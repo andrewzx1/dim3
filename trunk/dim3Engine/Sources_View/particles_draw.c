@@ -226,7 +226,7 @@ int particle_fill_array_quad_single(float *vertex_ptr,int idx,int nvertex,d3pnt 
       
 ======================================================= */
 
-void particle_draw(effect_type *effect,int count)
+void particle_draw(effect_type *effect,int count,int image_offset)
 {
 	int						n,idx,particle_count,ntot_count,nvertex,nindex,
 							ntrail,pixel_dif;
@@ -342,7 +342,7 @@ void particle_draw(effect_type *effect,int count)
 	
 		// setup images
 		
-	effect_image_animate_get_uv(count,&particle->animate,&gx,&gy,&g_size);
+	effect_image_animate_get_uv(count,image_offset,&particle->animate,&gx,&gy,&g_size);
 
 		// reduce x/z/y movement and add in offset
 		

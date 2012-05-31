@@ -66,7 +66,7 @@ void ring_draw_position(effect_type *effect,int count,d3pnt *pnt)
       
 ======================================================= */
 
-void ring_draw(effect_type *effect,int count)
+void ring_draw(effect_type *effect,int count,int image_offset)
 {
 	int						n,nvertex,nindex,life_tick;
 	unsigned short			v_idx;
@@ -116,7 +116,7 @@ void ring_draw(effect_type *effect,int count)
 	
 		// setup images
 		
-	effect_image_animate_get_uv(count,&ring->animate,&gx,&gy,&g_size);
+	effect_image_animate_get_uv(count,image_offset,&ring->animate,&gx,&gy,&g_size);
 	
 		// position and ring rotation
 

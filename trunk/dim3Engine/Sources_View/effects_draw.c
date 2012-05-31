@@ -370,7 +370,7 @@ void effect_draw_ray(effect_type *effect,int count)
       
 ======================================================= */
 
-void effect_image_animate_get_uv(int tick,iface_image_animation_type *animate,float *gx,float *gy,float *g_size)
+void effect_image_animate_get_uv(int tick,int image_offset,iface_image_animation_type *animate,float *gx,float *gy,float *g_size)
 {
 	int				k,nimage,image_per_row;
 	float			gsz;
@@ -385,7 +385,7 @@ void effect_image_animate_get_uv(int tick,iface_image_animation_type *animate,fl
 			k=0;
 		}
 		else {
-			k=tick/animate->msec;
+			k=(tick/animate->msec)+image_offset;
 		}
 
 		if ((!animate->loop) && (k>=nimage)) {
@@ -419,7 +419,7 @@ void effect_image_animate_get_uv(int tick,iface_image_animation_type *animate,fl
 
 void effect_draw(void)
 {
-	int				n,tick,count;
+	int				n,idx,tick,count;
 	effect_type		*effect;
 
 		// setup view
@@ -436,18 +436,19 @@ void effect_draw(void)
 	for (n=(view.render->draw_list.count-1);n>=0;n--) {
 		if (view.render->draw_list.items[n].type!=view_render_type_effect) continue;
 
-		effect=server.effect_list.effects[view.render->draw_list.items[n].idx];
+		idx=view.render->draw_list.items[n].idx;
+		effect=server.effect_list.effects[idx];
 		
 		count=tick-effect->start_tick;
 
 		switch (effect->effecttype) {
 
 			case ef_particle:
-				particle_draw(effect,count);
+				particle_draw(effect,count,idx);
 				break;
 				
 			case ef_ring:
-				ring_draw(effect,count);
+				ring_draw(effect,count,idx);
 				break;
 				
 			case ef_lightning:
