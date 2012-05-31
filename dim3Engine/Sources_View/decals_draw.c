@@ -114,7 +114,7 @@ void decal_render_mark(int stencil_idx,decal_type *decal)
 	
 		// get the decal image
 		
-	effect_image_animate_get_uv(tick,&mark->animate,&gx,&gy,&g_size);
+	effect_image_animate_get_uv(tick,0,&mark->animate,&gx,&gy,&g_size);
 
 		// get lighting
 		

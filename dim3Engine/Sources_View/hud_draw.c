@@ -159,7 +159,7 @@ void hud_bitmaps_draw(void)
 		
 			// setup images
 			
-		effect_image_animate_get_uv((tick-bitmap->show_tick),&bitmap->animate,&gx,&gy,&g_size);
+		effect_image_animate_get_uv((tick-bitmap->show_tick),0,&bitmap->animate,&gx,&gy,&g_size);
 
             // flips
            

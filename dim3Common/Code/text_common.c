@@ -51,9 +51,15 @@ texture_font_type					txt_font;
 
 void text_initialize(void)
 {
+#ifndef D3_OS_WINDOWS
+	strcpy(txt_font.name[0],"Arial");
+	strcpy(txt_font.name[1],"Helvetica");
+	strcpy(txt_font.name[2],"Verdana");
+#else
 	strcpy(txt_font.name[0],"Arial");
 	strcpy(txt_font.name[1],"Verdana");
 	strcpy(txt_font.name[2],"Tahoma");
+#endif
 
 	bitmap_text_initialize(&txt_font);
 
