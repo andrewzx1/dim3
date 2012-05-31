@@ -46,8 +46,9 @@ and can be sold or given away.
 #define gs_file									6
 #define gs_chooser								7
 #define gs_title								8
-#define gs_error								9
-#define gs_score_limit							10
+#define gs_load_pause							9
+#define gs_error								10
+#define gs_score_limit							11
 
 //
 // lists

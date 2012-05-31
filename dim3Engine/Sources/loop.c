@@ -300,6 +300,10 @@ void loop_state_run(void)
 		case gs_title:
 			title_run();
 			return;
+
+		case gs_load_pause:
+			load_pause_run();
+			return;
 			
 		case gs_error:
 			error_run();
@@ -349,6 +353,10 @@ void loop_state_last_close(void)
 		case gs_title:
 			title_close();
 			return;
+
+		case gs_load_pause:
+			load_pause_close();
+			return;
 			
 		case gs_error:
 			error_close();
@@ -395,6 +403,10 @@ void loop_state_next_open(void)
 			
 		case gs_title:
 			title_open();
+			return;
+
+		case gs_load_pause:
+			load_pause_open();
 			return;
 			
 		case gs_error:

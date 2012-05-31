@@ -124,6 +124,13 @@ void map_music_start(map_music_type *music)
 	if (!ok) console_add_error(err_str);
 }
 
+void map_start_finish(bool skip_media)
+{
+	if (!skip_media) map_media_start(&map.media);
+	map_music_start(&map.music);
+	if (!skip_media) view_fade_start();
+}
+
 /* =======================================================
 
       Cache Lookups and Map Draw Flags
@@ -547,14 +554,25 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 	game_time_pause_end();
 	
 	server.time.map_start_tick=game_time_get();
-	
-		// start any map open media
-		// and fades
-	
+
+		// if not dedicated host, run
+		// load pauses or map media
+
 	if (!app.dedicated_host) {
-		if (!skip_media) map_media_start(&map.media);
-		map_music_start(&map.music);
-		if (!skip_media) view_fade_start();
+
+			// if a pause start, go
+			// directly to intro
+
+		if ((iface.project.load_requires_click) && (!app.editor_override.on)) {
+			load_pause_setup(map.info.name,skip_media);
+		}
+	
+			// otherwise finish the map by running
+			// media or sounds
+
+		else {
+			map_start_finish(skip_media);
+		}
 	}
 
 	return(TRUE);
@@ -563,7 +581,7 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 void map_end(void)
 {
 	obj_type		*obj;
-	
+
 		// stop all sounds
 	
 	if (!app.dedicated_host) {
@@ -592,6 +610,14 @@ void map_end(void)
 		scripts_post_event_console(obj->script_idx,-1,sd_event_map,sd_event_map_close,0);
 	}
 
+		// remove all projectiles
+	
+	projectile_dispose_all();
+
+		// free map bound items
+		
+	object_dispose_2(bt_map);
+
 		// clear all back buffers
 		// release obscuring memory
 		// and shutdown weather and skies
@@ -605,10 +631,6 @@ void map_end(void)
 		rain_draw_release();
 	}
 
-		// remove all projectiles
-	
-	projectile_dispose_all();
-
 		// free some map lists
 
 	projectile_free_list();
@@ -619,10 +641,6 @@ void map_end(void)
 		
 	scripts_dispose(js.course_script_idx);
 
-		// free map bound items
-		
-	object_dispose_2(bt_map);
-	
 		// free group, portal segment, vertex and light lists
 		
 	if (!app.dedicated_host) {

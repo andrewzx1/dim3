@@ -56,6 +56,7 @@ extern bool game_file_reload(char *err_str);
 // maps
 //
 
+extern void map_start_finish(bool skip_media);
 extern bool map_start(bool in_file_load,bool skip_media,char *err_str);
 extern void map_end(void);
 extern void map_clear_changes(void);
@@ -472,6 +473,11 @@ extern void title_open(void);
 extern void title_close(void);
 extern bool title_setup(char *dir,char *name,char *sound_name,int life_tick,int event_id,char *err_str);
 extern void title_run(void);
+
+extern void load_pause_open(void);
+extern void load_pause_close(void);
+extern void load_pause_setup(char *map_name,bool skip_media);
+extern void load_pause_run(void);
 
 extern bool cinema_start(char *name,int event_id,char *err_str);
 extern void cinema_run(void);
