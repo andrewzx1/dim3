@@ -3196,6 +3196,10 @@
 						</FileConfiguration>
 					</File>
 					<File
+						RelativePath="..\..\dim3Engine\Sources_View\load_pause.c"
+						>
+					</File>
+					<File
 						RelativePath="..\..\dim3Engine\Sources_View\progress.c"
 						>
 						<FileConfiguration

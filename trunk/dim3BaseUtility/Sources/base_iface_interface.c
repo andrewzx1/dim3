@@ -558,6 +558,34 @@ void iface_read_settings_project_name(file_path_setup_type *path_setup)
 
 /* =======================================================
 
+      Interface Resolution Substitutions
+      
+======================================================= */
+
+void iface_read_settings_interface_get_xml_name(char *i_name)
+{
+	strcpy(i_name,"Interface");
+
+#if defined(D3_OS_MAC) && defined(D3_ENGINE) && defined(D3_OS_IPHONE)
+
+		// get iphone or ipad interface
+
+	if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
+		strcpy(i_name,"Interface_iPad");
+	}
+	else {
+		strcpy(i_name,"Interface_iPhone");
+	}
+
+		// does it exist?
+
+	if (!file_paths_data_exist(&iface_file_path_setup,"Settings",interface_name,"xml")) strcpy(i_name,"Interface");
+
+#endif
+}
+
+/* =======================================================
+
       Read Interface XML
       
 ======================================================= */
@@ -571,13 +599,15 @@ void iface_read_settings_interface(iface_type *iface)
 								intro_head_tag,intro_model_head_tag,intro_model_tag,intro_confirm_tag,
 								color_tag,font_tag,progress_tag,chat_tag,fade_tag,button_tag,sound_tag,
 								proj_tag,setup_tag;
-	char						path[1024],name[256];
+	char						path[1024],i_name[256],name[256];
 
 	iface_default_settings(iface);
 	
 		// read in interface from setting files
+
+	iface_read_settings_interface_get_xml_name(i_name);
 		
-	file_paths_data(&iface_file_path_setup,path,"Settings","Interface","xml");
+	file_paths_data(&iface_file_path_setup,path,"Settings",i_name,"xml");
 	if (!xml_open_file(path)) return;
 	
 		// decode the file
@@ -907,11 +937,13 @@ void iface_refresh_settings_interface_hud_only(iface_type *iface)
 {
 	int							interface_head_tag,
 								bitmap_head_tag,bitmap_tag,text_head_tag,text_tag,bar_head_tag,bar_tag;
-	char						path[1024];
+	char						path[1024],i_name[256];
 
 		// read in interface from setting files
-		
-	file_paths_data(&iface_file_path_setup,path,"Settings","Interface","xml");
+	
+	iface_read_settings_interface_get_xml_name(i_name);
+
+	file_paths_data(&iface_file_path_setup,path,"Settings",i_name,"xml");
 	if (!xml_open_file(path)) return;
 	
 		// decode the file
