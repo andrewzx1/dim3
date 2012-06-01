@@ -26,7 +26,9 @@ and can be sold or given away.
 *********************************************************************/
 
 #import <Foundation/Foundation.h>
+#ifdef D3_OS_IPHONE
 #import <UIKit/UIDevice.h>
+#endif
 
 void cocoa_file_get_application_support_path(char *path)
 {

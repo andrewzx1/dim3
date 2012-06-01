@@ -51,13 +51,14 @@ void item_pickup_check(obj_type *obj)
 	network_request_remote_pickup	pickup;
 	
 		// can pick up if you are hidden, no contact,
-		// set to ignore pickup, or are a pickup item
+		// set to ignore pickup, a remote, or are a pickup item
 		// yourself
 		
 	if (obj->hidden) return;
 	if (!obj->contact.object_on) return;
 	if (obj->pickup.on) return;
 	if (obj->pickup.ignore) return;
+	if (obj->type==object_type_remote) return;
 
 		// dead players can't pickup items
 

@@ -952,6 +952,8 @@ extern void rain_draw_init(void);
 extern void rain_draw_release(void);
 extern void rain_draw(void);
 
+extern void view_draw_tint_start(d3col *col,float alpha,int fade_in_msec,int life_msec,int fade_out_msec);
+
 //
 // misc rendering
 //
