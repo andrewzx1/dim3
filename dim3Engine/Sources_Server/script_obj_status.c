@@ -29,14 +29,13 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
+#include "interface.h"
 #include "scripts.h"
 #include "objects.h"
 
 extern iface_type		iface;
 extern map_type			map;
 extern js_type			js;
-
-extern void view_draw_tint_start(d3col *col,float alpha,int fade_in_msec,int life_msec,int fade_out_msec);
 
 JSValueRef js_obj_status_get_speed(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_obj_status_get_moving(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
