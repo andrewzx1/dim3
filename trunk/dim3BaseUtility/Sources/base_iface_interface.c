@@ -36,6 +36,10 @@ char							just_mode_str[][32]=text_just_list_def,
 								bar_type_str[][32]=bar_type_list_def,
 								score_format_str[][32]=score_format_list_def;
 
+#ifdef D3_OS_IPHONE
+	extern bool cocoa_is_ipad(void);
+#endif
+
 /* =======================================================
 
       Read Bitmap XML
@@ -566,11 +570,11 @@ void iface_read_settings_interface_get_xml_name(char *i_name)
 {
 	strcpy(i_name,"Interface");
 
-#if defined(D3_OS_MAC) && defined(D3_ENGINE) && defined(D3_OS_IPHONE)
+#if defined(D3_ENGINE) && defined(D3_OS_IPHONE)
 
 		// get iphone or ipad interface
 
-	if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
+	if (cocoa_is_ipad()) {
 		strcpy(i_name,"Interface_iPad");
 	}
 	else {
@@ -579,7 +583,7 @@ void iface_read_settings_interface_get_xml_name(char *i_name)
 
 		// does it exist?
 
-	if (!file_paths_data_exist(&iface_file_path_setup,"Settings",interface_name,"xml")) strcpy(i_name,"Interface");
+	if (!file_paths_data_exist(&iface_file_path_setup,"Settings",i_name,"xml")) strcpy(i_name,"Interface");
 
 #endif
 }
