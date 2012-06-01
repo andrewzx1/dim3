@@ -642,61 +642,6 @@ void remote_fire(int net_uid,network_request_remote_fire *fire)
 
 /* =======================================================
 
-      Remote Pickup
-      
-======================================================= */
-
-void remote_pickup(int net_uid,network_request_remote_pickup *pickup)
-{
-	int					n,idx;
-	d3pnt				org_pnt;
-	obj_type			*obj;
-	weapon_type			*weap;
-	
-	obj=object_find_remote_net_uid(net_uid);
-	if (obj==NULL) return;
-
-		// make sure pickup is at proper point
-
-	memmove(&org_pnt,&obj->pnt,sizeof(d3pnt));
-	
-	obj->pnt.x=ntohl(pickup->pt_x);
-	obj->pnt.y=ntohl(pickup->pt_y);
-	obj->pnt.z=ntohl(pickup->pt_z);
-
-		// setup health, ammo as they
-		// could effect pickups
-
-	obj->status.health.value=(signed short)ntohs(pickup->health);
-	obj->status.armor.value=(signed short)ntohs(pickup->armor);
-
-	idx=0;
-		
-	for (n=0;n!=max_weap_list;n++) {
-		weap=obj->weap_list.weaps[n];
-		if (weap==NULL) continue;
-
-		weap->hidden=((signed short)ntohs(pickup->ammos[idx].hidden)!=0);
-		weap->ammo.count=(signed short)ntohs(pickup->ammos[idx].ammo_count);
-		weap->ammo.clip_count=(signed short)ntohs(pickup->ammos[idx].clip_count);
-		weap->alt_ammo.count=(signed short)ntohs(pickup->ammos[idx].alt_ammo_count);
-		weap->alt_ammo.clip_count=(signed short)ntohs(pickup->ammos[idx].alt_clip_count);
-
-		idx++;
-		if (idx==net_max_weapon_per_remote) break;
-	}
-
-		// run pickup
-
-	item_pickup_check(obj);
-
-		// restore point
-
-	memmove(&obj->pnt,&org_pnt,sizeof(d3pnt));
-}
-
-/* =======================================================
-
       Remote Click
       
 ======================================================= */
@@ -780,10 +725,6 @@ bool remote_route_message(net_queue_msg_type *msg)
 			remote_fire(msg->net_uid,(network_request_remote_fire*)msg->msg);
 			return(TRUE);
 
-		case net_action_request_remote_pickup:
-			remote_pickup(msg->net_uid,(network_request_remote_pickup*)msg->msg);
-			return(TRUE);
-
 		case net_action_request_remote_click:
 			remote_click(msg->net_uid,(network_request_remote_click*)msg->msg);
 			return(TRUE);
@@ -818,7 +759,6 @@ bool remote_route_message(net_queue_msg_type *msg)
 void remote_network_send_updates(void)
 {
 	int					n,tick;
-	bool				monsters;
 	obj_type			*obj;
 
 		// time for an update
@@ -835,19 +775,20 @@ void remote_network_send_updates(void)
 		net_client_send_remote_update(obj,view.chat.type_on);
 	}
 
-		// update any co-op bots if hosting
+		// if the host, update all other
+		// objects that aren't scenery
 
 	if (net_setup.mode==net_mode_host) {
-	
-		monsters=iface.multiplayer.game_list.games[net_setup.game_idx].monsters;
 
 		for (n=0;n!=max_obj_list;n++) {
+			if (n==server.player_obj_idx) continue;
+
 			obj=server.obj_list.objs[n];
 			if (obj==NULL) continue;
 
-			if ((obj->type==object_type_bot_multiplayer) || ((obj->type==object_type_bot_map) && (monsters))) {
-				net_client_send_remote_update(obj,FALSE);
-			}
+			if (obj->scenery.on) continue;
+			
+			net_client_send_remote_update(obj,FALSE);
 		}
 	}
 }

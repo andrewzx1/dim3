@@ -148,6 +148,4 @@ extern void net_client_send_sound(obj_type *obj,d3pnt *pnt,float pitch,char *nam
 extern void net_client_send_projectile_add(obj_type *obj,char *weap_name,char *proj_setup_name,d3pnt *pt,d3ang *ang);
 extern void net_client_send_hitscan_add(obj_type *obj,char *weap_name,char *proj_setup_name,d3pnt *pt,d3ang *ang);
 extern void net_client_send_melee_add(obj_type *obj,char *weap_name,int radius,int distance,int damage,int force,d3pnt *pt,d3ang *ang);
-extern void net_client_setup_pickup(obj_type *obj,network_request_remote_pickup *pickup);
-extern void net_client_send_pickup(obj_type *obj,network_request_remote_pickup *pickup);
 extern void net_client_send_click(obj_type *obj,d3pnt *pt,d3ang *ang);

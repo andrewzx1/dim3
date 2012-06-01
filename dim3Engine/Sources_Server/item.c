@@ -45,29 +45,21 @@ extern network_setup_type	net_setup;
 
 void item_pickup_check(obj_type *obj)
 {
-	int								n;
-	bool							network_on;
-	obj_type						*item_obj;
-	network_request_remote_pickup	pickup;
+	int					n;
+	obj_type			*item_obj;
 	
 		// can pick up if you are hidden, no contact,
-		// set to ignore pickup, a remote, or are a pickup item
+		// set to ignore pickup, or are a pickup item
 		// yourself
 		
 	if (obj->hidden) return;
 	if (!obj->contact.object_on) return;
 	if (obj->pickup.on) return;
 	if (obj->pickup.ignore) return;
-	if (obj->type==object_type_remote) return;
 
 		// dead players can't pickup items
 
 	if ((obj->type==object_type_player) && (obj->status.health.value==0)) return;
-
-		// detect if we need to send synch
-		// pickup network messages
-
-	network_on=(net_setup.mode!=net_mode_none) && (object_networkable(obj));
 
 		// check for collisions with pickup items
     
@@ -92,12 +84,6 @@ void item_pickup_check(obj_type *obj)
 			obj->pickup.item_idx=item_obj->idx;
 			obj->pickup.obj_idx=-1;
 
-				// need to setup any network messages
-				// before the pickup event as it could
-				// change parts of the object
-
-			if (network_on) net_client_setup_pickup(obj,&pickup);
-
 				// send pickup event to item
 
 			scripts_post_event_console(item_obj->script_idx,-1,sd_event_pickup,0,0);
@@ -107,10 +93,6 @@ void item_pickup_check(obj_type *obj)
 				// send pickup event to object
 				
 			scripts_post_event_console(obj->script_idx,-1,sd_event_pickup,0,0);
-
-				// send network event
-
-			if (network_on) net_client_send_pickup(obj,&pickup);
 			
 				// successfully picked up
 				
