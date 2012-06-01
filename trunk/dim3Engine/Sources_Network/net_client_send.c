@@ -369,49 +369,6 @@ void net_client_send_melee_add(obj_type *obj,char *weap_name,int radius,int dist
 
 /* =======================================================
 
-      Pickup Messages
-	        
-======================================================= */
-
-void net_client_setup_pickup(obj_type *obj,network_request_remote_pickup *pickup)
-{
-	int									n,idx;
-	weapon_type							*weap;
-	
-		// make sure pickup can work by
-		// moving over settings pickups are concerned with
-
-	pickup->pt_x=htonl(obj->pnt.x);
-	pickup->pt_y=htonl(obj->pnt.y);
-	pickup->pt_z=htonl(obj->pnt.z);
-
-	pickup->health=htons((short)obj->status.health.value);
-	pickup->armor=htons((short)obj->status.armor.value);
-
-	idx=0;
-		
-	for (n=0;n!=max_weap_list;n++) {
-		weap=obj->weap_list.weaps[n];
-		if (weap==NULL) continue;
-
-		pickup->ammos[idx].hidden=htons((short)(weap->hidden?0:1));
-		pickup->ammos[idx].ammo_count=htons((short)weap->ammo.count);
-		pickup->ammos[idx].clip_count=htons((short)weap->ammo.clip_count);
-		pickup->ammos[idx].alt_ammo_count=htons((short)weap->alt_ammo.count);
-		pickup->ammos[idx].alt_clip_count=htons((short)weap->alt_ammo.clip_count);
-
-		idx++;
-		if (idx==net_max_weapon_per_remote) break;
-	}
-}
-
-void net_client_send_pickup(obj_type *obj,network_request_remote_pickup *pickup)
-{
-	net_client_send_msg(obj,net_action_request_remote_pickup,(unsigned char*)pickup,sizeof(network_request_remote_pickup));
-}
-
-/* =======================================================
-
       Click Messages
 	        
 ======================================================= */

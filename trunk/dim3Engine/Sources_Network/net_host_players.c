@@ -481,7 +481,6 @@ void net_host_player_remote_route_msg(net_queue_msg_type *msg)
 		case net_action_request_remote_chat:
 		case net_action_request_remote_sound:
 		case net_action_request_remote_fire:
-		case net_action_request_remote_pickup:
 		case net_action_request_remote_click:
 			net_host_player_send_message_others(msg->net_uid,msg->action,msg->msg,msg->msg_len);
 			break;
