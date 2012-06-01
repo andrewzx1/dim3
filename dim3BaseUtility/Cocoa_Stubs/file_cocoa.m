@@ -26,6 +26,7 @@ and can be sold or given away.
 *********************************************************************/
 
 #import <Foundation/Foundation.h>
+#import <UIKit/UIDevice.h>
 
 void cocoa_file_get_application_support_path(char *path)
 {
@@ -44,3 +45,13 @@ void cocoa_file_get_application_support_path(char *path)
 	strncpy(path,[[paths objectAtIndex:0] UTF8String],1024);
 	path[1023]=0x0;
 }
+
+bool cocoa_is_ipad(void)
+{
+#ifdef D3_OS_IPHONE
+	return(UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad);
+#else
+	return(FALSE);
+#endif
+}
+
