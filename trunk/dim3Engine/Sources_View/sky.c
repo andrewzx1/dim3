@@ -44,6 +44,7 @@ extern view_type		view;
 void sky_draw_background_single(map_background_layer_type *layer)
 {
 	float				gx,gy,gy_high;
+	float				vertexes[8],uvs[8];
 	texture_type		*texture;
 	bitmap_type			*bitmap;
 
@@ -63,7 +64,23 @@ void sky_draw_background_single(map_background_layer_type *layer)
 	texture=&map.textures[layer->fill];
 	bitmap=&texture->frames[texture->animate.current_frame].bitmap;
 	
-	view_primitive_2D_texture_quad(bitmap->gl_id,NULL,1.0f,0,view.screen.x_sz,0,view.screen.y_sz,gx,(gx+layer->size.x),gy,(gy+gy_high));
+	vertexes[0]=vertexes[1]=vertexes[2]=vertexes[5]=0.0f;
+	vertexes[4]=vertexes[6]=(float)view.screen.x_sz;
+	vertexes[3]=vertexes[7]=(float)view.screen.y_sz;
+	
+	uvs[0]=uvs[2]=gx;
+	uvs[1]=uvs[5]=gy;
+	uvs[3]=uvs[7]=(gy+gy_high);
+	uvs[4]=uvs[6]=(gx+layer->size.x);
+	
+	gl_texture_bind(0,bitmap->gl_id);
+
+		// draw the quad
+
+	glVertexPointer(2,GL_FLOAT,0,(GLvoid*)vertexes);
+	glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)uvs);
+
+	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
 }
 
 void sky_draw_background(void)
@@ -78,17 +95,38 @@ void sky_draw_background(void)
 	
 		// draw the layers
 		
+	glActiveTexture(GL_TEXTURE0);
+	glEnable(GL_TEXTURE_2D);
+	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_REPLACE);
+
 	glDisable(GL_DEPTH_TEST);
 	
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+	glColor4f(1.0f,1.0f,1.0f,1.0f);
+	
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	
+		// first background draws with replace
+		// and no alpha
+
+	sky_draw_background_single(&map.background.back);
+	
+		// other background draw with alpha
 	
 	glEnable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_NOTEQUAL,0);
-		
-	sky_draw_background_single(&map.background.back);
+	
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+
+	glEnable(GL_ALPHA_TEST);
+	glAlphaFunc(GL_NOTEQUAL,0);
+
+	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
+
 	sky_draw_background_single(&map.background.middle);
 	sky_draw_background_single(&map.background.front);
+	
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 
 	glDisable(GL_BLEND);
 	glDisable(GL_ALPHA_TEST);

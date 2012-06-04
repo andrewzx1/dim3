@@ -562,34 +562,6 @@ void iface_read_settings_project_name(file_path_setup_type *path_setup)
 
 /* =======================================================
 
-      Interface Resolution Substitutions
-      
-======================================================= */
-
-void iface_read_settings_interface_get_xml_name(char *i_name)
-{
-	strcpy(i_name,"Interface");
-
-#if defined(D3_ENGINE) && defined(D3_OS_IPHONE)
-
-		// get iphone or ipad interface
-
-	if (cocoa_is_ipad()) {
-		strcpy(i_name,"Interface_iPad");
-	}
-	else {
-		strcpy(i_name,"Interface_iPhone");
-	}
-
-		// does it exist?
-
-	if (!file_paths_data_exist(&iface_file_path_setup,"Settings",i_name,"xml")) strcpy(i_name,"Interface");
-
-#endif
-}
-
-/* =======================================================
-
       Read Interface XML
       
 ======================================================= */
@@ -609,7 +581,7 @@ void iface_read_settings_interface(iface_type *iface)
 	
 		// read in interface from setting files
 
-	iface_read_settings_interface_get_xml_name(i_name);
+	iface_xml_substitution("Interface",i_name);
 		
 	file_paths_data(&iface_file_path_setup,path,"Settings",i_name,"xml");
 	if (!xml_open_file(path)) return;
@@ -945,7 +917,7 @@ void iface_refresh_settings_interface_hud_only(iface_type *iface)
 
 		// read in interface from setting files
 	
-	iface_read_settings_interface_get_xml_name(i_name);
+	iface_xml_substitution("Interface",i_name);
 
 	file_paths_data(&iface_file_path_setup,path,"Settings",i_name,"xml");
 	if (!xml_open_file(path)) return;

@@ -896,7 +896,7 @@
 		20286C28FDCF999611CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0420;
+				LastUpgradeCheck = 0430;
 			};
 			buildConfigurationList = F5DB0C250856A7FD005A7CB7 /* Build configuration list for PBXProject "dim3Animator" */;
 			compatibilityVersion = "Xcode 3.2";

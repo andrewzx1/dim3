@@ -1620,7 +1620,7 @@
 		26A6840513DE405D007513D1 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0420;
+				LastUpgradeCheck = 0430;
 			};
 			buildConfigurationList = 26A6840813DE405D007513D1 /* Build configuration list for PBXProject "dim3Engine" */;
 			compatibilityVersion = "Xcode 3.2";

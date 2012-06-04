@@ -198,6 +198,19 @@ void model_draw_setup_object(obj_type *obj)
       
 ======================================================= */
 
+int model_draw_setup_weapon_height_adjust(void)
+{
+	float		ratio;
+	
+#ifndef D3_ROTATE_VIEW
+	ratio=(((float)view.screen.x_sz)/((float)view.screen.y_sz))*map.camera.plane.aspect_ratio;
+#else
+	ratio=(((float)view.screen.y_sz)/((float)view.screen.x_sz))*map.camera.plane.aspect_ratio;
+#endif
+
+	return((int)((1.6f-ratio)*1200.0f));
+}
+
 void model_draw_setup_weapon(obj_type *obj,weapon_type *weap,bool ignore_y_shifts,bool dual_hand)
 {
 	int					swap_yadd,weap_mode,
@@ -262,16 +275,18 @@ void model_draw_setup_weapon(obj_type *obj,weapon_type *weap,bool ignore_y_shift
 	if (dual_hand) fx+=weap->dual.hand_offset;
 
 		// rotate it with the camera
-	
+
 	matrix_rotate_x(&mat,obj->view_ang.x);
 	matrix_vertex_multiply(&mat,&fx,&fy,&fz);
 	
 	matrix_rotate_y(&mat,angle_add(obj->ang.y,180.0f));
 	matrix_vertex_multiply(&mat,&fx,&fy,&fz);
-	
+
 	draw->pnt.x=(int)fx+obj->pnt.x;
 	draw->pnt.y=(int)fy+(obj->pnt.y+obj->size.eye_offset);
 	draw->pnt.z=(int)fz+obj->pnt.z;
+	
+	draw->pnt.y-=model_draw_setup_weapon_height_adjust();
 
 		// viewing angle
 		

@@ -32,6 +32,10 @@ and can be sold or given away.
 d3col							default_tint_cols[8]={{1.0f,1.0f,1.0f},{1.0f,1.0f,0.0f},{1.0f,0.6f,0.0f},{1.0f,0.0f,0.0f},{0.0f,1.0f,0.0f},{0.0f,0.0f,1.0f},{1.0f,0.0f,1.0f},{0.6f,0.4f,0.0f}};
 file_path_setup_type			iface_file_path_setup;
 
+#ifdef D3_OS_IPHONE
+	extern bool cocoa_is_ipad(void);
+#endif
+
 /* =======================================================
 
       Interface Start
@@ -397,6 +401,34 @@ void iface_default_settings(iface_type *iface)
 	for (n=0;n!=max_preload_model;n++) {
 		iface->preload_model.names[n][0]=0x0;
 	}
+}
+
+/* =======================================================
+
+      XML Substitutions
+      
+======================================================= */
+
+void iface_xml_substitution(char *name,char *sub_name)
+{
+	strcpy(sub_name,name);
+
+#if defined(D3_ENGINE) && defined(D3_OS_IPHONE)
+
+		// get iphone or ipad chooser
+
+	if (cocoa_is_ipad()) {
+		sprintf(sub_name,"%s_iPad",name);
+	}
+	else {
+		sprintf(sub_name,"%s_iPhone",name);
+	}
+
+		// does it exist?
+
+	if (!file_paths_data_exist(&iface_file_path_setup,"Settings",sub_name,"xml")) strcpy(sub_name,name);
+
+#endif
 }
 
 /* =======================================================

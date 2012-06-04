@@ -63,7 +63,7 @@ void gui_background_load(char *background_path,char *bitmap_name)
 void gui_initialize(char *background_path,char *bitmap_name)
 {
 	int			x,y;
-	
+
 		// pause game
 		
 	game_time_pause_start();

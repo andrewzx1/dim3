@@ -742,6 +742,10 @@ bool import_create_mesh_from_obj_group(obj_import_state_type *import_state,char 
             npt++;
         }
 		
+			// is there at least 3 points?
+			
+		if (npt<3) continue;
+		
 			// create the poly
 
 		poly_idx=map_mesh_add_poly(&map,mesh_idx,npt,px,py,pz,gx,gy,txt_idx);

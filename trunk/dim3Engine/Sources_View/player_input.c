@@ -624,7 +624,7 @@ void player_get_6_way_input(obj_type *obj,float *mouse_x,float *mouse_y,bool *go
 		}
 		else {
 			if ((iface.virtual_control.sticks[0].on) && (iface.virtual_control.sticks[1].on)) {
-				(*mouse_x)-=input_touch_get_axis(2);
+				(*mouse_x)+=input_touch_get_axis(2);
 				(*mouse_y)+=input_touch_get_axis(3);
 
 				(*go_forward)|=input_touch_get_axis_as_button_min(1);

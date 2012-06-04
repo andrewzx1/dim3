@@ -99,6 +99,8 @@ void hud_bitmaps_draw(void)
 	obj_type					*obj;
 	bitmap_type					*bitmap_data;
 	
+	if (iface.bitmap_list.nbitmap==0) return;
+	
 	obj=server.obj_list.objs[server.player_obj_idx];
 	object_get_tint(obj,&team_tint);
 	
@@ -301,6 +303,7 @@ void hud_bitmaps_draw(void)
 
 			glVertexPointer(2,GL_FLOAT,0,(GLvoid*)vertexes);
 			glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)uvs);
+			
 			glDrawArrays(GL_TRIANGLE_STRIP,0,4);
 		}
 	}
