@@ -605,6 +605,7 @@ bool import_create_mesh_from_obj_group(obj_import_state_type *import_state,char 
 								vstr[256],uvstr[256],normalstr[256];
 	float						gx[8],gy[8];
 	float						*uv,*normal;
+	bool						face_error;
 	d3fpnt						*dpt;
 	d3fpnt						factor;
 	d3vct						n_v;
@@ -656,6 +657,8 @@ bool import_create_mesh_from_obj_group(obj_import_state_type *import_state,char 
 	}
 	
 		// get the polys
+
+	face_error=FALSE;
 		
     for (n=group->start_line_idx;n<=group->end_line_idx;n++) {
 	
@@ -744,8 +747,11 @@ bool import_create_mesh_from_obj_group(obj_import_state_type *import_state,char 
 		
 			// is there at least 3 points?
 			
-		if (npt<3) continue;
-		
+		if (npt<3) {
+			face_error=TRUE;
+			continue;
+		}
+
 			// create the poly
 
 		poly_idx=map_mesh_add_poly(&map,mesh_idx,npt,px,py,pz,gx,gy,txt_idx);
@@ -767,6 +773,10 @@ bool import_create_mesh_from_obj_group(obj_import_state_type *import_state,char 
 		map_mesh_delete(&map,mesh_idx);
 		return(TRUE);
 	}
+
+		// face errors
+
+	if (face_error) os_dialog_alert("OBJ Warning","There were polygons with less than 3 vertexes in this OBJ.  Those polygons were ignored.");
 
 		// calc the normals
 		// or only tangent if normals come with OBJ

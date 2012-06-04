@@ -663,7 +663,8 @@ typedef struct		{
 #define max_virtual_button								8
 
 typedef struct		{
-						int								outer_image_idx,inner_image_idx;
+						int								click_control_idx,
+														outer_image_idx,inner_image_idx;
 						float							touch_x,touch_y;
 						bool							on,flip_x,flip_y,use_bitmap;
 						char							outer_bitmap_name[file_str_len],

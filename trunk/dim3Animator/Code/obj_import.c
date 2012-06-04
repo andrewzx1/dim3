@@ -144,12 +144,13 @@ bool import_obj(char *path,bool replace,bool *found_normals,char *err_str)
 	char					txt[256],*c,vstr[256],vtstr[256],vnstr[256],
 							material_name[256],
 							material_list[max_model_texture][name_str_len];
-	bool					hit_material,in_material,all_material_exists;
+	bool					hit_material,in_material,all_material_exists,face_error;
 	d3uv					*uv,*uv_ptr;
 	d3vct					*normal,*normal_ptr;
 	model_mesh_type			*mesh;
 	model_vertex_type		*vertex,*old_vertex;
     model_poly_type			*poly;
+	model_poly_type			temp_poly;
 	
 	mesh=&model.meshes[state.cur_mesh_idx];
 	
@@ -224,6 +225,8 @@ bool import_obj(char *path,bool replace,bool *found_normals,char *err_str)
 	nuv=0;
 	nnormal=0;
 	npoly=0;
+
+	face_error=FALSE;
 	
 	f_ty=f_by=0;
 
@@ -258,6 +261,23 @@ bool import_obj(char *path,bool replace,bool *found_normals,char *err_str)
 		}
 
 		if (strcmp(txt,"f")==0) {
+
+				// count vertexes
+				// to find bad faces
+
+			ptsz=0;
+	        
+			for (k=0;k!=8;k++) {
+				textdecode_get_piece(n,(k+1),txt);
+				if (txt[0]==0x0) break;
+				ptsz++;
+			}
+
+			if (ptsz<3) {
+				face_error=TRUE;
+				continue;
+			}
+
 			npoly++;
 			continue;
 		}
@@ -271,6 +291,10 @@ bool import_obj(char *path,bool replace,bool *found_normals,char *err_str)
 		sprintf(err_str,"There are no UVs in this OBJ, please texture map the model before importing.");
 		return(FALSE);
 	}
+
+		// face errors
+
+	if (face_error) os_dialog_alert("OBJ Warning","There were polygons with less than 3 vertexes in this OBJ.  Those polygons were ignored.");
 	
 		// get the scale if not a replace
 		
@@ -413,7 +437,7 @@ bool import_obj(char *path,bool replace,bool *found_normals,char *err_str)
 	        
 				// create the poly
 
-			poly->txt_idx=texture_idx;
+			temp_poly.txt_idx=texture_idx;
 			
 			ptsz=0;
 	        
@@ -438,16 +462,16 @@ bool import_obj(char *path,bool replace,bool *found_normals,char *err_str)
 					*c=0x0;
 				}
 				
-				poly->v[ptsz]=atoi(vstr);
-				if (poly->v[ptsz]>0) {
-					poly->v[ptsz]--;
+				temp_poly.v[ptsz]=atoi(vstr);
+				if (temp_poly.v[ptsz]>0) {
+					temp_poly.v[ptsz]--;
 				}
 				else {
-					poly->v[ptsz]=nvertex+poly->v[ptsz];
+					temp_poly.v[ptsz]=nvertex+temp_poly.v[ptsz];
 				}
 	            
 				if (vtstr[0]==0x0) {
-					poly->gx[ptsz]=poly->gy[ptsz]=0.0f;
+					temp_poly.gx[ptsz]=temp_poly.gy[ptsz]=0.0f;
 				}
 				else {
 					idx=atoi(vtstr);
@@ -458,8 +482,8 @@ bool import_obj(char *path,bool replace,bool *found_normals,char *err_str)
 						idx=nuv+idx;
 					}
 					
-					poly->gx[ptsz]=uv_ptr[idx].x;
-					poly->gy[ptsz]=1.0f-uv_ptr[idx].y;
+					temp_poly.gx[ptsz]=uv_ptr[idx].x;
+					temp_poly.gy[ptsz]=1.0f-uv_ptr[idx].y;
 				}
 					
 				if (vnstr[0]!=0x0) {
@@ -471,19 +495,26 @@ bool import_obj(char *path,bool replace,bool *found_normals,char *err_str)
 						idx=nnormal+idx;
 					}
 
-					vertex=&mesh->vertexes[poly->v[ptsz]];
+					vertex=&mesh->vertexes[temp_poly.v[ptsz]];
 					
 					vertex->tangent_space.normal.x+=normal_ptr[idx].x;
 					vertex->tangent_space.normal.y+=normal_ptr[idx].y;
 					vertex->tangent_space.normal.z+=normal_ptr[idx].z;
 					
-					poly_normal_count[poly->v[ptsz]]++;
+					poly_normal_count[temp_poly.v[ptsz]]++;
 				}
 				
 				ptsz++;
 			}
 
-			poly->ptsz=ptsz;
+				// skip faces with <3 vertexes
+
+			if (ptsz<3) continue;
+
+				// create the new polygon
+
+			temp_poly.ptsz=ptsz;
+			memmove(poly,&temp_poly,sizeof(model_poly_type));
 
 			poly++;
 		}

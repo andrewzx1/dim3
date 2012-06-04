@@ -41,10 +41,7 @@ void iface_read_settings_particle(iface_type *iface)
 {
 	int					n,nparticle,
 						particle_data_head_tag,particle_head_tag,particle_tag,
-						particle_group_head_tag,particle_group_tag,tag,
-						ring_radius,ring_size;
-	float				ring_min_move,ring_max_move;
-	bool				ring_flip;
+						particle_group_head_tag,particle_group_tag,tag;
 	char				path[1024];
 	iface_particle_type	*particle;
 
@@ -163,68 +160,28 @@ void iface_read_settings_particle(iface_type *iface)
             particle->end_pixel_size=xml_get_attribute_int(tag,"end");
         }
 
-			// old way of defining particles
-			// supergumba -- delete me later
-
-        tag=xml_findfirstchild("Ring",particle_tag);
-        if (tag!=-1) {
-            ring_radius=xml_get_attribute_int(tag,"radius");
-            ring_size=xml_get_attribute_int(tag,"size");
-            ring_min_move=xml_get_attribute_float(tag,"min_move");
-            ring_max_move=xml_get_attribute_float(tag,"max_move");
-			ring_flip=xml_get_attribute_boolean(tag,"flip");
-
-			particle->rot.x=particle->rot.y=particle->rot.z=0.0f;
-			particle->rot_accel.x=particle->rot_accel.y=particle->rot_accel.z=0.0f;
-		
-			if (ring_flip) {
-				particle->pt.x=ring_radius+ring_size;
-				particle->pt.z=ring_radius+ring_size;
-				particle->pt.y=0;
-		
-				particle->vct.x=ring_max_move;
-				particle->vct.z=ring_max_move;
-				particle->vct.y=0;
-			}
-			else {
-				particle->pt.x=ring_radius+ring_size;
-				particle->pt.y=ring_radius+ring_size;
-				particle->pt.z=ring_radius+ring_size;
-		
-				particle->vct.x=ring_max_move;
-				particle->vct.y=ring_max_move;
-				particle->vct.z=ring_max_move;
-			}
+		tag=xml_findfirstchild("X",particle_tag);
+		if (tag!=-1) {
+			particle->pt.x=xml_get_attribute_int(tag,"offset");
+			particle->vct.x=xml_get_attribute_float(tag,"move");
+			particle->rot.x=xml_get_attribute_float_default(tag,"rot",0.0f);
+			particle->rot_accel.x=xml_get_attribute_float_default(tag,"rot_accel",0.0f);
 		}
 
-			// new way of defining particles
+		tag=xml_findfirstchild("Y",particle_tag);
+		if (tag!=-1) {
+			particle->pt.y=xml_get_attribute_int(tag,"offset");
+			particle->vct.y=xml_get_attribute_float(tag,"move");
+			particle->rot.y=xml_get_attribute_float_default(tag,"rot",0.0f);
+			particle->rot_accel.y=xml_get_attribute_float_default(tag,"rot_accel",0.0f);
+		}
 
-		else {
-
-			tag=xml_findfirstchild("X",particle_tag);
-			if (tag!=-1) {
-				particle->pt.x=xml_get_attribute_int(tag,"offset");
-				particle->vct.x=xml_get_attribute_float(tag,"move");
-				particle->rot.x=xml_get_attribute_float_default(tag,"rot",0.0f);
-				particle->rot_accel.x=xml_get_attribute_float_default(tag,"rot_accel",0.0f);
-			}
-
-			tag=xml_findfirstchild("Y",particle_tag);
-			if (tag!=-1) {
-				particle->pt.y=xml_get_attribute_int(tag,"offset");
-				particle->vct.y=xml_get_attribute_float(tag,"move");
-				particle->rot.y=xml_get_attribute_float_default(tag,"rot",0.0f);
-				particle->rot_accel.y=xml_get_attribute_float_default(tag,"rot_accel",0.0f);
-			}
-
-			tag=xml_findfirstchild("Z",particle_tag);
-			if (tag!=-1) {
-				particle->pt.z=xml_get_attribute_int(tag,"offset");
-				particle->vct.z=xml_get_attribute_float(tag,"move");
-				particle->rot.z=xml_get_attribute_float_default(tag,"rot",0.0f);
-				particle->rot_accel.z=xml_get_attribute_float_default(tag,"rot_accel",0.0f);
-			}
-
+		tag=xml_findfirstchild("Z",particle_tag);
+		if (tag!=-1) {
+			particle->pt.z=xml_get_attribute_int(tag,"offset");
+			particle->vct.z=xml_get_attribute_float(tag,"move");
+			particle->rot.z=xml_get_attribute_float_default(tag,"rot",0.0f);
+			particle->rot_accel.z=xml_get_attribute_float_default(tag,"rot_accel",0.0f);
 		}
 
 		particle->start_color.r=particle->start_color.g=particle->start_color.b=1.0f;
