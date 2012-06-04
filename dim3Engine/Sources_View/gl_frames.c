@@ -232,6 +232,10 @@ void gl_frame_clear(bool in_view)
 
 void gl_frame_swap(void)
 {
+#ifdef D3_OS_IPHONE
+	const GLenum			discards[]={GL_DEPTH_ATTACHMENT_EXT,GL_STENCIL_ATTACHMENT_EXT};
+#endif
+	
 		// is this app deactivated?
 
 	if (app.state==as_inactive) {
@@ -246,6 +250,12 @@ void gl_frame_swap(void)
 		glColor4f(0.0f,0.0f,0.0f,0.5f);
 		view_primitive_2D_tint_screen();
 	}
+	
+		// discard the depth and stencil
+	
+#ifdef D3_OS_IPHONE
+	glDiscardFramebufferEXT(GL_FRAMEBUFFER_EXT,2,discards);
+#endif
 
 		// swap buffer
 

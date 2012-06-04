@@ -442,7 +442,7 @@ void map_recalc_normals_mesh(map_type *map,map_mesh_type *mesh,int normal_mode,b
 
 			// work on the tangent
 			// get the side vectors (p1-p0) and (p2-p0)
-
+			
 		pt=&mesh->vertexes[poly->v[0]];
 		pt_1=&mesh->vertexes[poly->v[1]];
 		pt_2=&mesh->vertexes[poly->v[2]];

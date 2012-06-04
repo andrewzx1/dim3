@@ -318,7 +318,7 @@ bool bitmap_open(bitmap_type *bitmap,char *path,bool anisotropic,int mipmap_mode
 		// texture quality changes
 
 		// opengl es doesn't support non-square textures
-
+		
 #ifndef D3_OPENGL_ES
 	if (!rectangle) png_data=bitmap_fix_power_2(bitmap,alpha_channel,png_data);
 #else

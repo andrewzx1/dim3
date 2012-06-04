@@ -50,21 +50,10 @@ void iface_read_settings_multiplayer(iface_type *iface)
 	iface_mp_character_type		*mp_character;
 	iface_mp_bot_type			*mp_bot;
 
-		// check multiplayer file first, if it doesn't
-		// exist look in interface.xml
-		// supergumba -- remove later
-		
 	file_paths_data(&iface_file_path_setup,path,"Settings","Multiplayer","xml");
-	if (xml_open_file(path)) {
-		multiplayer_head_tag=xml_findrootchild("Multiplayer");
-	}
-	else {
-		file_paths_data(&iface_file_path_setup,path,"Settings","Interface","xml");
-		if (!xml_open_file(path)) return;
-
-		multiplayer_head_tag=xml_findrootchild("Interface");
-	}
-		
+	if (!xml_open_file(path)) return;
+	
+	multiplayer_head_tag=xml_findrootchild("Multiplayer");
     if (multiplayer_head_tag==-1) {
 		xml_close_file();
 		return;

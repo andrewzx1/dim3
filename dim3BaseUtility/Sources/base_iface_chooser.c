@@ -201,31 +201,17 @@ void iface_read_settings_chooser_single(iface_type *iface,int chooser_tag)
 void iface_read_settings_chooser(iface_type *iface)
 {
 	int					n,nchooser,
-						interface_head_tag,choosers_head_tag,chooser_tag;
-	char				path[1024];
+						choosers_head_tag,chooser_tag;
+	char				path[1024],c_name[256];
 
-		// check chooser file first, if it doesn't
-		// exist look in interface.xml
-		// supergumba -- remove later
-		
-	file_paths_data(&iface_file_path_setup,path,"Settings","Choosers","xml");
-	if (xml_open_file(path)) {
-		choosers_head_tag=xml_findrootchild("Choosers");
-	}
-	else {
-		file_paths_data(&iface_file_path_setup,path,"Settings","Interface","xml");
-		if (!xml_open_file(path)) return;
+	iface_xml_substitution("Choosers",c_name);
 
-		interface_head_tag=xml_findrootchild("Interface");
-		if (interface_head_tag==-1) {
-			xml_close_file();
-			return;
-		}
+	file_paths_data(&iface_file_path_setup,path,"Settings",c_name,"xml");
+	if (!xml_open_file(path)) return;
 
-		choosers_head_tag=xml_findfirstchild("Choosers",interface_head_tag);
-	}
 		// chooser counts
-		
+	
+	choosers_head_tag=xml_findrootchild("Choosers");
     if (choosers_head_tag==-1) {
 		xml_close_file();
 		return;

@@ -73,7 +73,7 @@ bool game_start(bool in_file_load,int skill,int option_flags,int simple_save_idx
 		// game in running state
 		
 	server.game_open=TRUE;
-	server.state=gs_running;
+	server.next_state=gs_running;
 	
 	game_time_pause_end();
 	

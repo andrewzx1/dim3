@@ -58,7 +58,7 @@ void load_pause_open(void)
 			return;
 		}
 	}
-		
+	
 		// otherwise generic load background
 
 	gui_initialize("Bitmaps/Backgrounds","load");

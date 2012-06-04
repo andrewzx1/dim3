@@ -101,6 +101,9 @@ bool gl_initialize(int screen_wid,int screen_high,int fsaa_mode,char *err_str)
 #if defined(D3_OS_LINUX) || defined(D3_OS_WINDOWS)
 	GLenum					glew_error;
 #endif
+#ifdef D3_OS_IPHONE
+	const GLenum			discards[]={GL_DEPTH_ATTACHMENT_EXT,GL_STENCIL_ATTACHMENT_EXT};
+#endif
 
 		// reset sizes to the desktop
 		// if they are at default
@@ -219,7 +222,11 @@ bool gl_initialize(int screen_wid,int screen_high,int fsaa_mode,char *err_str)
         
 	glClearColor(0.0f,0.0f,0.0f,0.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
-   
+	
+#ifdef D3_OS_IPHONE
+	glDiscardFramebufferEXT(GL_FRAMEBUFFER_EXT,2,discards);
+#endif
+
 #ifdef D3_SDL_1_3
 	SDL_GL_SwapWindow(sdl_wind);
 #else
