@@ -44,10 +44,13 @@ and can be sold or given away.
 #define kStickFlipX								8
 #define kStickFlipY								9
 #define kStickColor								10
+#define kStickControl							11
 
 extern iface_type				iface;
 extern setup_state_type			state;
 extern list_palette_type		property_palette;
+
+extern char						control_name_str[][32];
 
 /* =======================================================
 
@@ -71,6 +74,8 @@ void property_palette_fill_virtual_control_stick(int virtual_control_stick_idx)
 	list_palette_add_picker_file(&property_palette,kStickOuterBitmap,list_button_none,0,"Outer Bitmap","Bitmaps/Virtual","png","",stick->outer_bitmap_name,FALSE);
 	list_palette_add_picker_file(&property_palette,kStickInnerBitmap,list_button_none,0,"Inner Bitmap","Bitmaps/Virtual","png","",stick->inner_bitmap_name,FALSE);
 	list_palette_add_pick_color(&property_palette,kStickColor,"Color",&stick->color,FALSE);
+	list_palette_add_picker_list_int(&property_palette,kStickControl,"Click Action",(char*)control_name_str,-1,32,0,TRUE,&stick->click_control_idx,FALSE);
+
 	
 	list_palette_add_header(&property_palette,0,"Position");
 	list_palette_add_int(&property_palette,kStickPositionX,"X",&stick->pnt.x,FALSE);

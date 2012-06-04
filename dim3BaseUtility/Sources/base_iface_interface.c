@@ -274,7 +274,6 @@ void iface_read_settings_bar(iface_type *iface,int bar_tag)
 	
 	tag=xml_findfirstchild("Settings",bar_tag);
 	if (tag!=-1) {
-		if (xml_get_attribute_boolean(tag,"vert")) bar->type=bar_type_vertical;		// supergumba -- temporary to fix old bar types
 		bar->show=!xml_get_attribute_boolean(tag,"hide");
 	}
 	
@@ -312,6 +311,7 @@ void iface_read_settings_virtual_control(iface_type *iface,int virtual_head_tag)
 			if (tag==-1) break;
 
 			stick->on=xml_get_attribute_boolean(tag,"on");
+			stick->click_control_idx=xml_get_attribute_int_default(tag,"click_control",-1);
 			stick->use_bitmap=xml_get_attribute_boolean(tag,"use_bitmap");
 			stick->pnt.x=xml_get_attribute_int(tag,"x");
 			stick->pnt.y=xml_get_attribute_int(tag,"y");
@@ -1209,6 +1209,7 @@ bool iface_write_settings_interface(iface_type *iface,char *err_str)
 	for (n=0;n!=max_virtual_stick;n++) {
 		xml_add_tagstart("Stick");
 		xml_add_attribute_boolean("on",stick->on);
+		xml_add_attribute_int("click_control",stick->click_control_idx);
 		xml_add_attribute_boolean("use_bitmap",stick->use_bitmap);
 		xml_add_attribute_int("x",stick->pnt.x);
 		xml_add_attribute_int("y",stick->pnt.y);
