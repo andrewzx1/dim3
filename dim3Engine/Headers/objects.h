@@ -99,7 +99,6 @@ extern int object_get_respawn_time(obj_type *obj);
 extern void object_check_respawn(obj_type *obj);
 extern int game_player_create(char *err_str);
 extern bool game_multiplayer_bots_create(char *err_str);
-extern void game_remotes_create(network_reply_join_remote_list *remote_list);
 extern bool map_objects_create(char *err_str);
 extern bool map_object_attach_all(char *err_str);
 extern void map_object_detach_all(void);
@@ -266,7 +265,7 @@ extern void player_get_input(void);
 // remotes
 //
 
-extern bool remote_add(network_reply_join_remote *remote,bool send_event);
+extern bool remote_add(network_request_remote_add *remote_add,bool send_event);
 extern void remote_remove(int net_uid,bool send_event);
 extern bool remote_timed_out(obj_type *obj);
 extern void remote_predict_move(obj_type *obj);
@@ -274,7 +273,6 @@ extern bool remote_route_message(net_queue_msg_type *msg);
 extern void remote_network_send_updates(void);
 extern void remote_network_send_group_synch(void);
 extern void remote_network_send_latency_ping(void);
-extern void remote_setup_multiplayer_monsters(void);
 extern void remote_draw_status(obj_type *obj);
 extern void remote_draw_names_setup(void);
 extern void remote_draw_names_render(void);

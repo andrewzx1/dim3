@@ -163,7 +163,8 @@ typedef struct		{
 #define net_uid_constant_none							0
 #define net_uid_constant_host							1
 #define net_uid_constant_client_start					1000
-#define net_uid_constant_map_bot_start					2000
+#define net_uid_constant_bot_start						2000
+#define net_uid_constant_map_obj_start					3000
 
 //
 // messages actions
@@ -205,6 +206,14 @@ typedef struct		{
 //
 
 #define net_max_weapon_per_remote						24
+
+//
+// add types
+//
+
+#define net_remote_add_player							0
+#define net_remote_add_bot								1
+#define net_remote_add_map_object						2
 
 //
 // team definitions
@@ -263,23 +272,6 @@ typedef struct		{
 					} network_reply_info;
 
 //
-// join remotes and bots
-//
-
-typedef struct		{
-						int								pnt_x,pnt_y,pnt_z;
-						short							net_uid,bot,score,
-														team_idx,tint_color_idx;
-						char							name[name_str_len],
-														draw_name[name_str_len];
-					} network_reply_join_remote;
-
-typedef struct		{
-						short							count;
-						network_reply_join_remote		remotes[host_max_remote_count];
-					} network_reply_join_remote_list;
-
-//
 // joining messages
 //
 
@@ -295,7 +287,6 @@ typedef struct		{
 						int								map_tick;
 						short							net_uid,team_idx;
 						char							deny_reason[64];
-						network_reply_join_remote_list	remote_list;
 					} network_reply_join;
 
 //
@@ -309,7 +300,14 @@ typedef struct		{
 //
 // in game messages
 //
-				
+
+typedef struct		{
+						short							net_uid,type,score,
+														team_idx,tint_color_idx;
+						char							name[name_str_len],
+														draw_name[name_str_len];
+					} network_request_remote_add;
+
 typedef struct		{
 						short							net_uid_killer_obj,telefrag;
 					} network_request_remote_death;

@@ -49,7 +49,7 @@ extern network_setup_type	net_setup;
       
 ======================================================= */
 
-bool remote_add(network_reply_join_remote *remote,bool send_event)
+bool remote_add(network_request_remote_add *remote,bool send_event)
 {
 	int					idx;
 	char				err_str[256];
@@ -67,9 +67,8 @@ bool remote_add(network_reply_join_remote *remote,bool send_event)
 	obj->team_idx=(signed short)ntohs(remote->team_idx);
 	obj->tint_color_idx=(signed short)ntohs(remote->tint_color_idx);
 	
-	obj->pnt.x=ntohl(remote->pnt_x);
-	obj->pnt.y=ntohl(remote->pnt_y);
-	obj->pnt.z=ntohl(remote->pnt_z);
+	obj->pnt.x=obj->pnt.y=obj->pnt.z=0;
+	obj->ang.x=obj->ang.y=obj->ang.z=0.0f;
 
 	obj->remote.net_uid=(signed short)ntohs(remote->net_uid);
 	obj->remote.last_update=game_time_get();
@@ -698,7 +697,7 @@ bool remote_route_message(net_queue_msg_type *msg)
 			return(TRUE);
 			
 		case net_action_request_remote_add:
-			remote_add((network_reply_join_remote*)msg->msg,TRUE);
+			remote_add((network_request_remote_add*)msg->msg,TRUE);
 			return(TRUE);
 			
 		case net_action_request_remote_remove:
@@ -826,51 +825,3 @@ void remote_network_send_latency_ping(void)
 	net_client_send_latency_ping(server.obj_list.objs[server.player_obj_idx]);
 }
 
-/* =======================================================
-
-      Map Bots (Monsters) to Remotes
-      
-======================================================= */
-
-void remote_setup_multiplayer_monsters(void)
-{
-	int					n,net_uid;
-	bool				monsters;
-	obj_type			*obj;
-
-		// nothing to do if not a network game
-		
-	if (net_setup.mode==net_mode_none) return;
-	
-		// is it co-op mode?
-		
-	monsters=iface.multiplayer.game_list.games[net_setup.game_idx].monsters;
-	
-		// create remote IDs
-		
-	net_uid=net_uid_constant_map_bot_start;
-
-	for (n=0;n!=max_obj_list;n++) {
-		obj=server.obj_list.objs[n];
-		if (obj==NULL) continue;
-	
-		if (obj->type==object_type_bot_map) {
-		
-				// if not in coop, then no map bots
-
-			if (!monsters) {
-				obj->hidden=TRUE;
-			}
-
-				// map bots need a unique remote ID, build
-				// from a high number to not interfere with real
-				// remotes or bots
-
-			else {
-				obj->remote.net_uid=net_uid;
-				net_uid++;
-			}
-
-		}
-	}
-}

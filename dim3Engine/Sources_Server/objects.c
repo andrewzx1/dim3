@@ -558,7 +558,10 @@ int object_create(char *name,int type,int bind)
 	obj->damage_obj_idx=-1;
 	
 	obj->team_idx=net_team_none;
-	obj->spawn_spot_name[0]=0x0;
+
+	obj->spawn_spot.name[0]=0x0;
+	obj->spawn_spot.script[0]=0x0;
+	obj->spawn_spot.params[0]=0x0;
 	
 	obj->click.on=FALSE;
 	obj->click.distance=1500;
@@ -758,7 +761,7 @@ bool object_start_script(obj_type *obj,bool no_construct,char *err_str)
 		if (script_name[0]==0x0) strcpy(script_name,"Player");
 	}
 	else {
-		strcpy(script_name,obj->spot_script);
+		strcpy(script_name,obj->spawn_spot.script);
 	}
 	
 		// create the script
@@ -846,21 +849,21 @@ void object_multiplayer_setup(obj_type *obj)
 
 		// spawn spot
 
-	obj->spawn_spot_name[0]=0x0;
+	obj->spawn_spot.name[0]=0x0;
 
 	if ((mp_game->spawn.force_team_spot) && (obj->team_idx!=net_team_none)) {
 		if (obj->team_idx==net_team_red) {
-			strcpy(obj->spawn_spot_name,"Red");
+			strcpy(obj->spawn_spot.name,"Red");
 		}
 		else {
-			strcpy(obj->spawn_spot_name,"Blue");
+			strcpy(obj->spawn_spot.name,"Blue");
 		}
 	}
 	else {
-		strcpy(obj->spawn_spot_name,mp_game->spawn.spot_name);
+		strcpy(obj->spawn_spot.name,mp_game->spawn.spot_name);
 	}
 	
-	if (obj->spawn_spot_name[0]==0x0) strcpy(obj->spawn_spot_name,"Start");
+	if (obj->spawn_spot.name[0]==0x0) strcpy(obj->spawn_spot.name,"Start");
 }
 
 void object_multiplayer_setup_model_team_texture(obj_type *obj)
@@ -916,7 +919,7 @@ int object_start(spot_type *spot,char *name,int type,int bind,char *err_str)
 		
 	if (obj->type==object_type_player) {
 		obj->team_idx=net_team_none;
-		obj->spawn_spot_name[0]=0x0;
+		obj->spawn_spot.name[0]=0x0;
 		
 		obj->hidden=FALSE;
 		
@@ -946,11 +949,11 @@ int object_start(spot_type *spot,char *name,int type,int bind,char *err_str)
 
 		// parameters
 
-	obj->spot_script[0]=0x0;
-	obj->spot_params[0]=0x0;
+	obj->spawn_spot.script[0]=0x0;
+	obj->spawn_spot.params[0]=0x0;
 	if (spot!=NULL) {
-		strcpy(obj->spot_script,spot->script);
-		strcpy(obj->spot_params,spot->params);
+		strcpy(obj->spawn_spot.script,spot->script);
+		strcpy(obj->spawn_spot.params,spot->params);
 	}
 
 		// if networked player or multiplayer bot, run rules

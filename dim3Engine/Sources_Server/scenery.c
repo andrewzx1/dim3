@@ -118,6 +118,10 @@ void scenery_create(void)
 				if (model->nhit_box==0) obj->hit_box.on=FALSE;
 			}
 		}
+
+			// scenery is never remoted
+
+		obj->remote.net_uid=-1;
 	}
 }
 
