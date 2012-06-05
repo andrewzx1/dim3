@@ -457,8 +457,6 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 			progress_shutdown();
 			return(FALSE);
 		}
-	
-		remote_setup_multiplayer_monsters();
 	}
 
 	progress_next();

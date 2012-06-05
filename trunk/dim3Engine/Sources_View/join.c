@@ -715,7 +715,6 @@ void join_game(void)
 	char							deny_reason[64],err_str[256];
 	obj_type						*player_obj;
 	join_server_host_type			*host;
-	network_reply_join_remote_list	remote_list;
 
 		// get selected host
 
@@ -788,7 +787,7 @@ void join_game(void)
 							
 		// attempt to join
 
-	net_uid=net_client_join_host_start(player_obj,&tick_offset,deny_reason,&remote_list);
+	net_uid=net_client_join_host_start(player_obj,&tick_offset,deny_reason);
 	if (net_uid==-1) {
 		map_end();
 		game_end();
@@ -811,10 +810,6 @@ void join_game(void)
 		server.next_state=gs_error;
 		return;
 	}
-
-		// add in any remotes
-
-	game_remotes_create(&remote_list);
 
 		// request moving group synchs
 

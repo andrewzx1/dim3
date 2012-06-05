@@ -865,7 +865,7 @@ JSValueRef js_obj_get_parameter_func(JSContextRef cx,JSObjectRef func,JSObjectRe
     idx=script_value_to_int(cx,argv[0]);
     if (idx<0) idx=0;
     
-    c=obj->spot_params;
+    c=obj->spawn_spot.params;
     while (idx!=0) {
         c=strchr(c,'|');
         if (c==NULL) break;

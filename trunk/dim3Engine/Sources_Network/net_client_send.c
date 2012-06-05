@@ -94,48 +94,6 @@ void net_client_request_group_synch_ping(obj_type *obj)
 
 /* =======================================================
 
-      Object Death Messages
-      
-======================================================= */
-
-void net_client_send_death(obj_type *obj,bool telefrag)
-{
-	int								net_uid_killer_obj;
-	obj_type						*chk_obj;
-	network_request_remote_death	death;
-	
-		// normal deaths
-
-	if (!telefrag) {
-		net_uid_killer_obj=-1;
-		
-		if (obj->damage_obj_idx!=-1) {
-			chk_obj=server.obj_list.objs[obj->damage_obj_idx];
-			if (chk_obj!=NULL) {
-				if ((chk_obj->type==object_type_player) || (chk_obj->type==object_type_remote)) {
-					net_uid_killer_obj=chk_obj->remote.net_uid;
-				}
-			}
-		}
-		
-		death.net_uid_killer_obj=htons((short)net_uid_killer_obj);
-		death.telefrag=htons(0);
-	}
-
-		// telefrag deaths
-
-	else {
-		chk_obj=server.obj_list.objs[obj->damage_obj_idx];		// only remote objects can telefrag each other, so no other checks necessary
-		
-		death.net_uid_killer_obj=htons((short)chk_obj->remote.net_uid);
-		death.telefrag=htons(1);
-	}
-
-	net_client_send_msg(obj,net_action_request_remote_death,(unsigned char*)&death,sizeof(network_request_remote_death));
-}
-
-/* =======================================================
-
       Object Update Messages
       
 ======================================================= */
@@ -254,6 +212,48 @@ void net_client_send_remote_update(obj_type *obj,bool chat_on)
 		// send update
 		
 	net_client_send_msg(obj,net_action_request_remote_update,(unsigned char*)&update,sizeof(network_request_remote_update));
+}
+
+/* =======================================================
+
+      Object Death Messages
+      
+======================================================= */
+
+void net_client_send_death(obj_type *obj,bool telefrag)
+{
+	int								net_uid_killer_obj;
+	obj_type						*chk_obj;
+	network_request_remote_death	death;
+	
+		// normal deaths
+
+	if (!telefrag) {
+		net_uid_killer_obj=-1;
+		
+		if (obj->damage_obj_idx!=-1) {
+			chk_obj=server.obj_list.objs[obj->damage_obj_idx];
+			if (chk_obj!=NULL) {
+				if ((chk_obj->type==object_type_player) || (chk_obj->type==object_type_remote)) {
+					net_uid_killer_obj=chk_obj->remote.net_uid;
+				}
+			}
+		}
+		
+		death.net_uid_killer_obj=htons((short)net_uid_killer_obj);
+		death.telefrag=htons(0);
+	}
+
+		// telefrag deaths
+
+	else {
+		chk_obj=server.obj_list.objs[obj->damage_obj_idx];		// only remote objects can telefrag each other, so no other checks necessary
+		
+		death.net_uid_killer_obj=htons((short)chk_obj->remote.net_uid);
+		death.telefrag=htons(1);
+	}
+
+	net_client_send_msg(obj,net_action_request_remote_death,(unsigned char*)&death,sizeof(network_request_remote_death));
 }
 
 /* =======================================================

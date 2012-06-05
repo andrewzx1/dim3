@@ -33,6 +33,7 @@ and can be sold or given away.
 #include "network.h"
 #include "objects.h"
 
+extern app_type				app;
 extern map_type				map;
 extern server_type			server;
 extern iface_type			iface;
@@ -123,7 +124,7 @@ void net_host_shutdown(void)
 bool net_host_join_local_player(char *err_str)
 {
 	obj_type					*player_obj;
-	network_reply_join_remote	remote;
+	network_request_remote_add	remote;
 
 		// get local player
 
@@ -139,15 +140,15 @@ bool net_host_join_local_player(char *err_str)
 
 		// send all other players on host the new player for remote add
 
+	remote.type=net_remote_add_player;
 	strncpy(remote.name,player_obj->name,name_str_len);
 	strncpy(remote.draw_name,player_obj->draw.name,name_str_len);
 	remote.name[name_str_len-1]=0x0;
 	remote.team_idx=htons((short)net_team_none);
 	remote.tint_color_idx=htons((short)player_obj->tint_color_idx);
 	remote.score=0;
-	remote.pnt_x=remote.pnt_y=remote.pnt_z=0;
 
-	net_host_player_send_message_others(player_obj->remote.net_uid,net_action_request_remote_add,(unsigned char*)&remote,sizeof(network_reply_join_remote));
+	net_host_player_send_message_others(player_obj->remote.net_uid,net_action_request_remote_add,(unsigned char*)&remote_add,sizeof(network_request_remote_add));
 
 	return(TRUE);
 }
@@ -240,11 +241,11 @@ bool net_host_join_request_ok(network_request_join *request_join,network_reply_j
 
 int net_host_join_request(unsigned long ip_addr,int port,network_request_join *request_join)
 {
-	int							net_uid,
+	int							n,net_uid,
 								tint_color_idx;
 	obj_type					*obj;
 	network_reply_join			reply_join;
-	network_reply_join_remote	remote;
+	network_request_remote_add	remote;
 	
 		// check if join is OK
 	
@@ -266,13 +267,6 @@ int net_host_join_request(unsigned long ip_addr,int port,network_request_join *r
 
 	reply_join.team_idx=htons((short)net_team_none);
 	reply_join.map_tick=htonl(game_time_get()-map.start_game_tick);
-	
-	if (net_uid!=-1) {
-		net_host_player_create_join_remote_list(net_uid,&reply_join.remote_list);
-	}
-	else {
-		reply_join.remote_list.count=htons(0);
-	}
 
 		// build a remote add request for other
 		// clients in the game
@@ -282,13 +276,14 @@ int net_host_join_request(unsigned long ip_addr,int port,network_request_join *r
 		// rules and reset it
 
 	remote.net_uid=htons((short)net_uid);
+	remote.type=net_remote_add_player;
 	strncpy(remote.name,request_join->name,name_str_len);
-	strncpy(remote.draw_name,request_join->draw_name,name_str_len);
 	remote.name[name_str_len-1]=0x0;
+	strncpy(remote.draw_name,request_join->draw_name,name_str_len);
+	remote.draw_name[name_str_len-1]=0x0;
 	remote.team_idx=htons((short)net_team_none);
 	remote.tint_color_idx=htons((short)tint_color_idx);
 	remote.score=0;
-	remote.pnt_x=remote.pnt_y=remote.pnt_z=0;
 
 		// create the remote object
 
@@ -321,7 +316,40 @@ int net_host_join_request(unsigned long ip_addr,int port,network_request_join *r
 	
 		// send all other players on host the new player for remote add
 
-	net_host_player_send_message_others(net_uid,net_action_request_remote_add,(unsigned char*)&remote,sizeof(network_reply_join_remote));
+	net_host_player_send_message_others(net_uid,net_action_request_remote_add,(unsigned char*)&remote_add,sizeof(network_request_remote_add));
+
+		// send all other objects on this host
+		// (except player or scenery) as remote adds
+
+	for (n=0;n!=max_obj_list;n++) {
+		if (!app.dedicated_host) {
+			if (n==server.player_obj_idx) continue;
+		}
+
+		obj=server.obj_list.objs[n];
+		if (obj==NULL) continue;
+
+		if (obj->scenery.on) continue;
+
+			// build the remote
+
+		remote.net_uid=htons((short)obj->remote.net_uid);
+		if (obj->type==object_type_bot_multiplayer) {
+			remote.type=net_remote_add_bot;
+		}
+		else {
+			remote.type=net_remote_add_map_object;
+		}
+		strncpy(remote.name,obj->name,name_str_len);
+		remote.name[name_str_len-1]=0x0;
+		strncpy(remote.draw_name,obj->draw.name,name_str_len);
+		remote.draw_name[name_str_len-1]=0x0;
+		remote.team_idx=htons((short)obj->team_idx);
+		remote.tint_color_idx=htons((short)obj->tint_color_idx);
+		remote.score=obj->score.score;
+
+		net_host_player_send_message_single(net_uid,net_action_request_remote_add,(unsigned char*)&remote_add,sizeof(network_request_remote_add));
+	}
 	
 	return(net_uid);
 }

@@ -84,11 +84,11 @@ int object_choose_spawn_spot(obj_type *obj,char *err_str)
 		// if we have a spot type (for instance, network games
 		// need to start objects at the right place) then look for that
 		
-	if (obj->spawn_spot_name[0]!=0x0) {
-		spot_idx=map_find_random_spot(&map,obj->spawn_spot_name,spot_type_spawn);
+	if (obj->spawn_spot.name[0]!=0x0) {
+		spot_idx=map_find_random_spot(&map,obj->spawn_spot.name,spot_type_spawn);
 		if (spot_idx!=-1) return(spot_idx);
 	
-		sprintf(err_str,"Could not find spot: %s-Spawn",obj->spawn_spot_name);
+		sprintf(err_str,"Could not find spot: %s-Spawn",obj->spawn_spot.name);
 		return(-1);
 	}
 	
@@ -276,7 +276,7 @@ int game_player_create(char *err_str)
 
 bool game_multiplayer_bots_create(char *err_str)
 {
-	int						n,uid;
+	int						n,idx;
 	char					name[name_str_len];
 	spot_type				spot;
 	iface_mp_game_type		*mp_game;
@@ -309,31 +309,17 @@ bool game_multiplayer_bots_create(char *err_str)
 		strcpy(spot.script,mp_game->script.bot_script);
 		spot.params[0]=0x0;
 		
-		uid=object_start(&spot,name,object_type_bot_multiplayer,bt_game,err_str);
-		if (uid==-1) return(FALSE);
+			// create bot
+
+		idx=object_start(&spot,name,object_type_bot_multiplayer,bt_game,err_str);
+		if (idx==-1) return(FALSE);
+
+			// give bot network UID
+
+		server.obj_list.objs[idx]->remote.net_uid=net_uid_constant_bot_start+n;
 	}
 	
 	return(TRUE);
-}
-
-void game_remotes_create(network_reply_join_remote_list *remote_list)
-{
-	int							n,count;
-	network_reply_join_remote	*remote;
-
-		// remote lists are network based,
-		// so we need to translate the count
-
-	count=(signed short)ntohs(remote_list->count);
-
-		// run through the list
-
-	remote=remote_list->remotes;
-	
-	for (n=0;n!=count;n++) {
-		remote_add(remote,FALSE);
-		remote++;
-	}
 }
 
 /* =======================================================
@@ -345,7 +331,24 @@ void game_remotes_create(network_reply_join_remote_list *remote_list)
 bool map_objects_create(char *err_str)
 {
 	int					n,spawn_type;
+	boolean				monsters;
 	spot_type			*spot;
+
+		// if this is a client, all
+		// objects are created on the host
+
+	if (net_setup.mode==net_mode_client) return(TRUE);
+
+		// check for eliminating monsters
+		// for non co-op network game
+
+	monsters=TRUE;
+
+	if (net_setup.mode==net_mode_host) {
+		monsters=iface.multiplayer.game_list.games[net_setup.game_idx].monsters;
+	}
+
+		// spawn map objects
 	
 	for (n=0;n!=map.nspot;n++) {
 	
@@ -356,6 +359,11 @@ bool map_objects_create(char *err_str)
 			// map bots
 			
 		if ((spot->type!=spot_type_object) && (spot->type!=spot_type_bot)) continue;
+
+			// if networked game and not co-op,
+			// don't spawn monsters
+
+		if ((spot->type==spot_type_bot) && (!monsters)) continue;
 		
 			// check for correct skill level
 			// and multiplayer spawning flags
@@ -373,6 +381,10 @@ bool map_objects_create(char *err_str)
 		
 		spot->lookup.spawned_obj_idx=object_start(spot,spot->name,spawn_type,bt_map,err_str);
 		if (spot->lookup.spawned_obj_idx==-1) return(FALSE);
+
+			// give remote UID
+
+		server.obj_list.objs[spot->lookup.spawned_obj_idx]->remote.net_uid=net_uid_constant_map_obj_start+n;
 	}
 	
 	return(TRUE);

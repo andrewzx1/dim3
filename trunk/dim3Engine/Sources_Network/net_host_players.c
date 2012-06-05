@@ -374,55 +374,9 @@ void net_host_player_remote_group_synch(int net_uid)
 
 /* =======================================================
 
-      Build Lists for Info/Join Replies
+      Build Lists for Info Replies
       
 ======================================================= */
-
-void net_host_player_create_join_remote_list(int net_uid,network_reply_join_remote_list *remote_list)
-{
-	int							n,cnt;
-	net_host_player_type		*player;
-	network_reply_join_remote	*remote;
-
-		// find all remotes and bots
-	
-	cnt=0;
-	
-		// set up the player remotes
-
-	SDL_mutexP(net_host_player_lock);
-
-	player=net_host_players;
-	remote=remote_list->remotes;
-	
-	for (n=0;n!=net_host_player_count;n++) {
-
-		if (player->connect.net_uid!=net_uid) {
-
-			remote->net_uid=htons((short)player->connect.net_uid);
-			strcpy(remote->name,player->name);
-			strcpy(remote->draw_name,player->draw_name);
-			remote->bot=htons((short)(player->connect.bot?1:0));
-			remote->team_idx=htons((short)player->team_idx);
-			remote->tint_color_idx=htons((short)player->tint_color_idx);
-			remote->score=htons((short)player->score);
-			remote->pnt_x=htonl(player->pnt.x);
-			remote->pnt_y=htonl(player->pnt.y);
-			remote->pnt_z=htonl(player->pnt.z);
-
-			remote++;
-			cnt++;
-		}
-		
-		player++;
-	}
-	
-	SDL_mutexV(net_host_player_lock);
-
-		// finish with the count
-
-	remote_list->count=htons((short)cnt);
-}
 
 void net_host_player_create_info_player_list(network_reply_info_player_list *player_list)
 {

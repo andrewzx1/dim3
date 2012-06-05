@@ -106,7 +106,6 @@ extern int net_host_player_add(unsigned long ip_addr,int port,bool local,char *n
 extern int net_host_player_add_bot(obj_type *obj);
 extern void net_host_player_remove(int net_uid);
 
-extern void net_host_player_create_join_remote_list(int net_uid,network_reply_join_remote_list *remote_list);
 extern void net_host_player_create_info_player_list(network_reply_info_player_list *player_list);
 
 extern void net_host_player_remote_route_msg(net_queue_msg_type *msg);
@@ -121,7 +120,7 @@ extern void net_host_player_update(int net_uid,network_request_remote_update *up
 // client host pinging and joining
 //
 
-extern int net_client_join_host_start(obj_type *obj,int *tick_offset,char *deny_reason,network_reply_join_remote_list *remote_list);
+extern int net_client_join_host_start(obj_type *obj,int *tick_offset,char *deny_reason);
 extern void net_client_join_host_end(void);
 
 extern int net_client_find_game(char *game_name);

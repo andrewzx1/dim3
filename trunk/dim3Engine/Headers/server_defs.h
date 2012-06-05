@@ -695,6 +695,11 @@ typedef struct		{
 					} obj_input;
 
 typedef struct		{
+						char					name[name_str_len],script[file_str_len],
+												params[param_str_len];
+					} obj_spawn_spot;
+
+typedef struct		{
 						char					str[256];
 					} obj_debug;
 
@@ -867,8 +872,7 @@ typedef struct		{
 												team_idx,tint_color_idx,character_idx,
 												count,air_mode,damage_obj_idx,item_count,
 												last_move_animation_event,last_turn_animation_event;
-						char					name[name_str_len],spawn_spot_name[name_str_len],
-												spot_script[file_str_len],spot_params[param_str_len];
+						char					name[name_str_len];
 						bool					hidden,suspend,fly,slope_gravity,
 												side_step,crawl,floating,single_speed,no_slide,
 												open_doors,hide_all_weapons,
@@ -920,6 +924,7 @@ typedef struct		{
 						obj_score				score;
 						obj_scenery				scenery;
 						obj_debug				debug;
+						obj_spawn_spot			spawn_spot;
 						weapon_list_type		weap_list;
 					} obj_type;
 

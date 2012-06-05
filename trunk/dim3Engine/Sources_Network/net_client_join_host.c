@@ -67,7 +67,7 @@ int net_client_find_game(char *game_name)
       
 ======================================================= */
 
-int net_client_join_host_start(obj_type *obj,int *tick_offset,char *deny_reason,network_reply_join_remote_list *remote_list)
+int net_client_join_host_start(obj_type *obj,int *tick_offset,char *deny_reason)
 {
 	int						action,wait_tick,net_uid;
 	unsigned char			msg[net_max_msg_size];
@@ -145,8 +145,6 @@ int net_client_join_host_start(obj_type *obj,int *tick_offset,char *deny_reason,
 	obj->team_idx=(signed short)ntohs(reply_join.team_idx);
 	
 	*tick_offset=ntohl(reply_join.map_tick);
-
-	memmove(remote_list,&reply_join.remote_list,sizeof(network_reply_join_remote_list));
 
 	return(obj->remote.net_uid);
 }
