@@ -3226,6 +3226,10 @@
 						</FileConfiguration>
 					</File>
 					<File
+						RelativePath="..\..\dim3Engine\Sources_View\simplesave_pick.c"
+						>
+					</File>
+					<File
 						RelativePath="..\..\dim3Engine\Sources_View\singleplayer_option.c"
 						>
 					</File>

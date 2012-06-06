@@ -276,6 +276,10 @@ void loop_state_run(void)
 		case gs_singleplayer_option:
 			singleplayer_option_run();
 			return;
+
+		case gs_simplesave_pick:
+			simplesave_pick_run();
+			return;
 			
 		case gs_setup_game:
 			setup_game_run();
@@ -330,6 +334,10 @@ void loop_state_last_close(void)
 			singleplayer_option_close();
 			return;
 
+		case gs_simplesave_pick:
+			simplesave_pick_close();
+			return;
+
 		case gs_setup_game:
 			setup_game_close();
 			return;
@@ -379,6 +387,10 @@ void loop_state_next_open(void)
 
 		case gs_singleplayer_option:
 			singleplayer_option_open();
+			return;
+
+		case gs_simplesave_pick:
+			simplesave_pick_open();
 			return;
 
 		case gs_setup_game:

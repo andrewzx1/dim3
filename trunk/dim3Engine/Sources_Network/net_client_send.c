@@ -87,10 +87,15 @@ void net_client_send_latency_ping(obj_type *obj)
       
 ======================================================= */
 
-void net_client_request_group_synch_ping(obj_type *obj)
+void net_client_request_object_synch(obj_type *obj)
+{
+	if (net_setup.mode==net_mode_client) net_client_send_msg(obj,net_action_request_object_synch,NULL,0);
+}
+
+void net_client_request_group_synch(obj_type *obj)
 {
 	if (net_setup.mode==net_mode_client) net_client_send_msg(obj,net_action_request_group_synch,NULL,0);
-}	
+}
 
 /* =======================================================
 

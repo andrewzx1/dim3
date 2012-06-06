@@ -811,9 +811,11 @@ void join_game(void)
 		return;
 	}
 
-		// request moving group synchs
+		// request synchs of objects
+		// (sends remote_adds) and map groups
 
-	net_client_request_group_synch_ping(player_obj);
+	net_client_request_object_synch(player_obj);
+	net_client_request_group_synch(player_obj);
 	
 		// game is running
 	

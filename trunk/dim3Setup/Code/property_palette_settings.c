@@ -36,14 +36,15 @@ and can be sold or given away.
 #define kSettingsProjectName					0
 #define kSettingsProjectModernize				1
 #define kSettingsProjectNoShaders				2
-#define kSettingsProjectLoadRequiresClick		3
-#define kSettingsProjectSkill					4
+#define kSettingsProjectSimpleSave				4
+#define kSettingsProjectLoadRequiresClick		5
+#define kSettingsProjectSkill					6
 
-#define kSettingsScaleX							5
-#define kSettingsScaleY							6
+#define kSettingsScaleX							7
+#define kSettingsScaleY							8
 
-#define kSettingsFaseTitleMilliseconds			7
-#define kSettingsFaseMapMilliseconds			8
+#define kSettingsFaseTitleMilliseconds			9
+#define kSettingsFaseMapMilliseconds			10
 
 extern iface_type				iface;
 extern setup_state_type			state;
@@ -65,6 +66,7 @@ void property_palette_fill_project(void)
 	list_palette_add_string(&property_palette,kSettingsProjectName,"Name",iface.project.name,name_str_len,FALSE);
 	list_palette_add_checkbox(&property_palette,kSettingsProjectModernize,"Modernize",&iface.project.modernize,FALSE);
 	list_palette_add_checkbox(&property_palette,kSettingsProjectNoShaders,"No Shaders",&iface.project.no_shaders,FALSE);
+	list_palette_add_checkbox(&property_palette,kSettingsProjectSimpleSave,"Use Simple Saves",&iface.project.use_simplesave,FALSE);
 	list_palette_add_checkbox(&property_palette,kSettingsProjectLoadRequiresClick,"Loads Require Click to Continue",&iface.project.load_requires_click,FALSE);
 
 		// scale

@@ -829,7 +829,7 @@ typedef struct		{
 // intro
 //
 
-#define max_simple_save_spot									5
+#define max_simple_save_spot									3
 
 #define intro_score_format_number								0
 #define intro_score_format_time									1
@@ -1396,7 +1396,7 @@ typedef struct		{
 typedef struct		{
 						char							name[name_str_len];
 						bool							modernize,no_shaders,
-														load_requires_click;
+														use_simplesave,load_requires_click;
 					} iface_project_type;
 
 //

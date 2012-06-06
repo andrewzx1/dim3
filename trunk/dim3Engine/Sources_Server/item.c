@@ -47,6 +47,11 @@ void item_pickup_check(obj_type *obj)
 {
 	int					n;
 	obj_type			*item_obj;
+
+		// pickups happen on host, so clients
+		// ignore this
+
+	if (net_setup.mode==net_mode_client) return;
 	
 		// can pick up if you are hidden, no contact,
 		// set to ignore pickup, or are a pickup item
@@ -97,6 +102,15 @@ void item_pickup_check(obj_type *obj)
 				// successfully picked up
 				
 			obj->item_count=50;
+
+				// if this is host, then we need
+				// to update the remotes stats
+
+			if (net_setup.mode==net_mode_host) {
+				if (obj->type==object_type_remote) {
+					net_host_player_send_stat_update(obj);
+				}
+			}
 		}
 	}
 }
