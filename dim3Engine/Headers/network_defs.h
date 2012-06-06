@@ -186,12 +186,14 @@ typedef struct		{
 #define net_action_request_remote_sound					13
 #define net_action_request_remote_fire					14
 #define net_action_request_remote_click					15
-#define net_action_request_latency_ping					16
-#define net_action_reply_latency_ping					17
-#define net_action_request_host_exit					18
-#define net_action_request_group_synch					19
-#define net_action_reply_group_synch					20
-#define net_action_request_game_score_limit				21
+#define net_action_request_player_stat_update			16
+#define net_action_request_latency_ping					17
+#define net_action_reply_latency_ping					18
+#define net_action_request_host_exit					19
+#define net_action_request_object_synch					20
+#define net_action_request_group_synch					21
+#define net_action_reply_group_synch					22
+#define net_action_request_game_score_limit				23
 
 //
 // remote fire types
@@ -355,6 +357,16 @@ typedef struct		{
 						short							fire_type,radius,distance,damage,force;
 						char							weap_name[name_str_len],proj_setup_name[name_str_len];
 					} network_request_remote_fire;
+
+typedef struct		{
+						short							hidden,ammo_count,clip_count,
+														alt_ammo_count,alt_clip_count;
+					} network_request_player_ammo;		// used as part of network_request_player_stat_update
+
+typedef struct		{
+						short							health,armor;
+						network_request_player_ammo		ammos[net_max_weapon_per_remote];
+					} network_request_player_stat_update;
 
 typedef struct		{
 						int								pt_x,pt_y,pt_z,

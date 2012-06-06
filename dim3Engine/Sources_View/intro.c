@@ -463,8 +463,17 @@ bool intro_click_has_singleplayer_options(void)
 
 void intro_click_game(int simple_save_idx)
 {
+		// if we have simple save
+		// on, then jump to the simple save
+		// interface
+
+	if (iface.project.use_simplesave) {
+		server.next_state=gs_simplesave_pick;
+		return;
+	}
+
 		// if we have any options, then
-		// go to options dialog
+		// go to options interface
 
 	if (intro_click_has_singleplayer_options()) {
 		intro_simple_save_idx=simple_save_idx;

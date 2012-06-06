@@ -351,6 +351,52 @@ void net_host_player_update(int net_uid,network_request_remote_update *update)
 
 /* =======================================================
 
+      Object Synching
+
+	  When a player joins, it requests a object synch
+	  which sends a remote add for every object on
+	  the host that's not static scenery
+      
+======================================================= */
+
+void net_host_player_remote_object_synch(int net_uid)
+{
+	int							n;
+	obj_type					*obj;
+	network_request_remote_add	remote;
+
+	for (n=0;n!=max_obj_list;n++) {
+
+			// get object, skip scenery
+
+		obj=server.obj_list.objs[n];
+		if (obj==NULL) continue;
+
+		if (obj->scenery.on) continue;
+
+			// build the remote
+
+		remote.net_uid=htons((short)obj->remote.net_uid);
+		if (obj->type==object_type_bot_multiplayer) {
+			remote.type=net_remote_add_bot;
+		}
+		else {
+			remote.type=net_remote_add_map_object;
+		}
+		strncpy(remote.name,obj->name,name_str_len);
+		remote.name[name_str_len-1]=0x0;
+		strncpy(remote.draw_name,obj->draw.name,name_str_len);
+		remote.draw_name[name_str_len-1]=0x0;
+		remote.team_idx=htons((short)obj->team_idx);
+		remote.tint_color_idx=htons((short)obj->tint_color_idx);
+		remote.score=obj->score.score;
+
+		net_host_player_send_message_single(net_uid,net_action_request_remote_add,(unsigned char*)&remote_add,sizeof(network_request_remote_add));
+	}
+}
+
+/* =======================================================
+
       Moveable Group Synching
       
 ======================================================= */
@@ -443,6 +489,10 @@ void net_host_player_remote_route_msg(net_queue_msg_type *msg)
 			net_host_player_send_message_single(msg->net_uid,net_action_reply_latency_ping,NULL,0);
 			break;
 
+		case net_action_request_object_synch:
+			net_host_player_remote_object_synch(msg->net_uid);
+			break;
+
 		case net_action_request_group_synch:
 			net_host_player_remote_group_synch(msg->net_uid);
 			break;
@@ -452,6 +502,41 @@ void net_host_player_remote_route_msg(net_queue_msg_type *msg)
 		// pass on message to remote on this server
 			
 	remote_route_message(msg);
+}
+
+/* =======================================================
+
+      Send Stat Updates to Players
+	  Usually in response to pickup
+      
+======================================================= */
+
+void net_host_player_send_stat_update(obj_type *obj)
+{
+	int										n,idx;
+	weapon_type								*weap;
+	network_request_player_stat_update		stat_update;
+
+	stat_update.health=htons((short)obj->status.health.value);
+	stat_update.armor=htons((short)obj->status.armor.value);
+
+	idx=0;
+		
+	for (n=0;n!=max_weap_list;n++) {
+		weap=obj->weap_list.weaps[n];
+		if (weap==NULL) continue;
+
+		stat_update.ammos[idx].hidden=htons((short)(weap->hidden?0:1));
+		stat_update.ammos[idx].ammo_count=htons((short)weap->ammo.count);
+		stat_update.ammos[idx].clip_count=htons((short)weap->ammo.clip_count);
+		stat_update.ammos[idx].alt_ammo_count=htons((short)weap->alt_ammo.count);
+		stat_update.ammos[idx].alt_clip_count=htons((short)weap->alt_ammo.clip_count);
+
+		idx++;
+		if (idx==net_max_weapon_per_remote) break;
+	}
+	
+	net_host_player_send_message_single(obj->remote.net_uid,net_action_request_player_stat_update,(unsigned char*)&stat_update,sizeof(network_request_player_stat_update));
 }
 
 /* =======================================================

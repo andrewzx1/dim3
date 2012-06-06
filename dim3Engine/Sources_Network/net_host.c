@@ -241,7 +241,7 @@ bool net_host_join_request_ok(network_request_join *request_join,network_reply_j
 
 int net_host_join_request(unsigned long ip_addr,int port,network_request_join *request_join)
 {
-	int							n,net_uid,
+	int							net_uid,
 								tint_color_idx;
 	obj_type					*obj;
 	network_reply_join			reply_join;
@@ -317,39 +317,6 @@ int net_host_join_request(unsigned long ip_addr,int port,network_request_join *r
 		// send all other players on host the new player for remote add
 
 	net_host_player_send_message_others(net_uid,net_action_request_remote_add,(unsigned char*)&remote_add,sizeof(network_request_remote_add));
-
-		// send all other objects on this host
-		// (except player or scenery) as remote adds
-
-	for (n=0;n!=max_obj_list;n++) {
-		if (!app.dedicated_host) {
-			if (n==server.player_obj_idx) continue;
-		}
-
-		obj=server.obj_list.objs[n];
-		if (obj==NULL) continue;
-
-		if (obj->scenery.on) continue;
-
-			// build the remote
-
-		remote.net_uid=htons((short)obj->remote.net_uid);
-		if (obj->type==object_type_bot_multiplayer) {
-			remote.type=net_remote_add_bot;
-		}
-		else {
-			remote.type=net_remote_add_map_object;
-		}
-		strncpy(remote.name,obj->name,name_str_len);
-		remote.name[name_str_len-1]=0x0;
-		strncpy(remote.draw_name,obj->draw.name,name_str_len);
-		remote.draw_name[name_str_len-1]=0x0;
-		remote.team_idx=htons((short)obj->team_idx);
-		remote.tint_color_idx=htons((short)obj->tint_color_idx);
-		remote.score=obj->score.score;
-
-		net_host_player_send_message_single(net_uid,net_action_request_remote_add,(unsigned char*)&remote_add,sizeof(network_request_remote_add));
-	}
 	
 	return(net_uid);
 }

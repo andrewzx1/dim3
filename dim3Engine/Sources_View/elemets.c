@@ -273,7 +273,7 @@ void element_button_text_add(char *name,int id,int x,int y,int wid,int high,int 
 	element->enabled=TRUE;
 	element->hidden=FALSE;
 
-	element->setup.button.text_only=TRUE;
+	element->setup.button.mode=element_button_mode_text;
 	strcpy(element->setup.button.name,name);
 	
 	element->setup.button.image_idx=-1;
@@ -323,7 +323,7 @@ void element_button_bitmap_add(char *path,char *path2,int id,int x,int y,int wid
 	element->enabled=TRUE;
 	element->hidden=FALSE;
 
-	element->setup.button.text_only=FALSE;
+	element->setup.button.mode=element_button_mode_bitmap;
 	
 		// get button graphics
 		
@@ -341,6 +341,55 @@ void element_button_bitmap_add(char *path,char *path2,int id,int x,int y,int wid
 		element->wid=bitmap->wid;
 		element->high=bitmap->high;
 	}
+	
+	switch (x_pos) {
+		case element_pos_right:
+			element->x-=element->wid;
+			break;
+		case element_pos_center:
+			element->x-=(element->wid>>1);
+			break;
+	}
+
+	switch (y_pos) {
+		case element_pos_bottom:
+			element->y-=element->high;
+			break;
+		case element_pos_center:
+			element->y-=(element->high>>1);
+			break;
+	}
+
+	SDL_mutexV(element_thread_lock);
+}
+
+void element_button_box_add(int id,int x,int y,int wid,int high,int x_pos,int y_pos)
+{
+	element_type	*element;
+
+	SDL_mutexP(element_thread_lock);
+	
+	element=&elements[nelement];
+	nelement++;
+	
+	element->id=id;
+	element->type=element_type_button;
+	
+	element->x=x;
+	element->y=y;
+	
+	element->selectable=TRUE;
+	element->enabled=TRUE;
+	element->hidden=FALSE;
+
+	element->setup.button.mode=element_button_mode_box;
+
+	element->setup.button.name[0]=0x0;
+	element->setup.button.image_idx=-1;
+	element->setup.button.image_select_idx=-1;
+	
+	element->wid=wid;
+	element->high=high;
 	
 	switch (x_pos) {
 		case element_pos_right:
@@ -1070,7 +1119,7 @@ int element_find_for_xy(int x,int y)
       
 ======================================================= */
 
-void element_draw_button_text(element_type *element,int sel_id)
+void element_draw_button_text(element_type *element,bool draw_text,int sel_id)
 {
 	int				x,y,lft,rgt,top,bot;
 	float			alpha;
@@ -1098,6 +1147,8 @@ void element_draw_button_text(element_type *element,int sel_id)
 	view_primitive_2D_line_quad(&outline_col,alpha,lft,rgt,top,bot);
 	
 		// button text
+
+	if (!draw_text) return;
 
 	x=(lft+rgt)>>1;
 	y=((top+bot)>>1)-(iface.font.text_size_medium/10);
@@ -1140,11 +1191,20 @@ void element_draw_button_bitmap(element_type *element,int sel_id)
 
 void element_draw_button(element_type *element,int sel_id)
 {
-	if (element->setup.button.text_only) {
-		element_draw_button_text(element,sel_id);
-	}
-	else {
-		element_draw_button_bitmap(element,sel_id);
+	switch (element->setup.button.mode) {
+
+		case element_button_mode_text:
+			element_draw_button_text(element,TRUE,sel_id);
+			break;
+
+		case element_button_mode_bitmap:
+			element_draw_button_bitmap(element,sel_id);
+			break;
+
+		case element_button_mode_box:
+			element_draw_button_text(element,FALSE,sel_id);
+			break;
+
 	}
 }
 

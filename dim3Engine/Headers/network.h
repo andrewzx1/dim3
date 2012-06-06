@@ -105,10 +105,10 @@ extern bool net_host_player_add_ok(char *name,char *deny_reason);
 extern int net_host_player_add(unsigned long ip_addr,int port,bool local,char *name,char *draw_name,int tint_color_idx);
 extern int net_host_player_add_bot(obj_type *obj);
 extern void net_host_player_remove(int net_uid);
-
 extern void net_host_player_create_info_player_list(network_reply_info_player_list *player_list);
-
 extern void net_host_player_remote_route_msg(net_queue_msg_type *msg);
+
+extern void net_host_player_send_stat_update(obj_type *obj);
 
 extern void net_host_player_send_message_single(int net_uid,int action,unsigned char *msg,int msg_len);
 extern void net_host_player_send_message_others(int net_uid,int action,unsigned char *msg,int msg_len);
@@ -139,7 +139,8 @@ extern bool net_client_process_messages(void);
 
 extern void net_client_send_leave_host(obj_type *obj);
 extern void net_client_send_latency_ping(obj_type *obj);
-extern void net_client_request_group_synch_ping(obj_type *obj);
+extern void net_client_request_object_synch(obj_type *obj);
+extern void net_client_request_group_synch(obj_type *obj);
 extern void net_client_send_death(obj_type *obj,bool telefrag);
 extern void net_client_send_remote_update(obj_type *obj,bool chat_on);
 extern void net_client_send_chat(obj_type *obj,char *str);

@@ -805,7 +805,7 @@ void remote_network_send_group_synch(void)
 
 		// run group synch
 
-	net_client_request_group_synch_ping(server.obj_list.objs[server.player_obj_idx]);
+	net_client_request_group_synch(server.obj_list.objs[server.player_obj_idx]);
 }
 
 void remote_network_send_latency_ping(void)

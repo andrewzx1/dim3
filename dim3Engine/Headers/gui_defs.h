@@ -68,6 +68,14 @@ and can be sold or given away.
 #define element_pos_right						1
 
 //
+// GUI button modes
+//
+
+#define element_button_mode_text				0
+#define element_button_mode_bitmap				1
+#define element_button_mode_box					2
+
+//
 // GUI table bitmap mode
 //
 
@@ -128,9 +136,8 @@ and can be sold or given away.
 //
 
 typedef struct		{
-						int						image_idx,image_select_idx;
+						int						mode,image_idx,image_select_idx;
 						char					name[name_str_len];
-						bool					text_only;
 					} element_button_type;
 
 typedef struct		{
