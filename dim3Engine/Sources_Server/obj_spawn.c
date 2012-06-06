@@ -331,7 +331,7 @@ bool game_multiplayer_bots_create(char *err_str)
 bool map_objects_create(char *err_str)
 {
 	int					n,spawn_type;
-	boolean				monsters;
+	bool				monsters;
 	spot_type			*spot;
 
 		// if this is a client, all
