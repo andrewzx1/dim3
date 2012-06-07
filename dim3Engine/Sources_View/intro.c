@@ -467,8 +467,8 @@ void intro_click_game(int simple_save_idx)
 		// on, then jump to the simple save
 		// interface
 
-	if (iface.project.use_simplesave) {
-		server.next_state=gs_simplesave_pick;
+	if (iface.project.simple_save) {
+		server.next_state=gs_simple_save_pick;
 		return;
 	}
 

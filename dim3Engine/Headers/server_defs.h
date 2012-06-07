@@ -40,7 +40,7 @@ and can be sold or given away.
 #define gs_running								0
 #define gs_intro								1
 #define gs_singleplayer_option					2
-#define gs_simplesave_pick						3
+#define gs_simple_save_pick						3
 #define gs_setup_game							4
 #define gs_join									5
 #define gs_host									6

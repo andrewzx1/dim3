@@ -49,7 +49,7 @@
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="true"
 				AdditionalIncludeDirectories="..\Common\Libraries;..\Common\Libraries\GLEW;..\Common\Libraries\ZLib;..\Common\Libraries\SDL;..\Common\Libraries\MPG123;..\Common\Libraries\JavaScriptCore;..\Common\Libraries\PNG;..\..\dim3Engine\Headers;..\..\dim3Common\Headers;..\..\dim3BaseUtility\Headers;..\..\dim3BaseUtility\Sources;..\..\dim3ModelUtility\Headers;..\..\dim3ModelUtility\Sources;..\..\dim3MapUtility\Headers;..\..\dim3MapUtility\Sources"
-				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;D3_PCH;D3_ENGINE"
+				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;D3_PCH;D3_ENGINE;"
 				StringPooling="true"
 				ExceptionHandling="0"
 				RuntimeLibrary="2"
@@ -3226,7 +3226,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\dim3Engine\Sources_View\simplesave_pick.c"
+						RelativePath="..\..\dim3Engine\Sources_View\simple_save_pick.c"
 						>
 					</File>
 					<File

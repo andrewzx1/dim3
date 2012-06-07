@@ -1396,7 +1396,7 @@ typedef struct		{
 typedef struct		{
 						char							name[name_str_len];
 						bool							modernize,no_shaders,
-														use_simplesave,load_requires_click;
+														simple_save,load_requires_click;
 					} iface_project_type;
 
 //

@@ -1119,7 +1119,7 @@ int element_find_for_xy(int x,int y)
       
 ======================================================= */
 
-void element_draw_button_text(element_type *element,bool draw_text,int sel_id)
+void element_draw_button_text(element_type *element,int sel_id)
 {
 	int				x,y,lft,rgt,top,bot;
 	float			alpha;
@@ -1147,8 +1147,6 @@ void element_draw_button_text(element_type *element,bool draw_text,int sel_id)
 	view_primitive_2D_line_quad(&outline_col,alpha,lft,rgt,top,bot);
 	
 		// button text
-
-	if (!draw_text) return;
 
 	x=(lft+rgt)>>1;
 	y=((top+bot)>>1)-(iface.font.text_size_medium/10);
@@ -1189,12 +1187,56 @@ void element_draw_button_bitmap(element_type *element,int sel_id)
 	view_primitive_2D_texture_quad(gl_id,NULL,alpha,lft,rgt,top,bot,0.0f,1.0f,0.0f,1.0f);
 }
 
+void element_draw_button_box(element_type *element,int sel_id)
+{
+	int				y,lft,rgt,top,bot;
+	float			alpha;
+	d3col			gradient_start,gradient_end,outline_col;
+
+	if (element->enabled) {
+		alpha=1.0f;
+		if (element->id==sel_id) {
+			memmove(&outline_col,&iface.color.control.mouse_over,sizeof(d3col));
+		}
+		else {
+			memmove(&outline_col,&iface.color.button.outline,sizeof(d3col));
+		}
+	}
+	else {
+		alpha=0.3f;
+		memmove(&outline_col,&iface.color.button.outline,sizeof(d3col));
+	}
+	
+	element_get_box(element,&lft,&rgt,&top,&bot);
+	
+		// button background and outline
+
+	if (element->id!=sel_id) {
+		memmove(&gradient_start,&iface.color.control.fill,sizeof(d3col));
+		gradient_end.r=gradient_start.r*element_gradient_factor_background;
+		gradient_end.g=gradient_start.g*element_gradient_factor_background;
+		gradient_end.b=gradient_start.b*element_gradient_factor_background;
+	}
+	else {
+		memmove(&gradient_end,&iface.color.control.fill,sizeof(d3col));
+		gradient_start.r=gradient_end.r*element_gradient_factor_background;
+		gradient_start.g=gradient_end.g*element_gradient_factor_background;
+		gradient_start.b=gradient_end.b*element_gradient_factor_background;
+	}
+
+	y=(top+bot)>>1;
+	view_primitive_2D_color_poly(lft,top,&gradient_start,rgt,top,&gradient_start,rgt,y,&gradient_end,lft,y,&gradient_end,alpha);
+	view_primitive_2D_color_poly(lft,y,&gradient_end,rgt,y,&gradient_end,rgt,bot,&gradient_start,lft,bot,&gradient_start,alpha);
+
+	view_primitive_2D_line_quad(&outline_col,alpha,lft,rgt,top,bot);
+}
+
 void element_draw_button(element_type *element,int sel_id)
 {
 	switch (element->setup.button.mode) {
 
 		case element_button_mode_text:
-			element_draw_button_text(element,TRUE,sel_id);
+			element_draw_button_text(element,sel_id);
 			break;
 
 		case element_button_mode_bitmap:
@@ -1202,7 +1244,7 @@ void element_draw_button(element_type *element,int sel_id)
 			break;
 
 		case element_button_mode_box:
-			element_draw_button_text(element,FALSE,sel_id);
+			element_draw_button_box(element,sel_id);
 			break;
 
 	}

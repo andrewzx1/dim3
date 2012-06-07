@@ -68,6 +68,9 @@ void camera_chase_connect(void)
 
 float camera_chase_width_adjust(void)
 {
+#ifndef D3_OS_IPHONE
+	return(0.0f);
+#else
 	float		ratio;
 	
 #ifndef D3_ROTATE_VIEW
@@ -77,6 +80,7 @@ float camera_chase_width_adjust(void)
 #endif
 
 	return((1.6f-ratio)*13500.0f);
+#endif
 }
 
 /* =======================================================
