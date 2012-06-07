@@ -448,9 +448,9 @@ extern void singleplayer_option_open(void);
 extern void singleplayer_option_close(void);
 extern void singleplayer_option_run(void);
 
-extern void simplesave_pick_open(void);
-extern void simplesave_pick_close(void);
-extern void simplesave_pick_run(void);
+extern void simple_save_pick_open(void);
+extern void simple_save_pick_close(void);
+extern void simple_save_pick_run(void);
 
 extern void setup_game_open(void);
 extern void setup_game_close(void);
