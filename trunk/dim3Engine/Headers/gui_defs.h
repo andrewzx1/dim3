@@ -100,7 +100,10 @@ and can be sold or given away.
 
 #define element_control_padding_factor			0.01f
 
-#define element_control_draw_height				0.03f
+#define element_tab_margin_factor				0.02f
+#define element_tab_control_high				0.05f
+
+#define element_control_draw_height				0.035f
 #define element_control_draw_short_width		0.15f
 #define element_control_draw_long_width			0.4f
 
@@ -109,11 +112,11 @@ and can be sold or given away.
 #define element_table_max_check					128
 #define element_table_check_column_size			0.18f
 
-#define element_scroll_control_size				0.045f
+#define element_scroll_control_size				0.05f
 
 #define element_control_button_short_width		0.15f
 #define element_control_button_long_width		0.25f
-#define element_control_button_height			0.05f
+#define element_control_button_height			0.06f
 
 //
 // gradients

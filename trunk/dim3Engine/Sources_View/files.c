@@ -288,7 +288,7 @@ void file_open(void)
 	
 		// setup gui
 		
-	gui_initialize("Bitmaps/Backgrounds","default");
+	gui_initialize("Bitmaps/Backgrounds","main");
 	
 		// the tabs
 		

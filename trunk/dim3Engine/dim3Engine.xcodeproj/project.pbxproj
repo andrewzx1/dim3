@@ -459,6 +459,7 @@
 		26A32EDF1453CFE80005AABD /* model_util_file_model.c in Sources */ = {isa = PBXBuildFile; fileRef = 26A32EDE1453CFE80005AABD /* model_util_file_model.c */; };
 		26A45D081489AD6C00C02936 /* script_color.c in Sources */ = {isa = PBXBuildFile; fileRef = 26A45D061489AD6C00C02936 /* script_color.c */; };
 		26A45D091489AD6C00C02936 /* script_point_angle_vector.c in Sources */ = {isa = PBXBuildFile; fileRef = 26A45D071489AD6C00C02936 /* script_point_angle_vector.c */; };
+		26CBE2041581AD1E00093D7C /* simple_save_pick.c in Sources */ = {isa = PBXBuildFile; fileRef = 26CBE2031581AD1E00093D7C /* simple_save_pick.c */; };
 		26E1844513CEA27800812348 /* dim3 Engine.app in Copy Application */ = {isa = PBXBuildFile; fileRef = F5CD87F70557721D0023AD9B /* dim3 Engine.app */; };
 		26EE3E1713DA7F78000ABAF1 /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26EE3E1613DA7F78000ABAF1 /* AudioUnit.framework */; };
 		26F0C43F1563297300AFE368 /* app_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 26F0C43E1563297300AFE368 /* app_defs.h */; };
@@ -954,6 +955,7 @@
 		26A32EDE1453CFE80005AABD /* model_util_file_model.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = model_util_file_model.c; sourceTree = "<group>"; };
 		26A45D061489AD6C00C02936 /* script_color.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_color.c; sourceTree = "<group>"; };
 		26A45D071489AD6C00C02936 /* script_point_angle_vector.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_point_angle_vector.c; sourceTree = "<group>"; };
+		26CBE2031581AD1E00093D7C /* simple_save_pick.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = simple_save_pick.c; sourceTree = "<group>"; };
 		26EE3E1613DA7F78000ABAF1 /* AudioUnit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioUnit.framework; path = ../../../../System/Library/Frameworks/AudioUnit.framework; sourceTree = "<group>"; };
 		26F0C43E1563297300AFE368 /* app_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = app_defs.h; path = Headers/app_defs.h; sourceTree = "<group>"; };
 		26FF68A31523D5A200FACC3B /* base_iface_singleplayer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = base_iface_singleplayer.c; sourceTree = "<group>"; };
@@ -1452,6 +1454,7 @@
 				260B3F781411F781006ED023 /* progress.c */,
 				260B3F721411F781006ED023 /* intro.c */,
 				262579131525325A00C371C3 /* singleplayer_option.c */,
+				26CBE2031581AD1E00093D7C /* simple_save_pick.c */,
 				260B3F871411F781006ED023 /* title.c */,
 				2688306C1578223C00A3E446 /* load_pause.c */,
 				260B3F5A1411F781006ED023 /* files.c */,
@@ -2349,6 +2352,7 @@
 				268936C0155CCB5200147273 /* map_collide_xz.c in Sources */,
 				268936C1155CCB5200147273 /* map_collide_y.c in Sources */,
 				2688306D1578223C00A3E446 /* load_pause.c in Sources */,
+				26CBE2041581AD1E00093D7C /* simple_save_pick.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

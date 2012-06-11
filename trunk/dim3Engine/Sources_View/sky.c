@@ -43,35 +43,55 @@ extern view_type		view;
 
 void sky_draw_background_single(map_background_layer_type *layer)
 {
-	float				gx,gy,gy_high;
+	float				f_screen_x_sz,f_screen_y_sz,ratio,
+						f_ty,f_by,gx_lft,gx_rgt,gy_top,gy_bot;
 	float				vertexes[8],uvs[8];
 	texture_type		*texture;
 	bitmap_type			*bitmap;
 
 	if ((layer->fill<0) || (layer->fill>=max_map_texture)) return;
 	
-		// get y scaling
+	f_screen_x_sz=(float)view.screen.x_sz;
+	f_screen_y_sz=(float)view.screen.y_sz;
+	
+		// The Y actually uses the
+		// X screen size to keep the backgrounds
+		// square, we fix later
 		
-	gy_high=(((float)view.screen.y_sz)/((float)view.screen.x_sz))*layer->size.y;
-
-		// get scrolling
+	f_ty=f_screen_x_sz*layer->clip.x;
+	f_by=f_screen_x_sz*layer->clip.y;
+	
+		// get UV
 		
-	gx=((float)(view.render->camera.pnt.x+view.render->camera.pnt.z))*(layer->scroll_factor.x*0.001f);
-	gy=((float)view.render->camera.pnt.y)*(layer->scroll_factor.y*0.001f);
-
+	gx_lft=((float)(view.render->camera.pnt.x+view.render->camera.pnt.z))*(layer->scroll_factor.x*0.001f);
+	gx_rgt=gx_lft+layer->size.x;
+	
+	gy_top=(((float)view.render->camera.pnt.y)*(layer->scroll_factor.y*0.001f))+layer->clip.x;
+	gy_bot=gy_top+(layer->size.y*(layer->clip.y-layer->clip.x));
+	
+		// alter the Ys so we aren't drawing
+		// below the screen
+		
+	if (f_by>f_screen_y_sz) {
+		ratio=f_screen_y_sz/f_screen_x_sz;
+		f_by*=ratio;
+		gy_bot*=ratio;
+	}
+	
 		// draw background
 		
 	texture=&map.textures[layer->fill];
 	bitmap=&texture->frames[texture->animate.current_frame].bitmap;
 	
-	vertexes[0]=vertexes[1]=vertexes[2]=vertexes[5]=0.0f;
+	vertexes[0]=vertexes[2]=0.0f;
 	vertexes[4]=vertexes[6]=(float)view.screen.x_sz;
-	vertexes[3]=vertexes[7]=(float)view.screen.y_sz;
+	vertexes[1]=vertexes[5]=f_ty;
+	vertexes[3]=vertexes[7]=f_by;
 	
-	uvs[0]=uvs[2]=gx;
-	uvs[1]=uvs[5]=gy;
-	uvs[3]=uvs[7]=(gy+gy_high);
-	uvs[4]=uvs[6]=(gx+layer->size.x);
+	uvs[0]=uvs[2]=gx_lft;
+	uvs[4]=uvs[6]=gx_rgt;
+	uvs[1]=uvs[5]=gy_top;
+	uvs[3]=uvs[7]=gy_bot;
 	
 	gl_texture_bind(0,bitmap->gl_id);
 

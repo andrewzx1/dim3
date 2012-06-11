@@ -224,12 +224,18 @@ void write_map_settings_xml(map_type *map)
     xml_add_attribute_int("front_fill",map->background.front.fill);
     xml_add_attribute_2_coord_float("front_stamp",map->background.front.size.x,map->background.front.size.y);
     xml_add_attribute_2_coord_float("front_scroll",map->background.front.scroll_factor.x,map->background.front.scroll_factor.y);
-    xml_add_attribute_int("middle_fill",map->background.middle.fill);
+	xml_add_attribute_2_coord_float("front_clip",map->background.front.clip.x,map->background.front.clip.y);
+ 	
+	xml_add_attribute_int("middle_fill",map->background.middle.fill);
     xml_add_attribute_2_coord_float("middle_stamp",map->background.middle.size.x,map->background.middle.size.y);
     xml_add_attribute_2_coord_float("middle_scroll",map->background.middle.scroll_factor.x,map->background.middle.scroll_factor.y);
+	xml_add_attribute_2_coord_float("middle_clip",map->background.middle.clip.x,map->background.middle.clip.y);
+	
     xml_add_attribute_int("back_fill",map->background.back.fill);
     xml_add_attribute_2_coord_float("back_stamp",map->background.back.size.x,map->background.back.size.y);
     xml_add_attribute_2_coord_float("back_scroll",map->background.back.scroll_factor.x,map->background.back.scroll_factor.y);
+	xml_add_attribute_2_coord_float("back_clip",map->background.back.clip.x,map->background.back.clip.y);
+
     xml_add_tagend(TRUE);
     
     xml_add_tagstart("Sky");

@@ -44,23 +44,11 @@ and can be sold or given away.
 #define kIntroPropertyButtonCredit						15
 #define kIntroPropertyButtonQuit						16
 
-#define kIntroPropertySimpleSaveDescTextSize			30
-#define kIntroPropertySimpleSaveProgressOn				31
-#define kIntroPropertySimpleSaveProgressMaxPoint		32
-#define kIntroPropertySimpleSaveProgressMaxBitmap		33
-#define kIntroPropertySimpleSaveProgressWid				34
-#define kIntroPropertySimpleSaveProgressHigh			35
-#define kIntroPropertySimpleSaveProgressAdd				36
-#define kIntroPropertySimpleSaveProgressHorizontal		37
-#define kIntroPropertySimpleSaveProgressWrapCount		38
-#define kIntroPropertySimpleSaveProgressBitmap			39
-#define kIntroPropertySimpleSaveProgressBitmapDisable	40
-
-#define kIntroPropertyConfirmX							45
-#define kIntroPropertyConfirmY							46
-
-#define kIntroPropertyButtonSimpleSaveStart				50
-#define kIntroPropertyButtonSimpleSaveErase				60
+#define kIntroPropertySimpleSaveProgressOn				30
+#define kIntroPropertySimpleSaveProgressMaxPoint		31
+#define kIntroPropertySimpleSaveProgressMaxBitmap		32
+#define kIntroPropertySimpleSaveProgressBitmap			33
+#define kIntroPropertySimpleSaveProgressBitmapDisable	34
 
 #define kIntroPropertyFont								70
 
@@ -92,7 +80,7 @@ extern char						score_format_str[][32];
 void property_palette_fill_title_page(void)
 {
 	int				n;
-	char			name[256],str[256];
+	char			name[256];
 
 	list_palette_set_title(&property_palette,"Title Page",NULL,NULL,NULL,NULL,NULL);
 
@@ -120,41 +108,15 @@ void property_palette_fill_title_page(void)
 	list_palette_add_string_selectable(&property_palette,kIntroPropertyButtonMultiplayerJoin,"Multiplayer Join",NULL,-1,(state.cur_intro_button_idx==item_intro_button_multiplayer_join),FALSE);
 	list_palette_add_string_selectable(&property_palette,kIntroPropertyButtonCredit,"Credit",NULL,-1,(state.cur_intro_button_idx==item_intro_button_credit),FALSE);
 	list_palette_add_string_selectable(&property_palette,kIntroPropertyButtonQuit,"Quit",NULL,-1,(state.cur_intro_button_idx==item_intro_button_quit),FALSE);
-
-		// simple save settings
-		
-	list_palette_add_header(&property_palette,0,"Simple Save Settings");
-	list_palette_add_int(&property_palette,kIntroPropertySimpleSaveDescTextSize,"Description Text Size",&iface.intro.simple_save_list.desc.text_size,FALSE);
-	list_palette_add_int(&property_palette,kIntroPropertyConfirmX,"Erase Confirm Dialog X",&iface.intro.confirm.x,FALSE);
-	list_palette_add_int(&property_palette,kIntroPropertyConfirmY,"Erase Confirm Dialog Y",&iface.intro.confirm.y,FALSE);
-
-		// simple save buttons
-		
-	list_palette_add_header(&property_palette,0,"Simple Save Buttons");
-	for (n=0;n!=max_simple_save_spot;n++) {
-		sprintf(str,"Simple Save Start %d",n);
-		list_palette_add_string_selectable(&property_palette,(kIntroPropertyButtonSimpleSaveStart+n),str,NULL,-1,(state.cur_intro_button_idx==(item_intro_button_simple_save_start+n)),FALSE);
-	}
-
-	list_palette_add_header(&property_palette,0,"Simple Save Erase Buttons");
-	for (n=0;n!=max_simple_save_spot;n++) {
-		sprintf(str,"Simple Save Erase %d",n);
-		list_palette_add_string_selectable(&property_palette,(kIntroPropertyButtonSimpleSaveErase+n),str,NULL,-1,(state.cur_intro_button_idx==(item_intro_button_simple_save_erase+n)),FALSE);
-	}
 	
 		// simple save settings
 		
 	list_palette_add_header(&property_palette,0,"Simple Save Progress");
-	list_palette_add_checkbox(&property_palette,kIntroPropertySimpleSaveProgressOn,"On",&iface.intro.simple_save_list.progress.on,FALSE);
-	list_palette_add_int(&property_palette,kIntroPropertySimpleSaveProgressMaxPoint,"Max Points",&iface.intro.simple_save_list.progress.max_point,FALSE);
-	list_palette_add_int(&property_palette,kIntroPropertySimpleSaveProgressMaxBitmap,"Max Bitmaps",&iface.intro.simple_save_list.progress.max_bitmap,FALSE);
-	list_palette_add_int(&property_palette,kIntroPropertySimpleSaveProgressWid,"Bitmap Width",&iface.intro.simple_save_list.progress.wid,FALSE);
-	list_palette_add_int(&property_palette,kIntroPropertySimpleSaveProgressHigh,"Bitmap Height",&iface.intro.simple_save_list.progress.high,FALSE);
-	list_palette_add_int(&property_palette,kIntroPropertySimpleSaveProgressAdd,"Bitmap Add",&iface.intro.simple_save_list.progress.bitmap_add,FALSE);
-	list_palette_add_checkbox(&property_palette,kIntroPropertySimpleSaveProgressHorizontal,"Horizontal",&iface.intro.simple_save_list.progress.horizontal,FALSE);
-	list_palette_add_int(&property_palette,kIntroPropertySimpleSaveProgressWrapCount,"Wrap Count",&iface.intro.simple_save_list.progress.wrap_count,FALSE);
-	list_palette_add_picker_file(&property_palette,kIntroPropertySimpleSaveProgressBitmap,list_button_none,0,"Enabled Bitmap","Bitmaps/Interface","png","",iface.intro.simple_save_list.progress.bitmap_name,FALSE);
-	list_palette_add_picker_file(&property_palette,kIntroPropertySimpleSaveProgressBitmapDisable,list_button_none,0,"Disabled Bitmap","Bitmaps/Interface","png","",iface.intro.simple_save_list.progress.bitmap_disable_name,FALSE);
+	list_palette_add_checkbox(&property_palette,kIntroPropertySimpleSaveProgressOn,"On",&iface.intro.simple_save_progress.on,FALSE);
+	list_palette_add_int(&property_palette,kIntroPropertySimpleSaveProgressMaxPoint,"Max Points",&iface.intro.simple_save_progress.max_point,FALSE);
+	list_palette_add_int(&property_palette,kIntroPropertySimpleSaveProgressMaxBitmap,"Max Bitmaps",&iface.intro.simple_save_progress.max_bitmap,FALSE);
+	list_palette_add_picker_file(&property_palette,kIntroPropertySimpleSaveProgressBitmap,list_button_none,0,"Enabled Bitmap","Bitmaps/Interface","png","",iface.intro.simple_save_progress.bitmap_name,FALSE);
+	list_palette_add_picker_file(&property_palette,kIntroPropertySimpleSaveProgressBitmapDisable,list_button_none,0,"Disabled Bitmap","Bitmaps/Interface","png","",iface.intro.simple_save_progress.bitmap_disable_name,FALSE);
 
 		// score
 		
@@ -197,22 +159,6 @@ void property_palette_click_title_page(bool double_click)
 
 	if ((id>=kIntroPropertyButtonGameNew) && (id<=kIntroPropertyButtonQuit)) {
 		state.cur_intro_button_idx=(id-kIntroPropertyButtonGameNew)+item_intro_button_game_new;
-		state.cur_intro_model_idx=-1;
-		if (double_click) list_palette_set_level(&property_palette,2);
-		return;
-	}
-
-		// select save state button
-
-	if ((id>=kIntroPropertyButtonSimpleSaveStart) && (id<(kIntroPropertyButtonSimpleSaveStart+max_simple_save_spot))) {
-		state.cur_intro_button_idx=(id-kIntroPropertyButtonSimpleSaveStart)+item_intro_button_simple_save_start;
-		state.cur_intro_model_idx=-1;
-		if (double_click) list_palette_set_level(&property_palette,2);
-		return;
-	}
-
-	if ((id>=kIntroPropertyButtonSimpleSaveErase) && (id<(kIntroPropertyButtonSimpleSaveErase+max_simple_save_spot))) {
-		state.cur_intro_button_idx=(id-kIntroPropertyButtonSimpleSaveErase)+item_intro_button_simple_save_erase;
 		state.cur_intro_model_idx=-1;
 		if (double_click) list_palette_set_level(&property_palette,2);
 		return;

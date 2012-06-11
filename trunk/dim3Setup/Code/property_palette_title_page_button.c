@@ -44,12 +44,6 @@ and can be sold or given away.
 #define kButtonMobilePositionX					21
 #define kButtonMobilePositionY					22
 
-#define kButtonDescPositionX					30
-#define kButtonDescPositionY					31
-
-#define kButtonProgressPositionX				40
-#define kButtonProgressPositionY				41
-
 extern iface_type				iface;
 extern setup_state_type			state;
 extern list_palette_type		property_palette;
@@ -62,20 +56,6 @@ extern list_palette_type		property_palette;
 
 iface_intro_button_type* get_title_page_button_from_item_idx(int item_idx,char *name)
 {
-	int				idx;
-
-	if ((item_idx>=item_intro_button_simple_save_start) && (item_idx<(item_intro_button_simple_save_start+max_simple_save_spot))) {
-		idx=item_idx-item_intro_button_simple_save_start;
-		if (name!=NULL) sprintf(name,"Simple Save %d",idx);
-		return(&iface.intro.simple_save_list.saves[idx].button_start);
-	}
-
-	if ((item_idx>=item_intro_button_simple_save_erase) && (item_idx<(item_intro_button_simple_save_erase+max_simple_save_spot))) {
-		idx=item_idx-item_intro_button_simple_save_erase;
-		if (name!=NULL) sprintf(name,"Simple Erase %d",idx);
-		return(&iface.intro.simple_save_list.saves[idx].button_erase);
-	}
-
 	switch (item_idx) {
 
 		case item_intro_button_game_new:
@@ -110,30 +90,6 @@ iface_intro_button_type* get_title_page_button_from_item_idx(int item_idx,char *
 	return(NULL);
 }
 
-iface_intro_position_type* get_title_page_button_desc_from_item_idx(int item_idx)
-{
-	int				idx;
-
-	if ((item_idx>=item_intro_button_simple_save_start) && (item_idx<(item_intro_button_simple_save_start+max_simple_save_spot))) {
-		idx=item_idx-item_intro_button_simple_save_start;
-		return(&iface.intro.simple_save_list.saves[idx].desc);
-	}
-
-	return(NULL);
-}
-
-iface_intro_position_type* get_title_page_button_progress_from_item_idx(int item_idx)
-{
-	int				idx;
-
-	if ((item_idx>=item_intro_button_simple_save_start) && (item_idx<(item_intro_button_simple_save_start+max_simple_save_spot))) {
-		idx=item_idx-item_intro_button_simple_save_start;
-		return(&iface.intro.simple_save_list.saves[idx].progress);
-	}
-
-	return(NULL);
-}
-
 /* =======================================================
 
       Property Palette Fill Title Page Button
@@ -144,11 +100,8 @@ void property_palette_fill_title_page_button(int intro_button_idx)
 {
 	char							name[64];
 	iface_intro_button_type			*btn;
-	iface_intro_position_type		*desc,*progress;
 
 	btn=get_title_page_button_from_item_idx(intro_button_idx,name);
-	desc=get_title_page_button_desc_from_item_idx(intro_button_idx);
-	progress=get_title_page_button_progress_from_item_idx(intro_button_idx);
 
 	list_palette_set_title(&property_palette,"Title Page Button",name,NULL,NULL,NULL,NULL);
 
@@ -171,22 +124,6 @@ void property_palette_fill_title_page_button(int intro_button_idx)
 	list_palette_add_checkbox(&property_palette,kButtonMobileSkip,"Hide if Mobile",&btn->mobile_hide,FALSE);
 	list_palette_add_int(&property_palette,kButtonMobilePositionX,"X",&btn->mobile_x,FALSE);
 	list_palette_add_int(&property_palette,kButtonMobilePositionY,"Y",&btn->mobile_y,FALSE);
-
-		// description
-
-	if (desc!=NULL) {
-		list_palette_add_header(&property_palette,0,"Description");
-		list_palette_add_int(&property_palette,kButtonDescPositionX,"X",&desc->x,FALSE);
-		list_palette_add_int(&property_palette,kButtonDescPositionY,"Y",&desc->y,FALSE);
-	}
-
-		// progress
-
-	if (progress!=NULL) {
-		list_palette_add_header(&property_palette,0,"Progress Bitmaps");
-		list_palette_add_int(&property_palette,kButtonProgressPositionX,"X",&progress->x,FALSE);
-		list_palette_add_int(&property_palette,kButtonProgressPositionY,"Y",&progress->y,FALSE);
-	}
 }
 
 /* =======================================================

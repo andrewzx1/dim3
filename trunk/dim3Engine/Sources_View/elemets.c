@@ -213,12 +213,12 @@ int element_get_padding(void)
 
 int element_get_tab_margin(void)
 {
-	return((int)(((float)iface.scale_x)*0.05f));
+	return((int)(((float)iface.scale_x)*element_tab_margin_factor));
 }
 
 int element_get_tab_control_high(void)
 {
-	return(gl_text_get_char_height(iface.font.text_size_medium));
+	return((int)(((float)iface.scale_x)*element_tab_control_high));
 }
 
 void element_get_button_bottom_left(int *x,int *y,int wid,int high)
@@ -1184,7 +1184,7 @@ void element_draw_button_bitmap(element_type *element,int sel_id)
 	
 	element_get_box(element,&lft,&rgt,&top,&bot);
 
-	view_primitive_2D_texture_quad(gl_id,NULL,alpha,lft,rgt,top,bot,0.0f,1.0f,0.0f,1.0f);
+	view_primitive_2D_texture_quad(gl_id,NULL,alpha,lft,rgt,top,bot,0.0f,1.0f,0.0f,1.0f,TRUE);
 }
 
 void element_draw_button_box(element_type *element,int sel_id)
@@ -1199,12 +1199,12 @@ void element_draw_button_box(element_type *element,int sel_id)
 			memmove(&outline_col,&iface.color.control.mouse_over,sizeof(d3col));
 		}
 		else {
-			memmove(&outline_col,&iface.color.button.outline,sizeof(d3col));
+			memmove(&outline_col,&iface.color.picker.outline,sizeof(d3col));
 		}
 	}
 	else {
 		alpha=0.3f;
-		memmove(&outline_col,&iface.color.button.outline,sizeof(d3col));
+		memmove(&outline_col,&iface.color.picker.outline,sizeof(d3col));
 	}
 	
 	element_get_box(element,&lft,&rgt,&top,&bot);
@@ -1212,17 +1212,15 @@ void element_draw_button_box(element_type *element,int sel_id)
 		// button background and outline
 
 	if (element->id!=sel_id) {
-		memmove(&gradient_start,&iface.color.control.fill,sizeof(d3col));
-		gradient_end.r=gradient_start.r*element_gradient_factor_background;
-		gradient_end.g=gradient_start.g*element_gradient_factor_background;
-		gradient_end.b=gradient_start.b*element_gradient_factor_background;
+		memmove(&gradient_end,&iface.color.picker.fill,sizeof(d3col));
 	}
 	else {
-		memmove(&gradient_end,&iface.color.control.fill,sizeof(d3col));
-		gradient_start.r=gradient_end.r*element_gradient_factor_background;
-		gradient_start.g=gradient_end.g*element_gradient_factor_background;
-		gradient_start.b=gradient_end.b*element_gradient_factor_background;
+		memmove(&gradient_end,&iface.color.picker.hilite,sizeof(d3col));
 	}
+	
+	gradient_start.r=gradient_end.r*element_gradient_factor_background;
+	gradient_start.g=gradient_end.g*element_gradient_factor_background;
+	gradient_start.b=gradient_end.b*element_gradient_factor_background;
 
 	y=(top+bot)>>1;
 	view_primitive_2D_color_poly(lft,top,&gradient_start,rgt,top,&gradient_start,rgt,y,&gradient_end,lft,y,&gradient_end,alpha);
@@ -1266,7 +1264,7 @@ void element_draw_bitmap(element_type *element)
 		// the picture
 		
 	gl_id=view_images_get_gl_id(element->setup.button.image_idx);
-	view_primitive_2D_texture_quad(gl_id,NULL,1.0f,lft,rgt,top,bot,0.0f,1.0f,0.0f,1.0f);
+	view_primitive_2D_texture_quad(gl_id,NULL,1.0f,lft,rgt,top,bot,0.0f,1.0f,0.0f,1.0f,TRUE);
 	
 		// the frame
 		
@@ -1302,7 +1300,7 @@ void element_draw_count(element_type *element)
 			gl_id=view_images_get_gl_id(element->setup.count.image_disable_idx);
 		}
 		
-		view_primitive_2D_texture_quad(gl_id,NULL,1.0f,lft,rgt,top,bot,0.0f,1.0f,0.0f,1.0f);
+		view_primitive_2D_texture_quad(gl_id,NULL,1.0f,lft,rgt,top,bot,0.0f,1.0f,0.0f,1.0f,TRUE);
 		
 		if (element->setup.count.horizontal) {
 			if (row_count!=-1) {
@@ -2446,7 +2444,7 @@ void element_draw_table_line_data(element_type *element,int x,int y,int row,int 
 			gl_id=element_draw_table_get_image_gl_id(element,row);
 
 			if (gl_id!=-1) {
-				view_primitive_2D_texture_quad(gl_id,NULL,1.0f,dx,(dx+bitmap_sz),(y+2),((y+2)+bitmap_sz),0.0f,1.0f,0.0f,1.0f);
+				view_primitive_2D_texture_quad(gl_id,NULL,1.0f,dx,(dx+bitmap_sz),(y+2),((y+2)+bitmap_sz),0.0f,1.0f,0.0f,1.0f,TRUE);
 				view_primitive_2D_line_quad(&iface.color.control.outline,1.0f,dx,(dx+bitmap_sz),(y+2),((y+2)+bitmap_sz));
 			}
 

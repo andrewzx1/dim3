@@ -363,6 +363,7 @@
 		262DD2B6151E328C0078FEA4 /* base_iface_score.c in Sources */ = {isa = PBXBuildFile; fileRef = 262DD2B5151E328C0078FEA4 /* base_iface_score.c */; };
 		264356A614576B0F00CA4CFE /* model_util_file_model.c in Sources */ = {isa = PBXBuildFile; fileRef = 264356A514576B0F00CA4CFE /* model_util_file_model.c */; };
 		2647C977152767B3002FEA4B /* singleplayer_option.c in Sources */ = {isa = PBXBuildFile; fileRef = 2647C976152767B3002FEA4B /* singleplayer_option.c */; };
+		266B3DBF15845F31003E7787 /* simple_save_pick.c in Sources */ = {isa = PBXBuildFile; fileRef = 266B3DBE15845F31003E7787 /* simple_save_pick.c */; };
 		26883073157823BC00A3E446 /* load_pause.c in Sources */ = {isa = PBXBuildFile; fileRef = 26883072157823BC00A3E446 /* load_pause.c */; };
 		268936B7155CC99000147273 /* map_collide_setup.c in Sources */ = {isa = PBXBuildFile; fileRef = 268936B4155CC99000147273 /* map_collide_setup.c */; };
 		268936B8155CC99000147273 /* map_collide_xz.c in Sources */ = {isa = PBXBuildFile; fileRef = 268936B5155CC99000147273 /* map_collide_xz.c */; };
@@ -761,6 +762,7 @@
 		2638D24013ED0AD600029B18 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		264356A514576B0F00CA4CFE /* model_util_file_model.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = model_util_file_model.c; sourceTree = "<group>"; };
 		2647C976152767B3002FEA4B /* singleplayer_option.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = singleplayer_option.c; sourceTree = "<group>"; };
+		266B3DBE15845F31003E7787 /* simple_save_pick.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = simple_save_pick.c; sourceTree = "<group>"; };
 		26883072157823BC00A3E446 /* load_pause.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = load_pause.c; sourceTree = "<group>"; };
 		268936B4155CC99000147273 /* map_collide_setup.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = map_collide_setup.c; sourceTree = "<group>"; };
 		268936B5155CC99000147273 /* map_collide_xz.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = map_collide_xz.c; sourceTree = "<group>"; };
@@ -1078,6 +1080,7 @@
 				260B41B71411F812006ED023 /* rings_draw.c */,
 				260B41B81411F812006ED023 /* score_limit.c */,
 				260B41B91411F812006ED023 /* setup_game.c */,
+				266B3DBE15845F31003E7787 /* simple_save_pick.c */,
 				2647C976152767B3002FEA4B /* singleplayer_option.c */,
 				260B41BB1411F812006ED023 /* sky.c */,
 				260B41BC1411F812006ED023 /* tint.c */,
@@ -2041,6 +2044,7 @@
 				268936B8155CC99000147273 /* map_collide_xz.c in Sources */,
 				268936B9155CC99000147273 /* map_collide_y.c in Sources */,
 				26883073157823BC00A3E446 /* load_pause.c in Sources */,
+				266B3DBF15845F31003E7787 /* simple_save_pick.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

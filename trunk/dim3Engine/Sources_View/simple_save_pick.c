@@ -35,6 +35,10 @@ and can be sold or given away.
 #define simple_save_pick_button_cancel_id		1
 #define simple_save_pick_button_erase_id		2
 
+#define simple_save_pick_erase_frame_id			10
+#define simple_save_pick_erase_button_id		20
+#define simple_save_pick_erase_cancel_id		30
+
 #define simple_save_pick_button_start_id		100
 #define simple_save_pick_description_id			200
 #define simple_save_pick_progress_id			300
@@ -46,7 +50,85 @@ extern network_setup_type	net_setup;
 
 extern int					intro_simple_save_idx;
 
-bool						simple_save_pick_esc_down;
+bool						simple_save_pick_esc_down,
+							simple_save_pick_in_erase;
+
+/* =======================================================
+
+      Simple Save Pick Control Reset
+      
+======================================================= */
+
+void simple_save_pick_reset_controls(void)
+{
+	int				n,bitmap_count;
+
+		// load simple saves
+
+	simple_save_xml_read(&iface);
+	
+		// simple save erase
+		
+	if (simple_save_pick_in_erase) {
+	
+		for (n=0;n!=max_simple_save_spot;n++) {
+			element_enable((simple_save_pick_button_start_id+n),FALSE);
+			element_enable((simple_save_pick_description_id+n),FALSE);
+		}
+		
+		element_enable(simple_save_pick_button_erase_id,FALSE);
+		element_enable(simple_save_pick_button_cancel_id,FALSE);
+		
+		element_hide(simple_save_pick_erase_frame_id,FALSE);
+		
+		for (n=0;n!=max_simple_save_spot;n++) {
+			element_hide((simple_save_pick_erase_button_id+n),FALSE);
+		}
+		
+		element_hide(simple_save_pick_erase_cancel_id,FALSE);
+	}
+	
+		// regular picking
+		
+	else {
+		for (n=0;n!=max_simple_save_spot;n++) {
+			element_enable((simple_save_pick_button_start_id+n),TRUE);
+			element_enable((simple_save_pick_description_id+n),TRUE);
+		}
+		
+		element_enable(simple_save_pick_button_erase_id,TRUE);
+		element_enable(simple_save_pick_button_cancel_id,TRUE);
+		
+		element_hide(simple_save_pick_erase_frame_id,TRUE);
+		
+		for (n=0;n!=max_simple_save_spot;n++) {
+			element_hide((simple_save_pick_erase_button_id+n),TRUE);
+		}
+		
+		element_hide(simple_save_pick_erase_cancel_id,TRUE);
+	}
+	
+		// reset settings
+		
+	for (n=0;n!=max_simple_save_spot;n++) {
+		if (iface.simple_save_list.saves[n].save_id!=-1) {
+			element_text_change((simple_save_pick_description_id+n),iface.simple_save_list.saves[n].desc);
+		}
+		else {
+			element_text_change((simple_save_pick_description_id+n),"New");
+		}
+
+		if (iface.intro.simple_save_progress.on) {
+			if (simple_save_pick_in_erase) {
+				bitmap_count=0;
+			}
+			else {
+				bitmap_count=(iface.intro.simple_save_progress.max_bitmap*iface.simple_save_list.saves[n].points)/iface.intro.simple_save_progress.max_point;
+			}
+			element_set_value((simple_save_pick_progress_id+n),bitmap_count);
+		}
+	}
+}
 
 /* =======================================================
 
@@ -58,14 +140,14 @@ void simple_save_pick_open(void)
 {
 	int				n,x,y,bx,by,wid,high,
 					txt_y_off,txt_size,
-					bitmap_max,bitmap_size,bitmap_add,bitmap_count,
-					butt_wid,butt_high,save_wid,save_high,
+					bitmap_max,bitmap_size,bitmap_add,
+					butt_wid,butt_high,save_wid,save_high,erase_wid,erase_high,
 					padding,control_y_add;
-	char			desc[256],path[1024],disable_path[1024];
+	char			name[256],path[1024],disable_path[1024];
 
-		// intro UI
+		// simple save UI
 		
-	gui_initialize("Bitmaps/Backgrounds","default");
+	gui_initialize("Bitmaps/Backgrounds","main");
 
 		// get height
 
@@ -78,15 +160,11 @@ void simple_save_pick_open(void)
 		// dialog and frame
 
 	x=25;
-	y=25+control_y_add;
+	y=25+(control_y_add+padding);
 	wid=iface.scale_x-50;
-	high=iface.scale_y-(50+control_y_add);
+	high=iface.scale_y-(50+(control_y_add+padding));
 	
 	element_frame_add("Pick Save Spot",simple_save_pick_frame_id,x,y,wid,high);
-
-		// load simple saves
-
-	simple_save_xml_read(&iface);
 
 		// simple save picker sizes
 
@@ -101,11 +179,11 @@ void simple_save_pick_open(void)
 	
 	txt_size=(save_high-(padding*3))/4;
 	
-	if (!iface.intro.simple_save_list.progress.on) {
+	if (!iface.intro.simple_save_progress.on) {
 		txt_y_off=(save_high/2)+(txt_size/2);
 	}
 	else {
-		bitmap_max=iface.intro.simple_save_list.progress.max_bitmap;
+		bitmap_max=iface.intro.simple_save_progress.max_bitmap;
 		bitmap_size=((save_wid-(padding*2))/bitmap_max)-(padding/4);
 		bitmap_add=bitmap_size+(padding/4);
 
@@ -122,23 +200,37 @@ void simple_save_pick_open(void)
 
 			// description and progress
 
-		if (iface.simple_save_list.saves[n].save_id!=-1) {
-			strcpy(desc,iface.simple_save_list.saves[n].desc);
-		}
-		else {
-			strcpy(desc,"New");
-		}
-		element_text_add(desc,(simple_save_pick_description_id+n),(bx+padding),((by+txt_y_off)+padding),txt_size,tx_left,NULL,FALSE);
+		element_text_add("",(simple_save_pick_description_id+n),(bx+padding),((by+txt_y_off)+padding),txt_size,tx_left,&iface.color.picker.text,FALSE);
 
-		if (iface.intro.simple_save_list.progress.on) {
-			file_paths_data(&setup.file_path_setup,path,"Bitmaps/Interface",iface.intro.simple_save_list.progress.bitmap_name,"png");
-			file_paths_data(&setup.file_path_setup,disable_path,"Bitmaps/Interface",iface.intro.simple_save_list.progress.bitmap_disable_name,"png");
-			bitmap_count=(iface.intro.simple_save_list.progress.max_bitmap*iface.simple_save_list.saves[n].points)/iface.intro.simple_save_list.progress.max_point;
-			element_count_add(path,disable_path,(simple_save_pick_progress_id+n),(bx+padding),((by+txt_y_off)+(padding*2)),bitmap_size,bitmap_size,bitmap_add,TRUE,0,bitmap_count,bitmap_max);
+		if (iface.intro.simple_save_progress.on) {
+			file_paths_data(&setup.file_path_setup,path,"Bitmaps/Interface",iface.intro.simple_save_progress.bitmap_name,"png");
+			file_paths_data(&setup.file_path_setup,disable_path,"Bitmaps/Interface",iface.intro.simple_save_progress.bitmap_disable_name,"png");
+			element_count_add(path,disable_path,(simple_save_pick_progress_id+n),(bx+padding),((by+txt_y_off)+(padding*2)),bitmap_size,bitmap_size,bitmap_add,TRUE,0,0,bitmap_max);
 		}
 
 		by+=(save_high+padding);
 	}
+	
+		// simple save erase
+		
+	erase_wid=(butt_wid*4)+(padding*5);
+	erase_high=butt_high+(padding*2);
+		
+	bx=(x+(wid>>1))-(erase_wid>>1);
+	by=(y+(high>>1))-(erase_high>>1);
+	
+	element_frame_add("Erase Save Spot",simple_save_pick_erase_frame_id,bx,by,erase_wid,erase_high);
+	
+	bx+=padding;
+	by+=padding;
+	
+	for (n=0;n!=max_simple_save_spot;n++) {
+		sprintf(name,"Erase %d",(n+1));
+		element_button_text_add(name,(simple_save_pick_erase_button_id+n),bx,by,butt_wid,butt_high,element_pos_left,element_pos_top);
+		bx+=(butt_wid+padding);
+	}
+	
+	element_button_text_add("Cancel",simple_save_pick_erase_cancel_id,bx,by,butt_wid,butt_high,element_pos_left,element_pos_top);
 
 		// erase button
 
@@ -156,6 +248,11 @@ void simple_save_pick_open(void)
 		// in key state
 	
 	simple_save_pick_esc_down=FALSE;
+	
+		// setup controls
+		
+	simple_save_pick_in_erase=FALSE;
+	simple_save_pick_reset_controls();
 }
 
 void simple_save_pick_close(void)
@@ -171,7 +268,9 @@ void simple_save_pick_close(void)
 
 void simple_save_pick_click(void)
 {
-	int				id,simple_save_idx;
+	int						id,simple_save_idx;
+	char					err_str[256];
+	iface_simple_save_type	*save;
 	
 		// element being clicked?
 		
@@ -187,8 +286,41 @@ void simple_save_pick_click(void)
 		return;
 	}
 
-		// erase button clicks
+		// turn erase dialog on/off
+		
+	if (id==simple_save_pick_button_erase_id) {
+		simple_save_pick_in_erase=TRUE;
+		simple_save_pick_reset_controls();
+		return;
+	}
+	
+	if (id==simple_save_pick_erase_cancel_id) {
+		simple_save_pick_in_erase=FALSE;
+		simple_save_pick_reset_controls();
+		return;
+	}
+	
+		// erase dialog buttong
+		
+	if ((id>=simple_save_pick_erase_button_id) && (id<(simple_save_pick_erase_button_id+max_simple_save_spot))) {
 
+		simple_save_idx=id-simple_save_pick_erase_button_id;
+		
+			// reset save
+			
+		save=&iface.simple_save_list.saves[simple_save_idx];
+		save->save_id=-1;
+		save->points=0;
+		save->desc[0]=0x0;
+		
+		simple_save_xml_write(&iface,err_str);
+	
+			// back to picker
+
+		simple_save_pick_in_erase=FALSE;
+		simple_save_pick_reset_controls();
+		return;
+	}
 
 		// play button clicks
 

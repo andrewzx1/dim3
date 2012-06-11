@@ -148,7 +148,7 @@ void gui_draw_background(float alpha)
 		view_primitive_2D_texture_quad_rectangle(bitmap->gl_id,alpha,0,iface.scale_x,0,iface.scale_y,bitmap->wid,bitmap->high);
 	}
 	else {
-		view_primitive_2D_texture_quad(bitmap->gl_id,NULL,alpha,0,iface.scale_x,0,iface.scale_y,0.0f,1.0f,0.0f,1.0f);
+		view_primitive_2D_texture_quad(bitmap->gl_id,NULL,alpha,0,iface.scale_x,0,iface.scale_y,0.0f,1.0f,0.0f,1.0f,TRUE);
 	}
 }
 

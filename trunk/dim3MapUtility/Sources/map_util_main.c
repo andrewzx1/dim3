@@ -189,16 +189,22 @@ bool map_new(map_type *map,char *name)
 	map->background.front.size.y=1.0f;
 	map->background.front.scroll_factor.x=0.0f;
 	map->background.front.scroll_factor.y=0.0f;
+	map->background.front.clip.x=0.0f;
+	map->background.front.clip.y=1.0f;
 	map->background.middle.fill=-1;
 	map->background.middle.size.x=1.0f;
 	map->background.middle.size.y=1.0f;
 	map->background.middle.scroll_factor.x=0.0f;
 	map->background.middle.scroll_factor.y=0.0f;
+	map->background.middle.clip.x=0.0f;
+	map->background.middle.clip.y=1.0f;
 	map->background.back.fill=-1;
 	map->background.back.size.x=1.0f;
 	map->background.back.size.y=1.0f;
 	map->background.back.scroll_factor.x=0.0f;
 	map->background.back.scroll_factor.y=0.0f;
+	map->background.back.clip.x=0.0f;
+	map->background.back.clip.y=1.0f;
 	
 		// sky
 		

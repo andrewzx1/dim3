@@ -157,7 +157,7 @@ void singleplayer_option_open(void)
 
 		// intro UI
 		
-	gui_initialize("Bitmaps/Backgrounds","default");
+	gui_initialize("Bitmaps/Backgrounds","main");
 
 		// get height
 
@@ -180,7 +180,7 @@ void singleplayer_option_open(void)
 		// dialog and frame
 
 	x=25;
-	y=(iface.scale_y-(high-control_y_add))>>1;
+	y=(iface.scale_y-(high-(control_y_add+padding)))>>1;
 	wid=iface.scale_x-50;
 	
 	element_frame_add("New Game",singleplayer_option_frame_id,x,y,wid,high);

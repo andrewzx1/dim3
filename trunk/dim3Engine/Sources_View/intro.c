@@ -33,8 +33,6 @@ and can be sold or given away.
 
 // intro elements
 
-// supergumba -- clean all this up
-
 #define intro_button_game_new_id				0
 #define intro_button_game_load_id				1
 #define intro_button_game_setup_id				2
@@ -45,21 +43,6 @@ and can be sold or given away.
 #define intro_button_credit_id					20
 #define intro_button_quit_id					21
 
-#define intro_simple_save_erase_frame			30
-#define intro_simple_save_erase_ok				31
-#define intro_simple_save_erase_cancel			32
-
-#define intro_simple_save_button_start			100
-#define intro_simple_save_button_erase			200
-#define intro_simple_save_text_desc				300
-
-#define intro_simple_save_progress_bitmap		1000
-
-// intro modes
-
-#define intro_mode_normal						0
-#define intro_mode_simple_save_erase			1
-
 extern app_type				app;
 extern server_type			server;
 extern map_type				map;
@@ -67,7 +50,7 @@ extern iface_type			iface;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
 
-int							intro_mode,intro_simple_save_idx;
+int							intro_simple_save_idx;
 bool						intro_esc_down;
 bitmap_type					intro_bitmap;
 
@@ -76,84 +59,6 @@ bitmap_type					intro_bitmap;
       Intro UI Utilities
       
 ======================================================= */
-
-void intro_show_hide_for_mode(void)
-{
-	int					n,bitmap_count;
-	char				str[256];
-	
-		// simple save erase
-		
-	if (intro_mode==intro_mode_simple_save_erase) {
-	
-		element_enable(intro_button_game_new_id,FALSE);
-		element_enable(intro_button_game_load_id,FALSE);
-		element_enable(intro_button_game_setup_id,FALSE);
-		element_enable(intro_button_multiplayer_host_id,FALSE);
-		element_enable(intro_button_multiplayer_join_id,FALSE);
-		element_enable(intro_button_credit_id,FALSE);
-		element_enable(intro_button_quit_id,FALSE);
-		
-		for (n=0;n!=max_simple_save_spot;n++) {
-			element_enable((intro_simple_save_button_start+n),FALSE);
-			element_enable((intro_simple_save_button_erase+n),FALSE);
-			element_enable((intro_simple_save_text_desc+n),FALSE);
-		}
-
-		sprintf(str,"Erase Saved Game %d?",(intro_simple_save_idx+1));
-		element_text_change(intro_simple_save_erase_frame,str);
-		
-		element_hide(intro_simple_save_erase_frame,FALSE);
-		element_hide(intro_simple_save_erase_ok,FALSE);
-		element_hide(intro_simple_save_erase_cancel,FALSE);
-		
-		return;
-	}
-	
-		// regular
-		
-	element_hide(intro_button_game_new_id,FALSE);
-	element_hide(intro_button_game_load_id,FALSE);
-	element_hide(intro_button_game_setup_id,FALSE);
-	element_hide(intro_button_multiplayer_host_id,FALSE);
-	element_hide(intro_button_multiplayer_join_id,FALSE);
-	element_hide(intro_button_credit_id,FALSE);
-	element_hide(intro_button_quit_id,FALSE);
-	
-	element_enable(intro_button_game_new_id,TRUE);
-	element_enable(intro_button_game_load_id,TRUE);
-	element_enable(intro_button_game_setup_id,TRUE);
-	element_enable(intro_button_multiplayer_host_id,TRUE);
-	element_enable(intro_button_multiplayer_join_id,TRUE);
-	element_enable(intro_button_credit_id,TRUE);
-	element_enable(intro_button_quit_id,TRUE);
-	
-	for (n=0;n!=max_simple_save_spot;n++) {
-		element_hide((intro_simple_save_button_start+n),FALSE);
-		element_hide((intro_simple_save_button_erase+n),FALSE);
-		element_hide((intro_simple_save_text_desc+n),FALSE);
-		
-		element_enable((intro_simple_save_button_start+n),TRUE);
-		element_enable((intro_simple_save_button_erase+n),TRUE);
-		element_enable((intro_simple_save_text_desc+n),TRUE);
-		
-		if (iface.simple_save_list.saves[n].save_id!=-1) {
-			element_text_change((intro_simple_save_text_desc+n),iface.simple_save_list.saves[n].desc);
-		}
-		else {
-			element_text_change((intro_simple_save_text_desc+n),"New");
-		}
-
-		if (iface.intro.simple_save_list.progress.on) {
-			bitmap_count=(iface.intro.simple_save_list.progress.max_bitmap*iface.simple_save_list.saves[n].points)/iface.intro.simple_save_list.progress.max_point;
-			element_set_value((intro_simple_save_progress_bitmap+n),bitmap_count);
-		}
-	}
-	
-	element_hide(intro_simple_save_erase_frame,TRUE);
-	element_hide(intro_simple_save_erase_ok,TRUE);
-	element_hide(intro_simple_save_erase_cancel,TRUE);
-}
 
 void intro_open_add_button(iface_intro_button_type *btn,char *name,int id)
 {
@@ -255,10 +160,8 @@ void intro_open(void)
 {
 	int								n,x,y,yadd,wid,num_wid;
 	bool							start_music;
-	char							name[32],str[256],err_str[256],
-									path[1024],disable_path[1024];
+	char							str[256],err_str[256];
 	iface_intro_model_type			*intro_model;
-	iface_intro_simple_save_type	*intro_simple_save;
 	iface_score_type				*score;
 
 		// intro UI
@@ -283,50 +186,7 @@ void intro_open(void)
 	intro_open_add_button(&iface.intro.button_multiplayer_join,"button_multiplayer_join",intro_button_multiplayer_join_id);
 	intro_open_add_button(&iface.intro.button_credit,"button_credit",intro_button_credit_id);
 	intro_open_add_button(&iface.intro.button_quit,"button_quit",intro_button_quit_id);
-	
-		// simple saves
-
-	for (n=0;n!=max_simple_save_spot;n++) {
-
-			// all simple save items are controlled
-			// by main start button
-
-		intro_simple_save=&iface.intro.simple_save_list.saves[n];
-		if (!intro_simple_save->button_start.on) continue;
-
-			// buttons
-
-		sprintf(name,"button_simple_start_%d",n);
-		intro_open_add_button(&intro_simple_save->button_start,name,(intro_simple_save_button_start+n));
-		sprintf(name,"button_simple_erase_%d",n);
-		intro_open_add_button(&intro_simple_save->button_erase,name,(intro_simple_save_button_erase+n));
-
-			// description
-
-		element_text_add("",(intro_simple_save_text_desc+n),intro_simple_save->desc.x,intro_simple_save->desc.y,iface.intro.simple_save_list.desc.text_size,tx_center,NULL,FALSE);
-
-			// simple save progress
-
-		if (iface.intro.simple_save_list.progress.on) {
-			file_paths_data(&setup.file_path_setup,path,"Bitmaps/Interface",iface.intro.simple_save_list.progress.bitmap_name,"png");
-			file_paths_data(&setup.file_path_setup,disable_path,"Bitmaps/Interface",iface.intro.simple_save_list.progress.bitmap_disable_name,"png");
-			element_count_add(path,disable_path,(intro_simple_save_progress_bitmap+n),intro_simple_save->progress.x,intro_simple_save->progress.y,iface.intro.simple_save_list.progress.wid,iface.intro.simple_save_list.progress.high,iface.intro.simple_save_list.progress.bitmap_add,iface.intro.simple_save_list.progress.horizontal,iface.intro.simple_save_list.progress.wrap_count,0,iface.intro.simple_save_list.progress.max_bitmap);
-		}
-	}
-	
-		// simple save confirm
 		
-	x=iface.intro.confirm.x;
-	y=iface.intro.confirm.y;
-	
-	element_frame_add("",intro_simple_save_erase_frame,x,y,320,100);
-	element_button_text_add("Erase",intro_simple_save_erase_ok,(x+20),(y+25),100,50,element_pos_left,element_pos_top);
-	element_button_text_add("Cancel",intro_simple_save_erase_cancel,(x+290),(y+25),100,50,element_pos_right,element_pos_top);
-	
-		// read in simple saves
-		
-	simple_save_xml_read(&iface);
-	
 		// high scores
 
 	if (iface.intro.score.on) {
@@ -358,12 +218,9 @@ void intro_open(void)
 		}
 	}
 	
-		// correct panel
+		// default to first simple save
 
-	intro_mode=intro_mode_normal;
 	intro_simple_save_idx=0;
-
-	intro_show_hide_for_mode();
 
 		// in intro state
 	
@@ -495,39 +352,6 @@ void intro_click_load(void)
 	server.next_state=gs_file;
 }
 
-void intro_click_simple_save_start(int idx)
-{
-	intro_start_game(skill_medium,0,NULL,idx);
-}
-
-void intro_click_simple_save_erase(int idx)
-{
-	intro_mode=intro_mode_simple_save_erase;
-	intro_simple_save_idx=idx;
-	intro_show_hide_for_mode();
-}
-
-void intro_click_simple_save_erase_ok(void)
-{
-	char					err_str[256];
-	iface_simple_save_type	*save;
-	
-		// reset save
-		
-	save=&iface.simple_save_list.saves[intro_simple_save_idx];
-	save->save_id=-1;
-	save->points=0;
-	save->desc[0]=0x0;
-	
-	simple_save_xml_write(&iface,err_str);
-	
-		// back to intro
-
-	intro_mode=intro_mode_normal;
-	intro_show_hide_for_mode();
-}
-
-
 /* =======================================================
 
       Intro Input
@@ -546,20 +370,6 @@ void intro_click(void)
 	
 	hud_click();
 	
-		// simple save start
-		
-	if ((id>=intro_simple_save_button_start) && (id<(intro_simple_save_button_start+max_simple_save_spot))) {
-		intro_click_game(id-intro_simple_save_button_start);
-		return;
-	}
-
-		// simple save erase
-		
-	if ((id>=intro_simple_save_button_erase) && (id<(intro_simple_save_button_erase+max_simple_save_spot))) {
-		intro_click_simple_save_erase(id-intro_simple_save_button_erase);
-		return;
-	}
-	
 		// regular button clicks
 		
 	switch (id) {
@@ -576,17 +386,6 @@ void intro_click(void)
 			server.next_state=gs_setup_game;
 			break;
 			
-			// simple save buttons
-			
-		case intro_simple_save_erase_ok:
-			intro_click_simple_save_erase_ok();
-			break;
-
-		case intro_simple_save_erase_cancel:
-			intro_mode=intro_mode_normal;
-			intro_show_hide_for_mode();
-			break;
-
 			// multiplayer buttons
 
 		case intro_button_multiplayer_host_id:
@@ -625,16 +424,7 @@ void intro_key(void)
 	
 	intro_esc_down=TRUE;
 
-		// escape quits new game
-		// or simple save
-		
-	if (intro_mode==intro_mode_simple_save_erase) {
-		intro_mode=intro_mode_normal;
-		intro_show_hide_for_mode();
-		return;
-	}
-	
-		// or entire game
+		// escape quits game
 		
 	intro_close();
 	app.loop_quit=TRUE;
