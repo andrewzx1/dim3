@@ -464,6 +464,9 @@ void net_host_player_remote_route_msg(net_queue_msg_type *msg)
 {
 		// push messages to other clients
 		// and respond to player specific messages
+
+		// stat_updates are send only from host to
+		// client, so ignore all of those
 		
 	switch (msg->action) {
 	
@@ -484,6 +487,9 @@ void net_host_player_remote_route_msg(net_queue_msg_type *msg)
 		case net_action_request_remote_click:
 			net_host_player_send_message_others(msg->net_uid,msg->action,msg->msg,msg->msg_len);
 			break;
+
+		case net_action_request_remote_stat_update:
+			return;			// ignore these
 
 		case net_action_request_latency_ping:
 			net_host_player_send_message_single(msg->net_uid,net_action_reply_latency_ping,NULL,0);
@@ -515,7 +521,7 @@ void net_host_player_send_stat_update(obj_type *obj)
 {
 	int										n,idx;
 	weapon_type								*weap;
-	network_request_player_stat_update		stat_update;
+	network_request_remote_stat_update		stat_update;
 
 	stat_update.health=htons((short)obj->status.health.value);
 	stat_update.armor=htons((short)obj->status.armor.value);
@@ -536,7 +542,7 @@ void net_host_player_send_stat_update(obj_type *obj)
 		if (idx==net_max_weapon_per_remote) break;
 	}
 	
-	net_host_player_send_message_single(obj->remote.net_uid,net_action_request_player_stat_update,(unsigned char*)&stat_update,sizeof(network_request_player_stat_update));
+	net_host_player_send_message_single(obj->remote.net_uid,net_action_request_remote_stat_update,(unsigned char*)&stat_update,sizeof(network_request_remote_stat_update));
 }
 
 /* =======================================================

@@ -79,8 +79,23 @@ int al_distance_to_listener(d3pnt *pnt)
 
 int al_play_source(int buffer_idx,d3pnt *pnt,float pitch,bool loop,bool ambient,bool no_position,bool no_cancel)
 {
-	int					n,idx,non_no_cancel_idx;
+	int					n,idx,dist,non_no_cancel_idx;
+	audio_buffer_type	*buffer;
 	audio_play_type		*play;
+
+		// skip all sounds outside twice the
+		// listener cone, while this can clip sounds,
+		// on smaller devices the audio is more complex
+		// and time consuming
+
+	if ((!ambient) && (!no_position) && (pnt!=NULL)) {
+		dist=al_distance_to_listener(pnt);
+
+		buffer=&audio_buffers[buffer_idx];
+		if ((dist<<1)>=buffer->max_dist) return(-1);
+	}
+
+		// add to audio list
 
 	SDL_LockAudio();
 
