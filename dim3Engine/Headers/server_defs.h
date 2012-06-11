@@ -226,7 +226,7 @@ and can be sold or given away.
 // model defines
 //
 
-#define max_model_shadow_vbo_count				3
+#define max_model_shadow_vbo_count				5
 #define max_model_dynamic_bone					4
 
 //

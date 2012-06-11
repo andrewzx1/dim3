@@ -83,19 +83,13 @@ bool remote_add(network_request_remote_add *remote,bool send_event)
 	obj->mesh.last_stand_mesh_idx=-1;
 	
 		// remotes have no script
-		// special remote type always reroutes to
-		// regular player scripts
-		
-	if (!object_start_script(obj,FALSE,err_str)) {
-		console_add_error(err_str);
-		free(server.obj_list.objs[idx]);
-		server.obj_list.objs[idx]=NULL;
-		return(FALSE);
-	}
+
+	obj->script_idx=-1;
 
 		// load models
 		// we substitute the model passed through
-		// from the remote instead of the one in the script
+		// from the remote as there is no script to
+		// set it up
 		
 	strcpy(obj->draw.name,remote->draw_name);
 	obj->draw.on=TRUE;
@@ -684,6 +678,41 @@ void remote_click(int net_uid,network_request_remote_click *click)
 
 /* =======================================================
 
+      Remote Stat Update
+      
+======================================================= */
+
+void remote_stat_update(int net_uid,network_request_remote_stat_update *stat_update)
+{
+	int				n,idx;
+	obj_type		*obj;
+	weapon_type		*weap;
+	
+	obj=object_find_remote_net_uid(net_uid);
+	if (obj==NULL) return;
+
+	obj->status.health.value=(signed short)ntohs(stat_update->health);
+	obj->status.armor.value=(signed short)ntohs(stat_update->armor);
+
+	idx=0;
+		
+	for (n=0;n!=max_weap_list;n++) {
+		weap=obj->weap_list.weaps[n];
+		if (weap==NULL) continue;
+
+		weap->hidden=(ntohs(stat_update->ammos[idx].hidden)!=0);
+		weap->ammo.count=(signed short)ntohs(stat_update->ammos[idx].ammo_count);
+		weap->ammo.clip_count=(signed short)ntohs(stat_update->ammos[idx].clip_count);
+		weap->alt_ammo.count=(signed short)ntohs(stat_update->ammos[idx].alt_ammo_count);
+		weap->alt_ammo.clip_count=(signed short)ntohs(stat_update->ammos[idx].alt_clip_count);
+
+		idx++;
+		if (idx==net_max_weapon_per_remote) break;
+	}
+}
+
+/* =======================================================
+
       Remote Networking Receives
       
 ======================================================= */
@@ -726,6 +755,10 @@ bool remote_route_message(net_queue_msg_type *msg)
 
 		case net_action_request_remote_click:
 			remote_click(msg->net_uid,(network_request_remote_click*)msg->msg);
+			return(TRUE);
+
+		case net_action_request_remote_stat_update:
+			remote_stat_update(msg->net_uid,(network_request_remote_stat_update*)msg->msg);
 			return(TRUE);
 
 		case net_action_reply_latency_ping:

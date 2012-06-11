@@ -186,7 +186,7 @@ typedef struct		{
 #define net_action_request_remote_sound					13
 #define net_action_request_remote_fire					14
 #define net_action_request_remote_click					15
-#define net_action_request_player_stat_update			16
+#define net_action_request_remote_stat_update			16
 #define net_action_request_latency_ping					17
 #define net_action_reply_latency_ping					18
 #define net_action_request_host_exit					19
@@ -361,12 +361,12 @@ typedef struct		{
 typedef struct		{
 						short							hidden,ammo_count,clip_count,
 														alt_ammo_count,alt_clip_count;
-					} network_request_player_ammo;		// used as part of network_request_player_stat_update
+					} network_request_remote_ammo;		// used as part of network_request_remote_stat_update
 
 typedef struct		{
 						short							health,armor;
-						network_request_player_ammo		ammos[net_max_weapon_per_remote];
-					} network_request_player_stat_update;
+						network_request_remote_ammo		ammos[net_max_weapon_per_remote];
+					} network_request_remote_stat_update;
 
 typedef struct		{
 						int								pt_x,pt_y,pt_z,
