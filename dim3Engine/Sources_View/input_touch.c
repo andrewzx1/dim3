@@ -336,6 +336,8 @@ void input_touch_scrub_point(d3pnt *pt,int touch_id,int x,int y)
 	
 	touch=SDL_GetTouch(touch_id);
 	
+		// convert to screen
+		
 #ifndef D3_ROTATE_VIEW
 	fx=((float)x)/((float)touch->xres);
 	pt->x=(int)(fx*((float)view.screen.x_sz));
@@ -348,10 +350,12 @@ void input_touch_scrub_point(d3pnt *pt,int touch_id,int x,int y)
 	
 	fy=((float)x)/((float)touch->xres);
 	pt->y=view.screen.y_sz-(int)(fy*((float)view.screen.y_sz));
-	
-	pt->x-=(int)(((float)view.screen.x_sz)*0.025f);			// x-y adjustments for touch events
-	pt->y-=(int)(((float)view.screen.y_sz)*0.025f);
 #endif
+
+		// convert to view scale
+		
+	pt->x=(pt->x*iface.scale_x)/view.screen.x_sz;
+	pt->y=(pt->y*iface.scale_y)/view.screen.y_sz;
 }
 
 void input_touch_event_down(int touch_id,int finger_id,int x,int y)

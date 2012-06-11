@@ -69,7 +69,12 @@ and can be sold or given away.
 #define kSettingsColorButtonText				61
 #define kSettingsColorButtonOutline				62
 
-#define kSettingColorSystemMetric				70
+#define kSettingsColorPickerFill				70
+#define kSettingsColorPickerHilite				71
+#define kSettingsColorPickerText				72
+#define kSettingsColorPickerOutline				73
+
+#define kSettingColorSystemMetric				80
 
 extern iface_type				iface;
 extern setup_state_type			state;
@@ -135,6 +140,14 @@ void property_palette_fill_color(void)
 	list_palette_add_pick_color(&property_palette,kSettingsColorButtonFill,"Button Fill",&iface.color.button.fill,FALSE);
 	list_palette_add_pick_color(&property_palette,kSettingsColorButtonText,"Button Text",&iface.color.button.text,FALSE);
 	list_palette_add_pick_color(&property_palette,kSettingsColorButtonOutline,"Button Outline",&iface.color.button.outline,FALSE);
+	
+		// picker color
+		
+	list_palette_add_header(&property_palette,0,"Picker Colors");
+	list_palette_add_pick_color(&property_palette,kSettingsColorPickerFill,"Picker Fill",&iface.color.picker.fill,FALSE);
+	list_palette_add_pick_color(&property_palette,kSettingsColorPickerHilite,"Picker Highlight",&iface.color.picker.hilite,FALSE);
+	list_palette_add_pick_color(&property_palette,kSettingsColorPickerText,"Picker Text",&iface.color.picker.text,FALSE);
+	list_palette_add_pick_color(&property_palette,kSettingsColorPickerOutline,"Picker Outline",&iface.color.picker.outline,FALSE);
 
 		// system color
 		

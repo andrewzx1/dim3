@@ -130,7 +130,7 @@ void progress_next(void)
 		view_primitive_2D_texture_quad_rectangle(progress_background_bitmap.gl_id,1.0f,0,iface.scale_x,0,iface.scale_y,progress_background_bitmap.wid,progress_background_bitmap.high);
 	}
 	else {
-		view_primitive_2D_texture_quad(progress_background_bitmap.gl_id,NULL,1.0f,0,iface.scale_x,0,iface.scale_y,0.0f,1.0f,0.0f,1.0f);
+		view_primitive_2D_texture_quad(progress_background_bitmap.gl_id,NULL,1.0f,0,iface.scale_x,0,iface.scale_y,0.0f,1.0f,0.0f,1.0f,TRUE);
 	}
 	
 		// draw the progress background
@@ -173,7 +173,7 @@ void progress_next(void)
 
 		// progress overlay
 
-	if (iface.progress.overlay) view_primitive_2D_texture_quad(progress_overlay_bitmap.gl_id,NULL,1.0f,lft,rgt,top,bot,0.0f,1.0f,0.0f,1.0f);
+	if (iface.progress.overlay) view_primitive_2D_texture_quad(progress_overlay_bitmap.gl_id,NULL,1.0f,lft,rgt,top,bot,0.0f,1.0f,0.0f,1.0f,TRUE);
 
 	gl_frame_swap();
 }

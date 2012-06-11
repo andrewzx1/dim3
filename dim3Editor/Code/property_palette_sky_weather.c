@@ -33,57 +33,62 @@ and can be sold or given away.
 #include "ui_common.h"
 #include "interface.h"
 
-#define kMapPropertySkyOn					1
-#define kMapPropertySkyType					2
-#define kMapPropertySkyRadius				3
-#define kMapPropertyDomeY					4
-#define kMapPropertyDomeMirror				5
-#define kMapPropertyTextureRepeat			6
-#define kMapPropertyTextureShift			7
-#define kMapPropertyTextureFill				8
-#define kMapPropertyTextureBottomFill		9
-#define kMapPropertyTextureNorthFill		10
-#define kMapPropertyTextureSouthFill		11
-#define kMapPropertyTextureEastFill			12
-#define kMapPropertyTextureWestFill			13
+#define kMapPropertySkyOn						1
+#define kMapPropertySkyType						2
+#define kMapPropertySkyRadius					3
+#define kMapPropertyDomeY						4
+#define kMapPropertyDomeMirror					5
+#define kMapPropertyTextureRepeat				6
+#define kMapPropertyTextureShift				7
+#define kMapPropertyTextureFill					8
+#define kMapPropertyTextureBottomFill			9
+#define kMapPropertyTextureNorthFill			10
+#define kMapPropertyTextureSouthFill			11
+#define kMapPropertyTextureEastFill				12
+#define kMapPropertyTextureWestFill				13
 
-#define kMapPropertyBackgroundOn			20
-#define kMapPropertyBackgroundFrontFill		21
-#define kMapPropertyBackgroundFrontStamp	22
-#define kMapPropertyBackgroundFrontShift	23
-#define kMapPropertyBackgroundMiddleFill	24
-#define kMapPropertyBackgroundMiddleStamp	25
-#define kMapPropertyBackgroundMiddleShift	26
-#define kMapPropertyBackgroundBackFill		27
-#define kMapPropertyBackgroundBackStamp		28
-#define kMapPropertyBackgroundBackShift		29
+#define kMapPropertyBackgroundOn				20
+#define kMapPropertyBackgroundFrontFill			21
+#define kMapPropertyBackgroundFrontStamp		22
+#define kMapPropertyBackgroundFrontShift		23
+#define kMapPropertyBackgroundFrontClip			24
 
-#define kMapPropertyFogOn					30
-#define kMapPropertyFogInnerRadius			31
-#define kMapPropertyFogOuterRadius			32
-#define kMapPropertyFogUseSolidColor		33
-#define kMapPropertyFogColor				34
-#define kMapPropertyFogTextureIndex			35
-#define kMapPropertyFogCount				36
-#define kMapPropertyFogHigh					37
-#define kMapPropertyFogDrop					38
-#define kMapPropertyFogAlpha				39
-#define kMapPropertyFogTextureSpeed			40
-#define kMapPropertyFogTextureFact			41
+#define kMapPropertyBackgroundMiddleFill		30
+#define kMapPropertyBackgroundMiddleStamp		31
+#define kMapPropertyBackgroundMiddleShift		32
+#define kMapPropertyBackgroundMiddleClip		33
 
-#define kMapPropertyRainOn					50
-#define kMapPropertyRainDensity				51
-#define kMapPropertyRainRadius				52
-#define kMapPropertyRainHeight				53
-#define kMapPropertyRainSpeed				54
-#define kMapPropertyRainWidth				55
-#define kMapPropertyRainLength				56
-#define kMapPropertyRainAlpha				57
-#define kMapPropertyRainStartColor			58
-#define kMapPropertyRainEndColor			59
-#define kMapPropertyRainSlantAdd			60
-#define kMapPropertyRainSlantMaxTime		61
-#define kMapPropertyRainSlantChangeTime		62
+#define kMapPropertyBackgroundBackFill			40
+#define kMapPropertyBackgroundBackStamp			41
+#define kMapPropertyBackgroundBackShift			42
+#define kMapPropertyBackgroundBackClip			43
+
+#define kMapPropertyFogOn						50
+#define kMapPropertyFogInnerRadius				51
+#define kMapPropertyFogOuterRadius				52
+#define kMapPropertyFogUseSolidColor			53
+#define kMapPropertyFogColor					54
+#define kMapPropertyFogTextureIndex				55
+#define kMapPropertyFogCount					56
+#define kMapPropertyFogHigh						57
+#define kMapPropertyFogDrop						58
+#define kMapPropertyFogAlpha					59
+#define kMapPropertyFogTextureSpeed				60
+#define kMapPropertyFogTextureFact				61
+
+#define kMapPropertyRainOn						70
+#define kMapPropertyRainDensity					71
+#define kMapPropertyRainRadius					72
+#define kMapPropertyRainHeight					73
+#define kMapPropertyRainSpeed					74
+#define kMapPropertyRainWidth					75
+#define kMapPropertyRainLength					76
+#define kMapPropertyRainAlpha					77
+#define kMapPropertyRainStartColor				78
+#define kMapPropertyRainEndColor				79
+#define kMapPropertyRainSlantAdd				80
+#define kMapPropertyRainSlantMaxTime			81
+#define kMapPropertyRainSlantChangeTime			82
 
 extern map_type					map;
 extern editor_state_type		state;
@@ -125,16 +130,22 @@ void property_palette_fill_sky_weather(void)
 		// background
 
 	list_palette_add_header(&property_palette,0,"Map Background");
+	
 	list_palette_add_checkbox(&property_palette,kMapPropertyBackgroundOn,"On",&map.background.on,FALSE);
 	list_palette_add_uv(&property_palette,kMapPropertyBackgroundFrontStamp,"Front Stamp",&map.background.front.size,FALSE);
 	list_palette_add_uv(&property_palette,kMapPropertyBackgroundFrontShift,"Front Scroll",&map.background.front.scroll_factor,FALSE);
+	list_palette_add_uv(&property_palette,kMapPropertyBackgroundFrontClip,"Front Y Clip",&map.background.front.clip,FALSE);
+
 	list_palette_add_picker_list_int(&property_palette,kMapPropertyBackgroundFrontFill,"Front Fill",(char*)map.textures,max_map_texture,sizeof(texture_type),(int)offsetof(texture_type,frames[0].name),TRUE,&map.background.front.fill,FALSE);
 	list_palette_add_uv(&property_palette,kMapPropertyBackgroundMiddleStamp,"Middle Stamp",&map.background.middle.size,FALSE);
 	list_palette_add_uv(&property_palette,kMapPropertyBackgroundMiddleShift,"Middle Scroll",&map.background.middle.scroll_factor,FALSE);
+	list_palette_add_uv(&property_palette,kMapPropertyBackgroundMiddleClip,"Middle Y Clip",&map.background.middle.clip,FALSE);
+
 	list_palette_add_picker_list_int(&property_palette,kMapPropertyBackgroundMiddleFill,"Middle Fill",(char*)map.textures,max_map_texture,sizeof(texture_type),(int)offsetof(texture_type,frames[0].name),TRUE,&map.background.middle.fill,FALSE);
 	list_palette_add_uv(&property_palette,kMapPropertyBackgroundBackStamp,"Back Stamp",&map.background.back.size,FALSE);
 	list_palette_add_uv(&property_palette,kMapPropertyBackgroundBackShift,"Back Scroll",&map.background.back.scroll_factor,FALSE);
 	list_palette_add_picker_list_int(&property_palette,kMapPropertyBackgroundBackFill,"Back Fill",(char*)map.textures,max_map_texture,sizeof(texture_type),(int)offsetof(texture_type,frames[0].name),TRUE,&map.background.back.fill,FALSE);
+	list_palette_add_uv(&property_palette,kMapPropertyBackgroundBackClip,"Back Y Clip",&map.background.back.clip,FALSE);
 
 		// fog general
 

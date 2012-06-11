@@ -62,7 +62,7 @@ void virtual_stick_draw(iface_virtual_stick_type *stick)
 	bot=stick->pnt.y+stick->size.y;
 	
 	bitmap=view_images_get_bitmap(stick->outer_image_idx);
-	view_primitive_2D_texture_quad(bitmap->gl_id,&stick->color,1.0f,stick->pnt.x,rgt,stick->pnt.y,bot,0.0f,1.0f,0.0f,1.0f);
+	view_primitive_2D_texture_quad(bitmap->gl_id,&stick->color,1.0f,stick->pnt.x,rgt,stick->pnt.y,bot,0.0f,1.0f,0.0f,1.0f,TRUE);
 
 		// inner stick location
 		
@@ -94,7 +94,7 @@ void virtual_stick_draw(iface_virtual_stick_type *stick)
 	bot=top+sy;
 	
 	bitmap=view_images_get_bitmap(stick->inner_image_idx);
-	view_primitive_2D_texture_quad(bitmap->gl_id,&stick->color,1.0f,lft,rgt,top,bot,0.0f,1.0f,0.0f,1.0f);
+	view_primitive_2D_texture_quad(bitmap->gl_id,&stick->color,1.0f,lft,rgt,top,bot,0.0f,1.0f,0.0f,1.0f,TRUE);
 }
 
 /* =======================================================
@@ -120,7 +120,7 @@ void virtual_button_draw(iface_virtual_button_type *button)
 		bitmap=view_images_get_bitmap(button->up_image_idx);
 	}
 	
-	view_primitive_2D_texture_quad(bitmap->gl_id,&button->color,1.0f,button->pnt.x,rgt,button->pnt.y,bot,0.0f,1.0f,0.0f,1.0f);
+	view_primitive_2D_texture_quad(bitmap->gl_id,&button->color,1.0f,button->pnt.x,rgt,button->pnt.y,bot,0.0f,1.0f,0.0f,1.0f,TRUE);
 }
 
 /* =======================================================

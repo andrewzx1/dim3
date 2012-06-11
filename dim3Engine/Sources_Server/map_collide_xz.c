@@ -733,13 +733,6 @@ bool collide_box_to_map_simple(d3pnt *pt,d3pnt *box_sz,d3pnt *motion,bool check_
 			chk_obj=server.obj_list.objs[collide_obj_list[n]];
 			if (chk_obj==NULL) continue;
 			
-			if (!is_proj) {
-				if (!chk_obj->contact.object_on) continue;
-			}
-			else {
-				if (!chk_obj->contact.projectile_on) continue;
-			}
-			
 			x_sz=chk_obj->size.x>>1;
 			if ((max.x<(chk_obj->pnt.x-x_sz)) || (min.x>(chk_obj->pnt.x+x_sz))) continue;
 			z_sz=chk_obj->size.z>>1;
@@ -747,6 +740,13 @@ bool collide_box_to_map_simple(d3pnt *pt,d3pnt *box_sz,d3pnt *motion,bool check_
 			if ((max.y<(chk_obj->pnt.y-chk_obj->size.y)) || (min.y>chk_obj->pnt.y)) continue;
 			
 			if ((chk_obj->hidden) || (chk_obj->pickup.on) || (!chk_obj->contact.object_on)) continue;
+			
+			if (!is_proj) {
+				if (!chk_obj->contact.object_on) continue;
+			}
+			else {
+				if (!chk_obj->contact.projectile_on) continue;
+			}
 			
 			contact->obj_idx=chk_obj->idx;
 			contact->proj_idx=-1;
@@ -789,11 +789,11 @@ bool collide_box_to_map_simple(d3pnt *pt,d3pnt *box_sz,d3pnt *motion,bool check_
 	for (n=0;n!=map.mesh.nmesh;n++) {
 		chk_mesh=&map.mesh.meshes[n];
 		
-		if (chk_mesh->flag.pass_through) return(FALSE);
-		
 		if ((max.x<chk_mesh->box.min.x) || (min.x>chk_mesh->box.max.x)) continue;
 		if ((max.z<chk_mesh->box.min.z) || (min.z>chk_mesh->box.max.z)) continue;
 		if ((max.y<chk_mesh->box.min.y) || (min.y>chk_mesh->box.max.y)) continue;
+
+		if (chk_mesh->flag.pass_through) return(FALSE);
 
 		contact->obj_idx=-1;
 		contact->proj_idx=-1;

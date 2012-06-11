@@ -656,7 +656,7 @@ typedef struct		{
 
 typedef struct		{
 						int									fill;
-						d3uv								size,scroll_factor;
+						d3uv								size,scroll_factor,clip;
 					} map_background_layer_type;					
 					
 typedef struct		{

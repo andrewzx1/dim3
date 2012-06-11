@@ -453,18 +453,18 @@ void join_lan_internet_hosts(void)
 	padding=element_get_padding();
 	
 	x=margin+padding;
-	y=(margin+element_get_tab_control_high())+padding;
+	y=margin+element_get_tab_control_high();
 
 	wid=iface.scale_x-((margin+padding)*2);
-	high=(int)(((float)iface.scale_y)*0.84f)-y;
+	high=(int)(((float)iface.scale_y)*0.86f)-y;
 
 	switch (join_mode) {
 		case join_mode_wan_lan:
-			high=(high/2)-5;
+			high=(high/2);
 			break;
 		case join_mode_lan_error:
-			err_high=(gl_text_get_char_height(iface.font.text_size_medium)*2)+10;
-			high-=(err_high+5);
+			err_high=(gl_text_get_char_height(iface.font.text_size_medium)*2)+(padding*2);
+			high-=(err_high+padding);
 			break;
 	}
 
@@ -494,7 +494,7 @@ void join_lan_internet_hosts(void)
 	}
 	else {
 		if (join_mode==join_mode_lan_error) {
-			y+=(high+5);
+			y+=(high+padding);
 
 			strcpy(str,"No internet hosts available, could not retrieve host data from:\n");
 			strcat(str,iface.multiplayer.news.host);
@@ -527,7 +527,7 @@ void join_create_pane(void)
 	element_clear();
 	
 		// tabs
-
+		
 	if (join_mode==join_mode_wan_lan) {
 		element_tab_add((char*)tab_list,join_tab_value,join_tab_id,2);
 	}
@@ -639,7 +639,7 @@ void join_open(void)
 
 		// setup gui
 		
-	gui_initialize("Bitmaps/Backgrounds","default");
+	gui_initialize("Bitmaps/Backgrounds","main");
 	
 		// start with first tab
 		

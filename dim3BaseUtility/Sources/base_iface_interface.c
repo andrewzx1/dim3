@@ -475,7 +475,7 @@ void iface_read_settings_menu(iface_type *iface,int menu_tag)
       
 ======================================================= */
 
-void iface_read_settings_intro_button(int tag,iface_intro_button_type *btn,iface_intro_position_type *desc,iface_intro_position_type *progress)
+void iface_read_settings_intro_button(int tag,iface_intro_button_type *btn)
 {
 	if (tag==-1) return;
 	
@@ -487,16 +487,6 @@ void iface_read_settings_intro_button(int tag,iface_intro_button_type *btn,iface
 	btn->high=xml_get_attribute_int_default(tag,"height",-1);
 	btn->on=xml_get_attribute_boolean(tag,"on");
 	btn->mobile_hide=xml_get_attribute_boolean(tag,"mobile_hide");
-
-	if (desc!=NULL) {
-		desc->x=xml_get_attribute_int(tag,"desc_x");
-		desc->y=xml_get_attribute_int(tag,"desc_y");
-	}
-
-	if (progress!=NULL) {
-		progress->x=xml_get_attribute_int(tag,"progress_x");
-		progress->y=xml_get_attribute_int(tag,"progress_y");
-	}
 }
 
 void iface_read_settings_intro_model(iface_type *iface,int tag)
@@ -572,7 +562,7 @@ void iface_read_settings_interface(iface_type *iface)
 								bitmap_head_tag,bitmap_tag,text_head_tag,text_tag,bar_head_tag,bar_tag,
 								virtual_head_tag,radar_head_tag,menu_head_tag,menu_tag,title_tag,
 								simple_save_tag,score_tag,preload_tag,preload_models_tag,preload_model_tag,
-								intro_head_tag,intro_model_head_tag,intro_model_tag,intro_confirm_tag,
+								intro_head_tag,intro_model_head_tag,intro_model_tag,
 								color_tag,font_tag,progress_tag,chat_tag,fade_tag,button_tag,sound_tag,
 								proj_tag,setup_tag;
 	char						path[1024],i_name[256],name[256];
@@ -701,6 +691,10 @@ void iface_read_settings_interface(iface_type *iface)
 		xml_get_attribute_color(color_tag,"button_fill",&iface->color.button.fill);
 		xml_get_attribute_color(color_tag,"button_text",&iface->color.button.text);
 		xml_get_attribute_color(color_tag,"button_outline",&iface->color.button.outline);
+		xml_get_attribute_color(color_tag,"picker_fill",&iface->color.picker.fill);
+		xml_get_attribute_color(color_tag,"picker_hilite",&iface->color.picker.hilite);
+		xml_get_attribute_color(color_tag,"picker_text",&iface->color.picker.text);
+		xml_get_attribute_color(color_tag,"picker_outline",&iface->color.picker.outline);
 		xml_get_attribute_color(color_tag,"system_metric",&iface->color.system.metric);
 		xml_get_attribute_color(color_tag,"default_tint",&iface->color.default_tint);
 	}
@@ -799,17 +793,11 @@ void iface_read_settings_interface(iface_type *iface)
 
 		simple_save_tag=xml_findfirstchild("Simple_Save",intro_head_tag);
 		if (simple_save_tag!=-1) {
-			iface->intro.simple_save_list.desc.text_size=xml_get_attribute_int(simple_save_tag,"desc_text_size");
-			iface->intro.simple_save_list.progress.on=xml_get_attribute_boolean(simple_save_tag,"progress_on");
-			iface->intro.simple_save_list.progress.max_point=xml_get_attribute_int(simple_save_tag,"progress_max_point");
-			iface->intro.simple_save_list.progress.max_bitmap=xml_get_attribute_int(simple_save_tag,"progress_max_bitmap");
-			iface->intro.simple_save_list.progress.wid=xml_get_attribute_int(simple_save_tag,"progress_wid");
-			iface->intro.simple_save_list.progress.high=xml_get_attribute_int(simple_save_tag,"progress_high");
-			iface->intro.simple_save_list.progress.bitmap_add=xml_get_attribute_int(simple_save_tag,"progress_bitmap_add");
-			iface->intro.simple_save_list.progress.horizontal=xml_get_attribute_boolean(simple_save_tag,"progress_horizontal");
-			iface->intro.simple_save_list.progress.wrap_count=xml_get_attribute_int(simple_save_tag,"progress_wrap_count");
-			xml_get_attribute_text(simple_save_tag,"progress_bitmap_name",iface->intro.simple_save_list.progress.bitmap_name,name_str_len);
-			xml_get_attribute_text(simple_save_tag,"progress_bitmap_disable_name",iface->intro.simple_save_list.progress.bitmap_disable_name,name_str_len);
+			iface->intro.simple_save_progress.on=xml_get_attribute_boolean(simple_save_tag,"progress_on");
+			iface->intro.simple_save_progress.max_point=xml_get_attribute_int(simple_save_tag,"progress_max_point");
+			iface->intro.simple_save_progress.max_bitmap=xml_get_attribute_int(simple_save_tag,"progress_max_bitmap");
+			xml_get_attribute_text(simple_save_tag,"progress_bitmap_name",iface->intro.simple_save_progress.bitmap_name,name_str_len);
+			xml_get_attribute_text(simple_save_tag,"progress_bitmap_disable_name",iface->intro.simple_save_progress.bitmap_disable_name,name_str_len);
 		}
 
 			// score settings
@@ -830,30 +818,14 @@ void iface_read_settings_interface(iface_type *iface)
 			
 		button_tag=xml_findfirstchild("Buttons",intro_head_tag);
 		if (button_tag!=-1) {
-			iface_read_settings_intro_button(xml_findfirstchild("Game_New",button_tag),&iface->intro.button_game_new,NULL,NULL);
-			iface_read_settings_intro_button(xml_findfirstchild("Game_Load",button_tag),&iface->intro.button_game_load,NULL,NULL);
-			iface_read_settings_intro_button(xml_findfirstchild("Game_Setup",button_tag),&iface->intro.button_game_setup,NULL,NULL);
-			iface_read_settings_intro_button(xml_findfirstchild("Multiplayer_Host",button_tag),&iface->intro.button_multiplayer_host,NULL,NULL);
-			iface_read_settings_intro_button(xml_findfirstchild("Multiplayer_Join",button_tag),&iface->intro.button_multiplayer_join,NULL,NULL);
-			iface_read_settings_intro_button(xml_findfirstchild("Credit",button_tag),&iface->intro.button_credit,NULL,NULL);
-			iface_read_settings_intro_button(xml_findfirstchild("Quit",button_tag),&iface->intro.button_quit,NULL,NULL);
-			
-			for (n=0;n!=max_simple_save_spot;n++) {
-				sprintf(name,"Simple_Start_%d",n);
-				iface_read_settings_intro_button(xml_findfirstchild(name,button_tag),&iface->intro.simple_save_list.saves[n].button_start,&iface->intro.simple_save_list.saves[n].desc,&iface->intro.simple_save_list.saves[n].progress);
-				sprintf(name,"Simple_Erase_%d",n);
-				iface_read_settings_intro_button(xml_findfirstchild(name,button_tag),&iface->intro.simple_save_list.saves[n].button_erase,NULL,NULL);
-			}
+			iface_read_settings_intro_button(xml_findfirstchild("Game_New",button_tag),&iface->intro.button_game_new);
+			iface_read_settings_intro_button(xml_findfirstchild("Game_Load",button_tag),&iface->intro.button_game_load);
+			iface_read_settings_intro_button(xml_findfirstchild("Game_Setup",button_tag),&iface->intro.button_game_setup);
+			iface_read_settings_intro_button(xml_findfirstchild("Multiplayer_Host",button_tag),&iface->intro.button_multiplayer_host);
+			iface_read_settings_intro_button(xml_findfirstchild("Multiplayer_Join",button_tag),&iface->intro.button_multiplayer_join);
+			iface_read_settings_intro_button(xml_findfirstchild("Credit",button_tag),&iface->intro.button_credit);
+			iface_read_settings_intro_button(xml_findfirstchild("Quit",button_tag),&iface->intro.button_quit);
 		}
-		
-			// confirm
-			
-		intro_confirm_tag=xml_findfirstchild("Confirm",intro_head_tag);
-		if (intro_confirm_tag!=-1) {
-			iface->intro.confirm.x=xml_get_attribute_int(intro_confirm_tag,"x");
-			iface->intro.confirm.y=xml_get_attribute_int(intro_confirm_tag,"y");
-		}
-		
 	}
 	
 		// setup
@@ -984,7 +956,7 @@ void iface_refresh_settings_interface_hud_only(iface_type *iface)
       
 ======================================================= */
 
-void iface_write_settings_interface_intro_button(char *name,iface_intro_button_type *btn,iface_intro_position_type *desc,iface_intro_position_type *progress)
+void iface_write_settings_interface_intro_button(char *name,iface_intro_button_type *btn)
 {
 	xml_add_tagstart(name);
 	
@@ -996,16 +968,6 @@ void iface_write_settings_interface_intro_button(char *name,iface_intro_button_t
 	if (btn->high!=-1) xml_add_attribute_int("height",btn->high);
 	xml_add_attribute_boolean("on",btn->on);
 	xml_add_attribute_boolean("mobile_hide",btn->mobile_hide);
-
-	if (desc!=NULL) {
-		xml_add_attribute_int("desc_x",desc->x);
-		xml_add_attribute_int("desc_y",desc->y);
-	}
-
-	if (progress!=NULL) {
-		xml_add_attribute_int("progress_x",progress->x);
-		xml_add_attribute_int("progress_y",progress->y);
-	}
 
 	xml_add_tagend(TRUE);
 }
@@ -1373,6 +1335,10 @@ bool iface_write_settings_interface(iface_type *iface,char *err_str)
 	xml_add_attribute_color("button_fill",&iface->color.button.fill);
 	xml_add_attribute_color("button_text",&iface->color.button.text);
 	xml_add_attribute_color("button_outline",&iface->color.button.outline);
+	xml_add_attribute_color("picker_fill",&iface->color.picker.fill);
+	xml_add_attribute_color("picker_hilite",&iface->color.picker.hilite);
+	xml_add_attribute_color("picker_text",&iface->color.picker.text);
+	xml_add_attribute_color("picker_outline",&iface->color.picker.outline);
 	xml_add_attribute_color("system_metric",&iface->color.system.metric);
 	xml_add_attribute_color("default_tint",&iface->color.default_tint);
 	xml_add_tagend(TRUE);
@@ -1469,17 +1435,11 @@ bool iface_write_settings_interface(iface_type *iface,char *err_str)
 		// simple save
 
 	xml_add_tagstart("Simple_Save");
-	xml_add_attribute_int("desc_text_size",iface->intro.simple_save_list.desc.text_size);
-	xml_add_attribute_boolean("progress_on",iface->intro.simple_save_list.progress.on);
-	xml_add_attribute_int("progress_max_point",iface->intro.simple_save_list.progress.max_point);
-	xml_add_attribute_int("progress_max_bitmap",iface->intro.simple_save_list.progress.max_bitmap);
-	xml_add_attribute_int("progress_wid",iface->intro.simple_save_list.progress.wid);
-	xml_add_attribute_int("progress_high",iface->intro.simple_save_list.progress.high);
-	xml_add_attribute_int("progress_bitmap_add",iface->intro.simple_save_list.progress.bitmap_add);
-	xml_add_attribute_boolean("progress_horizontal",iface->intro.simple_save_list.progress.horizontal);
-	xml_add_attribute_int("progress_wrap_count",iface->intro.simple_save_list.progress.wrap_count);
-	xml_add_attribute_text("progress_bitmap_name",iface->intro.simple_save_list.progress.bitmap_name);
-	xml_add_attribute_text("progress_bitmap_disable_name",iface->intro.simple_save_list.progress.bitmap_disable_name);
+	xml_add_attribute_boolean("progress_on",iface->intro.simple_save_progress.on);
+	xml_add_attribute_int("progress_max_point",iface->intro.simple_save_progress.max_point);
+	xml_add_attribute_int("progress_max_bitmap",iface->intro.simple_save_progress.max_bitmap);
+	xml_add_attribute_text("progress_bitmap_name",iface->intro.simple_save_progress.bitmap_name);
+	xml_add_attribute_text("progress_bitmap_disable_name",iface->intro.simple_save_progress.bitmap_disable_name);
 	xml_add_tagend(TRUE);
 
 		// score
@@ -1500,27 +1460,15 @@ bool iface_write_settings_interface(iface_type *iface,char *err_str)
 	xml_add_tagstart("Buttons");
 	xml_add_tagend(FALSE);
 
-	iface_write_settings_interface_intro_button("Game_New",&iface->intro.button_game_new,NULL,NULL);
-	iface_write_settings_interface_intro_button("Game_Load",&iface->intro.button_game_load,NULL,NULL);
-	iface_write_settings_interface_intro_button("Game_Setup",&iface->intro.button_game_setup,NULL,NULL);
-	iface_write_settings_interface_intro_button("Multiplayer_Host",&iface->intro.button_multiplayer_host,NULL,NULL);
-	iface_write_settings_interface_intro_button("Multiplayer_Join",&iface->intro.button_multiplayer_join,NULL,NULL);
-	iface_write_settings_interface_intro_button("Credit",&iface->intro.button_credit,NULL,NULL);
-	iface_write_settings_interface_intro_button("Quit",&iface->intro.button_quit,NULL,NULL);
-	
-	for (n=0;n!=max_simple_save_spot;n++) {
-		sprintf(name,"Simple_Start_%d",n);
-		iface_write_settings_interface_intro_button(name,&iface->intro.simple_save_list.saves[n].button_start,&iface->intro.simple_save_list.saves[n].desc,&iface->intro.simple_save_list.saves[n].progress);
-		sprintf(name,"Simple_Erase_%d",n);
-		iface_write_settings_interface_intro_button(name,&iface->intro.simple_save_list.saves[n].button_erase,NULL,NULL);
-	}
+	iface_write_settings_interface_intro_button("Game_New",&iface->intro.button_game_new);
+	iface_write_settings_interface_intro_button("Game_Load",&iface->intro.button_game_load);
+	iface_write_settings_interface_intro_button("Game_Setup",&iface->intro.button_game_setup);
+	iface_write_settings_interface_intro_button("Multiplayer_Host",&iface->intro.button_multiplayer_host);
+	iface_write_settings_interface_intro_button("Multiplayer_Join",&iface->intro.button_multiplayer_join);
+	iface_write_settings_interface_intro_button("Credit",&iface->intro.button_credit);
+	iface_write_settings_interface_intro_button("Quit",&iface->intro.button_quit);
 
 	xml_add_tagclose("Buttons");
-	
-	xml_add_tagstart("Confirm");
-	xml_add_attribute_int("x",iface->intro.confirm.x);
-	xml_add_attribute_int("y",iface->intro.confirm.y);
-	xml_add_tagend(TRUE);
 
 	xml_add_tagclose("Intro");
 

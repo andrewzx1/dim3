@@ -373,7 +373,7 @@ void host_game_pane(void)
 	x=margin+padding;
 
 	wid=iface.scale_x-((margin+padding)*2);
-	high=(int)(((float)iface.scale_y)*0.84f)-y;
+	high=(int)(((float)iface.scale_y)*0.86f)-y;
 
 	strcpy(cols[0].name,"Map");
 	cols[0].percent_size=1.0f;
@@ -579,7 +579,7 @@ void host_open(void)
 
 		// setup gui
 		
-	gui_initialize("Bitmaps/Backgrounds","default");
+	gui_initialize("Bitmaps/Backgrounds","main");
 
 		// start with first tab
 		

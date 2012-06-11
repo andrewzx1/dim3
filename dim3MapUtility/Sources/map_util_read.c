@@ -158,13 +158,27 @@ void decode_map_settings_xml(map_type *map,int map_head)
 		map->background.front.fill=xml_get_attribute_int(main_background_tag,"front_fill");
 		xml_get_attribute_2_coord_float(main_background_tag,"front_stamp",&map->background.front.size.x,&map->background.front.size.y);
 		xml_get_attribute_2_coord_float(main_background_tag,"front_scroll",&map->background.front.scroll_factor.x,&map->background.front.scroll_factor.y);
+		if (!xml_get_attribute_2_coord_float(main_background_tag,"front_clip",&map->background.front.clip.x,&map->background.front.clip.y)) {
+			map->background.front.clip.x=0.0f;
+			map->background.front.clip.y=1.0f;
+		}
+
 		map->background.middle.fill=xml_get_attribute_int(main_background_tag,"middle_fill");
 		xml_get_attribute_2_coord_float(main_background_tag,"middle_stamp",&map->background.middle.size.x,&map->background.middle.size.y);
 		xml_get_attribute_2_coord_float(main_background_tag,"middle_scroll",&map->background.middle.scroll_factor.x,&map->background.middle.scroll_factor.y);
+		if (!xml_get_attribute_2_coord_float(main_background_tag,"middle_clip",&map->background.middle.clip.x,&map->background.middle.clip.y)) {
+			map->background.middle.clip.x=0.0f;
+			map->background.middle.clip.y=1.0f;
+		}
+
 		map->background.back.fill=xml_get_attribute_int(main_background_tag,"back_fill");
 		xml_get_attribute_2_coord_float(main_background_tag,"back_stamp",&map->background.back.size.x,&map->background.back.size.y);
 		xml_get_attribute_2_coord_float(main_background_tag,"back_scroll",&map->background.back.scroll_factor.x,&map->background.back.scroll_factor.y);
-    }
+ 		if (!xml_get_attribute_2_coord_float(main_background_tag,"back_clip",&map->background.back.clip.x,&map->background.back.clip.y)) {
+			map->background.back.clip.x=0.0f;
+			map->background.back.clip.y=1.0f;
+		}
+   }
   
 	main_sky_tag=xml_findfirstchild("Sky",map_head);
     if (main_sky_tag!=-1) {

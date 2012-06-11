@@ -137,6 +137,7 @@ bool title_setup(char *dir,char *name,char *sound_name,int life_tick,int event_i
 void title_run(void)
 {
 	int				tick,raw_tick;
+	bool			exit;
 	float			alpha;
 
 		// is the automatic close on?
@@ -153,6 +154,7 @@ void title_run(void)
 		// get the fade
 
 	alpha=1.0f;
+	exit=FALSE;
 
 	switch (title_fade_mode) {
 
@@ -174,8 +176,8 @@ void title_run(void)
 			
 			tick=raw_tick-title_fade_tick;
 			if (tick>iface.fade.title_msec) {
-				server.next_state=title_last_state;
-				return;
+				exit=TRUE;
+				alpha=0.0f;
 			}
 			
 			alpha=1.0f-(((float)tick)/(float)iface.fade.title_msec);
@@ -185,6 +187,13 @@ void title_run(void)
 		// run the GUI
 
 	gui_draw(alpha,FALSE);
+	
+		// time to exit?
+		
+	if (exit) {
+		server.next_state=title_last_state;
+		return;
+	}
 	
 		// the input
 		

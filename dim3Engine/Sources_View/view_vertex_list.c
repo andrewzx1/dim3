@@ -230,7 +230,7 @@ bool view_map_vbo_initialize(void)
 		}
 
 			// create the VBO
-
+			
 		view_create_mesh_liquid_vertex_object(&mesh->vbo,vertex_cnt,stride,index_cnt);
 
 		if (!view_map_vbo_initialize_mesh(mesh)) return(FALSE);

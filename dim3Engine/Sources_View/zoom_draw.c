@@ -147,6 +147,6 @@ void zoom_draw(obj_type *obj,weapon_type *weap)
 
 	col.r=col.g=col.b=1.0f;
 	
-	view_primitive_2D_texture_quad(gl_id,&col,1.0f,lft,rgt,top,bot,0.0f,1.0f,0.0f,1.0f);
+	view_primitive_2D_texture_quad(gl_id,&col,1.0f,lft,rgt,top,bot,0.0f,1.0f,0.0f,1.0f,TRUE);
 }
 

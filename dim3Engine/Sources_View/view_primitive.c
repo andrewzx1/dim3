@@ -473,7 +473,7 @@ void view_primitive_3D_line_cube(d3col *col,float alpha,int *px,int *py,int *pz)
       
 ======================================================= */
 
-void view_primitive_2D_texture_quad(GLuint gl_id,d3col *col,float alpha,int lft,int rgt,int top,int bot,float gx,float gx2,float gy,float gy2)
+void view_primitive_2D_texture_quad(GLuint gl_id,d3col *col,float alpha,int lft,int rgt,int top,int bot,float gx,float gx2,float gy,float gy2,bool clamp)
 {
 	float			vertexes[8],uvs[8];
 
@@ -516,6 +516,11 @@ void view_primitive_2D_texture_quad(GLuint gl_id,d3col *col,float alpha,int lft,
 	glEnable(GL_TEXTURE_2D);
 	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
 	gl_texture_bind(0,gl_id);
+	
+	if (clamp) {
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE);
+	}
 
 		// draw the quad
 
@@ -529,6 +534,11 @@ void view_primitive_2D_texture_quad(GLuint gl_id,d3col *col,float alpha,int lft,
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 
 		// finish texture draw
+		
+	if (clamp) {
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT);
+	}
 	
 	glDisable(GL_TEXTURE_2D);
 
@@ -610,7 +620,7 @@ void view_primitive_2D_texture_quad_rot(GLuint gl_id,d3col *col,float alpha,int 
 void view_primitive_2D_texture_quad_rectangle(GLuint gl_id,float alpha,int lft,int rgt,int top,int bot,int pixel_wid,int pixel_high)
 {
 #if defined(D3_OS_IPHONE) || defined(D3_OS_ANDRIOD)
-	view_primitive_2D_texture_quad(gl_id,NULL,alpha,lft,rgt,top,bot,0.0f,1.0f,0.0f,1.0f);
+	view_primitive_2D_texture_quad(gl_id,NULL,alpha,lft,rgt,top,bot,0.0f,1.0f,0.0f,1.0f,FALSE);
 #else
 	float			vertexes[8],uvs[8];
 

@@ -530,6 +530,10 @@ typedef struct		{
 typedef struct		{
 						d3col							fill,text,outline;
 					} iface_color_button_type;
+					
+typedef struct		{
+						d3col							fill,hilite,text,outline;
+					} iface_color_picker_type;
 
 typedef struct		{
 						d3col							metric;
@@ -543,6 +547,7 @@ typedef struct		{
 						iface_color_tab_type			tab;
 						iface_color_control_type		control;
 						iface_color_button_type			button;
+						iface_color_picker_type			picker;
 						iface_color_system_type			system;
 					} iface_color_type;
 
@@ -843,35 +848,12 @@ typedef struct		{
 					} iface_intro_button_type;
 
 typedef struct		{
-						int										x,y;
-					} iface_intro_position_type;
-
-typedef struct		{
-						iface_intro_button_type					button_start,button_erase;
-						iface_intro_position_type				desc,progress;
-					} iface_intro_simple_save_type;
-
-typedef struct		{
-						int										text_size;
-					} iface_intro_simple_save_desc_type;
-
-typedef struct		{
 						int										max_point,max_bitmap,
-																bitmap_add,wid,high,wrap_count;
+																bitmap_add2,wid2,high2,wrap_count2;
 						char									bitmap_name[name_str_len],
 																bitmap_disable_name[name_str_len];
-						bool									on,horizontal;
+						bool									on,horizontal2;
 					} iface_intro_simple_save_progress_type;
-
-typedef struct		{
-						iface_intro_simple_save_desc_type		desc;
-						iface_intro_simple_save_progress_type	progress;
-						iface_intro_simple_save_type			saves[max_simple_save_spot];
-					} iface_intro_simple_save_list;
-
-typedef struct		{
-						int										x,y;
-					} iface_intro_confirm_type;
 
 typedef struct		{
 						int										x,y,
@@ -898,9 +880,8 @@ typedef struct		{
 						iface_intro_button_type					button_game_new,button_game_load,button_game_setup,
 																button_multiplayer_host,button_multiplayer_join,
 																button_credit,button_quit;
-						iface_intro_confirm_type				confirm;
 						iface_intro_score_type					score;
-						iface_intro_simple_save_list			simple_save_list;
+						iface_intro_simple_save_progress_type	simple_save_progress;
 						iface_intro_model_list					model_list;
 					} iface_intro_type;
 

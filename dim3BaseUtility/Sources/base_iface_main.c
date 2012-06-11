@@ -275,6 +275,11 @@ void iface_default_settings(iface_type *iface)
 	iface->color.button.fill.r=iface->color.button.fill.g=iface->color.button.fill.b=0.6f;
 	iface->color.button.text.r=iface->color.button.text.g=iface->color.button.text.b=0.0f;
 	iface->color.button.outline.r=iface->color.button.outline.g=iface->color.button.outline.b=0.0f;
+	
+	iface->color.picker.fill.r=iface->color.picker.fill.g=iface->color.picker.fill.b=0.6f;
+	iface->color.picker.hilite.r=iface->color.picker.hilite.g=iface->color.picker.hilite.b=0.8f;
+	iface->color.picker.text.r=iface->color.picker.text.g=iface->color.picker.text.b=0.0f;
+	iface->color.picker.outline.r=iface->color.picker.outline.g=iface->color.picker.outline.b=0.0f;
 
 	iface->color.system.metric.r=iface->color.system.metric.g=iface->color.system.metric.b=1.0f;
 	
@@ -326,19 +331,12 @@ void iface_default_settings(iface_type *iface)
 	iface_default_settings_button(&iface->intro.button_multiplayer_join,0,128,TRUE);
 	iface_default_settings_button(&iface->intro.button_credit,0,192,TRUE);
 	iface_default_settings_button(&iface->intro.button_quit,0,224,TRUE);
-
-	iface->intro.simple_save_list.desc.text_size=20;
 	
-	iface->intro.simple_save_list.progress.on=FALSE;
-	iface->intro.simple_save_list.progress.max_point=100;
-	iface->intro.simple_save_list.progress.max_bitmap=5;
-	iface->intro.simple_save_list.progress.wid=-1;
-	iface->intro.simple_save_list.progress.high=-1;
-	iface->intro.simple_save_list.progress.bitmap_add=16;
-	iface->intro.simple_save_list.progress.horizontal=TRUE;
-	iface->intro.simple_save_list.progress.wrap_count=-1;
-	iface->intro.simple_save_list.progress.bitmap_name[0]=0x0;
-	iface->intro.simple_save_list.progress.bitmap_disable_name[0]=0x0;
+	iface->intro.simple_save_progress.on=FALSE;
+	iface->intro.simple_save_progress.max_point=100;
+	iface->intro.simple_save_progress.max_bitmap=5;
+	iface->intro.simple_save_progress.bitmap_name[0]=0x0;
+	iface->intro.simple_save_progress.bitmap_disable_name[0]=0x0;
 
 	iface->intro.score.on=FALSE;
 	iface->intro.score.x=0;
@@ -348,18 +346,6 @@ void iface_default_settings(iface_type *iface)
 	iface->intro.score.text_size=20;
 	iface->intro.score.format=intro_score_format_number;
 	iface->intro.score.col.r=iface->intro.score.col.g=iface->intro.score.col.b=1.0f;
-	
-	for (n=0;n!=max_simple_save_spot;n++) {
-		iface_default_settings_button(&iface->intro.simple_save_list.saves[n].button_start,0,(n*32),FALSE);
-		iface_default_settings_button(&iface->intro.simple_save_list.saves[n].button_erase,40,(n*32),FALSE);
-		iface->intro.simple_save_list.saves[n].desc.x=80;
-		iface->intro.simple_save_list.saves[n].desc.y=(n*32);
-		iface->intro.simple_save_list.saves[n].progress.x=120;
-		iface->intro.simple_save_list.saves[n].progress.y=(n*32);
-	}
-	
-	iface->intro.confirm.x=0;
-	iface->intro.confirm.y=0;
 
 	iface->intro.model_list.nmodel=0;
 	

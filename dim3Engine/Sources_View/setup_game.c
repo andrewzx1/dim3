@@ -276,7 +276,7 @@ void setup_game_action_pane(void)
 	y=(margin+element_get_tab_control_high())+padding;
 
 	wid=iface.scale_x-((margin+padding)*2);
-	high=(int)(((float)iface.scale_y)*0.76f)-y;
+	high=(int)(((float)iface.scale_y)*0.77f)-y;
 	
 		// setup action list
 		
@@ -380,7 +380,7 @@ void setup_game_player_pane(void)
 	y+=padding;
 
 	wid=(int)(((float)iface.scale_x)*0.80f)-((margin+padding)*2);
-	high=(int)(((float)iface.scale_y)*0.84f)-y;
+	high=(int)(((float)iface.scale_y)*0.86f)-y;
 
 	strcpy(cols[0].name,"Characters");
 	cols[0].percent_size=1.0f;
@@ -396,7 +396,7 @@ void setup_game_player_pane(void)
 	
 		// character model
 
-	x=(int)(((float)iface.scale_x)*0.81f);
+	x=(int)(((float)iface.scale_x)*0.85f);
 	y=(int)(((float)iface.scale_y)*0.78f);
 	
 	mp_character=&iface.multiplayer.character_list.characters[setup.network.character_idx];
@@ -648,7 +648,7 @@ void setup_game_open(void)
 {
 		// setup gui
 		
-	gui_initialize("Bitmaps/Backgrounds","default");
+	gui_initialize("Bitmaps/Backgrounds","main");
 
 		// remember if we came here
 		// from within the game
