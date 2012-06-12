@@ -60,7 +60,7 @@ unsigned char* png_utility_read(char *path,int *p_wid,int *p_high,bool *alpha_ch
 bool png_utility_write(unsigned char *data,int wid,int high,bool alpha_channel,char *path);
 bool png_utility_check(char *path,char *err_str);
 bool png_utility_copy(char *srce_path,char *dest_path);
-bool bitmap_texture_open(bitmap_type *bitmap,unsigned char *data,bool anisotropic,int mipmap_mode,bool compress,bool rectangle,bool pixelated);
+bool bitmap_texture_open(bitmap_type *bitmap,unsigned char *data,int mipmap_mode,bool compress,bool rectangle,bool pixelated);
 void bitmap_texture_close(bitmap_type *bitmap);
 
 /* =======================================================

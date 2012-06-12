@@ -418,7 +418,7 @@ typedef struct		{
 					} editor_setup_col_type;
 
 typedef struct		{
-						int						anisotropic_mode,mipmap_mode,
+						int						mipmap_mode,
 												duplicate_offset,snap_size,
 												clip_distance;
 						bool					free_look,auto_texture,big_texture,

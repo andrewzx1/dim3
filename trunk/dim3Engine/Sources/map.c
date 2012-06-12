@@ -275,7 +275,7 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 	
 	progress_next();
 
-	map_setup(&setup.file_path_setup,setup.anisotropic,setup.mipmap_mode,TRUE,view_shader_on());
+	map_setup(&setup.file_path_setup,setup.mipmap_mode,TRUE,view_shader_on());
 
 	if (!map_open(&map,map.info.name)) {
 		progress_shutdown();
