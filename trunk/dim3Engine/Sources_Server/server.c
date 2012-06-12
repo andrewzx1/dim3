@@ -41,6 +41,7 @@ js_type						js;
 extern app_type				app;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
+extern file_path_setup_type	file_path_setup;
 
 extern void server_run(void);
 
@@ -60,7 +61,7 @@ bool server_initialize(char *err_str)
 	
 		// allocate memory
 
-	if (!iface_initialize(&iface,&setup.file_path_setup)) {
+	if (!iface_initialize(&iface)) {
 		iface_shutdown(&iface);
 		strcpy(err_str,"Out of Memory");
 		return(FALSE);

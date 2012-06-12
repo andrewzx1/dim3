@@ -41,6 +41,7 @@ extern iface_type			iface;
 extern js_type				js;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
+extern file_path_setup_type	file_path_setup;
 
 char						object_type_str[][32]={"Player","Remote","Bot Multiplayer","Bot Map","Object"},
 							bind_type_str[][16]={"Game","Map","Remote"},
@@ -158,7 +159,7 @@ void debug_dump(void)
 
 		// start output file
 
-	file_paths_app_data(&setup.file_path_setup,path,"Debug","info","txt");
+	file_paths_app_data(&file_path_setup,path,"Debug","info","txt");
 	
 	file=fopen(path,"w");
 	if (file==NULL) return;
@@ -538,7 +539,7 @@ void debug_screenshot(void)
 	tm=localtime(&curtime);
 
 	sprintf(file_name,"%.4d%.2d%.2d_%.2d%.2d%.2d",(tm->tm_year+1900),(tm->tm_mon+1),tm->tm_mday,tm->tm_hour,tm->tm_min,tm->tm_sec);
-	file_paths_app_data(&setup.file_path_setup,path,"Screenshots",file_name,"png");
+	file_paths_app_data(&file_path_setup,path,"Screenshots",file_name,"png");
 		
 	if (!gl_screen_shot(0,0,view.screen.x_sz,view.screen.y_sz,FALSE,path)) {
 		console_add_system("Unable to save screenshot");
@@ -593,7 +594,7 @@ bool debug_change_map(char *name)
 		
 	map_ok=FALSE;
 	
-	fpd=file_paths_read_directory_data(&setup.file_path_setup,"Maps","xml");
+	fpd=file_paths_read_directory_data(&file_path_setup,"Maps","xml");
 	
 	for (n=0;n!=fpd->nfile;n++) {
 		if (strcasecmp(fpd->files[n].file_name,name)==0) {

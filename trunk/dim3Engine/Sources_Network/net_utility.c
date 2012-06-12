@@ -38,6 +38,7 @@ and can be sold or given away.
 
 extern iface_type			iface;
 extern setup_type			setup;
+extern file_path_setup_type	file_path_setup;
 
 int							net_proj_hash;
 
@@ -81,7 +82,7 @@ void net_create_project_hash(void)
 	
 		// scan data directory to build hash
 		
-	net_proj_hash=file_paths_project_hash(setup.file_path_setup.path_data);
+	net_proj_hash=file_paths_project_hash(file_path_setup.path_data);
 }
 
 int net_get_project_hash(void)

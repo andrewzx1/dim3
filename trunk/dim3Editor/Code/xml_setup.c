@@ -43,8 +43,6 @@ void setup_xml_default(void)
 {
 	strcpy(setup.engine_name,"dim3 Engine");
 	
-	setup.mipmap_mode=mipmap_mode_bilinear;
-	
 	setup.free_look=TRUE;
 	setup.auto_texture=TRUE;
 	setup.big_texture=FALSE;
@@ -115,7 +113,6 @@ bool setup_xml_read(void)
 	
 		// keys
 
-    xml_key_read_int(setup_tag,"Mipmap_Mode",&setup.mipmap_mode);
  	xml_key_read_boolean(setup_tag,"Free_Look",&setup.free_look);
  	xml_key_read_boolean(setup_tag,"Auto_Texture",&setup.auto_texture);
  	xml_key_read_boolean(setup_tag,"Big_Texture",&setup.big_texture);
@@ -163,7 +160,6 @@ bool setup_xml_write(void)
 	
 		// keys
 		
-    xml_key_write_int("Mipmap_Mode",setup.mipmap_mode);
  	xml_key_write_boolean("Free_Look",setup.free_look);
  	xml_key_write_boolean("Auto_Texture",setup.auto_texture);
  	xml_key_write_boolean("Big_Texture",setup.big_texture);

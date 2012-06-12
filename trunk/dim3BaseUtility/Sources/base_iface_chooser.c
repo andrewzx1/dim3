@@ -29,7 +29,7 @@ and can be sold or given away.
 	#include "dim3baseutility.h"
 #endif
 
-extern file_path_setup_type		iface_file_path_setup;
+extern file_path_setup_type		file_path_setup;
 
 extern char						just_mode_str[][32];
 
@@ -206,7 +206,7 @@ void iface_read_settings_chooser(iface_type *iface)
 
 	iface_xml_substitution("Choosers",c_name);
 
-	file_paths_data(&iface_file_path_setup,path,"Settings",c_name,"xml");
+	file_paths_data(&file_path_setup,path,"Settings",c_name,"xml");
 	if (!xml_open_file(path)) return;
 
 		// chooser counts
@@ -350,7 +350,7 @@ bool iface_write_settings_chooser(iface_type *iface,char *err_str)
 
         // save the map
 		
-	file_paths_data(&iface_file_path_setup,path,"Settings","Choosers","xml");
+	file_paths_data(&file_path_setup,path,"Settings","Choosers","xml");
 		
 	ok=xml_save_file(path,err_str);
     xml_close_file();

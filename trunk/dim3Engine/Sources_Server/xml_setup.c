@@ -33,6 +33,7 @@ and can be sold or given away.
 
 extern iface_type			iface;
 extern network_setup_type	net_setup;
+extern file_path_setup_type	file_path_setup;
 
 setup_type					setup;
 
@@ -47,7 +48,6 @@ void setup_xml_default(void)
 	setup.screen_wid=-1;
 	setup.screen_high=-1;
 	
-	setup.mipmap_mode=mipmap_mode_trilinear;
 	setup.fsaa_mode=fsaa_mode_none;
 	
 	setup.decal_on=TRUE;
@@ -132,7 +132,6 @@ bool setup_xml_read_path(char *path)
 	xml_key_read_int(setup_tag,"Screen_Width",&setup.screen_wid);
 	xml_key_read_int(setup_tag,"Screen_Height",&setup.screen_high);
 	xml_key_read_float(setup_tag,"Gamma",&setup.gamma);
-    xml_key_read_int(setup_tag,"Mipmap_Mode",&setup.mipmap_mode);
 	xml_key_read_int(setup_tag,"FSAA_Mode",&setup.fsaa_mode);
 	xml_key_read_boolean(setup_tag,"Decal_On",&setup.decal_on);
 	xml_key_read_boolean(setup_tag,"Shadow_On",&setup.shadow_on);
@@ -233,8 +232,8 @@ bool setup_xml_read(void)
 		// check user specific setup XML file.  If it exists, use that,
 		// otherwise use default XML file
 		
-	if (!file_paths_app_data_exist(&setup.file_path_setup,path,"Settings","Setup","xml")) {
-		file_paths_data(&setup.file_path_setup,path,"Settings","Setup","xml");
+	if (!file_paths_app_data_exist(&file_path_setup,path,"Settings","Setup","xml")) {
+		file_paths_data(&file_path_setup,path,"Settings","Setup","xml");
 	}
 	
 	if (!setup_xml_read_path(path)) return(FALSE);
@@ -248,7 +247,7 @@ bool setup_xml_reset(void)
 	
 		// read directly from the default
 		
-	file_paths_data(&setup.file_path_setup,path,"Settings","Setup","xml");
+	file_paths_data(&file_path_setup,path,"Settings","Setup","xml");
 
 	return(setup_xml_read_path(path));
 }
@@ -278,7 +277,6 @@ bool setup_xml_write(void)
     xml_key_write_int("Screen_Width",setup.screen_wid);
     xml_key_write_int("Screen_Height",setup.screen_high);
 	xml_key_write_float("Gamma",setup.gamma);
-    xml_key_write_int("Mipmap_Mode",setup.mipmap_mode);
 	xml_key_write_int("FSAA_Mode",setup.fsaa_mode);
 	xml_key_write_boolean("Decal_On",setup.decal_on);
 	xml_key_write_boolean("Shadow_On",setup.shadow_on);
@@ -371,7 +369,7 @@ bool setup_xml_write(void)
         // save the setup
 		// always save to user specific data
 		
-	file_paths_app_data(&setup.file_path_setup,path,"Settings","Setup","xml");
+	file_paths_app_data(&file_path_setup,path,"Settings","Setup","xml");
 		
 	ok=xml_save_file(path,err_str);
     xml_close_file();
@@ -396,7 +394,6 @@ void setup_restore(void)
 	setup.decal_on=FALSE;
 	setup.shadow_on=FALSE;
 	
-	setup.mipmap_mode=mipmap_mode_none;
 	setup.fsaa_mode=fsaa_mode_none;
 	
 	setup.music_on=FALSE;

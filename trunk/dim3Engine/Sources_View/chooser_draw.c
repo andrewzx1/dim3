@@ -36,6 +36,7 @@ extern server_type			server;
 extern iface_type			iface;
 extern js_type				js;
 extern setup_type			setup;
+extern file_path_setup_type	file_path_setup;
 
 int							chooser_idx;
 char						chooser_sub_txt[max_chooser_sub_txt][max_chooser_text_data_sz];
@@ -169,10 +170,10 @@ void chooser_create_elements(void)
 					break;
 
 				case chooser_piece_type_item:
-					file_paths_data(&setup.file_path_setup,path,"Chooser",piece->data.item.file,"png");
+					file_paths_data(&file_path_setup,path,"Chooser",piece->data.item.file,"png");
 					if (template_piece->clickable) {
 						sprintf(fname,"%s_selected",template_piece->data.item.file);
-						file_paths_data(&setup.file_path_setup,path2,"Chooser",fname,"png");
+						file_paths_data(&file_path_setup,path2,"Chooser",fname,"png");
 						element_button_bitmap_add(path,path2,template_piece->id,template_piece->x,template_piece->y,template_piece->wid,template_piece->high,element_pos_left,element_pos_top);
 					}
 					else {
@@ -209,11 +210,11 @@ void chooser_create_elements(void)
 				break;
 
 			case chooser_piece_type_item:
-				file_paths_data(&setup.file_path_setup,path,"Chooser",piece->data.item.file,"png");
+				file_paths_data(&file_path_setup,path,"Chooser",piece->data.item.file,"png");
 				
 				if (piece->clickable) {
 					sprintf(fname,"%s_selected",piece->data.item.file);
-					file_paths_data(&setup.file_path_setup,path2,"Chooser",fname,"png");
+					file_paths_data(&file_path_setup,path2,"Chooser",fname,"png");
 					element_button_bitmap_add(path,path2,piece->id,piece->x,piece->y,piece->wid,piece->high,element_pos_left,element_pos_top);
 				}
 				else {

@@ -44,8 +44,6 @@ extern char					media_type_str[][32],
 							cinema_actor_type_str[][32],
 							map_bump_mode_str[][32];
 
-extern maputility_settings_type		maputility_settings;
-
 /* =======================================================
 
       Map Fix

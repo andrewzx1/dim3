@@ -71,7 +71,7 @@ void tool_palette_initialize(char *app_name)
 		if (tool_bitmaps_file_name[n][0]==0x0) continue;
 		
 		file_paths_app(&file_path_setup,path,sub_path,tool_bitmaps_file_name[n],"png");
-		bitmap_open(&tool_bitmaps[n],path,mipmap_mode_none,FALSE,FALSE,FALSE,FALSE);
+		bitmap_open(&tool_bitmaps[n],path,FALSE,FALSE,FALSE,FALSE);
 	}
 
 		// currently no pressed icon
@@ -97,7 +97,7 @@ void tool_palette_shutdown(void)
 void tool_palette_draw_icon(int x,int y,unsigned long gl_id,bool is_highlight,bool is_disabled,bool is_pushed)
 {
 	int				pixel_sz;
-	float			col,alpha;
+	float			rg_col,b_col,alpha;
 	float			vertexes[8],colors[16],uvs[8]={0.0f,0.0f,1.0f,0.0f,1.0f,1.0f,0.0f,1.0f};
 
 	pixel_sz=tool_palette_pixel_size();
@@ -105,14 +105,16 @@ void tool_palette_draw_icon(int x,int y,unsigned long gl_id,bool is_highlight,bo
 		// background
 
 	if (is_pushed) {
-		col=0.60f;
+		rg_col=0.5f;
+		b_col=0.6f;
 	}
 	else {
 		if (!is_highlight) {
-			col=0.95f;
+			rg_col=b_col=0.95f;
 		}
 		else {
-			col=0.85f;
+			rg_col=0.8f;
+			b_col=0.9f;
 		}
 	}
 
@@ -123,8 +125,11 @@ void tool_palette_draw_icon(int x,int y,unsigned long gl_id,bool is_highlight,bo
 	vertexes[1]=vertexes[3]=(float)y;
 	vertexes[5]=vertexes[7]=(float)(y+pixel_sz);
 
-	colors[0]=colors[1]=colors[2]=colors[4]=colors[5]=colors[6]=col;
-	colors[8]=colors[9]=colors[10]=colors[12]=colors[13]=colors[14]=col-0.2f;
+	colors[0]=colors[1]=colors[4]=colors[5]=rg_col;
+	colors[2]=colors[6]=b_col;
+	colors[8]=colors[9]=colors[12]=colors[13]=rg_col-0.2f;
+	colors[10]=colors[14]=b_col-0.2f;
+
 	colors[3]=colors[7]=colors[11]=colors[15]=alpha;
 			
 	glVertexPointer(2,GL_FLOAT,0,vertexes);
@@ -206,7 +211,7 @@ void tool_palette_draw(void)
 			
 	glVertexPointer(2,GL_FLOAT,0,vertexes);
 
-	glColor4f(0.9f,0.9f,0.9f,1.0f);
+	glColor4f(1.0f,1.0f,1.0f,1.0f);
 	glDrawArrays(GL_QUADS,0,4);
 
 		// tools

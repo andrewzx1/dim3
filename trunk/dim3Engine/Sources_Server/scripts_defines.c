@@ -33,6 +33,7 @@ and can be sold or given away.
 
 extern js_type				js;
 extern setup_type			setup;
+extern file_path_setup_type	file_path_setup;
 
 script_define_type			*script_user_defines;
 
@@ -465,7 +466,7 @@ void script_load_user_defines(void)
 
 		// read defines file
 
-	file_paths_data(&setup.file_path_setup,path,"Scripts/Global","Defines","txt");
+	file_paths_data(&file_path_setup,path,"Scripts/Global","Defines","txt");
 	
 	file=fopen(path,"rb");
 	if (file==NULL) return;

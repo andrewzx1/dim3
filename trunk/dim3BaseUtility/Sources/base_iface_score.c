@@ -29,7 +29,7 @@ and can be sold or given away.
 	#include "dim3baseutility.h"
 #endif
 
-extern file_path_setup_type		iface_file_path_setup;
+extern file_path_setup_type		file_path_setup;
 
 /* =======================================================
 
@@ -56,7 +56,7 @@ void score_xml_read(iface_type *iface)
 	
 		// any file to load
 		
-	if (!file_paths_app_data_exist(&iface_file_path_setup,path,"Settings","Score","xml")) return;
+	if (!file_paths_app_data_exist(&file_path_setup,path,"Settings","Score","xml")) return;
 	
 		// read file
 		
@@ -121,7 +121,7 @@ void score_xml_write(iface_type *iface,char *err_str)
 
         // save the file
 		
-	file_paths_app_data(&iface_file_path_setup,path,"Settings","Score","xml");
+	file_paths_app_data(&file_path_setup,path,"Settings","Score","xml");
 		
 	ok=xml_save_file(path,err_str);
     xml_close_file();

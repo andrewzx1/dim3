@@ -144,7 +144,12 @@ GLuint gl_back_render_create_texture(void)
 	
 	glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,back_render_texture_pixel_size,back_render_texture_pixel_size,0,GL_RGBA,GL_UNSIGNED_BYTE,0);
 
-		// animsotropic
+		// mipmap
+		
+	glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_LINEAR);
+	glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+
+		// anisotropic
 		
 #if defined(D3_OS_IPHONE) || defined(D3_OS_ANDRIOD)
 	glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MAX_ANISOTROPY_EXT,1.0);
@@ -152,27 +157,6 @@ GLuint gl_back_render_create_texture(void)
 	glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT,&max);
 	glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MAX_ANISOTROPY_EXT,max);
 #endif
-
-		// mipmap modes
-		
-	switch (setup.mipmap_mode) {
-	
-		case mipmap_mode_none:
-			glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-			glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-			break;
-			
-		case mipmap_mode_bilinear:
-			glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_NEAREST);
-			glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-			break;
-			
-		case mipmap_mode_trilinear:
-			glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_LINEAR);
-			glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-			break;
-			
-	}
 	
 	gl_texture_clear(0);
 	

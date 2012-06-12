@@ -26,16 +26,6 @@ and can be sold or given away.
 *********************************************************************/
 
 //
-// Setting Structure
-//
-
-typedef struct		{
-						int						mipmap_mode;
-						bool					in_engine,shader_on;
-						file_path_setup_type	file_path_setup;
-                    } modelutility_settings_type;
-
-//
 // Functions
 //
 

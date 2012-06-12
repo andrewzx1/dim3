@@ -34,6 +34,7 @@ and can be sold or given away.
 extern map_type				map;
 extern view_type			view;
 extern setup_type			setup;
+extern file_path_setup_type	file_path_setup;
 
 int							gl_shader_cur_mesh_idx;
 shader_type					*gl_shader_current;
@@ -164,7 +165,7 @@ bool gl_shader_report_error(char *err_str,char *vertex_name,char *fragment_name,
 	
 		// start or append log file
 		
-	file_paths_app_data(&setup.file_path_setup,path,"Debug","glsl_error_log","txt");
+	file_paths_app_data(&file_path_setup,path,"Debug","glsl_error_log","txt");
 
 	file=fopen(path,"w");
 	if (file==NULL) {

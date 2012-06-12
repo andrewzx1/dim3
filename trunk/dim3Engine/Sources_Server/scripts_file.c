@@ -33,6 +33,7 @@ and can be sold or given away.
 
 extern js_type				js;
 extern setup_type			setup;
+extern file_path_setup_type	file_path_setup;
 
 /* =======================================================
 
@@ -55,7 +56,7 @@ bool script_load_file(script_type *script,char *script_dir,char *script_name,cha
 	sprintf(file_name,"%s.js",script_name);
 	
 	sprintf(sub_path,"Scripts/%s",script_dir);
-	file_paths_data(&setup.file_path_setup,path,sub_path,script_name,"js");
+	file_paths_data(&file_path_setup,path,sub_path,script_name,"js");
 		
 	file=fopen(path,"rb");
 	if (file==NULL) {

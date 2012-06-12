@@ -29,8 +29,6 @@ and can be sold or given away.
 	#include "dim3maputility.h"
 #endif
 
-extern maputility_settings_type		maputility_settings;
-
 /* =======================================================
 
       Count Texture Frames

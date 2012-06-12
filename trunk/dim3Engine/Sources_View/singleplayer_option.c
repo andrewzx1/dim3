@@ -47,6 +47,7 @@ extern server_type			server;
 extern iface_type			iface;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
+extern file_path_setup_type	file_path_setup;
 
 bool						singleplayer_option_esc_down;
 char						skill_list[6][32]={"Easy","Medium","Hard",""};
@@ -71,13 +72,9 @@ void singleplayer_option_map_list_fill(void)
 	bool						singleplayer_map_picker;
 	file_path_directory_type	*map_pick_fpd;
 
-		// need to make sure map paths are correct
-
-	map_setup(&setup.file_path_setup,setup.mipmap_mode,TRUE,view_shader_on());
-
 		// load in all maps
 
-	map_pick_fpd=file_paths_read_directory_data(&setup.file_path_setup,"Maps","xml");
+	map_pick_fpd=file_paths_read_directory_data(&file_path_setup,"Maps","xml");
 
 	nfile=map_pick_fpd->nfile;
 	if (nfile<=0) {

@@ -29,7 +29,7 @@ and can be sold or given away.
 	#include "dim3baseutility.h"
 #endif
 
-extern file_path_setup_type		iface_file_path_setup;
+extern file_path_setup_type		file_path_setup;
 
 char							just_mode_str[][32]=text_just_list_def,
 								text_special_str[][32]=text_special_list_def,
@@ -573,7 +573,7 @@ void iface_read_settings_interface(iface_type *iface)
 
 	iface_xml_substitution("Interface",i_name);
 		
-	file_paths_data(&iface_file_path_setup,path,"Settings",i_name,"xml");
+	file_paths_data(&file_path_setup,path,"Settings",i_name,"xml");
 	if (!xml_open_file(path)) return;
 	
 		// decode the file
@@ -892,7 +892,7 @@ void iface_refresh_settings_interface_hud_only(iface_type *iface)
 	
 	iface_xml_substitution("Interface",i_name);
 
-	file_paths_data(&iface_file_path_setup,path,"Settings",i_name,"xml");
+	file_paths_data(&file_path_setup,path,"Settings",i_name,"xml");
 	if (!xml_open_file(path)) return;
 	
 		// decode the file
@@ -1525,7 +1525,7 @@ bool iface_write_settings_interface(iface_type *iface,char *err_str)
 
         // save the map
 		
-	file_paths_data(&iface_file_path_setup,path,"Settings","Interface","xml");
+	file_paths_data(&file_path_setup,path,"Settings","Interface","xml");
 		
 	ok=xml_save_file(path,err_str);
     xml_close_file();

@@ -35,6 +35,7 @@ extern map_type				map;
 extern view_type			view;
 extern iface_type			iface;
 extern setup_type			setup;
+extern file_path_setup_type	file_path_setup;
 
 int							nuser_shader;
 shader_type					user_shaders[max_iface_user_shader];
@@ -128,7 +129,7 @@ bool gl_user_shader_initialize(char *err_str)
 
 			// load the shaders
 
-		file_paths_data(&setup.file_path_setup,path,"Shaders",shader->vertex_name,"vert");
+		file_paths_data(&file_path_setup,path,"Shaders",shader->vertex_name,"vert");
 		vertex_data=gl_shader_open_file(path);
 		if (vertex_data==NULL) {
 			sprintf(err_str,"GLSL Error: Can not open shader file '%s'",shader->vertex_name);
@@ -136,7 +137,7 @@ bool gl_user_shader_initialize(char *err_str)
 			return(FALSE);
 		}
 			
-		file_paths_data(&setup.file_path_setup,path,"Shaders",shader->fragment_name,"frag");
+		file_paths_data(&file_path_setup,path,"Shaders",shader->fragment_name,"frag");
 		fragment_data=gl_shader_open_file(path);
 		if (fragment_data==NULL) {
 			sprintf(err_str,"GLSL Error: Can not open shader file '%s'",shader->fragment_name);

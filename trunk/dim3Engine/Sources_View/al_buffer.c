@@ -33,6 +33,7 @@ and can be sold or given away.
 
 extern iface_type			iface;
 extern setup_type			setup;
+extern file_path_setup_type	file_path_setup;
 
 extern int					audio_buffer_count;
 extern audio_buffer_type	audio_buffers[audio_max_buffer];
@@ -149,7 +150,7 @@ void al_load_all_xml_sounds(void)
 	snd=iface.sound_list.sounds;
 
 	for (n=0;n!=iface.sound_list.nsound;n++) {
-		file_paths_data(&setup.file_path_setup,wave_path,"Sounds",snd->file_name,"wav");
+		file_paths_data(&file_path_setup,wave_path,"Sounds",snd->file_name,"wav");
 		al_open_buffer(snd->name,wave_path,snd->min_dist,snd->max_dist);
 		snd++;
 	}

@@ -29,7 +29,11 @@ and can be sold or given away.
 	#include "dim3maputility.h"
 #endif
 
-extern maputility_settings_type		maputility_settings;
+#ifdef D3_ENGINE
+	extern bool view_shader_on(void);
+#endif
+
+extern file_path_setup_type	file_path_setup;
 
 /* =======================================================
 
@@ -138,16 +142,16 @@ bool map_textures_read_texture_ok(map_type *map,int txt_idx)
 void map_textures_read_texture(map_type *map,int txt_idx)
 {
 	int					n;
-	char				path[1024],path2[1024],name[256];
+	char				path[1024],name[256];
 	texture_type		*texture;
 	texture_frame_type	*frame;
 						
 		// if in engine, then only load textures
 		// directly hooked up to elements
 
-	if (maputility_settings.in_engine) {
-		if (!map_textures_read_texture_ok(map,txt_idx)) return;
-	}
+#ifdef D3_ENGINE
+	if (!map_textures_read_texture_ok(map,txt_idx)) return;
+#endif
 
 		// load textures
 	
@@ -160,46 +164,34 @@ void map_textures_read_texture(map_type *map,int txt_idx)
 	for (n=0;n!=max_texture_frame;n++) {
 	
 		if (frame->name[0]!=0x0) {
-		
-				// if in engine and no shader,
-				// then combine bitmap and bump into bitmap
-			
-			if ((maputility_settings.in_engine) && (!maputility_settings.shader_on)) {
-			
-				file_paths_data(&maputility_settings.file_path_setup,path,"Bitmaps/Textures",frame->name,"png");
 				
-				sprintf(name,"%s_n",frame->name);
-				file_paths_data(&maputility_settings.file_path_setup,path2,"Bitmaps/Textures",name,"png");
-				bitmap_combine(&frame->bitmap,path,path2,maputility_settings.mipmap_mode,texture->compress,texture->pixelated);
-			}
+				// bitmap
 			
-				// else load all maps
-				
-			else {
-		
-					// bitmap
-					
-				file_paths_data(&maputility_settings.file_path_setup,path,"Bitmaps/Textures",frame->name,"png");
-				bitmap_open(&frame->bitmap,path,maputility_settings.mipmap_mode,texture->compress,FALSE,texture->pixelated,FALSE);
+			file_paths_data(&file_path_setup,path,"Bitmaps/Textures",frame->name,"png");
+			bitmap_open(&frame->bitmap,path,TRUE,texture->compress,FALSE,FALSE);
+
+#ifdef D3_ENGINE
+			if (view_shader_on()) {
 				
 					// bumpmap
 					
 				sprintf(name,"%s_n",frame->name);
-				file_paths_data(&maputility_settings.file_path_setup,path,"Bitmaps/Textures",name,"png");		// compresses messes up normals
-				bitmap_open(&frame->bumpmap,path,maputility_settings.mipmap_mode,FALSE,FALSE,texture->pixelated,FALSE);
+				file_paths_data(&file_path_setup,path,"Bitmaps/Textures",name,"png");		// compresses messes up normals
+				bitmap_open(&frame->bumpmap,path,TRUE,FALSE,FALSE,FALSE);
 								
 					// specular map
 					
 				sprintf(name,"%s_s",frame->name);
-				file_paths_data(&maputility_settings.file_path_setup,path,"Bitmaps/Textures",name,"png");
-				bitmap_open(&frame->specularmap,path,maputility_settings.mipmap_mode,texture->compress,FALSE,texture->pixelated,FALSE);
+				file_paths_data(&file_path_setup,path,"Bitmaps/Textures",name,"png");
+				bitmap_open(&frame->specularmap,path,TRUE,texture->compress,FALSE,FALSE);
 			}
-			
+#endif
+
 				// glow map
 				
 			sprintf(name,"%s_g",frame->name);
-			file_paths_data(&maputility_settings.file_path_setup,path,"Bitmaps/Textures",name,"png");
-			bitmap_open(&frame->glowmap,path,maputility_settings.mipmap_mode,texture->compress,FALSE,texture->pixelated,TRUE);
+			file_paths_data(&file_path_setup,path,"Bitmaps/Textures",name,"png");
+			bitmap_open(&frame->glowmap,path,TRUE,texture->compress,FALSE,TRUE);
 		}
 		
 		frame++;

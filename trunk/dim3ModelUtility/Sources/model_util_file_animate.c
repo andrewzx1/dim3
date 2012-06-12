@@ -29,7 +29,7 @@ and can be sold or given away.
 	#include "dim3modelutility.h"
 #endif
 
-extern modelutility_settings_type		modelutility_settings;
+extern file_path_setup_type	file_path_setup;
 
 extern int model_xml_get_attribute_bone(model_type *model,int tag,char *tag_name);
 
@@ -54,7 +54,7 @@ bool model_read_v2_animate_xml(model_type *model)
         // load the animate xml
         
 	sprintf(sub_path,"Models/%s",model->name);
-	file_paths_data(&modelutility_settings.file_path_setup,path,sub_path,"animate","xml");
+	file_paths_data(&file_path_setup,path,sub_path,"animate","xml");
 	
 	if (!xml_open_file(path)) return(FALSE);
 

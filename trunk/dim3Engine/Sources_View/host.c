@@ -61,6 +61,7 @@ extern server_type			server;
 extern iface_type			iface;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
+extern file_path_setup_type	file_path_setup;
 
 int							host_tab_value,host_first_map_idx,
 							host_file_map_count,host_table_map_count;
@@ -164,13 +165,9 @@ void host_map_list_initialize(void)
 	host_table_map_count=0;
 	host_table_map_list=NULL;
 
-		// need to make sure map paths are correct
-
-	map_setup(&setup.file_path_setup,setup.mipmap_mode,TRUE,view_shader_on());
-
 		// load in all maps with the correct game type
 
-	map_pick_fpd=file_paths_read_directory_data(&setup.file_path_setup,"Maps","xml");
+	map_pick_fpd=file_paths_read_directory_data(&file_path_setup,"Maps","xml");
 
 	nfile=map_pick_fpd->nfile;
 	if (nfile<=0) {

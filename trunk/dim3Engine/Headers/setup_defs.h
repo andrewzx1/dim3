@@ -122,7 +122,7 @@ typedef struct		{
 					
 typedef struct		{
 						int								screen_wid,screen_high,
-														mipmap_mode,fsaa_mode;
+														fsaa_mode;
 						float							gamma,sound_volume,music_volume;
 						bool							decal_on,lightmap_on,shadow_on,
 														always_run,toggle_run,invert_look,mouse_smooth,
@@ -133,5 +133,4 @@ typedef struct		{
 						setup_axis_type					mouse,joystick;
 						setup_action_list_type			action_list;
 						setup_network_type				network;
-						file_path_setup_type			file_path_setup;
 					} setup_type;

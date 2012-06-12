@@ -29,7 +29,7 @@ and can be sold or given away.
 	#include "dim3baseutility.h"
 #endif
 
-extern file_path_setup_type		iface_file_path_setup;
+extern file_path_setup_type		file_path_setup;
 
 char							control_names_str[][32]=control_names;
 
@@ -53,7 +53,7 @@ void iface_read_settings_action(iface_type *iface)
 	
 		// read in actions from setting files
 		
-	file_paths_data(&iface_file_path_setup,path,"Settings","Actions","xml");
+	file_paths_data(&file_path_setup,path,"Settings","Actions","xml");
 	if (!xml_open_file(path)) return;
 	
 		// decode the file
@@ -126,7 +126,7 @@ bool iface_write_settings_action(iface_type *iface,char *err_str)
 
         // write the xml
 		
-	file_paths_data(&iface_file_path_setup,path,"Settings","Actions","xml");
+	file_paths_data(&file_path_setup,path,"Settings","Actions","xml");
 		
 	ok=xml_save_file(path,err_str);
     xml_close_file();

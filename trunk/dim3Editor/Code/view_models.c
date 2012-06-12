@@ -48,10 +48,7 @@ model_type						*models;
 void view_models_start(void)
 {
 	nmodel=0;
-	
 	models=malloc(sizeof(model_type)*max_model);
-	
-	model_setup(&file_path_setup,mipmap_mode_none,FALSE,FALSE);
 }
 
 void view_models_close(void)
