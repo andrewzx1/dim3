@@ -40,6 +40,7 @@ extern setup_type			setup;
 extern network_setup_type	net_setup;
 
 app_type					app;
+file_path_setup_type		file_path_setup;
 
 /* =======================================================
 

@@ -30,7 +30,8 @@ and can be sold or given away.
 #endif
 
 d3col							default_tint_cols[8]={{1.0f,1.0f,1.0f},{1.0f,1.0f,0.0f},{1.0f,0.6f,0.0f},{1.0f,0.0f,0.0f},{0.0f,1.0f,0.0f},{0.0f,0.0f,1.0f},{1.0f,0.0f,1.0f},{0.6f,0.4f,0.0f}};
-file_path_setup_type			iface_file_path_setup;
+
+extern file_path_setup_type		file_path_setup;
 
 #ifdef D3_OS_IPHONE
 	extern bool cocoa_is_ipad(void);
@@ -42,12 +43,8 @@ file_path_setup_type			iface_file_path_setup;
       
 ======================================================= */
 
-bool iface_initialize(iface_type *iface,file_path_setup_type *path_setup)
+bool iface_initialize(iface_type *iface)
 {
-		// remember path setup
-
-	memmove(&iface_file_path_setup,path_setup,sizeof(file_path_setup_type));
-
 		// initialize counts
 
 	iface->bitmap_list.nbitmap=0;
@@ -413,7 +410,7 @@ void iface_xml_substitution(char *name,char *sub_name)
 
 		// does it exist?
 
-	if (!file_paths_data_exist(&iface_file_path_setup,"Settings",sub_name,"xml")) strcpy(sub_name,name);
+	if (!file_paths_data_exist(&file_path_setup,"Settings",sub_name,"xml")) strcpy(sub_name,name);
 
 #endif
 }

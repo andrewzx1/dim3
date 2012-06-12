@@ -29,7 +29,11 @@ and can be sold or given away.
 	#include "dim3modelutility.h"
 #endif
 
-extern modelutility_settings_type		modelutility_settings;
+#ifdef D3_ENGINE
+	extern bool view_shader_on(void);
+#endif
+
+extern file_path_setup_type	file_path_setup;
 
 /* =======================================================
 
@@ -60,7 +64,7 @@ void model_textures_read(model_type *model)
 {
     int						n,k;
     char					sub_path[1024],path[1024],
-							path2[1024],name[file_str_len];
+							name[file_str_len];
 	texture_type			*texture;
 	texture_frame_type		*frame;
    
@@ -93,43 +97,34 @@ void model_textures_read(model_type *model)
 			
 				sprintf(sub_path,"Models/%s/Textures",model->name);
 			
-					// if in engine and no shader,
-					// then combine bitmap and bump into bitmap
-				
-				if ((modelutility_settings.in_engine) && (!modelutility_settings.shader_on)) {
-					file_paths_data(&modelutility_settings.file_path_setup,path,sub_path,frame->name,"png");
-				
-					sprintf(name,"%s_n",frame->name);
-					file_paths_data(&modelutility_settings.file_path_setup,path2,sub_path,name,"png");
-					
-					bitmap_combine(&frame->bitmap,path,path2,modelutility_settings.mipmap_mode,texture->compress,texture->pixelated);
-				}
-				
-					// else load all maps
-					
-				else {
+					// bitmap
 
-					file_paths_data(&modelutility_settings.file_path_setup,path,sub_path,frame->name,"png");
-					bitmap_open(&frame->bitmap,path,modelutility_settings.mipmap_mode,texture->compress,FALSE,texture->pixelated,FALSE);
+				file_paths_data(&file_path_setup,path,sub_path,frame->name,"png");
+				bitmap_open(&frame->bitmap,path,TRUE,texture->compress,FALSE,FALSE);
+
+#ifdef D3_ENGINE
+				if (view_shader_on()) {
 
 						// bumpmap
 
 					sprintf(name,"%s_n",frame->name);
-					file_paths_data(&modelutility_settings.file_path_setup,path,sub_path,name,"png");	// compress messes up normals
-					bitmap_open(&frame->bumpmap,path,modelutility_settings.mipmap_mode,FALSE,FALSE,texture->pixelated,FALSE);
+					file_paths_data(&file_path_setup,path,sub_path,name,"png");	// compress messes up normals
+					bitmap_open(&frame->bumpmap,path,TRUE,FALSE,FALSE,FALSE);
 					
 						// specular map
 
 					sprintf(name,"%s_s",frame->name);
-					file_paths_data(&modelutility_settings.file_path_setup,path,sub_path,name,"png");
-					bitmap_open(&frame->specularmap,path,modelutility_settings.mipmap_mode,texture->compress,FALSE,texture->pixelated,FALSE);
+					file_paths_data(&file_path_setup,path,sub_path,name,"png");
+					bitmap_open(&frame->specularmap,path,TRUE,texture->compress,FALSE,FALSE);
+
 				}
-				
+#endif
+
 					// glow map
 
 				sprintf(name,"%s_g",frame->name);
-				file_paths_data(&modelutility_settings.file_path_setup,path,sub_path,name,"png");
-				bitmap_open(&frame->glowmap,path,modelutility_settings.mipmap_mode,texture->compress,FALSE,texture->pixelated,TRUE);
+				file_paths_data(&file_path_setup,path,sub_path,name,"png");
+				bitmap_open(&frame->glowmap,path,TRUE,texture->compress,FALSE,TRUE);
 			}
 			
 			frame++;

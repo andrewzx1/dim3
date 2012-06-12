@@ -37,6 +37,7 @@ extern server_type			server;
 extern view_type			view;
 extern iface_type			iface;
 extern setup_type			setup;
+extern file_path_setup_type	file_path_setup;
 
 int							nelement,element_click_down_id,
 							element_open_text_field_id,element_open_combo_id;
@@ -2318,10 +2319,10 @@ unsigned long element_draw_table_get_image_gl_id(element_type *element,int row_i
 		// get path
 
 	if (element->setup.table.bitmap_mode==element_table_bitmap_data) {
-		file_paths_data(&setup.file_path_setup,path,subdir,filename,"png");
+		file_paths_data(&file_path_setup,path,subdir,filename,"png");
 	}
 	else {
-		file_paths_app_data(&setup.file_path_setup,path,subdir,filename,"png");
+		file_paths_app_data(&file_path_setup,path,subdir,filename,"png");
 	}
 	
 		// is it already loaded?

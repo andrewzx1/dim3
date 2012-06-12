@@ -57,7 +57,7 @@ bool main_app_initialize(void)
 	
 		// load interface and setup files
 	
-	if (!iface_initialize(&iface,&file_path_setup)) {
+	if (!iface_initialize(&iface)) {
 		os_dialog_alert("Error","Out of Memory");
 		os_glue_end();
 		return(FALSE);

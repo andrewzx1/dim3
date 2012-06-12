@@ -37,6 +37,7 @@ extern view_type			view;
 extern iface_type			iface;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
+extern file_path_setup_type	file_path_setup;
 
 extern int					remote_slow_image_idx,remote_talk_image_idx;
 
@@ -132,8 +133,8 @@ bool view_images_load_single_normal(view_image_type *image,char *path,bool recta
 	image->nbitmap=1;
 	image->total_msec=0;
 	
-	if (simple) return(bitmap_open(&image->bitmaps[0].bitmap,path,mipmap_mode_none,FALSE,rectangle,FALSE,FALSE));
-	return(bitmap_open(&image->bitmaps[0].bitmap,path,setup.mipmap_mode,FALSE,rectangle,FALSE,FALSE));
+	if (simple) return(bitmap_open(&image->bitmaps[0].bitmap,path,FALSE,FALSE,rectangle,FALSE));
+	return(bitmap_open(&image->bitmaps[0].bitmap,path,TRUE,FALSE,rectangle,FALSE));
 }
 
 bool view_images_load_single_animated(view_image_type *image,char *path,bool rectangle,bool simple)
@@ -170,10 +171,10 @@ bool view_images_load_single_animated(view_image_type *image,char *path,bool rec
 		sprintf(bitmap_path,"%s/%s.png",path,name);
 		
 		if (simple) {
-			if (!bitmap_open(&image->bitmaps[n].bitmap,bitmap_path,mipmap_mode_none,FALSE,rectangle,FALSE,FALSE)) return(FALSE);
+			if (!bitmap_open(&image->bitmaps[n].bitmap,bitmap_path,FALSE,FALSE,rectangle,FALSE)) return(FALSE);
 		}
 		else {
-			if (!bitmap_open(&image->bitmaps[n].bitmap,bitmap_path,setup.mipmap_mode,FALSE,rectangle,FALSE,FALSE)) return(FALSE);
+			if (!bitmap_open(&image->bitmaps[n].bitmap,bitmap_path,TRUE,FALSE,rectangle,FALSE)) return(FALSE);
 		}
 		
 		image->bitmaps[n].msec=xml_get_attribute_int(animation_tag,"msec");
@@ -285,14 +286,14 @@ void view_images_cached_load(void)
 	iface_bitmap=iface.bitmap_list.bitmaps;
 	
 	for (n=0;n!=iface.bitmap_list.nbitmap;n++) {
-		file_paths_data(&setup.file_path_setup,path,"Bitmaps/Interface",iface_bitmap->filename,"png");
+		file_paths_data(&file_path_setup,path,"Bitmaps/Interface",iface_bitmap->filename,"png");
 		iface_bitmap->image_idx=view_images_load_single(path,FALSE,TRUE);
 		iface_bitmap++;
 	}
 
 		// radar background
 
-	file_paths_data(&setup.file_path_setup,path,"Bitmaps/Radar",iface.radar.background_bitmap_name,"png");
+	file_paths_data(&file_path_setup,path,"Bitmaps/Radar",iface.radar.background_bitmap_name,"png");
 	iface.radar.background_image_idx=view_images_load_single(path,FALSE,TRUE);
 
 		// radar icons
@@ -300,7 +301,7 @@ void view_images_cached_load(void)
 	icon=iface.radar.icons;
 	
 	for (n=0;n!=iface.radar.nicon;n++) {
-		file_paths_data(&setup.file_path_setup,path,"Bitmaps/Radar",icon->bitmap_name,"png");
+		file_paths_data(&file_path_setup,path,"Bitmaps/Radar",icon->bitmap_name,"png");
 		icon->image_idx=view_images_load_single(path,FALSE,TRUE);
 		icon++;
 	}
@@ -310,7 +311,7 @@ void view_images_cached_load(void)
 	particle=iface.particle_list.particles;
 
 	for (n=0;n!=iface.particle_list.nparticle;n++) {
-		file_paths_data(&setup.file_path_setup,path,"Bitmaps/Particles",particle->bitmap_name,"png");
+		file_paths_data(&file_path_setup,path,"Bitmaps/Particles",particle->bitmap_name,"png");
 		particle->image_idx=view_images_load_single(path,FALSE,FALSE);
 		particle++;
 	}
@@ -320,7 +321,7 @@ void view_images_cached_load(void)
 	ring=iface.ring_list.rings;
 
 	for (n=0;n!=iface.ring_list.nring;n++) {
-		file_paths_data(&setup.file_path_setup,path,"Bitmaps/Rings",ring->bitmap_name,"png");
+		file_paths_data(&file_path_setup,path,"Bitmaps/Rings",ring->bitmap_name,"png");
 		ring->image_idx=view_images_load_single(path,FALSE,FALSE);
 		ring++;
 	}
@@ -330,7 +331,7 @@ void view_images_cached_load(void)
 	mark=iface.mark_list.marks;
 
 	for (n=0;n!=iface.mark_list.nmark;n++) {
-		file_paths_data(&setup.file_path_setup,path,"Bitmaps/Marks",mark->bitmap_name,"png");
+		file_paths_data(&file_path_setup,path,"Bitmaps/Marks",mark->bitmap_name,"png");
 		mark->image_idx=view_images_load_single(path,FALSE,FALSE);
 		mark++;
 	}
@@ -340,7 +341,7 @@ void view_images_cached_load(void)
 	halo=iface.halo_list.halos;
 
 	for (n=0;n!=iface.halo_list.nhalo;n++) {
-		file_paths_data(&setup.file_path_setup,path,"Bitmaps/Halos",halo->bitmap_name,"png");
+		file_paths_data(&file_path_setup,path,"Bitmaps/Halos",halo->bitmap_name,"png");
 		halo->image_idx=view_images_load_single(path,FALSE,FALSE);
 		halo++;
 	}
@@ -350,7 +351,7 @@ void view_images_cached_load(void)
 	crosshair=iface.crosshair_list.crosshairs;
 
 	for (n=0;n!=iface.crosshair_list.ncrosshair;n++) {
-		file_paths_data(&setup.file_path_setup,path,"Bitmaps/Crosshairs",crosshair->bitmap_name,"png");
+		file_paths_data(&file_path_setup,path,"Bitmaps/Crosshairs",crosshair->bitmap_name,"png");
 		crosshair->image_idx=view_images_load_single(path,FALSE,TRUE);
 		crosshair++;
 	}
@@ -358,10 +359,10 @@ void view_images_cached_load(void)
 		// remote bitmaps
 
 	if (net_setup.mode!=net_mode_none) {
-		file_paths_data(&setup.file_path_setup,path,"Bitmaps/Network","slow","png");
+		file_paths_data(&file_path_setup,path,"Bitmaps/Network","slow","png");
 		remote_slow_image_idx=view_images_load_single(path,FALSE,TRUE);
 	
-		file_paths_data(&setup.file_path_setup,path,"Bitmaps/Network","talk","png");
+		file_paths_data(&file_path_setup,path,"Bitmaps/Network","talk","png");
 		remote_talk_image_idx=view_images_load_single(path,FALSE,TRUE);
 	}
 	
@@ -374,10 +375,10 @@ void view_images_cached_load(void)
 	for (n=0;n!=max_virtual_stick;n++) {
 		
 		if ((stick->on) && (stick->use_bitmap)) {
-			file_paths_data(&setup.file_path_setup,path,"Bitmaps/Virtual",stick->outer_bitmap_name,"png");
+			file_paths_data(&file_path_setup,path,"Bitmaps/Virtual",stick->outer_bitmap_name,"png");
 			stick->outer_image_idx=view_images_load_single(path,FALSE,TRUE);
 		
-			file_paths_data(&setup.file_path_setup,path,"Bitmaps/Virtual",stick->inner_bitmap_name,"png");
+			file_paths_data(&file_path_setup,path,"Bitmaps/Virtual",stick->inner_bitmap_name,"png");
 			stick->inner_image_idx=view_images_load_single(path,FALSE,TRUE);
 		}
 		
@@ -389,10 +390,10 @@ void view_images_cached_load(void)
 	for (n=0;n!=max_virtual_button;n++) {
 	
 		if ((button->on) && (button->use_bitmap)) {
-			file_paths_data(&setup.file_path_setup,path,"Bitmaps/Virtual",button->up_bitmap_name,"png");
+			file_paths_data(&file_path_setup,path,"Bitmaps/Virtual",button->up_bitmap_name,"png");
 			button->up_image_idx=view_images_load_single(path,FALSE,TRUE);
 	
-			file_paths_data(&setup.file_path_setup,path,"Bitmaps/Virtual",button->down_bitmap_name,"png");
+			file_paths_data(&file_path_setup,path,"Bitmaps/Virtual",button->down_bitmap_name,"png");
 			button->down_image_idx=view_images_load_single(path,FALSE,TRUE);
 		}
 		

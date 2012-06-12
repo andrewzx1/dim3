@@ -47,6 +47,7 @@ extern server_type			server;
 extern iface_type			iface;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
+extern file_path_setup_type	file_path_setup;
 
 extern int					intro_simple_save_idx;
 
@@ -203,8 +204,8 @@ void simple_save_pick_open(void)
 		element_text_add("",(simple_save_pick_description_id+n),(bx+padding),((by+txt_y_off)+padding),txt_size,tx_left,&iface.color.picker.text,FALSE);
 
 		if (iface.intro.simple_save_progress.on) {
-			file_paths_data(&setup.file_path_setup,path,"Bitmaps/Interface",iface.intro.simple_save_progress.bitmap_name,"png");
-			file_paths_data(&setup.file_path_setup,disable_path,"Bitmaps/Interface",iface.intro.simple_save_progress.bitmap_disable_name,"png");
+			file_paths_data(&file_path_setup,path,"Bitmaps/Interface",iface.intro.simple_save_progress.bitmap_name,"png");
+			file_paths_data(&file_path_setup,disable_path,"Bitmaps/Interface",iface.intro.simple_save_progress.bitmap_disable_name,"png");
 			element_count_add(path,disable_path,(simple_save_pick_progress_id+n),(bx+padding),((by+txt_y_off)+(padding*2)),bitmap_size,bitmap_size,bitmap_add,TRUE,0,0,bitmap_max);
 		}
 

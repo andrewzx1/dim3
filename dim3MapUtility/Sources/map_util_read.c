@@ -29,7 +29,7 @@ and can be sold or given away.
 	#include "dim3maputility.h"
 #endif
 
-extern maputility_settings_type		maputility_settings;
+extern file_path_setup_type	file_path_setup;
 
 char					media_type_str[][32]={"none","chooser","title","movie",""},
 						camera_mode_str[][32]={"fpp","chase","static","chase_static",""},
@@ -519,7 +519,7 @@ bool map_host_load_info(char *map_name,char *info_name,bool *singleplayer_map_pi
 	int				map_head,tag;
 	char			path[1024];
 
-	file_paths_data(&maputility_settings.file_path_setup,path,"Maps",map_name,"xml");
+	file_paths_data(&file_path_setup,path,"Maps",map_name,"xml");
 
 		// open XML file
 

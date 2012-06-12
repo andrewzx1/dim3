@@ -35,56 +35,31 @@ and can be sold or given away.
       
 ======================================================= */
 
-void bitmap_texture_set_mipmap_filter(int gl_bindtype,int mipmap_mode,bool pixelated)
+void bitmap_texture_set_filtering(int gl_bindtype,bool mipmap)
 {
-		
-		// pixelated textures are always nearest
-		
-	if (pixelated) {
-		glTexParameterf(gl_bindtype,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
-		glTexParameterf(gl_bindtype,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
-		return;
-	}
-
-		// OpenGLES filters are pretty limited
-		
-#ifdef D3_OPENGL_ES
-
-	if (mipmap_mode==mipmap_mode_none) {
-		glTexParameterf(gl_bindtype,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-	}
-	else {
-		glTexParameterf(gl_bindtype,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_LINEAR);
-	}
-	
-	glTexParameterf(gl_bindtype,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-	
-	return;
-
+#if !defined(D3_OS_IPHONE) && !defined(D3_OS_ANDRIOD)
+	float				max;
 #endif
 
-		// regular OpenGL filters
-			
-		// regular mipmap modes
-		
-	switch (mipmap_mode) {
-	
-		case mipmap_mode_none:
-			glTexParameterf(gl_bindtype,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-			glTexParameterf(gl_bindtype,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-			break;
-			
-		case mipmap_mode_bilinear:
-			glTexParameterf(gl_bindtype,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_NEAREST);
-			glTexParameterf(gl_bindtype,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-			break;
-			
-		case mipmap_mode_trilinear:
-			glTexParameterf(gl_bindtype,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_LINEAR);
-			glTexParameterf(gl_bindtype,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-			break;
-			
+		// mipmapping
+
+	if (mipmap) {
+		glTexParameterf(gl_bindtype,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_LINEAR);
+		glTexParameterf(gl_bindtype,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
 	}
+	else {
+		glTexParameterf(gl_bindtype,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+		glTexParameterf(gl_bindtype,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+	}
+
+		// anisotropy
+
+#if defined(D3_OS_IPHONE) || defined(D3_OS_ANDRIOD)
+	glTexParameterf(gl_bindtype,GL_TEXTURE_MAX_ANISOTROPY_EXT,1.0);
+#else	
+	glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT,&max);
+	glTexParameterf(gl_bindtype,GL_TEXTURE_MAX_ANISOTROPY_EXT,max);
+#endif
 }
 
 /* =======================================================
@@ -93,13 +68,10 @@ void bitmap_texture_set_mipmap_filter(int gl_bindtype,int mipmap_mode,bool pixel
       
 ======================================================= */
 
-bool bitmap_texture_open(bitmap_type *bitmap,unsigned char *data,int mipmap_mode,bool compress,bool rectangle,bool pixelated)
+bool bitmap_texture_open(bitmap_type *bitmap,unsigned char *data,bool mipmap,bool compress,bool rectangle)
 {
 	int					gl_txtformat,gl_txttype,gl_bindtype;
 	GLuint				gl_id;
-#if !defined(D3_OS_IPHONE) && !defined(D3_OS_ANDRIOD)
-	float				max;
-#endif
 
 		// if no bitmap data then no texture
 		
@@ -119,16 +91,9 @@ bool bitmap_texture_open(bitmap_type *bitmap,unsigned char *data,int mipmap_mode
 
 	glBindTexture(gl_bindtype,gl_id);
 
-		// storage and settings
+		// filtering
 	
-	bitmap_texture_set_mipmap_filter(gl_bindtype,mipmap_mode,pixelated);
-	
-#if defined(D3_OS_IPHONE) || defined(D3_OS_ANDRIOD)
-	glTexParameterf(gl_bindtype,GL_TEXTURE_MAX_ANISOTROPY_EXT,1.0);
-#else	
-	glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT,&max);
-	glTexParameterf(gl_bindtype,GL_TEXTURE_MAX_ANISOTROPY_EXT,max);
-#endif
+	bitmap_texture_set_filtering(gl_bindtype,mipmap);
 	
 		// texture type
 		// opengl es doesn't support compression
@@ -155,8 +120,9 @@ bool bitmap_texture_open(bitmap_type *bitmap,unsigned char *data,int mipmap_mode
 
 	glTexImage2D(gl_bindtype,0,gl_txtformat,bitmap->wid,bitmap->high,0,gl_txttype,GL_UNSIGNED_BYTE,data);
 
-	if ((mipmap_mode!=mipmap_mode_none) && (!rectangle) && (!pixelated)) {
-		fprintf(stdout,"  mipmapped!\n");
+		// create mipmaps
+
+	if ((mipmap) && (!rectangle)) {
 		glEnable(GL_TEXTURE_2D);
 		glGenerateMipmapEXT(GL_TEXTURE_2D);
 		glDisable(GL_TEXTURE_2D);
@@ -293,7 +259,6 @@ void bitmap_texture_clear(texture_type *texture)
 
 	texture->shine_factor=10.0f;
 	texture->additive=FALSE;
-	texture->pixelated=FALSE;
 	texture->compress=FALSE;
 
 	texture->material_name[0]=0x0;
@@ -335,7 +300,6 @@ void bitmap_texture_read_xml(texture_type *texture,int main_tag,bool read_scale)
 		
 	texture->animate.on=xml_get_attribute_boolean(main_tag,"animate");
 	texture->additive=xml_get_attribute_boolean(main_tag,"additive");
-	texture->pixelated=xml_get_attribute_boolean(main_tag,"pixelated");
 	texture->compress=xml_get_attribute_boolean(main_tag,"compress");
 
 	texture->shine_factor=xml_get_attribute_float_default(main_tag,"shine_factor",10.0f);
@@ -394,7 +358,6 @@ void bitmap_texture_write_xml(texture_type *texture,int frame_count,bool write_s
 		
 	xml_add_attribute_boolean("animate",texture->animate.on);
 	xml_add_attribute_boolean("additive",texture->additive);
-	xml_add_attribute_boolean("pixelated",texture->pixelated);
 	xml_add_attribute_boolean("compress",texture->compress);
 
 	xml_add_attribute_float("shine_factor",texture->shine_factor);

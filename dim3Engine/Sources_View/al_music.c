@@ -42,6 +42,7 @@ char							audio_music_fade_next_name[name_str_len];
 
 extern map_type					map;
 extern setup_type				setup;
+extern file_path_setup_type		file_path_setup;
 
 /* =======================================================
 
@@ -139,7 +140,7 @@ short* al_music_load_mp3(char *name,float *f_sample_len,float *freq_factor,char 
 
 		// load mp3
 		
-	file_paths_data(&setup.file_path_setup,path,"Music",name,"mp3");
+	file_paths_data(&file_path_setup,path,"Music",name,"mp3");
 
 	mh=mpg123_new(NULL,&err);
 	if (mh==NULL) {

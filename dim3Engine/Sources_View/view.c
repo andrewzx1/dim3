@@ -41,6 +41,7 @@ extern server_type			server;
 extern iface_type			iface;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
+extern file_path_setup_type	file_path_setup;
 
 extern void game_file_initialize(void);
 extern void menu_input(void);
@@ -562,13 +563,13 @@ bool view_file_paths_bitmap_check_wide(char *path,char *dir,char *name)
 		
 	if (view.screen.wide) {
 		sprintf(name2,"%s_wide",name);
-		file_paths_data(&setup.file_path_setup,path,dir,name2,"png");
+		file_paths_data(&file_path_setup,path,dir,name2,"png");
 		if (stat(path,&sb)!=-1) return(TRUE);
 	}
 	
 		// fall back to standard
 		
-	file_paths_data(&setup.file_path_setup,path,dir,name,"png");
+	file_paths_data(&file_path_setup,path,dir,name,"png");
 	return(stat(path,&sb)!=-1);
 }
 

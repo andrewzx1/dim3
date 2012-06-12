@@ -38,6 +38,7 @@ extern iface_type			iface;
 extern setup_type			setup;
 extern js_type				js;
 extern network_setup_type	net_setup;
+extern file_path_setup_type	file_path_setup;
 
 bool						load_pause_skip_media;
 char						load_pause_map_name[name_str_len];
@@ -53,7 +54,7 @@ void load_pause_open(void)
 		// use map background if it exists
 
 	if (load_pause_map_name!=NULL) {
-		if (file_paths_data_exist(&setup.file_path_setup,"Bitmaps/Backgrounds_Map",load_pause_map_name,"png")) {
+		if (file_paths_data_exist(&file_path_setup,"Bitmaps/Backgrounds_Map",load_pause_map_name,"png")) {
 			gui_initialize("Bitmaps/Backgrounds_Map",load_pause_map_name);
 			return;
 		}

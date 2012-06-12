@@ -49,6 +49,7 @@ extern map_type				map;
 extern iface_type			iface;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
+extern file_path_setup_type	file_path_setup;
 
 int							intro_simple_save_idx;
 bool						intro_esc_down;
@@ -87,8 +88,8 @@ void intro_open_add_button(iface_intro_button_type *btn,char *name,int id)
 
 	sprintf(sel_name,"%s_selected",name);
 
-	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements",name,"png");
-	file_paths_data(&setup.file_path_setup,path2,"Bitmaps/UI_Elements",sel_name,"png");
+	file_paths_data(&file_path_setup,path,"Bitmaps/UI_Elements",name,"png");
+	file_paths_data(&file_path_setup,path2,"Bitmaps/UI_Elements",sel_name,"png");
 	element_button_bitmap_add(path,path2,id,x,y,btn->wid,btn->high,element_pos_left,element_pos_top);
 	
 	btn->element_id=id;

@@ -36,6 +36,7 @@ extern map_type				map;
 extern server_type			server;
 extern iface_type			iface;
 extern setup_type			setup;
+extern file_path_setup_type	file_path_setup;
 
 int							progress_current,progress_max;
 bitmap_type					progress_background_bitmap,progress_overlay_bitmap;
@@ -61,20 +62,20 @@ void progress_initialize(char *map_name,int max)
 	bitmap_ok=FALSE;
 		
 	if (map_name!=NULL) {
-		file_paths_data(&setup.file_path_setup,path,"Bitmaps/Backgrounds_Map",map_name,"png");
-		bitmap_ok=bitmap_open(&progress_background_bitmap,path,mipmap_mode_none,FALSE,gl_check_texture_rectangle_ok(),FALSE,FALSE);
+		file_paths_data(&file_path_setup,path,"Bitmaps/Backgrounds_Map",map_name,"png");
+		bitmap_ok=bitmap_open(&progress_background_bitmap,path,FALSE,FALSE,gl_check_texture_rectangle_ok(),FALSE);
 	}
 	
 	if (!bitmap_ok) {
 		view_file_paths_bitmap_check_wide(path,"Bitmaps/Backgrounds","load");
-		bitmap_open(&progress_background_bitmap,path,mipmap_mode_none,FALSE,gl_check_texture_rectangle_ok(),FALSE,FALSE);
+		bitmap_open(&progress_background_bitmap,path,FALSE,FALSE,gl_check_texture_rectangle_ok(),FALSE);
 	}
 
 		// overlay bitmap
 
 	if (iface.progress.overlay) {
-		file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","progress_overlay","png");
-		bitmap_open(&progress_overlay_bitmap,path,mipmap_mode_none,FALSE,FALSE,FALSE,FALSE);
+		file_paths_data(&file_path_setup,path,"Bitmaps/UI_Elements","progress_overlay","png");
+		bitmap_open(&progress_overlay_bitmap,path,FALSE,FALSE,FALSE,FALSE);
 	}
 	
 		// current progress

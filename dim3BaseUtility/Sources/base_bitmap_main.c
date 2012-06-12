@@ -301,7 +301,7 @@ unsigned char* bitmap_setup_alpha(bitmap_type *bitmap,unsigned char *png_data,bo
       
 ======================================================= */
 
-bool bitmap_open(bitmap_type *bitmap,char *path,int mipmap_mode,bool compress,bool rectangle,bool pixelated,bool scrub_black_to_alpha)
+bool bitmap_open(bitmap_type *bitmap,char *path,bool mipmap,bool compress,bool rectangle,bool scrub_black_to_alpha)
 {
 	unsigned char		*png_data;
 	bool				ok,alpha_channel;
@@ -331,7 +331,7 @@ bool bitmap_open(bitmap_type *bitmap,char *path,int mipmap_mode,bool compress,bo
 		
 		// get the texture
 		
-	ok=bitmap_texture_open(bitmap,png_data,mipmap_mode,compress,rectangle,pixelated);
+	ok=bitmap_texture_open(bitmap,png_data,mipmap,compress,rectangle);
 		
 	free(png_data);
 	
@@ -368,7 +368,7 @@ bool bitmap_color(bitmap_type *bitmap,d3col *col)
 		*dptr++=kb;
 	}
 	
-	ok=bitmap_texture_open(bitmap,png_data,mipmap_mode_none,FALSE,FALSE,TRUE);
+	ok=bitmap_texture_open(bitmap,png_data,FALSE,FALSE,FALSE);
 
 	free(png_data);
 	
@@ -381,7 +381,7 @@ bool bitmap_color(bitmap_type *bitmap,d3col *col)
       
 ======================================================= */
 
-bool bitmap_data(bitmap_type *bitmap,unsigned char *data,int wid,int high,bool alpha_channel,int mipmap_mode,bool compress,bool rectangle)
+bool bitmap_data(bitmap_type *bitmap,unsigned char *data,int wid,int high,bool alpha_channel,bool mipmap,bool compress,bool rectangle)
 {
 	bitmap->wid=wid;
 	bitmap->high=high;
@@ -398,120 +398,7 @@ bool bitmap_data(bitmap_type *bitmap,unsigned char *data,int wid,int high,bool a
 	
 		// get the texture
 		
-	return(bitmap_texture_open(bitmap,data,mipmap_mode,compress,rectangle,FALSE));
-}
-
-/* =======================================================
-
-      Combine Bitmaps
-      
-======================================================= */
-
-bool bitmap_combine(bitmap_type *bitmap,char *bitmap_path,char *bumpmap_path,int mipmap_mode,bool compress,bool pixelated)
-{
-	int					n,pixel_cnt,data_sz;
-	float				f,pf[3];
-	unsigned char		*bitmap_data,*bumpmap_data,
-						*srce,*dest;
-	bool				ok,bitmap_only,alpha_channel;
-	d3vct				normal,bump;
-	bitmap_type			bumpmap;
-	
-		// load the bitmap
-		
-	bitmap_new(bitmap);
-	
-	bitmap_data=png_utility_read(bitmap_path,&bitmap->wid,&bitmap->high,&alpha_channel);
-	if (bitmap_data==NULL) return(FALSE);
-	
-	bitmap_data=bitmap_fix_power_2(bitmap,alpha_channel,bitmap_data);
-	bitmap_data=bitmap_setup_alpha(bitmap,bitmap_data,alpha_channel,FALSE);
-	
-		// load the bump
-		// if no bump, just use bitmap
-		
-	bitmap_new(&bumpmap);
-	
-	bumpmap_data=png_utility_read(bumpmap_path,&bumpmap.wid,&bumpmap.high,&alpha_channel);
-	if (bumpmap_data!=NULL) {
-		bumpmap_data=bitmap_fix_power_2(&bumpmap,alpha_channel,bumpmap_data);
-		bumpmap_data=bitmap_setup_alpha(&bumpmap,bumpmap_data,alpha_channel,FALSE);
-	}
-	
-		// if no bump map or
-		// different sizes, just use bitmap
-		
-	bitmap_only=TRUE;
-	
-	if (bumpmap_data!=NULL) {
-		bitmap_only=(bitmap->wid!=bumpmap.wid) || (bitmap->high!=bumpmap.high);
-	}
-	
-	if (bitmap_only) {
-		ok=bitmap_texture_open(bitmap,bitmap_data,mipmap_mode,compress,FALSE,pixelated);
-		if (bumpmap_data!=NULL) free(bumpmap_data);
-		free(bitmap_data);
-		return(ok);
-	}
-	
-		// work the bump into the bitmap
-
-	pixel_cnt=bitmap->wid*bitmap->high;
-
-	if (bitmap->alpha_mode!=alpha_mode_none) {
-		data_sz=pixel_cnt*4;
-	}
-	else {
-		data_sz=pixel_cnt*3;
-	}
-		
-		// our fake normal
-
-	normal.x=normal.y=0.0f;
-	normal.z=0.5f;
-
-	dest=bitmap_data;
-	srce=bumpmap_data;
-
-	for (n=0;n!=pixel_cnt;n++) {
-
-			// unpack the bump normal
-
-		bump.x=((((float)*srce++)/255.0f)*2.0f)-1.0f;
-		bump.y=((((float)*srce++)/255.0f)*2.0f)-1.0f;
-		bump.z=((((float)*srce++)/255.0f)*2.0f)-1.0f;
-		vector_normalize(&bump);
-
-		if (bumpmap.alpha_mode!=alpha_mode_none) srce++;
-
-			// get the dot3
-			// we make sure it never gets too
-			// dark for this simple version
-
-		f=vector_dot_product(&normal,&bump);
-		if (f<0.75f) f=0.75f;
-
-			// multiply it into bitmap
-
-		pf[0]=((float)*dest)/255.0f;
-		pf[1]=((float)*(dest+1))/255.0f;
-		pf[2]=((float)*(dest+2))/255.0f;
-
-		*dest++=(int)((pf[0]*f)*255.0f);
-		*dest++=(int)((pf[1]*f)*255.0f);
-		*dest++=(int)((pf[2]*f)*255.0f);
-
-		if (bitmap->alpha_mode!=alpha_mode_none) dest++;
-	}
-
-		// and finally make the combine bitmap
-	
-	ok=bitmap_texture_open(bitmap,bitmap_data,mipmap_mode,compress,FALSE,pixelated);
-	
-	free(bumpmap_data);
-	free(bitmap_data);
-	
-	return(ok);
+	return(bitmap_texture_open(bitmap,data,mipmap,compress,rectangle));
 }
 
 /* =======================================================

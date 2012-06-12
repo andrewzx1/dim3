@@ -29,21 +29,7 @@ and can be sold or given away.
 	#include "dim3modelutility.h"
 #endif
 
-modelutility_settings_type		modelutility_settings;
-
-/* =======================================================
-
-      Model Setup Routines
-      
-======================================================= */
-
-void model_setup(file_path_setup_type *file_path_setup,int mipmap_mode,bool in_engine,bool shader_on)
-{
-	memmove(&modelutility_settings.file_path_setup,file_path_setup,sizeof(file_path_setup_type));
-	modelutility_settings.mipmap_mode=mipmap_mode;
-	modelutility_settings.in_engine=in_engine;
-	modelutility_settings.shader_on=shader_on;
-}
+extern file_path_setup_type	file_path_setup;
 
 /* =======================================================
 
@@ -63,7 +49,7 @@ bool model_new(model_type *model,char *name)
 	strcpy(model->name,name);
 	
 	sprintf(sub_path,"Models/%s",name);
-	file_paths_data_default(&modelutility_settings.file_path_setup,model->load_base_path,sub_path,NULL,NULL);
+	file_paths_data_default(&file_path_setup,model->load_base_path,sub_path,NULL,NULL);
 		
 		// default settings
 	
@@ -169,7 +155,7 @@ bool model_open(model_type *model,char *name,bool load_bitmaps)
 		// load base path is location of mesh.xml
 		
 	sprintf(sub_path,"Models/%s",model->name);
-	file_paths_data(&modelutility_settings.file_path_setup,model->load_base_path,sub_path,NULL,NULL);
+	file_paths_data(&file_path_setup,model->load_base_path,sub_path,NULL,NULL);
 
 		// read XML for new format
 

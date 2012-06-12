@@ -348,16 +348,6 @@ extern void xml_key_write_color(char *name,d3col *value);
 #define alpha_mode_transparent					2
 
 //
-// mipmap modes
-//
-
-#define mipmap_mode_none						0
-#define mipmap_mode_bilinear					1
-#define mipmap_mode_trilinear					2
-
-#define mipmap_mode_setup_list_def				{"None","Bilinear","Trilinear",""}
-
-//
 // texture maximums
 //
 
@@ -426,7 +416,7 @@ typedef struct		{
 typedef struct		{
 						int						shader_idx;
 						float					shine_factor;
-						bool					additive,pixelated,compress;
+						bool					additive,compress;
 						char					material_name[name_str_len],
 												shader_name[name_str_len];
 						texture_animate_type	animate;
@@ -440,10 +430,9 @@ typedef struct		{
 //
 
 extern void bitmap_new(bitmap_type *bitmap);
-extern bool bitmap_open(bitmap_type *bitmap,char *path,int mipmap_mode,bool compress,bool rectangle,bool pixelated,bool scrub_black_to_alpha);
+extern bool bitmap_open(bitmap_type *bitmap,char *path,bool mipmap,bool compress,bool rectangle,bool scrub_black_to_alpha);
 extern bool bitmap_color(bitmap_type *bitmap,d3col *col);
-extern bool bitmap_data(bitmap_type *bitmap,unsigned char *data,int wid,int high,bool alpha_channel,int mipmap_mode,bool compress,bool rectangle);
-extern bool bitmap_combine(bitmap_type *bitmap,char *bitmap_path,char *bumpmap_path,int mipmap_mode,bool compress,bool pixelated);
+extern bool bitmap_data(bitmap_type *bitmap,unsigned char *data,int wid,int high,bool alpha_channel,bool mipmap,bool compress,bool rectangle);
 extern void bitmap_close(bitmap_type *bitmap);
 
 extern int bitmap_texture_get_current_frame(texture_type *texture,bool reverse,int tick);
@@ -1418,7 +1407,7 @@ typedef struct		{
 						iface_score_list				score_list;
 					} iface_type;
 					
-extern bool iface_initialize(iface_type *iface,file_path_setup_type *path_setup);
+extern bool iface_initialize(iface_type *iface);
 extern void iface_shutdown(iface_type *iface);
 
 extern void iface_default_settings(iface_type *iface);

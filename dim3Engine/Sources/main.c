@@ -34,6 +34,8 @@ and can be sold or given away.
 extern iface_type			iface;
 extern app_type				app;
 extern setup_type			setup;
+extern file_path_setup_type	file_path_setup;
+
 
 extern bool dim3_osx_appstore_main(void);
 
@@ -60,7 +62,7 @@ void app_check_editor_link(void)
 
 		// attempt to open editor link file
 		
-	file_paths_dim3_app_data(&setup.file_path_setup,path,"dim3EditorLink","tmp");
+	file_paths_dim3_app_data(&file_path_setup,path,"dim3EditorLink","tmp");
 	
 	file=fopen(path,"rb");
 	if (file==NULL) return;
@@ -207,14 +209,14 @@ int main(int argc,char *argv[])
 	
 		// setup paths
 
-	if (!file_paths_setup(&setup.file_path_setup)) {
+	if (!file_paths_setup(&file_path_setup)) {
 		app_report_error("dim3 requires a data folder with project files.");
 		return(0);
 	}
 	
 		// get the project name
 		
-	iface_read_settings_project_name(&setup.file_path_setup);
+	iface_read_settings_project_name(&file_path_setup);
 
 		// check if editor is launching engine and
 		// if a map needs to be auto-loaded

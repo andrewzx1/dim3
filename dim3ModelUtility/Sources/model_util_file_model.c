@@ -29,7 +29,7 @@ and can be sold or given away.
 	#include "dim3modelutility.h"
 #endif
 
-extern modelutility_settings_type		modelutility_settings;
+extern file_path_setup_type	file_path_setup;
 
 /* =======================================================
 
@@ -82,7 +82,7 @@ bool model_read_xml(model_type *model)
         // load the model xml
 		
 	sprintf(sub_path,"Models/%s",model->name);
-	file_paths_data(&modelutility_settings.file_path_setup,path,sub_path,"model","xml");
+	file_paths_data(&file_path_setup,path,sub_path,"model","xml");
 	
 	if (!xml_open_file(path)) return(FALSE);
 

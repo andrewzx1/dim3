@@ -41,6 +41,7 @@ extern js_type				js;
 extern setup_type			setup;
 extern iface_type			iface;
 extern network_setup_type	net_setup;
+extern file_path_setup_type	file_path_setup;
 
 char						current_map_name[name_str_len];
 
@@ -275,8 +276,6 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 	
 	progress_next();
 
-	map_setup(&setup.file_path_setup,setup.mipmap_mode,TRUE,view_shader_on());
-
 	if (!map_open(&map,map.info.name)) {
 		progress_shutdown();
 		sprintf(err_str,"Could not open map: %s",map.info.name);
@@ -426,7 +425,7 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 
 	js.course_script_idx=-1;
 
-	if (file_paths_data_exist(&setup.file_path_setup,"Scripts/Courses",map.info.name,"js")) {
+	if (file_paths_data_exist(&file_path_setup,"Scripts/Courses",map.info.name,"js")) {
 	
 		js.course_script_idx=scripts_add(thing_type_course,"Courses",map.info.name,-1,-1,-1,err_str);
 		if (js.course_script_idx==-1) {

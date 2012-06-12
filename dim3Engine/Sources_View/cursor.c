@@ -33,6 +33,7 @@ and can be sold or given away.
 
 extern iface_type			iface;
 extern setup_type			setup;
+extern file_path_setup_type	file_path_setup;
 
 int							cursor_image_idx;
 
@@ -60,7 +61,7 @@ void cursor_initialize(void)
 {
 	char		path[1024];
 	
-	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","cursor","png");
+	file_paths_data(&file_path_setup,path,"Bitmaps/UI_Elements","cursor","png");
 	cursor_image_idx=view_images_load_single(path,FALSE,TRUE);
 }
 

@@ -42,6 +42,7 @@ and can be sold or given away.
 extern server_type			server;
 extern iface_type			iface;
 extern setup_type			setup;
+extern file_path_setup_type	file_path_setup;
 
 int							file_last_state;
 char						*file_table_data,*file_name_data;
@@ -138,7 +139,7 @@ void file_build_list(void)
 	
 		// grab the files
 		
-	fpd=file_paths_read_directory_document(&setup.file_path_setup,"Saved Games","sav");
+	fpd=file_paths_read_directory_document(&file_path_setup,"Saved Games","sav");
 	if (fpd==NULL) return;
 
 		// sort the times
@@ -254,10 +255,10 @@ void file_save_delete(void)
 	c=strrchr(file_name,'.');		// get rid of .sav
 	if (c!=NULL) *c=0x0;
 	
-	file_paths_app_data(&setup.file_path_setup,path,"Saved Games",file_name,"png");
+	file_paths_app_data(&file_path_setup,path,"Saved Games",file_name,"png");
 	remove(path);
 	
-	file_paths_app_data(&setup.file_path_setup,path,"Saved Games",file_name,"sav");
+	file_paths_app_data(&file_path_setup,path,"Saved Games",file_name,"sav");
 	remove(path);
 	
 		// reset table

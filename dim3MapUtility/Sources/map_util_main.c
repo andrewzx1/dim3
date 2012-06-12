@@ -29,21 +29,7 @@ and can be sold or given away.
 	#include "dim3maputility.h"
 #endif
 
-maputility_settings_type		maputility_settings;
-
-/* =======================================================
-
-      Map Setup
-      
-======================================================= */
-
-void map_setup(file_path_setup_type *file_path_setup,int mipmap_mode,bool in_engine,bool shader_on)
-{
-	memmove(&maputility_settings.file_path_setup,file_path_setup,sizeof(file_path_setup_type));
-	maputility_settings.mipmap_mode=mipmap_mode;
-	maputility_settings.in_engine=in_engine;
-	maputility_settings.shader_on=shader_on;
-}
+extern file_path_setup_type	file_path_setup;
 
 /* =======================================================
 
@@ -61,7 +47,7 @@ bool map_new(map_type *map,char *name)
 	map->info.title[0]=0x0;
 	map->info.author[0]=0x0;
 	
-	file_paths_data_default(&maputility_settings.file_path_setup,map->info.load_path,"Maps",map->info.name,"xml");
+	file_paths_data_default(&file_path_setup,map->info.load_path,"Maps",map->info.name,"xml");
 	
 		// physics
 		
@@ -323,7 +309,7 @@ bool map_open(map_type *map,char *name)
 	if (!map_new(map,name)) return(FALSE);
 	
 	strcpy(map->info.name,name);
-	file_paths_data(&maputility_settings.file_path_setup,map->info.load_path,"Maps",map->info.name,"xml");
+	file_paths_data(&file_path_setup,map->info.load_path,"Maps",map->info.name,"xml");
 	
 	if (!read_map_xml(map)) return(FALSE);
 

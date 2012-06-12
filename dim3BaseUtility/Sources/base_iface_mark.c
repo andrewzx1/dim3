@@ -29,7 +29,7 @@ and can be sold or given away.
 	#include "dim3baseutility.h"
 #endif
 
-extern file_path_setup_type		iface_file_path_setup;
+extern file_path_setup_type		file_path_setup;
 
 /* =======================================================
 
@@ -45,7 +45,7 @@ void iface_read_settings_mark(iface_type *iface)
 
 		// read in interface from setting files
 		
-	file_paths_data(&iface_file_path_setup,path,"Settings","Marks","xml");
+	file_paths_data(&file_path_setup,path,"Settings","Marks","xml");
 	if (!xml_open_file(path)) return;
 	
 		// get counts
@@ -200,7 +200,7 @@ bool iface_write_settings_mark(iface_type *iface,char *err_str)
 
         // write the xml
 		
-	file_paths_data(&iface_file_path_setup,path,"Settings","Marks","xml");
+	file_paths_data(&file_path_setup,path,"Settings","Marks","xml");
 		
 	ok=xml_save_file(path,err_str);
     xml_close_file();

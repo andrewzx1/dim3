@@ -39,18 +39,20 @@ typedef struct		{
 						char				version[16],map_name[name_str_len];
 					} file_save_header;					
 
-extern map_type			map;
-extern camera_type		camera;
-extern view_type		view;
-extern server_type		server;
-extern iface_type		iface;
-extern js_type			js;
-extern setup_type		setup;
+extern map_type				map;
+extern camera_type			camera;
+extern view_type			view;
+extern server_type			server;
+extern iface_type			iface;
+extern js_type				js;
+extern setup_type			setup;
+extern file_path_setup_type	file_path_setup;
 
-bool					game_file_has_suspended_save;
-unsigned long			game_file_sz,game_file_pos;
-char					game_file_last_save_name[256];
-unsigned char			*game_file_data;
+
+bool						game_file_has_suspended_save;
+unsigned long				game_file_sz,game_file_pos;
+char						game_file_last_save_name[256];
+unsigned char				*game_file_data;
 
 extern void view_capture_draw(char *path);
 extern void rain_reset(void);
@@ -281,7 +283,7 @@ bool game_file_save(bool suspend_save,char *err_str)
 		// save screen
 		
 	if (!suspend_save) {
-		file_paths_app_data(&setup.file_path_setup,path,"Saved Games",file_name,"png");
+		file_paths_app_data(&file_path_setup,path,"Saved Games",file_name,"png");
 		view_capture_draw(path);
 	}
 
@@ -470,10 +472,10 @@ bool game_file_save(bool suspend_save,char *err_str)
 	if (!suspend_save) progress_next();
 
 	if (!suspend_save) {
-		file_paths_app_data(&setup.file_path_setup,path,"Saved Games",file_name,"sav");
+		file_paths_app_data(&file_path_setup,path,"Saved Games",file_name,"sav");
 	}
 	else {
-		file_paths_app_data(&setup.file_path_setup,path,"Saved Games","suspend","ssv");
+		file_paths_app_data(&file_path_setup,path,"Saved Games","suspend","ssv");
 	}
 
 	ok=game_file_compress_save(path,err_str);
@@ -522,10 +524,10 @@ bool game_file_load(char *file_name,bool resume_load,char *err_str)
 		c=strrchr(fname,'.');
 		if (c!=NULL) *c=0x0;			// remove any extensions
 	
-		file_paths_app_data(&setup.file_path_setup,path,"Saved Games",fname,"sav");
+		file_paths_app_data(&file_path_setup,path,"Saved Games",fname,"sav");
 	}
 	else {
-		file_paths_app_data(&setup.file_path_setup,path,"Saved Games","suspend","ssv");
+		file_paths_app_data(&file_path_setup,path,"Saved Games","suspend","ssv");
 	}
 
 	if (!game_file_expand_load(path,err_str)) return(FALSE);
