@@ -134,7 +134,9 @@ void gl_back_render_map_end(void)
 
 GLuint gl_back_render_create_texture(void)
 {
+#if !defined(D3_OS_IPHONE) && !defined(D3_OS_ANDRIOD)
 	float			max;
+#endif
 	GLuint			gl_id;
 	
 	glGenTextures(1,&gl_id);
@@ -144,14 +146,12 @@ GLuint gl_back_render_create_texture(void)
 
 		// animsotropic
 		
-	
-	if (!setup.anisotropic) {
-		glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MAX_ANISOTROPY_EXT,1.0);
-	}
-	else {
-		glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT,&max);
-		glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MAX_ANISOTROPY_EXT,max);
-	}
+#if defined(D3_OS_IPHONE) || defined(D3_OS_ANDRIOD)
+	glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MAX_ANISOTROPY_EXT,1.0);
+#else
+	glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT,&max);
+	glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MAX_ANISOTROPY_EXT,max);
+#endif
 
 		// mipmap modes
 		

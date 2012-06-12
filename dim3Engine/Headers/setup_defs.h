@@ -41,7 +41,7 @@ and can be sold or given away.
 // setup values
 //
 
-// anistropic mode, texture quality mode, mipmap mode, and mipmap mode all defined in baseutility.h
+// texture quality mode, mipmap mode, and mipmap mode all defined in baseutility.h
 
 #define fsaa_mode_none								0
 #define fsaa_mode_2x								1
@@ -124,7 +124,7 @@ typedef struct		{
 						int								screen_wid,screen_high,
 														mipmap_mode,fsaa_mode;
 						float							gamma,sound_volume,music_volume;
-						bool							anisotropic,decal_on,lightmap_on,shadow_on,
+						bool							decal_on,lightmap_on,shadow_on,
 														always_run,toggle_run,invert_look,mouse_smooth,
 														music_on,auto_aim,window,window_editor,
 														no_hud,no_draw_weapon,metrics_on,debug_on,

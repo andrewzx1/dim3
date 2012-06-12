@@ -31,7 +31,7 @@ and can be sold or given away.
       
 ======================================================= */
 
-#define dim3_version					"0015"
+#define dim3_version					"0016"
 
 /* =======================================================
 
@@ -440,10 +440,10 @@ typedef struct		{
 //
 
 extern void bitmap_new(bitmap_type *bitmap);
-extern bool bitmap_open(bitmap_type *bitmap,char *path,bool anisotropic,int mipmap_mode,bool compress,bool rectangle,bool pixelated,bool scrub_black_to_alpha);
+extern bool bitmap_open(bitmap_type *bitmap,char *path,int mipmap_mode,bool compress,bool rectangle,bool pixelated,bool scrub_black_to_alpha);
 extern bool bitmap_color(bitmap_type *bitmap,d3col *col);
-extern bool bitmap_data(bitmap_type *bitmap,unsigned char *data,int wid,int high,bool alpha_channel,bool anisotropic,int mipmap_mode,bool compress,bool rectangle);
-extern bool bitmap_combine(bitmap_type *bitmap,char *bitmap_path,char *bumpmap_path,bool anisotropic,int mipmap_mode,bool compress,bool pixelated);
+extern bool bitmap_data(bitmap_type *bitmap,unsigned char *data,int wid,int high,bool alpha_channel,int mipmap_mode,bool compress,bool rectangle);
+extern bool bitmap_combine(bitmap_type *bitmap,char *bitmap_path,char *bumpmap_path,int mipmap_mode,bool compress,bool pixelated);
 extern void bitmap_close(bitmap_type *bitmap);
 
 extern int bitmap_texture_get_current_frame(texture_type *texture,bool reverse,int tick);

@@ -35,19 +35,6 @@ and can be sold or given away.
       
 ======================================================= */
 
-void bitmap_texture_set_anisotropic_mode(int gl_bindtype,bool anisotropic)
-{
-	float			max;
-	
-	if (!anisotropic) {
-		glTexParameterf(gl_bindtype,GL_TEXTURE_MAX_ANISOTROPY_EXT,1.0);
-		return;
-	}
-	
-	glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT,&max);
-	glTexParameterf(gl_bindtype,GL_TEXTURE_MAX_ANISOTROPY_EXT,max);
-}
-
 void bitmap_texture_set_mipmap_filter(int gl_bindtype,int mipmap_mode,bool pixelated)
 {
 		
@@ -106,11 +93,14 @@ void bitmap_texture_set_mipmap_filter(int gl_bindtype,int mipmap_mode,bool pixel
       
 ======================================================= */
 
-bool bitmap_texture_open(bitmap_type *bitmap,unsigned char *data,bool anisotropic,int mipmap_mode,bool compress,bool rectangle,bool pixelated)
+bool bitmap_texture_open(bitmap_type *bitmap,unsigned char *data,int mipmap_mode,bool compress,bool rectangle,bool pixelated)
 {
 	int					gl_txtformat,gl_txttype,gl_bindtype;
 	GLuint				gl_id;
-	
+#if !defined(D3_OS_IPHONE) && !defined(D3_OS_ANDRIOD)
+	float				max;
+#endif
+
 		// if no bitmap data then no texture
 		
 	if (data==NULL) return(FALSE);
@@ -132,7 +122,13 @@ bool bitmap_texture_open(bitmap_type *bitmap,unsigned char *data,bool anisotropi
 		// storage and settings
 	
 	bitmap_texture_set_mipmap_filter(gl_bindtype,mipmap_mode,pixelated);
-	bitmap_texture_set_anisotropic_mode(gl_bindtype,anisotropic);
+	
+#if defined(D3_OS_IPHONE) || defined(D3_OS_ANDRIOD)
+	glTexParameterf(gl_bindtype,GL_TEXTURE_MAX_ANISOTROPY_EXT,1.0);
+#else	
+	glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT,&max);
+	glTexParameterf(gl_bindtype,GL_TEXTURE_MAX_ANISOTROPY_EXT,max);
+#endif
 	
 		// texture type
 		// opengl es doesn't support compression
@@ -160,6 +156,7 @@ bool bitmap_texture_open(bitmap_type *bitmap,unsigned char *data,bool anisotropi
 	glTexImage2D(gl_bindtype,0,gl_txtformat,bitmap->wid,bitmap->high,0,gl_txttype,GL_UNSIGNED_BYTE,data);
 
 	if ((mipmap_mode!=mipmap_mode_none) && (!rectangle) && (!pixelated)) {
+		fprintf(stdout,"  mipmapped!\n");
 		glEnable(GL_TEXTURE_2D);
 		glGenerateMipmapEXT(GL_TEXTURE_2D);
 		glDisable(GL_TEXTURE_2D);

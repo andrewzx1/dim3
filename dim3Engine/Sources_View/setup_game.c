@@ -42,10 +42,9 @@ and can be sold or given away.
 #define ctrl_fsaa_id						1
 #define ctrl_decal_on_id					4
 #define ctrl_shadow_on_id					5
-#define ctrl_anisotropic_id					6
-#define ctrl_mipmap_id						7
-#define ctrl_texture_quality_id				8
-#define ctrl_gamma_id						9
+#define ctrl_mipmap_id						6
+#define ctrl_texture_quality_id				7
+#define ctrl_gamma_id						8
 
 #define ctrl_sound_volume_id				30
 #define ctrl_music_on_id					31
@@ -152,7 +151,6 @@ void setup_game_video_pane(void)
 	control_y_sz=control_y_add*3;
 	if (!no_res_combo) control_y_sz+=control_y_add;
 	if (gl_check_fsaa_ok()) control_y_sz+=control_y_add;
-	if (gl_check_texture_anisotropic_filter_ok()) control_y_sz+=control_y_add;
 #ifndef D3_OPENGL_ES
 	control_y_sz+=control_y_add;
 #endif
@@ -196,11 +194,6 @@ void setup_game_video_pane(void)
 	y+=control_y_add;
 	element_checkbox_add("Shadows",setup.shadow_on,ctrl_shadow_on_id,x,y,TRUE);
 	y+=control_y_add;
-
-	if (gl_check_texture_anisotropic_filter_ok()) {
-		element_checkbox_add("Anisotropic Filtering",setup.anisotropic,ctrl_anisotropic_id,x,y,TRUE);
-		y+=control_y_add;
-	}
 	
 #ifndef D3_OPENGL_ES
 	element_combo_add("MipMap Filtering",(char*)setup_mipmap_mode_list,setup.mipmap_mode,ctrl_mipmap_id,x,y,TRUE);
@@ -704,7 +697,6 @@ void setup_game_close(void)
 		display_reset=(setup_backup.screen_wid!=setup.screen_wid);
 		display_reset=display_reset || (setup_backup.screen_high!=setup.screen_high);
 		display_reset=display_reset || (setup_backup.fsaa_mode!=setup.fsaa_mode);
-		display_reset=display_reset || (setup_backup.anisotropic!=setup.anisotropic);
 		display_reset=display_reset || (setup_backup.mipmap_mode!=setup.mipmap_mode);
 	
 		if (display_reset) {
@@ -809,10 +801,6 @@ void setup_game_handle_click(int id)
 			setup.shadow_on=element_get_value(ctrl_shadow_on_id);
 			break;
 
-		case ctrl_anisotropic_id:
-			setup.anisotropic=element_get_value(ctrl_anisotropic_id);
-			break;
-			
 		case ctrl_mipmap_id:
 			setup.mipmap_mode=element_get_value(ctrl_mipmap_id);
 			break;

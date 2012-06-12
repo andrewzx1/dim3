@@ -166,7 +166,7 @@ void host_map_list_initialize(void)
 
 		// need to make sure map paths are correct
 
-	map_setup(&setup.file_path_setup,setup.anisotropic,setup.mipmap_mode,TRUE,view_shader_on());
+	map_setup(&setup.file_path_setup,setup.mipmap_mode,TRUE,view_shader_on());
 
 		// load in all maps with the correct game type
 

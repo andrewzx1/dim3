@@ -424,7 +424,7 @@ extern void model_floor(model_type *model,int mesh_idx);
 extern void model_floor_all(model_type *model);
 extern void model_flip_uv(model_type *model,int mesh_idx,bool flip_u,bool flip_v);
 
-extern void model_setup(file_path_setup_type *file_path_setup,bool anisotropic,int mipmap_mode,bool in_engine,bool shader_on);
+extern void model_setup(file_path_setup_type *file_path_setup,int mipmap_mode,bool in_engine,bool shader_on);
 extern bool model_new(model_type *model,char *name);
 extern bool model_open(model_type *model,char *name,bool load_bitmaps);
 extern bool model_save(model_type *model,char *err_str);

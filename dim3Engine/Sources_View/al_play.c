@@ -92,7 +92,7 @@ int al_play_source(int buffer_idx,d3pnt *pnt,float pitch,bool loop,bool ambient,
 		dist=al_distance_to_listener(pnt);
 
 		buffer=&audio_buffers[buffer_idx];
-		if ((dist<<1)>=buffer->max_dist) return(-1);
+		if ((dist>>1)>=buffer->max_dist) return(-1);
 	}
 
 		// add to audio list

@@ -66,7 +66,7 @@ void list_palette_initialize(char *app_name)
 		
 	for (n=0;n!=5;n++) {
 		file_paths_app(&file_path_setup,path,sub_path,btn_names[n],"png");
-		bitmap_open(&list_bitmaps[n],path,FALSE,mipmap_mode_none,FALSE,FALSE,FALSE,FALSE);
+		bitmap_open(&list_bitmaps[n],path,mipmap_mode_none,FALSE,FALSE,FALSE,FALSE);
 	}
 }
 

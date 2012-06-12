@@ -138,7 +138,7 @@ int model_load(char *name)
 
 		// load model
 		
-	model_setup(&setup.file_path_setup,setup.anisotropic,setup.mipmap_mode,TRUE,view_shader_on());
+	model_setup(&setup.file_path_setup,setup.mipmap_mode,TRUE,view_shader_on());
 
 	if (!model_open(mdl,name,(!app.dedicated_host))) {
 		free(mdl);
