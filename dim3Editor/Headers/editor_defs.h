@@ -35,15 +35,13 @@ and can be sold or given away.
 // tools
 //
 
-#define tool_count								40
+#define tool_count								38
 #define tool_button_size						32
 
 #define tool_file_names							{ \
 													"Tool Move Points", \
 													"Tool Move Points Together", \
 													"Tool Snap Points", \
-													"Tool Snap Box", \
-													"Tool Snap Box Points", \
 													"Tool Free Look", \
 													"Tool Toggle Mode", \
 													"Tool Edit Mesh", \
@@ -81,14 +79,12 @@ and can be sold or given away.
 													"Tool Liquid", \
 											}
 											
-#define tool_separators						{"0000010100100100110100010100000000000000"}
+#define tool_separators						{"00010100100100110100010100000000000000"}
 
 #define tool_tip_names							{ \
 													"Move Vertexes and Meshes Freely", \
 													"Move Equal Vertexes Together", \
 													"Snap Vertexes and Meshes", \
-													"Snap Mesh Bounding Boxes", \
-													"Snap Mesh Points on Bounding Boxes", \
 													"Free Look Mode", \
 													"Multi-Select Mode", \
 													"Select Meshes", \
@@ -133,8 +129,6 @@ and can be sold or given away.
 #define vertex_mode_none						0
 #define vertex_mode_lock						1
 #define vertex_mode_snap						2
-#define vertex_mode_snap_box					3
-#define vertex_mode_snap_box_points				4
 
 //
 // drag modes

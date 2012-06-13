@@ -250,7 +250,7 @@ void import_texture_fill_materials(obj_import_state_type *import_state)
 			if (os_load_file(title,path,"png")) {
 			
 					// is it good?
-				
+
 				if (bitmap_check(path,err_str)) {
 			
 						// get the actual file name

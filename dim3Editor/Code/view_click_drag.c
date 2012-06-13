@@ -307,8 +307,8 @@ bool view_click_drag_mesh(editor_view_type *view,d3pnt *pt)
 {
 	int						n,k,x,y,mx,my,mz,nsel,nvertex,
 							type,mesh_idx,poly_idx;
-	bool					first_drag,snap_hit;
-	d3pnt					old_pt,*dpt,*old_dpt,*old_dpt_ptr,move_pnt,mpt,spt;
+	bool					first_drag;
+	d3pnt					old_pt,*dpt,*old_dpt,*old_dpt_ptr,move_pnt,mpt;
 	d3rect					box;
 	map_mesh_type			*mesh;
 	
@@ -409,37 +409,9 @@ bool view_click_drag_mesh(editor_view_type *view,d3pnt *pt)
 		mpt.y-=old_dpt[0].y;
 		mpt.z-=old_dpt[0].z;
 		
-			// check all vertexes for snaps
-			// and stop on first hit
+			// snaps
 
-		snap_hit=FALSE;
-		
-		old_dpt_ptr=old_dpt;
-		
-		for (k=0;k!=nsel;k++) {
-			select_get(k,&type,&mesh_idx,&poly_idx);
-			if (type!=mesh_piece) continue;
-			
-			mesh=&map.mesh.meshes[mesh_idx];
-		
-			for (n=0;n!=mesh->nvertex;n++) {
-				spt.x=old_dpt_ptr->x+mpt.x;
-				spt.y=old_dpt_ptr->y+mpt.y;
-				spt.z=old_dpt_ptr->z+mpt.z;
-				
-				if (view_click_snap_mesh(mesh_idx,&spt)) {
-					mpt.x=spt.x-old_dpt_ptr->x;
-					mpt.y=spt.y-old_dpt_ptr->y;
-					mpt.z=spt.z-old_dpt_ptr->z;
-					snap_hit=TRUE;
-					break;
-				}
-				
-				old_dpt_ptr++;
-			}
-			
-			if (snap_hit) break;
-		}
+		view_click_snap_mesh(old_dpt,&mpt);
 
 			// move vertexes
 		
