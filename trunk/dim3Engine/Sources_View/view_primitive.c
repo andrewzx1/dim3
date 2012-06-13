@@ -195,10 +195,11 @@ void view_primitive_2D_color_trig(d3col *col,float alpha,int lft,int rgt,int top
 	glDisable(GL_ALPHA_TEST);
 }
 
-void view_primitive_2D_color_arc(d3col *col,float alpha,int lft,int rgt,int top,int bot,float start_perc,float end_perc)
+void view_primitive_2D_color_arc(d3col *out_col,d3col *in_col,float alpha,int lft,int rgt,int top,int bot,float start_perc,float end_perc)
 {
 	float			mx,my,fx,fy,start_rad,end_rad;
 	float			vertexes[6];
+	unsigned char	uc_alpha,colors[12];
 
 		// get angles
 
@@ -211,6 +212,8 @@ void view_primitive_2D_color_arc(d3col *col,float alpha,int lft,int rgt,int top,
 	start_rad=(TRIG_PI*2.0f)*start_perc;
 	end_rad=(TRIG_PI*2.0f)*end_perc;
 
+		// vertexes and colors
+		
 	vertexes[0]=mx;
 	vertexes[1]=my;
 
@@ -219,6 +222,21 @@ void view_primitive_2D_color_arc(d3col *col,float alpha,int lft,int rgt,int top,
 
 	vertexes[4]=mx+(fx*sinf(end_rad));
 	vertexes[5]=my-(fy*cosf(end_rad));
+	
+	uc_alpha=(unsigned char)(alpha*255.0f);
+
+	colors[0]=(unsigned char)(in_col->r*255.0f);
+	colors[1]=(unsigned char)(in_col->g*255.0f);
+	colors[2]=(unsigned char)(in_col->b*255.0f);
+	colors[3]=uc_alpha;
+	colors[4]=(unsigned char)(out_col->r*255.0f);
+	colors[5]=(unsigned char)(out_col->g*255.0f);
+	colors[6]=(unsigned char)(out_col->b*255.0f);
+	colors[7]=uc_alpha;
+	colors[8]=(unsigned char)(out_col->r*255.0f);
+	colors[9]=(unsigned char)(out_col->g*255.0f);
+	colors[10]=(unsigned char)(out_col->b*255.0f);
+	colors[11]=uc_alpha;
 
 		// setup draw
 		
@@ -230,13 +248,16 @@ void view_primitive_2D_color_arc(d3col *col,float alpha,int lft,int rgt,int top,
 
 	glDisable(GL_DEPTH_TEST);
 
-	glColor4f(col->r,col->g,col->b,alpha);
-
 		// draw the trig
 		
+	glEnableClientState(GL_COLOR_ARRAY);
+	
 	glVertexPointer(2,GL_FLOAT,0,(GLvoid*)vertexes);
+	glColorPointer(4,GL_UNSIGNED_BYTE,0,(GLvoid*)colors);
 
 	glDrawArrays(GL_TRIANGLES,0,3);
+	
+	glDisableClientState(GL_COLOR_ARRAY);
 	
 		// finish draw
 

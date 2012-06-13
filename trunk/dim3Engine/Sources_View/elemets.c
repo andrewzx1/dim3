@@ -2499,6 +2499,7 @@ void element_draw_table_busy(element_type *element)
 {
 	int				n,idx,lft,rgt,top,bot,high;
 	float			start_perc,end_perc;
+	d3col			in_hilite,in_background;
 
 	element_get_box(element,&lft,&rgt,&top,&bot);
 
@@ -2512,6 +2513,16 @@ void element_draw_table_busy(element_type *element)
 		// selected arc
 
 	idx=(game_time_get_raw()>>7)&0xF;
+	
+		// inner colors
+		
+	in_hilite.r=iface.progress.hilite_color.r*element_gradient_factor_foreground;
+	in_hilite.g=iface.progress.hilite_color.g*element_gradient_factor_foreground;
+	in_hilite.b=iface.progress.hilite_color.b*element_gradient_factor_foreground;
+	
+	in_background.r=iface.progress.background_color.r*element_gradient_factor_foreground;
+	in_background.g=iface.progress.background_color.g*element_gradient_factor_foreground;
+	in_background.b=iface.progress.background_color.b*element_gradient_factor_foreground;
 
 		// spinning busy wheel
 
@@ -2520,10 +2531,10 @@ void element_draw_table_busy(element_type *element)
 		end_perc=((float)(n+1))/16.0f;
 
 		if (n==idx) {
-			view_primitive_2D_color_arc(&iface.progress.hilite_color,0.7f,lft,rgt,top,bot,start_perc,end_perc);
+			view_primitive_2D_color_arc(&iface.progress.hilite_color,&in_hilite,0.7f,lft,rgt,top,bot,start_perc,end_perc);
 		}
 		else {
-			view_primitive_2D_color_arc(&iface.progress.background_color,0.5f,lft,rgt,top,bot,start_perc,end_perc);
+			view_primitive_2D_color_arc(&iface.progress.background_color,&in_background,0.7f,lft,rgt,top,bot,start_perc,end_perc);
 		}
 	}
 }

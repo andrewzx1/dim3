@@ -107,6 +107,10 @@
 		262C38D212D0211200A94FEE /* ui_common.h in Headers */ = {isa = PBXBuildFile; fileRef = 262C38D112D0211200A94FEE /* ui_common.h */; };
 		262C397012D0268500A94FEE /* list_palette_common.c in Sources */ = {isa = PBXBuildFile; fileRef = 262C396F12D0268500A94FEE /* list_palette_common.c */; };
 		262DD2AC151E31CC0078FEA4 /* base_iface_score.c in Sources */ = {isa = PBXBuildFile; fileRef = 262DD2AB151E31CC0078FEA4 /* base_iface_score.c */; };
+		2638D2EC15884D220083B012 /* Tool Snap Box Points.png in Resources */ = {isa = PBXBuildFile; fileRef = 2638D2EB15884D220083B012 /* Tool Snap Box Points.png */; };
+		2638D2EE15884D2A0083B012 /* Tool Snap Box.png in Resources */ = {isa = PBXBuildFile; fileRef = 2638D2ED15884D2A0083B012 /* Tool Snap Box.png */; };
+		2638D2EF15884D490083B012 /* Tool Snap Box Points.png in Copy (Tools Icons) */ = {isa = PBXBuildFile; fileRef = 2638D2EB15884D220083B012 /* Tool Snap Box Points.png */; };
+		2638D2F015884D4D0083B012 /* Tool Snap Box.png in Copy (Tools Icons) */ = {isa = PBXBuildFile; fileRef = 2638D2ED15884D2A0083B012 /* Tool Snap Box.png */; };
 		263ADA6B14296509009EE0E0 /* view_vbo.c in Sources */ = {isa = PBXBuildFile; fileRef = 263ADA6A14296509009EE0E0 /* view_vbo.c */; };
 		263C5EBE122045E3008935B9 /* view_handle.c in Sources */ = {isa = PBXBuildFile; fileRef = 263C5EBD122045E3008935B9 /* view_handle.c */; };
 		263D10D0156760A700A03C7D /* auto_generate_setup.c in Sources */ = {isa = PBXBuildFile; fileRef = 263D10CC156760A700A03C7D /* auto_generate_setup.c */; };
@@ -312,6 +316,8 @@
 				26F95EDE125AD24D0016127D /* Tool Rotate Mode.png in Copy (Tools Icons) */,
 				26F95EDF125AD24D0016127D /* Tool Run Map.png in Copy (Tools Icons) */,
 				26F95EE0125AD24D0016127D /* Tool Small Grid.png in Copy (Tools Icons) */,
+				2638D2EF15884D490083B012 /* Tool Snap Box Points.png in Copy (Tools Icons) */,
+				2638D2F015884D4D0083B012 /* Tool Snap Box.png in Copy (Tools Icons) */,
 				26F95EE1125AD24D0016127D /* Tool Snap Points.png in Copy (Tools Icons) */,
 				26F95EE2125AD24D0016127D /* Tool Split Mesh.png in Copy (Tools Icons) */,
 				26F95EE3125AD24D0016127D /* Tool Tesselate Mesh.png in Copy (Tools Icons) */,
@@ -476,6 +482,8 @@
 		262C38D112D0211200A94FEE /* ui_common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ui_common.h; path = ../dim3Common/Headers/ui_common.h; sourceTree = SOURCE_ROOT; };
 		262C396F12D0268500A94FEE /* list_palette_common.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = list_palette_common.c; path = ../dim3Common/Code/list_palette_common.c; sourceTree = SOURCE_ROOT; };
 		262DD2AB151E31CC0078FEA4 /* base_iface_score.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = base_iface_score.c; sourceTree = "<group>"; };
+		2638D2EB15884D220083B012 /* Tool Snap Box Points.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Tool Snap Box Points.png"; sourceTree = "<group>"; };
+		2638D2ED15884D2A0083B012 /* Tool Snap Box.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Tool Snap Box.png"; sourceTree = "<group>"; };
 		263ADA6A14296509009EE0E0 /* view_vbo.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = view_vbo.c; path = Code/view_vbo.c; sourceTree = "<group>"; };
 		263C5EBD122045E3008935B9 /* view_handle.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = view_handle.c; path = Code/view_handle.c; sourceTree = "<group>"; };
 		263D10CC156760A700A03C7D /* auto_generate_setup.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = auto_generate_setup.c; path = Code/auto_generate_setup.c; sourceTree = "<group>"; };
@@ -959,6 +967,8 @@
 				26636B15125A8EE20090A321 /* Tool Rotate Mode.png */,
 				26636B16125A8EE20090A321 /* Tool Run Map.png */,
 				26636B17125A8EE20090A321 /* Tool Small Grid.png */,
+				2638D2EB15884D220083B012 /* Tool Snap Box Points.png */,
+				2638D2ED15884D2A0083B012 /* Tool Snap Box.png */,
 				26636B18125A8EE20090A321 /* Tool Snap Points.png */,
 				26636B19125A8EE20090A321 /* Tool Split Mesh.png */,
 				26636B1A125A8EE20090A321 /* Tool Tesselate Mesh.png */,
@@ -1211,6 +1221,8 @@
 				26459B6513DBDA8800D7DD73 /* Back.png in Resources */,
 				26E30100144B6FDE00BB4BD5 /* dim3 Editor.xib in Resources */,
 				262BFC961533BB51006C1CF6 /* Tool Node Duplicate.png in Resources */,
+				2638D2EC15884D220083B012 /* Tool Snap Box Points.png in Resources */,
+				2638D2EE15884D2A0083B012 /* Tool Snap Box.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
