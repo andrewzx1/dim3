@@ -92,63 +92,61 @@ bool tool_get_highlight_state(int tool_idx)
 			return(state.vertex_mode==vertex_mode_lock);
 		case 2:
 			return(state.vertex_mode==vertex_mode_snap);
-		case 3:
-			return(state.vertex_mode==vertex_mode_snap_box);
-		case 4:
-			return(state.vertex_mode==vertex_mode_snap_box_points);
 
 			// free look and select
 
-		case 5:
+		case 3:
 			return(state.free_look);
-		case 6:
+		case 4:
 			return(state.select_add);
 
 			// drag mode
 
-		case 7:
+		case 5:
 			return(state.drag_mode==drag_mode_mesh);
-		case 8:
+		case 6:
 			return(state.drag_mode==drag_mode_polygon);
-		case 9:
+		case 7:
 			return(state.drag_mode==drag_mode_vertex);
 			
 			// grids
 			
+		case 11:
+			return(state.grid_mode==grid_mode_none);
+		case 12:
+			return(state.grid_mode==grid_mode_small);
 		case 13:
-		case 14:
-		case 15:
-			return(state.grid_mode==(tool_idx-11));
+			return(state.grid_mode==grid_mode_large);
 
 			// auto texture
 
-		case 16:
+		case 14:
 			return(state.auto_texture);
 
 			// handle mode
 
-		case 17:
+		case 15:
 			return(state.handle_mode==handle_mode_rotate);
-		case 18:
+		case 16:
 			return(state.handle_mode==handle_mode_move);
 
 			// node mode
 
-		case 19:
+		case 17:
 			return(state.node_mode==node_mode_select);
-		case 20:
+		case 18:
 			return(state.node_mode==node_mode_duplicate);
-		case 21:
+		case 19:
 			return(state.node_mode==node_mode_link);
-		case 22:
+		case 20:
 			return(state.node_mode==node_mode_remove_link);
 			
 			// normals and culling
 
-		case 23:
+		case 21:
 			view=view_get_current_view();
 			return(state.show_normals);
-		case 24:
+		case 22:
 			view=view_get_current_view();
 			return(view->cull);
 	}
@@ -197,99 +195,97 @@ void tool_click(int tool_idx)
 		case 2:
 			state.vertex_mode=vertex_mode_snap;
 			break;
-
-		case 3:
-			state.vertex_mode=vertex_mode_snap_box;
-			break;
-
-		case 4:
-			state.vertex_mode=vertex_mode_snap_box_points;
-			break;
 			
 			// free look and selection toggle
 			
-		case 5:
+		case 3:
 			state.free_look=!state.free_look;
 			break;
 
-		case 6:
+		case 4:
 			state.select_add=!state.select_add;
 			break;
 			
 			// drag mode buttons
 			
-		case 7:
+		case 5:
 			state.drag_mode=drag_mode_mesh;
 			break;
 			
-		case 8:
+		case 6:
 			state.drag_mode=drag_mode_polygon;
 			break;
 			
-		case 9:
+		case 7:
 			state.drag_mode=drag_mode_vertex;
 			break;
 			
 			// mesh polygons
 			
-		case 10:
+		case 8:
 			piece_combine_mesh();
 			break;
 			
-		case 11:
+		case 9:
 			piece_split_mesh();
 			break;
 
-		case 12:
+		case 10:
 			piece_tesselate(TRUE);
 			break;
 			
 			
 			// grids
 			
+		case 11:
+			state.grid_mode=grid_mode_none;
+			break;
+
+		case 12:
+			state.grid_mode=grid_mode_small;
+			break;
+
 		case 13:
-		case 14:
-		case 15:
-			state.grid_mode=tool_idx-11;
+			state.grid_mode=grid_mode_large;
 			break;
 			
 			// auto-texture
 			
-		case 16:
+		case 14:
 			state.auto_texture=!state.auto_texture;
 			break;
 			
 			// handle modes
 			
-		case 17:
+		case 15:
 			state.handle_mode=handle_mode_rotate;
 			break;
 			
-		case 18:
+		case 16:
 			state.handle_mode=handle_mode_move;
 			break;
 			
 			// node editing
 			
-		case 19:
+		case 17:
 			state.show_node=TRUE;
 			menu_update_view();
 			state.node_mode=node_mode_select;
 			break;
 			
-		case 20:
+		case 18:
 			state.show_node=TRUE;
 			menu_update_view();
 			state.node_mode=node_mode_duplicate;
 			break;
 			
-		case 21:
+		case 19:
 			state.show_node=TRUE;
 			menu_update_view();
 			state.node_mode=node_mode_link;
 			break;
 			
-		case 22:
+		case 20:
 			state.show_node=TRUE;
 			menu_update_view();
 			state.node_mode=node_mode_remove_link;
@@ -297,72 +293,72 @@ void tool_click(int tool_idx)
 			
 			// normals
 			
-		case 23:
+		case 21:
 			state.show_normals=!state.show_normals;
 			break;
 			
-		case 24:
+		case 22:
 			view=view_get_current_view();
 			view_cull(!view->cull);
 			break;
 			
 			// script and run buttons
 			
-		case 25:
+		case 23:
 			launch_map_script_editor();
 			break;
 			
-		case 26:
+		case 24:
 			launch_engine();
 			break;
 			
 			// pieces create
 			
-		case 28:
+		case 26:
 			piece_create_spot();
 			break;
 			
-		case 29:
+		case 27:
 			piece_create_light();
 			break;
 			
-		case 30:
+		case 28:
 			piece_create_sound();
 			break;
 			
-		case 31:
+		case 29:
 			piece_create_particle();
 			break;
 			
-		case 32:
+		case 30:
 			piece_create_scenery();
 			break;
 			
-		case 33:
+		case 31:
 			piece_create_node();
 			break;
 			
-		case 34:
+		case 32:
 			piece_add_obj_mesh();
 			break;
 			
-		case 35:
+		case 33:
 			piece_add_obj_mesh_uv();
 			break;
 			
-		case 36:
+		case 34:
 			piece_add_height_map_mesh();
 			break;
 			
-		case 37:
+		case 35:
 			piece_add_grid_mesh();
 			break;
 			
-		case 38:
+		case 36:
 			piece_add_polygon_mesh();
 			break;
 			
-		case 39:
+		case 37:
 			piece_create_liquid();
 			break;
 			
@@ -404,7 +400,7 @@ void tool_default(void)
 void tool_switch_vertex_mode(void)
 {
 	state.vertex_mode++;
-	if (state.vertex_mode>vertex_mode_snap_box_points) state.vertex_mode=vertex_mode_none;
+	if (state.vertex_mode>vertex_mode_snap) state.vertex_mode=vertex_mode_none;
 	
 	main_wind_draw();
 }

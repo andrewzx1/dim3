@@ -421,7 +421,7 @@ extern int view_get_grid(void);
 extern void view_click_grid(d3pnt *pt);
 extern bool view_click_snap(int mesh_idx,int liquid_idx,d3pnt *pt);
 extern bool view_click_snap_poly(int mesh_idx,int poly_idx,d3pnt *pt);
-extern bool view_click_snap_mesh(int mesh_idx,d3pnt *pt);
+extern void view_click_snap_mesh(d3pnt *old_dpt,d3pnt *mpt);
 extern void view_click_piece_map_pick_start(editor_view_type *view);
 extern void view_click_piece(editor_view_type *view,d3pnt *pt,bool double_click);
 extern bool view_click_drag_mesh_handle(editor_view_type *view,d3pnt *pt);

@@ -207,6 +207,8 @@ bool view_click_snap_poly(int mesh_idx,int poly_idx,d3pnt *pt)
 	d3pnt				hpt;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
+
+	if (state.vertex_mode!=vertex_mode_snap) return(FALSE);
 	
 	cur_dist=-1;
 	
@@ -230,12 +232,18 @@ bool view_click_snap_poly(int mesh_idx,int poly_idx,d3pnt *pt)
 	return(cur_dist!=-1);
 }
 
-bool view_click_snap_mesh(int mesh_idx,d3pnt *pt)
+/* =======================================================
+
+      Snap Meshes
+      
+======================================================= */
+
+bool view_click_snap_mesh_vertexes(int mesh_idx,d3pnt *pt)
 {
 	int					n,d,cur_dist;
 	d3pnt				hpt;
 	map_mesh_type		*mesh;
-	
+
 	cur_dist=-1;
 	
 	mesh=&map.mesh.meshes[mesh_idx];
@@ -255,6 +263,53 @@ bool view_click_snap_mesh(int mesh_idx,d3pnt *pt)
 	}
 	
 	return(cur_dist!=-1);
+}
+
+void view_click_snap_mesh(d3pnt *old_dpt,d3pnt *mpt)
+{
+	int				n,k,nsel,type,mesh_idx,poly_idx;
+	bool			snap_hit;
+	d3pnt			*old_dpt_ptr;
+	d3pnt			spt;
+	map_mesh_type	*mesh;
+
+	if (state.vertex_mode!=vertex_mode_snap) return;
+
+		// check all vertexes in all meshes
+		// in the selection for snaps.  Anything that
+		// can snap is later compared by the total
+		// number of vetexes snapped
+
+	snap_hit=FALSE;
+	
+	old_dpt_ptr=old_dpt;
+
+	nsel=select_count();
+	
+	for (k=0;k!=nsel;k++) {
+		select_get(k,&type,&mesh_idx,&poly_idx);
+		if (type!=mesh_piece) continue;
+		
+		mesh=&map.mesh.meshes[mesh_idx];
+	
+		for (n=0;n!=mesh->nvertex;n++) {
+			spt.x=old_dpt_ptr->x+mpt->x;
+			spt.y=old_dpt_ptr->y+mpt->y;
+			spt.z=old_dpt_ptr->z+mpt->z;
+			
+			if (view_click_snap_mesh_vertexes(mesh_idx,&spt)) {
+				mpt->x=spt.x-old_dpt_ptr->x;
+				mpt->y=spt.y-old_dpt_ptr->y;
+				mpt->z=spt.z-old_dpt_ptr->z;
+				snap_hit=TRUE;
+				break;
+			}
+			
+			old_dpt_ptr++;
+		}
+		
+		if (snap_hit) break;
+	}
 }
 
 /* =======================================================

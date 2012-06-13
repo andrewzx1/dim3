@@ -425,11 +425,49 @@ bool png_utility_check(char *path,char *err_str)
       
 ======================================================= */
 
+bool png_utility_copy_compare_paths(char *srce_path,char *dest_path)
+{
+	int				n,len;
+	char			ch1,ch2;
+
+	len=strlen(srce_path);
+	if (len!=strlen(dest_path)) return(FALSE);
+
+		// we compare this way so we can
+		// skip and / or \ reverses
+		// and caps
+
+	for (n=0;n!=len;n++) {
+		ch1=srce_path[n];
+		ch2=dest_path[n];
+
+		if ((ch1=='\\') || (ch1=='/')) {
+			if ((ch2!='\\') && (ch2!='/')) return(FALSE);
+			continue;
+		}
+
+		if ((ch1>='A') && (ch1<='Z')) ch1+=('a'-'A');
+		if ((ch2>='A') && (ch2<='Z')) ch2+=('a'-'A');
+
+		if (ch1!=ch2) return(FALSE);
+	}
+
+	return(TRUE);
+}
+
 bool png_utility_copy(char *srce_path,char *dest_path)
 {
 	int				sz;
 	unsigned char	c[1024];
 	FILE			*srce,*dest;
+
+		// compare the paths and
+		// ignore if same file
+
+	if (png_utility_copy_compare_paths(srce_path,dest_path)) {
+		MessageBox(NULL,"SKIP",dest_path,MB_OK);
+		return(TRUE);
+	}
 
 		// open files
 		
