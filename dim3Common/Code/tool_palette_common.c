@@ -211,7 +211,7 @@ void tool_palette_draw(void)
 			
 	glVertexPointer(2,GL_FLOAT,0,vertexes);
 
-	glColor4f(1.0f,1.0f,1.0f,1.0f);
+	glColor4f(0.95f,0.95f,0.95f,1.0f);
 	glDrawArrays(GL_QUADS,0,4);
 
 		// tools

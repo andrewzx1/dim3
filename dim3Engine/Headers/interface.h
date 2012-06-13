@@ -749,7 +749,7 @@ extern void view_primitive_2D_tint_screen(void);
 extern void view_primitive_2D_color_poly(int x0,int y0,d3col *col0,int x1,int y1,d3col *col1,int x2,int y2,d3col *col2,int x3,int y3,d3col *col3,float alpha);
 extern void view_primitive_2D_color_quad(d3col *col,float alpha,int lft,int rgt,int top,int bot);
 extern void view_primitive_2D_color_trig(d3col *col,float alpha,int lft,int rgt,int top,int bot,int dir);
-extern void view_primitive_2D_color_arc(d3col *col,float alpha,int lft,int rgt,int top,int bot,float start_perc,float end_perc);
+extern void view_primitive_2D_color_arc(d3col *out_col,d3col *in_col,float alpha,int lft,int rgt,int top,int bot,float start_perc,float end_perc);
 extern void view_primitive_2D_line(d3col *col,float alpha,int x0,int y0,int x1,int y1);
 extern void view_primitive_2D_line_poly(d3col *col,float alpha,int x0,int y0,int x1,int y1,int x2,int y2,int x3,int y3);
 extern void view_primitive_2D_line_quad(d3col *col,float alpha,int lft,int rgt,int top,int bot);
