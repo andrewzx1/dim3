@@ -176,8 +176,19 @@ bool model_read_xml(model_type *model)
 		tag=xml_findnextchild(tag);
 	}
 
+		// name bone
+
     tag=xml_findfirstchild("Name",model_head);
 	if (tag!=-1) model->bone_connect.name_bone_idx=model_read_xml_bone(model,tag,"bone");
+
+		// labels
+
+    tag=xml_findfirstchild("Label",model_head);
+    if (tag!=-1) {
+		model->bone_connect.label_text_bone_idx=model_read_xml_bone(model,tag,"text_bone");
+ 		model->bone_connect.label_bitmap_bone_idx=model_read_xml_bone(model,tag,"bitmap_bone");
+		model->bone_connect.label_health_bone_idx=model_read_xml_bone(model,tag,"health_bone");
+   }
 	
         // hit boxes
     
@@ -661,6 +672,14 @@ bool model_write_xml(model_type *model,char *err_str)
     
     xml_add_tagstart("Name");
  	model_write_xml_bone(model,"bone",model->bone_connect.name_bone_idx);
+	xml_add_tagend(TRUE);
+
+        // label
+    
+    xml_add_tagstart("Label");
+ 	model_write_xml_bone(model,"text_bone",model->bone_connect.label_text_bone_idx);
+ 	model_write_xml_bone(model,"bitmap_bone",model->bone_connect.label_bitmap_bone_idx);
+ 	model_write_xml_bone(model,"health_bone",model->bone_connect.label_health_bone_idx);
 	xml_add_tagend(TRUE);
 
 		// hit boxes

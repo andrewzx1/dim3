@@ -35,14 +35,6 @@ extern view_type			view;
 extern iface_type			iface;
 extern setup_type			setup;
 
-#define max_touch_state		4		// supergumba move
-
-typedef struct		{
-						int						id,button_idx,stick_idx;
-						bool					on;
-						d3pnt					pt;
-					} touch_state_type;
-
 bool						touch_gui_click;
 d3pnt						touch_gui_pnt;
 touch_state_type			touch_states[max_touch_state];
@@ -141,7 +133,7 @@ int input_touch_to_virtual_button_start(d3pnt *pt)
 		if ((pt->x<button->pnt.x) || (pt->x>(button->pnt.x+button->size.x)) || (pt->y<button->pnt.y) || (pt->y>(button->pnt.y+button->size.y))) continue;
 		
 		button->down=TRUE;
-		input_action_set_touch_trigger_state(button->control_idx,TRUE);
+		input_action_set_touch_trigger_state(button->control_idx,TRUE,FALSE);
 		
 		return(n);
 	}
@@ -156,7 +148,7 @@ void input_touch_to_virtual_button_release(int button_idx)
 	button=&iface.virtual_control.buttons[button_idx];
 	
 	button->down=FALSE;
-	input_action_set_touch_trigger_state(button->control_idx,FALSE);
+	input_action_set_touch_trigger_state(button->control_idx,FALSE,FALSE);
 }
 
 /* =======================================================
@@ -224,9 +216,18 @@ void input_touch_to_virtual_stick_release(int stick_idx)
 {
 	iface_virtual_stick_type	*stick;
 
+		// release the stick
+
 	stick=&iface.virtual_control.sticks[stick_idx];
 	stick->touch_x=0.0f;
 	stick->touch_y=0.0f;
+
+		// see if this counts as a click
+
+	if (stick->click_control_idx==-1) return;
+	if (stick->tick>(game_time_get_raw()+touch_stick_up_down_click_msec)) return;
+
+	input_action_set_touch_trigger_state(stick->click_control_idx,TRUE,TRUE);		// set auto up so it gets read once and then set to up
 }
 
 /* =======================================================
@@ -285,6 +286,7 @@ void input_touch_state_add_down(int id,d3pnt *pt)
 			if (state->id==id) {
 				state->pt.x=pt->x;
 				state->pt.y=pt->y;
+				state->tick=game_time_get_raw();
 				input_touch_to_virtual_stick_move(state);
 				return;
 			}
@@ -308,6 +310,7 @@ void input_touch_state_add_down(int id,d3pnt *pt)
 	state->stick_idx=-1;
 	state->pt.x=pt->x;
 	state->pt.y=pt->y;
+	state->tick=game_time_get_raw();
 	
 		// in a button or a stick?
 

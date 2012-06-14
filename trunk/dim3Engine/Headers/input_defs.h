@@ -168,9 +168,30 @@ and can be sold or given away.
 typedef struct		{
 						int						type,index;
 					} input_action_item_type;
-					
+
+typedef struct		{
+						bool					trigger,auto_up;
+					} input_action_touch_type;
+
 typedef struct		{
 						int						nitem;
+						bool					still_down;
 						input_action_item_type  items[input_max_action_item];
-						bool					touch_trigger,still_down;
+						input_action_touch_type	touch;
 					} input_action_type;
+
+//
+// touch structures
+//
+
+#define max_touch_state							4
+
+#define touch_stick_up_down_click_msec			500
+
+typedef struct		{
+						int						id,button_idx,stick_idx,
+												tick;
+						bool					on;
+						d3pnt					pt;
+					} touch_state_type;
+

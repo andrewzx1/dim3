@@ -108,16 +108,14 @@ void model_calc_draw_bone_position(model_type *model,model_draw_setup *draw_setu
       
 ======================================================= */
 
-bool model_get_light_position(model_type *model,model_draw_setup *draw_setup,int idx,d3pnt *pnt)
+inline bool model_get_generic_bone_position(model_draw_setup *draw_setup,int bone_idx,d3pnt *pnt)
 {
-	int			bone_idx;
 	d3pnt		bone_pnt;
 	
 		// get bone position
 	
-	bone_idx=model->bone_connect.light_bone_idx[idx];
 	if (bone_idx==-1) return(FALSE);
-	
+		
 	model_get_draw_bone_position(draw_setup,bone_idx,&bone_pnt);
 	
 		// add in model position
@@ -127,47 +125,35 @@ bool model_get_light_position(model_type *model,model_draw_setup *draw_setup,int
 	pnt->z+=bone_pnt.z;
 	
 	return(TRUE);
+}
+
+bool model_get_light_position(model_type *model,model_draw_setup *draw_setup,int idx,d3pnt *pnt)
+{
+	return(model_get_generic_bone_position(draw_setup,model->bone_connect.light_bone_idx[idx],pnt));
 }
 
 bool model_get_halo_position(model_type *model,model_draw_setup *draw_setup,int idx,d3pnt *pnt)
 {
-	int			bone_idx;
-	d3pnt		bone_pnt;
-	
-		// get bone position
-	
-	bone_idx=model->bone_connect.halo_bone_idx[idx];
-	if (bone_idx==-1) return(FALSE);
-		
-	model_get_draw_bone_position(draw_setup,bone_idx,&bone_pnt);
-	
-		// add in model position
-		
-	pnt->x+=bone_pnt.x;
-	pnt->y+=bone_pnt.y;
-	pnt->z+=bone_pnt.z;
-	
-	return(TRUE);
+	return(model_get_generic_bone_position(draw_setup,model->bone_connect.halo_bone_idx[idx],pnt));
 }
 
 bool model_get_name_position(model_type *model,model_draw_setup *draw_setup,d3pnt *pnt)
 {
-	int			bone_idx;
-	d3pnt		bone_pnt;
-	
-		// get bone position
-	
-	bone_idx=model->bone_connect.name_bone_idx;
-	if (bone_idx==-1) return(FALSE);
-		
-	model_get_draw_bone_position(draw_setup,bone_idx,&bone_pnt);
-	
-		// add in model position
-		
-	pnt->x+=bone_pnt.x;
-	pnt->y+=bone_pnt.y;
-	pnt->z+=bone_pnt.z;
-	
-	return(TRUE);
+	return(model_get_generic_bone_position(draw_setup,model->bone_connect.name_bone_idx,pnt));
+}
+
+bool model_get_label_text_position(model_type *model,model_draw_setup *draw_setup,d3pnt *pnt)
+{
+	return(model_get_generic_bone_position(draw_setup,model->bone_connect.label_text_bone_idx,pnt));
+}
+
+bool model_get_label_bitmap_position(model_type *model,model_draw_setup *draw_setup,d3pnt *pnt)
+{
+	return(model_get_generic_bone_position(draw_setup,model->bone_connect.label_bitmap_bone_idx,pnt));
+}
+
+bool model_get_label_health_position(model_type *model,model_draw_setup *draw_setup,d3pnt *pnt)
+{
+	return(model_get_generic_bone_position(draw_setup,model->bone_connect.label_health_bone_idx,pnt));
 }
 

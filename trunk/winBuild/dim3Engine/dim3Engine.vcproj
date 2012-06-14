@@ -1468,6 +1468,14 @@
 						</FileConfiguration>
 					</File>
 					<File
+						RelativePath="..\..\dim3Engine\Sources_Server\script_obj_watch_angle.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Engine\Sources_Server\script_obj_watch_position.c"
+						>
+					</File>
+					<File
 						RelativePath="..\..\dim3Engine\Sources_Server\script_obj_weapon.c"
 						>
 						<FileConfiguration

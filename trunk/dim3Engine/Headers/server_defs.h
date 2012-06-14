@@ -596,6 +596,8 @@ typedef struct		{
 						char					obj_flags[max_obj_list],
 												sound_name[name_str_len];
 						bool					on;
+						d3pnt					pnt;
+						d3ang					ang;
 						obj_watch_restrict		watch_restrict;
 					} obj_watch;
 		

@@ -40,26 +40,30 @@ and can be sold or given away.
 #define kModelPropertyViewBoxOffset				3
 #define kModelPropertyViewBoxSize				4
 
-#define kModelPropertyNameBone					5
+#define kModelPropertyNameBone					10
+#define kModelPropertyLabelTextBone				11
+#define kModelPropertyLabelBitmapBone			12
+#define kModelPropertyLabelHealthBone			13
+
 #define kModelPropertyLightBoneStart			100
 #define kModelPropertyLightBoneEnd				(100+max_model_light)
 #define kModelPropertyHaloBoneStart				200
 #define kModelPropertyHaloBoneEnd				(200+max_model_halo)
 
-#define kModelPropertyRigidBodyOn				6
-#define kModelPropertyRigidBodyYResetFact		7
-#define kModelPropertyRigidBodyYSmoothFact		8
-#define kModelPropertyRigidBodyXMaxAngle		9
-#define kModelPropertyRigidBodyXResetFact		10
-#define kModelPropertyRigidBodyXSmoothFact		11
-#define kModelPropertyRigidBodyZMaxAngle		12
-#define kModelPropertyRigidBodyZResetFact		13
-#define kModelPropertyRigidBodyZSmoothFact		14
+#define kModelPropertyRigidBodyOn				20
+#define kModelPropertyRigidBodyYResetFact		21
+#define kModelPropertyRigidBodyYSmoothFact		22
+#define kModelPropertyRigidBodyXMaxAngle		23
+#define kModelPropertyRigidBodyXResetFact		24
+#define kModelPropertyRigidBodyXSmoothFact		25
+#define kModelPropertyRigidBodyZMaxAngle		26
+#define kModelPropertyRigidBodyZResetFact		27
+#define kModelPropertyRigidBodyZSmoothFact		28
 
-#define kModelPropertyUIMinDiffuse				15
-#define kModelPropertyUIDiffuseVector			16
+#define kModelPropertyUIMinDiffuse				30
+#define kModelPropertyUIDiffuseVector			31
 
-#define kModelPropertyImportScale				17
+#define kModelPropertyImportScale				40
 
 extern model_type				model;
 extern animator_state_type		state;
@@ -91,8 +95,11 @@ void property_palette_fill_model(void)
 	list_palette_add_point(&property_palette,kModelPropertyViewBoxOffset,"View Box Offset",&model.view_box.offset,FALSE);
 	list_palette_add_point(&property_palette,kModelPropertyViewBoxSize,"View Box Size",&model.view_box.size,FALSE);
 
-	list_palette_add_header(&property_palette,0,"Model Name Bone");
-	list_palette_add_picker_list_int(&property_palette,kModelPropertyNameBone,"Bone",(char*)model.bones,model.nbone,sizeof(model_bone_type),(int)offsetof(model_bone_type,name),TRUE,&model.bone_connect.name_bone_idx,FALSE);
+	list_palette_add_header(&property_palette,0,"Model Name-Label Bone");
+	list_palette_add_picker_list_int(&property_palette,kModelPropertyNameBone,"Name Bone",(char*)model.bones,model.nbone,sizeof(model_bone_type),(int)offsetof(model_bone_type,name),TRUE,&model.bone_connect.name_bone_idx,FALSE);
+	list_palette_add_picker_list_int(&property_palette,kModelPropertyLabelTextBone,"Label Text Bone",(char*)model.bones,model.nbone,sizeof(model_bone_type),(int)offsetof(model_bone_type,name),TRUE,&model.bone_connect.label_text_bone_idx,FALSE);
+	list_palette_add_picker_list_int(&property_palette,kModelPropertyLabelBitmapBone,"Label Bitmap Bone",(char*)model.bones,model.nbone,sizeof(model_bone_type),(int)offsetof(model_bone_type,name),TRUE,&model.bone_connect.label_bitmap_bone_idx,FALSE);
+	list_palette_add_picker_list_int(&property_palette,kModelPropertyLabelHealthBone,"Label Health Bone",(char*)model.bones,model.nbone,sizeof(model_bone_type),(int)offsetof(model_bone_type,name),TRUE,&model.bone_connect.label_health_bone_idx,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Model Light Bones");
 	for (n=0;n!=max_model_light;n++) {
