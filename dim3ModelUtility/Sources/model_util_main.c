@@ -67,6 +67,9 @@ bool model_new(model_type *model,char *name)
 	}
 
 	model->bone_connect.name_bone_idx=-1;
+	model->bone_connect.label_text_bone_idx=-1;
+	model->bone_connect.label_bitmap_bone_idx=-1;
+	model->bone_connect.label_health_bone_idx=-1;
 
 	model->rigid_body.on=FALSE;
 

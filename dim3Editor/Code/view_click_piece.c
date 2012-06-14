@@ -238,10 +238,10 @@ bool view_click_snap_poly(int mesh_idx,int poly_idx,d3pnt *pt)
       
 ======================================================= */
 
-bool view_click_snap_mesh_vertexes(int mesh_idx,d3pnt *pt)
+bool view_click_snap_mesh_vertexes(int mesh_idx,d3pnt *pnt)
 {
 	int					n,d,cur_dist;
-	d3pnt				hpt;
+	d3pnt				hpnt;
 	map_mesh_type		*mesh;
 
 	cur_dist=-1;
@@ -249,15 +249,15 @@ bool view_click_snap_mesh_vertexes(int mesh_idx,d3pnt *pt)
 	mesh=&map.mesh.meshes[mesh_idx];
 	
 	for (n=0;n!=mesh->nvertex;n++) {
-		memmove(&hpt,pt,sizeof(d3pnt));
+		memmove(&hpnt,pnt,sizeof(d3pnt));
 		
-		if (view_click_snap(mesh_idx,-1,&hpt)) {
-			d=distance_get(pt->x,pt->y,pt->z,hpt.x,hpt.y,hpt.z);
+		if (view_click_snap(mesh_idx,-1,&hpnt)) {
+			d=distance_get(pnt->x,pnt->y,pnt->z,hpnt.x,hpnt.y,hpnt.z);
 			if (d>(setup.snap_size*view_snap_clip_size_factor)) continue;
 			
 			if ((d<cur_dist) || (cur_dist<0)) {
 				cur_dist=d;
-				memmove(pt,&hpt,sizeof(d3pnt));
+				memmove(pnt,&hpnt,sizeof(d3pnt));
 			}
 		}
 	}
@@ -265,24 +265,17 @@ bool view_click_snap_mesh_vertexes(int mesh_idx,d3pnt *pt)
 	return(cur_dist!=-1);
 }
 
-void view_click_snap_mesh(d3pnt *old_dpt,d3pnt *mpt)
+int view_click_get_snap_count(d3pnt *old_dpnt,d3pnt *mpnt)
 {
-	int				n,k,nsel,type,mesh_idx,poly_idx;
-	bool			snap_hit;
-	d3pnt			*old_dpt_ptr;
-	d3pnt			spt;
-	map_mesh_type	*mesh;
+	int				n,k,t,i,nsel,type,count,
+					mesh_idx,poly_idx;
+	bool			hit;
+	d3pnt			*old_dpnt_ptr;
+	d3pnt			spnt;
+	map_mesh_type	*mesh,*mesh2;
 
-	if (state.vertex_mode!=vertex_mode_snap) return;
-
-		// check all vertexes in all meshes
-		// in the selection for snaps.  Anything that
-		// can snap is later compared by the total
-		// number of vetexes snapped
-
-	snap_hit=FALSE;
-	
-	old_dpt_ptr=old_dpt;
+	count=0;
+	old_dpnt_ptr=old_dpnt;
 
 	nsel=select_count();
 	
@@ -293,23 +286,102 @@ void view_click_snap_mesh(d3pnt *old_dpt,d3pnt *mpt)
 		mesh=&map.mesh.meshes[mesh_idx];
 	
 		for (n=0;n!=mesh->nvertex;n++) {
-			spt.x=old_dpt_ptr->x+mpt->x;
-			spt.y=old_dpt_ptr->y+mpt->y;
-			spt.z=old_dpt_ptr->z+mpt->z;
+			spnt.x=old_dpnt_ptr->x+mpnt->x;
+			spnt.y=old_dpnt_ptr->y+mpnt->y;
+			spnt.z=old_dpnt_ptr->z+mpnt->z;
+
+				// count any collision
+				// skip any meshes within selection
+
+			hit=FALSE;
+
+			for (i=0;i!=map.mesh.nmesh;i++) {
+				if (i==n) continue;
+				if (!select_check(mesh_piece,i,-1)) continue;
+
+				mesh2=&map.mesh.meshes[i];
+
+				for (t=0;t!=mesh2->nvertex;t++) {
+					if (spnt.x!=mesh2->vertexes[t].x) continue;
+					if (spnt.y!=mesh2->vertexes[t].y) continue;
+					if (spnt.z!=mesh2->vertexes[t].z) continue;
+
+					hit=TRUE;
+					break;
+				}
+
+				if (hit) break;
+			}
+
+			if (hit) count++;
+		}
+	}
+
+	return(count);
+}
+
+void view_click_snap_mesh(d3pnt *old_dpnt,d3pnt *mpnt)
+{
+	int				n,k,nsel,type,
+					snap_count,snap_min_count,
+					mesh_idx,poly_idx;
+	d3pnt			*old_dpnt_ptr;
+	d3pnt			spnt,mv_pnt,cur_mv_pnt;
+	map_mesh_type	*mesh;
+
+	if (state.vertex_mode!=vertex_mode_snap) return;
+
+		// check all vertexes in all meshes
+		// in the selection for snaps.  Anything that
+		// can snap is compared by the total
+		// number of vetexes snapped, the one with the
+		// least is the snap target
+
+	snap_min_count=9999;
+	
+	old_dpnt_ptr=old_dpnt;
+
+	nsel=select_count();
+	
+	for (k=0;k!=nsel;k++) {
+		select_get(k,&type,&mesh_idx,&poly_idx);
+		if (type!=mesh_piece) continue;
+		
+		mesh=&map.mesh.meshes[mesh_idx];
+	
+		for (n=0;n!=mesh->nvertex;n++) {
+			spnt.x=old_dpnt_ptr->x+mpnt->x;
+			spnt.y=old_dpnt_ptr->y+mpnt->y;
+			spnt.z=old_dpnt_ptr->z+mpnt->z;
+
+				// can this vertex snap?
 			
-			if (view_click_snap_mesh_vertexes(mesh_idx,&spt)) {
-				mpt->x=spt.x-old_dpt_ptr->x;
-				mpt->y=spt.y-old_dpt_ptr->y;
-				mpt->z=spt.z-old_dpt_ptr->z;
-				snap_hit=TRUE;
-				break;
+			if (view_click_snap_mesh_vertexes(mesh_idx,&spnt)) {
+
+					// get the new snap point
+
+				mv_pnt.x=spnt.x-old_dpnt_ptr->x;
+				mv_pnt.y=spnt.y-old_dpnt_ptr->y;
+				mv_pnt.z=spnt.z-old_dpnt_ptr->z;
+
+					// get the snap count
+
+				snap_count=view_click_get_snap_count(old_dpnt,mpnt);
+
+				if (snap_count<snap_min_count) {
+					snap_min_count=snap_count;
+					memmove(&cur_mv_pnt,&mv_pnt,sizeof(d3pnt));
+				}
 			}
 			
-			old_dpt_ptr++;
+			old_dpnt_ptr++;
 		}
-		
-		if (snap_hit) break;
 	}
+
+		// if we had a good snap,
+		// update the move
+
+	if (snap_min_count!=9999) memmove(mpnt,&cur_mv_pnt,sizeof(d3pnt));
 }
 
 /* =======================================================

@@ -122,8 +122,9 @@ void input_action_clear(void)
     
 	for (n=0;n!=256;n++) {
 		action->nitem=0;
-		action->touch_trigger=FALSE;
 		action->still_down=FALSE;
+		action->touch.trigger=FALSE;
+		action->touch.auto_up=FALSE;
 		action++;
 	}
 }
@@ -517,9 +518,10 @@ bool input_check_action_same_attachment(int action_1_index,int action_2_index)
       
 ======================================================= */
 
-void input_action_set_touch_trigger_state(int action_idx,bool down)
+void input_action_set_touch_trigger_state(int action_idx,bool down,bool auto_up)
 {
-	input_actions[action_idx].touch_trigger=down;
+	input_actions[action_idx].touch.trigger=down;
+	input_actions[action_idx].touch.auto_up=auto_up;
 }
 
 /* =======================================================
@@ -537,9 +539,13 @@ bool input_action_get_state(int action_index)
 	action=&input_actions[action_index];
 
 		// touches send commands directly
-		// to this structure
+		// to this structure, virtual stick
+		// clicks are always auto up
 
-	if (action->touch_trigger) return(TRUE);
+	if (action->touch.trigger) {
+		if (action->touch.auto_up) action->touch.trigger=FALSE;
+		return(TRUE);
+	}
 
 		// check other inputs
 	

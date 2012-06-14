@@ -259,7 +259,8 @@ typedef struct		{
 typedef struct		{
 						int								light_bone_idx[max_model_light],
 														halo_bone_idx[max_model_halo],
-														name_bone_idx;
+														name_bone_idx,label_text_bone_idx,
+														label_bitmap_bone_idx,label_health_bone_idx;
 					} model_bone_connect_type;
 
 //
@@ -399,6 +400,9 @@ extern void model_calc_draw_bone_position(model_type *model,model_draw_setup *dr
 extern bool model_get_light_position(model_type *model,model_draw_setup *draw_setup,int idx,d3pnt *pnt);
 extern bool model_get_halo_position(model_type *model,model_draw_setup *draw_setup,int idx,d3pnt *pnt);
 extern bool model_get_name_position(model_type *model,model_draw_setup *draw_setup,d3pnt *pnt);
+extern bool model_get_label_text_position(model_type *model,model_draw_setup *draw_setup,d3pnt *pnt);
+extern bool model_get_label_bitmap_position(model_type *model,model_draw_setup *draw_setup,d3pnt *pnt);
+extern bool model_get_label_health_position(model_type *model,model_draw_setup *draw_setup,d3pnt *pnt);
 
 extern void model_get_size(model_type *model,int *x,int *y,int *z);
 extern void model_get_vertex_extent(model_type *model,int mesh_idx,int *p_minx,int *p_maxx,int *p_minz,int *p_maxz,int *p_miny,int *p_maxy);

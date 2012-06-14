@@ -552,7 +552,7 @@ void object_damage(obj_type *obj,obj_type *source_obj,weapon_type *source_weap,p
 
 		// any watches
 
-	object_watch_damage_alert(&obj->pnt,obj->idx);
+	object_watch_damage_alert(&obj->pnt,obj);
 }
 
 /* =======================================================

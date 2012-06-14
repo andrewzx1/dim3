@@ -39,6 +39,55 @@ extern js_type				js;
 
 /* =======================================================
 
+      Watch Setup
+      
+======================================================= */
+
+void object_watch_setup(obj_type *obj,int watch_obj_idx,int base_team,char *sound_name,d3pnt *pnt)
+{
+	obj_type		*watch_obj;
+
+		// object ID, team,
+		// and sound
+
+	obj->watch.obj_idx=watch_obj_idx;
+	obj->watch.base_team=base_team;
+	if (sound_name==NULL) {
+		obj->watch.sound_name[0]=0x0;
+	}
+	else {
+		strcpy(obj->watch.sound_name,sound_name);
+	}
+
+		// position and angle
+
+	if (pnt!=NULL) {
+		obj->watch.pnt.x=pnt->x;
+		obj->watch.pnt.y=pnt->y;
+		obj->watch.pnt.z=pnt->z;
+	}
+	else {
+		obj->watch.pnt.x=0;
+		obj->watch.pnt.y=0;
+		obj->watch.pnt.z=0;
+
+		if (watch_obj_idx!=-1) {
+			watch_obj=server.obj_list.objs[watch_obj_idx];
+			if (watch_obj!=NULL) {
+				obj->watch.pnt.x=watch_obj->pnt.x;
+				obj->watch.pnt.y=watch_obj->pnt.y;
+				obj->watch.pnt.z=watch_obj->pnt.z;
+			}
+		}
+	}
+
+	obj->watch.ang.x=angle_find(obj->pnt.y,obj->pnt.z,obj->watch.pnt.y,obj->watch.pnt.z);
+	obj->watch.ang.y=angle_find(obj->pnt.x,obj->pnt.z,obj->watch.pnt.x,obj->watch.pnt.z);
+	obj->watch.ang.z=angle_find(obj->pnt.x,obj->pnt.y,obj->watch.pnt.x,obj->watch.pnt.y);
+}
+
+/* =======================================================
+
       Object Watching
       
 ======================================================= */
@@ -137,14 +186,14 @@ void object_watch(obj_type *obj)
 		if (is_near) {
 			if (obj->watch.obj_flags[n]==0x0) {
 				obj->watch.obj_flags[n]=0x1;
-				obj->watch.obj_idx=watch_obj->idx;
+				object_watch_setup(obj,watch_obj->idx,-1,NULL,NULL);
 				scripts_post_event_console(obj->script_idx,-1,sd_event_watch,sd_event_watch_object_near,0);
 			}
 		}
 		else {
 			if (obj->watch.obj_flags[n]==0x1) {
 				obj->watch.obj_flags[n]=0x0;
-				obj->watch.obj_idx=watch_obj->idx;
+				object_watch_setup(obj,watch_obj->idx,-1,NULL,NULL);
 				scripts_post_event_console(obj->script_idx,-1,sd_event_watch,sd_event_watch_object_far,0);
 			}
 		}
@@ -156,6 +205,27 @@ void object_watch(obj_type *obj)
       Object Watch Alerts
       
 ======================================================= */
+
+void object_watch_damage_alert(d3pnt *pnt,obj_type *damage_obj)
+{
+	int				n;
+	obj_type		*obj;
+	
+		// notify watching objects of damaged objects
+
+	for (n=0;n!=max_obj_list;n++) {
+		obj=server.obj_list.objs[n];
+		if (obj==NULL) continue;
+
+		if ((obj->watch.on) && (obj->watch.dist!=0)) {
+
+			if (distance_get(pnt->x,pnt->y,pnt->z,obj->pnt.x,obj->pnt.y,obj->pnt.z)<=obj->watch.dist) {
+				object_watch_setup(obj,damage_obj->idx,-1,NULL,NULL);
+				scripts_post_event_console(obj->script_idx,-1,sd_event_watch,sd_event_watch_object_damage,0);
+			}
+		}
+	}
+}
 
 void object_watch_death_alert(obj_type *dead_obj)
 {
@@ -169,7 +239,7 @@ void object_watch_death_alert(obj_type *dead_obj)
 		if (obj==NULL) continue;
 
 		if (obj->watch.on) {
-			obj->watch.obj_idx=dead_obj->idx;
+			object_watch_setup(obj,dead_obj->idx,-1,NULL,NULL);
 			scripts_post_event_console(obj->script_idx,-1,sd_event_watch,sd_event_watch_object_death,0);
 		}
 	}
@@ -187,8 +257,7 @@ void object_watch_base_alert(map_mesh_type *mesh,obj_type *enter_obj,bool entry)
 		if (obj==NULL) continue;
 
 		if (obj->watch.on) {
-			obj->watch.obj_idx=enter_obj->idx;
-			obj->watch.base_team=mesh->msg.base_team;
+			object_watch_setup(obj,enter_obj->idx,mesh->msg.base_team,NULL,NULL);
 			if (entry) {
 				scripts_post_event_console(obj->script_idx,-1,sd_event_watch,sd_event_watch_object_enter_base,0);
 			}
@@ -219,37 +288,10 @@ void object_watch_sound_alert(d3pnt *pnt,int sound_obj_idx,char *sound_name)
 		if ((obj->watch.on) && (obj->watch.dist!=0)) {
 
 			if (distance_get(pnt->x,pnt->y,pnt->z,obj->pnt.x,obj->pnt.y,obj->pnt.z)<=obj->watch.dist) {
-				obj->watch.obj_idx=sound_obj_idx;
-				strcpy(obj->watch.sound_name,sound_name);
+				object_watch_setup(obj,sound_obj_idx,-1,sound_name,pnt);
 				scripts_post_event_console(obj->script_idx,-1,sd_event_watch,sd_event_watch_object_sound,0);
 			}
 		}
 	}
 }
 
-/* =======================================================
-
-      Object Watch Damage
-      
-======================================================= */
-
-void object_watch_damage_alert(d3pnt *pnt,int damage_obj_idx)
-{
-	int				n;
-	obj_type		*obj;
-	
-		// notify watching objects of damaged objects
-
-	for (n=0;n!=max_obj_list;n++) {
-		obj=server.obj_list.objs[n];
-		if (obj==NULL) continue;
-
-		if ((obj->watch.on) && (obj->watch.dist!=0)) {
-
-			if (distance_get(pnt->x,pnt->y,pnt->z,obj->pnt.x,obj->pnt.y,obj->pnt.z)<=obj->watch.dist) {
-				obj->watch.obj_idx=damage_obj_idx;
-				scripts_post_event_console(obj->script_idx,-1,sd_event_watch,sd_event_watch_object_damage,0);
-			}
-		}
-	}
-}
