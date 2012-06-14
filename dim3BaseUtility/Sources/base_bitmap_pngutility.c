@@ -464,10 +464,7 @@ bool png_utility_copy(char *srce_path,char *dest_path)
 		// compare the paths and
 		// ignore if same file
 
-	if (png_utility_copy_compare_paths(srce_path,dest_path)) {
-		MessageBox(NULL,"SKIP",dest_path,MB_OK);
-		return(TRUE);
-	}
+	if (png_utility_copy_compare_paths(srce_path,dest_path)) return(TRUE);
 
 		// open files
 		
