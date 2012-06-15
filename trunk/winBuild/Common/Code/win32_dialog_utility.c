@@ -90,6 +90,16 @@ float win32_dialog_get_float(HWND diag,int id)
 	return((float)atof(str));
 }
 
+void win32_dialog_set_boolean(HWND diag,int id,boolean value)
+{
+	SendDlgItemMessage(diag,id,BM_SETCHECK,(value?BST_CHECKED:BST_UNCHECKED),0);
+}
+
+boolean win32_dialog_get_boolean(HWND diag,int id)
+{
+	return(SendDlgItemMessage(diag,id,BM_GETCHECK,0,0)==BST_CHECKED);
+}
+
 void win32_dialog_combo_clear(HWND diag,int id)
 {
 	SendDlgItemMessage(diag,id,CB_RESETCONTENT,0,0);

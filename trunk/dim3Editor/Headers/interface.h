@@ -253,6 +253,7 @@ extern void piece_select_more(void);
 extern void piece_tesselate(bool mesh);
 extern void piece_resize(void);
 extern void piece_reposition(void);
+extern void piece_force_grid(void);
 extern void piece_resize_texture(void);
 extern void piece_flip(bool flip_x,bool flip_y,bool flip_z);
 extern void piece_rotate(float rot_x,float rot_y,float rot_z);
@@ -419,6 +420,7 @@ extern void view_pick_list_add_2D_handle(d3pnt *pnt,int type,int main_idx,int su
 
 extern int view_get_grid(void);
 extern void view_click_grid(d3pnt *pt);
+extern void view_force_grid(int mesh_idx);
 extern bool view_click_snap(int mesh_idx,int liquid_idx,d3pnt *pt);
 extern bool view_click_snap_poly(int mesh_idx,int poly_idx,d3pnt *pt);
 extern void view_click_snap_mesh(d3pnt *old_dpt,d3pnt *mpt);
@@ -475,6 +477,6 @@ extern bool dialog_reposition_run(d3pnt *min,d3pnt *max);
 extern bool dialog_resize_texture_run(float *fct_u,float *fct_v);
 extern bool dialog_free_rotate_run(float *rot_x,float *rot_y,float *rot_z);
 extern bool dialog_create_grid_mesh_run(int *xdiv,int *ydiv,int *zdiv);
-extern int dialog_obj_import_run(int *scale_axis,int *scale_unit);
+extern int dialog_obj_import_run(int *scale_axis,int *scale_unit,bool *force_grid);
 extern bool dialog_height_import_run(int *div_cnt,int *size,int *high);
 

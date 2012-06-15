@@ -35,6 +35,7 @@ extern HWND						wnd;
 extern map_type					map;
 
 int								dialog_obj_import_type,dialog_obj_import_axis,dialog_obj_import_unit;
+bool							dialog_obj_import_force_grid;
 
 /* =======================================================
 
@@ -55,6 +56,7 @@ void dialog_obj_import_set(HWND diag)
 	win32_dialog_combo_set_value(diag,IDC_OBJ_IMPORT_AXIS,0);
 
 	win32_dialog_set_int(diag,IDC_OBJ_IMPORT_UNITS,5000);
+	win32_dialog_set_boolean(diag,IDC_OBJ_IMPORT_FORCE_GRID,TRUE);
 }
 
 void dialog_obj_import_get(HWND diag)
@@ -62,6 +64,7 @@ void dialog_obj_import_get(HWND diag)
 	dialog_obj_import_type=win32_dialog_combo_get_value(diag,IDC_OBJ_IMPORT_TYPE);
 	dialog_obj_import_axis=win32_dialog_combo_get_value(diag,IDC_OBJ_IMPORT_AXIS);
 	dialog_obj_import_unit=win32_dialog_get_int(diag,IDC_OBJ_IMPORT_UNITS);
+	dialog_obj_import_force_grid=win32_dialog_get_boolean(diag,IDC_OBJ_IMPORT_FORCE_GRID);
 }
 
 LRESULT CALLBACK dialog_obj_import_proc(HWND diag,UINT msg,WPARAM wparam,LPARAM lparam)
@@ -100,7 +103,7 @@ LRESULT CALLBACK dialog_obj_import_proc(HWND diag,UINT msg,WPARAM wparam,LPARAM 
       
 ======================================================= */
 
-int dialog_obj_import_run(int *scale_axis,int *scale_unit)
+int dialog_obj_import_run(int *scale_axis,int *scale_unit,bool *force_grid)
 {
 	dialog_obj_import_type=0;
 
@@ -108,6 +111,7 @@ int dialog_obj_import_run(int *scale_axis,int *scale_unit)
 
 	*scale_axis=dialog_obj_import_axis;
 	*scale_unit=dialog_obj_import_unit;
+	*force_grid=dialog_obj_import_force_grid;
 
 	return(dialog_obj_import_type);
 }

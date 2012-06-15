@@ -514,6 +514,22 @@ void piece_reposition(void)
 	main_wind_draw();
 }
 
+void piece_force_grid(void)
+{
+	int				n,sel_count,type,mesh_idx,poly_idx;
+	
+	undo_push();
+		
+	sel_count=select_count();
+	
+	for (n=0;n!=sel_count;n++) {
+		select_get(n,&type,&mesh_idx,&poly_idx);
+		if (type==mesh_piece) view_force_grid(mesh_idx);
+	}
+	
+	main_wind_draw();
+}
+
 /* =======================================================
 
       Piece Resize Texture

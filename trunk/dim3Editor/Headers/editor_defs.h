@@ -355,6 +355,7 @@ typedef struct		{
 #define kCommandMeshTesselate					FOUR_CHAR_CODE('ptsl')
 #define kCommandMeshResize						FOUR_CHAR_CODE('mrsz')
 #define kCommandMeshReposition					FOUR_CHAR_CODE('mrps')
+#define kCommandMeshForceGrid					FOUR_CHAR_CODE('mfgd')
 #define kCommandMeshResizeTexture				FOUR_CHAR_CODE('mrst')
 #define kCommandMeshFlipX						FOUR_CHAR_CODE('pfpx')
 #define kCommandMeshFlipY						FOUR_CHAR_CODE('pfpy')

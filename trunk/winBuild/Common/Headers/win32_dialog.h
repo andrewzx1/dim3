@@ -31,6 +31,8 @@ extern void win32_dialog_set_int(HWND diag,int id,int value);
 extern int win32_dialog_get_int(HWND diag,int id);
 extern void win32_dialog_set_float(HWND diag,int id,float value);
 extern float win32_dialog_get_float(HWND diag,int id);
+extern void win32_dialog_set_boolean(HWND diag,int id,boolean value);
+extern boolean win32_dialog_get_boolean(HWND diag,int id);
 extern void win32_dialog_combo_clear(HWND diag,int id);
 extern void win32_dialog_combo_add(HWND diag,int id,char *str);
 extern void win32_dialog_combo_set_value(HWND diag,int id,int value);
