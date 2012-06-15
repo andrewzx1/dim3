@@ -72,6 +72,52 @@ void view_click_grid(d3pnt *pt)
 	pt->z*=sz;
 }
 
+void view_force_grid(int mesh_idx)
+{
+	int					k,grid_sz;
+	d3pnt				min,max;
+	map_mesh_type		*mesh;
+
+		// get box
+
+	mesh=&map.mesh.meshes[mesh_idx];
+	map_prepare_mesh_box(mesh);
+
+		// push to grid start
+
+	grid_sz=view_get_grid();
+
+	k=mesh->box.min.x/grid_sz;
+	min.x=k*grid_sz;
+
+	k=mesh->box.min.y/grid_sz;
+	min.y=k*grid_sz;
+
+	k=mesh->box.min.z/grid_sz;
+	min.z=k*grid_sz;
+
+		// make sure bound box is grid sized
+
+	k=(mesh->box.max.x-mesh->box.min.x)/grid_sz;
+	max.x=min.x+(k*grid_sz);
+
+	k=(mesh->box.max.y-mesh->box.min.y)/grid_sz;
+	max.y=min.y+(k*grid_sz);
+
+	k=(mesh->box.max.z-mesh->box.min.z)/grid_sz;
+	max.z=min.z+(k*grid_sz);
+
+		// reset mesh
+
+	map_mesh_resize(&map,mesh_idx,&min,&max);
+}
+
+/* =======================================================
+
+      Snap Vertexes and Polys
+      
+======================================================= */
+
 bool view_click_snap(int mesh_idx,int liquid_idx,d3pnt *pt)
 {
 	int				n,t,y,snap_sz;

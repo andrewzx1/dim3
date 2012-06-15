@@ -403,6 +403,10 @@ bool menu_event_run(int cmd)
 			piece_reposition();
 			return(TRUE);
 
+		case kCommandMeshForceGrid:
+			piece_force_grid();
+			return(TRUE);
+
 		case kCommandMeshResizeTexture:
 			piece_resize_texture();
 			return(TRUE);

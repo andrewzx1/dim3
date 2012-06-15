@@ -657,6 +657,16 @@ typedef struct		{
 					} obj_score;
 
 //
+// labels
+//
+
+typedef struct		{
+						int						image_idx;
+						char					text[32];
+						bool					health;
+					} obj_label;
+
+//
 // scenery objects
 //
 
@@ -925,6 +935,7 @@ typedef struct		{
 						obj_snd_ambient			ambient;
 						obj_remote				remote;
 						obj_score				score;
+						obj_label				label;
 						obj_scenery				scenery;
 						obj_debug				debug;
 						obj_spawn_spot			spawn_spot;

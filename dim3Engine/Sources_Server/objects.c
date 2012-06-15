@@ -697,6 +697,10 @@ int object_create(char *name,int type,int bind)
 	obj->auto_walk.mode=aw_none;
 	obj->auto_walk.dodge.on=FALSE;
 
+	obj->label.text[0]=0x0;
+	obj->label.image_idx=-1;
+	obj->label.health=FALSE;
+
 	obj->debug.str[0]=0x0;
 	
 	object_clear_contact(&obj->contact);

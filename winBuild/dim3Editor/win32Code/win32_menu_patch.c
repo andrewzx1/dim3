@@ -79,6 +79,7 @@ int				win32_menu_remap[][2]={
 					{kCommandMeshTesselate,ID_MESH_TESSELATE},
 					{kCommandMeshResize,ID_MESH_RESIZE},
 					{kCommandMeshReposition,ID_MESH_REPOSITION},
+					{kCommandMeshForceGrid,ID_MESH_FORCE_GRID},
 					{kCommandMeshResizeTexture,ID_MESH_RESIZE_TEXTURE},
 					{kCommandMeshFlipX,ID_MESH_FLIP_X},
 					{kCommandMeshFlipY,ID_MESH_FLIP_Y},

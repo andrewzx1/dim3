@@ -863,7 +863,7 @@ bool import_obj(char *path,char *err_str)
 							import_mode,scale_axis,scale_unit;
 	char					*c,txt[256],file_name[256];
 	unsigned char			*mesh_mark;
-	bool					ok,replace_ok;
+	bool					ok,replace_ok,force_grid;
 	d3pnt					replace_min,replace_max;
 	obj_import_state_type	import_state;
 
@@ -974,7 +974,7 @@ bool import_obj(char *path,char *err_str)
 		// run the import dialog
 
 	replace_ok=piece_add_obj_is_replace_ok(&replace_min,&replace_max);
-	import_mode=dialog_obj_import_run(&scale_axis,&scale_unit);
+	import_mode=dialog_obj_import_run(&scale_axis,&scale_unit,&force_grid);
 	
 	if ((import_mode==import_mode_replace) && (!replace_ok)) import_mode=-1;
 	
@@ -1011,6 +1011,7 @@ bool import_obj(char *path,char *err_str)
 		textdecode_close();
 		
 		for (n=old_nmesh;n<map.mesh.nmesh;n++) {
+			if (force_grid) view_force_grid(n);
 			select_add(mesh_piece,n,0);
 		}
 		
