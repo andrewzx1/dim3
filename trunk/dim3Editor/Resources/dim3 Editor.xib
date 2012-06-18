@@ -10,9 +10,7 @@
       <string key="NS.key.0">com.apple.InterfaceBuilder.CarbonPlugin</string>
       <string key="NS.object.0">907</string>
     </object>
-    <array class="NSMutableArray" key="IBDocument.EditedObjectIDs">
-      <integer value="209"/>
-    </array>
+    <array class="NSMutableArray" key="IBDocument.EditedObjectIDs"/>
     <array key="IBDocument.PluginDependencies">
       <string>com.apple.InterfaceBuilder.CarbonPlugin</string>
     </array>
@@ -2013,6 +2011,35 @@
                   <nil key="helpTagExtendedText"/>
                   <integer value="0" key="helpTagDisplaySide"/>
                 </object>
+                <object class="IBHIMenuItem" id="686052875">
+                  <reference key="NSMenu" ref="943502152"/>
+                  <string key="NSTitle">Force Bounds To Grid</string>
+                  <string key="NSKeyEquiv"/>
+                  <int key="NSKeyEquivModMask">1048576</int>
+                  <int key="NSMnemonicLoc">2147483647</int>
+                  <reference key="NSOnImage" ref="30500971"/>
+                  <reference key="NSMixedImage" ref="228858472"/>
+                  <string key="title">Force Bounds To Grid</string>
+                  <string key="keyEquivalent"/>
+                  <integer value="0" key="disabled"/>
+                  <integer value="0" key="checked"/>
+                  <integer value="0" key="submenuParentChoosable"/>
+                  <integer value="0" key="dynamic"/>
+                  <integer value="1" key="notPreviousAlternate"/>
+                  <integer value="0" key="hidden"/>
+                  <integer value="0" key="ignoreMeta"/>
+                  <integer value="0" key="sectionHeader"/>
+                  <integer value="0" key="customDraw"/>
+                  <integer value="0" key="autoRepeat"/>
+                  <integer value="0" key="autoDisable"/>
+                  <integer value="0" key="updateSingleItem"/>
+                  <integer value="0" key="includeInCmdKeyMatching"/>
+                  <integer value="1048576" key="keyEquivalentModifierMask"/>
+                  <integer value="1835427684" key="command"/>
+                  <nil key="helpTagText"/>
+                  <nil key="helpTagExtendedText"/>
+                  <integer value="0" key="helpTagDisplaySide"/>
+                </object>
                 <object class="IBHIMenuItem" id="419922128">
                   <reference key="NSMenu" ref="943502152"/>
                   <string key="NSTitle">Resize Current Texture...</string>
@@ -3972,14 +3999,15 @@
         <nil key="classID"/>
         <string key="title">OBJ Import</string>
         <object class="IBHIRootControl" key="rootControl" id="574807821">
-          <nil key="NSNextResponder"/>
+          <reference key="NSNextResponder"/>
           <int key="NSvFlags">256</int>
           <array class="NSMutableArray" key="NSSubviews">
             <object class="IBHIButton" id="183263898">
               <reference key="NSNextResponder" ref="574807821"/>
               <int key="NSvFlags">256</int>
-              <string key="NSFrame">{{460, 148}, {89, 32}}</string>
+              <string key="NSFrame">{{460, 174}, {89, 32}}</string>
               <reference key="NSSuperview" ref="574807821"/>
+              <reference key="NSWindow"/>
               <integer value="0" key="controlSignature"/>
               <integer value="0" key="controlID"/>
               <integer value="1" key="enabled"/>
@@ -4031,6 +4059,7 @@
               <int key="NSvFlags">256</int>
               <string key="NSFrame">{{20, 85}, {435, 17}}</string>
               <reference key="NSSuperview" ref="574807821"/>
+              <reference key="NSWindow"/>
               <integer value="0" key="controlSignature"/>
               <integer value="5" key="controlID"/>
               <integer value="1" key="enabled"/>
@@ -4082,6 +4111,7 @@
               <int key="NSvFlags">256</int>
               <string key="NSFrame">{{20, 20}, {435, 17}}</string>
               <reference key="NSSuperview" ref="574807821"/>
+              <reference key="NSWindow"/>
               <integer value="0" key="controlSignature"/>
               <integer value="5" key="controlID"/>
               <integer value="1" key="enabled"/>
@@ -4133,6 +4163,7 @@
               <int key="NSvFlags">256</int>
               <string key="NSFrame">{{20, 47}, {93, 16}}</string>
               <reference key="NSSuperview" ref="574807821"/>
+              <reference key="NSWindow"/>
               <integer value="0" key="controlSignature"/>
               <integer value="5" key="controlID"/>
               <integer value="1" key="enabled"/>
@@ -4184,6 +4215,7 @@
               <int key="NSvFlags">256</int>
               <string key="NSFrame">{{32, 113}, {76, 16}}</string>
               <reference key="NSSuperview" ref="574807821"/>
+              <reference key="NSWindow"/>
               <integer value="0" key="controlSignature"/>
               <integer value="5" key="controlID"/>
               <integer value="1" key="enabled"/>
@@ -4235,6 +4267,7 @@
               <int key="NSvFlags">256</int>
               <string key="NSFrame">{{183, 113}, {48, 16}}</string>
               <reference key="NSSuperview" ref="574807821"/>
+              <reference key="NSWindow"/>
               <integer value="0" key="controlSignature"/>
               <integer value="5" key="controlID"/>
               <integer value="1" key="enabled"/>
@@ -4286,6 +4319,7 @@
               <int key="NSvFlags">256</int>
               <string key="NSFrame">{{377, 113}, {85, 16}}</string>
               <reference key="NSSuperview" ref="574807821"/>
+              <reference key="NSWindow"/>
               <integer value="0" key="controlSignature"/>
               <integer value="5" key="controlID"/>
               <integer value="1" key="enabled"/>
@@ -4337,6 +4371,7 @@
               <int key="NSvFlags">256</int>
               <string key="NSFrame">{{235, 106}, {138, 30}}</string>
               <reference key="NSSuperview" ref="574807821"/>
+              <reference key="NSWindow"/>
               <integer value="1935895653" key="controlSignature"/>
               <integer value="0" key="controlID"/>
               <integer value="1" key="enabled"/>
@@ -4391,6 +4426,7 @@
               <int key="NSvFlags">256</int>
               <string key="NSFrame">{{116, 43}, {430, 26}}</string>
               <reference key="NSSuperview" ref="574807821"/>
+              <reference key="NSWindow"/>
               <integer value="1768779892" key="controlSignature"/>
               <integer value="0" key="controlID"/>
               <integer value="1" key="enabled"/>
@@ -4540,6 +4576,7 @@
               <int key="NSvFlags">256</int>
               <string key="NSFrame">{{113, 109}, {65, 26}}</string>
               <reference key="NSSuperview" ref="574807821"/>
+              <reference key="NSWindow"/>
               <integer value="1635281267" key="controlSignature"/>
               <integer value="0" key="controlID"/>
               <integer value="1" key="enabled"/>
@@ -4687,8 +4724,9 @@
             <object class="IBHIButton" id="840283792">
               <reference key="NSNextResponder" ref="574807821"/>
               <int key="NSvFlags">256</int>
-              <string key="NSFrame">{{378, 148}, {82, 32}}</string>
+              <string key="NSFrame">{{378, 174}, {82, 32}}</string>
               <reference key="NSSuperview" ref="574807821"/>
+              <reference key="NSWindow"/>
               <integer value="0" key="controlSignature"/>
               <integer value="2" key="controlID"/>
               <integer value="1" key="enabled"/>
@@ -4735,8 +4773,61 @@
               <integer value="0" key="contentType"/>
               <string key="title">Cancel</string>
             </object>
+            <object class="IBHICheckBox" id="229607026">
+              <reference key="NSNextResponder" ref="574807821"/>
+              <int key="NSvFlags">268</int>
+              <string key="NSFrame">{{114, 140}, {195, 18}}</string>
+              <reference key="NSSuperview" ref="574807821"/>
+              <reference key="NSWindow"/>
+              <string key="NSReuseIdentifierKey">_NS:71</string>
+              <integer value="1718055524" key="controlSignature"/>
+              <integer value="0" key="controlID"/>
+              <integer value="1" key="enabled"/>
+              <integer value="0" key="hidden"/>
+              <integer value="9999" key="fontStyle"/>
+              <integer value="0" key="controlSize"/>
+              <integer value="0" key="command"/>
+              <nil key="helpTagExtendedText"/>
+              <nil key="helpTagText"/>
+              <integer value="0" key="helpTagDisplaySide"/>
+              <reference key="auxiliaryProperties" ref="0"/>
+              <object class="IBCarbonHILayoutInfo" key="layoutInfo">
+                <nil key="bindingTopView"/>
+                <integer value="0" key="bindingTopKind"/>
+                <real value="0.0" key="bindingTopOffset"/>
+                <nil key="bindingLeftView"/>
+                <integer value="0" key="bindingLeftKind"/>
+                <real value="0.0" key="bindingLeftOffset"/>
+                <nil key="bindingBottomView"/>
+                <integer value="0" key="bindingBottomKind"/>
+                <real value="0.0" key="bindingBottomOffset"/>
+                <nil key="bindingRightView"/>
+                <integer value="0" key="bindingRightKind"/>
+                <real value="0.0" key="bindingRightOffset"/>
+                <real value="0.0" key="scaleXRatio"/>
+                <nil key="scaleXView"/>
+                <integer value="0" key="scaleXKind"/>
+                <real value="0.0" key="scaleYRatio"/>
+                <nil key="scaleYView"/>
+                <integer value="0" key="scaleYKind"/>
+                <integer value="0" key="positionXKind"/>
+                <nil key="positionXView"/>
+                <real value="0.0" key="positionXOffset"/>
+                <integer value="0" key="positionYKind"/>
+                <nil key="positionYView"/>
+                <real value="0.0" key="positionYOffset"/>
+              </object>
+              <integer value="0" key="layoutSuspended"/>
+              <reference key="instantiationProperties" ref="0"/>
+              <nil key="classID"/>
+              <integer value="0" key="state"/>
+              <integer value="1" key="autoToggle"/>
+              <string key="title">Force to current grid</string>
+            </object>
           </array>
-          <string key="NSFrameSize">{563, 192}</string>
+          <string key="NSFrameSize">{563, 218}</string>
+          <reference key="NSSuperview"/>
+          <reference key="NSWindow"/>
           <integer value="0" key="controlSignature"/>
           <integer value="0" key="controlID"/>
           <integer value="1" key="enabled"/>
@@ -4779,7 +4870,7 @@
           <nil key="classID"/>
         </object>
         <integer value="0" key="autoPositionMask"/>
-        <string key="windowRectAsNSRect">{{401, 177}, {563, 192}}</string>
+        <string key="windowRectAsNSRect">{{401, 177}, {563, 218}}</string>
         <string key="autoScreenRectAsNSRect">{{0, 0}, {1024, 768}}</string>
         <integer value="0" key="helpTagDisplaySide"/>
         <reference key="instantiationProperties" ref="0"/>
@@ -9857,8 +9948,6 @@ Y29tA</string>
             <reference key="object" ref="574807821"/>
             <array class="NSMutableArray" key="children">
               <reference ref="263088797"/>
-              <reference ref="183263898"/>
-              <reference ref="840283792"/>
               <reference ref="260475270"/>
               <reference ref="309061117"/>
               <reference ref="159644205"/>
@@ -9867,6 +9956,9 @@ Y29tA</string>
               <reference ref="583231590"/>
               <reference ref="346361153"/>
               <reference ref="496696181"/>
+              <reference ref="183263898"/>
+              <reference ref="840283792"/>
+              <reference ref="229607026"/>
             </array>
             <reference key="parent" ref="638475118"/>
           </object>
@@ -10155,6 +10247,7 @@ Y29tA</string>
               <reference ref="21351162"/>
               <reference ref="426639878"/>
               <reference ref="325103561"/>
+              <reference ref="686052875"/>
             </array>
             <reference key="parent" ref="682932006"/>
           </object>
@@ -11228,6 +11321,16 @@ Y29tA</string>
             <reference key="object" ref="22500621"/>
             <reference key="parent" ref="364485497"/>
           </object>
+          <object class="IBObjectRecord">
+            <int key="objectID">16664</int>
+            <reference key="object" ref="686052875"/>
+            <reference key="parent" ref="943502152"/>
+          </object>
+          <object class="IBObjectRecord">
+            <int key="objectID">16665</int>
+            <reference key="object" ref="229607026"/>
+            <reference key="parent" ref="574807821"/>
+          </object>
         </array>
       </object>
       <dictionary class="NSMutableDictionary" key="flattenedProperties">
@@ -11240,6 +11343,9 @@ Y29tA</string>
         <object class="NSAffineTransform" key="16378.IBViewBoundsToFrameTransform">
           <bytes key="NSTransformStruct">P4AAAL+AAABBgAAAwjAAAA</bytes>
         </object>
+        <object class="NSAffineTransform" key="16515.IBViewBoundsToFrameTransform">
+          <bytes key="NSTransformStruct">P4AAAL+AAABDvQAAwzIAAA</bytes>
+        </object>
         <string key="16592.IBEditorWindowLastContentRect">{{126, 767}, {476, 90}}</string>
         <string key="16592.IBWindowTemplateEditedContentRect">{{126, 767}, {476, 90}}</string>
         <string key="16634.IBEditorWindowLastContentRect">{{168, 681}, {306, 130}}</string>
@@ -11249,6 +11355,11 @@ Y29tA</string>
         <string key="16661.IBPluginDependency">com.apple.InterfaceBuilder.CarbonPlugin</string>
         <string key="16662.IBPluginDependency">com.apple.InterfaceBuilder.CarbonPlugin</string>
         <string key="16663.IBPluginDependency">com.apple.InterfaceBuilder.CarbonPlugin</string>
+        <string key="16664.IBPluginDependency">com.apple.InterfaceBuilder.CarbonPlugin</string>
+        <string key="16665.IBPluginDependency">com.apple.InterfaceBuilder.CarbonPlugin</string>
+        <object class="NSAffineTransform" key="16665.IBViewBoundsToFrameTransform">
+          <bytes key="NSTransformStruct">P4AAAL+AAABC5AAAwycAAA</bytes>
+        </object>
         <string key="189.IBEditorWindowLastContentRect">{{179, 932}, {241, 63}}</string>
         <string key="193.IBEditorWindowLastContentRect">{{179, 952}, {104, 23}}</string>
         <string key="201.IBEditorWindowLastContentRect">{{179, 852}, {157, 103}}</string>
@@ -11263,9 +11374,12 @@ Y29tA</string>
         <string key="447.IBWindowTemplateEditedContentRect">{{357, 407}, {364, 197}}</string>
         <string key="5603.IBEditorWindowLastContentRect">{{231, 584}, {306, 158}}</string>
         <string key="5603.IBWindowTemplateEditedContentRect">{{231, 584}, {306, 158}}</string>
-        <string key="6042.IBEditorWindowLastContentRect">{{147, 642}, {563, 192}}</string>
-        <string key="6042.IBWindowTemplateEditedContentRect">{{147, 642}, {563, 192}}</string>
-        <string key="6508.IBEditorWindowLastContentRect">{{179, 302}, {303, 593}}</string>
+        <string key="6042.IBEditorWindowLastContentRect">{{147, 616}, {563, 218}}</string>
+        <string key="6042.IBWindowTemplateEditedContentRect">{{147, 616}, {563, 218}}</string>
+        <object class="NSAffineTransform" key="6047.IBViewBoundsToFrameTransform">
+          <bytes key="NSTransformStruct">P4AAAL+AAABD5gAAwzIAAA</bytes>
+        </object>
+        <string key="6508.IBEditorWindowLastContentRect">{{179, 282}, {303, 613}}</string>
         <string key="6511.IBEditorWindowLastContentRect">{{179, 612}, {267, 263}}</string>
         <string key="6514.IBEditorWindowLastContentRect">{{179, 832}, {240, 23}}</string>
         <string key="6720.IBEditorWindowLastContentRect">{{273, 527}, {449, 169}}</string>
@@ -11277,7 +11391,7 @@ Y29tA</string>
       <nil key="activeLocalization"/>
       <dictionary class="NSMutableDictionary" key="localizations"/>
       <nil key="sourceID"/>
-      <int key="maxID">16663</int>
+      <int key="maxID">16665</int>
     </object>
     <object class="IBClassDescriber" key="IBDocument.Classes"/>
     <int key="IBDocument.localizationMode">0</int>

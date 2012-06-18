@@ -120,10 +120,11 @@ script_define_type			script_dim3_defines[]={
 								{sd_spot_type_spawn,							"",		"DIM3_SPOT_TYPE_SPAWN"},
 								
 								{sd_object_type_player,							"",		"DIM3_OBJECT_TYPE_PLAYER"},
-								{sd_object_type_remote,							"",		"DIM3_OBJECT_TYPE_REMOTE"},
 								{sd_object_type_bot_multiplayer,				"",		"DIM3_OBJECT_TYPE_BOT_MULTIPLAYER"},
 								{sd_object_type_bot_map,						"",		"DIM3_OBJECT_TYPE_BOT_MAP"},
 								{sd_object_type_object,							"",		"DIM3_OBJECT_TYPE_OBJECT"},
+								{sd_object_type_remote_player,					"",		"DIM3_OBJECT_TYPE_REMOTE_PLAYER"},
+								{sd_object_type_remote_object,					"",		"DIM3_OBJECT_TYPE_REMOTE_OBJECT"},
 								
 								{sd_collision_mode_cylinder,					"",		"DIM3_COLLISION_MODE_CYLINDER"},
 								{sd_collision_mode_box,							"",		"DIM3_COLLISION_MODE_BOX"},

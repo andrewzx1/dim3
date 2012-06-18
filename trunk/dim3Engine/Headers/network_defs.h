@@ -210,14 +210,6 @@ typedef struct		{
 #define net_max_weapon_per_remote						24
 
 //
-// add types
-//
-
-#define net_remote_add_player							0
-#define net_remote_add_bot								1
-#define net_remote_add_map_object						2
-
-//
 // team definitions
 //
 

@@ -121,7 +121,7 @@ JSValueRef js_obj_touch_get_objectIsRemote(JSContextRef cx,JSObjectRef j_obj,JSS
 	touch_obj=server.obj_list.objs[obj->touch.obj_idx];
 	if (touch_obj==NULL) return(script_bool_to_value(cx,FALSE));
 
-	return(script_bool_to_value(cx,touch_obj->type==object_type_remote));
+	return(script_bool_to_value(cx,touch_obj->type==object_type_remote_player));
 }
 
 JSValueRef js_obj_touch_get_objectIsBot(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
@@ -149,7 +149,7 @@ JSValueRef js_obj_touch_get_objectIsPlayerRemoteBot(JSContextRef cx,JSObjectRef 
 	touch_obj=server.obj_list.objs[obj->touch.obj_idx];
 	if (touch_obj==NULL) return(script_bool_to_value(cx,FALSE));
 	
-	return(script_bool_to_value(cx,(touch_obj->type==object_type_remote) || (touch_obj->type==object_type_bot_multiplayer)));
+	return(script_bool_to_value(cx,(touch_obj->type==object_type_remote_player) || (touch_obj->type==object_type_bot_multiplayer)));
 }
 
 JSValueRef js_obj_touch_get_stand(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)

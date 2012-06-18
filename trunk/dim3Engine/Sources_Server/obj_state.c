@@ -59,7 +59,7 @@ void object_score_recalc_place(void)
 		obj=server.obj_list.objs[n];
 		if (obj==NULL) continue;
 	
-		if ((obj->type!=object_type_player) && (obj->type!=object_type_remote) && (obj->type!=object_type_bot_multiplayer)) continue;
+		if ((obj->type!=object_type_player) && (obj->type!=object_type_remote_player) && (obj->type!=object_type_bot_multiplayer)) continue;
 		
 			// find place
 			
@@ -223,7 +223,7 @@ bool object_telefrag_players(obj_type *obj,bool check_only)
 
 		// only players, remotes, and multiplayer bots can telefrag
 
-	if ((obj->type!=object_type_player) && (obj->type!=object_type_remote) && (obj->type!=object_type_bot_multiplayer)) return(FALSE);
+	if ((obj->type!=object_type_player) && (obj->type!=object_type_remote_player) && (obj->type!=object_type_bot_multiplayer)) return(FALSE);
 
 		// colliding with remotes
 		
@@ -233,7 +233,7 @@ bool object_telefrag_players(obj_type *obj,bool check_only)
 		check_obj=server.obj_list.objs[n];
 		if (check_obj==NULL) continue;
 	
-		if ((check_obj->type!=object_type_player) && (check_obj->type!=object_type_remote) && (check_obj->type!=object_type_bot_multiplayer)) continue;
+		if ((check_obj->type!=object_type_player) && (check_obj->type!=object_type_remote_player) && (check_obj->type!=object_type_bot_multiplayer)) continue;
 		if ((check_obj->hidden) || (!check_obj->contact.object_on)) continue;
 		if (obj->idx==check_obj->idx) continue;
 		
@@ -349,7 +349,7 @@ void object_touch(obj_type *obj)
 		// get touch object
 
 	hit_obj=server.obj_list.objs[idx];
-	if (hit_obj->type==object_type_remote) return;
+	if (hit_obj->type==object_type_remote_player) return;
 
 	stand=(idx==obj->contact.stand_obj_idx);
 
@@ -486,7 +486,7 @@ void object_damage(obj_type *obj,obj_type *source_obj,weapon_type *source_weap,p
 {
 	int				org_damage;
 	
-	if (obj->type==object_type_remote) return;
+	if (obj->type==object_type_remote_player) return;
 	if (!obj->damage.on) return;
 	
 		// need to make sure cascading scripts
@@ -727,7 +727,7 @@ void object_crush(obj_type *obj,bool auto_crush)
 	
 		// kill if not a remote or invincible
 		
-	if (obj->type==object_type_remote) return;
+	if (obj->type==object_type_remote_player) return;
 	if (obj->damage.invincible) return;
 
 	obj->damage_obj_idx=-1;

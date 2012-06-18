@@ -754,13 +754,13 @@ bool object_start_script(obj_type *obj,bool no_construct,char *err_str)
 		return(TRUE);
 	}
 
-		// if player or remote, use player script
+		// if player, use player script
 		// or overridden multiplayer script,
 		// otherwise use script setup by spot
 	
 	script_name[0]=0x0;
 
-	if ((obj->type==object_type_player) || (obj->type==object_type_remote)) {
+	if (obj->type==object_type_player) {
 		if (net_setup.mode!=net_mode_none) strcpy(script_name,iface.multiplayer.game_list.games[net_setup.game_idx].script.player_script);
 		if (script_name[0]==0x0) strcpy(script_name,"Player");
 	}
@@ -841,7 +841,7 @@ void object_multiplayer_setup(obj_type *obj)
 	iface_mp_game_type			*mp_game;
 
 	if (net_setup.mode==net_mode_none) return;
-	if ((obj->type!=object_type_player) && (obj->type!=object_type_remote) && (obj->type!=object_type_bot_multiplayer)) return;
+	if ((obj->type!=object_type_player) && (obj->type!=object_type_remote_player) && (obj->type!=object_type_bot_multiplayer)) return;
 
 		// team setup
 
@@ -878,7 +878,7 @@ void object_multiplayer_setup_model_team_texture(obj_type *obj)
 	texture_type		*texture;
 
 	if (net_setup.mode==net_mode_none) return;
-	if ((obj->type!=object_type_player) && (obj->type!=object_type_remote) && (obj->type!=object_type_bot_multiplayer)) return;
+	if ((obj->type!=object_type_player) && (obj->type!=object_type_remote_player) && (obj->type!=object_type_bot_multiplayer)) return;
 	if (obj->team_idx==net_team_none) return;
 
 		// get model

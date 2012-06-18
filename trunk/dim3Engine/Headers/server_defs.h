@@ -85,10 +85,11 @@ and can be sold or given away.
 //
 
 #define object_type_player						0
-#define object_type_remote						1
-#define object_type_bot_multiplayer				2
-#define object_type_bot_map						3
-#define object_type_object						4
+#define object_type_bot_multiplayer				1
+#define object_type_bot_map						2
+#define object_type_object						3
+#define object_type_remote_player				4
+#define object_type_remote_object				5
 
 //
 // input modes

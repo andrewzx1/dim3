@@ -198,10 +198,11 @@ and can be sold or given away.
 //
 
 #define sd_object_type_player							1170
-#define sd_object_type_remote							1171
-#define sd_object_type_bot_multiplayer					1172
-#define sd_object_type_bot_map							1173
-#define sd_object_type_object							1174
+#define sd_object_type_bot_multiplayer					1171
+#define sd_object_type_bot_map							1172
+#define sd_object_type_object							1173
+#define sd_object_type_remote_player					1174
+#define sd_object_type_remote_object					1175
 
 //
 // collision type modes

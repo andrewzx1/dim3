@@ -341,6 +341,7 @@ void iface_read_settings_virtual_control(iface_type *iface,int virtual_head_tag)
 			if (tag==-1) break;
 
 			button->on=xml_get_attribute_boolean(tag,"on");
+			button->sticky=xml_get_attribute_boolean(tag,"sticky");
 			button->use_bitmap=xml_get_attribute_boolean(tag,"use_bitmap");
 			button->control_idx=xml_get_attribute_int_default(tag,"control",0);
 			button->pnt.x=xml_get_attribute_int(tag,"x");
@@ -1200,6 +1201,7 @@ bool iface_write_settings_interface(iface_type *iface,char *err_str)
 	for (n=0;n!=max_virtual_button;n++) {
 		xml_add_tagstart("Button");
 		xml_add_attribute_boolean("on",button->on);
+		xml_add_attribute_boolean("sticky",button->sticky);
 		xml_add_attribute_boolean("use_bitmap",button->use_bitmap);
 		xml_add_attribute_int("control",button->control_idx);
 		xml_add_attribute_int("x",button->pnt.x);

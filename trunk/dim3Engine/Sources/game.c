@@ -155,8 +155,13 @@ bool game_host_reset(char *err_str)
 				obj->next_spawn_sub_event=sd_event_spawn_game_reset;
 				break;
 				
-			case object_type_remote:
+			case object_type_remote_player:
 				object_score_reset(obj);
+				obj->next_spawn_sub_event=sd_event_spawn_game_reset;
+				obj->hidden=TRUE;
+				break;
+				
+			case object_type_remote_object:
 				obj->next_spawn_sub_event=sd_event_spawn_game_reset;
 				obj->hidden=TRUE;
 				break;

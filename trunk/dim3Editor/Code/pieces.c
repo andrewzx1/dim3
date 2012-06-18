@@ -524,7 +524,10 @@ void piece_force_grid(void)
 	
 	for (n=0;n!=sel_count;n++) {
 		select_get(n,&type,&mesh_idx,&poly_idx);
-		if (type==mesh_piece) view_force_grid(mesh_idx);
+		if (type==mesh_piece) {
+			view_force_grid(mesh_idx);
+			view_vbo_mesh_rebuild(mesh_idx);
+		}
 	}
 	
 	main_wind_draw();

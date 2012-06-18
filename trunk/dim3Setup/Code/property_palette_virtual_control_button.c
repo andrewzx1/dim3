@@ -34,15 +34,16 @@ and can be sold or given away.
 #include "interface.h"
 
 #define kButtonOn								0
-#define kButtonUseBitmap						1
-#define kButtonControl							2
-#define kButtonUpBitmap							3
-#define kButtonDownBitmap						4
-#define kButtonPositionX						5
-#define kButtonPositionY						6
-#define kButtonPositionWid						7
-#define kButtonPositionHigh						8
-#define kButtonColor							9
+#define kButtonSticky							1
+#define kButtonUseBitmap						2
+#define kButtonControl							3
+#define kButtonUpBitmap							4
+#define kButtonDownBitmap						5
+#define kButtonPositionX						6
+#define kButtonPositionY						7
+#define kButtonPositionWid						8
+#define kButtonPositionHigh						9
+#define kButtonColor							10
 
 extern iface_type				iface;
 extern setup_state_type			state;
@@ -70,6 +71,7 @@ void property_palette_fill_virtual_control_button(int virtual_control_button_idx
 		
 	list_palette_add_header(&property_palette,0,"Settings");
 	list_palette_add_checkbox(&property_palette,kButtonOn,"On",&button->on,FALSE);
+	list_palette_add_checkbox(&property_palette,kButtonSticky,"Sticky",&button->sticky,FALSE);
 	list_palette_add_checkbox(&property_palette,kButtonUseBitmap,"Use Bitmap",&button->use_bitmap,FALSE);
 	list_palette_add_picker_list_int(&property_palette,kButtonControl,"Action",(char*)control_name_str,-1,32,0,FALSE,&button->control_idx,FALSE);
 	list_palette_add_picker_file(&property_palette,kButtonUpBitmap,list_button_none,0,"Up Bitmap","Bitmaps/Virtual","png","",button->up_bitmap_name,FALSE);

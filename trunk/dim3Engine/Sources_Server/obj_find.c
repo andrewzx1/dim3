@@ -115,7 +115,7 @@ obj_type* object_find_nearest(d3pnt *pt,char *name,int type,int team_idx,float a
 			// player and remotes
 			
 		if (player) {
-			if ((obj->type!=object_type_player) && (obj->type!=object_type_bot_multiplayer) && (obj->type!=object_type_remote)) continue;
+			if ((obj->type!=object_type_player) && (obj->type!=object_type_remote_player) && (obj->type!=object_type_bot_multiplayer)) continue;
 		}
 
 		if (obj->idx==skip_obj_idx) continue;

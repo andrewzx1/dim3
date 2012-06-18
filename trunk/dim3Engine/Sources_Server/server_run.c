@@ -206,7 +206,7 @@ static inline void run_objects_slice_single(obj_type *obj)
 {
 		// remotes get predicted
 		
-	if (obj->type==object_type_remote) {
+	if ((obj->type==object_type_remote_player) || (obj->type==object_type_remote_object)) {
 		remote_predict_move(obj);
 		return;
 	}
@@ -235,7 +235,7 @@ void run_objects_slice(void)
 
 		if ((!obj->scenery.on) && (!obj->hidden)) {
 			run_objects_slice_single(obj);
-			if ((!obj->suspend) && (obj->type!=object_type_remote)) mesh_triggers(obj);
+			if ((!obj->suspend) && (obj->type!=object_type_remote_player) && (obj->type!=object_type_remote_object)) mesh_triggers(obj);
 		}
 	}
 }

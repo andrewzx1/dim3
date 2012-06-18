@@ -51,13 +51,17 @@ extern network_setup_type	net_setup;
 
 bool remote_add(network_request_remote_add *remote,bool send_event)
 {
-	int					idx;
+	int					idx,the_type;
 	char				err_str[256];
 	obj_type			*obj,*player_obj;
 	
+	fprintf(stdout,"ADD, net_uid=%d, name=%s, draw_name=%s\n",ntohs(remote->net_uid),remote->name,remote->draw_name);
+	
 		// create new object
 		
-	idx=object_create(remote->name,object_type_remote,bt_game);
+	the_type=(signed short)ntohs(remote->type);
+		
+	idx=object_create(remote->name,the_type,bt_game);
     if (idx==-1) return(FALSE);
 
 	obj=server.obj_list.objs[idx];
@@ -334,6 +338,9 @@ void remote_update(int net_uid,network_request_remote_update *update)
 	obj=object_find_remote_net_uid(net_uid);
 	if (obj==NULL) return;
 	
+	fprintf(stdout,"UPDATE net_uid=%d, name=%s\n",net_uid,obj->name);
+
+
 	draw=&obj->draw;
 	
 		// update position
@@ -802,27 +809,8 @@ void remote_network_send_updates(void)
 
 		// update the player
 
-	if (!app.dedicated_host) {
-		obj=server.obj_list.objs[server.player_obj_idx];
-		net_client_send_remote_update(obj,view.chat.type_on);
-	}
-
-		// if the host, update all other
-		// objects that aren't scenery
-
-	if (net_setup.mode==net_mode_host) {
-
-		for (n=0;n!=max_obj_list;n++) {
-			if (n==server.player_obj_idx) continue;
-
-			obj=server.obj_list.objs[n];
-			if (obj==NULL) continue;
-
-			if (obj->scenery.on) continue;
-			
-			net_client_send_remote_update(obj,FALSE);
-		}
-	}
+	obj=server.obj_list.objs[server.player_obj_idx];
+	net_client_send_remote_update(obj,view.chat.type_on);
 }
 
 void remote_network_send_group_synch(void)
