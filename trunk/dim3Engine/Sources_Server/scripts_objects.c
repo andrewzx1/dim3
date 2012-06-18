@@ -195,6 +195,7 @@ void script_initialize_classes(void)
 	script_init_obj_click_object();
 	script_init_obj_held_object();
 	script_init_obj_pickup_object();
+	script_init_obj_label_object();
 	script_init_obj_watch_object();
 	script_init_obj_watch_position_object();
 	script_init_obj_watch_angle_object();
@@ -353,6 +354,7 @@ void script_release_classes(void)
 	script_free_obj_click_object();
 	script_free_obj_held_object();
 	script_free_obj_pickup_object();
+	script_free_obj_label_object();
 	script_free_obj_watch_object();
 	script_free_obj_watch_position_object();
 	script_free_obj_watch_angle_object();
@@ -721,6 +723,7 @@ JSObjectRef script_create_main_object(JSContextRef cx,int script_idx)
 			script_add_obj_click_object(cx,j_obj,script_idx);
 			script_add_obj_held_object(cx,j_obj,script_idx);
 			script_add_obj_pickup_object(cx,j_obj,script_idx);
+			script_add_obj_label_object(cx,j_obj,script_idx);
 			script_add_obj_watch_object(cx,j_obj,script_idx);
 			script_add_obj_watch_position_object(cx,j_obj,script_idx);
 			script_add_obj_watch_angle_object(cx,j_obj,script_idx);

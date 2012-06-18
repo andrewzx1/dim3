@@ -663,7 +663,7 @@ typedef struct		{
 
 typedef struct		{
 						int						image_idx;
-						char					text[32];
+						char					text[32],bitmap_name[name_str_len];
 						bool					health;
 					} obj_label;
 

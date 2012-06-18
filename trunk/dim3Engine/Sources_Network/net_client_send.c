@@ -35,6 +35,7 @@ and can be sold or given away.
 
 extern map_type					map;
 extern server_type				server;
+extern view_type				view;
 extern js_type					js;
 extern setup_type				setup;
 
@@ -103,14 +104,8 @@ void net_client_request_group_synch(obj_type *obj)
       
 ======================================================= */
 
-void net_client_send_remote_update(obj_type *obj,bool chat_on)
+void net_client_send_remote_update(obj_type *obj)
 {
-	int								n,tick,flags;
-	model_draw						*draw;
-	model_draw_animation			*animation;
-	model_draw_dynamic_bone			*dyn_bone;
-	network_request_animation		*net_animation;
-	network_request_dynamic_bone	*net_dyn_bone;
 	network_request_remote_update	update;
 	
 		// no updates if pipe full
@@ -118,104 +113,10 @@ void net_client_send_remote_update(obj_type *obj,bool chat_on)
 	if (net_setup.mode==net_mode_client) {
 		if (!net_send_ready(client_socket)) return;
 	}
-
-	draw=&obj->draw;
-
-		// create flags
 		
-	flags=0;
-	
-	if (obj->hidden) flags|=net_update_flag_hidden;
-	if (!obj->contact.object_on) flags|=net_update_flag_no_contact_object;
-	if (!obj->contact.projectile_on) flags|=net_update_flag_no_contact_object;
-	if (!obj->contact.force_on) flags|=net_update_flag_no_contact_object;
-	if (chat_on) flags|=net_update_flag_talking;
-	
-	update.flags=htonl(flags);
-	
-		// status
-
-	update.score=htons((short)obj->score.score);
-	update.health=htons((short)obj->status.health.value);
-	update.armor=htons((short)obj->status.armor.value);
-	
-	update.last_stand_mesh_idx=htons((short)obj->mesh.last_stand_mesh_idx);
-	
-		// position
-		
-	update.pnt_x=htonl(obj->pnt.x);
-	update.pnt_y=htonl(obj->pnt.y);
-	update.pnt_z=htonl(obj->pnt.z);
-	
-	update.fp_ang_x=htonf(obj->ang.x);
-	update.fp_ang_y=htonf(obj->ang.y);
-	update.fp_ang_z=htonf(obj->ang.z);
-	
-	update.fp_face_ang_x=htonf(obj->face.ang.x);
-	update.fp_face_ang_y=htonf(obj->face.ang.y);
-	update.fp_face_ang_z=htonf(obj->face.ang.z);
-
-	update.offset_x=htons((short)draw->offset.x);
-	update.offset_y=htons((short)draw->offset.y);
-	update.offset_z=htons((short)draw->offset.z);
-
-	update.fp_predict_move_x=htonl(obj->pnt.x-obj->last_pnt.x);
-	update.fp_predict_move_y=htonl(obj->pnt.y-obj->last_pnt.y);
-	update.fp_predict_move_z=htonl(obj->pnt.z-obj->last_pnt.z);
-	
-	update.fp_predict_turn_y=htonf(obj->last_ang.y-obj->ang.y);
-	
-		// model animations
-
-	animation=draw->animations;
-	net_animation=update.animation;
-
-	tick=game_time_get();
-	
-	for (n=0;n!=max_model_blend_animation;n++) {
-		net_animation->model_tick=htonl(animation->tick-tick);
-		net_animation->model_mode=htons((short)animation->mode);
-		net_animation->model_animate_idx=htons((short)animation->animate_idx);
-		net_animation->model_animate_next_idx=htons((short)animation->animate_next_idx);
-		net_animation->model_pose_move_idx=htons((short)animation->pose_move_idx);
-		net_animation->model_smooth_animate_idx=htons((short)animation->smooth_animate_idx);
-		net_animation->model_smooth_pose_move_idx=htons((short)animation->smooth_pose_move_idx);
-
-		animation++;
-		net_animation++;
-	}
-	
-	update.model_mesh_mask=htonl(draw->mesh_mask);
-	
-	for (n=0;n!=max_model_texture;n++) {
-		update.model_cur_texture_frame[n]=(unsigned char)draw->textures[n].frame;
-	}
-
-		// dynamic bones
-
-	dyn_bone=draw->dynamic_bones;
-	net_dyn_bone=update.dynamic_bones;
-
-	for (n=0;n!=max_model_dynamic_bone;n++) {
-
-		net_dyn_bone->bone_idx=htons((short)dyn_bone->bone_idx);
-
-		if (dyn_bone->bone_idx!=-1) {
-			net_dyn_bone->fp_mov_x=htonf(dyn_bone->mov.x);
-			net_dyn_bone->fp_mov_y=htonf(dyn_bone->mov.y);
-			net_dyn_bone->fp_mov_z=htonf(dyn_bone->mov.z);
-			net_dyn_bone->fp_rot_x=htonf(dyn_bone->rot.x);
-			net_dyn_bone->fp_rot_y=htonf(dyn_bone->rot.y);
-			net_dyn_bone->fp_rot_z=htonf(dyn_bone->rot.z);
-			net_dyn_bone->fp_resize=htonf(dyn_bone->resize);
-		}
-
-		dyn_bone++;
-		net_dyn_bone++;
-	}
-
 		// send update
-		
+
+	remote_update_pack(obj,view.chat.type_on,&update);
 	net_client_send_msg(obj,net_action_request_remote_update,(unsigned char*)&update,sizeof(network_request_remote_update));
 }
 

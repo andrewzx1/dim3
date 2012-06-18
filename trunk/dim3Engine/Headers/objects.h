@@ -269,6 +269,8 @@ extern bool remote_add(network_request_remote_add *remote_add,bool send_event);
 extern void remote_remove(int net_uid,bool send_event);
 extern bool remote_timed_out(obj_type *obj);
 extern void remote_predict_move(obj_type *obj);
+extern void remote_update_pack(obj_type *obj,bool chat_on,network_request_remote_update *update);
+extern void remote_update_unpack(obj_type *obj,network_request_remote_update *update);
 extern bool remote_route_message(net_queue_msg_type *msg);
 extern void remote_network_send_updates(void);
 extern void remote_network_send_group_synch(void);

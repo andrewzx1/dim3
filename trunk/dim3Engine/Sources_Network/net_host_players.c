@@ -558,9 +558,10 @@ void net_host_player_send_stat_update(obj_type *obj)
 
 void net_host_player_send_updates(void)
 {
-	int					n,tick;
-	bool				chat_on;
-	obj_type			*obj;
+	int								n,tick;
+	bool							chat_on;
+	obj_type						*obj;
+	network_request_remote_update	update;
 
 		// time for an update
 
@@ -586,8 +587,9 @@ void net_host_player_send_updates(void)
 			if (!app.dedicated_host) {
 				if (n==server.player_obj_idx) chat_on=view.chat.type_on;
 			}
-			
-			net_client_send_remote_update(obj,chat_on);
+
+			remote_update_pack(obj,chat_on,&update);
+			net_host_player_send_message_all(net_action_request_remote_update,(unsigned char*)&update,sizeof(network_request_remote_update));
 		}
 	}
 }
@@ -650,15 +652,11 @@ void net_host_player_send_message_others(int net_uid,int action,unsigned char *m
 
 		if (n==idx) continue;
 
-			// skip the machine it's running on (usually
-			// the same as skipping the player but will
-			// be different when the host relays messages
-			// for bots)
+			// skip any local players
+			// or bots
 
 		player=&net_host_players[n];
-
-			// bots never get messages,
-
+		if (player->connect.local) continue;
 		if (player->connect.bot) continue;
 
 			// send to network

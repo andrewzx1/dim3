@@ -109,6 +109,7 @@ extern void net_host_player_create_info_player_list(network_reply_info_player_li
 extern void net_host_player_remote_route_msg(net_queue_msg_type *msg);
 
 extern void net_host_player_send_stat_update(obj_type *obj);
+extern void net_host_player_send_updates(void);
 
 extern void net_host_player_send_message_single(int net_uid,int action,unsigned char *msg,int msg_len);
 extern void net_host_player_send_message_others(int net_uid,int action,unsigned char *msg,int msg_len);
@@ -142,7 +143,7 @@ extern void net_client_send_latency_ping(obj_type *obj);
 extern void net_client_request_object_synch(obj_type *obj);
 extern void net_client_request_group_synch(obj_type *obj);
 extern void net_client_send_death(obj_type *obj,bool telefrag);
-extern void net_client_send_remote_update(obj_type *obj,bool chat_on);
+extern void net_client_send_remote_update(obj_type *obj);
 extern void net_client_send_chat(obj_type *obj,char *str);
 extern void net_client_send_sound(obj_type *obj,d3pnt *pnt,float pitch,char *name);
 extern void net_client_send_projectile_add(obj_type *obj,char *weap_name,char *proj_setup_name,d3pnt *pt,d3ang *ang);
