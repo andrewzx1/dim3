@@ -323,24 +323,122 @@ void remote_death(int net_uid,network_request_remote_death *death)
       
 ======================================================= */
 
-void remote_update(int net_uid,network_request_remote_update *update)
+void remote_update_pack(obj_type *obj,bool chat_on,network_request_remote_update *update)
+{
+	int								n,tick,flags;
+	model_draw						*draw;
+	model_draw_animation			*animation;
+	model_draw_dynamic_bone			*dyn_bone;
+	network_request_animation		*net_animation;
+	network_request_dynamic_bone	*net_dyn_bone;
+
+	draw=&obj->draw;
+
+		// create flags
+		
+	flags=0;
+	
+	if (obj->hidden) flags|=net_update_flag_hidden;
+	if (!obj->contact.object_on) flags|=net_update_flag_no_contact_object;
+	if (!obj->contact.projectile_on) flags|=net_update_flag_no_contact_object;
+	if (!obj->contact.force_on) flags|=net_update_flag_no_contact_object;
+	if (chat_on) flags|=net_update_flag_talking;
+	
+	update->flags=htonl(flags);
+	
+		// status
+
+	update->score=htons((short)obj->score.score);
+	update->health=htons((short)obj->status.health.value);
+	update->armor=htons((short)obj->status.armor.value);
+	
+	update->last_stand_mesh_idx=htons((short)obj->mesh.last_stand_mesh_idx);
+	
+		// position
+		
+	update->pnt_x=htonl(obj->pnt.x);
+	update->pnt_y=htonl(obj->pnt.y);
+	update->pnt_z=htonl(obj->pnt.z);
+	
+	update->fp_ang_x=htonf(obj->ang.x);
+	update->fp_ang_y=htonf(obj->ang.y);
+	update->fp_ang_z=htonf(obj->ang.z);
+	
+	update->fp_face_ang_x=htonf(obj->face.ang.x);
+	update->fp_face_ang_y=htonf(obj->face.ang.y);
+	update->fp_face_ang_z=htonf(obj->face.ang.z);
+
+	update->offset_x=htons((short)draw->offset.x);
+	update->offset_y=htons((short)draw->offset.y);
+	update->offset_z=htons((short)draw->offset.z);
+
+	update->fp_predict_move_x=htonl(obj->pnt.x-obj->last_pnt.x);
+	update->fp_predict_move_y=htonl(obj->pnt.y-obj->last_pnt.y);
+	update->fp_predict_move_z=htonl(obj->pnt.z-obj->last_pnt.z);
+	
+	update->fp_predict_turn_y=htonf(obj->last_ang.y-obj->ang.y);
+	
+		// model animations
+
+	animation=draw->animations;
+	net_animation=update->animation;
+
+	tick=game_time_get();
+	
+	for (n=0;n!=max_model_blend_animation;n++) {
+		net_animation->model_tick=htonl(animation->tick-tick);
+		net_animation->model_mode=htons((short)animation->mode);
+		net_animation->model_animate_idx=htons((short)animation->animate_idx);
+		net_animation->model_animate_next_idx=htons((short)animation->animate_next_idx);
+		net_animation->model_pose_move_idx=htons((short)animation->pose_move_idx);
+		net_animation->model_smooth_animate_idx=htons((short)animation->smooth_animate_idx);
+		net_animation->model_smooth_pose_move_idx=htons((short)animation->smooth_pose_move_idx);
+
+		animation++;
+		net_animation++;
+	}
+	
+	update->model_mesh_mask=htonl(draw->mesh_mask);
+	
+	for (n=0;n!=max_model_texture;n++) {
+		update->model_cur_texture_frame[n]=(unsigned char)draw->textures[n].frame;
+	}
+
+		// dynamic bones
+
+	dyn_bone=draw->dynamic_bones;
+	net_dyn_bone=update->dynamic_bones;
+
+	for (n=0;n!=max_model_dynamic_bone;n++) {
+
+		net_dyn_bone->bone_idx=htons((short)dyn_bone->bone_idx);
+
+		if (dyn_bone->bone_idx!=-1) {
+			net_dyn_bone->fp_mov_x=htonf(dyn_bone->mov.x);
+			net_dyn_bone->fp_mov_y=htonf(dyn_bone->mov.y);
+			net_dyn_bone->fp_mov_z=htonf(dyn_bone->mov.z);
+			net_dyn_bone->fp_rot_x=htonf(dyn_bone->rot.x);
+			net_dyn_bone->fp_rot_y=htonf(dyn_bone->rot.y);
+			net_dyn_bone->fp_rot_z=htonf(dyn_bone->rot.z);
+			net_dyn_bone->fp_resize=htonf(dyn_bone->resize);
+		}
+
+		dyn_bone++;
+		net_dyn_bone++;
+	}
+}
+
+void remote_update_unpack(obj_type *obj,network_request_remote_update *update)
 {
 	int								n,flags,old_score,
 									animation_mode,animate_idx,animate_next_idx;
 	d3pnt							org_pnt;
-	obj_type						*obj;
 	model_draw						*draw;
 	model_draw_dynamic_bone			*dyn_bone;
 	model_draw_animation			*animation;
 	network_request_dynamic_bone	*net_dyn_bone;
 	network_request_animation		*net_animation;
 	
-	obj=object_find_remote_net_uid(net_uid);
-	if (obj==NULL) return;
-	
-	fprintf(stdout,"UPDATE net_uid=%d, name=%s\n",net_uid,obj->name);
-
-
 	draw=&obj->draw;
 	
 		// update position
@@ -451,6 +549,18 @@ void remote_update(int net_uid,network_request_remote_update *update)
 		// last update tick
 		
 	obj->remote.last_update=game_time_get();
+}
+
+void remote_update(int net_uid,network_request_remote_update *update)
+{
+	obj_type						*obj;
+	
+	obj=object_find_remote_net_uid(net_uid);
+	if (obj==NULL) return;
+	
+	fprintf(stdout,"UPDATE net_uid=%d, name=%s\n",net_uid,obj->name);
+
+	remote_update_unpack(obj,update);
 	
 		// handle triggers
 		
@@ -797,7 +907,7 @@ bool remote_route_message(net_queue_msg_type *msg)
 
 void remote_network_send_updates(void)
 {
-	int					n,tick;
+	int					tick;
 	obj_type			*obj;
 
 		// time for an update
@@ -810,7 +920,7 @@ void remote_network_send_updates(void)
 		// update the player
 
 	obj=server.obj_list.objs[server.player_obj_idx];
-	net_client_send_remote_update(obj,view.chat.type_on);
+	net_client_send_remote_update(obj);
 }
 
 void remote_network_send_group_synch(void)
