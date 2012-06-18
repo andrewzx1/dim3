@@ -239,7 +239,7 @@ void net_client_send_death(obj_type *obj,bool telefrag)
 		if (obj->damage_obj_idx!=-1) {
 			chk_obj=server.obj_list.objs[obj->damage_obj_idx];
 			if (chk_obj!=NULL) {
-				if ((chk_obj->type==object_type_player) || (chk_obj->type==object_type_remote)) {
+				if ((chk_obj->type==object_type_player) || (chk_obj->type==object_type_remote_player)) {
 					net_uid_killer_obj=chk_obj->remote.net_uid;
 				}
 			}

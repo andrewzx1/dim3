@@ -209,7 +209,7 @@ JSValueRef js_map_object_find_all_players_func(JSContextRef cx,JSObjectRef func,
 		obj=server.obj_list.objs[n];
 		if (obj==NULL) continue;
 
-		if ((obj->type==object_type_player) || (obj->type==object_type_remote) || (obj->type==object_type_bot_multiplayer)) uids[cnt++]=obj->idx;
+		if ((obj->type==object_type_player) || (obj->type==object_type_remote_player) || (obj->type==object_type_bot_multiplayer)) uids[cnt++]=obj->idx;
 	}
 
 	if (cnt==0) return(script_null_to_value(cx));

@@ -38,6 +38,7 @@ extern char team_colors[][16];
 extern app_type				app;
 extern map_type				map;
 extern server_type			server;
+extern view_type			view;
 extern network_setup_type	net_setup;
 
 int							net_host_player_count;
@@ -361,7 +362,7 @@ void net_host_player_update(int net_uid,network_request_remote_update *update)
 
 void net_host_player_remote_object_synch(int net_uid)
 {
-	int							n;
+	int							n,the_type;
 	obj_type					*obj;
 	network_request_remote_add	remote;
 
@@ -373,16 +374,20 @@ void net_host_player_remote_object_synch(int net_uid)
 		if (obj==NULL) continue;
 
 		if (obj->scenery.on) continue;
+		
+			// don't send self!
+			
+		if (obj->remote.net_uid==net_uid) continue;
+		
+			// determine type on client
+			
+		the_type=object_type_remote_object;
+		if ((obj->type==object_type_remote_player) || (obj->type==object_type_bot_multiplayer)) the_type=object_type_remote_player;
 
 			// build the remote
 
 		remote.net_uid=htons((short)obj->remote.net_uid);
-		if (obj->type==object_type_bot_multiplayer) {
-			remote.type=net_remote_add_bot;
-		}
-		else {
-			remote.type=net_remote_add_map_object;
-		}
+		remote.type=htons((short)the_type);
 		strncpy(remote.name,obj->name,name_str_len);
 		remote.name[name_str_len-1]=0x0;
 		strncpy(remote.draw_name,obj->draw.name,name_str_len);
@@ -391,7 +396,7 @@ void net_host_player_remote_object_synch(int net_uid)
 		remote.tint_color_idx=htons((short)obj->tint_color_idx);
 		remote.score=obj->score.score;
 
-		net_host_player_send_message_single(net_uid,net_action_request_remote_add,(unsigned char*)&remote_add,sizeof(network_request_remote_add));
+		net_host_player_send_message_single(net_uid,net_action_request_remote_add,(unsigned char*)&remote,sizeof(network_request_remote_add));
 	}
 }
 
@@ -547,6 +552,48 @@ void net_host_player_send_stat_update(obj_type *obj)
 
 /* =======================================================
 
+      Send Bot 
+      
+======================================================= */
+
+void net_host_player_send_updates(void)
+{
+	int					n,tick;
+	bool				chat_on;
+	obj_type			*obj;
+
+		// time for an update
+
+	tick=game_time_get();
+	if (tick<server.time.network_update_tick) return;
+
+	server.time.network_update_tick=tick+client_communication_update_msec_rate;
+
+		// update all objects on this
+		// server that aren't scenery
+		// (this includes any player on
+		// the host)
+
+	if (net_setup.mode==net_mode_host) {
+
+		for (n=0;n!=max_obj_list;n++) {
+			obj=server.obj_list.objs[n];
+			if (obj==NULL) continue;
+
+			if (obj->scenery.on) continue;
+			
+			chat_on=FALSE;
+			if (!app.dedicated_host) {
+				if (n==server.player_obj_idx) chat_on=view.chat.type_on;
+			}
+			
+			net_client_send_remote_update(obj,chat_on);
+		}
+	}
+}
+
+/* =======================================================
+
       Send Messages to Other or All Players
       
 ======================================================= */
@@ -561,7 +608,7 @@ void net_host_player_send_message_single(int net_uid,int action,unsigned char *m
 		// find player
 
 	idx=net_host_player_find_net_uid(net_uid);
-	if (idx!=-1) {
+	if (idx==-1) {
 		SDL_mutexV(net_host_player_lock);
 		return;
 	}

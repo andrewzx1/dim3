@@ -34,6 +34,7 @@ extern map_type				map;
 #define kOBJImportType							FOUR_CHAR_CODE('impt')
 #define kOBJImportAxis							FOUR_CHAR_CODE('axis')
 #define kOBJImportScale							FOUR_CHAR_CODE('scle')
+#define kOBJImportForceGrid						FOUR_CHAR_CODE('fgrd')
 
 bool						dialog_obj_import_cancel;
 WindowRef					dialog_obj_import_wind;
@@ -79,7 +80,7 @@ static pascal OSStatus dialog_obj_import_event_proc(EventHandlerCallRef handler,
       
 ======================================================= */
 
-int dialog_obj_import_run(int *scale_axis,int *scale_unit)
+int dialog_obj_import_run(int *scale_axis,int *scale_unit,bool *force_grid)
 {
 	int						import_mode;
 	EventHandlerUPP			event_upp;
@@ -96,6 +97,7 @@ int dialog_obj_import_run(int *scale_axis,int *scale_unit)
 	dialog_set_combo(dialog_obj_import_wind,kOBJImportAxis,0,0);
 	dialog_set_int(dialog_obj_import_wind,kOBJImportScale,0,5000);
 	dialog_set_focus(dialog_obj_import_wind,kOBJImportScale,0);
+	dialog_set_boolean(dialog_obj_import_wind,kOBJImportForceGrid,0,TRUE);
 	
 		// show window
 	
@@ -118,6 +120,7 @@ int dialog_obj_import_run(int *scale_axis,int *scale_unit)
 	
 	*scale_axis=dialog_get_combo(dialog_obj_import_wind,kOBJImportAxis,0);
 	*scale_unit=dialog_get_int(dialog_obj_import_wind,kOBJImportScale,0);
+	*force_grid=dialog_get_boolean(dialog_obj_import_wind,kOBJImportForceGrid,0);
 	
 		// close window
 		

@@ -107,7 +107,7 @@ void item_pickup_check(obj_type *obj)
 				// to update the remotes stats
 
 			if (net_setup.mode==net_mode_host) {
-				if (obj->type==object_type_remote) {
+				if (obj->type==object_type_remote_player) {
 					net_host_player_send_stat_update(obj);
 				}
 			}

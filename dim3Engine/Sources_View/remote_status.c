@@ -172,7 +172,7 @@ void remote_draw_names_setup(void)
 		if (view.render->draw_list.items[n].type!=view_render_type_object) continue;
 		obj=server.obj_list.objs[view.render->draw_list.items[n].idx];
 		
-		if ((obj->type!=object_type_remote) && (obj->type!=object_type_bot_multiplayer)) continue;
+		if ((obj->type!=object_type_remote_player) && (obj->type!=object_type_bot_multiplayer)) continue;
 		if (obj->hidden) continue;
 		
 			// get name point

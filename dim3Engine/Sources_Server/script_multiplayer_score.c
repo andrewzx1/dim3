@@ -103,7 +103,7 @@ JSValueRef js_multiplayer_score_get_team_func(JSContextRef cx,JSObjectRef func,J
 		obj=server.obj_list.objs[n];
 		if (obj==NULL) continue;
 
-		if ((obj->type==object_type_player) || (obj->type==object_type_remote) || (obj->type==object_type_bot_multiplayer)) {
+		if ((obj->type==object_type_player) || (obj->type==object_type_remote_player) || (obj->type==object_type_bot_multiplayer)) {
 			if (obj->team_idx==team_idx) score+=obj->score.score;
 		}
 	}

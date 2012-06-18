@@ -115,7 +115,7 @@ void score_limit_check_scores(void)
 			obj=server.obj_list.objs[n];
 			if (obj==NULL) continue;
 		
-			if ((obj->type!=object_type_player) && (obj->type!=object_type_remote) && (obj->type!=object_type_bot_multiplayer)) continue;
+			if ((obj->type!=object_type_player) && (obj->type!=object_type_remote_player) && (obj->type!=object_type_bot_multiplayer)) continue;
 			
 			if (obj->team_idx==net_team_red) {
 				red_score+=obj->score.score;
@@ -142,7 +142,7 @@ void score_limit_check_scores(void)
 		obj=server.obj_list.objs[n];
 		if (obj==NULL) continue;
 
-		if ((obj->type==object_type_player) || (obj->type==object_type_remote) || (obj->type==object_type_bot_multiplayer)) {
+		if ((obj->type==object_type_player) || (obj->type==object_type_remote_player) || (obj->type==object_type_bot_multiplayer)) {
 			if (obj->score.score>=limit) {
 				score_limit_start();
 				return;

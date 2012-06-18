@@ -336,7 +336,7 @@ void weapon_target_next_object(obj_type *obj,weapon_type *weap)
 
 		if (weap->target.opponent_only) {
 			if (chk_obj->status.health.value==0) continue;
-			if ((chk_obj->type!=object_type_remote) && (chk_obj->type!=object_type_bot_multiplayer) && (chk_obj->type!=object_type_bot_map)) continue;
+			if ((chk_obj->type!=object_type_remote_player) && (chk_obj->type!=object_type_bot_multiplayer) && (chk_obj->type!=object_type_bot_map)) continue;
 		}
 		
 			// outside max distance?
@@ -405,7 +405,7 @@ void weapon_target_previous_object(obj_type *obj,weapon_type *weap)
 
 		if (weap->target.opponent_only) {
 			if (chk_obj->status.health.value==0) continue;
-			if ((chk_obj->type!=object_type_remote) && (chk_obj->type!=object_type_bot_multiplayer) && (chk_obj->type!=object_type_bot_map)) continue;
+			if ((chk_obj->type!=object_type_remote_player) && (chk_obj->type!=object_type_bot_multiplayer) && (chk_obj->type!=object_type_bot_map)) continue;
 		}
 		
 			// outside max distance?

@@ -449,6 +449,8 @@
 		2649D14813412B2900573F6F /* setup_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 2649D13D13412B2900573F6F /* setup_defs.h */; };
 		2649D14913412B2900573F6F /* sound_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 2649D13E13412B2900573F6F /* sound_defs.h */; };
 		2649D14A13412B2900573F6F /* view_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 2649D13F13412B2900573F6F /* view_defs.h */; };
+		267DEDB9158ACD9300216D36 /* script_obj_watch_angle.c in Sources */ = {isa = PBXBuildFile; fileRef = 267DEDB7158ACD9300216D36 /* script_obj_watch_angle.c */; };
+		267DEDBA158ACD9300216D36 /* script_obj_watch_position.c in Sources */ = {isa = PBXBuildFile; fileRef = 267DEDB8158ACD9300216D36 /* script_obj_watch_position.c */; };
 		267E82861330155B0087DCED /* interface.h in Headers */ = {isa = PBXBuildFile; fileRef = 267E82851330155B0087DCED /* interface.h */; };
 		2688306D1578223C00A3E446 /* load_pause.c in Sources */ = {isa = PBXBuildFile; fileRef = 2688306C1578223C00A3E446 /* load_pause.c */; };
 		268936BF155CCB5200147273 /* map_collide_setup.c in Sources */ = {isa = PBXBuildFile; fileRef = 268936BC155CCB5200147273 /* map_collide_setup.c */; };
@@ -945,6 +947,8 @@
 		2649D13D13412B2900573F6F /* setup_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = setup_defs.h; path = Headers/setup_defs.h; sourceTree = "<group>"; };
 		2649D13E13412B2900573F6F /* sound_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = sound_defs.h; path = Headers/sound_defs.h; sourceTree = "<group>"; };
 		2649D13F13412B2900573F6F /* view_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = view_defs.h; path = Headers/view_defs.h; sourceTree = "<group>"; };
+		267DEDB7158ACD9300216D36 /* script_obj_watch_angle.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_obj_watch_angle.c; sourceTree = "<group>"; };
+		267DEDB8158ACD9300216D36 /* script_obj_watch_position.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_obj_watch_position.c; sourceTree = "<group>"; };
 		267E82851330155B0087DCED /* interface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = interface.h; path = Headers/interface.h; sourceTree = "<group>"; };
 		2688306C1578223C00A3E446 /* load_pause.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = load_pause.c; sourceTree = "<group>"; };
 		268936BC155CCB5200147273 /* map_collide_setup.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = map_collide_setup.c; sourceTree = "<group>"; };
@@ -1669,6 +1673,8 @@
 				260B3F0A1411F781006ED023 /* script_obj_vehicle.c */,
 				260B3F0B1411F781006ED023 /* script_obj_vert_speed.c */,
 				260B3F0C1411F781006ED023 /* script_obj_watch.c */,
+				267DEDB7158ACD9300216D36 /* script_obj_watch_angle.c */,
+				267DEDB8158ACD9300216D36 /* script_obj_watch_position.c */,
 				260B3F0D1411F781006ED023 /* script_obj_weapon.c */,
 				260B3F0E1411F781006ED023 /* script_obj_weapon_fire.c */,
 				260B3F0F1411F781006ED023 /* script_proj_action.c */,
@@ -2353,6 +2359,8 @@
 				268936C1155CCB5200147273 /* map_collide_y.c in Sources */,
 				2688306D1578223C00A3E446 /* load_pause.c in Sources */,
 				26CBE2041581AD1E00093D7C /* simple_save_pick.c in Sources */,
+				267DEDB9158ACD9300216D36 /* script_obj_watch_angle.c in Sources */,
+				267DEDBA158ACD9300216D36 /* script_obj_watch_position.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

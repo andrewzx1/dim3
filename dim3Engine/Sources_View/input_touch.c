@@ -132,9 +132,24 @@ int input_touch_to_virtual_button_start(d3pnt *pt)
 
 		if ((pt->x<button->pnt.x) || (pt->x>(button->pnt.x+button->size.x)) || (pt->y<button->pnt.y) || (pt->y>(button->pnt.y+button->size.y))) continue;
 		
-		button->down=TRUE;
-		input_action_set_touch_trigger_state(button->control_idx,TRUE,FALSE);
+			// regular buttons go down
+			
+		if (!button->sticky) {
+			button->down=TRUE;
+			input_action_set_touch_trigger_state(button->control_idx,TRUE,FALSE);
+			return(n);
+		}
 		
+			// sticky buttons toggle
+			
+		if (!button->down) {
+			button->down=TRUE;
+			input_action_set_touch_trigger_state(button->control_idx,TRUE,FALSE);
+			return(n);
+		}
+		
+		button->down=FALSE;
+		input_action_set_touch_trigger_state(button->control_idx,FALSE,FALSE);
 		return(n);
 	}
 	
@@ -146,6 +161,7 @@ void input_touch_to_virtual_button_release(int button_idx)
 	iface_virtual_button_type	*button;
 	
 	button=&iface.virtual_control.buttons[button_idx];
+	if (button->sticky) return;			// sticky buttons never go up
 	
 	button->down=FALSE;
 	input_action_set_touch_trigger_state(button->control_idx,FALSE,FALSE);
@@ -212,7 +228,7 @@ int input_touch_to_virtual_stick_start(touch_state_type *state)
 	return(-1);
 }
 
-void input_touch_to_virtual_stick_release(int stick_idx)
+void input_touch_to_virtual_stick_release(int stick_idx,int tick)
 {
 	iface_virtual_stick_type	*stick;
 
@@ -225,7 +241,7 @@ void input_touch_to_virtual_stick_release(int stick_idx)
 		// see if this counts as a click
 
 	if (stick->click_control_idx==-1) return;
-	if (stick->tick>(game_time_get_raw()+touch_stick_up_down_click_msec)) return;
+	if (tick>(game_time_get_raw()+touch_stick_up_down_click_msec)) return;
 
 	input_action_set_touch_trigger_state(stick->click_control_idx,TRUE,TRUE);		// set auto up so it gets read once and then set to up
 }
@@ -259,7 +275,7 @@ void input_touch_state_add_up(int id)
 			if (state->id==id) {
 				state->on=FALSE;
 				if (state->button_idx!=-1) input_touch_to_virtual_button_release(state->button_idx);
-				if (state->stick_idx!=-1) input_touch_to_virtual_stick_release(state->stick_idx);
+				if (state->stick_idx!=-1) input_touch_to_virtual_stick_release(state->stick_idx,state->tick);
 				return;
 			}
 		}
@@ -286,7 +302,6 @@ void input_touch_state_add_down(int id,d3pnt *pt)
 			if (state->id==id) {
 				state->pt.x=pt->x;
 				state->pt.y=pt->y;
-				state->tick=game_time_get_raw();
 				input_touch_to_virtual_stick_move(state);
 				return;
 			}

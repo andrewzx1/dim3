@@ -140,7 +140,7 @@ bool net_host_join_local_player(char *err_str)
 
 		// send all other players on host the new player for remote add
 
-	remote.type=net_remote_add_player;
+	remote.type=object_type_remote_player;
 	strncpy(remote.name,player_obj->name,name_str_len);
 	strncpy(remote.draw_name,player_obj->draw.name,name_str_len);
 	remote.name[name_str_len-1]=0x0;
@@ -148,7 +148,7 @@ bool net_host_join_local_player(char *err_str)
 	remote.tint_color_idx=htons((short)player_obj->tint_color_idx);
 	remote.score=0;
 
-	net_host_player_send_message_others(player_obj->remote.net_uid,net_action_request_remote_add,(unsigned char*)&remote_add,sizeof(network_request_remote_add));
+	net_host_player_send_message_others(player_obj->remote.net_uid,net_action_request_remote_add,(unsigned char*)&remote,sizeof(network_request_remote_add));
 
 	return(TRUE);
 }
@@ -276,7 +276,7 @@ int net_host_join_request(unsigned long ip_addr,int port,network_request_join *r
 		// rules and reset it
 
 	remote.net_uid=htons((short)net_uid);
-	remote.type=net_remote_add_player;
+	remote.type=object_type_remote_player;
 	strncpy(remote.name,request_join->name,name_str_len);
 	remote.name[name_str_len-1]=0x0;
 	strncpy(remote.draw_name,request_join->draw_name,name_str_len);
@@ -316,7 +316,7 @@ int net_host_join_request(unsigned long ip_addr,int port,network_request_join *r
 	
 		// send all other players on host the new player for remote add
 
-	net_host_player_send_message_others(net_uid,net_action_request_remote_add,(unsigned char*)&remote_add,sizeof(network_request_remote_add));
+	net_host_player_send_message_others(net_uid,net_action_request_remote_add,(unsigned char*)&remote,sizeof(network_request_remote_add));
 	
 	return(net_uid);
 }

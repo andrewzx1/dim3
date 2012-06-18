@@ -670,7 +670,7 @@ typedef struct		{
 typedef struct		{
 						int								control_idx,
 														up_image_idx,down_image_idx;
-						bool							on,down,use_bitmap;
+						bool							on,sticky,down,use_bitmap;
 						char							up_bitmap_name[file_str_len],
 														down_bitmap_name[file_str_len];
 						d3pnt							pnt,size;
