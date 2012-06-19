@@ -54,8 +54,8 @@ extern bool net_ip_to_address(char *ip,unsigned long *ip_addr,char *err_str);
 extern bool net_bind_any(d3socket sock,int port,char *err_str);
 extern bool net_receive_ready(d3socket sock);
 extern bool net_send_ready(d3socket sock);
-extern bool net_recvfrom_mesage(d3socket sock,unsigned long *ip_addr,int *port,int *action,int *net_uid,unsigned char *msg,int *msg_len);
-extern bool net_sendto_msg(d3socket sock,unsigned long ip_addr,int port,int action,int net_uid,unsigned char *msg,int msg_len);
+extern bool net_recvfrom_mesage(d3socket sock,unsigned long *ip_addr,int *port,int *action,int *sender_net_uid,unsigned char *msg,int *msg_len);
+extern bool net_sendto_msg(d3socket sock,unsigned long ip_addr,int port,int action,int sender_net_uid,unsigned char *msg,int msg_len);
 
 //
 // http reads
@@ -104,16 +104,16 @@ extern int net_host_player_find_ip_addr(unsigned long ip_addr,int port);
 extern bool net_host_player_add_ok(char *name,char *deny_reason);
 extern int net_host_player_add(unsigned long ip_addr,int port,bool local,char *name,char *draw_name,int tint_color_idx);
 extern int net_host_player_add_bot(obj_type *obj);
-extern void net_host_player_remove(int net_uid);
+extern void net_host_player_remove_by_uid(int net_uid);
 extern void net_host_player_create_info_player_list(network_reply_info_player_list *player_list);
 extern void net_host_player_remote_route_msg(net_queue_msg_type *msg);
 
 extern void net_host_player_send_stat_update(obj_type *obj);
 extern void net_host_player_send_updates(void);
 
-extern void net_host_player_send_message_single(int net_uid,int action,unsigned char *msg,int msg_len);
-extern void net_host_player_send_message_others(int net_uid,int action,unsigned char *msg,int msg_len);
-extern void net_host_player_send_message_all(int action,unsigned char *data,int len);
+extern void net_host_player_send_message_single(int send_net_uid,int action,unsigned char *msg,int msg_len);
+extern void net_host_player_send_message_others(int skip_net_uid,int action,unsigned char *msg,int msg_len);
+extern void net_host_player_send_message_all(int action,unsigned char *msg,int msg_len);
 
 extern void net_host_player_update(int net_uid,network_request_remote_update *update);
 
@@ -138,7 +138,7 @@ extern bool net_client_process_messages(void);
 // client sending messages
 //
 
-extern void net_client_send_leave_host(obj_type *obj);
+extern void net_client_send_remove_remove(obj_type *obj);
 extern void net_client_send_latency_ping(obj_type *obj);
 extern void net_client_request_object_synch(obj_type *obj);
 extern void net_client_request_group_synch(obj_type *obj);

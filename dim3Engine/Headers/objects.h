@@ -265,8 +265,8 @@ extern void player_get_input(void);
 // remotes
 //
 
-extern bool remote_add(network_request_remote_add *remote_add,bool send_event);
-extern void remote_remove(int net_uid,bool send_event);
+extern bool remote_add(network_request_remote_add *remote_add);
+extern void remote_remove(network_request_remote_remove *remove);
 extern bool remote_timed_out(obj_type *obj);
 extern void remote_predict_move(obj_type *obj);
 extern void remote_update_pack(obj_type *obj,bool chat_on,network_request_remote_update *update);

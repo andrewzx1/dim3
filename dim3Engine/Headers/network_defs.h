@@ -101,7 +101,7 @@ and can be sold or given away.
 //
 
 typedef struct		{
-						int								net_uid,action,
+						int								sender_net_uid,action,
 														msg_len,port;
 						unsigned long					ip_addr;
 						unsigned char					msg[net_max_msg_size];
@@ -176,24 +176,23 @@ typedef struct		{
 #define net_action_request_join							3
 #define net_action_reply_join							4
 #define net_action_request_game_reset					5
-#define net_action_request_leave						6
-#define net_action_request_remote_add					7
-#define net_action_request_remote_remove				8
-#define net_action_request_remote_death					9
-#define net_action_request_remote_update				10
-#define net_action_request_remote_telefrag				11
-#define net_action_request_remote_chat					12
-#define net_action_request_remote_sound					13
-#define net_action_request_remote_fire					14
-#define net_action_request_remote_click					15
-#define net_action_request_remote_stat_update			16
-#define net_action_request_latency_ping					17
-#define net_action_reply_latency_ping					18
-#define net_action_request_host_exit					19
-#define net_action_request_object_synch					20
-#define net_action_request_group_synch					21
-#define net_action_reply_group_synch					22
-#define net_action_request_game_score_limit				23
+#define net_action_request_remote_add					6
+#define net_action_request_remote_remove				7
+#define net_action_request_remote_death					8
+#define net_action_request_remote_update				9
+#define net_action_request_remote_telefrag				10
+#define net_action_request_remote_chat					11
+#define net_action_request_remote_sound					12
+#define net_action_request_remote_fire					13
+#define net_action_request_remote_click					14
+#define net_action_request_remote_stat_update			15
+#define net_action_request_latency_ping					16
+#define net_action_reply_latency_ping					17
+#define net_action_request_host_exit					18
+#define net_action_request_object_synch					19
+#define net_action_request_group_synch					20
+#define net_action_reply_group_synch					21
+#define net_action_request_game_score_limit				22
 
 //
 // remote fire types
@@ -237,7 +236,7 @@ typedef struct		{
 //
 
 typedef struct		{
-						short							net_uid,
+						short							sender_net_uid,
 														action,len;
 					} network_header;
 
@@ -279,7 +278,7 @@ typedef struct		{
 
 typedef struct		{
 						int								map_tick;
-						short							net_uid,team_idx;
+						short							join_net_uid,team_idx;
 						char							deny_reason[64];
 					} network_reply_join;
 
@@ -296,14 +295,19 @@ typedef struct		{
 //
 
 typedef struct		{
-						short							net_uid,type,score,
+						short							add_net_uid,type,score,
 														team_idx,tint_color_idx;
 						char							name[name_str_len],
 														draw_name[name_str_len];
 					} network_request_remote_add;
+					
+typedef struct		{
+						short							remove_net_uid;
+					} network_request_remote_remove;
 
 typedef struct		{
-						short							net_uid_killer_obj,telefrag;
+						short							death_net_uid,killer_net_uid,
+														telefrag;
 					} network_request_remote_death;
 
 typedef struct		{
@@ -326,7 +330,7 @@ typedef struct		{
 														fp_face_ang_x,fp_face_ang_y,fp_face_ang_z,
 														fp_predict_move_x,fp_predict_move_y,fp_predict_move_z,
 														fp_predict_turn_y,model_mesh_mask;
-						short							offset_x,offset_y,offset_z,
+						short							update_net_uid,offset_x,offset_y,offset_z,
 														score,health,armor,
 														last_stand_mesh_idx;
 						unsigned char					model_cur_texture_frame[max_model_texture];
