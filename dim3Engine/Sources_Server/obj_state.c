@@ -469,11 +469,10 @@ void object_click(obj_type *obj,obj_type *from_obj)
 		
 	scripts_post_event_console(obj->script_idx,-1,sd_event_click,0,0);
 
-		// and any network events
+		// clients send clicks back
+		// to host
 
-	if (net_setup.mode!=net_mode_none) {
-		if ((from_obj->idx==server.player_obj_idx) || (from_obj->type==object_type_bot_multiplayer)) net_client_send_click(from_obj,&from_obj->pnt,&from_obj->ang);
-	}
+	if (net_setup.mode==net_mode_client) net_client_send_click(from_obj,obj);
 }
 
 /* =======================================================

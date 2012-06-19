@@ -277,7 +277,7 @@ bool net_sendto_msg(d3socket sock,unsigned long ip_addr,int port,int action,int 
 		
 	head=(network_header*)data;
 
-	head->sender_net_uid=htons((short)net_uid);
+	head->sender_net_uid=htons((short)sender_net_uid);
 	head->action=htons((short)action);
 	head->len=htons((short)msg_len);
 	
