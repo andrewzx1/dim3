@@ -245,7 +245,7 @@ int net_host_join_request(unsigned long ip_addr,int port,network_request_join *r
 								tint_color_idx;
 	obj_type					*obj;
 	network_reply_join			reply_join;
-	network_request_remote_add	remote;
+	network_request_remote_add	add;
 	
 		// check if join is OK
 	
@@ -263,7 +263,7 @@ int net_host_join_request(unsigned long ip_addr,int port,network_request_join *r
 
 		// construct the reply
 	
-	reply_join.net_uid=htons((short)net_uid);
+	reply_join.join_net_uid=htons((short)net_uid);
 
 	reply_join.team_idx=htons((short)net_team_none);
 	reply_join.map_tick=htonl(game_time_get()-map.start_game_tick);
@@ -275,19 +275,19 @@ int net_host_join_request(unsigned long ip_addr,int port,network_request_join *r
 		// team (none), after we add, we can call the game
 		// rules and reset it
 
-	remote.net_uid=htons((short)net_uid);
-	remote.type=object_type_remote_player;
-	strncpy(remote.name,request_join->name,name_str_len);
-	remote.name[name_str_len-1]=0x0;
-	strncpy(remote.draw_name,request_join->draw_name,name_str_len);
-	remote.draw_name[name_str_len-1]=0x0;
-	remote.team_idx=htons((short)net_team_none);
-	remote.tint_color_idx=htons((short)tint_color_idx);
-	remote.score=0;
+	add.add_net_uid=htons((short)net_uid);
+	add.type=object_type_remote_player;
+	strncpy(add.name,request_join->name,name_str_len);
+	add.name[name_str_len-1]=0x0;
+	strncpy(add.draw_name,request_join->draw_name,name_str_len);
+	add.draw_name[name_str_len-1]=0x0;
+	add.team_idx=htons((short)net_team_none);
+	add.tint_color_idx=htons((short)tint_color_idx);
+	add.score=0;
 
 		// create the remote object
 
-	if (!remote_add(&remote,TRUE)) {
+	if (!remote_add(&add,TRUE)) {
 		net_uid=-1;
 	}
 
@@ -300,13 +300,13 @@ int net_host_join_request(unsigned long ip_addr,int port,network_request_join *r
 			// reset team in reply and remote add
 
 		reply_join.team_idx=htons((short)obj->team_idx);
-		remote.team_idx=htons((short)obj->team_idx);
+		add.team_idx=htons((short)obj->team_idx);
 	}
 	
 		// send reply back to client
 
 	if (!net_sendto_msg(host_socket,ip_addr,port,net_action_reply_join,net_uid_constant_host,(unsigned char*)&reply_join,sizeof(network_reply_join))) {
-		if (net_uid!=-1) net_host_player_remove(net_uid);
+		if (net_uid!=-1) net_host_player_remove_by_uid(net_uid);
 		return(FALSE);
 	}
 	
@@ -316,7 +316,7 @@ int net_host_join_request(unsigned long ip_addr,int port,network_request_join *r
 	
 		// send all other players on host the new player for remote add
 
-	net_host_player_send_message_others(net_uid,net_action_request_remote_add,(unsigned char*)&remote,sizeof(network_request_remote_add));
+	net_host_player_send_message_others(net_uid,net_action_request_remote_add,(unsigned char*)&add,sizeof(network_request_remote_add));
 	
 	return(net_uid);
 }

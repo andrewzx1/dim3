@@ -360,6 +360,7 @@
 		26107D03154DFF5600791918 /* icon-iphone@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 26107CFF154DFF5600791918 /* icon-iphone@2x.png */; };
 		26107D07154DFFBA00791918 /* Default-Portrait@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 26107D06154DFFBA00791918 /* Default-Portrait@2x~ipad.png */; };
 		26107D0B154DFFF300791918 /* Default-Landscape@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 26107D0A154DFFF300791918 /* Default-Landscape@2x~ipad.png */; };
+		262D75DD158FE8C70086B8BB /* script_obj_label.c in Sources */ = {isa = PBXBuildFile; fileRef = 262D75DC158FE8C70086B8BB /* script_obj_label.c */; };
 		262DD2B6151E328C0078FEA4 /* base_iface_score.c in Sources */ = {isa = PBXBuildFile; fileRef = 262DD2B5151E328C0078FEA4 /* base_iface_score.c */; };
 		264356A614576B0F00CA4CFE /* model_util_file_model.c in Sources */ = {isa = PBXBuildFile; fileRef = 264356A514576B0F00CA4CFE /* model_util_file_model.c */; };
 		2647C977152767B3002FEA4B /* singleplayer_option.c in Sources */ = {isa = PBXBuildFile; fileRef = 2647C976152767B3002FEA4B /* singleplayer_option.c */; };
@@ -760,6 +761,7 @@
 		26107CFF154DFF5600791918 /* icon-iphone@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "icon-iphone@2x.png"; path = "Resources/icon-iphone@2x.png"; sourceTree = "<group>"; };
 		26107D06154DFFBA00791918 /* Default-Portrait@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-Portrait@2x~ipad.png"; path = "Resources/Default-Portrait@2x~ipad.png"; sourceTree = "<group>"; };
 		26107D0A154DFFF300791918 /* Default-Landscape@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-Landscape@2x~ipad.png"; path = "Resources/Default-Landscape@2x~ipad.png"; sourceTree = "<group>"; };
+		262D75DC158FE8C70086B8BB /* script_obj_label.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_obj_label.c; sourceTree = "<group>"; };
 		262DD2B5151E328C0078FEA4 /* base_iface_score.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = base_iface_score.c; sourceTree = "<group>"; };
 		2638D24013ED0AD600029B18 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		264356A514576B0F00CA4CFE /* model_util_file_model.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = model_util_file_model.c; sourceTree = "<group>"; };
@@ -1435,6 +1437,7 @@
 				260B413F1411F812006ED023 /* script_obj_turn_speed.c */,
 				260B41401411F812006ED023 /* script_obj_vehicle.c */,
 				260B41411411F812006ED023 /* script_obj_vert_speed.c */,
+				262D75DC158FE8C70086B8BB /* script_obj_label.c */,
 				260B41421411F812006ED023 /* script_obj_watch.c */,
 				267DEDB0158ACD6400216D36 /* script_obj_watch_angle.c */,
 				267DEDB1158ACD6400216D36 /* script_obj_watch_position.c */,
@@ -2053,6 +2056,7 @@
 				266B3DBF15845F31003E7787 /* simple_save_pick.c in Sources */,
 				267DEDB2158ACD6400216D36 /* script_obj_watch_angle.c in Sources */,
 				267DEDB3158ACD6400216D36 /* script_obj_watch_position.c in Sources */,
+				262D75DD158FE8C70086B8BB /* script_obj_label.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

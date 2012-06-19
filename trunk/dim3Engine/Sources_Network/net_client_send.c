@@ -72,9 +72,12 @@ void net_client_send_msg(obj_type *obj,int action,unsigned char *msg,int msg_len
       
 ======================================================= */
 
-void net_client_send_leave_host(obj_type *obj)
+void net_client_send_remote_remove(obj_type *obj)
 {
-	net_client_send_msg(obj,net_action_request_leave,NULL,0);
+	network_request_remote_remove			remove;
+	
+	remove.remove_net_uid=htons((short)obj->remote.net_uid);
+	net_client_send_msg(obj,net_action_request_remote_remove,(unsigned char*)&remove,sizeof(network_request_remote_remove));
 }
 
 void net_client_send_latency_ping(obj_type *obj)
@@ -132,6 +135,8 @@ void net_client_send_death(obj_type *obj,bool telefrag)
 	obj_type						*chk_obj;
 	network_request_remote_death	death;
 	
+	death.death_net_uid=htons((short)obj->remote.net_uid);
+	
 		// normal deaths
 
 	if (!telefrag) {
@@ -146,7 +151,7 @@ void net_client_send_death(obj_type *obj,bool telefrag)
 			}
 		}
 		
-		death.net_uid_killer_obj=htons((short)net_uid_killer_obj);
+		death.killer_net_uid=htons((short)net_uid_killer_obj);
 		death.telefrag=htons(0);
 	}
 
@@ -155,7 +160,7 @@ void net_client_send_death(obj_type *obj,bool telefrag)
 	else {
 		chk_obj=server.obj_list.objs[obj->damage_obj_idx];		// only remote objects can telefrag each other, so no other checks necessary
 		
-		death.net_uid_killer_obj=htons((short)chk_obj->remote.net_uid);
+		death.killer_net_uid=htons((short)chk_obj->remote.net_uid);
 		death.telefrag=htons(1);
 	}
 

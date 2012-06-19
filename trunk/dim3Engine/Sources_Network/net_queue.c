@@ -95,7 +95,7 @@ bool net_queue_feed(d3socket sock,net_queue_type *queue)
 
 		queue_msg=queue->msgs+queue->count;
 
-		if (!net_recvfrom_mesage(sock,&queue_msg->ip_addr,&queue_msg->port,&queue_msg->action,&queue_msg->net_uid,queue_msg->msg,&queue_msg->msg_len)) {
+		if (!net_recvfrom_mesage(sock,&queue_msg->ip_addr,&queue_msg->port,&queue_msg->action,&queue_msg->sender_net_uid,queue_msg->msg,&queue_msg->msg_len)) {
 			err=TRUE;			// socket has closed, error out
 			break;
 		}

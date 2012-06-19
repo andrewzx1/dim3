@@ -49,7 +49,7 @@ extern network_setup_type	net_setup;
       
 ======================================================= */
 
-bool remote_add(network_request_remote_add *remote,bool send_event)
+bool remote_add(network_request_remote_add *remote)
 {
 	int					idx,the_type;
 	char				err_str[256];
@@ -74,7 +74,7 @@ bool remote_add(network_request_remote_add *remote,bool send_event)
 	obj->pnt.x=obj->pnt.y=obj->pnt.z=0;
 	obj->ang.x=obj->ang.y=obj->ang.z=0.0f;
 
-	obj->remote.net_uid=(signed short)ntohs(remote->net_uid);
+	obj->remote.net_uid=(signed short)ntohs(remote->add_net_uid);
 	obj->remote.last_update=game_time_get();
 	obj->remote.talking=FALSE;
 	
@@ -115,7 +115,7 @@ bool remote_add(network_request_remote_add *remote,bool send_event)
 
 		// send event to player
 
-	if ((send_event) && (!app.dedicated_host)) {
+	if (!app.dedicated_host) {
 		player_obj=server.obj_list.objs[server.player_obj_idx];
 		scripts_post_event_console(player_obj->script_idx,-1,sd_event_remote,sd_event_remote_join,obj->idx);
 	}
@@ -123,20 +123,20 @@ bool remote_add(network_request_remote_add *remote,bool send_event)
 	return(TRUE);
 }
 
-void remote_remove(int net_uid,bool send_event)
+void remote_remove(network_request_remote_remove *remove)
 {
 	obj_type			*obj,*player_obj;
 	
 		// find remote index
 		
-	obj=object_find_remote_net_uid(net_uid);
+	obj=object_find_remote_net_uid(remove->remove_net_uid);
 	if (obj==NULL) return;
 
 		// send event to player
 		// do it before dispose so player can
 		// read the object if it wants to
 
-	if ((send_event) && (!app.dedicated_host)) {
+	if (!app.dedicated_host) {
 		player_obj=server.obj_list.objs[server.player_obj_idx];
 		scripts_post_event_console(player_obj->script_idx,-1,sd_event_remote,sd_event_remote_leave,obj->idx);
 	}
@@ -333,6 +333,10 @@ void remote_update_pack(obj_type *obj,bool chat_on,network_request_remote_update
 	network_request_dynamic_bone	*net_dyn_bone;
 
 	draw=&obj->draw;
+	
+		// net UID
+		
+	update->net_uid=htons((short)obj->remote.update_net_uid);
 
 		// create flags
 		
@@ -555,7 +559,9 @@ void remote_update(int net_uid,network_request_remote_update *update)
 {
 	obj_type						*obj;
 	
-	obj=object_find_remote_net_uid(net_uid);
+	fprintf(stdout,"got update for %d\n",net_uid);
+	
+	obj=object_find_remote_net_uid((signed short)ntohs(update->update_net_uid));
 	if (obj==NULL) return;
 	
 	fprintf(stdout,"UPDATE net_uid=%d, name=%s\n",net_uid,obj->name);
@@ -843,15 +849,15 @@ bool remote_route_message(net_queue_msg_type *msg)
 			return(TRUE);
 			
 		case net_action_request_remote_add:
-			remote_add((network_request_remote_add*)msg->msg,TRUE);
+			remote_add((network_request_remote_add*)msg->msg);
 			return(TRUE);
 			
 		case net_action_request_remote_remove:
-			remote_remove(msg->net_uid,TRUE);
+			remote_remove((network_request_remote_remove*)msg->msg);
 			return(TRUE);
 			
 		case net_action_request_remote_death:
-			remote_death(msg->net_uid,(network_request_remote_death*)msg->msg);
+			remote_death(msg->net_uid,(network_request_remote_death*)msg->msg);		// supergumba -- do all these
 			return(TRUE);
 		
 		case net_action_request_remote_update:

@@ -204,7 +204,7 @@ bool join_ping_thread_add_host(join_server_host_list_type *list,int start_tick,n
 
 int join_ping_thread_lan(void *arg)
 {
-	int					max_tick,action,net_uid;
+	int					max_tick,action,sender_net_uid;
 	unsigned char		msg[net_max_msg_size];
 	bool				good_reply;
 	d3socket			broadcast_sock;
@@ -238,7 +238,7 @@ int join_ping_thread_lan(void *arg)
 			
 		good_reply=FALSE;
 		
-		if (net_recvfrom_mesage(broadcast_sock,NULL,NULL,&action,&net_uid,msg,NULL)) {
+		if (net_recvfrom_mesage(broadcast_sock,NULL,NULL,&action,&sender_net_uid,msg,NULL)) {
 			if (action==net_action_reply_info) {
 				good_reply=join_ping_thread_add_host(join_host_lan_list,join_thread_lan_start_tick,(network_reply_info*)msg);
 				if (good_reply) join_create_list(join_host_lan_list,join_lan_table_id);
@@ -268,7 +268,7 @@ int join_ping_thread_lan(void *arg)
 
 bool join_ping_thread_wan_host(join_server_host_type *host,int msec,unsigned char *msg)
 {
-	int						action,net_uid,max_tick;
+	int						action,sender_net_uid,max_tick;
 	unsigned long			ip_addr,nip_addr,recv_ip_addr;
 	bool					got_reply;
 	d3socket				sock;
@@ -300,7 +300,7 @@ bool join_ping_thread_wan_host(join_server_host_type *host,int msec,unsigned cha
 	max_tick=client_query_timeout_wait_msec;
 	
 	while (((msec+max_tick)>time_get()) && (!join_thread_quit)) {
-		if (net_recvfrom_mesage(sock,&recv_ip_addr,NULL,&action,&net_uid,msg,NULL)) {
+		if (net_recvfrom_mesage(sock,&recv_ip_addr,NULL,&action,&sender_net_uid,msg,NULL)) {
 			if ((recv_ip_addr==ip_addr) && (action==net_action_reply_info)) {
 				got_reply=TRUE;
 				break;
@@ -802,7 +802,7 @@ void join_game(void)
 		// start client network thread
 		
 	if (!net_client_start_message_queue(err_str)) {
-		net_client_send_leave_host(server.obj_list.objs[server.player_obj_idx]);
+		net_client_send_remote_remove(server.obj_list.objs[server.player_obj_idx]);
 		net_client_join_host_end();
 		map_end();
 		game_end();
