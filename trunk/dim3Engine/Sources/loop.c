@@ -71,7 +71,6 @@ void loop_server_run(void)
 		case net_mode_client:
 			remote_network_send_updates();
 			remote_network_send_group_synch();
-			remote_network_send_latency_ping();
 			break;
 			
 		case net_mode_host:

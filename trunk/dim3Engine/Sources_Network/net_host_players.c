@@ -85,7 +85,7 @@ int net_host_player_find_net_uid(int net_uid)
 	return(-1);
 }
 
-int net_host_player_find_ip_addr(unsigned long ip_addr,int port)
+int net_host_player_find_ip_addr(net_address_type *addr)
 {
 	int						n;
 	net_host_player_type	*player;
@@ -93,7 +93,7 @@ int net_host_player_find_ip_addr(unsigned long ip_addr,int port)
 	player=net_host_players;
 	
 	for (n=0;n!=net_host_player_count;n++) {
-		if ((player->connect.ip_addr==ip_addr) && (player->connect.port==port)) return(n);
+		if ((player->connect.addr.ip==addr->ip) && (player->connect.addr.port==addr->port)) return(n);
 		player++;
 	}
 	
@@ -148,7 +148,7 @@ bool net_host_player_add_ok(char *name,char *deny_reason)
       
 ======================================================= */
 
-int net_host_player_add(unsigned long ip_addr,int port,bool local,char *name,char *draw_name,int tint_color_idx)
+int net_host_player_add(net_address_type *addr,bool local,char *name,char *draw_name,int tint_color_idx)
 {
 	net_host_player_type		*player;
 
@@ -169,8 +169,15 @@ int net_host_player_add(unsigned long ip_addr,int port,bool local,char *name,cha
 		return(-1);
 	}
 
-	player->connect.ip_addr=ip_addr;
-	player->connect.port=port;
+	if (addr==NULL) {
+		player->connect.addr.ip=0;
+		player->connect.addr.port=0;
+	}
+	else {
+		player->connect.addr.ip=addr->ip;
+		player->connect.addr.port=addr->port;
+	}
+
 	player->connect.local=local;
 	player->connect.bot=FALSE;
 
@@ -321,19 +328,17 @@ int net_host_player_count_team(int team_idx)
       
 ======================================================= */
 
-void net_host_player_update(int net_uid,network_request_remote_update *update)
+void net_host_player_update(network_request_remote_update *update)
 {
 	int							idx,score;
 	bool						score_update;
 	net_host_player_type		*player;
 
-	score=(signed short)ntohs(update->score);
-	
 		// update score
 		
 	SDL_mutexP(net_host_player_lock);
 
-	idx=net_host_player_find_net_uid(net_uid);
+	idx=net_host_player_find_net_uid((signed short)ntohs(update->update_net_uid));
 	if (idx==-1) {
 		SDL_mutexV(net_host_player_lock);
 		return;
@@ -348,11 +353,34 @@ void net_host_player_update(int net_uid,network_request_remote_update *update)
 	player->pnt.z=ntohl(update->pnt_z);
 		
 		// score
+
+	score=(signed short)ntohs(update->score);
 	
 	score_update=(score!=player->score);
 	player->score=score;
 	
 	SDL_mutexV(net_host_player_lock);
+}
+
+/* =======================================================
+
+      Remote Click
+      
+======================================================= */
+
+void net_host_player_remote_click(network_request_remote_click *click)
+{
+	obj_type			*clicking_obj,*clicked_obj;
+	
+	clicking_obj=object_find_remote_net_uid((signed short)ntohs(click->clicking_net_uid));
+	if (clicking_obj==NULL) return;
+
+	clicked_obj=object_find_remote_net_uid((signed short)ntohs(click->clicking_net_uid));
+	if (clicking_obj==NULL) return;
+
+		// run click
+
+	object_click(clicked_obj,clicking_obj);
 }
 
 /* =======================================================
@@ -407,7 +435,12 @@ void net_host_player_remote_object_synch(int net_uid)
 
 /* =======================================================
 
-      Moveable Group Synching
+      Group Synching
+
+	  Periodically, clients ask the host to
+	  synch their group movements, so they don't
+	  get off.  This is also used to read
+	  the latency
       
 ======================================================= */
 
@@ -485,7 +518,7 @@ void net_host_player_remote_route_msg(net_queue_msg_type *msg)
 			net_host_player_send_message_others(msg->sender_net_uid,net_action_request_remote_remove,msg->msg,msg->msg_len);
 			break;
 			
-		case net_action_request_remote_update:		// supergumba -- do all these
+		case net_action_request_remote_update:
 			net_host_player_update((network_request_remote_update*)msg->msg);
 			net_host_player_send_message_others(msg->sender_net_uid,net_action_request_remote_update,msg->msg,msg->msg_len);
 			break;
@@ -494,23 +527,19 @@ void net_host_player_remote_route_msg(net_queue_msg_type *msg)
 		case net_action_request_remote_chat:
 		case net_action_request_remote_sound:
 		case net_action_request_remote_fire:
-		case net_action_request_remote_click:
-			net_host_player_send_message_others(msg->net_uid,msg->action,msg->msg,msg->msg_len);
+			net_host_player_send_message_others(msg->sender_net_uid,msg->action,msg->msg,msg->msg_len);
 			break;
 
-		case net_action_request_remote_stat_update:
-			return;			// ignore these
-
-		case net_action_request_latency_ping:
-			net_host_player_send_message_single(msg->net_uid,net_action_reply_latency_ping,NULL,0);
+		case net_action_request_remote_click:
+			net_host_player_remote_click((network_request_remote_click*)msg->msg);
 			break;
 
 		case net_action_request_object_synch:
-			net_host_player_remote_object_synch(msg->net_uid);
+			net_host_player_remote_object_synch(msg->sender_net_uid);
 			break;
 
 		case net_action_request_group_synch:
-			net_host_player_remote_group_synch(msg->net_uid);
+			net_host_player_remote_group_synch(msg->sender_net_uid);
 			break;
 
 	}
@@ -533,6 +562,7 @@ void net_host_player_send_stat_update(obj_type *obj)
 	weapon_type								*weap;
 	network_request_remote_stat_update		stat_update;
 
+	stat_update.stat_net_uid=htons((short)obj->remote.net_uid);
 	stat_update.health=htons((short)obj->status.health.value);
 	stat_update.armor=htons((short)obj->status.armor.value);
 
@@ -552,7 +582,7 @@ void net_host_player_send_stat_update(obj_type *obj)
 		if (idx==net_max_weapon_per_remote) break;
 	}
 	
-	net_host_player_send_message_single(obj->remote.net_uid,net_action_request_remote_stat_update,(unsigned char*)&stat_update,sizeof(network_request_remote_stat_update));
+	net_host_player_send_message_all(net_action_request_remote_stat_update,(unsigned char*)&stat_update,sizeof(network_request_remote_stat_update));
 }
 
 /* =======================================================
@@ -614,7 +644,7 @@ void net_host_player_send_message_single(int send_net_uid,int action,unsigned ch
 
 		// find player
 
-	idx=net_host_player_find_net_uid(net_uid);
+	idx=net_host_player_find_net_uid(send_net_uid);
 	if (idx==-1) {
 		SDL_mutexV(net_host_player_lock);
 		return;
@@ -624,11 +654,12 @@ void net_host_player_send_message_single(int send_net_uid,int action,unsigned ch
 
 		// send message
 
-	net_sendto_msg(player->connect.sock,player->connect.ip_addr,player->connect.port,action,net_uid_constant_host,msg,msg_len);
+	net_sendto_msg(player->connect.sock,player->connect.addr.ip,player->connect.addr.port,action,net_uid_constant_host,msg,msg_len);
 
 	SDL_mutexV(net_host_player_lock);
 }
 
+// supergumba -- replace all this
 void net_host_player_send_message_others(int skip_net_uid,int action,unsigned char *msg,int msg_len)
 {
 	int						n,idx;
@@ -668,7 +699,7 @@ void net_host_player_send_message_others(int skip_net_uid,int action,unsigned ch
 
 			// send to network
 		
-		net_sendto_msg(player->connect.sock,player->connect.ip_addr,player->connect.port,action,net_uid_constant_host,msg,msg_len);
+		net_sendto_msg(player->connect.sock,player->connect.addr.ip,player->connect.addr.port,action,net_uid_constant_host,msg,msg_len);
 	}
 	
 	SDL_mutexV(net_host_player_lock);
@@ -678,3 +709,51 @@ void net_host_player_send_message_all(int action,unsigned char *msg,int msg_len)
 {
 	net_host_player_send_message_others(net_uid_constant_host,action,msg,msg_len);
 }
+
+/*
+
+void net_host_player_send_message_to_clients(net_address_type *skip_addr,int action,unsigned char *msg,int msg_len)
+{
+	int						n,idx;
+	net_host_player_type	*player;
+	
+	SDL_mutexP(net_host_player_lock);
+
+		// find player to skip
+		// if this is the host UID, then
+		// there's nobody to skip
+
+	if (skip_net_uid==-1) {
+		idx=-1;
+	}
+	else {
+		idx=net_host_player_find_net_uid(skip_net_uid);
+		if (idx==-1) {
+			SDL_mutexV(net_host_player_lock);
+			return;
+		}
+	}
+	
+		// send to others
+	
+	for (n=0;n!=net_host_player_count;n++) {
+
+			// skip person sending the message
+
+		if (n==idx) continue;
+
+			// skip any local players
+			// or bots
+
+		player=&net_host_players[n];
+		if (player->connect.local) continue;
+		if (player->connect.bot) continue;
+
+			// send to network
+		
+		net_sendto_msg(player->connect.sock,player->connect.ip_addr,player->connect.port,action,net_uid_constant_host,msg,msg_len);
+	}
+	
+	SDL_mutexV(net_host_player_lock);
+}
+*/

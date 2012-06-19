@@ -77,8 +77,7 @@ and can be sold or given away.
 #define client_message_per_loop_count					10
 
 #define client_communication_update_msec_rate			25
-#define client_communication_group_synch_msec_rate		10000
-#define client_communication_latency_ping_msec_rate		5000
+#define client_communication_group_synch_msec_rate		5000
 
 #define client_communication_timeout_msec				1000
 
@@ -97,14 +96,23 @@ and can be sold or given away.
 #define net_queue_max_message							256
 
 //
+// network address
+//
+
+typedef struct		{
+						int								port;
+						unsigned long					ip;
+					} net_address_type;
+
+//
 // network queues
 //
 
 typedef struct		{
-						int								sender_net_uid,action,
-														msg_len,port;
-						unsigned long					ip_addr;
+						int								sender_net_uid,		// supergumba -- delete
+														action,msg_len;
 						unsigned char					msg[net_max_msg_size];
+						net_address_type				addr;
 					} net_queue_msg_type;
 
 typedef struct		{
@@ -118,9 +126,9 @@ typedef struct		{
 //
 
 typedef struct		{
-						int								net_uid,port;
-						unsigned long					ip_addr;
+						int								net_uid;
 						bool							local,bot;
+						net_address_type				addr;
 						d3socket						sock;
 					} net_host_player_connect_type;
 
@@ -186,13 +194,11 @@ typedef struct		{
 #define net_action_request_remote_fire					13
 #define net_action_request_remote_click					14
 #define net_action_request_remote_stat_update			15
-#define net_action_request_latency_ping					16
-#define net_action_reply_latency_ping					17
-#define net_action_request_host_exit					18
-#define net_action_request_object_synch					19
-#define net_action_request_group_synch					20
-#define net_action_reply_group_synch					21
-#define net_action_request_game_score_limit				22
+#define net_action_request_host_exit					16
+#define net_action_request_object_synch					17
+#define net_action_request_group_synch					18
+#define net_action_reply_group_synch					19
+#define net_action_request_game_score_limit				20
 
 //
 // remote fire types
@@ -225,7 +231,8 @@ typedef struct		{
 #define net_update_flag_no_contact_object				0x00000002
 #define net_update_flag_no_contact_projectile			0x00000004
 #define net_update_flag_no_contact_force				0x00000008
-#define net_update_flag_talking							0x00000010
+#define net_update_flag_clickable						0x00000010
+#define net_update_flag_talking							0x00000020
 
 #define net_group_synch_flag_on							0x00000001
 #define net_group_synch_flag_freeze						0x00000002
@@ -236,7 +243,7 @@ typedef struct		{
 //
 
 typedef struct		{
-						short							sender_net_uid,
+						short							sender_net_uid,		// supergumba -- delete this
 														action,len;
 					} network_header;
 
@@ -339,6 +346,7 @@ typedef struct		{
 					} network_request_remote_update;
 					
 typedef struct		{
+						short							chat_net_uid;
 						char							str[64];
 					} network_request_remote_chat;
 					
@@ -350,7 +358,7 @@ typedef struct		{
 typedef struct		{
 						int								pt_x,pt_y,pt_z,
 														fp_ang_x,fp_ang_y,fp_ang_z;
-						short							fire_type,radius,distance,damage,force;
+						short							fire_net_uid,fire_type,radius,distance,damage,force;
 						char							weap_name[name_str_len],proj_setup_name[name_str_len];
 					} network_request_remote_fire;
 
@@ -360,13 +368,12 @@ typedef struct		{
 					} network_request_remote_ammo;		// used as part of network_request_remote_stat_update
 
 typedef struct		{
-						short							health,armor;
+						short							stat_net_uid,health,armor;
 						network_request_remote_ammo		ammos[net_max_weapon_per_remote];
 					} network_request_remote_stat_update;
 
 typedef struct		{
-						int								pt_x,pt_y,pt_z,
-														fp_ang_x,fp_ang_y,fp_ang_z;
+						short							clicking_net_uid,clicked_net_uid;
 					} network_request_remote_click;
 
 //

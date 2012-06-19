@@ -45,30 +45,7 @@ extern network_setup_type		net_setup;
 
 /* =======================================================
 
-      Client Message Mainline
-      
-======================================================= */
-
-void net_client_send_msg(obj_type *obj,int action,unsigned char *msg,int msg_len)
-{
-		// if we are a client, send all
-		// messages to the host
-
-	if (net_setup.mode==net_mode_client) {
-		net_sendto_msg(client_socket,net_setup.client.host_ip_addr,net_port_host,action,obj->remote.net_uid,msg,msg_len);
-	}
-
-		// if we are the host, some of the
-		// actions we route to other players
-
-	else {
-		net_host_player_send_message_others(obj->remote.net_uid,action,msg,msg_len);
-	}
-}
-
-/* =======================================================
-
-      Host Leave, Ping Messages
+      Host Leave
       
 ======================================================= */
 
@@ -77,13 +54,8 @@ void net_client_send_remote_remove(obj_type *obj)
 	network_request_remote_remove			remove;
 	
 	remove.remove_net_uid=htons((short)obj->remote.net_uid);
-	net_client_send_msg(obj,net_action_request_remote_remove,(unsigned char*)&remove,sizeof(network_request_remote_remove));
+	net_sendto_msg(client_socket,net_setup.client.host_ip_addr,net_port_host,net_action_request_remote_remove,obj->remote.net_uid,(unsigned char*)&remove,sizeof(network_request_remote_remove));
 }
-
-void net_client_send_latency_ping(obj_type *obj)
-{
-	if (net_setup.mode==net_mode_client) net_client_send_msg(obj,net_action_request_latency_ping,NULL,0);
-}	
 
 /* =======================================================
 
@@ -93,12 +65,12 @@ void net_client_send_latency_ping(obj_type *obj)
 
 void net_client_request_object_synch(obj_type *obj)
 {
-	if (net_setup.mode==net_mode_client) net_client_send_msg(obj,net_action_request_object_synch,NULL,0);
+	net_sendto_msg(client_socket,net_setup.client.host_ip_addr,net_port_host,net_action_request_object_synch,obj->remote.net_uid,NULL,0);
 }
 
 void net_client_request_group_synch(obj_type *obj)
 {
-	if (net_setup.mode==net_mode_client) net_client_send_msg(obj,net_action_request_group_synch,NULL,0);
+	net_sendto_msg(client_socket,net_setup.client.host_ip_addr,net_port_host,net_action_request_group_synch,obj->remote.net_uid,NULL,0);
 }
 
 /* =======================================================
@@ -120,7 +92,7 @@ void net_client_send_remote_update(obj_type *obj)
 		// send update
 
 	remote_update_pack(obj,view.chat.type_on,&update);
-	net_client_send_msg(obj,net_action_request_remote_update,(unsigned char*)&update,sizeof(network_request_remote_update));
+	net_sendto_msg(client_socket,net_setup.client.host_ip_addr,net_port_host,net_action_request_remote_update,obj->remote.net_uid,(unsigned char*)&update,sizeof(network_request_remote_update));
 }
 
 /* =======================================================
@@ -164,7 +136,7 @@ void net_client_send_death(obj_type *obj,bool telefrag)
 		death.telefrag=htons(1);
 	}
 
-	net_client_send_msg(obj,net_action_request_remote_death,(unsigned char*)&death,sizeof(network_request_remote_death));
+	net_sendto_msg(client_socket,net_setup.client.host_ip_addr,net_port_host,net_action_request_remote_death,obj->remote.net_uid,(unsigned char*)&death,sizeof(network_request_remote_death));
 }
 
 /* =======================================================
@@ -177,9 +149,10 @@ void net_client_send_chat(obj_type *obj,char *str)
 {
 	network_request_remote_chat		chat;
 	
+	chat.chat_net_uid=htons((short)obj->remote.net_uid);
 	strcpy(chat.str,str);
 
-	net_client_send_msg(obj,net_action_request_remote_chat,(unsigned char*)&chat,sizeof(network_request_remote_chat));
+	net_sendto_msg(client_socket,net_setup.client.host_ip_addr,net_port_host,net_action_request_remote_chat,obj->remote.net_uid,(unsigned char*)&chat,sizeof(network_request_remote_chat));
 }
 
 void net_client_send_sound(obj_type *obj,d3pnt *pnt,float pitch,char *name)
@@ -194,7 +167,7 @@ void net_client_send_sound(obj_type *obj,d3pnt *pnt,float pitch,char *name)
 	
 	strcpy(sound.name,name);
 
-	net_client_send_msg(obj,net_action_request_remote_sound,(unsigned char*)&sound,sizeof(network_request_remote_sound));
+	net_sendto_msg(client_socket,net_setup.client.host_ip_addr,net_port_host,net_action_request_remote_sound,obj->remote.net_uid,(unsigned char*)&sound,sizeof(network_request_remote_sound));
 }
 
 /* =======================================================
@@ -206,7 +179,8 @@ void net_client_send_sound(obj_type *obj,d3pnt *pnt,float pitch,char *name)
 void net_client_send_projectile_add(obj_type *obj,char *weap_name,char *proj_setup_name,d3pnt *pt,d3ang *ang)
 {
 	network_request_remote_fire		fire;
-	
+
+	fire.fire_net_uid=htons((short)obj->remote.net_uid);
 	fire.fire_type=htons(net_remote_fire_type_projectile);
 
 	fire.pt_x=htonl(pt->x);
@@ -225,13 +199,14 @@ void net_client_send_projectile_add(obj_type *obj,char *weap_name,char *proj_set
 	fire.damage=0;
 	fire.force=0;
 
-	net_client_send_msg(obj,net_action_request_remote_fire,(unsigned char*)&fire,sizeof(network_request_remote_fire));
+	net_sendto_msg(client_socket,net_setup.client.host_ip_addr,net_port_host,net_action_request_remote_fire,obj->remote.net_uid,(unsigned char*)&fire,sizeof(network_request_remote_fire));
 }
 
 void net_client_send_hitscan_add(obj_type *obj,char *weap_name,char *proj_setup_name,d3pnt *pt,d3ang *ang)
 {
 	network_request_remote_fire		fire;
 	
+	fire.fire_net_uid=htons((short)obj->remote.net_uid);
 	fire.fire_type=htons(net_remote_fire_type_hit_scan);
 	
 	fire.pt_x=htonl(pt->x);
@@ -250,13 +225,14 @@ void net_client_send_hitscan_add(obj_type *obj,char *weap_name,char *proj_setup_
 	fire.damage=0;
 	fire.force=0;
 
-	net_client_send_msg(obj,net_action_request_remote_fire,(unsigned char*)&fire,sizeof(network_request_remote_fire));
+	net_sendto_msg(client_socket,net_setup.client.host_ip_addr,net_port_host,net_action_request_remote_fire,obj->remote.net_uid,(unsigned char*)&fire,sizeof(network_request_remote_fire));
 }
 
 void net_client_send_melee_add(obj_type *obj,char *weap_name,int radius,int distance,int damage,int force,d3pnt *pt,d3ang *ang)
 {
 	network_request_remote_fire		fire;
 	
+	fire.fire_net_uid=htons((short)obj->remote.net_uid);
 	fire.fire_type=htons(net_remote_fire_type_melee);
 	
 	fire.pt_x=htonl(pt->x);
@@ -275,7 +251,7 @@ void net_client_send_melee_add(obj_type *obj,char *weap_name,int radius,int dist
 	fire.damage=htons((short)damage);
 	fire.force=htons((short)force);
 
-	net_client_send_msg(obj,net_action_request_remote_fire,(unsigned char*)&fire,sizeof(network_request_remote_fire));
+	net_sendto_msg(client_socket,net_setup.client.host_ip_addr,net_port_host,net_action_request_remote_fire,obj->remote.net_uid,(unsigned char*)&fire,sizeof(network_request_remote_fire));
 }
 
 /* =======================================================
@@ -284,17 +260,12 @@ void net_client_send_melee_add(obj_type *obj,char *weap_name,int radius,int dist
 	        
 ======================================================= */
 
-void net_client_send_click(obj_type *obj,d3pnt *pt,d3ang *ang)
+void net_client_send_click(obj_type *clicking_obj,obj_type *clicked_obj)
 {
 	network_request_remote_click		click;
 	
-	click.pt_x=htonl(pt->x);
-	click.pt_y=htonl(pt->y);
-	click.pt_z=htonl(pt->z);
+	click.clicking_net_uid=htons((short)clicking_obj->remote.net_uid);
+	click.clicked_net_uid=htons((short)clicked_obj->remote.net_uid);
 	
-	click.fp_ang_x=htonf(ang->x);
-	click.fp_ang_y=htonf(ang->y);
-	click.fp_ang_z=htonf(ang->z);
-	
-	net_client_send_msg(obj,net_action_request_remote_click,(unsigned char*)&click,sizeof(network_request_remote_click));
+	net_sendto_msg(client_socket,net_setup.client.host_ip_addr,net_port_host,net_action_request_remote_click,clicking_obj->remote.net_uid,(unsigned char*)&click,sizeof(network_request_remote_click));
 }

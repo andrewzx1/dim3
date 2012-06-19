@@ -204,7 +204,6 @@ void debug_dump(void)
 	debug_dump_info_int(file,"Server Run Tick (Game)",server.time.run_tick);
 	debug_dump_info_int(file,"Server Network Update Tick (Game)",server.time.network_update_tick);
 	debug_dump_info_int(file,"Server Network Group Synch Tick (Game)",server.time.network_group_synch_tick);
-	debug_dump_info_int(file,"Server Network Latency Ping Tick (Game)",server.time.network_latency_ping_tick);
 
 	debug_dump_info_int(file,"View Input Tick (Raw)",view.time.input_tick);
 	debug_dump_info_int(file,"View Draw Tick (Raw)",view.time.draw_tick);

@@ -132,7 +132,7 @@ bool net_host_join_local_player(char *err_str)
 
 		// join directly to host
 
-	player_obj->remote.net_uid=net_host_player_add(-1,-1,TRUE,player_obj->name,player_obj->draw.name,player_obj->tint_color_idx);
+	player_obj->remote.net_uid=net_host_player_add(NULL,TRUE,player_obj->name,player_obj->draw.name,player_obj->tint_color_idx);
 	if (player_obj->remote.net_uid==-1) {
 		strcpy(err_str,"Unable to add player");
 		return(FALSE);
@@ -191,7 +191,7 @@ void net_host_join_multiplayer_bots(void)
       
 ======================================================= */
 
-void net_host_info_request(unsigned long ip_addr,int port)
+void net_host_info_request(net_address_type *addr)
 {
 	network_reply_info		info;
 	
@@ -209,7 +209,7 @@ void net_host_info_request(unsigned long ip_addr,int port)
 
 	net_host_player_create_info_player_list(&info.player_list);
 
-	net_sendto_msg(host_socket,ip_addr,port,net_action_reply_info,net_uid_constant_host,(unsigned char*)&info,sizeof(network_reply_info));
+	net_sendto_msg(host_socket,addr->ip,addr->port,net_action_reply_info,net_uid_constant_host,(unsigned char*)&info,sizeof(network_reply_info));
 }
 
 /* =======================================================
@@ -239,7 +239,7 @@ bool net_host_join_request_ok(network_request_join *request_join,network_reply_j
 	return(net_host_player_add_ok(request_join->name,reply_join->deny_reason));
 }
 
-int net_host_join_request(unsigned long ip_addr,int port,network_request_join *request_join)
+int net_host_join_request(net_address_type *addr,network_request_join *request_join)
 {
 	int							net_uid,
 								tint_color_idx;
@@ -258,7 +258,7 @@ int net_host_join_request(unsigned long ip_addr,int port,network_request_join *r
 
 	if (net_host_join_request_ok(request_join,&reply_join)) {
 		tint_color_idx=htons((short)request_join->tint_color_idx);
-		net_uid=net_host_player_add(ip_addr,port,FALSE,request_join->name,request_join->draw_name,tint_color_idx);
+		net_uid=net_host_player_add(addr,FALSE,request_join->name,request_join->draw_name,tint_color_idx);
 	}
 
 		// construct the reply
@@ -287,7 +287,7 @@ int net_host_join_request(unsigned long ip_addr,int port,network_request_join *r
 
 		// create the remote object
 
-	if (!remote_add(&add,TRUE)) {
+	if (!remote_add(&add)) {
 		net_uid=-1;
 	}
 
@@ -343,14 +343,14 @@ void net_host_process_messages(void)
 			// reply to all info request
 			
 		if (msg.action==net_action_request_info) {
-			net_host_info_request(msg.ip_addr,msg.port);
+			net_host_info_request(&msg.addr);
 			continue;
 		}
 
 			// reply to all join requests
 
 		if (msg.action==net_action_request_join) {
-			net_host_join_request(msg.ip_addr,msg.port,(network_request_join*)msg.msg);
+			net_host_join_request(&msg.addr,(network_request_join*)msg.msg);
 			continue;
 		}
 		

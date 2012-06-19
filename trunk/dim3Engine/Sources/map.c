@@ -536,7 +536,6 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 	server.time.run_tick=tick;
 	server.time.network_update_tick=tick;
 	server.time.network_group_synch_tick=tick;
-	server.time.network_latency_ping_tick=tick;	
 	view.time.run_tick=tick;
 	js.timer_tick=tick;
 
