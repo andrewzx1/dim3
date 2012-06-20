@@ -83,7 +83,7 @@ void score_limit_start(void)
 		// push score limit to all remotes
 
 	player_obj=server.obj_list.objs[server.player_obj_idx];
-	net_host_player_send_message_others(player_obj->remote.net_uid,net_action_request_game_score_limit,NULL,0);
+	net_host_player_send_message_to_clients_all(NULL,net_action_request_game_score_limit,NULL,0);
 }
 
 void score_limit_check_scores(void)

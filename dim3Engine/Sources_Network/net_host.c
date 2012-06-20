@@ -148,7 +148,7 @@ bool net_host_join_local_player(char *err_str)
 	remote.tint_color_idx=htons((short)player_obj->tint_color_idx);
 	remote.score=0;
 
-	net_host_player_send_message_others(player_obj->remote.net_uid,net_action_request_remote_add,(unsigned char*)&remote,sizeof(network_request_remote_add));
+	net_host_player_send_message_to_clients_all(NULL,net_action_request_remote_add,(unsigned char*)&remote,sizeof(network_request_remote_add));
 
 	return(TRUE);
 }
@@ -209,7 +209,7 @@ void net_host_info_request(net_address_type *addr)
 
 	net_host_player_create_info_player_list(&info.player_list);
 
-	net_sendto_msg(host_socket,addr,net_action_reply_info,net_uid_constant_host,(unsigned char*)&info,sizeof(network_reply_info));
+	net_sendto_msg(host_socket,addr,net_action_reply_info,(unsigned char*)&info,sizeof(network_reply_info));
 }
 
 /* =======================================================
@@ -305,7 +305,7 @@ int net_host_join_request(net_address_type *addr,network_request_join *request_j
 	
 		// send reply back to client
 
-	if (!net_sendto_msg(host_socket,addr,net_action_reply_join,net_uid_constant_host,(unsigned char*)&reply_join,sizeof(network_reply_join))) {
+	if (!net_sendto_msg(host_socket,addr,net_action_reply_join,(unsigned char*)&reply_join,sizeof(network_reply_join))) {
 		if (net_uid!=-1) net_host_player_remove_by_uid(net_uid);
 		return(FALSE);
 	}
@@ -316,7 +316,7 @@ int net_host_join_request(net_address_type *addr,network_request_join *request_j
 	
 		// send all other players on host the new player for remote add
 
-	net_host_player_send_message_others(net_uid,net_action_request_remote_add,(unsigned char*)&add,sizeof(network_request_remote_add));
+	net_host_player_send_message_to_clients_all(addr,net_action_request_remote_add,(unsigned char*)&add,sizeof(network_request_remote_add));
 	
 	return(net_uid);
 }
@@ -457,7 +457,7 @@ void net_host_game_end(void)
 {
 		// inform all player of server shutdown
 		
-	net_host_player_send_message_all(net_action_request_host_exit,NULL,0);
+	net_host_player_send_message_to_clients_all(NULL,net_action_request_host_exit,NULL,0);
 
 		// shutdown server
 

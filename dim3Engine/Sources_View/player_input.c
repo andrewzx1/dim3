@@ -850,6 +850,43 @@ void player_top_down_input(obj_type *obj)
 		// get input
 
 	player_get_4_way_input(&go_left,&go_right,&go_up,&go_down);
+
+		// if facing is on, we need
+		// to switch keys to be forward/backward
+		// and side step
+
+	if (obj->face.obj_idx!=-1) {
+
+		if (go_left) {
+			obj->side_move.moving=TRUE;
+			obj->side_move.reverse=FALSE;
+		}
+		else {
+			if (go_right) {
+				obj->side_move.moving=TRUE;
+				obj->side_move.reverse=TRUE;
+			}
+			else {
+				obj->side_move.moving=FALSE;
+			}
+		}
+
+		if (go_up) {
+			obj->forward_move.moving=TRUE;
+			obj->forward_move.reverse=FALSE;
+		}
+		else {
+			if (go_down) {
+				obj->forward_move.moving=TRUE;
+				obj->forward_move.reverse=TRUE;
+			}
+			else {
+				obj->forward_move.moving=FALSE;
+			}
+		}
+
+		return;
+	}
 	
 		// all the movements
 		
@@ -888,6 +925,11 @@ void player_top_down_input(obj_type *obj)
 		object_player_turn_direct(obj,angle_add(obj->turn.top_down_ang_offset,180.0f));
 		return;
 	}
+
+		// no directions, stop movements
+
+	obj->forward_move.moving=FALSE;
+	obj->side_move.moving=FALSE;
 }
 
 /* =======================================================

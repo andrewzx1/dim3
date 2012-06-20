@@ -106,8 +106,7 @@ typedef struct		{
 //
 
 typedef struct		{
-						int								sender_net_uid,		// supergumba -- delete
-														action,msg_len;
+						int								action,msg_len;
 						unsigned char					msg[net_max_msg_size];
 						net_address_type				addr;
 					} net_queue_msg_type;
@@ -165,8 +164,7 @@ typedef struct		{
 // special remote unqiue IDs
 //
 
-#define net_uid_constant_none							0
-#define net_uid_constant_host							1
+#define net_uid_constant_host							0
 #define net_uid_constant_client_start					1000
 #define net_uid_constant_bot_start						2000
 #define net_uid_constant_map_obj_start					3000
@@ -240,8 +238,7 @@ typedef struct		{
 //
 
 typedef struct		{
-						short							sender_net_uid,		// supergumba -- delete this
-														action,len;
+						short							action,len;
 					} network_header;
 
 //

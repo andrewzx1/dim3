@@ -195,7 +195,6 @@ void object_face(obj_type *obj)
 	track_obj=server.obj_list.objs[obj->face.obj_idx];
 	
 	if (obj->fly) {
-	
 		py=obj->pnt.y-(obj->size.y>>1);
 		ty=track_obj->pnt.y-(track_obj->size.y>>1);
 
@@ -229,7 +228,8 @@ void object_face_stop(obj_type *obj)
 
 void object_player_turn(obj_type *obj)
 {
-	float			turn_add,turn_restrict;
+	float			turn_add,to_ang,turn_restrict;
+	obj_type		*track_obj;
 	weapon_type		*weap;
 	
 		// can it turn?
@@ -239,11 +239,20 @@ void object_player_turn(obj_type *obj)
 		return;
 	}
 	
-		// get turn speed
-	
+		// get turning, if facing
+		// is on, force to always face object
+
 	obj->turn.fix_ang_add.y=0;
-	
-	turn_add=obj->turn.ang_add.y;
+
+	if (obj->face.obj_idx==-1) {
+		turn_add=obj->turn.ang_add.y;
+	}
+	else {
+		track_obj=server.obj_list.objs[obj->face.obj_idx];
+		to_ang=angle_find(obj->pnt.x,obj->pnt.z,track_obj->pnt.x,track_obj->pnt.z);
+		turn_add=angle_add(to_ang,-obj->ang.y);
+	}
+
     if (turn_add==0) return;
 	
 		// zoom factors
