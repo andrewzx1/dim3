@@ -179,7 +179,8 @@ bool app_run_dedicated_host(char *err_str)
 
 	net_setup.mode=net_mode_host;
 	net_setup.client.latency=0;
-	net_setup.client.host_ip_addr=0;
+	net_setup.client.host_addr.ip=0;
+	net_setup.client.host_addr.port=0;
 	
 	net_create_project_hash();
 

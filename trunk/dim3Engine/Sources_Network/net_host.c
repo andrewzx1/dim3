@@ -209,7 +209,7 @@ void net_host_info_request(net_address_type *addr)
 
 	net_host_player_create_info_player_list(&info.player_list);
 
-	net_sendto_msg(host_socket,addr->ip,addr->port,net_action_reply_info,net_uid_constant_host,(unsigned char*)&info,sizeof(network_reply_info));
+	net_sendto_msg(host_socket,addr,net_action_reply_info,net_uid_constant_host,(unsigned char*)&info,sizeof(network_reply_info));
 }
 
 /* =======================================================
@@ -305,7 +305,7 @@ int net_host_join_request(net_address_type *addr,network_request_join *request_j
 	
 		// send reply back to client
 
-	if (!net_sendto_msg(host_socket,ip_addr,port,net_action_reply_join,net_uid_constant_host,(unsigned char*)&reply_join,sizeof(network_reply_join))) {
+	if (!net_sendto_msg(host_socket,addr,net_action_reply_join,net_uid_constant_host,(unsigned char*)&reply_join,sizeof(network_reply_join))) {
 		if (net_uid!=-1) net_host_player_remove_by_uid(net_uid);
 		return(FALSE);
 	}

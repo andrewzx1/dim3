@@ -37,9 +37,6 @@ and can be sold or given away.
 //
 
 #define net_port_host									11800
-#define net_port_host_query								11801
-#define net_port_host_broadcast							11802
-#define net_port_host_broadcast_reply					11803
 
 //
 // low-level socket timing
@@ -152,7 +149,7 @@ typedef struct		{
 
 typedef struct		{
 						int								latency,latency_ping_tick;
-						unsigned long					host_ip_addr;
+						net_address_type				host_addr;
 					} network_setup_client_type;
 
 typedef struct		{

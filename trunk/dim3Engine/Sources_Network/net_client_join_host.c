@@ -95,7 +95,7 @@ int net_client_join_host_start(obj_type *obj,int *tick_offset,char *deny_reason)
 	strcpy(request_join.draw_name,obj->draw.name);
 	request_join.tint_color_idx=(signed short)ntohs((short)obj->tint_color_idx);
 
-	net_sendto_msg(client_socket,net_setup.client.host_ip_addr,net_port_host,net_action_request_join,net_uid_constant_none,(unsigned char*)&request_join,sizeof(network_request_join));
+	net_sendto_msg(client_socket,&net_setup.client.host_addr,net_action_request_join,net_uid_constant_none,(unsigned char*)&request_join,sizeof(network_request_join));
 
 		// wait for the reply
 		
