@@ -454,7 +454,7 @@ void host_info_pane(void)
 	char		str[256];
 	
 	control_y_add=element_get_control_high();
-	control_y_sz=5*control_y_add;
+	control_y_sz=4*control_y_add;
 	
 	x=(int)(((float)iface.scale_x)*0.4f);
 	y=((iface.scale_y>>1)+(element_get_button_high()>>1))-(control_y_sz>>1);
@@ -485,10 +485,6 @@ void host_info_pane(void)
 
 	sprintf(str,"%d",net_port_host);
 	element_info_field_add("Host Port",str,-1,x,y);
-	y+=control_y_add;
-
-	sprintf(str,"%d",net_port_host_query);
-	element_info_field_add("Host Query Port",str,-1,x,y);
 	y+=control_y_add;
 }
 
@@ -638,7 +634,8 @@ void host_game(void)
 
 	net_setup.mode=net_mode_host;
 	net_setup.client.latency=0;
-	net_setup.client.host_ip_addr=0;
+	net_setup.client.host_addr.ip=0;
+	net_setup.client.host_addr.port=0;
 
 		// setup map
 		

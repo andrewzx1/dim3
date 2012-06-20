@@ -207,6 +207,7 @@ int join_ping_thread_lan(void *arg)
 	int					max_tick,action,sender_net_uid;
 	unsigned char		msg[net_max_msg_size];
 	bool				good_reply;
+	net_address_type	addr;
 	d3socket			broadcast_sock;
 
 		// create a socket and send out a broadcast
@@ -218,7 +219,10 @@ int join_ping_thread_lan(void *arg)
 
 	net_socket_enable_broadcast(broadcast_sock);
 	
-	if (!net_sendto_msg(broadcast_sock,INADDR_BROADCAST,net_port_host,net_action_request_info,net_uid_constant_none,NULL,0)) {
+	addr.ip=INADDR_BROADCAST;
+	addr.port=net_port_host;
+	
+	if (!net_sendto_msg(broadcast_sock,&addr,net_action_request_info,net_uid_constant_none,NULL,0)) {
 		net_close_socket(&broadcast_sock);
 		return(0);
 	}
@@ -271,6 +275,7 @@ bool join_ping_thread_wan_host(join_server_host_type *host,int msec,unsigned cha
 	int						action,sender_net_uid,max_tick;
 	unsigned long			ip_addr,nip_addr,recv_ip_addr;
 	bool					got_reply;
+	net_address_type		addr;
 	d3socket				sock;
 	
 		// get socket, translate IP
@@ -282,9 +287,10 @@ bool join_ping_thread_wan_host(join_server_host_type *host,int msec,unsigned cha
 	nip_addr=inet_addr(host->ip);
 	if (nip_addr==INADDR_NONE) return(FALSE);
 	
-	ip_addr=ntohl(nip_addr);
+	addr.ip=ntohl(nip_addr);
+	addr.port=net_port_host;
 
-	if (!net_sendto_msg(sock,ip_addr,net_port_host,net_action_request_info,net_uid_constant_none,NULL,0)) {
+	if (!net_sendto_msg(sock,&addr,net_action_request_info,net_uid_constant_none,NULL,0)) {
 		net_close_socket(&sock);
 		return(FALSE);
 	}
@@ -739,11 +745,13 @@ void join_game(void)
 
 		// set the network flags
 	
-	if (!net_ip_to_address(host->ip,&net_setup.client.host_ip_addr,err_str)) {
+	if (!net_ip_to_address(host->ip,&net_setup.client.host_addr.ip,err_str)) {
 		error_setup(err_str,"Network Game Canceled");
 		server.next_state=gs_error;
 		return;
 	}
+	
+	net_setup.client.host_addr.port=net_port_host;
 
 	net_setup.mode=net_mode_client;
 	net_setup.client.latency=0;

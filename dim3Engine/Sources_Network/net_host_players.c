@@ -222,8 +222,8 @@ int net_host_player_add_bot(obj_type *obj)
 		// bots have no connections
 
 	player->connect.sock=D3_NULL_SOCKET;
-	player->connect.ip_addr=-1;
-	player->connect.port=-1;
+	player->connect.addr.ip=0;
+	player->connect.addr.port=0;
 	player->connect.local=TRUE;
 	player->connect.bot=TRUE;
 
@@ -654,7 +654,7 @@ void net_host_player_send_message_single(int send_net_uid,int action,unsigned ch
 
 		// send message
 
-	net_sendto_msg(player->connect.sock,player->connect.addr.ip,player->connect.addr.port,action,net_uid_constant_host,msg,msg_len);
+	net_sendto_msg(player->connect.sock,&player->connect.addr,action,net_uid_constant_host,msg,msg_len);
 
 	SDL_mutexV(net_host_player_lock);
 }
@@ -699,7 +699,7 @@ void net_host_player_send_message_others(int skip_net_uid,int action,unsigned ch
 
 			// send to network
 		
-		net_sendto_msg(player->connect.sock,player->connect.addr.ip,player->connect.addr.port,action,net_uid_constant_host,msg,msg_len);
+		net_sendto_msg(player->connect.sock,&player->connect.addr,action,net_uid_constant_host,msg,msg_len);
 	}
 	
 	SDL_mutexV(net_host_player_lock);
