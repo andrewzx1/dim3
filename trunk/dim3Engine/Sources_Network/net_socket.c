@@ -203,7 +203,7 @@ bool net_send_ready(d3socket sock)
       
 ======================================================= */
 
-bool net_recvfrom_mesage(d3socket sock,unsigned long *ip_addr,int *port,int *action,int *sender_net_uid,unsigned char *msg,int *msg_len)
+bool net_recvfrom_mesage(d3socket sock,net_address_type *addr,int *action,unsigned char *msg,int *msg_len)
 {
 	int						len;
 	unsigned char			data[net_max_msg_size];
@@ -239,9 +239,11 @@ bool net_recvfrom_mesage(d3socket sock,unsigned long *ip_addr,int *port,int *act
 	
 		// setup return address
 		
-	if (ip_addr!=NULL) *ip_addr=ntohl(addr_in.sin_addr.s_addr);
-	if (port!=NULL) *port=(int)ntohs(addr_in.sin_port);
-	
+	if (addr!=NULL) {
+		addr->ip=ntohl(addr_in.sin_addr.s_addr);
+		addr->port=(int)ntohs(addr_in.sin_port);
+	}
+
 		// no data?
 		
 	if (len==0) {
@@ -253,7 +255,6 @@ bool net_recvfrom_mesage(d3socket sock,unsigned long *ip_addr,int *port,int *act
 		
 	head=(network_header*)data;
 	
-	*sender_net_uid=(int)ntohs(head->sender_net_uid);
 	*action=(int)ntohs(head->action);
 	
 	len=(int)ntohs(head->len);
@@ -266,7 +267,7 @@ bool net_recvfrom_mesage(d3socket sock,unsigned long *ip_addr,int *port,int *act
 	return(TRUE);
 }
 
-bool net_sendto_msg(d3socket sock,unsigned long ip_addr,int port,int action,int sender_net_uid,unsigned char *msg,int msg_len)
+bool net_sendto_msg(d3socket sock,unsigned long ip_addr,int port,int action,unsigned char *msg,int msg_len)
 {
 	int						send_sz;
 	unsigned char			data[net_max_msg_size];
@@ -277,7 +278,6 @@ bool net_sendto_msg(d3socket sock,unsigned long ip_addr,int port,int action,int 
 		
 	head=(network_header*)data;
 
-	head->sender_net_uid=htons((short)sender_net_uid);
 	head->action=htons((short)action);
 	head->len=htons((short)msg_len);
 	

@@ -95,7 +95,7 @@ bool net_queue_feed(d3socket sock,net_queue_type *queue)
 
 		queue_msg=queue->msgs+queue->count;
 
-		if (!net_recvfrom_mesage(sock,&queue_msg->addr.ip,&queue_msg->addr.port,&queue_msg->action,&queue_msg->sender_net_uid,queue_msg->msg,&queue_msg->msg_len)) {
+		if (!net_recvfrom_mesage(sock,&queue_msg->addr,&queue_msg->action,queue_msg->msg,&queue_msg->msg_len)) {
 			err=TRUE;			// socket has closed, error out
 			break;
 		}
@@ -120,7 +120,7 @@ bool net_queue_feed(d3socket sock,net_queue_type *queue)
       
 ======================================================= */
 
-bool net_queue_push_message(net_queue_type *queue,int sender_net_uid,int action,unsigned char *msg_data,int msg_len)
+bool net_queue_push_message(net_queue_type *queue,int action,unsigned char *msg_data,int msg_len)
 {
 	net_queue_msg_type	*queue_msg;
 
@@ -141,7 +141,6 @@ bool net_queue_push_message(net_queue_type *queue,int sender_net_uid,int action,
 	queue_msg->addr.port=0;
 
 	queue_msg->action=action;
-	queue_msg->sender_net_uid=sender_net_uid;
 
 	queue_msg->msg_len=msg_len;
 	if (msg_data!=NULL) memmove(queue_msg->msg,msg_data,msg_len);

@@ -118,7 +118,7 @@ int net_client_receive_thread(void *arg)
 		// if there was an error, put a exit on
 		// the queue as if it came from the host
 		
-	if (client_err) net_queue_push_message(&client_queue,net_uid_constant_none,net_action_request_host_exit,NULL,0);
+	if (client_err) net_queue_push_message(&client_queue,net_action_request_host_exit,NULL,0);
 	
 		// exit thread
 	

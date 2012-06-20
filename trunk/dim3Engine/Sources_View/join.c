@@ -204,7 +204,7 @@ bool join_ping_thread_add_host(join_server_host_list_type *list,int start_tick,n
 
 int join_ping_thread_lan(void *arg)
 {
-	int					max_tick,action,sender_net_uid;
+	int					max_tick,action;
 	unsigned char		msg[net_max_msg_size];
 	bool				good_reply;
 	net_address_type	addr;
@@ -222,7 +222,7 @@ int join_ping_thread_lan(void *arg)
 	addr.ip=INADDR_BROADCAST;
 	addr.port=net_port_host;
 	
-	if (!net_sendto_msg(broadcast_sock,&addr,net_action_request_info,net_uid_constant_none,NULL,0)) {
+	if (!net_sendto_msg(broadcast_sock,&addr,net_action_request_info,NULL,0)) {
 		net_close_socket(&broadcast_sock);
 		return(0);
 	}
@@ -242,7 +242,7 @@ int join_ping_thread_lan(void *arg)
 			
 		good_reply=FALSE;
 		
-		if (net_recvfrom_mesage(broadcast_sock,NULL,NULL,&action,&sender_net_uid,msg,NULL)) {
+		if (net_recvfrom_mesage(broadcast_sock,NULL,&action,msg,NULL)) {
 			if (action==net_action_reply_info) {
 				good_reply=join_ping_thread_add_host(join_host_lan_list,join_thread_lan_start_tick,(network_reply_info*)msg);
 				if (good_reply) join_create_list(join_host_lan_list,join_lan_table_id);
@@ -272,10 +272,10 @@ int join_ping_thread_lan(void *arg)
 
 bool join_ping_thread_wan_host(join_server_host_type *host,int msec,unsigned char *msg)
 {
-	int						action,sender_net_uid,max_tick;
-	unsigned long			ip_addr,nip_addr,recv_ip_addr;
+	int						action,max_tick;
+	unsigned long			nip_addr;
 	bool					got_reply;
-	net_address_type		addr;
+	net_address_type		addr,recv_addr;
 	d3socket				sock;
 	
 		// get socket, translate IP
@@ -290,7 +290,7 @@ bool join_ping_thread_wan_host(join_server_host_type *host,int msec,unsigned cha
 	addr.ip=ntohl(nip_addr);
 	addr.port=net_port_host;
 
-	if (!net_sendto_msg(sock,&addr,net_action_request_info,net_uid_constant_none,NULL,0)) {
+	if (!net_sendto_msg(sock,&addr,net_action_request_info,NULL,0)) {
 		net_close_socket(&sock);
 		return(FALSE);
 	}
@@ -306,8 +306,8 @@ bool join_ping_thread_wan_host(join_server_host_type *host,int msec,unsigned cha
 	max_tick=client_query_timeout_wait_msec;
 	
 	while (((msec+max_tick)>time_get()) && (!join_thread_quit)) {
-		if (net_recvfrom_mesage(sock,&recv_ip_addr,NULL,&action,&sender_net_uid,msg,NULL)) {
-			if ((recv_ip_addr==ip_addr) && (action==net_action_reply_info)) {
+		if (net_recvfrom_mesage(sock,&recv_addr,&action,msg,NULL)) {
+			if ((recv_addr.ip==addr.ip) && (action==net_action_reply_info)) {
 				got_reply=TRUE;
 				break;
 			}

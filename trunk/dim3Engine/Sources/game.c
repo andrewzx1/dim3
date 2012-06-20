@@ -174,7 +174,7 @@ bool game_host_reset(char *err_str)
 	strcpy(reset.map_name,map.info.name);
 
 	player_obj=server.obj_list.objs[server.player_obj_idx];
-	net_host_player_send_message_others(player_obj->remote.net_uid,net_action_request_game_reset,(unsigned char*)&reset,sizeof(network_request_game_reset));
+	net_host_player_send_message_to_clients_all(NULL,net_action_request_game_reset,(unsigned char*)&reset,sizeof(network_request_game_reset));
 
 	return(TRUE);
 }

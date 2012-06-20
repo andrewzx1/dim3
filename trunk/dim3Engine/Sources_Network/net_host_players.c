@@ -85,7 +85,7 @@ int net_host_player_find_net_uid(int net_uid)
 	return(-1);
 }
 
-int net_host_player_find_ip_addr(net_address_type *addr)
+int net_host_player_find_net_addr(net_address_type *addr)
 {
 	int						n;
 	net_host_player_type	*player;
@@ -393,11 +393,24 @@ void net_host_player_remote_click(network_request_remote_click *click)
       
 ======================================================= */
 
-void net_host_player_remote_object_synch(int net_uid)
+void net_host_player_remote_object_synch(net_address_type *addr)
 {
-	int							n,the_type;
+	int							n,idx,skip_net_uid,the_type;
 	obj_type					*obj;
 	network_request_remote_add	add;
+
+		// find this player
+
+	skip_net_uid=-1;
+
+	SDL_mutexP(net_host_player_lock);
+
+	idx=net_host_player_find_net_addr(addr);
+	if (idx!=-1) skip_net_uid=net_host_players[idx].connect.net_uid;
+
+	SDL_mutexV(net_host_player_lock);
+
+		// send objects
 
 	for (n=0;n!=max_obj_list;n++) {
 
@@ -410,7 +423,7 @@ void net_host_player_remote_object_synch(int net_uid)
 		
 			// don't send self!
 			
-		if (obj->remote.net_uid==net_uid) continue;
+		if (obj->remote.net_uid==skip_net_uid) continue;
 		
 			// determine type on client
 			
@@ -429,7 +442,7 @@ void net_host_player_remote_object_synch(int net_uid)
 		add.tint_color_idx=htons((short)obj->tint_color_idx);
 		add.score=obj->score.score;
 
-		net_host_player_send_message_single(net_uid,net_action_request_remote_add,(unsigned char*)&add,sizeof(network_request_remote_add));
+		net_host_player_send_message_to_client(addr,net_action_request_remote_add,(unsigned char*)&add,sizeof(network_request_remote_add));
 	}
 }
 
@@ -444,7 +457,7 @@ void net_host_player_remote_object_synch(int net_uid)
       
 ======================================================= */
 
-void net_host_player_remote_group_synch(int net_uid)
+void net_host_player_remote_group_synch(net_address_type *addr)
 {
 	int								n;
 	network_reply_group_synch		reply_synch;
@@ -456,7 +469,7 @@ void net_host_player_remote_group_synch(int net_uid)
 
 		if (map.group.groups[n].run.was_moved) {
 			group_moves_synch_with_client(n,&reply_synch);
-			net_host_player_send_message_single(net_uid,net_action_reply_group_synch,(unsigned char*)&reply_synch,sizeof(network_reply_group_synch));
+			net_host_player_send_message_to_client(addr,net_action_reply_group_synch,(unsigned char*)&reply_synch,sizeof(network_reply_group_synch));
 		}
 	}
 }
@@ -515,19 +528,19 @@ void net_host_player_remote_route_msg(net_queue_msg_type *msg)
 	
 		case net_action_request_remote_remove:
 			net_host_player_remove((network_request_remote_remove*)msg->msg);
-			net_host_player_send_message_others(msg->sender_net_uid,net_action_request_remote_remove,msg->msg,msg->msg_len);
+			net_host_player_send_message_to_clients_all(&msg->addr,net_action_request_remote_remove,msg->msg,msg->msg_len);
 			break;
 			
 		case net_action_request_remote_update:
 			net_host_player_update((network_request_remote_update*)msg->msg);
-			net_host_player_send_message_others(msg->sender_net_uid,net_action_request_remote_update,msg->msg,msg->msg_len);
+			net_host_player_send_message_to_clients_all(&msg->addr,net_action_request_remote_update,msg->msg,msg->msg_len);
 			break;
 			
 		case net_action_request_remote_death:
 		case net_action_request_remote_chat:
 		case net_action_request_remote_sound:
 		case net_action_request_remote_fire:
-			net_host_player_send_message_others(msg->sender_net_uid,msg->action,msg->msg,msg->msg_len);
+			net_host_player_send_message_to_clients_all(&msg->addr,msg->action,msg->msg,msg->msg_len);
 			break;
 
 		case net_action_request_remote_click:
@@ -535,11 +548,11 @@ void net_host_player_remote_route_msg(net_queue_msg_type *msg)
 			break;
 
 		case net_action_request_object_synch:
-			net_host_player_remote_object_synch(msg->sender_net_uid);
+			net_host_player_remote_object_synch(&msg->addr);
 			break;
 
 		case net_action_request_group_synch:
-			net_host_player_remote_group_synch(msg->sender_net_uid);
+			net_host_player_remote_group_synch(&msg->addr);
 			break;
 
 	}
@@ -582,7 +595,7 @@ void net_host_player_send_stat_update(obj_type *obj)
 		if (idx==net_max_weapon_per_remote) break;
 	}
 	
-	net_host_player_send_message_all(net_action_request_remote_stat_update,(unsigned char*)&stat_update,sizeof(network_request_remote_stat_update));
+	net_host_player_send_message_to_clients_all(NULL,net_action_request_remote_stat_update,(unsigned char*)&stat_update,sizeof(network_request_remote_stat_update));
 }
 
 /* =======================================================
@@ -624,18 +637,18 @@ void net_host_player_send_updates(void)
 			}
 
 			remote_update_pack(obj,chat_on,&update);
-			net_host_player_send_message_all(net_action_request_remote_update,(unsigned char*)&update,sizeof(network_request_remote_update));
+			net_host_player_send_message_to_clients_all(NULL,net_action_request_remote_update,(unsigned char*)&update,sizeof(network_request_remote_update));
 		}
 	}
 }
 
 /* =======================================================
 
-      Send Messages to Other or All Players
+      Send Messages to Single or All Players
       
 ======================================================= */
 
-void net_host_player_send_message_single(int send_net_uid,int action,unsigned char *msg,int msg_len)
+void net_host_player_send_message_to_client(net_address_type *addr,int action,unsigned char *msg,int msg_len)
 {
 	int						idx;
 	net_host_player_type	*player;
@@ -644,7 +657,7 @@ void net_host_player_send_message_single(int send_net_uid,int action,unsigned ch
 
 		// find player
 
-	idx=net_host_player_find_net_uid(send_net_uid);
+	idx=net_host_player_find_net_addr(addr);
 	if (idx==-1) {
 		SDL_mutexV(net_host_player_lock);
 		return;
@@ -654,41 +667,30 @@ void net_host_player_send_message_single(int send_net_uid,int action,unsigned ch
 
 		// send message
 
-	net_sendto_msg(player->connect.sock,&player->connect.addr,action,net_uid_constant_host,msg,msg_len);
+	net_sendto_msg(player->connect.sock,&player->connect.addr,action,msg,msg_len);
 
 	SDL_mutexV(net_host_player_lock);
 }
 
-// supergumba -- replace all this
-void net_host_player_send_message_others(int skip_net_uid,int action,unsigned char *msg,int msg_len)
+void net_host_player_send_message_to_clients_all(net_address_type *skip_addr,int action,unsigned char *msg,int msg_len)
 {
-	int						n,idx;
+	int						n,skip_idx;
 	net_host_player_type	*player;
 	
 	SDL_mutexP(net_host_player_lock);
 
 		// find player to skip
-		// if this is the host UID, then
-		// there's nobody to skip
 
-	if (skip_net_uid==net_uid_constant_host) {
-		idx=-1;
-	}
-	else {
-		idx=net_host_player_find_net_uid(skip_net_uid);
-		if (idx==-1) {
-			SDL_mutexV(net_host_player_lock);
-			return;
-		}
-	}
+	skip_idx=-1;
+	if (skip_addr!=NULL) skip_idx=net_host_player_find_net_addr(skip_addr);
 	
 		// send to others
 	
 	for (n=0;n!=net_host_player_count;n++) {
 
-			// skip person sending the message
+			// any skip addresses
 
-		if (n==idx) continue;
+		if (n==skip_idx) continue;
 
 			// skip any local players
 			// or bots
@@ -699,61 +701,8 @@ void net_host_player_send_message_others(int skip_net_uid,int action,unsigned ch
 
 			// send to network
 		
-		net_sendto_msg(player->connect.sock,&player->connect.addr,action,net_uid_constant_host,msg,msg_len);
+		net_sendto_msg(player->connect.sock,&player->connect.addr,action,msg,msg_len);
 	}
 	
 	SDL_mutexV(net_host_player_lock);
 }
-
-void net_host_player_send_message_all(int action,unsigned char *msg,int msg_len)
-{
-	net_host_player_send_message_others(net_uid_constant_host,action,msg,msg_len);
-}
-
-/*
-
-void net_host_player_send_message_to_clients(net_address_type *skip_addr,int action,unsigned char *msg,int msg_len)
-{
-	int						n,idx;
-	net_host_player_type	*player;
-	
-	SDL_mutexP(net_host_player_lock);
-
-		// find player to skip
-		// if this is the host UID, then
-		// there's nobody to skip
-
-	if (skip_net_uid==-1) {
-		idx=-1;
-	}
-	else {
-		idx=net_host_player_find_net_uid(skip_net_uid);
-		if (idx==-1) {
-			SDL_mutexV(net_host_player_lock);
-			return;
-		}
-	}
-	
-		// send to others
-	
-	for (n=0;n!=net_host_player_count;n++) {
-
-			// skip person sending the message
-
-		if (n==idx) continue;
-
-			// skip any local players
-			// or bots
-
-		player=&net_host_players[n];
-		if (player->connect.local) continue;
-		if (player->connect.bot) continue;
-
-			// send to network
-		
-		net_sendto_msg(player->connect.sock,player->connect.ip_addr,player->connect.port,action,net_uid_constant_host,msg,msg_len);
-	}
-	
-	SDL_mutexV(net_host_player_lock);
-}
-*/

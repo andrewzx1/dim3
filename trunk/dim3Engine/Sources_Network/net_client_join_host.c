@@ -69,7 +69,7 @@ int net_client_find_game(char *game_name)
 
 int net_client_join_host_start(obj_type *obj,int *tick_offset,char *deny_reason)
 {
-	int						action,wait_tick,sender_net_uid;
+	int						action,wait_tick;
 	unsigned char			msg[net_max_msg_size];
 	char					err_str[256];
 	bool					reply_ok;
@@ -95,7 +95,7 @@ int net_client_join_host_start(obj_type *obj,int *tick_offset,char *deny_reason)
 	strcpy(request_join.draw_name,obj->draw.name);
 	request_join.tint_color_idx=(signed short)ntohs((short)obj->tint_color_idx);
 
-	net_sendto_msg(client_socket,&net_setup.client.host_addr,net_action_request_join,net_uid_constant_none,(unsigned char*)&request_join,sizeof(network_request_join));
+	net_sendto_msg(client_socket,&net_setup.client.host_addr,net_action_request_join,(unsigned char*)&request_join,sizeof(network_request_join));
 
 		// wait for the reply
 		
@@ -109,7 +109,7 @@ int net_client_join_host_start(obj_type *obj,int *tick_offset,char *deny_reason)
 	wait_tick=time_get()+client_join_timeout_wait_msec;
 
 	while (wait_tick>time_get()) {
-		reply_ok=net_recvfrom_mesage(client_socket,NULL,NULL,&action,&sender_net_uid,msg,NULL);
+		reply_ok=net_recvfrom_mesage(client_socket,NULL,&action,msg,NULL);
 		if ((!reply_ok) || (action==net_action_reply_join)) break;
 		
 		usleep(100000);
