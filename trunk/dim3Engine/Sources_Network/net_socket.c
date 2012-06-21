@@ -267,7 +267,7 @@ bool net_recvfrom_mesage(d3socket sock,net_address_type *addr,int *action,unsign
 	return(TRUE);
 }
 
-bool net_sendto_msg(d3socket sock,unsigned long ip_addr,int port,int action,unsigned char *msg,int msg_len)
+bool net_sendto_msg(d3socket sock,net_address_type *addr,int action,unsigned char *msg,int msg_len)
 {
 	int						send_sz;
 	unsigned char			data[net_max_msg_size];
@@ -288,8 +288,8 @@ bool net_sendto_msg(d3socket sock,unsigned long ip_addr,int port,int action,unsi
 		// send message
 		
 	addr_in.sin_family=AF_INET;
-	addr_in.sin_port=htons((short)port);
-	addr_in.sin_addr.s_addr=htonl(ip_addr);
+	addr_in.sin_port=htons((short)addr->port);
+	addr_in.sin_addr.s_addr=htonl(addr->ip);
 	
 	send_sz=sizeof(network_header)+msg_len;
 		

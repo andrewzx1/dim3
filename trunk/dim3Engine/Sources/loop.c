@@ -51,10 +51,16 @@ void loop_server_run(void)
 {
 		// networking
 
-	if (net_setup.mode==net_mode_host) net_host_process_messages();
-		
-	if (net_setup.mode!=net_mode_none) {
-		if (!net_client_process_messages()) return;
+	switch (net_setup.mode) {
+
+		case net_mode_client:
+			if (!net_client_process_messages()) return;
+			break;
+
+		case net_mode_host:
+			net_host_process_messages();
+			break;
+
 	}
 	
 		// run server

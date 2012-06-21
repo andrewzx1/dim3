@@ -188,7 +188,7 @@ typedef struct		{
 #define net_action_request_remote_sound					12
 #define net_action_request_remote_fire					13
 #define net_action_request_remote_click					14
-#define net_action_request_remote_stat_update			15
+#define net_action_request_remote_pickup				15
 #define net_action_request_host_exit					16
 #define net_action_request_object_synch					17
 #define net_action_request_group_synch					18
@@ -227,7 +227,8 @@ typedef struct		{
 #define net_update_flag_no_contact_projectile			0x00000004
 #define net_update_flag_no_contact_force				0x00000008
 #define net_update_flag_clickable						0x00000010
-#define net_update_flag_talking							0x00000020
+#define net_update_flag_pickup							0x00000020
+#define net_update_flag_talking							0x00000040
 
 #define net_group_synch_flag_on							0x00000001
 #define net_group_synch_flag_freeze						0x00000002
@@ -364,7 +365,7 @@ typedef struct		{
 typedef struct		{
 						short							stat_net_uid,health,armor;
 						network_request_remote_ammo		ammos[net_max_weapon_per_remote];
-					} network_request_remote_stat_update;
+					} network_request_remote_pickup;
 
 typedef struct		{
 						short							clicking_net_uid,clicked_net_uid;

@@ -767,7 +767,7 @@ void element_tab_add(char *tab_list,int value,int id,int ntab)
 	element->x=margin;
 	element->y=margin;
 	element->wid=iface.scale_x-(margin*2);
-	element->high=gl_text_get_char_height(iface.font.text_size_medium);
+	element->high=element_get_tab_control_high();
 	
 	element->selectable=TRUE;
 	element->enabled=TRUE;
@@ -2714,11 +2714,10 @@ void element_draw_tab(element_type *element,int sel_id,int x,int y)
 	d3col			col;
 	d3col			shadow_col={0.3f,0.3f,0.3f};
 	
-	high=gl_text_get_char_height(iface.font.text_size_medium);
-		
 		// sizes
 	
 	margin=element_get_tab_margin();
+	high=element_get_tab_control_high();
 	
 	xadd=(iface.scale_x-(margin*3))/element->setup.tab.ntab;
 	
@@ -2746,7 +2745,7 @@ void element_draw_tab(element_type *element,int sel_id,int x,int y)
 		// tabs
 		
 	x_slant=(int)(((float)xadd)*0.025f);
-	y_push=(int)(((float)high)*0.3f);
+	y_push=margin>>1;
 	
 	by=margin+high;
 	

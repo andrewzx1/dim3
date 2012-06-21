@@ -339,7 +339,7 @@ void net_host_process_messages(void)
 			// check for messages
 
 		if (!net_queue_check_message(&host_queue,&msg)) return;
-		
+
 			// reply to all info request
 			
 		if (msg.action==net_action_request_info) {
@@ -413,7 +413,7 @@ int net_host_thread(void *arg)
 			// and cancel network game
 			
 		if (!net_queue_feed(host_socket,&host_queue)) break;
-		
+	
 			// always wait a little to not flood this thread
 			
 		usleep(100000);

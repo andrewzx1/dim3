@@ -100,6 +100,27 @@ int net_host_player_find_net_addr(net_address_type *addr)
 	return(-1);
 }
 
+bool net_host_player_net_uid_to_address(int net_uid,net_address_type *addr)
+{
+	int						n;
+	net_host_player_type	*player;
+	
+	player=net_host_players;
+	
+	for (n=0;n!=net_host_player_count;n++) {
+
+		if (player->connect.net_uid==net_uid) {
+			addr->ip=player->connect.addr.ip;
+			addr->port=player->connect.addr.port;
+			return(TRUE);
+		}
+
+		player++;
+	}
+	
+	return(FALSE);
+}
+
 /* =======================================================
 
       Player Add OK?
@@ -557,27 +578,37 @@ void net_host_player_remote_route_msg(net_queue_msg_type *msg)
 
 	}
 		
-		// pass on message to remote on this server
+		// pass on message to remotes on this host
 			
 	remote_route_message(msg);
 }
 
 /* =======================================================
 
-      Send Stat Updates to Players
-	  Usually in response to pickup
+      Send Pickup Stat Updates to Players
       
 ======================================================= */
 
-void net_host_player_send_stat_update(obj_type *obj)
+void net_host_player_send_pickup(obj_type *obj)
 {
-	int										n,idx;
-	weapon_type								*weap;
-	network_request_remote_stat_update		stat_update;
+	int									n,idx;
+	weapon_type							*weap;
+	net_address_type					addr;
+	network_request_remote_pickup		pickup;
 
-	stat_update.stat_net_uid=htons((short)obj->remote.net_uid);
-	stat_update.health=htons((short)obj->status.health.value);
-	stat_update.armor=htons((short)obj->status.armor.value);
+		// get player
+
+	SDL_mutexP(net_host_player_lock);
+	ok=net_host_player_net_uid_to_address(obj->remote.net_uid,&addr);
+	SDL_mutexV(net_host_player_lock);
+
+	if (!ok) return;
+
+		// build the update
+
+	pickup.stat_net_uid=htons((short)obj->remote.net_uid);
+	pickup.health=htons((short)obj->status.health.value);
+	pickup.armor=htons((short)obj->status.armor.value);
 
 	idx=0;
 		
@@ -585,17 +616,19 @@ void net_host_player_send_stat_update(obj_type *obj)
 		weap=obj->weap_list.weaps[n];
 		if (weap==NULL) continue;
 
-		stat_update.ammos[idx].hidden=htons((short)(weap->hidden?0:1));
-		stat_update.ammos[idx].ammo_count=htons((short)weap->ammo.count);
-		stat_update.ammos[idx].clip_count=htons((short)weap->ammo.clip_count);
-		stat_update.ammos[idx].alt_ammo_count=htons((short)weap->alt_ammo.count);
-		stat_update.ammos[idx].alt_clip_count=htons((short)weap->alt_ammo.clip_count);
+		pickup.ammos[idx].hidden=htons((short)(weap->hidden?0:1));
+		pickup.ammos[idx].ammo_count=htons((short)weap->ammo.count);
+		pickup.ammos[idx].clip_count=htons((short)weap->ammo.clip_count);
+		pickup.ammos[idx].alt_ammo_count=htons((short)weap->alt_ammo.count);
+		pickup.ammos[idx].alt_clip_count=htons((short)weap->alt_ammo.clip_count);
 
 		idx++;
 		if (idx==net_max_weapon_per_remote) break;
 	}
-	
-	net_host_player_send_message_to_clients_all(NULL,net_action_request_remote_stat_update,(unsigned char*)&stat_update,sizeof(network_request_remote_stat_update));
+
+		// send update to player
+
+	net_host_player_send_message_to_clients_all(&addr,net_action_request_remote_pickup,(unsigned char*)&pickup,sizeof(network_request_remote_pickup));
 }
 
 /* =======================================================

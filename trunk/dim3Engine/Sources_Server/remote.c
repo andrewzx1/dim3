@@ -55,8 +55,6 @@ bool remote_add(network_request_remote_add *remote)
 	char				err_str[256];
 	obj_type			*obj,*player_obj;
 	
-	fprintf(stdout,"ADD, net_uid=%d, name=%s, draw_name=%s\n",ntohs(remote->add_net_uid),remote->name,remote->draw_name);
-	
 		// create new object
 		
 	the_type=(signed short)ntohs(remote->type);
@@ -344,6 +342,7 @@ void remote_update_pack(obj_type *obj,bool chat_on,network_request_remote_update
 	if (!obj->contact.projectile_on) flags|=net_update_flag_no_contact_object;
 	if (!obj->contact.force_on) flags|=net_update_flag_no_contact_object;
 	if (obj->click.on) flags|=net_update_flag_clickable;
+	if (obj->pickup.on) flags|=net_update_flag_pickup;
 	if (chat_on) flags|=net_update_flag_talking;
 	
 	update->flags=htonl(flags);
@@ -537,6 +536,7 @@ void remote_update_unpack(obj_type *obj,network_request_remote_update *update)
 	obj->contact.projectile_on=!((flags&net_update_flag_no_contact_projectile)!=0);
 	obj->contact.force_on=!((flags&net_update_flag_no_contact_force)!=0);
 	obj->click.on=((flags&net_update_flag_clickable)!=0);
+	obj->pickup.on=((flags&net_update_flag_pickup)!=0);
 	obj->remote.talking=((flags&net_update_flag_talking)!=0);
 	
 		// update status
@@ -565,8 +565,6 @@ void remote_update(network_request_remote_update *update)
 	
 	obj=object_find_remote_net_uid(net_uid);
 	if (obj==NULL) return;
-	
-	fprintf(stdout,"UPDATE net_uid=%d, name=%s\n",net_uid,obj->name);
 
 		// update remote
 
@@ -754,21 +752,23 @@ void remote_fire(network_request_remote_fire *fire)
 
 /* =======================================================
 
-      Remote Stat Update
+      Remote Pickup
       
 ======================================================= */
 
-void remote_stat_update(network_request_remote_stat_update *stat_update)
+void remote_pickup(network_request_remote_stat_update *pickup)
 {
 	int				n,idx;
 	obj_type		*obj;
 	weapon_type		*weap;
 	
-	obj=object_find_remote_net_uid((signed short)ntohs(stat_update->stat_net_uid));
+		// setup pickup
+
+	obj=object_find_remote_net_uid((signed short)ntohs(pickup->stat_net_uid));
 	if (obj==NULL) return;
 
-	obj->status.health.value=(signed short)ntohs(stat_update->health);
-	obj->status.armor.value=(signed short)ntohs(stat_update->armor);
+	obj->status.health.value=(signed short)ntohs(pickup->health);
+	obj->status.armor.value=(signed short)ntohs(pickup->armor);
 
 	idx=0;
 		
@@ -776,15 +776,19 @@ void remote_stat_update(network_request_remote_stat_update *stat_update)
 		weap=obj->weap_list.weaps[n];
 		if (weap==NULL) continue;
 
-		weap->hidden=(ntohs(stat_update->ammos[idx].hidden)!=0);
-		weap->ammo.count=(signed short)ntohs(stat_update->ammos[idx].ammo_count);
-		weap->ammo.clip_count=(signed short)ntohs(stat_update->ammos[idx].clip_count);
-		weap->alt_ammo.count=(signed short)ntohs(stat_update->ammos[idx].alt_ammo_count);
-		weap->alt_ammo.clip_count=(signed short)ntohs(stat_update->ammos[idx].alt_clip_count);
+		weap->hidden=(ntohs(pickup->ammos[idx].hidden)!=0);
+		weap->ammo.count=(signed short)ntohs(pickup->ammos[idx].ammo_count);
+		weap->ammo.clip_count=(signed short)ntohs(pickup->ammos[idx].clip_count);
+		weap->alt_ammo.count=(signed short)ntohs(pickup->ammos[idx].alt_ammo_count);
+		weap->alt_ammo.clip_count=(signed short)ntohs(pickup->ammos[idx].alt_clip_count);
 
 		idx++;
 		if (idx==net_max_weapon_per_remote) break;
 	}
+
+		// send event to player
+
+	scripts_post_event_console(obj->script_idx,-1,sd_event_pickup,0,0);
 }
 
 /* =======================================================
@@ -848,8 +852,8 @@ bool remote_route_message(net_queue_msg_type *msg)
 			remote_fire((network_request_remote_fire*)msg->msg);
 			return(TRUE);
 
-		case net_action_request_remote_stat_update:
-			remote_stat_update((network_request_remote_stat_update*)msg->msg);
+		case net_action_request_remote_pickup:
+			remote_stat_pickup((network_request_remote_pickup*)msg->msg);
 			return(TRUE);
 
 		case net_action_request_host_exit:
