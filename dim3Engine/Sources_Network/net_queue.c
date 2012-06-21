@@ -92,7 +92,6 @@ bool net_queue_feed(d3socket sock,net_queue_type *queue)
 		if (queue->count>=net_queue_max_message) break;
 	
 			// get the next message
-
 		queue_msg=queue->msgs+queue->count;
 
 		if (!net_recvfrom_mesage(sock,&queue_msg->addr,&queue_msg->action,queue_msg->msg,&queue_msg->msg_len)) {

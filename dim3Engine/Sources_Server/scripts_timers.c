@@ -356,7 +356,7 @@ void timers_run(void)
 			timer->count=timer->freq;
 		}
 	}
-	
+
 		// now we can remove any timers that
 		// were marked as disposed
 		

@@ -108,7 +108,7 @@ extern void net_host_player_remove_by_uid(int net_uid);
 extern void net_host_player_create_info_player_list(network_reply_info_player_list *player_list);
 extern void net_host_player_remote_route_msg(net_queue_msg_type *msg);
 
-extern void net_host_player_send_stat_update(obj_type *obj);
+extern void net_host_player_send_pickup(obj_type *obj);
 extern void net_host_player_send_updates(void);
 
 extern void net_host_player_send_message_to_client(net_address_type *addr,int action,unsigned char *msg,int msg_len);

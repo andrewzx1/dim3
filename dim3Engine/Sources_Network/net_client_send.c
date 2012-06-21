@@ -85,9 +85,7 @@ void net_client_send_remote_update(obj_type *obj)
 	
 		// no updates if pipe full
 		
-	if (net_setup.mode==net_mode_client) {
-		if (!net_send_ready(client_socket)) return;
-	}
+	if (!net_send_ready(client_socket)) return;
 		
 		// send update
 
