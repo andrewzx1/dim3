@@ -49,9 +49,9 @@ int view_get_grid(void)
 {
 	switch (state.grid_mode) {
 		case grid_mode_small:
-			return(576);				// historical based on the old 144 number
+			return(500);
 		case grid_mode_large:
-			return(2304);
+			return(2000);
 	}
 
 	return(1);

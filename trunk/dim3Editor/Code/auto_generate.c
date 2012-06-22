@@ -969,7 +969,7 @@ bool ag_generate_run(char *path,char *err_str)
 
 		// add ceilings
 
-//	ag_generate_ceilings();	// supergumba
+	ag_generate_ceilings();
 
 		// mirroring
 
