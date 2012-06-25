@@ -91,62 +91,16 @@ and can be sold or given away.
 #define font_hud_index							1
 
 //
-// GUI scaling factors
+// GUI scaling factors (non-settable)
 //
 
-#ifndef D3_OS_IPHONE
+#define cursor_size_factor						0.05f
+#define text_height_factor						1.2f
 
-	#define cursor_size_factor						0.05f
-
-	#define text_height_factor						1.2f
-
-	#define element_control_padding_factor			0.01f
-
-	#define element_tab_margin_factor				0.02f
-	#define element_tab_control_high				0.04f
-
-	#define element_control_draw_height				0.035f
-	#define element_control_draw_short_width		0.15f
-	#define element_control_draw_long_width			0.4f
-
-	#define element_table_max_image					16
-	#define element_table_bitmap_size				0.07f
-	#define element_table_max_check					128
-	#define element_table_check_column_size			0.18f
-
-	#define element_scroll_control_size				0.05f
-
-	#define element_control_button_short_width		0.15f
-	#define element_control_button_long_width		0.25f
-	#define element_control_button_height			0.06f
-	
-#else
-
-	#define cursor_size_factor						0.05f
-
-	#define text_height_factor						1.2f
-
-	#define element_control_padding_factor			0.02f
-
-	#define element_tab_margin_factor				0.02f
-	#define element_tab_control_high				0.06f
-
-	#define element_control_draw_height				0.06f
-	#define element_control_draw_short_width		0.2f
-	#define element_control_draw_long_width			0.5f
-
-	#define element_table_max_image					16
-	#define element_table_bitmap_size				0.07f
-	#define element_table_max_check					128
-	#define element_table_check_column_size			0.18f
-
-	#define element_scroll_control_size				0.06f
-
-	#define element_control_button_short_width		0.2f
-	#define element_control_button_long_width		0.3f
-	#define element_control_button_height			0.08f
-	
-#endif
+#define element_table_max_image					16
+#define element_table_bitmap_size				0.07f
+#define element_table_max_check					128
+#define element_table_check_column_size			0.18f
 
 //
 // gradients

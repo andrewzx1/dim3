@@ -200,9 +200,6 @@ void model_draw_setup_object(obj_type *obj)
 
 int model_draw_setup_weapon_height_adjust(void)
 {
-#ifndef D3_OS_IPHONE
-	return(0);
-#else
 	float		ratio;
 	
 #ifndef D3_ROTATE_VIEW
@@ -211,8 +208,7 @@ int model_draw_setup_weapon_height_adjust(void)
 	ratio=(((float)view.screen.y_sz)/((float)view.screen.x_sz))*map.camera.plane.aspect_ratio;
 #endif
 
-	return((int)((1.6f-ratio)*1200.0f));
-#endif
+	return((int)((1.6f-ratio)*iface.devices[view.device_type].scale.weapon_high_adjust));
 }
 
 void model_draw_setup_weapon(obj_type *obj,weapon_type *weap,bool ignore_y_shifts,bool dual_hand)

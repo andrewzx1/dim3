@@ -92,6 +92,7 @@ int net_client_join_host_start(obj_type *obj,int *tick_offset,char *deny_reason)
 	request_join.hash=ntohl(net_get_project_hash());
 
 	strcpy(request_join.name,obj->name);
+	strcpy(request_join.script_name,js.script_list.scripts[obj->script_idx]->name);
 	strcpy(request_join.draw_name,obj->draw.name);
 	request_join.tint_color_idx=(signed short)ntohs((short)obj->tint_color_idx);
 

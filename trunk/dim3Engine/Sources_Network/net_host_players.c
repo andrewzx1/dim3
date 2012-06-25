@@ -39,6 +39,7 @@ extern app_type				app;
 extern map_type				map;
 extern server_type			server;
 extern view_type			view;
+extern js_type				js;
 extern network_setup_type	net_setup;
 
 int							net_host_player_count;
@@ -455,10 +456,9 @@ void net_host_player_remote_object_synch(net_address_type *addr)
 
 		add.add_net_uid=htons((short)obj->remote.net_uid);
 		add.type=htons((short)the_type);
-		strncpy(add.name,obj->name,name_str_len);
-		add.name[name_str_len-1]=0x0;
-		strncpy(add.draw_name,obj->draw.name,name_str_len);
-		add.draw_name[name_str_len-1]=0x0;
+		strcpy(add.name,obj->name);
+		strcpy(add.script_name,js.script_list.scripts[obj->script_idx]->name);
+		strcpy(add.draw_name,obj->draw.name);
 		add.team_idx=htons((short)obj->team_idx);
 		add.tint_color_idx=htons((short)obj->tint_color_idx);
 		add.score=obj->score.score;

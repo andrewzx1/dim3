@@ -274,6 +274,7 @@ typedef struct		{
 						int								hash;
 						short							tint_color_idx;
 						char							name[name_str_len],
+														script_name[name_str_len],
 														draw_name[name_str_len],
 														vers[name_str_len];
 					} network_request_join;
@@ -300,6 +301,7 @@ typedef struct		{
 						short							add_net_uid,type,score,
 														team_idx,tint_color_idx;
 						char							name[name_str_len],
+														script_name[name_str_len],
 														draw_name[name_str_len];
 					} network_request_remote_add;
 					
@@ -360,7 +362,7 @@ typedef struct		{
 typedef struct		{
 						short							hidden,ammo_count,clip_count,
 														alt_ammo_count,alt_clip_count;
-					} network_request_remote_ammo;		// used as part of network_request_remote_stat_update
+					} network_request_remote_ammo;			// used as part of network_request_remote_pickup
 
 typedef struct		{
 						short							pickup_net_uid,health,armor;

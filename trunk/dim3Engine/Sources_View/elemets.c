@@ -204,22 +204,22 @@ void element_clear(void)
 
 int element_get_control_high(void)
 {
-	return((int)(((float)iface.scale_x)*element_control_draw_height)+5);
+	return((int)(((float)iface.scale_x)*iface.devices[view.device_type].scale.control_high)+5);
 }
 
 int element_get_padding(void)
 {
-	return((int)(((float)iface.scale_x)*element_control_padding_factor));
+	return((int)(((float)iface.scale_x)*iface.devices[view.device_type].scale.control_padding));
 }
 
 int element_get_tab_margin(void)
 {
-	return((int)(((float)iface.scale_x)*element_tab_margin_factor));
+	return((int)(((float)iface.scale_x)*iface.devices[view.device_type].scale.tab_margin));
 }
 
 int element_get_tab_control_high(void)
 {
-	return((int)(((float)iface.scale_x)*element_tab_control_high));
+	return((int)(((float)iface.scale_x)*iface.devices[view.device_type].scale.tab_high));
 }
 
 void element_get_button_bottom_left(int *x,int *y,int wid,int high)
@@ -236,17 +236,17 @@ void element_get_button_bottom_right(int *x,int *y,int wid,int high)
 
 int element_get_button_short_wid(void)
 {
-	return((int)(((float)iface.scale_x)*element_control_button_short_width));
+	return((int)(((float)iface.scale_x)*iface.devices[view.device_type].scale.button_short_wid));
 }
 
 int element_get_button_long_wid(void)
 {
-	return((int)(((float)iface.scale_x)*element_control_button_long_width));
+	return((int)(((float)iface.scale_x)*iface.devices[view.device_type].scale.button_long_wid));
 }
 
 int element_get_button_high(void)
 {
-	return((int)(((float)iface.scale_x)*element_control_button_height));
+	return((int)(((float)iface.scale_x)*iface.devices[view.device_type].scale.button_high));
 }
 
 /* =======================================================

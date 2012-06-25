@@ -56,6 +56,7 @@ void property_palette_fill_main(void)
 
 	list_palette_add_item(&property_palette,item_interface_project,0,"Project",(state.cur_item==item_interface_project),FALSE);
 	list_palette_add_item(&property_palette,item_interface_color,0,"Color",(state.cur_item==item_interface_color),FALSE);
+	list_palette_add_item(&property_palette,item_interface_device,0,"Devices",(state.cur_item==item_interface_device),FALSE);
 	list_palette_add_item(&property_palette,item_interface_logo,0,"Logo",(state.cur_item==item_interface_logo),FALSE);
 	list_palette_add_item(&property_palette,item_interface_title_page,0,"Title Page",(state.cur_item==item_interface_title_page),FALSE);
 	list_palette_add_item(&property_palette,item_interface_singleplayer,0,"Singleplayer",(state.cur_item==item_interface_singleplayer),FALSE);

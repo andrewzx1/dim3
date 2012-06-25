@@ -36,6 +36,7 @@ and can be sold or given away.
 extern app_type				app;
 extern map_type				map;
 extern server_type			server;
+extern js_type				js;
 extern iface_type			iface;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
@@ -124,7 +125,7 @@ void net_host_shutdown(void)
 bool net_host_join_local_player(char *err_str)
 {
 	obj_type					*player_obj;
-	network_request_remote_add	remote;
+	network_request_remote_add	add;
 
 		// get local player
 
@@ -140,15 +141,15 @@ bool net_host_join_local_player(char *err_str)
 
 		// send all other players on host the new player for remote add
 
-	remote.type=htons((short)object_type_remote_player);
-	strncpy(remote.name,player_obj->name,name_str_len);
-	strncpy(remote.draw_name,player_obj->draw.name,name_str_len);
-	remote.name[name_str_len-1]=0x0;
-	remote.team_idx=htons((short)net_team_none);
-	remote.tint_color_idx=htons((short)player_obj->tint_color_idx);
-	remote.score=0;
+	add.type=htons((short)object_type_remote_player);
+	strcpy(add.name,player_obj->name);
+	strcpy(add.script_name,js.script_list.scripts[player_obj->script_idx]->name);
+	strcpy(add.draw_name,player_obj->draw.name);
+	add.team_idx=htons((short)net_team_none);
+	add.tint_color_idx=htons((short)player_obj->tint_color_idx);
+	add.score=0;
 
-	net_host_player_send_message_to_clients_all(NULL,net_action_request_remote_add,(unsigned char*)&remote,sizeof(network_request_remote_add));
+	net_host_player_send_message_to_clients_all(NULL,net_action_request_remote_add,(unsigned char*)&add,sizeof(network_request_remote_add));
 
 	return(TRUE);
 }
@@ -278,12 +279,15 @@ int net_host_join_request(net_address_type *addr,network_request_join *request_j
 	add.add_net_uid=htons((short)net_uid);
 	add.type=htons((short)object_type_remote_player);
 	strncpy(add.name,request_join->name,name_str_len);
-	add.name[name_str_len-1]=0x0;
+	strncpy(add.script_name,request_join->script_name,name_str_len);
 	strncpy(add.draw_name,request_join->draw_name,name_str_len);
-	add.draw_name[name_str_len-1]=0x0;
 	add.team_idx=htons((short)net_team_none);
 	add.tint_color_idx=htons((short)tint_color_idx);
 	add.score=0;
+
+	add.name[name_str_len-1]=0x0;
+	add.script_name[name_str_len-1]=0x0;
+	add.draw_name[name_str_len-1]=0x0;
 
 		// create the remote object
 

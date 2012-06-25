@@ -56,6 +56,7 @@ void property_palette_initialize(void)
 	property_palette.item_pane.click.item=NULL;
 
 	state.cur_item=item_interface_project;
+	state.cur_device=device_type_pc;
 	state.cur_intro_button_idx=-1;
 	state.cur_intro_model_idx=-1;
 	state.cur_hud_bitmap_idx=-1;
@@ -109,6 +110,10 @@ void property_palette_fill_level_1(void)
 
 		case item_interface_color:
 			property_palette_fill_color();
+			return;
+
+		case item_interface_device:
+			property_palette_fill_devices();
 			return;
 
 		case item_interface_logo:
@@ -461,6 +466,10 @@ void property_palette_click_level_1(bool double_click)
 
 		case item_interface_color:
 			property_palette_click_color(double_click);
+			break;
+
+		case item_interface_device:
+			property_palette_click_devices(double_click);
 			break;
 
 		case item_interface_logo:

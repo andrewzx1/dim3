@@ -549,6 +549,7 @@ typedef struct		{
 //
  
 typedef struct		{
+						int									device_type;
 						view_count_type						count;
 						view_screen_type					screen;
 						view_render_type					*render;
