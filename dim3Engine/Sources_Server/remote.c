@@ -127,7 +127,7 @@ void remote_remove(network_request_remote_remove *remove)
 	
 		// find remote index
 		
-	obj=object_find_remote_net_uid(remove->remove_net_uid);
+	obj=object_find_remote_net_uid((signed short)ntohs(remove->remove_net_uid));
 	if (obj==NULL) return;
 
 		// send event to player
@@ -731,7 +731,7 @@ void remote_fire(network_request_remote_fire *fire)
 
 	obj=object_find_remote_net_uid((signed short)ntohs(fire->fire_net_uid));
 	if (obj==NULL) return;
-
+	
 	fire_type=(int)ntohs(fire->fire_type);
 
 	switch (fire_type) {
@@ -756,7 +756,7 @@ void remote_fire(network_request_remote_fire *fire)
       
 ======================================================= */
 
-void remote_pickup(network_request_remote_stat_update *pickup)
+void remote_pickup(network_request_remote_pickup *pickup)
 {
 	int				n,idx;
 	obj_type		*obj;
@@ -764,7 +764,7 @@ void remote_pickup(network_request_remote_stat_update *pickup)
 	
 		// setup pickup
 
-	obj=object_find_remote_net_uid((signed short)ntohs(pickup->stat_net_uid));
+	obj=object_find_remote_net_uid((signed short)ntohs(pickup->pickup_net_uid));
 	if (obj==NULL) return;
 
 	obj->status.health.value=(signed short)ntohs(pickup->health);
@@ -853,7 +853,7 @@ bool remote_route_message(net_queue_msg_type *msg)
 			return(TRUE);
 
 		case net_action_request_remote_pickup:
-			remote_stat_pickup((network_request_remote_pickup*)msg->msg);
+			remote_pickup((network_request_remote_pickup*)msg->msg);
 			return(TRUE);
 
 		case net_action_request_host_exit:

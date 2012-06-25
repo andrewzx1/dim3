@@ -592,6 +592,7 @@ void net_host_player_remote_route_msg(net_queue_msg_type *msg)
 void net_host_player_send_pickup(obj_type *obj)
 {
 	int									n,idx;
+	bool								ok;
 	weapon_type							*weap;
 	net_address_type					addr;
 	network_request_remote_pickup		pickup;
@@ -606,7 +607,7 @@ void net_host_player_send_pickup(obj_type *obj)
 
 		// build the update
 
-	pickup.stat_net_uid=htons((short)obj->remote.net_uid);
+	pickup.pickup_net_uid=htons((short)obj->remote.net_uid);
 	pickup.health=htons((short)obj->status.health.value);
 	pickup.armor=htons((short)obj->status.armor.value);
 
@@ -653,7 +654,8 @@ void net_host_player_send_updates(void)
 
 		// update all objects on this
 		// server that aren't scenery
-		// (this includes any player on
+		// or remotes
+		// (this includes the player on
 		// the host)
 
 	if (net_setup.mode==net_mode_host) {
@@ -663,6 +665,7 @@ void net_host_player_send_updates(void)
 			if (obj==NULL) continue;
 
 			if (obj->scenery.on) continue;
+			if (obj->type==object_type_remote_player) continue;
 			
 			chat_on=FALSE;
 			if (!app.dedicated_host) {

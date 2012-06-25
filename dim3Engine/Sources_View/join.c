@@ -808,7 +808,7 @@ void join_game(void)
 	player_obj->remote.net_uid=net_uid;
 	
 		// start client network thread
-		
+
 	if (!net_client_start_message_queue(err_str)) {
 		net_client_send_remote_remove(server.obj_list.objs[server.player_obj_idx]);
 		net_client_join_host_end();

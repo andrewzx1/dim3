@@ -79,7 +79,7 @@ float camera_chase_width_adjust(void)
 	ratio=(((float)view.screen.y_sz)/((float)view.screen.x_sz))*map.camera.plane.aspect_ratio;
 #endif
 
-	return((1.6f-ratio)*13500.0f);
+	return((1.6f-ratio)*9000.0f);		// supergumba -- needs to be settable
 #endif
 }
 

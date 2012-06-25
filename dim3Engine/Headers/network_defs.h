@@ -363,7 +363,7 @@ typedef struct		{
 					} network_request_remote_ammo;		// used as part of network_request_remote_stat_update
 
 typedef struct		{
-						short							stat_net_uid,health,armor;
+						short							pickup_net_uid,health,armor;
 						network_request_remote_ammo		ammos[net_max_weapon_per_remote];
 					} network_request_remote_pickup;
 

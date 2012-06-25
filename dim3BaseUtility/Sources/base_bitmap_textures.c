@@ -64,38 +64,6 @@ void bitmap_texture_set_filtering(int gl_bindtype,bool mipmap)
 
 /* =======================================================
 
-      Force Load Texture
-      
-======================================================= */
-
-void bitmap_texture_force_load(void)
-{
-	int				n;
-	float			vertexes[3*3];
-
-		// force texture to be loaded
-		// this is hacky, but it exists because
-		// some systems have a problem with
-		// getting the textures into memory when
-		// needed, especially iOS which seems
-		// to stage some for later
-	
-	for (n=0;n!=9;n++) {
-		vertexes[n]=0.0f;
-	}
-
-	glEnable(GL_TEXTURE_2D);
-	glVertexPointer(3,GL_FLOAT,0,(GLvoid*)vertexes);
-
-	glDrawArrays(GL_TRIANGLES,0,3);
-
-	glDisable(GL_TEXTURE_2D);
-
-	glFinish();
-}
-
-/* =======================================================
-
       Open OpenGL Textures
       
 ======================================================= */
@@ -163,10 +131,6 @@ bool bitmap_texture_open(bitmap_type *bitmap,unsigned char *data,bool mipmap,boo
 		// set to bitmap
 		
 	bitmap->gl_id=gl_id;
-
-		// force load
-
-	bitmap_texture_force_load();
 
 		// unbind
 
