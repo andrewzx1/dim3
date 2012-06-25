@@ -140,7 +140,7 @@ bool net_host_join_local_player(char *err_str)
 
 		// send all other players on host the new player for remote add
 
-	remote.type=object_type_remote_player;
+	remote.type=htons((short)object_type_remote_player);
 	strncpy(remote.name,player_obj->name,name_str_len);
 	strncpy(remote.draw_name,player_obj->draw.name,name_str_len);
 	remote.name[name_str_len-1]=0x0;
@@ -276,7 +276,7 @@ int net_host_join_request(net_address_type *addr,network_request_join *request_j
 		// rules and reset it
 
 	add.add_net_uid=htons((short)net_uid);
-	add.type=object_type_remote_player;
+	add.type=htons((short)object_type_remote_player);
 	strncpy(add.name,request_join->name,name_str_len);
 	add.name[name_str_len-1]=0x0;
 	strncpy(add.draw_name,request_join->draw_name,name_str_len);
