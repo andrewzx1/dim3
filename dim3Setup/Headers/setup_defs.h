@@ -44,26 +44,27 @@ and can be sold or given away.
 #define item_interface							0
 #define item_interface_project					1
 #define item_interface_color					2
-#define item_interface_logo						3
-#define item_interface_title_page				4
-#define item_interface_singleplayer				5
-#define item_interface_multiplayer				6
-#define item_interface_setup					7
-#define item_interface_progress					8
-#define item_interface_hud						9
-#define item_interface_virtual_control			10
-#define item_interface_radar					11
-#define item_interface_menu						12
-#define item_interface_chooser					13
-#define item_interface_sound					14
-#define item_interface_particle					15
-#define item_interface_ring						16
-#define item_interface_halo						17
-#define item_interface_mark						18
-#define item_interface_crosshair				19
-#define item_interface_action					20
-#define item_interface_shader					21
-#define item_interface_preload_models			22
+#define item_interface_device					3
+#define item_interface_logo						4
+#define item_interface_title_page				5
+#define item_interface_singleplayer				6
+#define item_interface_multiplayer				7
+#define item_interface_setup					8
+#define item_interface_progress					9
+#define item_interface_hud						10
+#define item_interface_virtual_control			11
+#define item_interface_radar					12
+#define item_interface_menu						13
+#define item_interface_chooser					14
+#define item_interface_sound					15
+#define item_interface_particle					16
+#define item_interface_ring						17
+#define item_interface_halo						18
+#define item_interface_mark						19
+#define item_interface_crosshair				20
+#define item_interface_action					21
+#define item_interface_shader					22
+#define item_interface_preload_models			23
 
 //
 // intro button types
@@ -85,7 +86,7 @@ and can be sold or given away.
 //
 
 typedef struct		{
-						int						cur_item,
+						int						cur_item,cur_device,
 												cur_intro_button_idx,cur_intro_model_idx,
 												cur_hud_bitmap_idx,cur_hud_text_idx,cur_hud_bar_idx,
 												cur_virtual_control_stick_idx,cur_virtual_control_button_idx,

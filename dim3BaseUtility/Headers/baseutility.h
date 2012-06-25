@@ -495,6 +495,16 @@ extern bool bitmap_copy(char *srce_path,char *dest_path);
 #define max_net_option							32
 
 //
+// devices
+//
+
+#define max_device								3
+
+#define device_type_pc							0
+#define device_type_phone						1
+#define device_type_pad							2
+
+//
 // color and font settings
 //
 
@@ -545,6 +555,24 @@ typedef struct		{
 						char							interface_name[max_iface_font_variant][name_str_len],
 														hud_name[max_iface_font_variant][name_str_len];
 					} iface_font_type;
+
+//
+// devices
+//
+
+typedef struct		{
+						float							control_padding,control_high,
+														control_short_wid,control_long_wid,
+														control_scroll_size,button_high,
+														button_short_wid,button_long_wid,
+														tab_margin,tab_high,
+														camera_chase_width_adjust,
+														weapon_high_adjust;
+					} iface_device_scale_type;
+
+typedef struct		{
+						iface_device_scale_type			scale;
+					} iface_device_type;
 
 //
 // generic animated image
@@ -1379,6 +1407,7 @@ typedef struct		{
 						iface_project_type				project;
 						iface_color_type				color;
 						iface_font_type					font;
+						iface_device_type				devices[max_device];
 						iface_progress_type				progress;
 						iface_logo_type					logo;
 						iface_intro_type				intro;

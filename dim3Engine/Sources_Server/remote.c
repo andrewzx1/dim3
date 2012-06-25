@@ -84,9 +84,15 @@ bool remote_add(network_request_remote_add *remote)
 	
 	obj->mesh.last_stand_mesh_idx=-1;
 	
-		// remotes have no script
+		// remote script
 
-	obj->script_idx=-1;
+	strcpy(obj->spawn_spot.script,remote->script_name);
+
+	if (!object_start_script(obj,TRUE,err_str)) {
+		free(server.obj_list.objs[idx]);
+		server.obj_list.objs[idx]=NULL;
+		return(FALSE);
+	}
 
 		// load models
 		// we substitute the model passed through

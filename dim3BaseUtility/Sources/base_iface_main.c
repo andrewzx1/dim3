@@ -293,6 +293,47 @@ void iface_default_settings(iface_type *iface)
 		strcpy(iface->font.hud_name[n],"Arial");
 	}
 
+		// devices
+
+	iface->devices[device_type_pc].scale.control_padding=0.01f;
+	iface->devices[device_type_pc].scale.control_high=0.035f;
+	iface->devices[device_type_pc].scale.control_short_wid=0.15f;
+	iface->devices[device_type_pc].scale.control_long_wid=0.4f;
+	iface->devices[device_type_pc].scale.control_scroll_size=0.05f;
+	iface->devices[device_type_pc].scale.button_height=0.06f;
+	iface->devices[device_type_pc].scale.button_short_wid=0.15f;
+	iface->devices[device_type_pc].scale.button_long_wid=0.25f;
+	iface->devices[device_type_pc].scale.tab_margin=0.02f;
+	iface->devices[device_type_pc].scale.tab_high=0.04f;
+	iface->devices[device_type_pc].scale.camera_chase_width_adjust=0.0f;
+	iface->devices[device_type_pc].scale.weapon_high_adjust=0.0f;
+
+	iface->devices[device_type_phone].scale.control_padding=0.02f;
+	iface->devices[device_type_phone].scale.control_high=0.06f;
+	iface->devices[device_type_phone].scale.control_short_wid=0.2f;
+	iface->devices[device_type_phone].scale.control_long_wid=0.5f;
+	iface->devices[device_type_phone].scale.control_scroll_size=0.06f;
+	iface->devices[device_type_phone].scale.button_height=0.08f;
+	iface->devices[device_type_phone].scale.button_short_wid=0.2f;
+	iface->devices[device_type_phone].scale.button_long_wid=0.3f;
+	iface->devices[device_type_phone].scale.tab_margin=0.02f;
+	iface->devices[device_type_phone].scale.tab_high=0.06f;
+	iface->devices[device_type_phone].scale.camera_chase_width_adjust=9000.0f;
+	iface->devices[device_type_phone].scale.weapon_high_adjust=1200.0f;
+
+	iface->devices[device_type_pad].scale.control_padding=0.02f;
+	iface->devices[device_type_pad].scale.control_high=0.06f;
+	iface->devices[device_type_pad].scale.control_short_wid=0.2f;
+	iface->devices[device_type_pad].scale.control_long_wid=0.5f;
+	iface->devices[device_type_pad].scale.control_scroll_size=0.06f;
+	iface->devices[device_type_pad].scale.button_height=0.08f;
+	iface->devices[device_type_pad].scale.button_short_wid=0.2f;
+	iface->devices[device_type_pad].scale.button_long_wid=0.3f;
+	iface->devices[device_type_pad].scale.tab_margin=0.02f;
+	iface->devices[device_type_pad].scale.tab_high=0.06f;
+	iface->devices[device_type_pad].scale.camera_chase_width_adjust=9000.0f;
+	iface->devices[device_type_pad].scale.weapon_high_adjust=1200.0f;
+
 		// progress
 		
 	iface->progress.lx=0;

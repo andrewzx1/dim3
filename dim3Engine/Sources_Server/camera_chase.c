@@ -32,6 +32,7 @@ and can be sold or given away.
 #include "interface.h"
 #include "objects.h"
 
+extern iface_type		iface;
 extern server_type		server;
 extern view_type		view;
 extern map_type			map;
@@ -68,9 +69,6 @@ void camera_chase_connect(void)
 
 float camera_chase_width_adjust(void)
 {
-#ifndef D3_OS_IPHONE
-	return(0.0f);
-#else
 	float		ratio;
 	
 #ifndef D3_ROTATE_VIEW
@@ -79,8 +77,7 @@ float camera_chase_width_adjust(void)
 	ratio=(((float)view.screen.y_sz)/((float)view.screen.x_sz))*map.camera.plane.aspect_ratio;
 #endif
 
-	return((1.6f-ratio)*9000.0f);		// supergumba -- needs to be settable
-#endif
+	return((1.6f-ratio)*iface.devices[view.device_type].scale.camera_chase_width_adjust);
 }
 
 /* =======================================================

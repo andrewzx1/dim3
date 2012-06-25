@@ -374,6 +374,24 @@ bool view_initialize(char *err_str)
 	if ((iface.setup.no_resolution_switch) && (!setup.window)) {
 		setup.screen_wid=setup.screen_high=-1;
 	}
+
+		// determine and cache the
+		// device type
+
+#ifdef D3_OS_IPHONE
+	if (cocoa_is_pad()) {
+		view.device_type=view_device_type_pad;
+	}
+	else {
+		view.device_type=device_type_phone;
+	}
+#else
+	#ifdef D3_OS_ANDRIOD
+		view.device_type=device_type_phone;
+	#else
+		view.device_type=device_type_pc;
+	#endif
+#endif
 	
 		// get desktop screen size
 		
