@@ -62,7 +62,7 @@ void error_open(void)
 
 		// the text
 		
-	control_y_add=element_get_control_high();
+	control_y_add=element_get_control_separation_high();
 	
 	col.r=1.0f;
 	col.g=col.b=0.0f;

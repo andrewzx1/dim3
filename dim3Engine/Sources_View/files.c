@@ -313,7 +313,7 @@ void file_open(void)
 	y=(margin+element_get_tab_control_high())+padding;
 
 	wid=iface.scale_x-((margin+padding)*2);
-	high=(int)(((float)iface.scale_y)*0.84f)-y;
+	high=iface.scale_y-(y+margin+(padding*2)+element_get_button_high());
 
 	strcpy(cols[0].name,"Map");
 	cols[0].percent_size=0.50f;

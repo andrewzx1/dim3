@@ -159,7 +159,7 @@ void singleplayer_option_open(void)
 		// get height
 
 	padding=element_get_padding();
-	control_y_add=element_get_control_high();
+	control_y_add=element_get_control_separation_high();
 	
 	butt_wid=element_get_button_short_wid();
 	butt_high=element_get_button_high();

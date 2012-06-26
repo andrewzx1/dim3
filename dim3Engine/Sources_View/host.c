@@ -345,7 +345,7 @@ void host_game_pane(void)
 	
 	margin=element_get_tab_margin();
 	padding=element_get_padding();
-	control_y_add=element_get_control_high();
+	control_y_add=element_get_control_separation_high();
 	
 		// game type
 
@@ -370,7 +370,7 @@ void host_game_pane(void)
 	x=margin+padding;
 
 	wid=iface.scale_x-((margin+padding)*2);
-	high=(int)(((float)iface.scale_y)*0.86f)-y;
+	high=iface.scale_y-(y+margin+(padding*2)+element_get_button_high());
 
 	strcpy(cols[0].name,"Map");
 	cols[0].percent_size=1.0f;
@@ -395,7 +395,7 @@ void host_options_pane(void)
 
 		// panel sizes
 
-	control_y_add=element_get_control_high();
+	control_y_add=element_get_control_separation_high();
 	control_y_sz=(control_y_add*(3+iface.multiplayer.option_list.noption))+element_get_padding();
 	if (iface.multiplayer.bot_list.on) control_y_sz+=(control_y_add*2);
 	
@@ -453,7 +453,7 @@ void host_info_pane(void)
 	int			x,y,control_y_add,control_y_sz;
 	char		str[256];
 	
-	control_y_add=element_get_control_high();
+	control_y_add=element_get_control_separation_high();
 	control_y_sz=4*control_y_add;
 	
 	x=(int)(((float)iface.scale_x)*0.4f);
