@@ -210,15 +210,19 @@ extern void element_initialize(void);
 extern void element_shutdown(void);
 extern void element_clear(void);
 
-extern inline int element_get_control_high(void);
+extern inline int element_get_control_separation_high(void);
 extern inline int element_get_padding(void);
 extern inline int element_get_tab_margin(void);
 extern inline int element_get_tab_control_high(void);
+extern inline int element_get_control_short_wid(void);
+extern inline int element_get_control_long_wid(void);
+extern inline int element_get_control_high(void);
 extern inline void element_get_button_bottom_left(int *x,int *y,int wid,int high);
 extern inline void element_get_button_bottom_right(int *x,int *y,int wid,int high);
-extern int element_get_button_short_wid(void);
-extern int element_get_button_long_wid(void);
-extern int element_get_button_high(void);
+extern inline int element_get_button_short_wid(void);
+extern inline int element_get_button_long_wid(void);
+extern inline int element_get_button_high(void);
+extern inline int element_get_control_scroll_size(void);
 
 extern void element_button_text_add(char *name,int id,int x,int y,int wid,int high,int x_pos,int y_pos);
 extern void element_button_bitmap_add(char *path,char *path2,int id,int x,int y,int wid,int high,int x_pos,int y_pos);

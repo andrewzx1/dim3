@@ -123,9 +123,11 @@ void setup_network_fill_character_table(void)
 	c=(char*)setup_character_list;
 	
 	for (n=0;n!=iface.multiplayer.character_list.ncharacter;n++) {
-		sprintf(c,"%s",iface.multiplayer.character_list.characters[n].name);
+		strcpy(c,iface.multiplayer.character_list.characters[n].name);
 		c+=128;
 	}
+	
+	*c=0x0;
 
 	element_set_table_data(ctrl_character_id,(char*)setup_character_list);
 }
@@ -142,9 +144,13 @@ void setup_game_video_pane(void)
 				x,y,control_y_add,control_y_sz;
 	bool		no_res_combo;
 	
+#if defined(D3_OS_IPHONE) || defined(D3_OS_ANDRIOD)
+	no_res_combo=TRUE;
+#else
 	no_res_combo=(iface.setup.no_resolution_switch) && (!setup.window);
+#endif
 	
-	control_y_add=element_get_control_high();
+	control_y_add=element_get_control_separation_high();
 	control_y_sz=control_y_add*3;
 	if (!no_res_combo) control_y_sz+=control_y_add;
 	if (gl_check_fsaa_ok()) control_y_sz+=control_y_add;
@@ -196,7 +202,7 @@ void setup_game_audio_pane(void)
 {
 	int			x,y,control_y_add,control_y_sz;
 	
-	control_y_add=element_get_control_high();
+	control_y_add=element_get_control_separation_high();
 	control_y_sz=control_y_add*2;
 	
 	x=(int)(((float)iface.scale_x)*0.38f);
@@ -214,7 +220,7 @@ void setup_game_mouse_pane(void)
 {
 	int			x,y,control_y_add,control_y_sz;
 	
-	control_y_add=element_get_control_high();
+	control_y_add=element_get_control_separation_high();
 	control_y_sz=8*control_y_add;
 	if (iface.setup.allow_auto_aim) control_y_sz+=control_y_add;
 	
@@ -258,7 +264,7 @@ void setup_game_action_pane(void)
 	y=(margin+element_get_tab_control_high())+padding;
 
 	wid=iface.scale_x-((margin+padding)*2);
-	high=(int)(((float)iface.scale_y)*0.77f)-y;
+	high=iface.scale_y-(y+margin+(padding*3)+(element_get_button_high()*2));
 	
 		// setup action list
 		
@@ -305,8 +311,6 @@ void setup_game_action_pane(void)
 	
 		// action buttons
 		
-	padding=element_get_padding();
-
 	x=iface.scale_x>>1;
 	y+=high;
 	
@@ -332,7 +336,7 @@ void setup_game_player_pane(void)
 	margin=element_get_tab_margin();
 	padding=element_get_padding();
 
-	control_y_add=element_get_control_high();
+	control_y_add=element_get_control_separation_high();
 	control_y_sz=control_y_add*3;
 	
 	if (iface.multiplayer.character_list.ncharacter!=0) {
@@ -362,7 +366,7 @@ void setup_game_player_pane(void)
 	y+=padding;
 
 	wid=(int)(((float)iface.scale_x)*0.80f)-((margin+padding)*2);
-	high=(int)(((float)iface.scale_y)*0.86f)-y;
+	high=iface.scale_y-(y+(padding*2)+margin+element_get_button_high());
 
 	strcpy(cols[0].name,"Characters");
 	cols[0].percent_size=1.0f;
@@ -389,7 +393,7 @@ void setup_game_debug_pane(void)
 {
 	int			x,y,control_y_add,control_y_sz;
 	
-	control_y_add=element_get_control_high();
+	control_y_add=element_get_control_separation_high();
 	control_y_sz=control_y_add*8;
 	
 	x=(int)(((float)iface.scale_x)*0.6f);

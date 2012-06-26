@@ -459,10 +459,10 @@ void join_lan_internet_hosts(void)
 	padding=element_get_padding();
 	
 	x=margin+padding;
-	y=margin+element_get_tab_control_high();
+	y=margin+padding+element_get_tab_control_high();
 
 	wid=iface.scale_x-((margin+padding)*2);
-	high=(int)(((float)iface.scale_y)*0.86f)-y;
+	high=iface.scale_y-(y+margin+(padding*3)+element_get_button_high());
 
 	switch (join_mode) {
 		case join_mode_wan_lan:
@@ -699,7 +699,7 @@ void join_activity_complete(bool single,char *msg)
 	element_enable(join_button_join_id,single);
 	element_enable(join_button_cancel_id,TRUE);
 	
-	if (!single) {		// supergumba -- might need to get rid of this
+	if (!single) {
 		element_set_value(join_lan_table_id,-1);
 		element_set_value(join_wan_table_id,-1);
 	}

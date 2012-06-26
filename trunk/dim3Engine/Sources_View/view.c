@@ -52,6 +52,7 @@ extern void chat_clear_messages(void);
 extern bool shadow_initialize(void);
 extern void shadow_shutdown(void);
 extern void menu_draw(void);
+extern bool cocoa_is_ipad(void);
 
 extern int loop_event_callback(void *userdata,SDL_Event *event);
 
@@ -379,8 +380,8 @@ bool view_initialize(char *err_str)
 		// device type
 
 #ifdef D3_OS_IPHONE
-	if (cocoa_is_pad()) {
-		view.device_type=view_device_type_pad;
+	if (cocoa_is_ipad()) {
+		view.device_type=device_type_pad;
 	}
 	else {
 		view.device_type=device_type_phone;

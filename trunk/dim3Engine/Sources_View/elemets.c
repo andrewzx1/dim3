@@ -202,7 +202,7 @@ void element_clear(void)
       
 ======================================================= */
 
-int element_get_control_high(void)
+int element_get_control_separation_high(void)
 {
 	return((int)(((float)iface.scale_x)*iface.devices[view.device_type].scale.control_high)+5);
 }
@@ -220,6 +220,21 @@ int element_get_tab_margin(void)
 int element_get_tab_control_high(void)
 {
 	return((int)(((float)iface.scale_x)*iface.devices[view.device_type].scale.tab_high));
+}
+
+int element_get_control_short_wid(void)
+{
+	return((int)(((float)iface.scale_x)*iface.devices[view.device_type].scale.control_short_wid));
+}
+
+int element_get_control_long_wid(void)
+{
+	return((int)(((float)iface.scale_x)*iface.devices[view.device_type].scale.control_long_wid));
+}
+
+int element_get_control_high(void)
+{
+	return((int)(((float)iface.scale_x)*iface.devices[view.device_type].scale.control_high));
 }
 
 void element_get_button_bottom_left(int *x,int *y,int wid,int high)
@@ -247,6 +262,11 @@ int element_get_button_long_wid(void)
 int element_get_button_high(void)
 {
 	return((int)(((float)iface.scale_x)*iface.devices[view.device_type].scale.button_high));
+}
+
+int element_get_control_scroll_size(void)
+{
+	return((int)(((float)iface.scale_x)*iface.devices[view.device_type].scale.control_scroll_size));
 }
 
 /* =======================================================
@@ -526,8 +546,8 @@ void element_text_field_add(char *str,char *value_str,int max_value_str_sz,int i
 	element->x=x;
 	element->y=y;
 
-	element->wid=(int)(((float)iface.scale_x)*element_control_draw_long_width);
-	element->high=(int)(((float)iface.scale_x)*element_control_draw_height);
+	element->wid=(int)(((float)iface.scale_x)*iface.devices[view.device_type].scale.control_long_wid);
+	element->high=element_get_control_high();
 	
 	element->selectable=selectable;
 	element->enabled=TRUE;
@@ -557,8 +577,8 @@ void element_number_add(char *str,int value,int id,int x,int y,int min,int max)
 	element->x=x;
 	element->y=y;
 
-	element->wid=(int)(((float)iface.scale_x)*element_control_draw_short_width);
-	element->high=(int)(((float)iface.scale_x)*element_control_draw_height);
+	element->wid=(int)(((float)iface.scale_x)*iface.devices[view.device_type].scale.control_short_wid);
+	element->high=element_get_control_high();
 	
 	element->selectable=TRUE;
 	element->enabled=TRUE;
@@ -591,8 +611,8 @@ void element_checkbox_add(char *str,int value,int id,int x,int y,bool selectable
 	element->enabled=TRUE;
 	element->hidden=FALSE;
 
-	element->wid=(int)(((float)iface.scale_x)*element_control_draw_short_width);
-	element->high=(int)(((float)iface.scale_x)*element_control_draw_height);
+	element->wid=(int)(((float)iface.scale_x)*iface.devices[view.device_type].scale.control_short_wid);
+	element->high=element_get_control_high();
 	
 	strcpy(element->str,str);
 	
@@ -620,8 +640,8 @@ void element_combo_add(char *str,char *combo_data,int value,int id,int x,int y,b
 	element->enabled=TRUE;
 	element->hidden=FALSE;
 
-	element->wid=(int)(((float)iface.scale_x)*element_control_draw_long_width);
-	element->high=(int)(((float)iface.scale_x)*element_control_draw_height);
+	element->wid=(int)(((float)iface.scale_x)*iface.devices[view.device_type].scale.control_long_wid);
+	element->high=element_get_control_high();
 	
 	strcpy(element->str,str);
 	
@@ -650,8 +670,8 @@ void element_slider_add(char *str,float value,float value_min,float value_max,in
 	element->enabled=TRUE;
 	element->hidden=FALSE;
 
-	element->wid=(int)(((float)iface.scale_x)*element_control_draw_long_width);
-	element->high=(int)(((float)iface.scale_x)*element_control_draw_height);
+	element->wid=(int)(((float)iface.scale_x)*iface.devices[view.device_type].scale.control_long_wid);
+	element->high=element_get_control_high();
 
 	strcpy(element->str,str);
 	
@@ -804,8 +824,8 @@ void element_color_add(char *str,int value,int id,int x,int y,bool selectable)
 	element->enabled=TRUE;
 	element->hidden=FALSE;
 
-	element->wid=(int)(((float)iface.scale_x)*element_control_draw_long_width);
-	element->high=(int)(((float)iface.scale_x)*element_control_draw_height);
+	element->wid=element_get_control_long_wid();
+	element->high=element_get_control_high();
 
 	strcpy(element->str,str);
 
@@ -869,8 +889,8 @@ void element_info_field_add(char *str,char *value_str,int id,int x,int y)
 	element->x=x;
 	element->y=y;
 
-	element->wid=(int)(((float)iface.scale_x)*element_control_draw_long_width);
-	element->high=(int)(((float)iface.scale_x)*element_control_draw_height);
+	element->wid=element_get_control_long_wid();
+	element->high=element_get_control_high();
 	
 	element->selectable=FALSE;
 	element->enabled=TRUE;
@@ -1640,7 +1660,7 @@ void element_draw_checkbox_control(int x,int y,int wid,bool checked,bool enabled
 
 		// checkbox
 
-	high=(int)(((float)iface.scale_x)*element_control_draw_height);
+	high=element_get_control_high();
 
 	lft=x;
 	rgt=lft+wid;
@@ -1730,7 +1750,7 @@ void element_draw_checkbox(element_type *element,int sel_id)
 	
 		// checkbox
 
-	wid=(int)(((float)iface.scale_x)*element_control_draw_short_width);
+	wid=element_get_control_short_wid();
 	element_draw_checkbox_control((x+10),ky,wid,(element->value!=0),element->enabled,(element->id==sel_id));
 }
 
@@ -2077,7 +2097,7 @@ int element_click_scroll_controls(element_type *element,int header_high,int x,in
 		// click size is a little bigger than
 		// actual draw size
 
-	ctrl_sz=(int)(((float)iface.scale_x)*element_scroll_control_size);
+	ctrl_sz=element_get_control_scroll_size();
 	ctrl_sz+=8;
 		
 	element_get_box(element,&lft,&rgt,&top,&bot);
@@ -2110,7 +2130,7 @@ void element_draw_scroll_controls(element_type *element,int header_high,bool up_
 	
 		// element size
 
-	ctrl_sz=(int)(((float)iface.scale_x)*element_scroll_control_size);
+	ctrl_sz=element_get_control_scroll_size();
 		
 	element_get_box(element,&lft,&rgt,&top,&bot);
 	
@@ -2980,7 +3000,7 @@ void element_draw_text_box(element_type *element)
 	
 		// wrap width
 		
-	wrap_wid=element->wid-((int)(((float)iface.scale_x)*element_scroll_control_size)+8);
+	wrap_wid=element->wid-(element_get_control_scroll_size()+8);
 
 		// draw text
 		
