@@ -509,6 +509,33 @@ void iface_read_settings_intro_model(iface_type *iface,int tag)
 
 /* =======================================================
 
+      Read Device XML
+      
+======================================================= */
+
+void iface_read_settings_device(int tag,iface_device_type *device)
+{
+	int				scale_tag;
+
+	scale_tag=xml_findfirstchild("Scale",tag);
+	if (scale_tag!=-1) {
+		device->scale.control_padding=xml_get_attribute_float(scale_tag,"control_padding");
+		device->scale.control_high=xml_get_attribute_float(scale_tag,"control_height");
+		device->scale.control_short_wid=xml_get_attribute_float(scale_tag,"control_short_width");
+		device->scale.control_long_wid=xml_get_attribute_float(scale_tag,"control_long_width");
+		device->scale.control_scroll_size=xml_get_attribute_float(scale_tag,"control_scroll_size");
+		device->scale.button_high=xml_get_attribute_float(scale_tag,"button_height");
+		device->scale.button_short_wid=xml_get_attribute_float(scale_tag,"button_short_width");
+		device->scale.button_long_wid=xml_get_attribute_float(scale_tag,"button_long_width");
+		device->scale.tab_margin=xml_get_attribute_float(scale_tag,"tab_margin");
+		device->scale.tab_high=xml_get_attribute_float(scale_tag,"tab_height");
+		device->scale.camera_chase_width_adjust=xml_get_attribute_float(scale_tag,"camera_chase_ratio");
+		device->scale.weapon_high_adjust=xml_get_attribute_float(scale_tag,"weapon_height_ratio");
+	}
+}
+
+/* =======================================================
+
       Read Interface XML
 	  For Project Name, so we can put it in the
 	  File Path so project name can override the application's
@@ -559,7 +586,7 @@ void iface_read_settings_project_name(file_path_setup_type *path_setup)
 
 void iface_read_settings_interface(iface_type *iface)
 {
-	int							n,interface_head_tag,scale_tag,
+	int							n,interface_head_tag,scale_tag,device_head_tag,device_tag,
 								bitmap_head_tag,bitmap_tag,text_head_tag,text_tag,bar_head_tag,bar_tag,
 								virtual_head_tag,radar_head_tag,menu_head_tag,menu_tag,title_tag,
 								simple_save_tag,score_tag,preload_tag,preload_models_tag,preload_model_tag,
@@ -591,6 +618,21 @@ void iface_read_settings_interface(iface_type *iface)
 	if (scale_tag!=-1) {
 		iface->scale_x=xml_get_attribute_int_default(scale_tag,"x",640);
 		iface->scale_y=xml_get_attribute_int_default(scale_tag,"y",480);
+	}
+
+		// devices
+
+	device_head_tag=xml_findfirstchild("Devices",interface_head_tag);
+	if (device_head_tag!=-1) {
+
+		device_tag=xml_findfirstchild("Device",device_head_tag);
+
+		for (n=0;n!=max_device;n++) {
+			if (device_tag==-1) break;
+
+			iface_read_settings_device(device_tag,&iface->devices[n]);
+			device_tag=xml_findnextchild(device_tag);
+		}
 	}
 
 		// some initial text sizes
@@ -973,6 +1015,33 @@ void iface_write_settings_interface_intro_button(char *name,iface_intro_button_t
 	xml_add_tagend(TRUE);
 }
 
+void iface_write_settings_interface_device(char *name,iface_device_type *device)
+{
+	xml_add_tagstart("Device");
+	xml_add_attribute_text("name",name);
+	xml_add_tagend(FALSE);
+
+		// scale
+
+	xml_add_tagstart("Scale");
+	xml_add_attribute_float("control_padding",device->scale.control_padding);
+	xml_add_attribute_float("control_height",device->scale.control_high);
+	xml_add_attribute_float("control_short_width",device->scale.control_short_wid);
+	xml_add_attribute_float("control_long_width",device->scale.control_long_wid);
+	xml_add_attribute_float("control_scroll_size",device->scale.control_scroll_size);
+	xml_add_attribute_float("button_height",device->scale.button_high);
+	xml_add_attribute_float("button_short_width",device->scale.button_short_wid);
+	xml_add_attribute_float("button_long_width",device->scale.button_long_wid);
+	xml_add_attribute_float("tab_margin",device->scale.tab_margin);
+	xml_add_attribute_float("tab_height",device->scale.tab_high);
+	xml_add_attribute_float("camera_chase_ratio",device->scale.camera_chase_width_adjust);
+	xml_add_attribute_float("weapon_height_ratio",device->scale.weapon_high_adjust);
+
+	xml_add_tagend(TRUE);
+
+	xml_add_tagclose("Device");
+}
+
 /* =======================================================
 
       Write Interface XML
@@ -1007,6 +1076,15 @@ bool iface_write_settings_interface(iface_type *iface,char *err_str)
 	xml_add_attribute_int("x",iface->scale_x);
 	xml_add_attribute_int("y",iface->scale_y);
 	xml_add_tagend(TRUE);
+
+		// devices
+
+	xml_add_tagstart("Devices");
+	xml_add_tagend(FALSE);
+	iface_write_settings_interface_device("pc",&iface->devices[device_type_pc]);
+	iface_write_settings_interface_device("phone",&iface->devices[device_type_phone]);
+	iface_write_settings_interface_device("pad",&iface->devices[device_type_pad]);
+	xml_add_tagclose("Devices");
 	
 		// bitmaps
 		

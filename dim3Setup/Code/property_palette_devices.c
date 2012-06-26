@@ -64,7 +64,7 @@ void property_palette_fill_devices(void)
 		list_palette_add_float(&property_palette,-1,"Control Short Width",&device->scale.control_short_wid,FALSE);
 		list_palette_add_float(&property_palette,-1,"Control Long Width",&device->scale.control_long_wid,FALSE);
 		list_palette_add_float(&property_palette,-1,"Control Scroll Size",&device->scale.control_scroll_size,FALSE);
-		list_palette_add_float(&property_palette,-1,"Button Height",&device->scale.button_height,FALSE);
+		list_palette_add_float(&property_palette,-1,"Button Height",&device->scale.button_high,FALSE);
 		list_palette_add_float(&property_palette,-1,"Button Short Width",&device->scale.button_short_wid,FALSE);
 		list_palette_add_float(&property_palette,-1,"Button Long Width",&device->scale.button_long_wid,FALSE);
 		list_palette_add_float(&property_palette,-1,"Tab Margin",&device->scale.tab_margin,FALSE);
