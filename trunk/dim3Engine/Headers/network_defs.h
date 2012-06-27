@@ -207,7 +207,7 @@ typedef struct		{
 // network maximums
 //
 
-#define net_max_weapon_per_remote						24
+#define net_max_weapon_per_remote						16
 
 //
 // team definitions
@@ -329,6 +329,11 @@ typedef struct		{
 					} network_request_dynamic_bone;			// used as part of network_request_update
 
 typedef struct		{
+						short							hidden,ammo_count,clip_count,
+														alt_ammo_count,alt_clip_count;
+					} network_request_weapon_ammo;			// used as part of network_request_update
+
+typedef struct		{
 						int								flags,pnt_x,pnt_y,pnt_z,
 														fp_ang_x,fp_ang_y,fp_ang_z,
 														fp_face_ang_x,fp_face_ang_y,fp_face_ang_z,
@@ -340,6 +345,7 @@ typedef struct		{
 						unsigned char					model_cur_texture_frame[max_model_texture];
 						network_request_animation		animation[max_model_blend_animation];
 						network_request_dynamic_bone	dynamic_bones[max_model_dynamic_bone];
+						network_request_weapon_ammo		ammos[net_max_weapon_per_remote];
 					} network_request_remote_update;
 					
 typedef struct		{

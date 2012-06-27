@@ -124,6 +124,7 @@ void net_host_shutdown(void)
 
 bool net_host_join_local_player(char *err_str)
 {
+	char						*c;
 	obj_type					*player_obj;
 	network_request_remote_add	add;
 
@@ -143,7 +144,11 @@ bool net_host_join_local_player(char *err_str)
 
 	add.type=htons((short)object_type_remote_player);
 	strcpy(add.name,player_obj->name);
+	
 	strcpy(add.script_name,js.script_list.scripts[player_obj->script_idx]->name);
+	c=strrchr(add.script_name,'.');		// remove .js
+	if (c!=0x0) *c=0x0;
+	
 	strcpy(add.draw_name,player_obj->draw.name);
 	add.team_idx=htons((short)net_team_none);
 	add.tint_color_idx=htons((short)player_obj->tint_color_idx);
@@ -244,6 +249,7 @@ int net_host_join_request(net_address_type *addr,network_request_join *request_j
 {
 	int							net_uid,
 								tint_color_idx;
+	char						*c;
 	obj_type					*obj;
 	network_reply_join			reply_join;
 	network_request_remote_add	add;
@@ -279,7 +285,11 @@ int net_host_join_request(net_address_type *addr,network_request_join *request_j
 	add.add_net_uid=htons((short)net_uid);
 	add.type=htons((short)object_type_remote_player);
 	strncpy(add.name,request_join->name,name_str_len);
+	
 	strncpy(add.script_name,request_join->script_name,name_str_len);
+	c=strrchr(add.script_name,'.');		// remove .js
+	if (c!=0x0) *c=0x0;
+
 	strncpy(add.draw_name,request_join->draw_name,name_str_len);
 	add.team_idx=htons((short)net_team_none);
 	add.tint_color_idx=htons((short)tint_color_idx);
