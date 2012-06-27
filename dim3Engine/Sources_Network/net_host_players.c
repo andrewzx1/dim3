@@ -418,6 +418,7 @@ void net_host_player_remote_click(network_request_remote_click *click)
 void net_host_player_remote_object_synch(net_address_type *addr)
 {
 	int							n,idx,skip_net_uid,the_type;
+	char						*c;
 	obj_type					*obj;
 	network_request_remote_add	add;
 
@@ -457,7 +458,11 @@ void net_host_player_remote_object_synch(net_address_type *addr)
 		add.add_net_uid=htons((short)obj->remote.net_uid);
 		add.type=htons((short)the_type);
 		strcpy(add.name,obj->name);
+		
 		strcpy(add.script_name,js.script_list.scripts[obj->script_idx]->name);
+		c=strrchr(add.script_name,'.');		// remove .js
+		if (c!=0x0) *c=0x0;
+
 		strcpy(add.draw_name,obj->draw.name);
 		add.team_idx=htons((short)obj->team_idx);
 		add.tint_color_idx=htons((short)obj->tint_color_idx);

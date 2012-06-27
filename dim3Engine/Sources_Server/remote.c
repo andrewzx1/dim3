@@ -88,7 +88,7 @@ bool remote_add(network_request_remote_add *remote)
 
 	strcpy(obj->spawn_spot.script,remote->script_name);
 
-	if (!object_start_script(obj,TRUE,err_str)) {
+	if (!object_start_script(obj,FALSE,err_str)) {
 		free(server.obj_list.objs[idx]);
 		server.obj_list.objs[idx]=NULL;
 		return(FALSE);
@@ -184,6 +184,10 @@ void remote_predict_move(obj_type *obj)
 		// predict movements
 		
 	object_move_remote(obj);
+	
+		// run pickups
+		
+	item_pickup_check(obj);
 	
 		// reduce movements
 		
@@ -326,7 +330,8 @@ void remote_death(network_request_remote_death *death)
 
 void remote_update_pack(obj_type *obj,bool chat_on,network_request_remote_update *update)
 {
-	int								n,tick,flags;
+	int								n,idx,tick,flags;
+	weapon_type						*weap;
 	model_draw						*draw;
 	model_draw_animation			*animation;
 	model_draw_dynamic_bone			*dyn_bone;
@@ -358,7 +363,25 @@ void remote_update_pack(obj_type *obj,bool chat_on,network_request_remote_update
 	update->score=htons((short)obj->score.score);
 	update->health=htons((short)obj->status.health.value);
 	update->armor=htons((short)obj->status.armor.value);
-	
+
+	idx=0;
+		
+	for (n=0;n!=max_weap_list;n++) {
+		weap=obj->weap_list.weaps[n];
+		if (weap==NULL) continue;
+
+		update->ammos[idx].hidden=htons((short)(weap->hidden?0:1));
+		update->ammos[idx].ammo_count=htons((short)weap->ammo.count);
+		update->ammos[idx].clip_count=htons((short)weap->ammo.clip_count);
+		update->ammos[idx].alt_ammo_count=htons((short)weap->alt_ammo.count);
+		update->ammos[idx].alt_clip_count=htons((short)weap->alt_ammo.clip_count);
+
+		idx++;
+		if (idx==net_max_weapon_per_remote) break;
+	}
+
+		// last mesh
+		
 	update->last_stand_mesh_idx=htons((short)obj->mesh.last_stand_mesh_idx);
 	
 		// position
@@ -437,9 +460,10 @@ void remote_update_pack(obj_type *obj,bool chat_on,network_request_remote_update
 
 void remote_update_unpack(obj_type *obj,network_request_remote_update *update)
 {
-	int								n,flags,old_score,
+	int								n,idx,flags,old_score,
 									animation_mode,animate_idx,animate_next_idx;
 	d3pnt							org_pnt;
+	weapon_type						*weap;
 	model_draw						*draw;
 	model_draw_dynamic_bone			*dyn_bone;
 	model_draw_animation			*animation;
@@ -553,6 +577,24 @@ void remote_update_unpack(obj_type *obj,network_request_remote_update *update)
 	obj->status.health.value=(signed short)ntohs(update->health);
 	obj->status.armor.value=(signed short)ntohs(update->armor);
 	
+	idx=0;
+		
+	for (n=0;n!=max_weap_list;n++) {
+		weap=obj->weap_list.weaps[n];
+		if (weap==NULL) continue;
+
+		weap->hidden=(ntohs(update->ammos[idx].hidden)!=0);
+		weap->ammo.count=(signed short)ntohs(update->ammos[idx].ammo_count);
+		weap->ammo.clip_count=(signed short)ntohs(update->ammos[idx].clip_count);
+		weap->alt_ammo.count=(signed short)ntohs(update->ammos[idx].alt_ammo_count);
+		weap->alt_ammo.clip_count=(signed short)ntohs(update->ammos[idx].alt_clip_count);
+
+		idx++;
+		if (idx==net_max_weapon_per_remote) break;
+	}
+
+		// last stand mesh
+		
 	obj->mesh.last_stand_mesh_idx=(signed short)ntohs(update->last_stand_mesh_idx);
 	
 		// last update tick
@@ -576,8 +618,10 @@ void remote_update(network_request_remote_update *update)
 
 	remote_update_unpack(obj,update);
 	
-		// handle triggers
+		// handle pickups and
+		// triggers
 		
+	item_pickup_check(obj);
 	mesh_triggers(obj);
 }
 
