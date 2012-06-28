@@ -93,6 +93,8 @@ and can be sold or given away.
 #define core_shader_group_map								0
 #define core_shader_group_liquid							1
 #define core_shader_group_model								2
+#define core_shader_group_color								3
+#define core_shader_group_bitmap							4
 
 //
 // diffuse

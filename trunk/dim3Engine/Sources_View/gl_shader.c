@@ -41,7 +41,8 @@ shader_type					*gl_shader_current;
 
 extern int					nuser_shader;
 extern shader_type			user_shaders[max_iface_user_shader],
-							core_shaders[max_shader_light+1][max_core_shader];
+							core_shaders[max_shader_light+1][max_core_shader],
+							color_shader,bitmap_shader;
 
 extern float				light_shader_direction[7][3];
 
@@ -68,6 +69,10 @@ void gl_shader_draw_reset_normal_tangent_attrib(void) {}
 void gl_shader_draw_end(void) {}
 void gl_shader_texture_override(GLuint gl_id,float alpha) {}
 void gl_shader_draw_execute(int core_shader_group,texture_type *texture,int txt_idx,int frame,int lmap_txt_idx,float alpha,view_glsl_light_list_type *light_list,int tangent_offset,int normal_offset,int stride) {}
+void gl_shader_draw_simple_start(void);
+void gl_shader_draw_simple_end(void);
+void gl_shader_draw_execute_simple_color(void);
+void gl_shader_draw_execute_simple_bitmap(unsigned long gl_id);
 
 #else
 
@@ -895,7 +900,7 @@ void gl_shader_texture_override(GLuint gl_id,float alpha)
 
 /* =======================================================
 
-      Execute Shader
+      Execute Normal Shaders
       
 ======================================================= */
 
@@ -964,6 +969,61 @@ void gl_shader_draw_execute(int core_shader_group,texture_type *texture,int txt_
 	if (core_shader_group==core_shader_group_model) gl_shader_set_diffuse_variables(shader,light_list);
 
 	gl_shader_set_light_variables(shader,core_shader_group,is_core,light_list);
+}
+
+/* =======================================================
+
+      Execute Simple Shaders
+      
+======================================================= */
+
+void gl_shader_draw_simple_start(void)
+{
+		// remember current shader
+
+	gl_shader_current=NULL;
+
+		// make texture replace
+		
+	glColor4f(1.0f,0.0f,1.0f,1.0f);
+
+	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_REPLACE);
+}
+
+void gl_shader_draw_simple_end(void)
+{
+		// deactivate any current shader
+		
+	if (gl_shader_current!=NULL) glUseProgramObjectARB(0);
+	
+		// turn off any used textures
+
+	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
+	glDisable(GL_TEXTURE_2D);
+}
+
+void gl_shader_draw_execute_simple_color(void)
+{
+		// change over the shader
+		
+	if ((&color_shader)!=gl_shader_current) {
+		gl_shader_current=&color_shader;
+		glUseProgramObjectARB(color_shader.program_obj);
+	}
+}
+
+void gl_shader_draw_execute_simple_bitmap(unsigned long gl_id)
+{
+		// change over the shader
+		
+	if ((&bitmap_shader)!=gl_shader_current) {
+		gl_shader_current=&bitmap_shader;
+		glUseProgramObjectARB(bitmap_shader.program_obj);
+	}
+
+		// bind the bitmap
+
+	gl_texture_bind(0,gl_id);
 }
 
 #endif

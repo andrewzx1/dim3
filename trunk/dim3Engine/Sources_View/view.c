@@ -291,6 +291,12 @@ bool view_initialize_display(char *err_str)
 	
 		// start the shaders
 
+	if (!gl_simple_shader_initialize(err_str)) {
+		gl_shutdown();
+		SDL_Quit();
+		return(FALSE);
+	}
+
 	if (!gl_core_shader_initialize(err_str)) {
 		gl_shutdown();
 		SDL_Quit();
@@ -317,6 +323,7 @@ bool view_initialize_display(char *err_str)
 void view_shutdown_display(void)
 {
 	shadow_shutdown();
+	gl_simple_shader_shutdown();
 	gl_core_shader_shutdown();
 	gl_user_shader_shutdown();
 	gl_back_render_shutdown();

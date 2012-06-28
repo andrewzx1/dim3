@@ -1,0 +1,265 @@
+/****************************** File *********************************
+
+Module: dim3 Engine
+Author: Brian Barnes
+ Usage: Simple Shader Routines
+
+***************************** License ********************************
+
+This code can be freely used as long as these conditions are met:
+
+1. This header, in its entirety, is kept with the code
+2. This credit “Created with dim3 Technology” is given on a single
+application screen and in a single piece of the documentation
+3. It is not resold, in it's current form or modified, as an
+engine-only product
+
+This code is presented as is. The author of dim3 takes no
+responsibilities for any version of this code.
+
+Any non-engine product (games, etc) created with this code is free
+from any and all payment and/or royalties to the author of dim3,
+and can be sold or given away.
+
+(c) 2000-2012 Klink! Software www.klinksoftware.com
+ 
+*********************************************************************/
+
+#ifdef D3_PCH
+	#include "dim3engine.h"
+#endif
+
+#include "interface.h"
+
+extern map_type				map;
+extern setup_type			setup;
+extern view_type			view;
+extern render_info_type		render_info;
+
+shader_type					color_shader,bitmap_shader;
+
+/* =======================================================
+
+      Build Simple Color Shader
+      
+======================================================= */
+
+char* gl_simple_color_shader_build_vert(void)
+{
+	char			*buf;
+
+		// memory for shader
+
+	buf=(char*)malloc(max_core_shader_data_sz);
+	if (buf==NULL) return(NULL);
+
+	bzero(buf,max_core_shader_data_sz);
+
+		// build vert shader
+
+	strcat(buf,"varying vec4 color;\n");
+	
+	strcat(buf,"void main(void)\n");
+	strcat(buf,"{\n");
+	strcat(buf,"gl_Position=ftransform();\n");
+	strcat(buf,"color=gl_Color;\n");
+	strcat(buf,"}\n");
+
+	return(buf);
+}
+
+char* gl_simple_color_shader_build_frag(void)
+{
+	char			*buf;
+
+		// memory for shader
+
+	buf=(char*)malloc(max_core_shader_data_sz);
+	if (buf==NULL) return(NULL);
+
+	bzero(buf,max_core_shader_data_sz);
+
+		// build frag shader
+		
+	strcat(buf,"varying vec4 color;\n");
+	
+	strcat(buf,"void main(void)\n");
+	strcat(buf,"{\n");
+	strcat(buf,"gl_FragColor=color;\n");
+	strcat(buf,"}\n");
+
+	return(buf);
+}
+
+bool gl_simple_color_shader_create(shader_type *shader,char *err_str)
+{
+	char				*vertex_data,*fragment_data;
+	bool				ok;
+	
+		// create the shader code
+
+	vertex_data=gl_simple_color_shader_build_vert();
+	if (vertex_data==NULL) {
+		strcpy(err_str,"Out of Memory");
+		return(FALSE);
+	}
+
+	fragment_data=gl_simple_color_shader_build_frag();
+	if (fragment_data==NULL) {
+		free(vertex_data);
+		strcpy(err_str,"Out of Memory");
+		return(FALSE);
+	}
+	
+		// create the name
+		
+	strcpy(shader->name,"simple_color");
+	sprintf(shader->vertex_name,"%s_vert",shader->name);
+	sprintf(shader->fragment_name,"%s_frag",shader->name);
+	
+		// compile the code
+
+	ok=gl_shader_code_compile(shader,vertex_data,fragment_data,err_str);
+
+		// free the code
+
+	free(vertex_data);
+	free(fragment_data);
+
+	return(ok);
+}
+
+/* =======================================================
+
+      Build Simple Bitmap Shader
+      
+======================================================= */
+
+char* gl_simple_bitmap_shader_build_vert(void)
+{
+	char			*buf;
+
+		// memory for shader
+
+	buf=(char*)malloc(max_core_shader_data_sz);
+	if (buf==NULL) return(NULL);
+
+	bzero(buf,max_core_shader_data_sz);
+
+		// build vert shader
+
+	strcat(buf,"varying vec4 color;\n");
+	
+	strcat(buf,"void main(void)\n");
+	strcat(buf,"{\n");
+	strcat(buf,"gl_Position=ftransform();\n");
+	strcat(buf,"color=gl_Color;\n");
+	strcat(buf,"}\n");
+
+	return(buf);
+}
+
+char* gl_simple_bitmap_shader_build_frag(void)
+{
+	char			*buf;
+
+		// memory for shader
+
+	buf=(char*)malloc(max_core_shader_data_sz);
+	if (buf==NULL) return(NULL);
+
+	bzero(buf,max_core_shader_data_sz);
+
+		// build frag shader
+		
+	strcat(buf,"uniform sampler2D dim3Tex;\n");
+	strcat(buf,"varying vec4 color;\n");
+	
+	strcat(buf,"void main(void)\n");
+	strcat(buf,"{\n");
+	strcat(buf,"vec4 tex=texture2D(dim3Tex,gl_TexCoord[0].st);\n");
+	strcat(buf,"gl_FragColor.rgb=tex.rgb*color.rgb;\n");
+	strcat(buf,"gl_FragColor.a=tex.a*color.a;\n");
+	strcat(buf,"}\n");
+
+	return(buf);
+}
+
+bool gl_simple_bitmap_shader_create(shader_type *shader,char *err_str)
+{
+	char				*vertex_data,*fragment_data;
+	bool				ok;
+	
+		// create the shader code
+
+	vertex_data=gl_simple_bitmap_shader_build_vert();
+	if (vertex_data==NULL) {
+		strcpy(err_str,"Out of Memory");
+		return(FALSE);
+	}
+
+	fragment_data=gl_simple_bitmap_shader_build_frag();
+	if (fragment_data==NULL) {
+		free(vertex_data);
+		strcpy(err_str,"Out of Memory");
+		return(FALSE);
+	}
+	
+		// create the name
+		
+	strcpy(shader->name,"simple_bitmap");
+	sprintf(shader->vertex_name,"%s_vert",shader->name);
+	sprintf(shader->fragment_name,"%s_frag",shader->name);
+	
+		// compile the code
+
+	ok=gl_shader_code_compile(shader,vertex_data,fragment_data,err_str);
+
+		// free the code
+
+	free(vertex_data);
+	free(fragment_data);
+
+	return(ok);
+}
+
+/* =======================================================
+
+      Simple Shader Initialize/Shutdown
+      
+======================================================= */
+
+bool gl_simple_shader_initialize(char *err_str)
+{
+	if (!gl_check_shader_ok()) return(TRUE);
+	
+		// clear simple shaders
+
+	gl_shader_code_clear(&color_shader);
+	gl_shader_code_clear(&bitmap_shader);
+
+		// initialize simple shaders	
+		
+	if (!gl_simple_color_shader_create(&color_shader,err_str)) {
+		gl_simple_shader_shutdown();
+		return(FALSE);
+	}
+
+	if (!gl_simple_bitmap_shader_create(&bitmap_shader,err_str)) {
+		gl_simple_shader_shutdown();
+		return(FALSE);
+	}
+	
+	return(TRUE);
+}
+
+void gl_simple_shader_shutdown(void)
+{
+	if (!gl_check_shader_ok()) return;
+
+		// shutdown shaders
+
+	gl_shader_code_shutdown(&color_shader);
+	gl_shader_code_shutdown(&bitmap_shader);
+}
+
