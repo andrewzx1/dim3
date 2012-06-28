@@ -231,6 +231,7 @@ extern void object_grow_run(obj_type *obj);
 // items
 //
 
+extern bool item_pickup(obj_type *obj,obj_type *item_obj);
 extern void item_pickup_check(obj_type *obj);
 extern bool item_add_weapon(obj_type *obj,weapon_type *weap);
 extern bool item_swap_weapon(obj_type *obj,weapon_type *weap);

@@ -594,11 +594,9 @@ void net_host_player_remote_route_msg(net_queue_msg_type *msg)
       
 ======================================================= */
 
-void net_host_player_send_pickup(obj_type *obj)
+void net_host_player_send_pickup(obj_type *obj,obj_type *item_obj)
 {
-	int									n,idx;
 	bool								ok;
-	weapon_type							*weap;
 	net_address_type					addr;
 	network_request_remote_pickup		pickup;
 
@@ -612,29 +610,12 @@ void net_host_player_send_pickup(obj_type *obj)
 
 		// build the update
 
-	pickup.pickup_net_uid=htons((short)obj->remote.net_uid);
-	pickup.health=htons((short)obj->status.health.value);
-	pickup.armor=htons((short)obj->status.armor.value);
-
-	idx=0;
-		
-	for (n=0;n!=max_weap_list;n++) {
-		weap=obj->weap_list.weaps[n];
-		if (weap==NULL) continue;
-
-		pickup.ammos[idx].hidden=htons((short)(weap->hidden?0:1));
-		pickup.ammos[idx].ammo_count=htons((short)weap->ammo.count);
-		pickup.ammos[idx].clip_count=htons((short)weap->ammo.clip_count);
-		pickup.ammos[idx].alt_ammo_count=htons((short)weap->alt_ammo.count);
-		pickup.ammos[idx].alt_clip_count=htons((short)weap->alt_ammo.clip_count);
-
-		idx++;
-		if (idx==net_max_weapon_per_remote) break;
-	}
+	pickup.picking_net_uid=htons((short)obj->remote.net_uid);
+	pickup.picked_net_uid=htons((short)item_obj->remote.net_uid);
 
 		// send update to player
 
-	net_host_player_send_message_to_clients_all(&addr,net_action_request_remote_pickup,(unsigned char*)&pickup,sizeof(network_request_remote_pickup));
+	net_host_player_send_message_to_client(&addr,net_action_request_remote_pickup,(unsigned char*)&pickup,sizeof(network_request_remote_pickup));
 }
 
 /* =======================================================

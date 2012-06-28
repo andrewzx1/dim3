@@ -358,32 +358,6 @@ void remote_update_pack(obj_type *obj,bool chat_on,network_request_remote_update
 	
 	update->flags=htonl(flags);
 	
-		// status
-
-	update->score=htons((short)obj->score.score);
-	update->health=htons((short)obj->status.health.value);
-	update->armor=htons((short)obj->status.armor.value);
-
-	idx=0;
-		
-	for (n=0;n!=max_weap_list;n++) {
-		weap=obj->weap_list.weaps[n];
-		if (weap==NULL) continue;
-
-		update->ammos[idx].hidden=htons((short)(weap->hidden?0:1));
-		update->ammos[idx].ammo_count=htons((short)weap->ammo.count);
-		update->ammos[idx].clip_count=htons((short)weap->ammo.clip_count);
-		update->ammos[idx].alt_ammo_count=htons((short)weap->alt_ammo.count);
-		update->ammos[idx].alt_clip_count=htons((short)weap->alt_ammo.clip_count);
-
-		idx++;
-		if (idx==net_max_weapon_per_remote) break;
-	}
-
-		// last mesh
-		
-	update->last_stand_mesh_idx=htons((short)obj->mesh.last_stand_mesh_idx);
-	
 		// position
 		
 	update->pnt_x=htonl(obj->pnt.x);
@@ -456,6 +430,32 @@ void remote_update_pack(obj_type *obj,bool chat_on,network_request_remote_update
 		dyn_bone++;
 		net_dyn_bone++;
 	}
+	
+		// status
+
+	update->score=htons((short)obj->score.score);
+	update->health=htons((short)obj->status.health.value);
+	update->armor=htons((short)obj->status.armor.value);
+
+	idx=0;
+		
+	for (n=0;n!=max_weap_list;n++) {
+		weap=obj->weap_list.weaps[n];
+		if (weap==NULL) continue;
+
+		update->ammos[idx].hidden=htons((short)(weap->hidden?1:0));
+		update->ammos[idx].ammo_count=htons((short)weap->ammo.count);
+		update->ammos[idx].clip_count=htons((short)weap->ammo.clip_count);
+		update->ammos[idx].alt_ammo_count=htons((short)weap->alt_ammo.count);
+		update->ammos[idx].alt_clip_count=htons((short)weap->alt_ammo.clip_count);
+
+		idx++;
+		if (idx==net_max_weapon_per_remote) break;
+	}
+
+		// last mesh
+		
+	update->last_stand_mesh_idx=htons((short)obj->mesh.last_stand_mesh_idx);
 }
 
 void remote_update_unpack(obj_type *obj,network_request_remote_update *update)
@@ -808,37 +808,19 @@ void remote_fire(network_request_remote_fire *fire)
 
 void remote_pickup(network_request_remote_pickup *pickup)
 {
-	int				n,idx;
-	obj_type		*obj;
-	weapon_type		*weap;
+	obj_type		*obj,*item_obj;
 	
 		// setup pickup
 
-	obj=object_find_remote_net_uid((signed short)ntohs(pickup->pickup_net_uid));
+	obj=object_find_remote_net_uid((signed short)ntohs(pickup->picking_net_uid));
 	if (obj==NULL) return;
 
-	obj->status.health.value=(signed short)ntohs(pickup->health);
-	obj->status.armor.value=(signed short)ntohs(pickup->armor);
+	item_obj=object_find_remote_net_uid((signed short)ntohs(pickup->picked_net_uid));
+	if (item_obj==NULL) return;
 
-	idx=0;
+		// run the pickup
 		
-	for (n=0;n!=max_weap_list;n++) {
-		weap=obj->weap_list.weaps[n];
-		if (weap==NULL) continue;
-
-		weap->hidden=(ntohs(pickup->ammos[idx].hidden)!=0);
-		weap->ammo.count=(signed short)ntohs(pickup->ammos[idx].ammo_count);
-		weap->ammo.clip_count=(signed short)ntohs(pickup->ammos[idx].clip_count);
-		weap->alt_ammo.count=(signed short)ntohs(pickup->ammos[idx].alt_ammo_count);
-		weap->alt_ammo.clip_count=(signed short)ntohs(pickup->ammos[idx].alt_clip_count);
-
-		idx++;
-		if (idx==net_max_weapon_per_remote) break;
-	}
-
-		// send event to player
-
-	scripts_post_event_console(obj->script_idx,-1,sd_event_pickup,0,0);
+	item_pickup(obj,item_obj);
 }
 
 /* =======================================================
