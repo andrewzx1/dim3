@@ -3001,6 +3001,10 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\dim3Engine\Sources_View\gl_shader_simple.c"
+						>
+					</File>
+					<File
 						RelativePath="..\..\dim3Engine\Sources_View\gl_shader_user.c"
 						>
 					</File>

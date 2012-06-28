@@ -766,7 +766,7 @@ extern void view_primitive_2D_texture_quad_rot(GLuint gl_id,d3col *col,float alp
 extern void view_primitive_2D_texture_quad_rectangle(GLuint gl_id,float alpha,int lft,int rgt,int top,int bot,int pixel_wid,int pixel_high);
 
 //
-// shaders
+// core shaders
 //
 
 extern void gl_shader_code_clear(shader_type *shader);
@@ -782,6 +782,10 @@ extern void gl_shader_draw_reset_normal_tangent_attrib(void);
 extern void gl_shader_draw_end(void);
 extern void gl_shader_texture_override(GLuint gl_id,float alpha);
 extern void gl_shader_draw_execute(int core_shader_group,texture_type *texture,int txt_idx,int frame,int lmap_txt_idx,float alpha,view_glsl_light_list_type *light_list,int tangent_offset,int normal_offset,int stride);
+extern void gl_shader_draw_simple_start(void);
+extern void gl_shader_draw_simple_end(void);
+extern void gl_shader_draw_execute_simple_color(void);
+extern void gl_shader_draw_execute_simple_bitmap(unsigned long gl_id);
 
 //
 // core shaders
@@ -790,6 +794,13 @@ extern void gl_shader_draw_execute(int core_shader_group,texture_type *texture,i
 extern bool gl_core_shader_initialize(char *err_str);
 extern void gl_core_shader_shutdown(void);
 extern shader_type* gl_core_shader_find_ptr(int nlight,int core_shader_group,texture_type *texture);
+
+//
+// simple shaders
+//
+
+extern bool gl_simple_shader_initialize(char *err_str);
+extern void gl_simple_shader_shutdown(void);
 
 //
 // user shaders

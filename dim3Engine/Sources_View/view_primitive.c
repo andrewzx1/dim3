@@ -113,7 +113,10 @@ void view_primitive_2D_color_poly(int x0,int y0,d3col *col0,int x1,int y1,d3col 
 	glVertexPointer(2,GL_FLOAT,0,(GLvoid*)vertexes);
 	glColorPointer(4,GL_UNSIGNED_BYTE,0,(GLvoid*)colors);
 
+	gl_shader_draw_simple_start();
+	gl_shader_draw_execute_simple_color();
 	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
+	gl_shader_draw_simple_end();
 
  	glDisableClientState(GL_COLOR_ARRAY);
 		
