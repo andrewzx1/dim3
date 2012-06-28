@@ -39,6 +39,42 @@ extern network_setup_type	net_setup;
 
 /* =======================================================
 
+      Pick Up Item
+      
+======================================================= */
+
+bool item_pickup(obj_type *obj,obj_type *item_obj)
+{
+		// setup pickup for items
+		
+	item_obj->pickup.item_idx=-1;
+	item_obj->pickup.obj_idx=obj->idx;
+	item_obj->pickup.canceled=FALSE;
+
+		// setup pickup for objects
+
+	obj->pickup.item_idx=item_obj->idx;
+	obj->pickup.obj_idx=-1;
+
+		// send pickup event to item
+		// and exit if cancelled
+
+	scripts_post_event_console(item_obj->script_idx,-1,sd_event_pickup,0,0);
+	if (item_obj->pickup.canceled) return(FALSE);
+
+		// send pickup event to object
+		
+	scripts_post_event_console(obj->script_idx,-1,sd_event_pickup,0,0);
+			
+		// successfully picked up
+				
+	obj->item_count=50;
+	
+	return(TRUE);
+}
+
+/* =======================================================
+
       Check for Object Picking Up Item
       
 ======================================================= */
@@ -77,38 +113,17 @@ void item_pickup_check(obj_type *obj)
             // check bounds
 			
 		if (collide_object_to_object(obj,NULL,item_obj,FALSE)) {
-	
-				// setup pickup for items
-				
-			item_obj->pickup.item_idx=-1;
-			item_obj->pickup.obj_idx=obj->idx;
-			item_obj->pickup.canceled=FALSE;
-
-				// setup pickup for objects
-
-			obj->pickup.item_idx=item_obj->idx;
-			obj->pickup.obj_idx=-1;
-
-				// send pickup event to item
-
-			scripts_post_event_console(item_obj->script_idx,-1,sd_event_pickup,0,0);
-			
-			if (item_obj->pickup.canceled) continue;			// pickup was canceled by script
 		
-				// send pickup event to object
+				// run the pickup
 				
-			scripts_post_event_console(obj->script_idx,-1,sd_event_pickup,0,0);
-			
-				// successfully picked up
-				
-			obj->item_count=50;
-
+			if (!item_pickup(obj,item_obj)) continue;
+	
 				// if this is host, then we need
 				// to update the remotes stats
 
 			if (net_setup.mode==net_mode_host) {
 				if (obj->type==object_type_remote_player) {
-					net_host_player_send_pickup(obj);
+					net_host_player_send_pickup(obj,item_obj);
 				}
 			}
 		}
@@ -126,7 +141,7 @@ bool item_add_weapon(obj_type *obj,weapon_type *weap)
 		// already own weapon
 
 	if (!weap->hidden) {
-
+	
 			// can we pick up a second one?
 
 		if (!weap->dual.on) return(FALSE);

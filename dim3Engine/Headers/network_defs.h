@@ -366,13 +366,7 @@ typedef struct		{
 					} network_request_remote_fire;
 
 typedef struct		{
-						short							hidden,ammo_count,clip_count,
-														alt_ammo_count,alt_clip_count;
-					} network_request_remote_ammo;			// used as part of network_request_remote_pickup
-
-typedef struct		{
-						short							pickup_net_uid,health,armor;
-						network_request_remote_ammo		ammos[net_max_weapon_per_remote];
+						short							picking_net_uid,picked_net_uid;
 					} network_request_remote_pickup;
 
 typedef struct		{

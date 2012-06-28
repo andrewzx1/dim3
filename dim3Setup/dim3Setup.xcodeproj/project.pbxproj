@@ -52,6 +52,7 @@
 		262DD29F151E311C0078FEA4 /* base_iface_score.c in Sources */ = {isa = PBXBuildFile; fileRef = 262DD29E151E311C0078FEA4 /* base_iface_score.c */; };
 		262DD2BD151E35660078FEA4 /* property_palette_color.c in Sources */ = {isa = PBXBuildFile; fileRef = 262DD2BB151E35650078FEA4 /* property_palette_color.c */; };
 		262DD2BE151E35660078FEA4 /* property_palette_logo.c in Sources */ = {isa = PBXBuildFile; fileRef = 262DD2BC151E35660078FEA4 /* property_palette_logo.c */; };
+		2633C0A4159ABF2000C9C366 /* property_palette_devices.c in Sources */ = {isa = PBXBuildFile; fileRef = 2633C0A3159ABF2000C9C366 /* property_palette_devices.c */; };
 		2643488913E651F800920D9B /* property_palette_virtual_control.c in Sources */ = {isa = PBXBuildFile; fileRef = 2643488813E651F800920D9B /* property_palette_virtual_control.c */; };
 		26459B6E13DC9D5600D7DD73 /* Back.png in Resources */ = {isa = PBXBuildFile; fileRef = 26459B6D13DC9D5600D7DD73 /* Back.png */; };
 		26459B6F13DC9D6400D7DD73 /* Back.png in Copy (List Icons) */ = {isa = PBXBuildFile; fileRef = 26459B6D13DC9D5600D7DD73 /* Back.png */; };
@@ -215,6 +216,7 @@
 		262DD29E151E311C0078FEA4 /* base_iface_score.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = base_iface_score.c; sourceTree = "<group>"; };
 		262DD2BB151E35650078FEA4 /* property_palette_color.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_color.c; path = Code/property_palette_color.c; sourceTree = "<group>"; };
 		262DD2BC151E35660078FEA4 /* property_palette_logo.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_logo.c; path = Code/property_palette_logo.c; sourceTree = "<group>"; };
+		2633C0A3159ABF2000C9C366 /* property_palette_devices.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_devices.c; path = Code/property_palette_devices.c; sourceTree = "<group>"; };
 		2643488813E651F800920D9B /* property_palette_virtual_control.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_virtual_control.c; path = Code/property_palette_virtual_control.c; sourceTree = "<group>"; };
 		26459B6D13DC9D5600D7DD73 /* Back.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Back.png; path = "Resources/Additional Data/Icons/Lists/Back.png"; sourceTree = "<group>"; };
 		265E98F61440E0C300622047 /* mac_os_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mac_os_defs.h; path = ../dim3Common/Headers/mac_os_defs.h; sourceTree = "<group>"; };
@@ -466,6 +468,7 @@
 				268E6B201506F1D700B85F4E /* property_palette_main.c */,
 				268382A0133D4F3D0035315B /* property_palette_settings.c */,
 				262DD2BB151E35650078FEA4 /* property_palette_color.c */,
+				2633C0A3159ABF2000C9C366 /* property_palette_devices.c */,
 				262DD2BC151E35660078FEA4 /* property_palette_logo.c */,
 				2625559D15194450004E8C80 /* property_palette_title_page.c */,
 				2625559A15194450004E8C80 /* property_palette_singleplayer.c */,
@@ -774,6 +777,7 @@
 				265EB0761523D4E500642128 /* base_iface_singleplayer.c in Sources */,
 				26FF68B01523D5DF00FACC3B /* property_palette_singleplayer_option.c in Sources */,
 				266C87F71539F9E00086674F /* property_palette_preload_models.c in Sources */,
+				2633C0A4159ABF2000C9C366 /* property_palette_devices.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
