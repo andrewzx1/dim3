@@ -367,6 +367,7 @@
 		266B3DBF15845F31003E7787 /* simple_save_pick.c in Sources */ = {isa = PBXBuildFile; fileRef = 266B3DBE15845F31003E7787 /* simple_save_pick.c */; };
 		267DEDB2158ACD6400216D36 /* script_obj_watch_angle.c in Sources */ = {isa = PBXBuildFile; fileRef = 267DEDB0158ACD6400216D36 /* script_obj_watch_angle.c */; };
 		267DEDB3158ACD6400216D36 /* script_obj_watch_position.c in Sources */ = {isa = PBXBuildFile; fileRef = 267DEDB1158ACD6400216D36 /* script_obj_watch_position.c */; };
+		2682E456159D1F95001CE3DB /* gl_shader_simple.c in Sources */ = {isa = PBXBuildFile; fileRef = 2682E455159D1F95001CE3DB /* gl_shader_simple.c */; };
 		26883073157823BC00A3E446 /* load_pause.c in Sources */ = {isa = PBXBuildFile; fileRef = 26883072157823BC00A3E446 /* load_pause.c */; };
 		268936B7155CC99000147273 /* map_collide_setup.c in Sources */ = {isa = PBXBuildFile; fileRef = 268936B4155CC99000147273 /* map_collide_setup.c */; };
 		268936B8155CC99000147273 /* map_collide_xz.c in Sources */ = {isa = PBXBuildFile; fileRef = 268936B5155CC99000147273 /* map_collide_xz.c */; };
@@ -769,6 +770,7 @@
 		266B3DBE15845F31003E7787 /* simple_save_pick.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = simple_save_pick.c; sourceTree = "<group>"; };
 		267DEDB0158ACD6400216D36 /* script_obj_watch_angle.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_obj_watch_angle.c; sourceTree = "<group>"; };
 		267DEDB1158ACD6400216D36 /* script_obj_watch_position.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_obj_watch_position.c; sourceTree = "<group>"; };
+		2682E455159D1F95001CE3DB /* gl_shader_simple.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = gl_shader_simple.c; sourceTree = "<group>"; };
 		26883072157823BC00A3E446 /* load_pause.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = load_pause.c; sourceTree = "<group>"; };
 		268936B4155CC99000147273 /* map_collide_setup.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = map_collide_setup.c; sourceTree = "<group>"; };
 		268936B5155CC99000147273 /* map_collide_xz.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = map_collide_xz.c; sourceTree = "<group>"; };
@@ -1052,6 +1054,7 @@
 				260B41971411F812006ED023 /* gl_renderer.c */,
 				260B41981411F812006ED023 /* gl_shader.c */,
 				260B41991411F812006ED023 /* gl_shader_core.c */,
+				2682E455159D1F95001CE3DB /* gl_shader_simple.c */,
 				260B419A1411F812006ED023 /* gl_shader_fullscreen.c */,
 				260B419B1411F812006ED023 /* gl_shader_user.c */,
 				260B419C1411F812006ED023 /* gl_text.c */,
@@ -2057,6 +2060,7 @@
 				267DEDB2158ACD6400216D36 /* script_obj_watch_angle.c in Sources */,
 				267DEDB3158ACD6400216D36 /* script_obj_watch_position.c in Sources */,
 				262D75DD158FE8C70086B8BB /* script_obj_label.c in Sources */,
+				2682E456159D1F95001CE3DB /* gl_shader_simple.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
