@@ -110,6 +110,7 @@ void view_force_grid(int mesh_idx)
 		// reset mesh
 
 	map_mesh_resize(&map,mesh_idx,&min,&max);
+	view_vbo_mesh_rebuild(mesh_idx);
 }
 
 /* =======================================================
@@ -449,8 +450,13 @@ void view_click_rot_handle_rotate_run_axis(float *value,float org_value,float an
 	}
 }
 
-void view_click_rot_handle_rotate_run(d3ang *ang,d3ang *org_ang,float ang_add,int which_axis)
+void view_click_rot_handle_rotate_run(int type,int idx,d3ang *ang,d3ang *org_ang,float ang_add,int which_axis)
 {
+	d3pnt			mesh_pnt,mov_pnt;
+	d3ang			rot_ang;
+
+		// run the rotate
+
 	switch (which_axis) {
 		case 0:
 			view_click_rot_handle_rotate_run_axis(&ang->x,org_ang->x,ang_add);
@@ -461,6 +467,19 @@ void view_click_rot_handle_rotate_run(d3ang *ang,d3ang *org_ang,float ang_add,in
 		case 2:
 			view_click_rot_handle_rotate_run_axis(&ang->z,org_ang->z,ang_add);
 			break;
+	}
+
+		// if it's a mesh, then
+		// we need to move the mesh
+
+	if (type==mesh_piece) {
+		mov_pnt.x=mov_pnt.y=mov_pnt.z=0;
+		rot_ang.x=org_ang->x-ang->x;
+		rot_ang.y=org_ang->y-ang->y;
+		rot_ang.z=org_ang->z-ang->z;
+		map_mesh_calculate_center(&map,idx,&mesh_pnt);
+		map_mesh_move_rotate_copy(&map,idx,&mesh_pnt,&mov_pnt,&rot_ang);
+		view_vbo_mesh_rebuild(idx);
 	}
 }
 
@@ -475,8 +494,13 @@ void view_click_rot_handle_move_run_axis(int *value,int org_value,int mv_add)
 	*value=org_value+mv_add;
 }
 
-void view_click_rot_handle_move_run(d3pnt *pnt,d3pnt *org_pnt,int mv_add,int which_axis)
+void view_click_rot_handle_move_run(int type,int idx,d3pnt *pnt,d3pnt *org_pnt,int mv_add,int which_axis)
 {
+	d3pnt			mesh_pnt,mov_pnt;
+	d3ang			rot_ang;
+
+		// run the move
+
 	mv_add=-(mv_add*view_handle_move_scale);
 	
 	switch (which_axis) {
@@ -489,6 +513,21 @@ void view_click_rot_handle_move_run(d3pnt *pnt,d3pnt *org_pnt,int mv_add,int whi
 		case 2:
 			view_click_rot_handle_move_run_axis(&pnt->z,org_pnt->z,mv_add);
 			break;
+	}
+
+	view_click_grid(pnt);
+
+		// if it's a mesh, then
+		// we need to move the mesh
+
+	if (type==mesh_piece) {
+		mov_pnt.x=org_pnt->x-pnt->x;
+		mov_pnt.y=org_pnt->y-pnt->y;
+		mov_pnt.z=org_pnt->z-pnt->z;
+		rot_ang.x=rot_ang.y=rot_ang.z=0.0f;
+		map_mesh_calculate_center(&map,idx,&mesh_pnt);
+		map_mesh_move_rotate_copy(&map,idx,&mesh_pnt,&mov_pnt,&rot_ang);
+		view_vbo_mesh_rebuild(idx);
 	}
 }
 
@@ -503,9 +542,9 @@ bool view_click_rot_handles(editor_view_type *view,d3pnt *click_pt)
 	int			n,k,idx,type,main_idx,sub_idx,which_axis,sel_count,item_count;
 	int			*type_list,*idx_list;
 	bool		first_drag;
-	d3pnt		pt,center_pnt,*hand_pnts,
-				*pnt,org_pnt;
-	d3ang		*ang,org_ang;
+	d3pnt		pt,center_pnt,mesh_pnt,
+				*hand_pnts,*pnt,org_pnt;
+	d3ang		mesh_ang,*ang,org_ang;
 	d3rect		box;
 
 		// need to create the items outside
@@ -519,7 +558,7 @@ bool view_click_rot_handles(editor_view_type *view,d3pnt *click_pt)
 
 	for (n=0;n!=sel_count;n++) {
 		select_get(n,&type,&main_idx,&sub_idx);
-		if ((type==node_piece) || (type==spot_piece) || (type==scenery_piece)) item_count++;
+		if ((type==mesh_piece) || (type==node_piece) || (type==spot_piece) || (type==scenery_piece)) item_count++;
 	}
 
 	if (item_count==0) return(FALSE);
@@ -539,6 +578,15 @@ bool view_click_rot_handles(editor_view_type *view,d3pnt *click_pt)
 		select_get(n,&type,&main_idx,&sub_idx);
 		
 		switch (type) {
+
+			case mesh_piece:
+				map_mesh_calculate_center(&map,main_idx,&mesh_pnt);
+				if (view_handle_create_rot_handle(view,&mesh_pnt,NULL,&center_pnt,&hand_pnts[item_count*3])) {
+					type_list[item_count]=type;
+					idx_list[item_count]=main_idx;
+					item_count++;
+				}
+				break;
 		
 			case node_piece:
 				if (view_handle_create_rot_handle(view,&map.nodes[main_idx].pnt,&map.nodes[main_idx].ang,&center_pnt,&hand_pnts[item_count*3])) {
@@ -596,6 +644,14 @@ bool view_click_rot_handles(editor_view_type *view,d3pnt *click_pt)
 		// setup the drag
 
 	switch (type) {
+
+		case mesh_piece:
+			map_mesh_move_rotate_copy_reset(&map,main_idx);		// reset move-rotate copy so we start at current position/rotation
+			map_mesh_calculate_center(&map,main_idx,&mesh_pnt);
+			pnt=&mesh_pnt;
+			mesh_ang.x=mesh_ang.y=mesh_ang.z=0.0f;
+			ang=&mesh_ang;
+			break;
 	
 		case node_piece:
 			pnt=&map.nodes[main_idx].pnt;
@@ -638,10 +694,10 @@ bool view_click_rot_handles(editor_view_type *view,d3pnt *click_pt)
 			// handle movement
 			
 		if (state.handle_mode==handle_mode_rotate) {
-			view_click_rot_handle_rotate_run(ang,&org_ang,(float)(click_pt->x-pt.x),which_axis);
+			view_click_rot_handle_rotate_run(type,main_idx,ang,&org_ang,(float)(click_pt->x-pt.x),which_axis);
 		}
 		else {
-			view_click_rot_handle_move_run(pnt,&org_pnt,(click_pt->x-pt.x),which_axis);
+			view_click_rot_handle_move_run(type,main_idx,pnt,&org_pnt,(click_pt->x-pt.x),which_axis);
 		}
 		
         main_wind_draw();

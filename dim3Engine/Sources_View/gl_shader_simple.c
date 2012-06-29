@@ -148,11 +148,13 @@ char* gl_simple_bitmap_shader_build_vert(void)
 
 		// build vert shader
 
+	strcat(buf,"varying vec2 uv;\n");
 	strcat(buf,"varying vec4 color;\n");
 	
 	strcat(buf,"void main(void)\n");
 	strcat(buf,"{\n");
 	strcat(buf,"gl_Position=ftransform();\n");
+	strcat(buf,"uv=gl_MultiTexCoord0.st;\n");
 	strcat(buf,"color=gl_Color;\n");
 	strcat(buf,"}\n");
 
@@ -173,11 +175,12 @@ char* gl_simple_bitmap_shader_build_frag(void)
 		// build frag shader
 		
 	strcat(buf,"uniform sampler2D dim3Tex;\n");
+	strcat(buf,"varying vec2 uv;\n");
 	strcat(buf,"varying vec4 color;\n");
 	
 	strcat(buf,"void main(void)\n");
 	strcat(buf,"{\n");
-	strcat(buf,"vec4 tex=texture2D(dim3Tex,gl_TexCoord[0].st);\n");
+	strcat(buf,"vec4 tex=texture2D(dim3Tex,uv);\n");
 	strcat(buf,"gl_FragColor.rgb=tex.rgb*color.rgb;\n");
 	strcat(buf,"gl_FragColor.a=tex.a*color.a;\n");
 	strcat(buf,"}\n");

@@ -116,8 +116,8 @@ char* gl_core_map_shader_build_vert(int nlight,bool fog,bool bump,bool spec)
 	strcat(buf,"{\n");
 
 	strcat(buf,"gl_Position=ftransform();\n");
-// es2
-//	strcat(buf,"gl_Position=gl_ProjectionMatrix*gl_ModelViewMatrix*gl_Vertex;\n");	// supergumba -- convert to vec4 when we use attributes
+// ES2
+//	strcat(buf,"gl_Position=gl_ProjectionMatrix*gl_ModelViewMatrix*gl_Vertex;\n");	// ES2 -- convert to vec4 when we use attributes
 
 	strcat(buf,"gl_TexCoord[0]=gl_MultiTexCoord0;\n");
 	strcat(buf,"gl_TexCoord[1]=gl_MultiTexCoord1;\n");

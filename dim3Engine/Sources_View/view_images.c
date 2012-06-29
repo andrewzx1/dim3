@@ -133,8 +133,8 @@ bool view_images_load_single_normal(view_image_type *image,char *path,bool recta
 	image->nbitmap=1;
 	image->total_msec=0;
 	
-	if (simple) return(bitmap_open(&image->bitmaps[0].bitmap,path,FALSE,FALSE,rectangle,FALSE));
-	return(bitmap_open(&image->bitmaps[0].bitmap,path,TRUE,FALSE,rectangle,FALSE));
+	if (simple) return(bitmap_open(&image->bitmaps[0].bitmap,path,FALSE,FALSE,FALSE,rectangle,FALSE));
+	return(bitmap_open(&image->bitmaps[0].bitmap,path,TRUE,FALSE,FALSE,rectangle,FALSE));
 }
 
 bool view_images_load_single_animated(view_image_type *image,char *path,bool rectangle,bool simple)
@@ -171,10 +171,10 @@ bool view_images_load_single_animated(view_image_type *image,char *path,bool rec
 		sprintf(bitmap_path,"%s/%s.png",path,name);
 		
 		if (simple) {
-			if (!bitmap_open(&image->bitmaps[n].bitmap,bitmap_path,FALSE,FALSE,rectangle,FALSE)) return(FALSE);
+			if (!bitmap_open(&image->bitmaps[n].bitmap,bitmap_path,FALSE,FALSE,FALSE,rectangle,FALSE)) return(FALSE);
 		}
 		else {
-			if (!bitmap_open(&image->bitmaps[n].bitmap,bitmap_path,TRUE,FALSE,rectangle,FALSE)) return(FALSE);
+			if (!bitmap_open(&image->bitmaps[n].bitmap,bitmap_path,TRUE,FALSE,FALSE,rectangle,FALSE)) return(FALSE);
 		}
 		
 		image->bitmaps[n].msec=xml_get_attribute_int(animation_tag,"msec");

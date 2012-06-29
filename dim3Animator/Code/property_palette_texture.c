@@ -73,6 +73,7 @@ void property_palette_fill_texture(int texture_idx)
 	list_palette_add_header(&property_palette,0,"Texture Settings");
 	list_palette_add_checkbox(&property_palette,kTexturePropertyAnimate,"Animated",&texture->animate.on,FALSE);
 	list_palette_add_checkbox(&property_palette,kTexturePropertyAlphaAdditive,"Alpha Additive",&texture->additive,FALSE);
+	list_palette_add_checkbox(&property_palette,kTexturePropertyPixelated,"Pixelated",&texture->pixelated,FALSE);
 	list_palette_add_checkbox(&property_palette,kTexturePropertyCompress,"Compressed",&texture->compress,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Texture Options");

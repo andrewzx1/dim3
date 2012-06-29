@@ -71,7 +71,7 @@ void tool_palette_initialize(char *app_name)
 		if (tool_bitmaps_file_name[n][0]==0x0) continue;
 		
 		file_paths_app(&file_path_setup,path,sub_path,tool_bitmaps_file_name[n],"png");
-		bitmap_open(&tool_bitmaps[n],path,FALSE,FALSE,FALSE,FALSE);
+		bitmap_open(&tool_bitmaps[n],path,FALSE,FALSE,FALSE,FALSE,FALSE);
 	}
 
 		// currently no pressed icon

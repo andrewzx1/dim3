@@ -301,7 +301,7 @@ unsigned char* bitmap_setup_alpha(bitmap_type *bitmap,unsigned char *png_data,bo
       
 ======================================================= */
 
-bool bitmap_open(bitmap_type *bitmap,char *path,bool mipmap,bool compress,bool rectangle,bool scrub_black_to_alpha)
+bool bitmap_open(bitmap_type *bitmap,char *path,bool mipmap,bool compress,bool pixelated,bool rectangle,bool scrub_black_to_alpha)
 {
 	unsigned char		*png_data;
 	bool				ok,alpha_channel;
@@ -331,7 +331,7 @@ bool bitmap_open(bitmap_type *bitmap,char *path,bool mipmap,bool compress,bool r
 		
 		// get the texture
 		
-	ok=bitmap_texture_open(bitmap,png_data,mipmap,compress,rectangle);
+	ok=bitmap_texture_open(bitmap,png_data,mipmap,compress,pixelated,rectangle);
 		
 	free(png_data);
 	
@@ -368,7 +368,7 @@ bool bitmap_color(bitmap_type *bitmap,d3col *col)
 		*dptr++=kb;
 	}
 	
-	ok=bitmap_texture_open(bitmap,png_data,FALSE,FALSE,FALSE);
+	ok=bitmap_texture_open(bitmap,png_data,FALSE,FALSE,TRUE,FALSE);
 
 	free(png_data);
 	
@@ -381,7 +381,7 @@ bool bitmap_color(bitmap_type *bitmap,d3col *col)
       
 ======================================================= */
 
-bool bitmap_data(bitmap_type *bitmap,unsigned char *data,int wid,int high,bool alpha_channel,bool mipmap,bool compress,bool rectangle)
+bool bitmap_data(bitmap_type *bitmap,unsigned char *data,int wid,int high,bool alpha_channel,bool mipmap,bool compress,bool pixelated,bool rectangle)
 {
 	bitmap->wid=wid;
 	bitmap->high=high;
@@ -398,7 +398,7 @@ bool bitmap_data(bitmap_type *bitmap,unsigned char *data,int wid,int high,bool a
 	
 		// get the texture
 		
-	return(bitmap_texture_open(bitmap,data,mipmap,compress,rectangle));
+	return(bitmap_texture_open(bitmap,data,mipmap,compress,pixelated,rectangle));
 }
 
 /* =======================================================
