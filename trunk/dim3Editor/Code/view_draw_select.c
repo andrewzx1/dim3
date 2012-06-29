@@ -494,7 +494,7 @@ void view_draw_select(editor_view_type *view)
 	int						n,sel_count,
 							type,main_idx,sub_idx;
 	unsigned char			draw_mesh_once[max_mesh];
-	d3pnt					v_pnts[8];
+	d3pnt					pnt,v_pnts[8];
 
 		// push view forward so selections
 		// display properly
@@ -532,6 +532,8 @@ void view_draw_select(editor_view_type *view)
 				if (draw_mesh_once[main_idx]==0x0) {
 					draw_mesh_once[main_idx]=0x1;
 					view_draw_select_mesh(main_idx);
+					map_mesh_calculate_center(&map,main_idx,&pnt);
+					view_draw_select_rot_handles(view,&pnt,NULL);
 				}
 				break;
 				

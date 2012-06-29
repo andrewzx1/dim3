@@ -158,7 +158,7 @@ void bitmap_text_size_internal(texture_font_size_type *d3_size_font,char *name,i
 		}
 	}
 	
-	bitmap_data(&d3_size_font->bitmap,txt_data,bitmap_wid,bitmap_high,TRUE,FALSE,FALSE,FALSE);
+	bitmap_data(&d3_size_font->bitmap,txt_data,bitmap_wid,bitmap_high,TRUE,FALSE,FALSE,FALSE,FALSE);
 
 	free(txt_data);
 	
@@ -277,7 +277,7 @@ void bitmap_text_size_internal(texture_font_size_type *d3_size_font,char *name,i
 			}
 		}
 	}
-	bitmap_data(&d3_size_font->bitmap,data,bitmap_wid,bitmap_high,TRUE,FALSE,FALSE,FALSE);
+	bitmap_data(&d3_size_font->bitmap,data,bitmap_wid,bitmap_high,TRUE,FALSE,FALSE,FALSE,FALSE);
 	free(data);
 }
 
@@ -414,7 +414,7 @@ void bitmap_text_size_internal(texture_font_size_type *d3_size_font,char *name,i
 		}
 	}
 
-	bitmap_data(&d3_size_font->bitmap,data,bitmap_wid,bitmap_high,TRUE,FALSE,FALSE,FALSE);
+	bitmap_data(&d3_size_font->bitmap,data,bitmap_wid,bitmap_high,TRUE,FALSE,FALSE,FALSE,FALSE);
 
 	free(data);
 

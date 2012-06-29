@@ -168,7 +168,7 @@ void map_textures_read_texture(map_type *map,int txt_idx)
 				// bitmap
 			
 			file_paths_data(&file_path_setup,path,"Bitmaps/Textures",frame->name,"png");
-			bitmap_open(&frame->bitmap,path,TRUE,texture->compress,FALSE,FALSE);
+			bitmap_open(&frame->bitmap,path,TRUE,texture->compress,texture->pixelated,FALSE,FALSE);
 
 #ifdef D3_ENGINE
 			if (view_shader_on()) {
@@ -177,13 +177,13 @@ void map_textures_read_texture(map_type *map,int txt_idx)
 					
 				sprintf(name,"%s_n",frame->name);
 				file_paths_data(&file_path_setup,path,"Bitmaps/Textures",name,"png");		// compresses messes up normals
-				bitmap_open(&frame->bumpmap,path,TRUE,FALSE,FALSE,FALSE);
+				bitmap_open(&frame->bumpmap,path,TRUE,FALSE,texture->pixelated,FALSE,FALSE);
 								
 					// specular map
 					
 				sprintf(name,"%s_s",frame->name);
 				file_paths_data(&file_path_setup,path,"Bitmaps/Textures",name,"png");
-				bitmap_open(&frame->specularmap,path,TRUE,texture->compress,FALSE,FALSE);
+				bitmap_open(&frame->specularmap,path,TRUE,texture->compress,texture->pixelated,FALSE,FALSE);
 			}
 #endif
 
@@ -191,7 +191,7 @@ void map_textures_read_texture(map_type *map,int txt_idx)
 				
 			sprintf(name,"%s_g",frame->name);
 			file_paths_data(&file_path_setup,path,"Bitmaps/Textures",name,"png");
-			bitmap_open(&frame->glowmap,path,TRUE,texture->compress,FALSE,TRUE);
+			bitmap_open(&frame->glowmap,path,TRUE,texture->compress,texture->pixelated,FALSE,TRUE);
 		}
 		
 		frame++;

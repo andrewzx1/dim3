@@ -69,10 +69,12 @@ void gl_shader_draw_reset_normal_tangent_attrib(void) {}
 void gl_shader_draw_end(void) {}
 void gl_shader_texture_override(GLuint gl_id,float alpha) {}
 void gl_shader_draw_execute(int core_shader_group,texture_type *texture,int txt_idx,int frame,int lmap_txt_idx,float alpha,view_glsl_light_list_type *light_list,int tangent_offset,int normal_offset,int stride) {}
-void gl_shader_draw_simple_start(void);
-void gl_shader_draw_simple_end(void);
-void gl_shader_draw_execute_simple_color(void);
-void gl_shader_draw_execute_simple_bitmap(unsigned long gl_id);
+void gl_shader_draw_simple_color_start(void) {}
+void gl_shader_draw_simple_color_end(void) {}
+void gl_shader_draw_execute_simple_color(void) {}
+void gl_shader_draw_simple_bitmap_start(bool rectangle) {}
+void gl_shader_draw_simple_bitmap_end(bool rectangle) {}
+void gl_shader_draw_execute_simple_bitmap(unsigned long gl_id,bool rectangle) {}
 
 #else
 
@@ -973,33 +975,22 @@ void gl_shader_draw_execute(int core_shader_group,texture_type *texture,int txt_
 
 /* =======================================================
 
-      Execute Simple Shaders
+      Execute Simple Color Shaders
       
 ======================================================= */
 
-void gl_shader_draw_simple_start(void)
+void gl_shader_draw_simple_color_start(void)
 {
 		// remember current shader
 
 	gl_shader_current=NULL;
-
-		// make texture replace
-		
-	glColor4f(1.0f,0.0f,1.0f,1.0f);
-
-	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_REPLACE);
 }
 
-void gl_shader_draw_simple_end(void)
+void gl_shader_draw_simple_color_end(void)
 {
 		// deactivate any current shader
 		
 	if (gl_shader_current!=NULL) glUseProgramObjectARB(0);
-	
-		// turn off any used textures
-
-	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
-	glDisable(GL_TEXTURE_2D);
 }
 
 void gl_shader_draw_execute_simple_color(void)
@@ -1012,7 +1003,54 @@ void gl_shader_draw_execute_simple_color(void)
 	}
 }
 
-void gl_shader_draw_execute_simple_bitmap(unsigned long gl_id)
+/* =======================================================
+
+      Execute Simple Bitmap Shaders
+      
+======================================================= */
+
+void gl_shader_draw_simple_bitmap_start(bool rectangle)
+{
+		// remember current shader
+
+	gl_shader_current=NULL;
+
+		// enable texturing
+		
+#if defined(D3_OS_IPHONE) || defined(D3_OS_ANDRIOD)
+	glEnable(GL_TEXTURE_2D);
+#else
+	if (rectangle) {
+		glEnable(GL_TEXTURE_RECTANGLE);
+	}
+	else {
+		glEnable(GL_TEXTURE_2D);
+	}
+#endif
+}
+
+void gl_shader_draw_simple_bitmap_end(bool rectangle)
+{
+		// deactivate any current shader
+		
+	if (gl_shader_current!=NULL) glUseProgramObjectARB(0);
+	
+		// turn off any used textures
+
+#if defined(D3_OS_IPHONE) || defined(D3_OS_ANDRIOD)
+	glDisable(GL_TEXTURE_2D);
+#else
+	if (rectangle) {
+		glBindTexture(GL_TEXTURE_RECTANGLE,0);
+		glDisable(GL_TEXTURE_RECTANGLE);
+	}
+	else {
+		glDisable(GL_TEXTURE_2D);
+	}
+#endif
+}
+
+void gl_shader_draw_execute_simple_bitmap(unsigned long gl_id,bool rectangle)
 {
 		// change over the shader
 		
@@ -1023,7 +1061,16 @@ void gl_shader_draw_execute_simple_bitmap(unsigned long gl_id)
 
 		// bind the bitmap
 
+#if defined(D3_OS_IPHONE) || defined(D3_OS_ANDRIOD)
 	gl_texture_bind(0,gl_id);
+#else
+	if (rectangle) {
+		glBindTexture(GL_TEXTURE_RECTANGLE,gl_id);
+	}
+	else {
+		gl_texture_bind(0,gl_id);
+	}
+#endif
 }
 
 #endif

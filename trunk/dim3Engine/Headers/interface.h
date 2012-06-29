@@ -782,10 +782,14 @@ extern void gl_shader_draw_reset_normal_tangent_attrib(void);
 extern void gl_shader_draw_end(void);
 extern void gl_shader_texture_override(GLuint gl_id,float alpha);
 extern void gl_shader_draw_execute(int core_shader_group,texture_type *texture,int txt_idx,int frame,int lmap_txt_idx,float alpha,view_glsl_light_list_type *light_list,int tangent_offset,int normal_offset,int stride);
-extern void gl_shader_draw_simple_start(void);
-extern void gl_shader_draw_simple_end(void);
+
+extern void gl_shader_draw_simple_color_start(void);
+extern void gl_shader_draw_simple_color_end(void);
 extern void gl_shader_draw_execute_simple_color(void);
-extern void gl_shader_draw_execute_simple_bitmap(unsigned long gl_id);
+
+extern void gl_shader_draw_simple_bitmap_start(bool rectangle);
+extern void gl_shader_draw_simple_bitmap_end(bool rectangle);
+extern void gl_shader_draw_execute_simple_bitmap(unsigned long gl_id,bool rectangle);
 
 //
 // core shaders

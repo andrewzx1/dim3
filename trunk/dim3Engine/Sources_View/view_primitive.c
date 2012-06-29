@@ -113,10 +113,10 @@ void view_primitive_2D_color_poly(int x0,int y0,d3col *col0,int x1,int y1,d3col 
 	glVertexPointer(2,GL_FLOAT,0,(GLvoid*)vertexes);
 	glColorPointer(4,GL_UNSIGNED_BYTE,0,(GLvoid*)colors);
 
-	gl_shader_draw_simple_start();
-	gl_shader_draw_execute_simple_color();
+//	gl_shader_draw_simple_color_start();		// ES2 -- new shader stuff
+//	gl_shader_draw_execute_simple_color();
 	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
-	gl_shader_draw_simple_end();
+//	gl_shader_draw_simple_color_end();
 
  	glDisableClientState(GL_COLOR_ARRAY);
 		
@@ -500,6 +500,9 @@ void view_primitive_3D_line_cube(d3col *col,float alpha,int *px,int *py,int *pz)
 void view_primitive_2D_texture_quad(GLuint gl_id,d3col *col,float alpha,int lft,int rgt,int top,int bot,float gx,float gx2,float gy,float gy2,bool clamp)
 {
 	float			vertexes[8],uvs[8];
+	unsigned char	colors[16],uc_alpha,uc_r,uc_g,uc_b;
+
+		// setup the data
 
 	vertexes[0]=(float)lft;
 	vertexes[1]=(float)top;
@@ -519,6 +522,22 @@ void view_primitive_2D_texture_quad(GLuint gl_id,d3col *col,float alpha,int lft,
 	uvs[6]=gx2;
 	uvs[7]=gy2;
 
+	uc_alpha=(unsigned char)(alpha*255.0f);
+
+	if (col==NULL) {
+		uc_r=uc_g=uc_b=255;
+	}
+	else {
+		uc_r=(unsigned char)(col->r*255.0f);
+		uc_g=(unsigned char)(col->g*255.0f);
+		uc_b=(unsigned char)(col->b*255.0f);
+	}
+
+	colors[0]=colors[4]=colors[8]=colors[12]=uc_r;
+	colors[1]=colors[5]=colors[9]=colors[13]=uc_g;
+	colors[2]=colors[6]=colors[10]=colors[14]=uc_b;
+	colors[3]=colors[7]=colors[11]=colors[15]=uc_alpha;
+
 		// setup texture draw
 
 	glEnable(GL_BLEND);
@@ -528,17 +547,10 @@ void view_primitive_2D_texture_quad(GLuint gl_id,d3col *col,float alpha,int lft,
 	glAlphaFunc(GL_NOTEQUAL,0);
 
 	glDisable(GL_DEPTH_TEST);
-
-	if (col==NULL) {
-		glColor4f(1.0f,1.0f,1.0f,alpha);
-	}
-	else {
-		glColor4f(col->r,col->g,col->b,alpha);
-	}
 	
 	glActiveTexture(GL_TEXTURE0);
 	glEnable(GL_TEXTURE_2D);
-	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
+	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);		// ES2 -- can remove most of this
 	gl_texture_bind(0,gl_id);
 	
 	if (clamp) {
@@ -553,9 +565,16 @@ void view_primitive_2D_texture_quad(GLuint gl_id,d3col *col,float alpha,int lft,
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)uvs);
 
+	glEnableClientState(GL_COLOR_ARRAY);
+	glColorPointer(4,GL_UNSIGNED_BYTE,0,(GLvoid*)colors);
+
+//	gl_shader_draw_simple_bitmap_start(FALSE);		// ES2 -- new shader stuff
+//	gl_shader_draw_execute_simple_bitmap(gl_id,FALSE);
 	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
+//	gl_shader_draw_simple_bitmap_end(FALSE);
 
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+	glDisableClientState(GL_COLOR_ARRAY);
 
 		// finish texture draw
 		
@@ -574,6 +593,7 @@ void view_primitive_2D_texture_quad_rot(GLuint gl_id,d3col *col,float alpha,int 
 {
 	int				px[4],py[4];
 	float			vertexes[8],uvs[8];
+	unsigned char	colors[16],uc_alpha,uc_r,uc_g,uc_b;
 	
 	px[0]=px[3]=lft;
 	px[1]=px[2]=rgt;
@@ -581,6 +601,8 @@ void view_primitive_2D_texture_quad_rot(GLuint gl_id,d3col *col,float alpha,int 
 	py[2]=py[3]=bot;
 
 	if (ang!=0.0f) rotate_2D_polygon(4,px,py,((lft+rgt)>>1),((top+bot)>>1),ang);
+
+		// setup the data
 
 	vertexes[0]=(float)px[0];
 	vertexes[1]=(float)py[0];
@@ -600,6 +622,22 @@ void view_primitive_2D_texture_quad_rot(GLuint gl_id,d3col *col,float alpha,int 
 	uvs[6]=gx2;
 	uvs[7]=gy2;
 
+	uc_alpha=(unsigned char)(alpha*255.0f);
+
+	if (col==NULL) {
+		uc_r=uc_g=uc_b=255;
+	}
+	else {
+		uc_r=(unsigned char)(col->r*255.0f);
+		uc_g=(unsigned char)(col->g*255.0f);
+		uc_b=(unsigned char)(col->b*255.0f);
+	}
+
+	colors[0]=colors[4]=colors[8]=colors[12]=uc_r;
+	colors[1]=colors[5]=colors[9]=colors[13]=uc_g;
+	colors[2]=colors[6]=colors[10]=colors[14]=uc_b;
+	colors[3]=colors[7]=colors[11]=colors[15]=uc_alpha;
+
 		// setup texture draw
 
 	glEnable(GL_BLEND);
@@ -609,17 +647,10 @@ void view_primitive_2D_texture_quad_rot(GLuint gl_id,d3col *col,float alpha,int 
 	glAlphaFunc(GL_NOTEQUAL,0);
 
 	glDisable(GL_DEPTH_TEST);
-
-	if (col==NULL) {
-		glColor4f(1.0f,1.0f,1.0f,alpha);
-	}
-	else {
-		glColor4f(col->r,col->g,col->b,alpha);
-	}
 	
 	glActiveTexture(GL_TEXTURE0);
 	glEnable(GL_TEXTURE_2D);
-	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
+	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);		// ES2 -- most of this can go away
 	gl_texture_bind(0,gl_id);
 
 		// draw the quad
@@ -629,9 +660,16 @@ void view_primitive_2D_texture_quad_rot(GLuint gl_id,d3col *col,float alpha,int 
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)uvs);
 
+	glEnableClientState(GL_COLOR_ARRAY);
+	glColorPointer(4,GL_UNSIGNED_BYTE,0,(GLvoid*)colors);
+
+//	gl_shader_draw_simple_bitmap_start(FALSE);		// ES2 -- new shader stuff
+//	gl_shader_draw_execute_simple_bitmap(gl_id,FALSE);
 	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
+//	gl_shader_draw_simple_bitmap_end(FALSE);
 
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+	glDisableClientState(GL_COLOR_ARRAY);
 
 		// finish texture draw
 	
@@ -647,6 +685,9 @@ void view_primitive_2D_texture_quad_rectangle(GLuint gl_id,float alpha,int lft,i
 	view_primitive_2D_texture_quad(gl_id,NULL,alpha,lft,rgt,top,bot,0.0f,1.0f,0.0f,1.0f,FALSE);
 #else
 	float			vertexes[8],uvs[8];
+	unsigned char	colors[16],uc_alpha;
+
+		// setup the data
 
 	vertexes[0]=(float)lft;
 	vertexes[1]=(float)top;
@@ -665,6 +706,13 @@ void view_primitive_2D_texture_quad_rectangle(GLuint gl_id,float alpha,int lft,i
 	uvs[5]=0.0f;
 	uvs[6]=(float)pixel_wid;
 	uvs[7]=(float)pixel_high;
+
+	uc_alpha=(unsigned char)(alpha*255.0f);
+
+	colors[0]=colors[4]=colors[8]=colors[12]=255;
+	colors[1]=colors[5]=colors[9]=colors[13]=255;
+	colors[2]=colors[6]=colors[10]=colors[14]=255;
+	colors[3]=colors[7]=colors[11]=colors[15]=uc_alpha;
 	
 		// setup texture draw
 
@@ -682,7 +730,7 @@ void view_primitive_2D_texture_quad_rectangle(GLuint gl_id,float alpha,int lft,i
 
 	glActiveTexture(GL_TEXTURE0);
 	glEnable(GL_TEXTURE_RECTANGLE);
-	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_REPLACE);
+	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_REPLACE);		// ES2 -- most of this can go away
 	glBindTexture(GL_TEXTURE_RECTANGLE,gl_id);
 
 		// draw the quad
@@ -692,9 +740,16 @@ void view_primitive_2D_texture_quad_rectangle(GLuint gl_id,float alpha,int lft,i
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)uvs);
 
+	glEnableClientState(GL_COLOR_ARRAY);
+	glColorPointer(4,GL_UNSIGNED_BYTE,0,(GLvoid*)colors);
+
+//	gl_shader_draw_simple_bitmap_start(TRUE);		// ES2 -- new shader stuff
+//	gl_shader_draw_execute_simple_bitmap(gl_id,TRUE);
 	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
+//	gl_shader_draw_simple_bitmap_end(TRUE);
 
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+	glDisableClientState(GL_COLOR_ARRAY);
 
 		// finish texture draw
 	

@@ -48,19 +48,21 @@ void view_handle_create_single_rot_handle(d3pnt *pnt,d3vct *vct,d3ang *ang,d3pnt
 
 		// rotations
 	
-	if (ang->x!=0) {
-		matrix_rotate_x(&mat,ang->x);
-		matrix_vertex_multiply(&mat,&vct->x,&vct->y,&vct->z);
-	}
-	
-	if (ang->y!=0) {
-		matrix_rotate_y(&mat,ang->y);
-		matrix_vertex_multiply(&mat,&vct->x,&vct->y,&vct->z);
-	}
-	
-	if (ang->z!=0) {
-		matrix_rotate_z(&mat,ang->z);
-		matrix_vertex_multiply(&mat,&vct->x,&vct->y,&vct->z);
+	if (ang!=NULL) {
+		if (ang->x!=0) {
+			matrix_rotate_x(&mat,ang->x);
+			matrix_vertex_multiply(&mat,&vct->x,&vct->y,&vct->z);
+		}
+		
+		if (ang->y!=0) {
+			matrix_rotate_y(&mat,ang->y);
+			matrix_vertex_multiply(&mat,&vct->x,&vct->y,&vct->z);
+		}
+		
+		if (ang->z!=0) {
+			matrix_rotate_z(&mat,ang->z);
+			matrix_vertex_multiply(&mat,&vct->x,&vct->y,&vct->z);
+		}
 	}
 
 		// make point

@@ -165,6 +165,12 @@ int map_mesh_combine(map_type *map,int mesh_1_idx,int mesh_2_idx)
       
 ======================================================= */
 
+void map_mesh_move_rotate_copy_reset(map_type *map,int mesh_idx)
+{
+	if (map->mesh.meshes[mesh_idx].copy.vertexes!=NULL) free(map->mesh.meshes[mesh_idx].copy.vertexes);
+	map->mesh.meshes[mesh_idx].copy.vertexes=NULL;
+}
+
 void map_mesh_move_rotate_copy(map_type *map,int mesh_idx,d3pnt *center_pnt,d3pnt *move_pnt,d3ang *rot_ang)
 {
 	int							n,nvertex,npoly;
