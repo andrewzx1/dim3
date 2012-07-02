@@ -451,6 +451,9 @@ extern void view_mouse_get_scroll_horizontal_axis(editor_view_type *view,d3pnt *
 extern void view_mouse_get_scroll_vertical_axis(editor_view_type *view,d3pnt *pnt,int dist);
 extern void view_mouse_scroll_movement(editor_view_type *view,d3pnt *pnt);
 extern void view_mouse_forward_movement(editor_view_type *view,d3pnt *pnt);
+extern void view_key_forward_movement(editor_view_type *view,int dir);
+extern void view_key_side_movement(editor_view_type *view,int dir);
+extern void view_key_vert_movement(editor_view_type *view,int dir);
 extern void view_mouse_get_forward_axis(editor_view_type *view,d3pnt *pnt,int dist);
 extern void view_mouse_turn(editor_view_type *view,d3pnt *pnt);
 

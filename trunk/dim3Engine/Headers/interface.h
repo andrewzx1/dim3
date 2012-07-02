@@ -766,7 +766,7 @@ extern void view_primitive_2D_texture_quad_rot(GLuint gl_id,d3col *col,float alp
 extern void view_primitive_2D_texture_quad_rectangle(GLuint gl_id,float alpha,int lft,int rgt,int top,int bot,int pixel_wid,int pixel_high);
 
 //
-// core shaders
+// shaders
 //
 
 extern void gl_shader_code_clear(shader_type *shader);
@@ -787,9 +787,13 @@ extern void gl_shader_draw_simple_color_start(void);
 extern void gl_shader_draw_simple_color_end(void);
 extern void gl_shader_draw_execute_simple_color(void);
 
-extern void gl_shader_draw_simple_bitmap_start(bool rectangle);
-extern void gl_shader_draw_simple_bitmap_end(bool rectangle);
-extern void gl_shader_draw_execute_simple_bitmap(unsigned long gl_id,bool rectangle);
+extern void gl_shader_draw_simple_bitmap_start(void);
+extern void gl_shader_draw_simple_bitmap_end(void);
+extern void gl_shader_draw_execute_simple_bitmap(unsigned long gl_id);
+
+extern void gl_shader_draw_simple_bitmap_rect_start(void);
+extern void gl_shader_draw_simple_bitmap_rect_end(void);
+extern void gl_shader_draw_execute_simple_bitmap_rect(unsigned long gl_id);
 
 //
 // core shaders
