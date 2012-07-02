@@ -188,15 +188,17 @@ and can be sold or given away.
 // movement scales
 //
 
-#define move_mouse_scale						40
+#define move_mouse_min_scale					40
+#define move_mouse_distance_ratio				1000
+
 #define move_mouse_turn_reduce_scale			5.0f
+
+#define move_mouse_drag_distance_ratio			1000
 
 #define move_scroll_wheel_scale					300
 
 #define move_key_scale							30
 #define move_key_shift_reduce_scale				10
-
-#define view_handle_move_scale					3
 
 #define view_texture_shift_factor				100.0f
 

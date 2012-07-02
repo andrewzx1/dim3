@@ -38,34 +38,31 @@ extern editor_state_type		state;
 
 /* =======================================================
 
-      Mouse Movement
+      Mouse Movement Utility
       
 ======================================================= */
 
-void view_get_direction(d3pnt *pnt)
+void view_get_direction(d3pnt *pnt,d3ang *ang)
 {
 	float			fx,fy,fz;
-	d3ang			ang;
 	matrix_type		mat;
-	
-	view_get_angle(&ang);
 	
 	fx=(float)pnt->x;
 	fy=(float)pnt->y;
 	fz=(float)pnt->z;
 
-	if (ang.x!=0) {
-		matrix_rotate_x(&mat,ang.x);
+	if (ang->x!=0) {
+		matrix_rotate_x(&mat,ang->x);
 		matrix_vertex_multiply(&mat,&fx,&fy,&fz);
 	}
 	
-	if (ang.y!=0) {
-		matrix_rotate_y(&mat,angle_add(ang.y,180.0f));
+	if (ang->y!=0) {
+		matrix_rotate_y(&mat,angle_add(ang->y,180.0f));
 		matrix_vertex_multiply(&mat,&fx,&fy,&fz);
 	}
 	
-	if (ang.z!=0) {
-		matrix_rotate_z(&mat,ang.z);
+	if (ang->z!=0) {
+		matrix_rotate_z(&mat,ang->z);
 		matrix_vertex_multiply(&mat,&fx,&fy,&fz);
 	}
 	
@@ -73,6 +70,33 @@ void view_get_direction(d3pnt *pnt)
 	pnt->y=(int)fy;
 	pnt->z=(int)fz;
 }
+
+int view_get_movement_scale(editor_view_type *view,d3pnt *pnt)
+{
+
+	int					mesh_idx,dist,scale;
+	d3pnt				mpnt;
+	
+		// find closest mesh
+		
+	mesh_idx=map_mesh_find_closest(&map,pnt);
+	if (mesh_idx==-1) return(move_mouse_min_scale);
+	
+	map_mesh_calculate_center(&map,mesh_idx,&mpnt);
+	
+	dist=distance_get(view->pnt.x,view->pnt.y,view->pnt.z,mpnt.x,mpnt.y,mpnt.z);
+	
+	scale=dist/move_mouse_distance_ratio;
+	if (scale<move_mouse_min_scale) scale=move_mouse_min_scale;
+	
+	return(scale);
+}
+
+/* =======================================================
+
+      Mouse Movement
+      
+======================================================= */
 
 void view_mouse_get_scroll_horizontal_axis(editor_view_type *view,d3pnt *pnt,int dist)
 {
@@ -166,11 +190,12 @@ void view_mouse_get_forward_axis(editor_view_type *view,d3pnt *pnt,int dist)
 
 void view_mouse_scroll_movement(editor_view_type *view,d3pnt *pnt)
 {
-	int						x,y;
+	int						x,y,scale;
 	d3pnt					old_pnt,move_pnt;
     
     os_set_hand_cursor();
 	
+	scale=view_get_movement_scale(view,pnt);
 	memmove(&old_pnt,pnt,sizeof(d3pnt));
 	
 	while (!os_track_mouse_location(pnt,NULL)) {
@@ -187,8 +212,8 @@ void view_mouse_scroll_movement(editor_view_type *view,d3pnt *pnt)
 		
 		move_pnt.x=move_pnt.y=move_pnt.z=0;
 		
-		view_mouse_get_scroll_horizontal_axis(view,&move_pnt,(x*move_mouse_scale));
-		view_mouse_get_scroll_vertical_axis(view,&move_pnt,(y*move_mouse_scale));
+		view_mouse_get_scroll_horizontal_axis(view,&move_pnt,(x*scale));
+		view_mouse_get_scroll_vertical_axis(view,&move_pnt,(y*scale));
 
 		view_move_position(&move_pnt);
 		
@@ -198,12 +223,13 @@ void view_mouse_scroll_movement(editor_view_type *view,d3pnt *pnt)
 
 void view_mouse_forward_movement(editor_view_type *view,d3pnt *pnt)
 {
-	int				x,y;
+	int				x,y,scale;
 	d3pnt			old_pnt,move_pnt;
 	d3ang			turn_ang;
     
     os_set_drag_cursor();
 
+	scale=view_get_movement_scale(view,pnt);
 	memmove(&old_pnt,pnt,sizeof(d3pnt));
 	
 	while (!os_track_mouse_location(pnt,NULL)) {
@@ -219,7 +245,7 @@ void view_mouse_forward_movement(editor_view_type *view,d3pnt *pnt)
 		
 		move_pnt.x=move_pnt.y=move_pnt.z=0;
 
-		view_mouse_get_forward_axis(view,&move_pnt,(y*move_mouse_scale));
+		view_mouse_get_forward_axis(view,&move_pnt,(y*scale));
 		view_move_position(&move_pnt);
 		
 			// y turn
@@ -233,6 +259,45 @@ void view_mouse_forward_movement(editor_view_type *view,d3pnt *pnt)
 
         main_wind_draw();
 	}
+}
+
+void view_key_forward_movement(editor_view_type *view,int dir)
+{
+	d3pnt			move_pnt;
+	
+	move_pnt.x=0;
+	move_pnt.y=0;
+	move_pnt.z=dir*2000;
+
+	view_move_position(&move_pnt);
+
+	main_wind_draw();
+}
+
+void view_key_side_movement(editor_view_type *view,int dir)
+{
+	d3pnt			move_pnt;
+	
+	move_pnt.x=dir*2000;
+	move_pnt.y=0;
+	move_pnt.z=0;
+
+	view_move_position(&move_pnt);
+
+	main_wind_draw();
+}
+
+void view_key_vert_movement(editor_view_type *view,int dir)
+{
+	d3pnt			move_pnt;
+	
+	move_pnt.x=0;
+	move_pnt.y=dir*2000;
+	move_pnt.z=0;
+
+	view_move_position(&move_pnt);
+
+	main_wind_draw();
 }
 
 /* =======================================================

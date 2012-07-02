@@ -42,7 +42,7 @@ shader_type					*gl_shader_current;
 extern int					nuser_shader;
 extern shader_type			user_shaders[max_iface_user_shader],
 							core_shaders[max_shader_light+1][max_core_shader],
-							color_shader,bitmap_shader;
+							color_shader,bitmap_shader,bitmap_rect_shader;
 
 extern float				light_shader_direction[7][3];
 
@@ -55,6 +55,8 @@ extern bitmap_type			lmap_black_bitmap,lmap_white_bitmap;
 ======================================================= */
 
 #ifdef D3_OPENGL_ES
+
+// supergumba -- es2 -- remove all this and maybe add a new c file for exectuion
 
 void gl_shader_code_clear(shader_type *shader) {}
 bool gl_shader_code_compile(shader_type *shader,char *vertex_data,char *fragment_data,char *err_str) { return(FALSE); }
@@ -72,9 +74,12 @@ void gl_shader_draw_execute(int core_shader_group,texture_type *texture,int txt_
 void gl_shader_draw_simple_color_start(void) {}
 void gl_shader_draw_simple_color_end(void) {}
 void gl_shader_draw_execute_simple_color(void) {}
-void gl_shader_draw_simple_bitmap_start(bool rectangle) {}
-void gl_shader_draw_simple_bitmap_end(bool rectangle) {}
-void gl_shader_draw_execute_simple_bitmap(unsigned long gl_id,bool rectangle) {}
+void gl_shader_draw_simple_bitmap_start(void) {}
+void gl_shader_draw_simple_bitmap_end(void) {}
+void gl_shader_draw_execute_simple_bitmap(unsigned long gl_id) {}
+void gl_shader_draw_simple_bitmap_rect_start(void) {}
+void gl_shader_draw_simple_bitmap_rect_end(void) {}
+void gl_shader_draw_execute_simple_bitmap_rect(unsigned long gl_id) {}
 
 #else
 
@@ -1009,7 +1014,7 @@ void gl_shader_draw_execute_simple_color(void)
       
 ======================================================= */
 
-void gl_shader_draw_simple_bitmap_start(bool rectangle)
+void gl_shader_draw_simple_bitmap_start(void)
 {
 		// remember current shader
 
@@ -1017,19 +1022,10 @@ void gl_shader_draw_simple_bitmap_start(bool rectangle)
 
 		// enable texturing
 		
-#if defined(D3_OS_IPHONE) || defined(D3_OS_ANDRIOD)
 	glEnable(GL_TEXTURE_2D);
-#else
-	if (rectangle) {
-		glEnable(GL_TEXTURE_RECTANGLE);
-	}
-	else {
-		glEnable(GL_TEXTURE_2D);
-	}
-#endif
 }
 
-void gl_shader_draw_simple_bitmap_end(bool rectangle)
+void gl_shader_draw_simple_bitmap_end(void)
 {
 		// deactivate any current shader
 		
@@ -1037,20 +1033,10 @@ void gl_shader_draw_simple_bitmap_end(bool rectangle)
 	
 		// turn off any used textures
 
-#if defined(D3_OS_IPHONE) || defined(D3_OS_ANDRIOD)
 	glDisable(GL_TEXTURE_2D);
-#else
-	if (rectangle) {
-		glBindTexture(GL_TEXTURE_RECTANGLE,0);
-		glDisable(GL_TEXTURE_RECTANGLE);
-	}
-	else {
-		glDisable(GL_TEXTURE_2D);
-	}
-#endif
 }
 
-void gl_shader_draw_execute_simple_bitmap(unsigned long gl_id,bool rectangle)
+void gl_shader_draw_execute_simple_bitmap(unsigned long gl_id)
 {
 		// change over the shader
 		
@@ -1061,15 +1047,62 @@ void gl_shader_draw_execute_simple_bitmap(unsigned long gl_id,bool rectangle)
 
 		// bind the bitmap
 
-#if defined(D3_OS_IPHONE) || defined(D3_OS_ANDRIOD)
 	gl_texture_bind(0,gl_id);
+}
+
+/* =======================================================
+
+      Execute Simple Bitmap Rectangle Shaders
+      
+======================================================= */
+
+void gl_shader_draw_simple_bitmap_rect_start(void)
+{
+#if defined(D3_OS_IPHONE) || defined(D3_OS_ANDRIOD)
+	gl_shader_draw_simple_bitmap_start(gl_id);
 #else
-	if (rectangle) {
-		glBindTexture(GL_TEXTURE_RECTANGLE,gl_id);
+		// remember current shader
+
+	gl_shader_current=NULL;
+
+		// enable texturing
+		
+	glEnable(GL_TEXTURE_RECTANGLE);
+#endif
+}
+
+void gl_shader_draw_simple_bitmap_rect_end(void)
+{
+#if defined(D3_OS_IPHONE) || defined(D3_OS_ANDRIOD)
+	gl_shader_draw_simple_bitmap_end(gl_id);
+#else
+		// deactivate any current shader
+		
+	if (gl_shader_current!=NULL) glUseProgramObjectARB(0);
+	
+		// turn off any used textures
+
+	glBindTexture(GL_TEXTURE_RECTANGLE,0);
+	glDisable(GL_TEXTURE_RECTANGLE);
+#endif
+}
+
+void gl_shader_draw_execute_simple_bitmap_rect(unsigned long gl_id)
+{
+#if defined(D3_OS_IPHONE) || defined(D3_OS_ANDRIOD)
+	gl_shader_draw_execute_simple_bitmap(gl_id);
+#else
+
+		// change over the shader
+		
+	if ((&bitmap_rect_shader)!=gl_shader_current) {
+		gl_shader_current=&bitmap_rect_shader;
+		glUseProgramObjectARB(bitmap_rect_shader.program_obj);
 	}
-	else {
-		gl_texture_bind(0,gl_id);
-	}
+
+		// bind the bitmap
+
+	glBindTexture(GL_TEXTURE_RECTANGLE,gl_id);
 #endif
 }
 

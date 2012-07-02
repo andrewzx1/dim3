@@ -718,6 +718,30 @@ void map_mesh_calculate_center(map_type *map,int mesh_idx,d3pnt *mpt)
 	mpt->z=mz/nvertex;
 }
 
+void map_mesh_poly_calculate_center(map_type *map,int mesh_idx,int poly_idx,d3pnt *mpt)
+{
+	int					n,mx,my,mz;
+	d3pnt				*pt;
+	map_mesh_type		*mesh;
+	map_mesh_poly_type	*poly;
+
+	mesh=&map->mesh.meshes[mesh_idx];
+	poly=&mesh->polys[poly_idx];
+
+	mx=my=mz=0;
+
+	for (n=0;n!=poly->ptsz;n++) {
+		pt=&mesh->vertexes[poly->v[n]];
+		mx+=pt->x;
+		my+=pt->y;
+		mz+=pt->z;
+	}
+
+	mpt->x=mx/poly->ptsz;
+	mpt->y=my/poly->ptsz;
+	mpt->z=mz/poly->ptsz;
+}
+
 void map_mesh_calculate_uv_center(map_type *map,int mesh_idx,float *gx,float *gy)
 {
 	int					n,k,cnt;

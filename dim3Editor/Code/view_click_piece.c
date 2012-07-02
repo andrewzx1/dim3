@@ -494,14 +494,14 @@ void view_click_rot_handle_move_run_axis(int *value,int org_value,int mv_add)
 	*value=org_value+mv_add;
 }
 
-void view_click_rot_handle_move_run(int type,int idx,d3pnt *pnt,d3pnt *org_pnt,int mv_add,int which_axis)
+void view_click_rot_handle_move_run(int type,int idx,d3pnt *pnt,d3pnt *org_pnt,int mv_add,int scale,int which_axis)
 {
 	d3pnt			mesh_pnt,mov_pnt;
 	d3ang			rot_ang;
 
 		// run the move
 
-	mv_add=-(mv_add*view_handle_move_scale);
+	mv_add=-(mv_add*scale);
 	
 	switch (which_axis) {
 		case 0:
@@ -521,9 +521,9 @@ void view_click_rot_handle_move_run(int type,int idx,d3pnt *pnt,d3pnt *org_pnt,i
 		// we need to move the mesh
 
 	if (type==mesh_piece) {
-		mov_pnt.x=org_pnt->x-pnt->x;
-		mov_pnt.y=org_pnt->y-pnt->y;
-		mov_pnt.z=org_pnt->z-pnt->z;
+		mov_pnt.x=pnt->x-org_pnt->x;
+		mov_pnt.y=pnt->y-org_pnt->y;
+		mov_pnt.z=pnt->z-org_pnt->z;
 		rot_ang.x=rot_ang.y=rot_ang.z=0.0f;
 		map_mesh_calculate_center(&map,idx,&mesh_pnt);
 		map_mesh_move_rotate_copy(&map,idx,&mesh_pnt,&mov_pnt,&rot_ang);
@@ -539,7 +539,9 @@ void view_click_rot_handle_move_run(int type,int idx,d3pnt *pnt,d3pnt *org_pnt,i
 
 bool view_click_rot_handles(editor_view_type *view,d3pnt *click_pt)
 {
-	int			n,k,idx,type,main_idx,sub_idx,which_axis,sel_count,item_count;
+	int			n,k,idx,scale,mv,
+				type,main_idx,sub_idx,
+				which_axis,sel_count,item_count;
 	int			*type_list,*idx_list;
 	bool		first_drag;
 	d3pnt		pt,center_pnt,mesh_pnt,
@@ -672,6 +674,10 @@ bool view_click_rot_handles(editor_view_type *view,d3pnt *click_pt)
 	memmove(&org_pnt,pnt,sizeof(d3pnt));
 	memmove(&org_ang,ang,sizeof(d3ang));
 	
+		// get the scale
+		
+	scale=distance_get(view->pnt.x,view->pnt.y,view->pnt.z,pnt->x,pnt->y,pnt->z)/move_mouse_drag_distance_ratio;
+	
 		// handle drag
 	
     if (!os_button_down()) return(FALSE);
@@ -690,14 +696,19 @@ bool view_click_rot_handles(editor_view_type *view,d3pnt *click_pt)
 			os_set_drag_cursor();
 			first_drag=FALSE;
 		}
+		
+			// get biggest move
+			
+		mv=click_pt->x-pt.x;
+		if (abs(mv)<abs(click_pt->y-pt.y)) mv=click_pt->y-pt.y;
 
 			// handle movement
 			
 		if (state.handle_mode==handle_mode_rotate) {
-			view_click_rot_handle_rotate_run(type,main_idx,ang,&org_ang,(float)(click_pt->x-pt.x),which_axis);
+			view_click_rot_handle_rotate_run(type,main_idx,ang,&org_ang,(float)mv,which_axis);
 		}
 		else {
-			view_click_rot_handle_move_run(type,main_idx,pnt,&org_pnt,(click_pt->x-pt.x),which_axis);
+			view_click_rot_handle_move_run(type,main_idx,pnt,&org_pnt,mv,scale,which_axis);
 		}
 		
         main_wind_draw();

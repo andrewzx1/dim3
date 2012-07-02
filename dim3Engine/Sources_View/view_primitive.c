@@ -568,10 +568,10 @@ void view_primitive_2D_texture_quad(GLuint gl_id,d3col *col,float alpha,int lft,
 	glEnableClientState(GL_COLOR_ARRAY);
 	glColorPointer(4,GL_UNSIGNED_BYTE,0,(GLvoid*)colors);
 
-//	gl_shader_draw_simple_bitmap_start(FALSE);		// ES2 -- new shader stuff
-//	gl_shader_draw_execute_simple_bitmap(gl_id,FALSE);
+//	gl_shader_draw_simple_bitmap_start();		// ES2 -- new shader stuff
+//	gl_shader_draw_execute_simple_bitmap(gl_id);
 	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
-//	gl_shader_draw_simple_bitmap_end(FALSE);
+//	gl_shader_draw_simple_bitmap_end();
 
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	glDisableClientState(GL_COLOR_ARRAY);
@@ -663,10 +663,10 @@ void view_primitive_2D_texture_quad_rot(GLuint gl_id,d3col *col,float alpha,int 
 	glEnableClientState(GL_COLOR_ARRAY);
 	glColorPointer(4,GL_UNSIGNED_BYTE,0,(GLvoid*)colors);
 
-//	gl_shader_draw_simple_bitmap_start(FALSE);		// ES2 -- new shader stuff
-//	gl_shader_draw_execute_simple_bitmap(gl_id,FALSE);
+//	gl_shader_draw_simple_bitmap_start();		// ES2 -- new shader stuff
+//	gl_shader_draw_execute_simple_bitmap(gl_id);
 	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
-//	gl_shader_draw_simple_bitmap_end(FALSE);
+//	gl_shader_draw_simple_bitmap_end();
 
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	glDisableClientState(GL_COLOR_ARRAY);
@@ -743,10 +743,10 @@ void view_primitive_2D_texture_quad_rectangle(GLuint gl_id,float alpha,int lft,i
 	glEnableClientState(GL_COLOR_ARRAY);
 	glColorPointer(4,GL_UNSIGNED_BYTE,0,(GLvoid*)colors);
 
-//	gl_shader_draw_simple_bitmap_start(TRUE);		// ES2 -- new shader stuff
-//	gl_shader_draw_execute_simple_bitmap(gl_id,TRUE);
+//	gl_shader_draw_simple_bitmap_rect_start();		// ES2 -- new shader stuff
+//	gl_shader_draw_execute_simple_bitmap_rect(gl_id);
 	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
-//	gl_shader_draw_simple_bitmap_end(TRUE);
+//	gl_shader_draw_simple_bitmap_rect_end();
 
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	glDisableClientState(GL_COLOR_ARRAY);

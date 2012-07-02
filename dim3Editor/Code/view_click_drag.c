@@ -165,7 +165,7 @@ void view_click_drag_mesh_handle_skew(int mesh_idx,d3pnt *old_dpt,int handle_idx
 
 bool view_click_drag_mesh_handle(editor_view_type *view,d3pnt *pt)
 {
-	int						n,x,y,mx,my,mz,sub_idx,
+	int						n,x,y,mx,my,mz,scale,sub_idx,
 							type,mesh_idx,poly_idx,handle_idx;
 	bool					first_drag;
 	d3pnt					pts[20],old_pt,*old_dpt,mpt,move_pnt,
@@ -217,6 +217,11 @@ bool view_click_drag_mesh_handle(editor_view_type *view,d3pnt *pt)
 	if (old_dpt==NULL) return(FALSE);
 	
 	memmove(old_dpt,mesh->vertexes,(mesh->nvertex*sizeof(d3pnt)));
+	
+		// get the scale
+		
+	map_mesh_calculate_center(&map,mesh_idx,&mpt);
+	scale=distance_get(view->pnt.x,view->pnt.y,view->pnt.z,mpt.x,mpt.y,mpt.z)/move_mouse_drag_distance_ratio;
 		
 		// start dragging
 
@@ -250,12 +255,12 @@ bool view_click_drag_mesh_handle(editor_view_type *view,d3pnt *pt)
 		move_pnt.x=move_pnt.y=move_pnt.z=0;
 		
 		if (handle_idx<8) {
-			view_mouse_get_scroll_horizontal_axis(view,&move_pnt,-(x*move_mouse_scale));
-			view_mouse_get_scroll_vertical_axis(view,&move_pnt,-(y*move_mouse_scale));
+			view_mouse_get_scroll_horizontal_axis(view,&move_pnt,-(x*scale));
+			view_mouse_get_scroll_vertical_axis(view,&move_pnt,-(y*scale));
 		}
 		else {
-			move_pnt.x=-(x*move_mouse_scale);
-			move_pnt.y=-(y*move_mouse_scale);
+			move_pnt.x=-(x*scale);
+			move_pnt.y=-(y*scale);
 		}
 
 		mx+=move_pnt.x;
@@ -305,7 +310,7 @@ bool view_click_drag_mesh_handle(editor_view_type *view,d3pnt *pt)
 
 bool view_click_drag_mesh(editor_view_type *view,d3pnt *pt)
 {
-	int						n,k,x,y,mx,my,mz,nsel,nvertex,
+	int						n,k,x,y,mx,my,mz,scale,nsel,nvertex,
 							type,mesh_idx,poly_idx;
 	bool					first_drag;
 	d3pnt					old_pt,*dpt,*old_dpt,*old_dpt_ptr,move_pnt,mpt;
@@ -356,6 +361,11 @@ bool view_click_drag_mesh(editor_view_type *view,d3pnt *pt)
 		old_dpt_ptr+=mesh->nvertex;
 	}
 	
+		// get the scale
+		
+	map_mesh_calculate_center(&map,mesh_idx,&mpt);
+	scale=distance_get(view->pnt.x,view->pnt.y,view->pnt.z,mpt.x,mpt.y,mpt.z)/move_mouse_drag_distance_ratio;
+	
 		// drag meshes
 		
 	mx=my=mz=0;
@@ -363,6 +373,7 @@ bool view_click_drag_mesh(editor_view_type *view,d3pnt *pt)
 	first_drag=TRUE;
 	
 	view_get_pixel_box(view,&box);
+	
 	memmove(&old_pt,pt,sizeof(d3pnt));
 	
 	while (!os_track_mouse_location(pt,&box)) {
@@ -385,8 +396,8 @@ bool view_click_drag_mesh(editor_view_type *view,d3pnt *pt)
 
 		move_pnt.x=move_pnt.y=move_pnt.z=0;
 		
-		view_mouse_get_scroll_horizontal_axis(view,&move_pnt,-(x*move_mouse_scale));
-		view_mouse_get_scroll_vertical_axis(view,&move_pnt,-(y*move_mouse_scale));
+		view_mouse_get_scroll_horizontal_axis(view,&move_pnt,-(x*scale));
+		view_mouse_get_scroll_vertical_axis(view,&move_pnt,-(y*scale));
 		
 		mx+=move_pnt.x;
 		my+=move_pnt.y;
@@ -458,7 +469,7 @@ bool view_click_drag_mesh(editor_view_type *view,d3pnt *pt)
 
 bool view_click_drag_mesh_poly(editor_view_type *view,d3pnt *pt)
 {
-	int						n,x,y,mx,my,mz,
+	int						n,x,y,mx,my,mz,scale,
 							type,mesh_idx,poly_idx;
 	bool					first_drag;
 	d3pnt					old_pt,*dpt,*old_dpt,move_pnt,mpt,spt;
@@ -480,7 +491,7 @@ bool view_click_drag_mesh_poly(editor_view_type *view,d3pnt *pt)
 	
 	if (mesh->flag.lock_move) return(FALSE);
 	
-		// drag
+		// setup drag
 		
     if (!os_button_down()) return(FALSE);
 	
@@ -495,9 +506,17 @@ bool view_click_drag_mesh_poly(editor_view_type *view,d3pnt *pt)
 		memmove(&old_dpt[n],&mesh->vertexes[mesh_poly->v[n]],sizeof(d3pnt));
 	}
 	
+		// get the scale
+		
+	map_mesh_poly_calculate_center(&map,mesh_idx,poly_idx,&mpt);
+	scale=distance_get(view->pnt.x,view->pnt.y,view->pnt.z,mpt.x,mpt.y,mpt.z)/move_mouse_drag_distance_ratio;
+	
+		// run the drag
+		
 	mx=my=mz=0;
 	
 	view_get_pixel_box(view,&box);
+
 	memmove(&old_pt,pt,sizeof(d3pnt));
 	
 	while (!os_track_mouse_location(pt,&box)) {
@@ -520,8 +539,8 @@ bool view_click_drag_mesh_poly(editor_view_type *view,d3pnt *pt)
 
 		move_pnt.x=move_pnt.y=move_pnt.z=0;
 		
-		view_mouse_get_scroll_horizontal_axis(view,&move_pnt,-(x*move_mouse_scale));
-		view_mouse_get_scroll_vertical_axis(view,&move_pnt,-(y*move_mouse_scale));
+		view_mouse_get_scroll_horizontal_axis(view,&move_pnt,-(x*scale));
+		view_mouse_get_scroll_vertical_axis(view,&move_pnt,-(y*scale));
 		
 		mx+=move_pnt.x;
 		my+=move_pnt.y;
@@ -593,7 +612,7 @@ bool view_click_drag_mesh_poly(editor_view_type *view,d3pnt *pt)
 
 bool view_click_drag_vertex(editor_view_type *view,d3pnt *pt)
 {
-	int						n,x,y,mx,my,mz,sub_idx,
+	int						n,x,y,mx,my,mz,scale,sub_idx,
 							type,mesh_idx,poly_idx,vertex_idx;
 	d3pnt					old_pt,*dpt,old_dpt,move_pnt,mpt;
 	d3rect					box;
@@ -636,6 +655,10 @@ bool view_click_drag_vertex(editor_view_type *view,d3pnt *pt)
 		
 	state.drag_handle_idx=vertex_idx;
 	main_wind_draw();
+	
+		// get the scale
+		
+	scale=distance_get(view->pnt.x,view->pnt.y,view->pnt.z,mesh->vertexes[vertex_idx].x,mesh->vertexes[vertex_idx].y,mesh->vertexes[vertex_idx].z)/move_mouse_drag_distance_ratio;
 
 		// drag
 		
@@ -645,6 +668,7 @@ bool view_click_drag_vertex(editor_view_type *view,d3pnt *pt)
 	memmove(&old_dpt,dpt,sizeof(d3pnt));
 	
 	view_get_pixel_box(view,&box);
+
 	memmove(&old_pt,pt,sizeof(d3pnt));
 	
 	mx=my=mz=0;
@@ -669,8 +693,8 @@ bool view_click_drag_vertex(editor_view_type *view,d3pnt *pt)
 
 		move_pnt.x=move_pnt.y=move_pnt.z=0;
 		
-		view_mouse_get_scroll_horizontal_axis(view,&move_pnt,-(x*move_mouse_scale));
-		view_mouse_get_scroll_vertical_axis(view,&move_pnt,-(y*move_mouse_scale));
+		view_mouse_get_scroll_horizontal_axis(view,&move_pnt,-(x*scale));
+		view_mouse_get_scroll_vertical_axis(view,&move_pnt,-(y*scale));
 			
 		mx+=move_pnt.x;
 		my+=move_pnt.y;
@@ -799,7 +823,7 @@ bool view_click_drag_texture_uv(editor_view_type *view_setup,d3pnt *pt,bool enti
 
 bool view_click_drag_liquid_vertex(editor_view_type *view,d3pnt *pt)
 {
-	int						n,x,y,mx,my,mz,chk_x,chk_z,old_depth,
+	int						n,x,y,mx,my,mz,scale,chk_x,chk_z,old_depth,
 							type,liquid_idx,sub_idx,handle_idx;
 	d3pnt					pts[8],old_pt,old_dpt,move_pnt,mpt,dpt;
 	d3rect					box;
@@ -833,10 +857,15 @@ bool view_click_drag_liquid_vertex(editor_view_type *view,d3pnt *pt)
 	
     if (!os_button_down()) return(FALSE);
 
-			// hilite the drag handle
+		// hilite the drag handle
 		
 	state.drag_handle_idx=handle_idx;
 	main_wind_draw();
+
+		// get the scale
+		
+	map_liquid_calculate_center(&map,liquid_idx,&mpt);
+	scale=distance_get(view->pnt.x,view->pnt.y,view->pnt.z,mpt.x,mpt.y,mpt.z)/move_mouse_drag_distance_ratio;
 		
 		// drag
 	
@@ -851,6 +880,7 @@ bool view_click_drag_liquid_vertex(editor_view_type *view,d3pnt *pt)
 	old_depth=liq->depth;
 	
 	view_get_pixel_box(view,&box);
+	
 	memmove(&old_pt,pt,sizeof(d3pnt));
 	
 	mx=my=mz=0;
@@ -875,8 +905,8 @@ bool view_click_drag_liquid_vertex(editor_view_type *view,d3pnt *pt)
 
 		move_pnt.x=move_pnt.y=move_pnt.z=0;
 		
-		view_mouse_get_scroll_horizontal_axis(view,&move_pnt,-(x*move_mouse_scale));
-		view_mouse_get_scroll_vertical_axis(view,&move_pnt,-(y*move_mouse_scale));
+		view_mouse_get_scroll_horizontal_axis(view,&move_pnt,-(x*scale));
+		view_mouse_get_scroll_vertical_axis(view,&move_pnt,-(y*scale));
 			
 		mx+=move_pnt.x;
 		my+=move_pnt.y;
@@ -1009,7 +1039,7 @@ bool view_click_drag_liquid_vertex(editor_view_type *view,d3pnt *pt)
 
 bool view_click_drag_liquid(editor_view_type *view,d3pnt *pt)
 {
-	int						x,y,mx,my,mz,
+	int						x,y,mx,my,mz,scale,
 							old_lft,old_rgt,old_top,old_bot,old_y,
 							type,main_idx,sub_idx;
 	d3pnt					old_pt,move_pnt,mpt;
@@ -1029,6 +1059,13 @@ bool view_click_drag_liquid(editor_view_type *view,d3pnt *pt)
     if (!os_button_down()) return(FALSE);
 	
 	undo_push();
+	
+		// get the scale
+		
+	map_liquid_calculate_center(&map,main_idx,&mpt);
+	scale=distance_get(view->pnt.x,view->pnt.y,view->pnt.z,mpt.x,mpt.y,mpt.z)/move_mouse_drag_distance_ratio;
+
+		// run the drag
 
 	first_drag=TRUE;
 	
@@ -1039,6 +1076,7 @@ bool view_click_drag_liquid(editor_view_type *view,d3pnt *pt)
 	old_y=liq->y;
 	
 	view_get_pixel_box(view,&box);
+	
 	memmove(&old_pt,pt,sizeof(d3pnt));
 	
 	mx=my=mz=0;
@@ -1063,8 +1101,8 @@ bool view_click_drag_liquid(editor_view_type *view,d3pnt *pt)
 
 		move_pnt.x=move_pnt.y=move_pnt.z=0;
 		
-		view_mouse_get_scroll_horizontal_axis(view,&move_pnt,-(x*move_mouse_scale));
-		view_mouse_get_scroll_vertical_axis(view,&move_pnt,-(y*move_mouse_scale));
+		view_mouse_get_scroll_horizontal_axis(view,&move_pnt,-(x*scale));
+		view_mouse_get_scroll_vertical_axis(view,&move_pnt,-(y*scale));
 			
 		mx+=move_pnt.x;
 		my+=move_pnt.y;
@@ -1104,7 +1142,7 @@ bool view_click_drag_liquid(editor_view_type *view,d3pnt *pt)
 
 bool view_click_drag_item(editor_view_type *view,d3pnt *pt)
 {
-	int						x,y,mx,my,mz,
+	int						x,y,mx,my,mz,scale,
 							type,main_idx,sub_idx;
 	d3pnt					*pnt,old_pt,old_pnt,move_pnt,mpt;
 	d3rect					box;
@@ -1141,15 +1179,22 @@ bool view_click_drag_item(editor_view_type *view,d3pnt *pt)
 	
 	if (pnt==NULL) return(FALSE);
 		
-		// drag item
+		// setup drag
 	
     if (!os_button_down()) return(FALSE);
 	
 	undo_push();
+		
+		// get the scale
+		
+	scale=distance_get(view->pnt.x,view->pnt.y,view->pnt.z,pnt->x,pnt->y,pnt->z)/move_mouse_drag_distance_ratio;
+
+		// run the drag
 
 	first_drag=TRUE;
 	
 	view_get_pixel_box(view,&box);
+	
 	memmove(&old_pt,pt,sizeof(d3pnt));
 	memmove(&old_pnt,pnt,sizeof(d3pnt));
 	
@@ -1175,8 +1220,8 @@ bool view_click_drag_item(editor_view_type *view,d3pnt *pt)
 
 		move_pnt.x=move_pnt.y=move_pnt.z=0;
 		
-		view_mouse_get_scroll_horizontal_axis(view,&move_pnt,-(x*move_mouse_scale));
-		view_mouse_get_scroll_vertical_axis(view,&move_pnt,-(y*move_mouse_scale));
+		view_mouse_get_scroll_horizontal_axis(view,&move_pnt,-(x*scale));
+		view_mouse_get_scroll_vertical_axis(view,&move_pnt,-(y*scale));
 			
 		mx+=move_pnt.x;
 		my+=move_pnt.y;

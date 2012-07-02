@@ -315,25 +315,43 @@ bool main_wind_cursor(void)
 
 void main_wind_key(char ch)
 {
-		// special tool keys
+	editor_view_type		*view;
+	
+		// special movement keys
 		
-	if ((ch=='q') || (ch=='Q')) {
-		tool_switch_vertex_mode();
+	if ((ch=='w') || (ch=='W')) {
+		view=view_get_current_view();
+		view_key_forward_movement(view,-1);
+		return;
+	}
+
+	if ((ch=='s') || (ch=='S')) {
+		view=view_get_current_view();
+		view_key_forward_movement(view,1);
 		return;
 	}
 	
-	if ((ch=='w') || (ch=='W')) {
-		tool_switch_drag_mode();
+	if ((ch=='a') || (ch=='A')) {
+		view=view_get_current_view();
+		view_key_side_movement(view,-1);
+		return;
+	}
+
+	if ((ch=='d') || (ch=='D')) {
+		view=view_get_current_view();
+		view_key_side_movement(view,1);
+		return;
+	}
+
+	if ((ch=='q') || (ch=='Q')) {
+		view=view_get_current_view();
+		view_key_vert_movement(view,-1);
 		return;
 	}
 	
 	if ((ch=='e') || (ch=='E')) {
-		tool_switch_grid_mode();
-		return;
-	}
-	
-	if ((ch=='r') || (ch=='R')) {
-		tool_switch_node_mode();
+		view=view_get_current_view();
+		view_key_vert_movement(view,1);
 		return;
 	}
 	
