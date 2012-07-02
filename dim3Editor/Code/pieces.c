@@ -96,6 +96,7 @@ void piece_duplicate(void)
 				
 				map_mesh_calculate_center(&map,index,&mpt);
 				map_mesh_move(&map,index,&mov_pt);
+				view_force_grid(main_idx,TRUE);
 
 				view_vbo_mesh_initialize(index);
 				
@@ -525,7 +526,7 @@ void piece_force_grid(void)
 	for (n=0;n!=sel_count;n++) {
 		select_get(n,&type,&mesh_idx,&poly_idx);
 		if (type==mesh_piece) {
-			view_force_grid(mesh_idx);
+			view_force_grid(mesh_idx,FALSE);
 			view_vbo_mesh_rebuild(mesh_idx);
 		}
 	}
@@ -670,6 +671,7 @@ void piece_move(int move_x,int move_y,int move_z)
 		if (type==mesh_piece) {
 			if (!map.mesh.meshes[mesh_idx].flag.lock_move) {
 				map_mesh_move(&map,mesh_idx,&mov_pnt);
+				view_force_grid(mesh_idx,TRUE);
 				view_vbo_mesh_rebuild(mesh_idx);
 			}
 		}
@@ -1232,6 +1234,7 @@ void piece_key(char ch)
 			case mesh_piece:
 				if (map.mesh.meshes[main_idx].flag.lock_move) break;
 				map_mesh_move(&map,main_idx,&move_pnt);
+				view_force_grid(main_idx,TRUE);
 				if ((state.auto_texture) && (!map.mesh.meshes[main_idx].flag.lock_uv)) map_mesh_reset_uv(&map,main_idx);
 				view_vbo_mesh_rebuild(main_idx);
 				break;

@@ -72,10 +72,10 @@ void view_click_grid(d3pnt *pt)
 	pt->z*=sz;
 }
 
-void view_force_grid(int mesh_idx)
+void view_force_grid(int mesh_idx,bool pos_only)
 {
 	int					k,grid_sz;
-	d3pnt				min,max;
+	d3pnt				min,max,mov_pnt;
 	map_mesh_type		*mesh;
 
 		// get box
@@ -96,6 +96,20 @@ void view_force_grid(int mesh_idx)
 	k=mesh->box.min.z/grid_sz;
 	min.z=k*grid_sz;
 
+		// if pos only, only move
+		// position
+
+	if (pos_only) {
+		mov_pnt.x=min.x-mesh->box.min.x;
+		mov_pnt.y=min.y-mesh->box.min.y;
+		mov_pnt.z=min.z-mesh->box.min.z;
+
+		map_mesh_move(&map,mesh_idx,&mov_pnt);
+		view_vbo_mesh_rebuild(mesh_idx);
+		return;
+	}
+
+		// if not pos only, then
 		// make sure bound box is grid sized
 
 	k=(mesh->box.max.x-mesh->box.min.x)/grid_sz;

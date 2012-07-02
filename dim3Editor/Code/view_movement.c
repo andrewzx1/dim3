@@ -261,14 +261,26 @@ void view_mouse_forward_movement(editor_view_type *view,d3pnt *pnt)
 	}
 }
 
+/* =======================================================
+
+      Key Movement
+      
+======================================================= */
+
 void view_key_forward_movement(editor_view_type *view,int dir)
 {
 	d3pnt			move_pnt;
+	d3ang			ang;
 	
 	move_pnt.x=0;
 	move_pnt.y=0;
 	move_pnt.z=dir*2000;
 
+	ang.x=view->ang.x;
+	ang.y=angle_add(view->ang.y,180.0f);
+	ang.z=view->ang.z;
+
+	view_get_direction(&move_pnt,&ang);
 	view_move_position(&move_pnt);
 
 	main_wind_draw();
@@ -277,11 +289,17 @@ void view_key_forward_movement(editor_view_type *view,int dir)
 void view_key_side_movement(editor_view_type *view,int dir)
 {
 	d3pnt			move_pnt;
+	d3ang			ang;
 	
 	move_pnt.x=dir*2000;
 	move_pnt.y=0;
 	move_pnt.z=0;
 
+	ang.x=view->ang.x;
+	ang.y=angle_add(view->ang.y,180.0f);
+	ang.z=view->ang.z;
+
+	view_get_direction(&move_pnt,&ang);
 	view_move_position(&move_pnt);
 
 	main_wind_draw();
@@ -290,11 +308,17 @@ void view_key_side_movement(editor_view_type *view,int dir)
 void view_key_vert_movement(editor_view_type *view,int dir)
 {
 	d3pnt			move_pnt;
+	d3ang			ang;
 	
 	move_pnt.x=0;
 	move_pnt.y=dir*2000;
 	move_pnt.z=0;
 
+	ang.x=view->ang.x;
+	ang.y=angle_add(view->ang.y,180.0f);
+	ang.z=view->ang.z;
+
+	view_get_direction(&move_pnt,&view->ang);
 	view_move_position(&move_pnt);
 
 	main_wind_draw();
