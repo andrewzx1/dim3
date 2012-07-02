@@ -835,6 +835,7 @@ void map_mesh_move_all(int x,int y,int z)
 	
 	for (n=0;n!=map.mesh.nmesh;n++) {
 		map_mesh_move(&map,n,&pt);
+		view_force_grid(n,TRUE);
 		view_vbo_mesh_rebuild(n);
 	}
 }

@@ -447,6 +447,7 @@ bool view_click_drag_mesh(editor_view_type *view,d3pnt *pt)
 			if ((state.auto_texture) && (!mesh->flag.lock_uv)) map_mesh_reset_uv(&map,mesh_idx);
 		}
 
+		view_force_grid(mesh_idx,TRUE);
 		view_vbo_mesh_rebuild(mesh_idx);
 		
         main_wind_draw();

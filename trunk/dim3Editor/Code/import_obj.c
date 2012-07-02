@@ -1011,7 +1011,7 @@ bool import_obj(char *path,char *err_str)
 		textdecode_close();
 		
 		for (n=old_nmesh;n<map.mesh.nmesh;n++) {
-			if (force_grid) view_force_grid(n);
+			if (force_grid) view_force_grid(n,FALSE);
 			select_add(mesh_piece,n,0);
 		}
 		
