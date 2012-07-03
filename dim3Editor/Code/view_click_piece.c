@@ -86,6 +86,7 @@ void view_force_grid(int mesh_idx,bool pos_only)
 		// push to grid start
 
 	grid_sz=view_get_grid();
+	if (grid_sz<1) return;
 
 	k=mesh->box.min.x/grid_sz;
 	min.x=k*grid_sz;

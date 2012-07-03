@@ -336,7 +336,7 @@ void view_mouse_turn_free(d3pnt *pnt)
 	bool			redraw;
 	d3pnt			old_pnt;
 	d3ang			turn_ang;
-    
+	
     os_set_drag_cursor();
 
 	memmove(&old_pnt,pnt,sizeof(d3pnt));
