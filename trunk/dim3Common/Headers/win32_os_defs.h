@@ -59,7 +59,6 @@ and can be sold or given away.
 #define D3_OS_WINDOWS			1
 #undef D3_OPENGL_ES
 #undef D3_ROTATE_VIEW
-//#define D3_SDL_1_3				1
 
 //
 // os specific keys

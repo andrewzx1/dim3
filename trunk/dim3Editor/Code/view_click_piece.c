@@ -126,6 +126,10 @@ void view_force_grid(int mesh_idx,bool pos_only)
 
 	map_mesh_resize(&map,mesh_idx,&min,&max);
 	view_vbo_mesh_rebuild(mesh_idx);
+
+		// handle any cascades
+
+	view_click_fix_cascade_size(mesh_idx);
 }
 
 /* =======================================================
@@ -465,9 +469,9 @@ void view_click_rot_handle_rotate_run_axis(float *value,float org_value,float an
 	}
 }
 
-void view_click_rot_handle_rotate_run(int type,int idx,d3ang *ang,d3ang *org_ang,float ang_add,int which_axis)
+void view_click_rot_handle_rotate_run(int type,int idx,d3ang *ang,d3ang *org_ang,d3pnt *mesh_center_pnt,float ang_add,int which_axis)
 {
-	d3pnt			mesh_pnt,mov_pnt;
+	d3pnt			mov_pnt;
 	d3ang			rot_ang;
 
 		// run the rotate
@@ -492,8 +496,7 @@ void view_click_rot_handle_rotate_run(int type,int idx,d3ang *ang,d3ang *org_ang
 		rot_ang.x=org_ang->x-ang->x;
 		rot_ang.y=org_ang->y-ang->y;
 		rot_ang.z=org_ang->z-ang->z;
-		map_mesh_calculate_center(&map,idx,&mesh_pnt);
-		map_mesh_move_rotate_copy(&map,idx,&mesh_pnt,&mov_pnt,&rot_ang);
+		map_mesh_move_rotate_copy(&map,idx,mesh_center_pnt,&mov_pnt,&rot_ang);
 		view_vbo_mesh_rebuild(idx);
 	}
 }
@@ -720,7 +723,7 @@ bool view_click_rot_handles(editor_view_type *view,d3pnt *click_pt)
 			// handle movement
 			
 		if (state.handle_mode==handle_mode_rotate) {
-			view_click_rot_handle_rotate_run(type,main_idx,ang,&org_ang,(float)mv,which_axis);
+			view_click_rot_handle_rotate_run(type,main_idx,ang,&org_ang,&mesh_pnt,(float)mv,which_axis);
 		}
 		else {
 			view_click_rot_handle_move_run(type,main_idx,pnt,&org_pnt,mv,scale,which_axis);

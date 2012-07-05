@@ -40,9 +40,7 @@ extern setup_type			setup;
 extern render_info_type		render_info;
 extern camera_type			camera;
 
-#ifdef D3_SDL_1_3
-	extern SDL_Window		*sdl_wind;
-#endif
+extern SDL_Window			*sdl_wind;
 
 GLint						vport[4];
 float						mod_matrix[16],proj_matrix[16];
@@ -259,11 +257,7 @@ void gl_frame_swap(void)
 
 		// swap buffer
 
-#ifdef D3_SDL_1_3
 	SDL_GL_SwapWindow(sdl_wind);
-#else
-	SDL_GL_SwapBuffers();
-#endif
 }
 
 /* =======================================================

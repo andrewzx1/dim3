@@ -64,11 +64,7 @@ bool net_client_start_message_queue(char *err_str)
 	
 		// start receive thread
 		
-#ifndef D3_SDL_1_3
-	client_thread=SDL_CreateThread(net_client_receive_thread,NULL);
-#else
 	client_thread=SDL_CreateThread(net_client_receive_thread,"client",NULL);
-#endif
 	if (client_thread!=NULL) return(TRUE);
 	
 		// could not start thread

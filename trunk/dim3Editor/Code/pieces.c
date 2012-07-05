@@ -469,6 +469,9 @@ void piece_resize(void)
 		select_get(n,&type,&mesh_idx,&poly_idx);
 		
 		if (type==mesh_piece) {
+
+				// resize piece
+
 			map_mesh_calculate_extent(&map,mesh_idx,&min,&max);
 			map_mesh_calculate_center(&map,mesh_idx,&mpt);
 						
@@ -482,6 +485,10 @@ void piece_resize(void)
 
 			map_mesh_resize(&map,mesh_idx,&min,&max);
 			view_vbo_mesh_rebuild(mesh_idx);
+
+				// handle any cascades
+
+			view_click_fix_cascade_size(mesh_idx);
 		}
 	}
 	

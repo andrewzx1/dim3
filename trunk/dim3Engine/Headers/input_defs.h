@@ -29,15 +29,9 @@ and can be sold or given away.
 // SDL key lookups
 //
 
-#ifdef D3_SDL_1_3
-	#define input_max_keyboard		103
-#else
-	#define input_max_keyboard		133
-#endif
 
+#define input_max_keyboard			103
 #define text_input_keys_count		4
-
-#ifdef D3_SDL_1_3
 
 #define key_names							{ \
 												"Escape","F1","F2","F3","F4","F5","F6","F7","F8","F9","F10","F11","F12","F13","F14","F15", \
@@ -70,48 +64,6 @@ and can be sold or given away.
 												SDL_SCANCODE_KP_1,SDL_SCANCODE_KP_2,SDL_SCANCODE_KP_3, \
 												SDL_SCANCODE_KP_0,SDL_SCANCODE_KP_PERIOD,SDL_SCANCODE_KP_ENTER \
 											}
-
-#else
-
-#define key_names							{ \
-												"Backspace","Tab","Clear","Return","Pause","Escape","Space", \
-												"!","\"","#","$","&","'","(",")","*","+",",","-",".","/", \
-												"0","1","2","3","4","5","6","7","8","9", \
-												":",";","<","=",">","?","@","[","\\","]","^","_","`", \
-												"A","B","C","D","E","F","G","H","I","J","K","L","M", \
-												"N","O","P","Q","R","S","T","U","V","W","X","Y","Z", \
-												"Delete","KeyPad0","KeyPad1","KeyPad2","KeyPad3","KeyPad4","KeyPad5", \
-												"KeyPad6","KeyPad7","KeyPad8","KeyPad9", \
-												"KeyPad.","KeyPad/","KeyPad*","KeyPad-","KeyPad+","KeyPadEnter","KeyPad=", \
-												"UpArrow","DownArrow","RightArrow","LeftArrow", \
-												"Insert","Home","End","PageUp","PageDown", \
-												"F1","F2","F3","F4","F5","F6","F7","F8","F9","F10","F11","F12","F13","F14","F15", \
-												"NumLock","CapsLock","ScrollLock", \
-												"RightShift","LeftShift","RightControl","LeftControl","RightOption","LeftOption", \
-												"RightCommand","LeftCommand","LeftWindow","RightWindow", \
-												"ModeShift","Help","PrintScreen","SysRq","Break","Menu","Power","Euro" \
-											}
-										
-#define key_codes							{ \
-												SDLK_BACKSPACE,SDLK_TAB,SDLK_CLEAR,SDLK_RETURN,SDLK_PAUSE,SDLK_ESCAPE,SDLK_SPACE, \
-												SDLK_EXCLAIM,SDLK_QUOTEDBL,SDLK_HASH,SDLK_DOLLAR,SDLK_AMPERSAND,SDLK_QUOTE,SDLK_LEFTPAREN,SDLK_RIGHTPAREN,SDLK_ASTERISK,SDLK_PLUS,SDLK_COMMA,SDLK_MINUS,SDLK_PERIOD,SDLK_SLASH, \
-												SDLK_0,SDLK_1,SDLK_2,SDLK_3,SDLK_4,SDLK_5,SDLK_6,SDLK_7,SDLK_8,SDLK_9, \
-												SDLK_COLON,SDLK_SEMICOLON,SDLK_LESS,SDLK_EQUALS,SDLK_GREATER,SDLK_QUESTION,SDLK_AT,SDLK_LEFTBRACKET,SDLK_BACKSLASH,SDLK_RIGHTBRACKET,SDLK_CARET,SDLK_UNDERSCORE,SDLK_BACKQUOTE, \
-												SDLK_a,SDLK_b,SDLK_c,SDLK_d,SDLK_e,SDLK_f,SDLK_g,SDLK_h,SDLK_i,SDLK_j,SDLK_k,SDLK_l,SDLK_m, \
-												SDLK_n,SDLK_o,SDLK_p,SDLK_q,SDLK_r,SDLK_s,SDLK_t,SDLK_u,SDLK_v,SDLK_w,SDLK_x,SDLK_y,SDLK_z, \
-												SDLK_DELETE,SDLK_KP0,SDLK_KP1,SDLK_KP2,SDLK_KP3,SDLK_KP4,SDLK_KP5, \
-												SDLK_KP6,SDLK_KP7,SDLK_KP8,SDLK_KP9, \
-												SDLK_KP_PERIOD,SDLK_KP_DIVIDE,SDLK_KP_MULTIPLY,SDLK_KP_MINUS,SDLK_KP_PLUS,SDLK_KP_ENTER,SDLK_KP_EQUALS, \
-												SDLK_UP,SDLK_DOWN,SDLK_RIGHT,SDLK_LEFT, \
-												SDLK_INSERT,SDLK_HOME,SDLK_END,SDLK_PAGEUP,SDLK_PAGEDOWN, \
-												SDLK_F1,SDLK_F2,SDLK_F3,SDLK_F4,SDLK_F5,SDLK_F6,SDLK_F7,SDLK_F8,SDLK_F9,SDLK_F10,SDLK_F11,SDLK_F12,SDLK_F13,SDLK_F14,SDLK_F15, \
-												SDLK_NUMLOCK,SDLK_CAPSLOCK,SDLK_SCROLLOCK, \
-												SDLK_RSHIFT,SDLK_LSHIFT,SDLK_RCTRL,SDLK_LCTRL,SDLK_RALT,SDLK_LALT, \
-												SDLK_RMETA,SDLK_LMETA,SDLK_LSUPER,SDLK_RSUPER, \
-												SDLK_HELP,SDLK_PRINT,SDLK_SYSREQ,SDLK_BREAK,SDLK_MENU,SDLK_POWER,SDLK_EURO \
-											}
-
-#endif
 
 #define input_max_mouse_button				5
 

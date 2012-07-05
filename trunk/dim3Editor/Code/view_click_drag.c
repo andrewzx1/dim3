@@ -37,6 +37,58 @@ extern editor_state_type		state;
 
 /* =======================================================
 
+      Fix Cascading Meshes
+      
+======================================================= */
+
+void view_click_fix_cascade_size(int mesh_idx)
+{
+	int						n;
+	d3pnt					dpnt,min,max;
+	map_mesh_type			*mesh,*ccd_mesh;
+
+		// cascades only work if original mesh
+		// has cascade set, and to all meshes with
+		// cascading and the same import strings
+
+	mesh=&map.mesh.meshes[mesh_idx];
+	if (!mesh->flag.cascade_size) return;
+
+		// get difference
+
+	map_mesh_calculate_extent(&map,mesh_idx,&min,&max);
+
+	dpnt.x=max.x-min.x;
+	dpnt.y=max.y-min.y;
+	dpnt.z=max.z-min.z;
+
+		// fix any connected meshes
+
+	for (n=0;n!=map.mesh.nmesh;n++) {
+		if (n==mesh_idx) continue;
+
+			// good target?
+
+		ccd_mesh=&map.mesh.meshes[n];
+		if (!ccd_mesh->flag.cascade_size) continue;
+		if (strcmp(ccd_mesh->import.obj_name,mesh->import.obj_name)!=0) continue;
+		if (strcmp(ccd_mesh->import.group_name,mesh->import.group_name)!=0) continue;
+
+			// fix!
+
+		map_mesh_calculate_extent(&map,n,&min,&max);
+
+		max.x=min.x+dpnt.x;
+		max.y=min.y+dpnt.y;
+		max.z=min.z+dpnt.z;
+
+		map_mesh_resize(&map,n,&min,&max);
+		view_vbo_mesh_rebuild(n);
+	}
+}
+
+/* =======================================================
+
       Drag Mesh Handles
       
 ======================================================= */
@@ -284,13 +336,17 @@ bool view_click_drag_mesh_handle(editor_view_type *view,d3pnt *pt)
 		
 		if ((state.auto_texture) && (!mesh->flag.lock_uv)) map_mesh_reset_uv(&map,mesh_idx);
 
-		view_vbo_mesh_rebuild(mesh_idx);
-
         main_wind_draw();
 	}
 	
 	free(old_dpt);
-	
+
+		// run any cascades
+
+	view_click_fix_cascade_size(mesh_idx);
+
+		// done dragging
+
 	os_set_arrow_cursor();
 	
 		// turn off hilite
@@ -445,10 +501,10 @@ bool view_click_drag_mesh(editor_view_type *view,d3pnt *pt)
 			}
 			
 			if ((state.auto_texture) && (!mesh->flag.lock_uv)) map_mesh_reset_uv(&map,mesh_idx);
-		}
 
-		view_force_grid(mesh_idx,TRUE);
-		view_vbo_mesh_rebuild(mesh_idx);
+			view_force_grid(mesh_idx,TRUE);
+			view_vbo_mesh_rebuild(mesh_idx);
+		}
 		
         main_wind_draw();
 	}

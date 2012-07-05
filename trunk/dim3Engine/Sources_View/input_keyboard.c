@@ -38,33 +38,6 @@ int							text_input_keys[text_input_keys_count];
 char						text_input_shift_numbs[10]={'!','@','#','$','%','^','&','*','(',')'};
 unsigned char				key_states[1024];
 
-#ifndef D3_SDL_1_3
-	#define SDL_SCANCODE_A			SDLK_a
-	#define SDL_SCANCODE_Q			SDLK_q
-	#define SDL_SCANCODE_Z			SDLK_z
-	#define SDL_SCANCODE_0			SDLK_0
-	#define SDL_SCANCODE_1			SDLK_1
-	#define SDL_SCANCODE_9			SDLK_9
-	#define SDL_SCANCODE_KP_0		SDLK_KP0
-	#define SDL_SCANCODE_KP_9		SDLK_KP9
-	#define SDL_SCANCODE_SPACE		SDLK_SPACE
-	#define SDL_SCANCODE_BACKSPACE	SDLK_BACKSPACE
-	#define SDL_SCANCODE_ESCAPE		SDLK_ESCAPE
-	#define SDL_SCANCODE_RETURN		SDLK_RETURN
-	#define SDL_SCANCODE_KP_ENTER	SDLK_KP_ENTER
-	#define SDL_SCANCODE_MINUS		SDLK_MINUS
-	#define SDL_SCANCODE_EQUALS		SDLK_EQUALS
-	#define SDL_SCANCODE_COMMA		SDLK_COMMA
-	#define SDL_SCANCODE_PERIOD		SDLK_PERIOD
-	#define SDL_SCANCODE_SLASH		SDLK_SLASH
-	#define SDL_SCANCODE_SEMICOLON	SDLK_SEMICOLON
-	#define SDL_SCANCODE_APOSTROPHE	SDLK_QUOTE
-	#define SDL_SCANCODE_PERIOD		SDLK_PERIOD
-	#define SDL_SCANCODE_KP_PERIOD	SDLK_KP_PERIOD
-	#define SDL_SCANCODE_TAB		SDLK_TAB
-	#define SDL_SCANCODE_CAPSLOCK	SDLK_CAPSLOCK
-#endif
-
 /* =======================================================
 
       Keyboard Clear
@@ -197,13 +170,6 @@ char input_get_text_input_key(void)
 		return('a'+(key-SDL_SCANCODE_A));
 	}
 	
-#ifndef D3_SDL_1_3
-	if ((key>=SDL_SCANCODE_0) && (key<=SDL_SCANCODE_9)) {
-		if (!shifted) return('0'+(char)(key-SDL_SCANCODE_0));
-		if (key==SDL_SCANCODE_0) return(')');
-		return(text_input_shift_numbs[key-SDL_SCANCODE_1]);
-	}
-#else
 	if ((key>=SDL_SCANCODE_1) && (key<=SDL_SCANCODE_0)) {
 		if (key==SDL_SCANCODE_0) {
 			if (shifted) return(')');
@@ -212,7 +178,6 @@ char input_get_text_input_key(void)
 		if (shifted) return(text_input_shift_numbs[key-SDL_SCANCODE_1]);
 		return('1'+(char)(key-SDL_SCANCODE_1));
 	}
-#endif
 	
 		// couple misc characters
 		
