@@ -41,12 +41,13 @@ and can be sold or given away.
 #define kMeshPropertySimpleCollision			5
 #define kMeshPropertyLockUV						6
 #define kMeshPropertyLockMove					7
-#define kMeshPropertyNeverObscure				8
-#define kMeshPropertyNeverCull					9
-#define kMeshPropertyRotIndependent				10
-#define kMeshPropertyNoLightMap					11
-#define kMeshPropertySkipLightMapTrace			12
-#define kMeshPropertyNoHaloObscure				13
+#define kMeshPropertyCascadeSize				8
+#define kMeshPropertyNeverObscure				9
+#define kMeshPropertyNeverCull					10
+#define kMeshPropertyRotIndependent				11
+#define kMeshPropertyNoLightMap					12
+#define kMeshPropertySkipLightMapTrace			13
+#define kMeshPropertyNoHaloObscure				14
 
 #define kMeshPropertyGroup						20
 
@@ -127,6 +128,7 @@ void property_palette_fill_mesh(int mesh_idx,int poly_idx)
 	list_palette_add_checkbox(&property_palette,kMeshPropertySimpleCollision,"Simple Box Collision",&mesh->flag.simple_collision,FALSE);
 	list_palette_add_checkbox(&property_palette,kMeshPropertyLockUV,"Lock UVs",&mesh->flag.lock_uv,FALSE);
 	list_palette_add_checkbox(&property_palette,kMeshPropertyLockMove,"Lock Position",&mesh->flag.lock_move,FALSE);
+	list_palette_add_checkbox(&property_palette,kMeshPropertyCascadeSize,"Cascade Size",&mesh->flag.cascade_size,FALSE);
 	list_palette_add_checkbox(&property_palette,kMeshPropertyNeverObscure,"Never Obscure",&mesh->flag.never_obscure,FALSE);
 	list_palette_add_checkbox(&property_palette,kMeshPropertyNeverCull,"Never Cull",&mesh->flag.never_cull,FALSE);
 	list_palette_add_checkbox(&property_palette,kMeshPropertyRotIndependent,"Rotate Independently",&mesh->flag.rot_independent,FALSE);

@@ -37,12 +37,8 @@ extern setup_type			setup;
 extern iface_type			iface;
 extern render_info_type		render_info;
 
-#ifdef D3_SDL_1_3
-	SDL_Window					*sdl_wind;
-	SDL_GLContext				*sdl_gl_ctx;
-#else
-	SDL_Surface					*surface;
-#endif
+SDL_Window					*sdl_wind;
+SDL_GLContext				*sdl_gl_ctx;
 
 /* =======================================================
 
@@ -94,9 +90,7 @@ void gl_setup_context(void)
 
 bool gl_initialize(int screen_wid,int screen_high,int fsaa_mode,char *err_str)
 {
-#ifdef D3_SDL_1_3
 	int						sdl_flags;
-#endif
     GLint					ntxtunit,ntxtsize;
 #if defined(D3_OS_LINUX) || defined(D3_OS_WINDOWS)
 	GLenum					glew_error;
@@ -158,7 +152,6 @@ bool gl_initialize(int screen_wid,int screen_high,int fsaa_mode,char *err_str)
 	
 		// start window or full screen
 
-#ifdef D3_SDL_1_3
 	sdl_flags=SDL_WINDOW_OPENGL|SDL_WINDOW_SHOWN;
 	if (!gl_in_window_mode()) sdl_flags|=(SDL_WINDOW_FULLSCREEN|SDL_WINDOW_BORDERLESS);
 	
@@ -169,24 +162,6 @@ bool gl_initialize(int screen_wid,int screen_high,int fsaa_mode,char *err_str)
 	}
 	
 	sdl_gl_ctx=SDL_GL_CreateContext(sdl_wind);
-#else
-	if (gl_in_window_mode()) {
-		surface=SDL_SetVideoMode(view.screen.x_sz,view.screen.y_sz,32,SDL_OPENGL|SDL_HWSURFACE);
-		SDL_WM_SetCaption("dim3",NULL);
-	}
-	else {
-		surface=SDL_SetVideoMode(view.screen.x_sz,view.screen.y_sz,32,SDL_OPENGL|SDL_FULLSCREEN);
-	}
-
-	if (surface==NULL) {
-		sprintf(err_str,"SDL: Could not set video mode (Error: %s)",SDL_GetError());
-		return(FALSE);
-	}
-		
-	#ifdef D3_OS_MAC
-		if (!gl_in_window_mode()) SetSystemUIMode(kUIModeContentSuppressed,0);
-	#endif
-#endif
 
 		// use glew on linux and windows
 		
@@ -227,11 +202,7 @@ bool gl_initialize(int screen_wid,int screen_high,int fsaa_mode,char *err_str)
 	glDiscardFramebufferEXT(GL_FRAMEBUFFER_EXT,2,discards);
 #endif
 
-#ifdef D3_SDL_1_3
 	SDL_GL_SwapWindow(sdl_wind);
-#else
-	SDL_GL_SwapBuffers();
-#endif
 
 #ifndef D3_ROTATE_VIEW
 	glViewport(0,0,view.screen.x_sz,view.screen.y_sz);
@@ -285,10 +256,8 @@ void gl_shutdown(void)
 	
 		// close context
 		
-#ifdef D3_SDL_1_3
 	SDL_GL_DeleteContext(sdl_gl_ctx);
 	SDL_DestroyWindow(sdl_wind);
-#endif
 }
 
 /* =======================================================

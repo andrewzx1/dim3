@@ -256,7 +256,6 @@ bool input_app_active(void)
 	return(input_app_active_flag);
 }
 
-#ifdef D3_SDL_1_3
 bool input_event_window(int event)
 {
 	switch (event) {
@@ -290,15 +289,6 @@ bool input_event_window(int event)
 	
 	return(FALSE);
 }
-#else
-bool input_event_active(int state,int gain)
-{
-	if ((state&SDL_APPINPUTFOCUS)!=0) {
-		input_app_active_flag=(gain!=0);
-	}
-	return(TRUE);
-}
-#endif
 
 /* =======================================================
 
@@ -319,15 +309,9 @@ bool input_event_pump(void)
 		
 				// window events
 				
-			#ifdef D3_SDL_1_3
-				case SDL_WINDOWEVENT:
-					active_change|=input_event_window(event.window.event);
-					break;
-			#else
-				case SDL_ACTIVEEVENT:
-					active_change|=input_event_active(event.active.state,event.active.gain);
-					break;
-			#endif
+			case SDL_WINDOWEVENT:
+				active_change|=input_event_window(event.window.event);
+				break;
 
 				// touch events
 
@@ -349,19 +333,11 @@ bool input_event_pump(void)
 		#else
 		
 			case SDL_KEYDOWN:
-				#ifndef D3_SDL_1_3
-					input_event_key(event.key.keysym.sym,TRUE);
-				#else
-					input_event_key(event.key.keysym.scancode,TRUE);
-				#endif
+				input_event_key(event.key.keysym.scancode,TRUE);
 				break;
 
 			case SDL_KEYUP:
-				#ifndef D3_SDL_1_3
-					input_event_key(event.key.keysym.sym,FALSE);
-				#else
-					input_event_key(event.key.keysym.scancode,FALSE);
-				#endif
+				input_event_key(event.key.keysym.scancode,FALSE);
 				break;
 				
 				// mouse events
@@ -378,11 +354,10 @@ bool input_event_pump(void)
 				input_event_mouse_motion(event.motion.xrel,event.motion.yrel);
 				break;
 				
-		#ifdef D3_SDL_1_3
 			case SDL_MOUSEWHEEL:
 				input_event_mouse_wheel(event.wheel.y);
 				break;
-		#endif
+
 		#endif
 			
 				// joystick events

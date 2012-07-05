@@ -55,9 +55,6 @@ and can be sold or given away.
 
 #include <zlib.h>
 
-// supergumba -- temporary until only 1.3 remains
-#define D3_SDL_1_3					1
-
 //
 // os flags
 //

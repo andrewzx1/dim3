@@ -109,74 +109,6 @@ void view_memory_release(void)
       
 ======================================================= */
 
-#ifndef D3_SDL_1_3
-void view_create_screen_size_list(void)
-{
-	int				n,k,i,nscreen_size;
-	float			ratio;
-	bool			hit;
-	SDL_Rect		**modes;
-		
-	modes=SDL_ListModes(NULL,SDL_OPENGL|SDL_FULLSCREEN);
-	
-		// if no modes, then 640x480 is the only mode
-		
-	if ((modes==(SDL_Rect**)0) || (modes==(SDL_Rect**)-1)) {
-		render_info.screen_sizes[0].wid=640;
-		render_info.screen_sizes[0].high=480;
-		render_info.nscreen_size=1;
-		return;
-	}
-	
-		// get mode count
-		
-	nscreen_size=0;
-	while (modes[nscreen_size]!=0) {
-		nscreen_size++;
-	}
-	
-		// create screen list
-		
-	k=0;
-	
-	for (n=(nscreen_size-1);n>=0;n--) {
-
-			// knock out any less than 640x480 or when height >= width
-
-		if (modes[n]->w<640) continue;
-		if (modes[n]->h<480) continue;
-		if (modes[n]->h>=modes[n]->w) continue;
-
-			// is this screen already in list?
-
-		hit=FALSE;
-
-		for (i=0;i!=k;i++) {
-			if ((render_info.screen_sizes[i].wid==modes[n]->w) && (render_info.screen_sizes[i].high==modes[n]->h)) {
-				hit=TRUE;
-				break;
-			}
-		}
-
-			// add to list if ratio is equal or
-			// better than 4:3 (0.75) and not less
-			// then 1:85:1 (0.54)
-
-		if (!hit) {
-			ratio=(float)modes[n]->h/(float)modes[n]->w;
-			if ((ratio>=0.54) && (ratio<=0.75f)) {
-				render_info.screen_sizes[k].wid=modes[n]->w;
-				render_info.screen_sizes[k].high=modes[n]->h;
-
-				k++;
-				if (k>=max_screen_size) break;
-			}
-		}
-	}
-	
-	render_info.nscreen_size=k;
-}
-#else
 void view_create_screen_size_list(void)
 {
 	int				n,k,i,nmode;
@@ -238,8 +170,6 @@ void view_create_screen_size_list(void)
 	
 	render_info.nscreen_size=k;
 }
-
-#endif
 
 /* =======================================================
 
@@ -346,11 +276,7 @@ bool view_reset_display(char *err_str)
 bool view_initialize(char *err_str)
 {
 	int						tick;
-#ifdef D3_SDL_1_3
 	SDL_DisplayMode			sdl_mode;
-#else
-	const SDL_VideoInfo		*sdl_v_info;
-#endif
 
 		// clear view structure
 		
@@ -403,15 +329,9 @@ bool view_initialize(char *err_str)
 	
 		// get desktop screen size
 		
-#ifdef D3_SDL_1_3
 	SDL_GetDesktopDisplayMode(0,&sdl_mode);
 	render_info.desktop.wid=sdl_mode.w;
 	render_info.desktop.high=sdl_mode.h;
-#else
-	sdl_v_info=SDL_GetVideoInfo();
-	render_info.desktop.wid=sdl_v_info->current_w;
-	render_info.desktop.high=sdl_v_info->current_h;
-#endif
 
 		// create screen sizes
 		

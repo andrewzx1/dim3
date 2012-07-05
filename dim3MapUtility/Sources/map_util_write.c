@@ -578,6 +578,7 @@ void write_single_mesh(map_mesh_type *mesh)
 	xml_add_attribute_boolean("simple_collision",mesh->flag.simple_collision);
 	xml_add_attribute_boolean("lock_uv",mesh->flag.lock_uv);
 	xml_add_attribute_boolean("lock_move",mesh->flag.lock_move);
+	xml_add_attribute_boolean("cascade_size",mesh->flag.cascade_size);
 	xml_add_attribute_boolean("never_obscure",mesh->flag.never_obscure);
 	xml_add_attribute_boolean("never_cull",mesh->flag.never_cull);
 	xml_add_attribute_boolean("rot_independent",mesh->flag.rot_independent);

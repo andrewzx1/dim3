@@ -36,6 +36,7 @@ int									audio_buffer_count,
 									audio_music_song_idx,audio_music_alt_song_idx;
 float								audio_listener_ang_y;
 bool								audio_music_paused,audio_music_loop;
+unsigned char						audio_silence_byte;
 d3pnt								audio_listener_pnt;
 audio_buffer_type					audio_buffers[audio_max_buffer];
 audio_play_type						audio_plays[audio_max_play];
@@ -144,8 +145,10 @@ void audio_callback(void *userdata,Uint8 *stream,int len)
 		// if no plays or music, skip audio mix
 
 	if (last_play_idx==0) {
-		if (audio_music_paused) return;
-		if ((audio_music_song_idx==-1) && (audio_music_alt_song_idx==-1)) return;
+		if ((audio_music_paused) || ((audio_music_song_idx==-1) && (audio_music_alt_song_idx==-1))) {
+			memset(stream,audio_silence_byte,len);
+			return;
+		}
 	}
 	
 		// mix the audio
@@ -315,6 +318,8 @@ bool al_initialize(char *err_str)
 		return(FALSE);
 
 	}
+
+	audio_silence_byte=ospec.silence;
 
 		// no buffers loaded
 

@@ -52,7 +52,7 @@
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="true"
-				AdditionalIncludeDirectories=".;..\Common\Libraries;..\Common\Libraries\GLEW;..\Common\Libraries\ZLib;..\Common\Libraries\SDL;..\Common\Libraries\PNG;..\..\dim3Editor\Code;..\..\dim3Editor\Headers;..\..\dim3Common\Headers;..\Common;..\Common\Code;..\Common\Headers;..\..\dim3BaseUtility\Headers;..\..\dim3BaseUtility\Sources;..\..\dim3ModelUtility\Headers;..\..\dim3ModelUtility\Sources;..\..\dim3MapUtility\Headers;..\..\dim3MapUtility\Sources"
+				AdditionalIncludeDirectories=".;..\Common\Libraries;..\Common\Libraries\GLEW;..\Common\Libraries\ZLib;..\Common\Libraries\SDL2;..\Common\Libraries\PNG;..\..\dim3Editor\Code;..\..\dim3Editor\Headers;..\..\dim3Common\Headers;..\Common;..\Common\Code;..\Common\Headers;..\..\dim3BaseUtility\Headers;..\..\dim3BaseUtility\Sources;..\..\dim3ModelUtility\Headers;..\..\dim3ModelUtility\Sources;..\..\dim3MapUtility\Headers;..\..\dim3MapUtility\Sources"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;D3_PCH;D3_EDITOR"
 				StringPooling="true"
 				ExceptionHandling="0"

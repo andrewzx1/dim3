@@ -113,7 +113,7 @@
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="true"
 				WholeProgramOptimization="false"
-				AdditionalIncludeDirectories=".;..\Common\Libraries;..\Common\Libraries\GLEW;..\Common\Libraries\ZLib;..\Common\Libraries\SDL;..\Common\Libraries\PNG;..\..\dim3Setup\Code;..\..\dim3Setup\Headers;..\..\dim3Common\Headers;..\..\dim3BaseUtility\Headers;..\..\dim3BaseUtility\Sources;..\Common\Code;..\Common\Headers"
+				AdditionalIncludeDirectories=".;..\Common\Libraries;..\Common\Libraries\GLEW;..\Common\Libraries\ZLib;..\Common\Libraries\SDL2;..\Common\Libraries\PNG;..\..\dim3Setup\Code;..\..\dim3Setup\Headers;..\..\dim3Common\Headers;..\..\dim3BaseUtility\Headers;..\..\dim3BaseUtility\Sources;..\Common\Code;..\Common\Headers"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;D3_PCH;D3_SETUP"
 				StringPooling="true"
 				ExceptionHandling="0"

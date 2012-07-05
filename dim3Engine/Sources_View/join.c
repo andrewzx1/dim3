@@ -389,13 +389,8 @@ void join_ping_thread_start(void)
 		
 	join_thread_started=TRUE;
 
-#ifndef D3_SDL_1_3
-	join_lan_thread=SDL_CreateThread(join_ping_thread_lan,NULL);
-	if (join_run_wan) join_wan_thread=SDL_CreateThread(join_ping_thread_wan,NULL);
-#else
 	join_lan_thread=SDL_CreateThread(join_ping_thread_lan,"join_lan",NULL);
 	if (join_run_wan) join_wan_thread=SDL_CreateThread(join_ping_thread_wan,"join_wan",NULL);
-#endif
 }
 
 void join_ping_thread_end(void)
