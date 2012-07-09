@@ -2997,6 +2997,10 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\dim3Engine\Sources_View\gl_shader_execute.c"
+						>
+					</File>
+					<File
 						RelativePath="..\..\dim3Engine\Sources_View\gl_shader_fullscreen.c"
 						>
 					</File>
@@ -3507,6 +3511,19 @@
 						</FileConfiguration>
 					</File>
 					<File
+						RelativePath="..\..\dim3Engine\Sources_View\remote_status.c"
+						>
+						<FileConfiguration
+							Name="Release|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								AdditionalIncludeDirectories=""
+								PreprocessorDefinitions=""
+							/>
+						</FileConfiguration>
+					</File>
+					<File
 						RelativePath="..\..\dim3Engine\Sources_View\score_limit.c"
 						>
 						<FileConfiguration
@@ -3650,19 +3667,6 @@
 					</File>
 					<File
 						RelativePath="..\..\dim3Engine\Sources_View\particles_draw.c"
-						>
-						<FileConfiguration
-							Name="Release|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								AdditionalIncludeDirectories=""
-								PreprocessorDefinitions=""
-							/>
-						</FileConfiguration>
-					</File>
-					<File
-						RelativePath="..\..\dim3Engine\Sources_View\remote_status.c"
 						>
 						<FileConfiguration
 							Name="Release|Win32"

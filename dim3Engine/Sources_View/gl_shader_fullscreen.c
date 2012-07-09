@@ -42,7 +42,8 @@ GLuint						fs_shader_fbo_id,fs_shader_fbo_depth_stencil_id,fs_shader_txt_id;
 int							fs_shader_idx,fs_shader_life_msec,fs_shader_start_tick;
 bool						fs_shader_on,fs_shader_init,fs_shader_active;
 
-extern shader_type			user_shaders[max_iface_user_shader];
+extern shader_type			*gl_shader_current,
+							user_shaders[max_iface_user_shader];
 
 /* =======================================================
 
@@ -261,25 +262,19 @@ void gl_fs_shader_render_finish(void)
 
 	vertexes[0]=0.0f;
 	vertexes[1]=0.0f;
-
-	uvs[0]=0.0f;
-	uvs[1]=(float)view.screen.y_sz;
-
 	vertexes[2]=0.0f;
 	vertexes[3]=(float)view.screen.y_sz;
-
-	uvs[2]=0.0f;
-	uvs[3]=0.0f;
-
 	vertexes[4]=(float)view.screen.x_sz;
 	vertexes[5]=0.0f;
-
-	uvs[4]=(float)view.screen.x_sz;
-	uvs[5]=(float)view.screen.y_sz;
-
 	vertexes[6]=(float)view.screen.x_sz;
 	vertexes[7]=(float)view.screen.y_sz;
 
+	uvs[0]=0.0f;
+	uvs[1]=(float)view.screen.y_sz;
+	uvs[2]=0.0f;
+	uvs[3]=0.0f;
+	uvs[4]=(float)view.screen.x_sz;
+	uvs[5]=(float)view.screen.y_sz;
 	uvs[6]=(float)view.screen.x_sz;
 	uvs[7]=0.0f;
 
@@ -307,24 +302,24 @@ void gl_fs_shader_render_finish(void)
 	shader->start_tick=fs_shader_start_tick;			// make sure frequency matches start of shader
 	gl_shader_set_scene_variables(shader);
 
+		// required attributes
+
+	glVertexAttribPointerARB(shader->var_locs.dim3Vertex,2,GL_FLOAT,GL_FALSE,0,(void*)vertexes);
+	glVertexAttribPointerARB(shader->var_locs.dim3VertexUV,2,GL_FLOAT,GL_FALSE,0,(void*)uvs);
+
 		// draw the quad
-
-	glVertexPointer(2,GL_FLOAT,0,(GLvoid*)vertexes);
-
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)uvs);
 
 	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
 
 		// end the shader
+		// make sure currently no shader set
 
 	glUseProgramObjectARB(0);
+	gl_shader_current=NULL;
 
 		// finish fbo draw
 	
 	glDisable(GL_TEXTURE_RECTANGLE_ARB);
-
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 }
 
 #endif

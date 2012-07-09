@@ -83,82 +83,13 @@ void render_model_create_normal_vertexes(model_type *mdl,int mesh_mask,model_dra
 	}
 }
 
-void render_model_diffuse_color_vertexes(model_type *mdl,int mesh_mask,model_draw *draw)
-{
-	int					n,k,nvertex;
-	float				diffuse,min_diffuse,boost;
-	float				*na,*cp;
-	d3col				ambient_col;
-	d3vct				diffuse_vct;
-	model_mesh_type		*mesh;
-	
-		// setup diffuse
-		
-	if (!draw->ui_lighting) {
-		gl_lights_calc_diffuse_vector(&draw->pnt,draw->light_cache.count,draw->light_cache.indexes,&diffuse_vct);
-
-		gl_lights_calc_ambient_color(&ambient_col);
-		min_diffuse=(ambient_col.r+ambient_col.g+ambient_col.b)*(0.33f*gl_diffuse_ambient_factor);
-	}
-	else {
-		diffuse_vct.x=mdl->ui.fixed.diffuse_vct.x;
-		diffuse_vct.y=mdl->ui.fixed.diffuse_vct.y;
-		diffuse_vct.z=mdl->ui.fixed.diffuse_vct.z;
-		min_diffuse=mdl->ui.fixed.min_diffuse;
-	}
-	
-	boost=mdl->diffuse_boost;
-
-		// run the colors
-		
-	for (n=0;n!=mdl->nmesh;n++) {
-		if ((mesh_mask&(0x1<<n))==0) continue;
-		
-		mesh=&mdl->meshes[n];
-		
-			// is this a diffuse mesh?
-			
-		if ((!mesh->diffuse) || (mesh->no_lighting)) continue;
-		
-			// get colors and normals
-		
-		na=draw->setup.mesh_arrays[n].gl_normal_array;
-		cp=draw->setup.mesh_arrays[n].gl_color_array;
-		
-			// run through the vertexes
-			
-		nvertex=mesh->nvertex;
-		
-		for (k=0;k!=nvertex;k++) {
-
-				// get the diffuse from
-				// the dot product and clamp it
-				
-			diffuse=(diffuse_vct.x*(*na++));
-			diffuse+=(diffuse_vct.y*(*na++));
-			diffuse+=(diffuse_vct.z*(*na++));
-
-			diffuse=((diffuse+1.0f)*0.5f)+boost;
-
-			if (diffuse<min_diffuse) diffuse=min_diffuse;
-			if (diffuse>=1.0f) diffuse=1.0f;
-		
-				// apply diffuse
-			
-			*cp++=(*cp)*diffuse;
-			*cp++=(*cp)*diffuse;
-			*cp++=(*cp)*diffuse;
-		}
-	}
-}
-
 /* =======================================================
 
-      Setup Model Drawing Arrays
+      Setup Model Vertex Object
       
 ======================================================= */
 
-void render_model_vertex_object_setup(model_type *mdl,int mesh_idx,model_draw *draw,unsigned char *vertex_ptr)
+void render_model_fill_vertex_objects(model_type *mdl,int mesh_idx,model_draw *draw,unsigned char *vertex_ptr)
 {
 	int					n,k,offset,stride;
 	float				*gx,*gy,*pf,
@@ -215,22 +146,12 @@ void render_model_vertex_object_setup(model_type *mdl,int mesh_idx,model_draw *d
 	}
 }
 
-/* =======================================================
-
-      Model Drawing Arrays
-      
-======================================================= */
-
 bool render_model_initialize_vertex_objects(model_type *mdl,int mesh_idx,model_draw *draw)
 {
-	int					stride;
 	unsigned char		*vertex_ptr;
 	model_mesh_type		*mesh;
 	
  		// construct VBO
-		// shaders have vertex, uv, tangent space
-
-		// also remember some offsets for later pointer work
 		
 	mesh=&mdl->meshes[mesh_idx];
 
@@ -240,30 +161,9 @@ bool render_model_initialize_vertex_objects(model_type *mdl,int mesh_idx,model_d
 		view_unbind_model_vertex_object();
 		return(FALSE);
 	}
-	
-		// shader drawing requires
-		// vertexes, UVs, normals, and tangents
 
-	render_model_vertex_object_setup(mdl,mesh_idx,draw,vertex_ptr);
-
-		// unmap VBO
-
+	render_model_fill_vertex_objects(mdl,mesh_idx,draw,vertex_ptr);
 	view_unmap_model_vertex_object();
-
-		// set the pointers
-		// glow maps use two texture units
-
-	stride=draw->vbo[mesh_idx].vertex_stride;
-
-	glVertexPointer(3,GL_FLOAT,stride,(GLvoid*)0);
-
-	glClientActiveTexture(GL_TEXTURE1);		// ES2 -- this all is going to go
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glTexCoordPointer(2,GL_FLOAT,stride,(GLvoid*)(3*sizeof(float)));
-
-	glClientActiveTexture(GL_TEXTURE0);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glTexCoordPointer(2,GL_FLOAT,stride,(GLvoid*)(3*sizeof(float)));
 
 	return(TRUE);
 }
@@ -271,17 +171,6 @@ bool render_model_initialize_vertex_objects(model_type *mdl,int mesh_idx,model_d
 void render_model_release_vertex_objects(void)
 {
 	view_unbind_model_vertex_object();
-
-	glDisableClientState(GL_COLOR_ARRAY);
-
-	glClientActiveTexture(GL_TEXTURE2);
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-		
-	glClientActiveTexture(GL_TEXTURE1);
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-	
-	glClientActiveTexture(GL_TEXTURE0);
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 }
 
 /* =======================================================
@@ -314,7 +203,6 @@ void render_model_opaque_mesh(model_type *mdl,int mesh_idx,model_draw *draw,view
 	glDepthMask(GL_TRUE);
 
 	gl_shader_draw_start();
-	gl_shader_draw_reset_normal_tangent_attrib();
 
 	stride=draw->vbo[mesh_idx].vertex_stride;
 
@@ -363,7 +251,7 @@ void render_model_opaque_mesh(model_type *mdl,int mesh_idx,model_draw *draw,view
 
 			// run the shader
 			
-		gl_shader_draw_execute(core_shader_group_model,texture,txt_idx,frame,-1,1.0f,light_list,(5*sizeof(float)),(8*sizeof(float)),stride);
+		gl_shader_draw_execute_model(texture,txt_idx,frame,1.0f,0,(3*sizeof(float)),(5*sizeof(float)),(8*sizeof(float)),stride,light_list);
 		glDrawArrays(GL_TRIANGLE_FAN,v_idx,poly->ptsz);
 		
 		v_idx+=poly->ptsz;
@@ -400,7 +288,6 @@ void render_model_transparent_mesh(model_type *mdl,int mesh_idx,model_draw *draw
 	glDepthMask(GL_FALSE);
 	
 	gl_shader_draw_start();
-	gl_shader_draw_reset_normal_tangent_attrib();
 
 	stride=draw->vbo[mesh_idx].vertex_stride;
 	
@@ -456,7 +343,7 @@ void render_model_transparent_mesh(model_type *mdl,int mesh_idx,model_draw *draw
 
 			// draw poly
 			
-		gl_shader_draw_execute(core_shader_group_model,texture,txt_idx,frame,-1,draw_mesh->alpha,light_list,(5*sizeof(float)),(8*sizeof(float)),stride);
+		gl_shader_draw_execute_model(texture,txt_idx,frame,draw_mesh->alpha,0,(3*sizeof(float)),(5*sizeof(float)),(8*sizeof(float)),stride,light_list);
 		glDrawArrays(GL_TRIANGLE_FAN,v_idx,poly->ptsz);
 		
 		v_idx+=poly->ptsz;

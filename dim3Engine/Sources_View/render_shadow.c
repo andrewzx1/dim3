@@ -499,14 +499,15 @@ void shadow_render_stencil_poly_draw(int ptsz,float *vertexes,int stencil_idx)
 	
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
-
-	glVertexPointer(3,GL_FLOAT,0,(GLvoid*)vertexes);
 	
 	glColorMask(GL_FALSE,GL_FALSE,GL_FALSE,GL_FALSE);
 	glStencilOp(GL_KEEP,GL_KEEP,GL_REPLACE);
 	glStencilFunc(GL_ALWAYS,stencil_idx,0xFF);
 
+	gl_shader_draw_simple_black_start();
+	gl_shader_draw_execute_simple_black_ptr(3,vertexes,1.0f);
 	glDrawArrays(GL_TRIANGLE_FAN,0,ptsz);
+	gl_shader_draw_simple_black_end();
 		
 	glColorMask(GL_TRUE,GL_TRUE,GL_TRUE,GL_TRUE);
 }
@@ -665,11 +666,6 @@ void shadow_render_model_mesh(model_type *mdl,int model_mesh_idx,model_draw *dra
 			// the color
 			
 		alpha=1.0f-((float)distance_get(draw->pnt.x,draw->pnt.y,draw->pnt.z,draw->shadow.light_pnt.x,draw->shadow.light_pnt.y,draw->shadow.light_pnt.z))/f_light_intensity;
-		glColor4f(0.0f,0.0f,0.0f,alpha);
-
-			// setup arrays
-
-		glVertexPointer(3,GL_FLOAT,0,(GLvoid*)0);
 
 			// draw the trigs onto the
 			// stenciled polygon
@@ -685,6 +681,11 @@ void shadow_render_model_mesh(model_type *mdl,int model_mesh_idx,model_draw *dra
 			// setup bounding eliminations
 		
 		shadow_render_prepare_bounds_check(&shadow_poly_ptrs[n],&bound_min,&bound_max);
+
+			// start shader
+
+		gl_shader_draw_simple_black_start();
+		gl_shader_draw_execute_simple_black_vbo(3,0,alpha);
 
 			// run through the shadow polygons
 			// skipping any we can
@@ -718,9 +719,7 @@ void shadow_render_model_mesh(model_type *mdl,int model_mesh_idx,model_draw *dra
 			view.count.shadow_poly++;
 		}
 
-			// reset colors
-
-		glColor4f(0.0f,0.0f,0.0f,1.0f);
+		gl_shader_draw_simple_black_end();
 
 			// unbind the vertex and index object
 				

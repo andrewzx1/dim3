@@ -51,8 +51,9 @@ int							remote_slow_image_idx,remote_talk_image_idx;
 
 void remote_draw_icon(obj_type *obj,unsigned long gl_id)
 {
-	int			x,y,z,x_sz,y_sz,z_sz;
-	float		vertexes[12],uvs[8];
+	int				x,y,z,x_sz,y_sz,z_sz;
+	float			vertexes[12],uvs[8];
+	unsigned char	colors[16];
 	
 		// get the position and rotation
 		
@@ -65,41 +66,44 @@ void remote_draw_icon(obj_type *obj,unsigned long gl_id)
 	z_sz=0;
 	rotate_2D_point_center(&x_sz,&z_sz,view.render->camera.ang.y);
 
-		// setup vertex ptr
+		// setup vertexes
 
     vertexes[0]=(float)(x-x_sz);
 	vertexes[1]=(float)(y-y_sz);
 	vertexes[2]=-(float)(z-z_sz);
-    uvs[0]=0.0f;
-	uvs[1]=0.0f;
 
     vertexes[3]=(float)(x-x_sz);
 	vertexes[4]=(float)y;
 	vertexes[5]=-(float)(z-z_sz);
-    uvs[2]=0.0f;
-	uvs[3]=1.0f;
 
     vertexes[6]=(float)(x+x_sz);
 	vertexes[7]=(float)(y-y_sz);
  	vertexes[8]=-(float)(z+z_sz);
-    uvs[4]=1.0f;
-	uvs[5]=0.0f;
 
     vertexes[9]=(float)(x+x_sz);
 	vertexes[10]=(float)y;
 	vertexes[11]=-(float)(z+z_sz);
+
+		// setup UVs
+
+    uvs[0]=0.0f;
+	uvs[1]=0.0f;
+    uvs[2]=0.0f;
+	uvs[3]=1.0f;
+    uvs[4]=1.0f;
+	uvs[5]=0.0f;
 	uvs[6]=1.0f;
 	uvs[7]=1.0f;
 
+		// setup colors
+
+	colors[0]=colors[4]=colors[8]=colors[12]=255;
+	colors[1]=colors[5]=colors[9]=colors[13]=255;
+	colors[2]=colors[6]=colors[10]=colors[14]=255;
+	colors[3]=colors[7]=colors[11]=colors[15]=255;
+
 		// draw the bitmap
 	
-	glVertexPointer(3,GL_FLOAT,0,(GLvoid*)vertexes);
-
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)uvs);
-			
-	gl_texture_simple_start();
-
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 
@@ -110,13 +114,10 @@ void remote_draw_icon(obj_type *obj,unsigned long gl_id)
 	glDepthFunc(GL_LEQUAL);
 	glDepthMask(GL_TRUE);
 
-	gl_texture_simple_set(gl_id,TRUE,1,1,1,1);
-
+	gl_shader_draw_simple_bitmap_start();
+	gl_shader_draw_execute_simple_bitmap_ptr(gl_id,3,vertexes,uvs,colors);
 	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
-
-	gl_texture_simple_end();
-
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+	gl_shader_draw_simple_bitmap_end();
 }
 
 void remote_draw_status(obj_type *obj)
