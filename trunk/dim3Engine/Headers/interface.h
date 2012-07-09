@@ -87,8 +87,6 @@ extern void view_shutdown(void);
 extern void view_game_start(void);
 extern void view_game_stop(void);
 
-extern bool view_shader_on(void);
-
 extern bool view_file_paths_bitmap_check_wide(char *path,char *dir,char *name);
 
 extern void view_loop_input(void);
@@ -673,7 +671,6 @@ extern inline bool gl_check_texture_anisotropic_filter_ok(void);
 extern inline bool gl_check_texture_generate_mipmaps_ok(void);
 extern inline bool gl_check_texture_rectangle_ok(void);
 extern inline bool gl_check_textured_point_ok(void);
-extern inline bool gl_check_shader_ok(void);
 
 //
 // lights
@@ -750,7 +747,7 @@ extern inline unsigned short* view_map_effect_index_object(void);
 extern inline void view_unmap_effect_index_object(void);
 extern inline void view_unbind_effect_index_object(void);
 
-extern void view_primitive_2D_tint_screen(void);
+extern void view_primitive_2D_tint_screen(d3col *col,float alpha);
 extern void view_primitive_2D_color_poly(int x0,int y0,d3col *col0,int x1,int y1,d3col *col1,int x2,int y2,d3col *col2,int x3,int y3,d3col *col3,float alpha);
 extern void view_primitive_2D_color_quad(d3col *col,float alpha,int lft,int rgt,int top,int bot);
 extern void view_primitive_2D_color_trig(d3col *col,float alpha,int lft,int rgt,int top,int bot,int dir);
@@ -783,17 +780,24 @@ extern void gl_shader_draw_end(void);
 extern void gl_shader_texture_override(GLuint gl_id,float alpha);
 extern void gl_shader_draw_execute(int core_shader_group,texture_type *texture,int txt_idx,int frame,int lmap_txt_idx,float alpha,view_glsl_light_list_type *light_list,int tangent_offset,int normal_offset,int stride);
 
+//
+// shader execution
+//
+
 extern void gl_shader_draw_simple_color_start(void);
 extern void gl_shader_draw_simple_color_end(void);
-extern void gl_shader_draw_execute_simple_color(void);
+extern void gl_shader_draw_execute_simple_color(int vertex_size,float *vertexes,unsigned char *colors);
 
 extern void gl_shader_draw_simple_bitmap_start(void);
 extern void gl_shader_draw_simple_bitmap_end(void);
-extern void gl_shader_draw_execute_simple_bitmap(unsigned long gl_id);
+extern void gl_shader_draw_execute_simple_bitmap(unsigned long gl_id,int vertex_size,float *vertexes,float *uvs,unsigned char *colors);
 
 extern void gl_shader_draw_simple_bitmap_rect_start(void);
 extern void gl_shader_draw_simple_bitmap_rect_end(void);
-extern void gl_shader_draw_execute_simple_bitmap_rect(unsigned long gl_id);
+extern void gl_shader_draw_execute_simple_bitmap_rect(unsigned long gl_id,int vertex_size,float *vertexes,float *uvs,unsigned char *colors);
+
+extern void gl_shader_draw_execute_map(texture_type *texture,int txt_idx,int frame,int lmap_txt_idx,float alpha,int vertex_offset,int uv_offset,int lmap_uv_offset,int tangent_offset,int normal_offset,int stride,view_glsl_light_list_type *light_list);
+extern void gl_shader_draw_execute_liquid(texture_type *texture,int txt_idx,int frame,int lmap_txt_idx,float alpha,int vertex_offset,int uv_offset,int lmap_uv_offset,int tangent_offset,int normal_offset,int stride,view_glsl_light_list_type *light_list);
 
 //
 // core shaders
@@ -896,8 +900,8 @@ extern void view_obscure_run(void);
 extern void gl_texture_initialize(void);
 extern void gl_texture_shutdown(void);
 extern void gl_texture_frame_start(void);
-extern inline void gl_texture_bind(int unit,GLuint txt_id);
-extern inline void gl_texture_clear(int unit);
+extern inline void gl_texture_bind(int unit,bool rectangle,GLuint txt_id);
+extern inline void gl_texture_clear(int unit,bool rectangle);
 extern inline void gl_texture_map_fixed_start(void);
 extern inline void gl_texture_map_fixed_end(void);
 extern inline void gl_texture_map_fixed_set(GLuint txt_id,GLuint lmap_txt_id,GLuint glow_txt_id,float glow_color,float alpha);

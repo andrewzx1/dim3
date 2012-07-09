@@ -37,8 +37,7 @@ bool						gl_check_value_frame_buffer,
 							gl_check_value_texture_anisotropic_filter,
 							gl_check_value_texture_generate_mipmaps,
 							gl_check_value_texture_rectangle,
-							gl_check_value_textured_point,
-							gl_check_value_shader;
+							gl_check_value_textured_point;
 
 extern setup_type			setup;
 extern render_info_type		render_info;
@@ -89,12 +88,6 @@ void gl_check_initialize(void)
 	gl_check_value_texture_generate_mipmaps=(strstr(render_info.ext_string,"GL_SGIS_generate_mipmap")!=NULL);
 	gl_check_value_texture_rectangle=(strstr(render_info.ext_string,"GL_ARB_texture_rectangle")!=NULL);
 	gl_check_value_textured_point=(strstr(render_info.ext_string,"GL_ARB_point_sprite")!=NULL);
-
-#ifndef D3_OPENGL_ES
-	gl_check_value_shader=gl_check_initialize_shader();
-#else
-	gl_check_value_shader=FALSE;
-#endif
 }
 
 /* =======================================================
@@ -132,10 +125,4 @@ bool gl_check_textured_point_ok(void)
 {
 	return(gl_check_value_textured_point);
 }
-
-bool gl_check_shader_ok(void)
-{
-	return(gl_check_value_shader);
-}
-
 

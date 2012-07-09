@@ -231,8 +231,9 @@ void gl_frame_clear(bool in_view)
 void gl_frame_swap(void)
 {
 #ifdef D3_OS_IPHONE
-	const GLenum			discards[]={GL_DEPTH_ATTACHMENT_EXT,GL_STENCIL_ATTACHMENT_EXT};
+	const GLenum		discards[]={GL_DEPTH_ATTACHMENT_EXT,GL_STENCIL_ATTACHMENT_EXT};
 #endif
+	d3col				col;
 	
 		// is this app deactivated?
 
@@ -244,9 +245,9 @@ void gl_frame_swap(void)
 
 		glDisable(GL_ALPHA_TEST);
 		glDisable(GL_DEPTH_TEST);
-
-		glColor4f(0.0f,0.0f,0.0f,0.5f);
-		view_primitive_2D_tint_screen();
+		
+		col.r=col.g=col.b=0.0f;
+		view_primitive_2D_tint_screen(&col,0.5f);
 	}
 	
 		// discard the depth and stencil

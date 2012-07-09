@@ -3166,7 +3166,7 @@ void element_draw_model(element_type *element)
 		// force shaders
 		// if being used
 		
-	if (view_shader_on()) gl_shader_draw_scene_start();
+	gl_shader_draw_scene_start();
 
 		// setup drawing
 

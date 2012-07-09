@@ -41,9 +41,10 @@ extern setup_type			setup;
       
 ======================================================= */
 
-void view_primitive_2D_tint_screen(void)
+void view_primitive_2D_tint_screen(d3col *col,float alpha)
 {
 	float			vertexes[8];
+	unsigned char	colors[16];
 	
 	vertexes[0]=0.0f;
 	vertexes[1]=0.0f;
@@ -53,10 +54,16 @@ void view_primitive_2D_tint_screen(void)
 	vertexes[5]=0.0f;
 	vertexes[6]=(float)view.screen.x_sz;
 	vertexes[7]=(float)view.screen.y_sz;
+	
+	colors[0]=colors[4]=colors[8]=colors[12]=(unsigned char)(col->r*255.0f);
+	colors[1]=colors[5]=colors[9]=colors[13]=(unsigned char)(col->g*255.0f);
+	colors[2]=colors[6]=colors[10]=colors[14]=(unsigned char)(col->b*255.0f);
+	colors[3]=colors[7]=colors[11]=colors[15]=(unsigned char)(alpha*255.0f);
 
-	glVertexPointer(2,GL_FLOAT,0,(GLvoid*)vertexes);
-
+	gl_shader_draw_simple_color_start();
+	gl_shader_draw_execute_simple_color(2,vertexes,colors);
 	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
+	gl_shader_draw_simple_color_end();
 }
 
 /* =======================================================
@@ -108,17 +115,10 @@ void view_primitive_2D_color_poly(int x0,int y0,d3col *col0,int x1,int y1,d3col 
 
 		// draw the polygon
 
-	glEnableClientState(GL_COLOR_ARRAY);
-	
-	glVertexPointer(2,GL_FLOAT,0,(GLvoid*)vertexes);
-	glColorPointer(4,GL_UNSIGNED_BYTE,0,(GLvoid*)colors);
-
-//	gl_shader_draw_simple_color_start();		// ES2 -- new shader stuff
-//	gl_shader_draw_execute_simple_color();
+	gl_shader_draw_simple_color_start();
+	gl_shader_draw_execute_simple_color(2,vertexes,colors);
 	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
-//	gl_shader_draw_simple_color_end();
-
- 	glDisableClientState(GL_COLOR_ARRAY);
+	gl_shader_draw_simple_color_end();
 		
 		// finish draw
 
@@ -134,6 +134,7 @@ void view_primitive_2D_color_quad(d3col *col,float alpha,int lft,int rgt,int top
 void view_primitive_2D_color_trig(d3col *col,float alpha,int lft,int rgt,int top,int bot,int dir)
 {
 	float			vertexes[6];
+	unsigned char	colors[12];
 
 	switch (dir) {
 
@@ -173,6 +174,11 @@ void view_primitive_2D_color_trig(d3col *col,float alpha,int lft,int rgt,int top
 			vertexes[5]=(float)bot;
 			break;
 	}
+	
+	colors[0]=colors[4]=colors[8]=(unsigned char)(col->r*255.0f);
+	colors[1]=colors[5]=colors[9]=(unsigned char)(col->g*255.0f);
+	colors[2]=colors[6]=colors[10]=(unsigned char)(col->b*255.0f);
+	colors[3]=colors[7]=colors[11]=(unsigned char)(alpha*255.0f);
 
 		// setup draw
 		
@@ -184,13 +190,12 @@ void view_primitive_2D_color_trig(d3col *col,float alpha,int lft,int rgt,int top
 
 	glDisable(GL_DEPTH_TEST);
 
-	glColor4f(col->r,col->g,col->b,alpha);
-
 		// draw the trig
 		
-	glVertexPointer(2,GL_FLOAT,0,(GLvoid*)vertexes);
-
+	gl_shader_draw_simple_color_start();
+	gl_shader_draw_execute_simple_color(2,vertexes,colors);
 	glDrawArrays(GL_TRIANGLES,0,3);
+	gl_shader_draw_simple_color_end();
 	
 		// finish draw
 
@@ -253,14 +258,10 @@ void view_primitive_2D_color_arc(d3col *out_col,d3col *in_col,float alpha,int lf
 
 		// draw the trig
 		
-	glEnableClientState(GL_COLOR_ARRAY);
-	
-	glVertexPointer(2,GL_FLOAT,0,(GLvoid*)vertexes);
-	glColorPointer(4,GL_UNSIGNED_BYTE,0,(GLvoid*)colors);
-
+	gl_shader_draw_simple_color_start();
+	gl_shader_draw_execute_simple_color(2,vertexes,colors);
 	glDrawArrays(GL_TRIANGLES,0,3);
-	
-	glDisableClientState(GL_COLOR_ARRAY);
+	gl_shader_draw_simple_color_end();
 	
 		// finish draw
 
@@ -277,11 +278,17 @@ void view_primitive_2D_color_arc(d3col *out_col,d3col *in_col,float alpha,int lf
 void view_primitive_2D_line(d3col *col,float alpha,int x0,int y0,int x1,int y1)
 {
 	float			vertexes[4];
+	unsigned char	colors[8];
 
 	vertexes[0]=(float)x0;
 	vertexes[1]=(float)y0;
 	vertexes[2]=(float)x1;
 	vertexes[3]=(float)y1;
+
+	colors[0]=colors[4]=(unsigned char)(col->r*255.0f);
+	colors[1]=colors[5]=(unsigned char)(col->g*255.0f);
+	colors[2]=colors[6]=(unsigned char)(col->b*255.0f);
+	colors[3]=colors[7]=(unsigned char)(alpha*255.0f);
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
@@ -291,13 +298,12 @@ void view_primitive_2D_line(d3col *col,float alpha,int x0,int y0,int x1,int y1)
 
 	glDisable(GL_DEPTH_TEST);
 
-	glColor4f(col->r,col->g,col->b,alpha);
-
 		// draw the quad
 		
-	glVertexPointer(2,GL_FLOAT,0,(GLvoid*)vertexes);
-
+	gl_shader_draw_simple_color_start();
+	gl_shader_draw_execute_simple_color(2,vertexes,colors);
 	glDrawArrays(GL_LINES,0,2);
+	gl_shader_draw_simple_color_end();
 
 		// finish draw
 
@@ -308,6 +314,7 @@ void view_primitive_2D_line(d3col *col,float alpha,int x0,int y0,int x1,int y1)
 void view_primitive_2D_line_poly(d3col *col,float alpha,int x0,int y0,int x1,int y1,int x2,int y2,int x3,int y3)
 {
 	float			vertexes[8];
+	unsigned char	colors[16];
 
 	vertexes[0]=(float)x0;
 	vertexes[1]=(float)y0;
@@ -318,6 +325,11 @@ void view_primitive_2D_line_poly(d3col *col,float alpha,int x0,int y0,int x1,int
 	vertexes[6]=(float)x3;
 	vertexes[7]=(float)y3;
 
+	colors[0]=colors[4]=colors[8]=colors[12]=(unsigned char)(col->r*255.0f);
+	colors[1]=colors[5]=colors[9]=colors[13]=(unsigned char)(col->g*255.0f);
+	colors[2]=colors[6]=colors[10]=colors[14]=(unsigned char)(col->b*255.0f);
+	colors[3]=colors[7]=colors[11]=colors[15]=(unsigned char)(alpha*255.0f);
+
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 
@@ -326,12 +338,12 @@ void view_primitive_2D_line_poly(d3col *col,float alpha,int x0,int y0,int x1,int
 
 	glDisable(GL_DEPTH_TEST);
 
-	glColor4f(col->r,col->g,col->b,alpha);
-
 		// draw the quad
 
-	glVertexPointer(2,GL_FLOAT,0,(GLvoid*)vertexes);
+	gl_shader_draw_simple_color_start();
+	gl_shader_draw_execute_simple_color(2,vertexes,colors);
 	glDrawArrays(GL_LINE_LOOP,0,4);
+	gl_shader_draw_simple_color_end();
 
 		// finish draw
 
@@ -347,6 +359,7 @@ void view_primitive_2D_line_quad(d3col *col,float alpha,int lft,int rgt,int top,
 void view_primitive_2D_line_trig(d3col *col,float alpha,int lft,int rgt,int top,int bot,int dir)
 {
 	float			vertexes[6];
+	unsigned char	colors[12];
 	
 		// get the vertexes
 
@@ -389,6 +402,11 @@ void view_primitive_2D_line_trig(d3col *col,float alpha,int lft,int rgt,int top,
 			break;
 	}
 
+	colors[0]=colors[4]=colors[8]=(unsigned char)(col->r*255.0f);
+	colors[1]=colors[5]=colors[9]=(unsigned char)(col->g*255.0f);
+	colors[2]=colors[6]=colors[10]=(unsigned char)(col->b*255.0f);
+	colors[3]=colors[7]=colors[11]=(unsigned char)(alpha*255.0f);
+
 		// setup draw
 
 	glEnable(GL_BLEND);
@@ -399,13 +417,12 @@ void view_primitive_2D_line_trig(d3col *col,float alpha,int lft,int rgt,int top,
 
 	glDisable(GL_DEPTH_TEST);
 
-	glColor4f(col->r,col->g,col->b,alpha);
-
 		// draw the quad
 		
-	glVertexPointer(2,GL_FLOAT,0,(GLvoid*)vertexes);
-
+	gl_shader_draw_simple_color_start();
+	gl_shader_draw_execute_simple_color(2,vertexes,colors);
 	glDrawArrays(GL_LINE_LOOP,0,3);
+	gl_shader_draw_simple_color_end();
 
 		// finish draw
 
@@ -422,6 +439,7 @@ void view_primitive_2D_line_trig(d3col *col,float alpha,int lft,int rgt,int top,
 void view_primitive_3D_line(d3col *col,float alpha,int x0,int y0,int z0,int x1,int y1,int z1)
 {
 	float			vertexes[6];
+	unsigned char	colors[8];
 
 	vertexes[0]=(float)x0;
 	vertexes[1]=(float)y0;
@@ -429,6 +447,11 @@ void view_primitive_3D_line(d3col *col,float alpha,int x0,int y0,int z0,int x1,i
 	vertexes[3]=(float)x1;
 	vertexes[4]=(float)y1;
 	vertexes[5]=(float)z1;
+	
+	colors[0]=colors[4]=(unsigned char)(col->r*255.0f);
+	colors[1]=colors[5]=(unsigned char)(col->g*255.0f);
+	colors[2]=colors[6]=(unsigned char)(col->b*255.0f);
+	colors[3]=colors[7]=(unsigned char)(alpha*255.0f);
 
 		// setup draw
 
@@ -438,13 +461,12 @@ void view_primitive_3D_line(d3col *col,float alpha,int x0,int y0,int z0,int x1,i
 	glDisable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_NOTEQUAL,0);
 
-	glColor4f(col->r,col->g,col->b,alpha);
-
 		// draw the quad
 		
-	glVertexPointer(3,GL_FLOAT,0,(GLvoid*)vertexes);
-
+	gl_shader_draw_simple_color_start();
+	gl_shader_draw_execute_simple_color(3,vertexes,colors);
 	glDrawArrays(GL_LINES,0,2);
+	gl_shader_draw_simple_color_end();
 
 		// finish draw
 
@@ -457,16 +479,31 @@ void view_primitive_3D_line_cube(d3col *col,float alpha,int *px,int *py,int *pz)
 	int				n;
 	unsigned short	cube_indexes[24]={0,1,1,2,2,3,3,0,4,5,5,6,6,7,7,4,0,4,1,5,2,6,3,7};
 	float			vertexes[24];
+	unsigned char	colors[32],uc_r,uc_g,uc_b,uc_alpha;
 	float			*vptr;
+	unsigned char	*cptr;
+	
+		// get the colors
+		
+	uc_r=(unsigned char)(col->r*255.0f);
+	uc_g=(unsigned char)(col->g*255.0f);
+	uc_b=(unsigned char)(col->b*255.0f);
+	uc_alpha=(unsigned char)(alpha*255.0f);
 
 		// get the vertexes
 		
 	vptr=vertexes;
+	cptr=colors;
 	
 	for (n=0;n!=8;n++) {
 		*vptr++=(float)px[n];
 		*vptr++=(float)py[n];
 		*vptr++=(float)pz[n];
+		
+		*cptr++=uc_r;
+		*cptr++=uc_g;
+		*cptr++=uc_b;
+		*cptr++=uc_alpha;
 	}
 	
 		// setup draw
@@ -481,9 +518,10 @@ void view_primitive_3D_line_cube(d3col *col,float alpha,int *px,int *py,int *pz)
 
 		// draw the quad
 		
-	glVertexPointer(3,GL_FLOAT,0,(GLvoid*)vertexes);
-
+	gl_shader_draw_simple_color_start();
+	gl_shader_draw_execute_simple_color(3,vertexes,colors);
 	glDrawElements(GL_LINES,24,GL_UNSIGNED_SHORT,(GLvoid*)cube_indexes);
+	gl_shader_draw_simple_color_end();
 
 		// finish draw
 
@@ -548,11 +586,6 @@ void view_primitive_2D_texture_quad(GLuint gl_id,d3col *col,float alpha,int lft,
 
 	glDisable(GL_DEPTH_TEST);
 	
-	glActiveTexture(GL_TEXTURE0);
-	glEnable(GL_TEXTURE_2D);
-	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);		// ES2 -- can remove most of this
-	gl_texture_bind(0,gl_id);
-	
 	if (clamp) {
 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE);
@@ -560,21 +593,10 @@ void view_primitive_2D_texture_quad(GLuint gl_id,d3col *col,float alpha,int lft,
 
 		// draw the quad
 
-	glVertexPointer(2,GL_FLOAT,0,(GLvoid*)vertexes);
-
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)uvs);
-
-	glEnableClientState(GL_COLOR_ARRAY);
-	glColorPointer(4,GL_UNSIGNED_BYTE,0,(GLvoid*)colors);
-
-//	gl_shader_draw_simple_bitmap_start();		// ES2 -- new shader stuff
-//	gl_shader_draw_execute_simple_bitmap(gl_id);
+	gl_shader_draw_simple_bitmap_start();
+	gl_shader_draw_execute_simple_bitmap(gl_id,2,vertexes,uvs,colors);
 	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
-//	gl_shader_draw_simple_bitmap_end();
-
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-	glDisableClientState(GL_COLOR_ARRAY);
+	gl_shader_draw_simple_bitmap_end();
 
 		// finish texture draw
 		
@@ -582,8 +604,6 @@ void view_primitive_2D_texture_quad(GLuint gl_id,d3col *col,float alpha,int lft,
 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT);
 	}
-	
-	glDisable(GL_TEXTURE_2D);
 
 	glDisable(GL_BLEND);
 	glDisable(GL_ALPHA_TEST);
@@ -647,33 +667,15 @@ void view_primitive_2D_texture_quad_rot(GLuint gl_id,d3col *col,float alpha,int 
 	glAlphaFunc(GL_NOTEQUAL,0);
 
 	glDisable(GL_DEPTH_TEST);
-	
-	glActiveTexture(GL_TEXTURE0);
-	glEnable(GL_TEXTURE_2D);
-	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);		// ES2 -- most of this can go away
-	gl_texture_bind(0,gl_id);
 
 		// draw the quad
 
-	glVertexPointer(2,GL_FLOAT,0,(GLvoid*)vertexes);
-
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)uvs);
-
-	glEnableClientState(GL_COLOR_ARRAY);
-	glColorPointer(4,GL_UNSIGNED_BYTE,0,(GLvoid*)colors);
-
-//	gl_shader_draw_simple_bitmap_start();		// ES2 -- new shader stuff
-//	gl_shader_draw_execute_simple_bitmap(gl_id);
+	gl_shader_draw_simple_bitmap_start();
+	gl_shader_draw_execute_simple_bitmap(gl_id,2,vertexes,uvs,colors);
 	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
-//	gl_shader_draw_simple_bitmap_end();
-
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-	glDisableClientState(GL_COLOR_ARRAY);
+	gl_shader_draw_simple_bitmap_end();
 
 		// finish texture draw
-	
-	glDisable(GL_TEXTURE_2D);
 
 	glDisable(GL_BLEND);
 	glDisable(GL_ALPHA_TEST);
@@ -724,37 +726,14 @@ void view_primitive_2D_texture_quad_rectangle(GLuint gl_id,float alpha,int lft,i
 
 	glDisable(GL_DEPTH_TEST);
 
-	glColor4f(1.0f,0.0f,1.0f,alpha);
-	
-	gl_texture_clear(0);
-
-	glActiveTexture(GL_TEXTURE0);
-	glEnable(GL_TEXTURE_RECTANGLE);
-	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_REPLACE);		// ES2 -- most of this can go away
-	glBindTexture(GL_TEXTURE_RECTANGLE,gl_id);
-
 		// draw the quad
 
-	glVertexPointer(2,GL_FLOAT,0,(GLvoid*)vertexes);
-
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)uvs);
-
-	glEnableClientState(GL_COLOR_ARRAY);
-	glColorPointer(4,GL_UNSIGNED_BYTE,0,(GLvoid*)colors);
-
-//	gl_shader_draw_simple_bitmap_rect_start();		// ES2 -- new shader stuff
-//	gl_shader_draw_execute_simple_bitmap_rect(gl_id);
+	gl_shader_draw_simple_bitmap_rect_start();
+	gl_shader_draw_execute_simple_bitmap_rect(gl_id,2,vertexes,uvs,colors);
 	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
-//	gl_shader_draw_simple_bitmap_rect_end();
-
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-	glDisableClientState(GL_COLOR_ARRAY);
+	gl_shader_draw_simple_bitmap_rect_end();
 
 		// finish texture draw
-	
-	glBindTexture(GL_TEXTURE_RECTANGLE,0);
-	glDisable(GL_TEXTURE_RECTANGLE);
 
 	glDisable(GL_BLEND);
 	glDisable(GL_ALPHA_TEST);

@@ -303,7 +303,6 @@ typedef struct		{
 typedef struct		{
 						bool								moved,cur_ambient_only,
 															has_opaque,has_transparent,has_glow;
-						unsigned char						*colors_cache;
 					} map_mesh_draw_type;
 
 typedef struct		{
@@ -885,8 +884,6 @@ extern int map_mesh_find(map_type *map,d3pnt *pnt);
 extern int map_mesh_find_closest(map_type *map,d3pnt *pnt);
 extern int map_mesh_find_always(map_type *map,d3pnt *pnt);
 extern int map_mesh_calculate_distance(map_mesh_type *mesh,d3pnt *pnt);
-
-extern bool map_mesh_create_colors_cache(map_mesh_type *mesh);
 
 extern int map_mesh_combine(map_type *map,int mesh_1_idx,int mesh_2_idx);
 extern void map_mesh_move_rotate_copy_reset(map_type *map,int mesh_idx);

@@ -140,7 +140,7 @@ GLuint gl_back_render_create_texture(void)
 	GLuint			gl_id;
 	
 	glGenTextures(1,&gl_id);
-	gl_texture_bind(0,gl_id);
+	gl_texture_bind(0,FALSE,gl_id);
 	
 	glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,back_render_texture_pixel_size,back_render_texture_pixel_size,0,GL_RGBA,GL_UNSIGNED_BYTE,0);
 
@@ -158,7 +158,7 @@ GLuint gl_back_render_create_texture(void)
 	glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MAX_ANISOTROPY_EXT,max);
 #endif
 	
-	gl_texture_clear(0);
+	gl_texture_clear(0,FALSE);
 	
 	return(gl_id);
 }
@@ -226,9 +226,9 @@ void gl_back_render_frame_node(char *node_name)
 
 		// generate mipmaps
 		
-	gl_texture_bind(0,node->back_render.txt_id);
+	gl_texture_bind(0,FALSE,node->back_render.txt_id);
 	glGenerateMipmapEXT(GL_TEXTURE_2D);
-	gl_texture_clear(GL_TEXTURE_2D);
+	gl_texture_clear(0,FALSE);
 
 		// mark as rendered for this frame
 		

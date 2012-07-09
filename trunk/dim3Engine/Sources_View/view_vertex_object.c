@@ -124,17 +124,9 @@ void view_unbind_mesh_liquid_index_object(void)
 void view_create_model_vertex_object(model_draw *draw)
 {
 	int					n,k,t,vertex_cnt,stride;
-	bool				shader_on;
 	model_type			*mdl;
 	model_mesh_type		*mesh;
 	model_poly_type		*poly;
-	
-		// there are some models that can
-		// draw without a shader dynamically (in the draw setup)
-		// so we ignore that flag and use shader on for most cases
-		// as it's greater than shader off
-
-	shader_on=view_shader_on();
 	
 		// each mesh has own VBO
 		
@@ -157,13 +149,7 @@ void view_create_model_vertex_object(model_draw *draw)
 			
 			// get the model vertex size
 			
-		stride=(3+2)*sizeof(float);					// 3 vertex and 2 uv
-		if (shader_on) {
-			stride+=((3+3)*sizeof(float));			// 3 tangent and 3 normal
-		}
-		else {
-			stride+=(4*sizeof(unsigned char));		// 4 colors
-		}
+		stride=(3+2+3+3)*sizeof(float);					// 3 vertex, 2 uv, 3 tangent, 3 normal
 
 			// init the vertex buffer
 

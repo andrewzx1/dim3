@@ -93,7 +93,7 @@ void sky_draw_background_single(map_background_layer_type *layer)
 	uvs[1]=uvs[5]=gy_top;
 	uvs[3]=uvs[7]=gy_bot;
 	
-	gl_texture_bind(0,bitmap->gl_id);
+	gl_texture_bind(0,FALSE,bitmap->gl_id);
 
 		// draw the quad
 

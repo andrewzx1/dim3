@@ -288,7 +288,7 @@ int gl_lights_setup_box(d3pnt *mid,d3pnt *min,d3pnt *max,int max_list_idx,int *l
 	return(count);
 }
 
-void gl_lights_setup_liquid(map_liquid_type *liq,bool light_map_skip)
+void gl_lights_setup_liquid(map_liquid_type *liq)
 {
 	d3pnt			mid,min,max;
 
@@ -304,7 +304,7 @@ void gl_lights_setup_liquid(map_liquid_type *liq,bool light_map_skip)
 	max.y=liq->y;
 	max.z=liq->bot;
 
-	liq->light_cache.count=gl_lights_setup_box(&mid,&min,&max,max_shader_light,liq->light_cache.indexes,light_map_skip);
+	liq->light_cache.count=gl_lights_setup_box(&mid,&min,&max,max_shader_light,liq->light_cache.indexes,FALSE);
 }
 
 void gl_lights_setup_model(model_draw *draw)
@@ -318,17 +318,10 @@ void gl_lights_setup_model(model_draw *draw)
 void gl_lights_setup_cache(void)
 {
 	int					n;
-	bool				shader_on;
 	obj_type			*obj;
 	proj_type			*proj;
 	weapon_type			*weap;
 	map_mesh_type		*mesh;
-	
-		// if there are no shaders, we don't put
-		// light map lights into the light lists
-		// as that's all handled in the light map
-		
-	shader_on=view_shader_on();
 	
 		// cache all the lights for the meshes, liquids,
 		// and models in this view
@@ -343,11 +336,11 @@ void gl_lights_setup_cache(void)
 			
 			case view_render_type_mesh:
 				mesh=&map.mesh.meshes[view.render->draw_list.items[n].idx];
-				mesh->light_cache.count=gl_lights_setup_box(&mesh->box.mid,&mesh->box.min,&mesh->box.max,max_map_light_cache_index,mesh->light_cache.indexes,(!shader_on));
+				mesh->light_cache.count=gl_lights_setup_box(&mesh->box.mid,&mesh->box.min,&mesh->box.max,max_map_light_cache_index,mesh->light_cache.indexes,FALSE);
 				break;
 
 			case view_render_type_liquid:
-				gl_lights_setup_liquid(&map.liquid.liquids[view.render->draw_list.items[n].idx],(!shader_on));
+				gl_lights_setup_liquid(&map.liquid.liquids[view.render->draw_list.items[n].idx]);
 				break;
 
 			case view_render_type_object:

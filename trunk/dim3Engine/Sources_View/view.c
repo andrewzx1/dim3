@@ -485,17 +485,6 @@ void view_game_reset_timing(void)
 
 /* =======================================================
 
-      View Shader Check
-      
-======================================================= */
-
-bool view_shader_on(void)
-{
-	return((!setup.disable_shaders) && (gl_check_shader_ok()) && (!iface.project.no_shaders));
-}
-
-/* =======================================================
-
       View Wide Check
       
 ======================================================= */

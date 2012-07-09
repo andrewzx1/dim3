@@ -97,10 +97,12 @@ char* gl_core_map_shader_build_vert(int nlight,bool fog,bool bump,bool spec)
 	gl_core_shader_build_generic_light_struct(nlight,buf);
 
 	strcat(buf,"uniform vec3 dim3CameraPosition;\n");
-	strcat(buf,"attribute vec3 dim3VertexNormal");
+	strcat(buf,"attribute vec3 dim3Vertex,dim3VertexNormal");
 	if ((bump) || (spec)) strcat(buf,",dim3VertexTangent");
 	strcat(buf,";\n");
+	strcat(buf,"attribute vec2 dim3VertexUV,dim3VertexLightMapUV;\n");
 	
+	strcat(buf,"varying vec2 uv,lightMapUV;\n");
 	strcat(buf,"varying vec3 dirNormal;\n");
 	if (fog) strcat(buf,"varying float fogFactor;\n");
 
@@ -115,16 +117,13 @@ char* gl_core_map_shader_build_vert(int nlight,bool fog,bool bump,bool spec)
 	strcat(buf,"void main(void)\n");
 	strcat(buf,"{\n");
 
-	strcat(buf,"gl_Position=ftransform();\n");
-// ES2
-//	strcat(buf,"gl_Position=gl_ProjectionMatrix*gl_ModelViewMatrix*gl_Vertex;\n");	// ES2 -- convert to vec4 when we use attributes
-
-	strcat(buf,"gl_TexCoord[0]=gl_MultiTexCoord0;\n");
-	strcat(buf,"gl_TexCoord[1]=gl_MultiTexCoord1;\n");
+	strcat(buf,"gl_Position=gl_ProjectionMatrix*gl_ModelViewMatrix*vec4(dim3Vertex,1.0);\n");
+	strcat(buf,"uv=dim3VertexUV;\n");
+	strcat(buf,"lightMapUV=dim3VertexLightMapUV;\n");
 	
 	strcat(buf,"dirNormal=normalize(dim3VertexNormal);\n");
 
-	strcat(buf,"vec3 vtx=vec3(gl_ModelViewMatrix*gl_Vertex);\n");
+	strcat(buf,"vec3 vtx=vec3(gl_ModelViewMatrix*vec4(dim3Vertex,1.0));\n");
 	
 	if ((bump) || (spec)) {
 		strcat(buf,"vec3 tangentSpaceTangent=normalize(gl_NormalMatrix*dim3VertexTangent);\n");
@@ -148,7 +147,7 @@ char* gl_core_map_shader_build_vert(int nlight,bool fog,bool bump,bool spec)
 		}
 	}
 	
-	if (fog) strcat(buf,"fogFactor=clamp(((gl_Fog.end-distance(gl_Vertex.xyz,dim3CameraPosition))*gl_Fog.scale),0.0,1.0);\n");
+	if (fog) strcat(buf,"fogFactor=clamp(((gl_Fog.end-distance(dim3Vertex,dim3CameraPosition))*gl_Fog.scale),0.0,1.0);\n");
 
 	strcat(buf,"}\n");
 
@@ -188,6 +187,7 @@ char* gl_core_map_shader_build_frag(int nlight,bool fog,bool bump,bool spec,bool
 	
 	strcat(buf,"uniform vec3 dim3AmbientColor;\n");
 	
+	strcat(buf,"varying vec2 uv,lightMapUV;\n");
 	strcat(buf,"varying vec3 dirNormal;\n");
 	if (fog) strcat(buf,"varying float fogFactor;\n");
 	
@@ -207,17 +207,17 @@ char* gl_core_map_shader_build_frag(int nlight,bool fog,bool bump,bool spec,bool
 
 		// the light map
 
-	strcat(buf,"vec3 lmap=texture2D(dim3TexLightMap,gl_TexCoord[1].st).rgb;\n");
+	strcat(buf,"vec3 lmap=texture2D(dim3TexLightMap,lightMapUV).rgb;\n");
 	strcat(buf,"ambient+=(lmap+(lmap*dim3LightMapBoost));\n");
 	
 		// the texture map
 		
-	strcat(buf,"vec4 tex=texture2D(dim3Tex,gl_TexCoord[0].st);\n");
+	strcat(buf,"vec4 tex=texture2D(dim3Tex,uv);\n");
 		
 		// the bump map
 		
 	if (bump) {
-		strcat(buf,"vec3 bumpMap=normalize((texture2D(dim3TexBump,gl_TexCoord[0].st).rgb*2.0)-1.0);\n");
+		strcat(buf,"vec3 bumpMap=normalize((texture2D(dim3TexBump,uv).rgb*2.0)-1.0);\n");
 		strcat(buf,"bumpMap.y=-bumpMap.y;\n");
 		strcat(buf,"float bump=dot(vec3(0.0,0.0,0.5),bumpMap);\n");
 	}
@@ -226,7 +226,7 @@ char* gl_core_map_shader_build_frag(int nlight,bool fog,bool bump,bool spec,bool
 		
 	if (spec) {
 		strcat(buf,"vec3 spec=vec3(0.0,0.0,0.0),specHalfVector;\n");
-		strcat(buf,"vec3 specMap=texture2D(dim3TexSpecular,gl_TexCoord[0].st).rgb;\n");
+		strcat(buf,"vec3 specMap=texture2D(dim3TexSpecular,uv).rgb;\n");
 		strcat(buf,"float specFactor;\n");
 	}
 	
@@ -341,6 +341,14 @@ bool gl_core_map_shader_create(shader_type *shader,int nlight,bool fog,bool bump
 
 	free(vertex_data);
 	free(fragment_data);
+	
+		// activate the required attributes
+		
+	glEnableVertexAttribArrayARB(shader->var_locs.dim3Vertex);
+	glEnableVertexAttribArrayARB(shader->var_locs.dim3VertexUV);
+	glEnableVertexAttribArrayARB(shader->var_locs.dim3VertexLightMapUV);
+	glEnableVertexAttribArrayARB(shader->var_locs.dim3VertexNormal);
+	if ((bump) || (spec)) glEnableVertexAttribArrayARB(shader->var_locs.dim3VertexTangent);
 
 	return(ok);
 }
@@ -368,8 +376,10 @@ char* gl_core_liquid_shader_build_vert(int nlight)
 	gl_core_shader_build_generic_light_struct(nlight,buf);
 
 	strcat(buf,"uniform vec3 dim3CameraPosition;\n");
-	strcat(buf,"attribute vec3 dim3VertexNormal;\n");
+	strcat(buf,"attribute vec3 dim3Vertex,dim3VertexNormal;\n");
+	strcat(buf,"attribute vec2 dim3VertexUV,dim3VertexLightMapUV;\n");
 	
+	strcat(buf,"varying vec2 uv,lightMapUV;\n");
 	strcat(buf,"varying vec3 dirNormal;\n");
 
 	for (n=0;n!=nlight;n++) {
@@ -379,13 +389,13 @@ char* gl_core_liquid_shader_build_vert(int nlight)
 	strcat(buf,"void main(void)\n");
 	strcat(buf,"{\n");
 
-	strcat(buf,"gl_Position=ftransform();\n");
-	strcat(buf,"gl_TexCoord[0]=gl_MultiTexCoord0;\n");
-	strcat(buf,"gl_TexCoord[1]=gl_MultiTexCoord1;\n");
+	strcat(buf,"gl_Position=gl_ProjectionMatrix*gl_ModelViewMatrix*vec4(dim3Vertex,1.0);\n");
+	strcat(buf,"uv=dim3VertexUV;\n");
+	strcat(buf,"lightMapUV=dim3VertexLightMapUV;\n");
 	
 	strcat(buf,"dirNormal=normalize(dim3VertexNormal);\n");
 
-	strcat(buf,"vec3 vtx=vec3(gl_ModelViewMatrix*gl_Vertex);\n");
+	strcat(buf,"vec3 vtx=vec3(gl_ModelViewMatrix*vec4(dim3Vertex,1.0));\n");
 	
 	for (n=0;n!=nlight;n++) {
 		sprintf(strchr(buf,0),"lightVector_%d=dim3Light_%d.position-vtx;\n",n,n);
@@ -416,6 +426,7 @@ char* gl_core_liquid_shader_build_frag(int nlight)
 	strcat(buf,"uniform float dim3Alpha,dim3LightMapBoost;\n");
 	strcat(buf,"uniform vec3 dim3AmbientColor;\n");
 	
+	strcat(buf,"varying vec2 uv,lightMapUV;\n");
 	strcat(buf,"varying vec3 dirNormal;\n");
 	
 	for (n=0;n!=nlight;n++) {
@@ -430,12 +441,12 @@ char* gl_core_liquid_shader_build_frag(int nlight)
 
 		// the light map
 
-	strcat(buf,"vec3 lmap=texture2D(dim3TexLightMap,gl_TexCoord[1].st).rgb;\n");
+	strcat(buf,"vec3 lmap=texture2D(dim3TexLightMap,lightMapUV).rgb;\n");
 	strcat(buf,"ambient+=(lmap+(lmap*dim3LightMapBoost));\n");
 	
 		// the texture map
 		
-	strcat(buf,"vec4 tex=texture2D(dim3Tex,gl_TexCoord[0].st);\n");
+	strcat(buf,"vec4 tex=texture2D(dim3Tex,uv);\n");
 	
 		// the texture lighting
 		
@@ -493,6 +504,13 @@ bool gl_core_liquid_shader_create(shader_type *shader,int nlight,char *err_str)
 
 	free(vertex_data);
 	free(fragment_data);
+	
+		// activate the required attributes
+		
+	glEnableVertexAttribArrayARB(shader->var_locs.dim3Vertex);
+	glEnableVertexAttribArrayARB(shader->var_locs.dim3VertexUV);
+	glEnableVertexAttribArrayARB(shader->var_locs.dim3VertexLightMapUV);
+	glEnableVertexAttribArrayARB(shader->var_locs.dim3VertexNormal);
 
 	return(ok);
 }
@@ -525,9 +543,10 @@ char* gl_core_model_shader_build_vert(int nlight,bool fog,bool bump,bool spec)
 
 	strcat(buf,"uniform vec3 dim3CameraPosition;\n");
 
-	strcat(buf,"attribute vec3 dim3VertexNormal");
+	strcat(buf,"attribute vec3 dim3Vertex,dim3VertexNormal");
 	if ((bump) || (spec)) strcat(buf,",dim3VertexTangent");
 	strcat(buf,";\n");
+	strcat(buf,"attribute vec2 dim3VertexUV;\n");
 	
 	strcat(buf,"varying vec3 dirNormal,tangentSpaceNormal;\n");
 	if (fog) strcat(buf,"varying float fogFactor;\n");
@@ -757,6 +776,13 @@ bool gl_core_model_shader_create(shader_type *shader,int nlight,bool fog,bool bu
 
 	free(vertex_data);
 	free(fragment_data);
+	
+		// activate the required attributes
+		
+	glEnableVertexAttribArrayARB(shader->var_locs.dim3Vertex);
+	glEnableVertexAttribArrayARB(shader->var_locs.dim3VertexUV);
+	glEnableVertexAttribArrayARB(shader->var_locs.dim3VertexNormal);
+	if ((bump) || (spec)) glEnableVertexAttribArrayARB(shader->var_locs.dim3VertexTangent);
 
 	return(ok);
 }
@@ -962,8 +988,6 @@ bool gl_core_shader_initialize_per_light(int nlight,char *err_str)
 bool gl_core_shader_initialize(char *err_str)
 {
 	int					n,k;
-
-	if (!gl_check_shader_ok()) return(TRUE);
 	
 		// note: we use max_shader_light+1 as
 		// the first spot is 0 lights, and then 1
@@ -989,8 +1013,6 @@ bool gl_core_shader_initialize(char *err_str)
 void gl_core_shader_shutdown(void)
 {
 	int					n,k;
-
-	if (!gl_check_shader_ok()) return;
 
 		// shutdown shaders
 

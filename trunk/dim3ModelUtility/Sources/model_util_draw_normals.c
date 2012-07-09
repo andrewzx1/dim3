@@ -81,7 +81,7 @@ void model_move_single_tangent_space_vector(model_draw_bone_type *draw_bones,mod
       
 ======================================================= */
 
-void model_create_draw_normals(model_type *model,int mesh_idx,model_draw_setup *draw_setup,bool normal_only)
+void model_create_draw_normals(model_type *model,int mesh_idx,model_draw_setup *draw_setup)
 {
 	int						n,nvertex;
 	float					*pt,*pn;
@@ -119,23 +119,21 @@ void model_create_draw_normals(model_type *model,int mesh_idx,model_draw_setup *
 
 				// run the tangent
 			
-			if (!normal_only) {
-				space.tangent.x=vertex->tangent_space.tangent.x;
-				space.tangent.y=vertex->tangent_space.tangent.y;
-				space.tangent.z=vertex->tangent_space.tangent.z;
+			space.tangent.x=vertex->tangent_space.tangent.x;
+			space.tangent.y=vertex->tangent_space.tangent.y;
+			space.tangent.z=vertex->tangent_space.tangent.z;
 
-				if (vertex->major_bone_idx!=-1) model_move_single_tangent_space_vector(draw_setup->bones,vertex,&space.tangent);
-				
-				matrix_vertex_2_multiply_ignore_transform(&sway_mat,&space.tangent);
-				
-				matrix_vertex_2_multiply_ignore_transform(&rot_x_mat,&space.tangent);
-				matrix_vertex_2_multiply_ignore_transform(&rot_z_mat,&space.tangent);
-				matrix_vertex_2_multiply_ignore_transform(&rot_y_mat,&space.tangent);
+			if (vertex->major_bone_idx!=-1) model_move_single_tangent_space_vector(draw_setup->bones,vertex,&space.tangent);
+			
+			matrix_vertex_2_multiply_ignore_transform(&sway_mat,&space.tangent);
+			
+			matrix_vertex_2_multiply_ignore_transform(&rot_x_mat,&space.tangent);
+			matrix_vertex_2_multiply_ignore_transform(&rot_z_mat,&space.tangent);
+			matrix_vertex_2_multiply_ignore_transform(&rot_y_mat,&space.tangent);
 
-				*pt++=space.tangent.x;
-				*pt++=space.tangent.y;
-				*pt++=space.tangent.z;
-			}
+			*pt++=space.tangent.x;
+			*pt++=space.tangent.y;
+			*pt++=space.tangent.z;
 			
 				// run the normal
 			
@@ -167,21 +165,19 @@ void model_create_draw_normals(model_type *model,int mesh_idx,model_draw_setup *
 
 			// run the tangent
 
-		if (!normal_only) {
-			space.tangent.x=vertex->tangent_space.tangent.x;
-			space.tangent.y=vertex->tangent_space.tangent.y;
-			space.tangent.z=vertex->tangent_space.tangent.z;
+		space.tangent.x=vertex->tangent_space.tangent.x;
+		space.tangent.y=vertex->tangent_space.tangent.y;
+		space.tangent.z=vertex->tangent_space.tangent.z;
 
-			if (vertex->major_bone_idx!=-1) model_move_single_tangent_space_vector(draw_setup->bones,vertex,&space.tangent);
-			
-			matrix_vertex_2_multiply_ignore_transform(&rot_x_mat,&space.tangent);
-			matrix_vertex_2_multiply_ignore_transform(&rot_z_mat,&space.tangent);
-			matrix_vertex_2_multiply_ignore_transform(&rot_y_mat,&space.tangent);
+		if (vertex->major_bone_idx!=-1) model_move_single_tangent_space_vector(draw_setup->bones,vertex,&space.tangent);
+		
+		matrix_vertex_2_multiply_ignore_transform(&rot_x_mat,&space.tangent);
+		matrix_vertex_2_multiply_ignore_transform(&rot_z_mat,&space.tangent);
+		matrix_vertex_2_multiply_ignore_transform(&rot_y_mat,&space.tangent);
 
-			*pt++=space.tangent.x;
-			*pt++=space.tangent.y;
-			*pt++=space.tangent.z;
-		}
+		*pt++=space.tangent.x;
+		*pt++=space.tangent.y;
+		*pt++=space.tangent.z;
 		
 			// run the normal
 
@@ -203,7 +199,7 @@ void model_create_draw_normals(model_type *model,int mesh_idx,model_draw_setup *
 	}
 }
 
-void model_flip_draw_normals(model_type *model,int mesh_idx,model_draw_setup *draw_setup,bool normal_only)
+void model_flip_draw_normals(model_type *model,int mesh_idx,model_draw_setup *draw_setup)
 {
 	int						n;
 	float					*pt,*pn;
@@ -219,8 +215,6 @@ void model_flip_draw_normals(model_type *model,int mesh_idx,model_draw_setup *dr
 		*pn=-(*pn);
 		pn+=3;
 	}
-	
-	if (normal_only) return;
 	
 		// flip tangents
 		
