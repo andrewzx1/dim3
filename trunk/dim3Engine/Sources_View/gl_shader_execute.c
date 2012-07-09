@@ -40,7 +40,8 @@ extern int					nuser_shader;
 extern shader_type			*gl_shader_current,
 							user_shaders[max_iface_user_shader],
 							core_shaders[max_shader_light+1][max_core_shader],
-							color_shader,bitmap_shader,bitmap_rect_shader;
+							color_shader,black_shader,
+							bitmap_shader,bitmap_rect_shader;
 
 /* =======================================================
 
@@ -50,31 +51,72 @@ extern shader_type			*gl_shader_current,
 
 void gl_shader_draw_simple_color_start(void)
 {
-		// remember current shader
-
-	gl_shader_current=NULL;
-}
-
-void gl_shader_draw_simple_color_end(void)
-{
-		// deactivate any current shader
-		
-	if (gl_shader_current!=NULL) glUseProgramObjectARB(0);
-}
-
-void gl_shader_draw_execute_simple_color(int vertex_size,float *vertexes,unsigned char *colors)
-{
 		// change over the shader
 		
 	if ((&color_shader)!=gl_shader_current) {
 		gl_shader_current=&color_shader;
 		glUseProgramObjectARB(color_shader.program_obj);
 	}
-	
+}
+
+void gl_shader_draw_simple_color_end(void)
+{
+}
+
+void gl_shader_draw_execute_simple_color_ptr(int vertex_size,float *vertexes,unsigned char *colors)
+{
 		// bind the required attributes
 		
 	glVertexAttribPointerARB(color_shader.var_locs.dim3Vertex,vertex_size,GL_FLOAT,GL_FALSE,0,(void*)vertexes);
 	glVertexAttribPointerARB(color_shader.var_locs.dim3VertexColor,4,GL_UNSIGNED_BYTE,GL_TRUE,0,(void*)colors);
+}
+
+/* =======================================================
+
+      Execute Simple Black Shaders
+      
+======================================================= */
+
+void gl_shader_draw_simple_black_start(void)
+{
+		// change over the shader
+		
+	if ((&black_shader)!=gl_shader_current) {
+		gl_shader_current=&black_shader;
+		glUseProgramObjectARB(black_shader.program_obj);
+	}
+}
+
+void gl_shader_draw_simple_black_end(void)
+{
+}
+
+void gl_shader_draw_execute_simple_black_ptr(int vertex_size,float *vertexes,float alpha)
+{
+		// set the alpha
+
+	if (black_shader.var_values.alpha!=alpha) {
+		black_shader.var_values.alpha=alpha;
+		glUniform1fARB(black_shader.var_locs.dim3Alpha,alpha);
+	}
+
+		// bind the required attributes
+		
+	glVertexAttribPointerARB(black_shader.var_locs.dim3Vertex,vertex_size,GL_FLOAT,GL_FALSE,0,(void*)vertexes);
+}
+
+void gl_shader_draw_execute_simple_black_vbo(int vertex_size,int vertex_offset,float alpha)
+{
+		// set the alpha
+
+	if (black_shader.var_values.alpha!=alpha) {
+		black_shader.var_values.alpha=alpha;
+		glUniform1fARB(black_shader.var_locs.dim3Alpha,alpha);
+	}
+
+		// bind the required attributes
+		
+	glVertexAttribPointerARB(black_shader.var_locs.dim3Vertex,vertex_size,GL_FLOAT,GL_FALSE,0,(void*)vertex_offset);
 }
 
 /* =======================================================
@@ -85,9 +127,12 @@ void gl_shader_draw_execute_simple_color(int vertex_size,float *vertexes,unsigne
 
 void gl_shader_draw_simple_bitmap_start(void)
 {
-		// remember current shader
-
-	gl_shader_current=NULL;
+		// change over the shader
+		
+	if ((&bitmap_shader)!=gl_shader_current) {
+		gl_shader_current=&bitmap_shader;
+		glUseProgramObjectARB(bitmap_shader.program_obj);
+	}
 
 		// enable texturing
 		
@@ -96,24 +141,11 @@ void gl_shader_draw_simple_bitmap_start(void)
 
 void gl_shader_draw_simple_bitmap_end(void)
 {
-		// deactivate any current shader
-		
-	if (gl_shader_current!=NULL) glUseProgramObjectARB(0);
-	
-		// turn off any used textures
-
 	glDisable(GL_TEXTURE_2D);
 }
 
-void gl_shader_draw_execute_simple_bitmap(unsigned long gl_id,int vertex_size,float *vertexes,float *uvs,unsigned char *colors)
+void gl_shader_draw_execute_simple_bitmap_ptr(unsigned long gl_id,int vertex_size,float *vertexes,float *uvs,unsigned char *colors)
 {
-		// change over the shader
-		
-	if ((&bitmap_shader)!=gl_shader_current) {
-		gl_shader_current=&bitmap_shader;
-		glUseProgramObjectARB(bitmap_shader.program_obj);
-	}
-
 		// bind the bitmap
 
 	gl_texture_bind(0,FALSE,gl_id);
@@ -123,6 +155,18 @@ void gl_shader_draw_execute_simple_bitmap(unsigned long gl_id,int vertex_size,fl
 	glVertexAttribPointerARB(bitmap_shader.var_locs.dim3Vertex,vertex_size,GL_FLOAT,GL_FALSE,0,(void*)vertexes);
 	glVertexAttribPointerARB(bitmap_shader.var_locs.dim3VertexUV,2,GL_FLOAT,GL_FALSE,0,(void*)uvs);
 	glVertexAttribPointerARB(bitmap_shader.var_locs.dim3VertexColor,4,GL_UNSIGNED_BYTE,GL_TRUE,0,(void*)colors);
+}
+
+void gl_shader_draw_execute_simple_bitmap_vbo_attribute(int vertex_size,int vertex_offset,int uv_offset,int color_offset)
+{
+	glVertexAttribPointerARB(bitmap_shader.var_locs.dim3Vertex,vertex_size,GL_FLOAT,GL_FALSE,0,(void*)vertex_offset);
+	glVertexAttribPointerARB(bitmap_shader.var_locs.dim3VertexUV,2,GL_FLOAT,GL_FALSE,0,(void*)uv_offset);
+	glVertexAttribPointerARB(bitmap_shader.var_locs.dim3VertexColor,4,GL_UNSIGNED_BYTE,GL_TRUE,0,(void*)color_offset);
+}
+
+void gl_shader_draw_execute_simple_bitmap_vbo_texture(unsigned long gl_id)
+{
+	gl_texture_bind(0,FALSE,gl_id);
 }
 
 /* =======================================================
@@ -136,9 +180,12 @@ void gl_shader_draw_simple_bitmap_rect_start(void)
 #if defined(D3_OS_IPHONE) || defined(D3_OS_ANDRIOD)
 	gl_shader_draw_simple_bitmap_start(gl_id);
 #else
-		// remember current shader
-
-	gl_shader_current=NULL;
+		// change over the shader
+		
+	if ((&bitmap_rect_shader)!=gl_shader_current) {
+		gl_shader_current=&bitmap_rect_shader;
+		glUseProgramObjectARB(bitmap_rect_shader.program_obj);
+	}
 
 		// enable texturing
 		
@@ -151,29 +198,15 @@ void gl_shader_draw_simple_bitmap_rect_end(void)
 #if defined(D3_OS_IPHONE) || defined(D3_OS_ANDRIOD)
 	gl_shader_draw_simple_bitmap_end(gl_id);
 #else
-		// deactivate any current shader
-		
-	if (gl_shader_current!=NULL) glUseProgramObjectARB(0);
-	
-		// turn off any used textures
-
 	glDisable(GL_TEXTURE_RECTANGLE);
 #endif
 }
 
-void gl_shader_draw_execute_simple_bitmap_rect(unsigned long gl_id,int vertex_size,float *vertexes,float *uvs,unsigned char *colors)
+void gl_shader_draw_execute_simple_bitmap_rect_ptr(unsigned long gl_id,int vertex_size,float *vertexes,float *uvs,unsigned char *colors)
 {
 #if defined(D3_OS_IPHONE) || defined(D3_OS_ANDRIOD)
-	gl_shader_draw_execute_simple_bitmap(gl_id,vertex_size,vertexes,uvs,colors);
+	gl_shader_draw_execute_simple_bitmap_ptr(gl_id,vertex_size,vertexes,uvs,colors);
 #else
-
-		// change over the shader
-		
-	if ((&bitmap_rect_shader)!=gl_shader_current) {
-		gl_shader_current=&bitmap_rect_shader;
-		glUseProgramObjectARB(bitmap_rect_shader.program_obj);
-	}
-
 		// bind the bitmap
 
 	gl_texture_bind(0,TRUE,gl_id);

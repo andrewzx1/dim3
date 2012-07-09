@@ -94,7 +94,9 @@ void hud_bitmaps_draw(void)
 								wid,high,repeat_count;
 	float						gx,gy,gx2,gy2,g_size,alpha;
 	float						vertexes[8],uvs[8];
-	d3col						tint,team_tint;
+	unsigned char				colors[16];
+	unsigned char				uc_r,uc_g,uc_b,uc_alpha;
+	d3col						team_tint;
 	iface_bitmap_type			*bitmap;
 	obj_type					*obj;
 	bitmap_type					*bitmap_data;
@@ -109,9 +111,7 @@ void hud_bitmaps_draw(void)
 	
 	glColor4f(0.0f,0.0f,0.0f,1.0f);
 
-	gl_texture_simple_start();
-
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	gl_shader_draw_simple_bitmap_start();
 
 		// timing for flashes and fades
 
@@ -140,11 +140,15 @@ void hud_bitmaps_draw(void)
 			// tint
 			
 		if (!bitmap->team_tint) {
-			tint.r=tint.g=tint.b=1.0f;
+			uc_r=uc_g=uc_b=255;
 		}
 		else {
-			memmove(&tint,&team_tint,sizeof(d3col));
+			uc_r=(unsigned char)(team_tint.r*255.0f);
+			uc_g=(unsigned char)(team_tint.g*255.0f);
+			uc_b=(unsigned char)(team_tint.b*255.0f);
 		}
+
+		uc_alpha=(unsigned char)(alpha*255.0f);
 
             // get bitmap and position
 			
@@ -180,10 +184,6 @@ void hud_bitmaps_draw(void)
 			gy2=gy;
 			gy+=g_size;
 		}
-
-			// bind texture
-
-		gl_texture_simple_set(bitmap_data->gl_id,TRUE,tint.r,tint.g,tint.b,alpha);
 		
 			// find the repeat count
 		
@@ -212,6 +212,14 @@ void hud_bitmaps_draw(void)
 		ry=bitmap->repeat.y_add;
 		
 		wrap_count=0;
+
+			// colors (setup here as
+			// they are same across all repeats)
+
+		colors[0]=colors[4]=colors[8]=colors[12]=uc_r;
+		colors[1]=colors[5]=colors[9]=colors[13]=uc_g;
+		colors[2]=colors[6]=colors[10]=colors[14]=uc_b;
+		colors[3]=colors[7]=colors[11]=colors[15]=uc_alpha;
 
 			// draw the bitmap
 
@@ -301,16 +309,12 @@ void hud_bitmaps_draw(void)
 
 				// draw the quad
 
-			glVertexPointer(2,GL_FLOAT,0,(GLvoid*)vertexes);
-			glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)uvs);
-			
+			gl_shader_draw_execute_simple_bitmap_ptr(bitmap_data->gl_id,2,vertexes,uvs,colors);
 			glDrawArrays(GL_TRIANGLE_STRIP,0,4);
 		}
 	}
 
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-	
-	gl_texture_simple_end();
+	gl_shader_draw_simple_bitmap_end();
 }
 
 /* =======================================================
@@ -705,14 +709,10 @@ void hud_bars_draw_pie(iface_bar_type *bar)
 
 	glDisable(GL_DEPTH_TEST);
 
-	glEnableClientState(GL_COLOR_ARRAY);
-
-	glVertexPointer(2,GL_FLOAT,0,(GLvoid*)vertexes);
-	glColorPointer(4,GL_UNSIGNED_BYTE,0,(GLvoid*)colors);
-
+	gl_shader_draw_simple_color_start();
+	gl_shader_draw_execute_simple_color_ptr(2,vertexes,colors);
 	glDrawArrays(GL_TRIANGLES,0,(72*3));
-	
-	glDisableClientState(GL_COLOR_ARRAY);
+	gl_shader_draw_simple_color_end();
 
 	glDisable(GL_BLEND);
 	glDisable(GL_ALPHA_TEST);

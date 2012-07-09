@@ -82,6 +82,7 @@ void gl_shader_set_instance_variables(shader_type *shader)
 		// cancel program
 		
 	glUseProgramObjectARB(0);
+	gl_shader_current=NULL;		// ES2 -- can get rid of all of this later
 }
 
 void gl_shader_cache_dynamic_variable_locations(shader_type *shader)
@@ -587,37 +588,25 @@ void gl_shader_set_poly_variables(shader_type *shader,float alpha)
 	}
 }
 
-void gl_shader_set_tangent_normal_array(shader_type *shader,int tangent_offset,int normal_offset,int stride)
+void gl_shader_hilite_override(shader_type *shader,view_glsl_light_list_type *light_list)
 {
-/* ES2 -- delete
-		// tangent array
-		
-	if (shader->var_locs.dim3VertexTangent!=-1) {
-		
-			// setup array
-			
-		if (shader->var_values.tangent_offset!=tangent_offset) {
-			shader->var_values.tangent_offset=tangent_offset;
-			glVertexAttribPointerARB(shader->var_locs.dim3VertexTangent,3,GL_FLOAT,GL_FALSE,stride,(void*)tangent_offset);
-		}
-	}
-	
-		// normal array
+		// going into highlight
 
-	if (shader->var_locs.dim3VertexNormal!=-1) {
-	
-			// need to enable?
-			
-		if (shader->var_values.normal_offset==-1) glEnableVertexAttribArrayARB(shader->var_locs.dim3VertexNormal);
-		
-			// setup array
-			
-		if (shader->var_values.normal_offset!=normal_offset) {
-			shader->var_values.normal_offset=normal_offset;
-			glVertexAttribPointerARB(shader->var_locs.dim3VertexNormal,3,GL_FLOAT,GL_FALSE,stride,(void*)normal_offset);
+	if (light_list->hilite) {
+		if (!shader->in_hilite) {
+			shader->in_hilite=TRUE;
+			gl_shader_ambient_hilite_override(shader,TRUE);
 		}
+		return;
 	}
-	*/
+
+		// not in highlight, check if
+		// we are in and then fix override
+
+	if (shader->in_hilite) {
+		shader->in_hilite=FALSE;
+		gl_shader_ambient_hilite_override(shader,FALSE);
+	}
 }
 
 /* =======================================================
@@ -720,36 +709,15 @@ void gl_shader_draw_start(void)
 	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_REPLACE);
 }
 
-void gl_shader_draw_reset_normal_tangent_attrib(void)
-{
-/* ES2 -- we have to look into this to see if it's still something I have to do
-
-	int				n,k;
-	
-		// reset vertex attributes because the
-		// check to see if offsets are equal fails when
-		// switching VBOs
-		
-	for (k=0;k!=(max_shader_light+1);k++) {
-		for (n=0;n!=max_core_shader;n++) {
-			core_shaders[k][n].var_values.tangent_offset=-1;
-			core_shaders[k][n].var_values.normal_offset=-1;
-		}
-	}
-	
-	for (n=0;n!=nuser_shader;n++) {
-		user_shaders[n].var_values.tangent_offset=-1;
-		user_shaders[n].var_values.normal_offset=-1;
-	}
-	*/
-}
-
 void gl_shader_draw_end(void)
 {
 		// deactivate any current shader
 		
-	if (gl_shader_current!=NULL) glUseProgramObjectARB(0);
-	
+	if (gl_shader_current!=NULL) {
+		gl_shader_current=NULL;
+		glUseProgramObjectARB(0);		// ES2 -- get rid of all of this later
+	}
+
 		// turn off any used textures
 
 	glActiveTexture(GL_TEXTURE4);
@@ -859,80 +827,11 @@ void gl_shader_texture_override(GLuint gl_id,float alpha)
 
 /* =======================================================
 
-      Execute Normal Shaders
+      Execute Map Shaders
       
 ======================================================= */
 
-void gl_shader_draw_execute(int core_shader_group,texture_type *texture,int txt_idx,int frame,int lmap_txt_idx,float alpha,view_glsl_light_list_type *light_list,int tangent_offset,int normal_offset,int stride)
-{
-	bool						is_core;
-	shader_type					*shader;
-	
-		// get shader based on number of lights
-		
-	if (texture->shader_idx==gl_shader_core_index) {
-		shader=gl_core_shader_find_ptr(light_list->nlight,core_shader_group,texture);
-		is_core=TRUE;
-	}
-	else {
-		shader=&user_shaders[texture->shader_idx];
-		is_core=FALSE;
-	}
-	
-		// if we are not in this shader, then
-		// change over
-		
-	if (shader!=gl_shader_current) {
-	
-			// set in the new program
-			
-		gl_shader_current=shader;
-		glUseProgramObjectARB(shader->program_obj);
-			
-			// set per-scene variables, only do this once
-			// as they don't change per scene
-		
-		if (!shader->per_scene_vars_set) {
-			shader->per_scene_vars_set=TRUE;
-			gl_shader_set_scene_variables(shader);
-		}
-	}
-	
-		// hiliting
-		
-	if (light_list->hilite) {
-		shader->in_hilite=TRUE;
-		gl_shader_ambient_hilite_override(shader,TRUE);
-	}
-	else {
-		if (shader->in_hilite) {
-			shader->in_hilite=FALSE;
-			gl_shader_ambient_hilite_override(shader,FALSE);
-		}
-	}
-	
-		// tangent and normal arrays
-		
-	gl_shader_set_tangent_normal_array(shader,tangent_offset,normal_offset,stride);
-	
-		// textures and per-texture variables
-		
-	gl_shader_set_texture(shader,core_shader_group,texture,txt_idx,lmap_txt_idx,frame);
-	
-		// per polygon variables
-		
-	gl_shader_set_poly_variables(shader,alpha);
-
-		// lighting variables
-			
-	if (core_shader_group==core_shader_group_model) gl_shader_set_diffuse_variables(shader,light_list);
-
-	gl_shader_set_light_variables(shader,core_shader_group,is_core,light_list);
-}
-
-
-
-
+// ES2 -- move these
 void gl_shader_draw_execute_map(texture_type *texture,int txt_idx,int frame,int lmap_txt_idx,float alpha,int vertex_offset,int uv_offset,int lmap_uv_offset,int tangent_offset,int normal_offset,int stride,view_glsl_light_list_type *light_list)
 {
 	bool						is_core;
@@ -973,34 +872,22 @@ void gl_shader_draw_execute_map(texture_type *texture,int txt_idx,int frame,int 
 	glVertexAttribPointerARB(shader->var_locs.dim3Vertex,3,GL_FLOAT,GL_FALSE,stride,(void*)vertex_offset);
 	glVertexAttribPointerARB(shader->var_locs.dim3VertexUV,2,GL_FLOAT,GL_FALSE,stride,(void*)uv_offset);
 	glVertexAttribPointerARB(shader->var_locs.dim3VertexLightMapUV,2,GL_FLOAT,GL_FALSE,stride,(void*)lmap_uv_offset);
-	glVertexAttribPointerARB(shader->var_locs.dim3VertexTangent,3,GL_FLOAT,GL_FALSE,stride,(void*)tangent_offset);
 	glVertexAttribPointerARB(shader->var_locs.dim3VertexNormal,3,GL_FLOAT,GL_FALSE,stride,(void*)normal_offset);
+	if (shader->var_locs.dim3VertexTangent!=-1) glVertexAttribPointerARB(shader->var_locs.dim3VertexTangent,3,GL_FLOAT,GL_FALSE,stride,(void*)tangent_offset);
 	
-		// hiliting
-		
-	if (light_list->hilite) {
-		shader->in_hilite=TRUE;
-		gl_shader_ambient_hilite_override(shader,TRUE);
-	}
-	else {
-		if (shader->in_hilite) {
-			shader->in_hilite=FALSE;
-			gl_shader_ambient_hilite_override(shader,FALSE);
-		}
-	}
-	
-		// textures and per-texture variables
-		
+		// setup variables
+
+	gl_shader_hilite_override(shader,light_list);
 	gl_shader_set_texture(shader,core_shader_group_map,texture,txt_idx,lmap_txt_idx,frame);
-	
-		// per polygon variables
-		
 	gl_shader_set_poly_variables(shader,alpha);
-
-		// lighting variables
-
 	gl_shader_set_light_variables(shader,core_shader_group_map,is_core,light_list);
 }
+
+/* =======================================================
+
+      Execute Liquid Shaders
+      
+======================================================= */
 
 void gl_shader_draw_execute_liquid(texture_type *texture,int txt_idx,int frame,int lmap_txt_idx,float alpha,int vertex_offset,int uv_offset,int lmap_uv_offset,int tangent_offset,int normal_offset,int stride,view_glsl_light_list_type *light_list)
 {
@@ -1042,24 +929,24 @@ void gl_shader_draw_execute_liquid(texture_type *texture,int txt_idx,int frame,i
 	glVertexAttribPointerARB(shader->var_locs.dim3Vertex,3,GL_FLOAT,GL_FALSE,stride,(void*)vertex_offset);
 	glVertexAttribPointerARB(shader->var_locs.dim3VertexUV,2,GL_FLOAT,GL_FALSE,stride,(void*)uv_offset);
 	glVertexAttribPointerARB(shader->var_locs.dim3VertexLightMapUV,2,GL_FLOAT,GL_FALSE,stride,(void*)lmap_uv_offset);
-	glVertexAttribPointerARB(shader->var_locs.dim3VertexTangent,3,GL_FLOAT,GL_FALSE,stride,(void*)tangent_offset);
 	glVertexAttribPointerARB(shader->var_locs.dim3VertexNormal,3,GL_FLOAT,GL_FALSE,stride,(void*)normal_offset);
+	if (shader->var_locs.dim3VertexTangent!=-1) glVertexAttribPointerARB(shader->var_locs.dim3VertexTangent,3,GL_FLOAT,GL_FALSE,stride,(void*)tangent_offset);
 	
-		// textures and per-texture variables
-		
+		// setup variables
+
+	gl_shader_hilite_override(shader,light_list);
 	gl_shader_set_texture(shader,core_shader_group_liquid,texture,txt_idx,lmap_txt_idx,frame);
-	
-		// per polygon variables
-		
 	gl_shader_set_poly_variables(shader,alpha);
-
-		// lighting variables
-
 	gl_shader_set_light_variables(shader,core_shader_group_liquid,is_core,light_list);
 }
 
-// ES2 -- do this one
-void gl_shader_draw_execute_model(texture_type *texture,int txt_idx,int frame,int lmap_txt_idx,float alpha,int vertex_offset,int uv_offset,int lmap_uv_offset,int tangent_offset,int normal_offset,int stride,view_glsl_light_list_type *light_list)
+/* =======================================================
+
+      Execute Model Shaders
+      
+======================================================= */
+
+void gl_shader_draw_execute_model(texture_type *texture,int txt_idx,int frame,float alpha,int vertex_offset,int uv_offset,int tangent_offset,int normal_offset,int stride,view_glsl_light_list_type *light_list)
 {
 	bool						is_core;
 	shader_type					*shader;
@@ -1067,7 +954,7 @@ void gl_shader_draw_execute_model(texture_type *texture,int txt_idx,int frame,in
 		// get shader based on number of lights
 		
 	if (texture->shader_idx==gl_shader_core_index) {
-		shader=gl_core_shader_find_ptr(light_list->nlight,core_shader_group_map,texture);
+		shader=gl_core_shader_find_ptr(light_list->nlight,core_shader_group_model,texture);
 		is_core=TRUE;
 	}
 	else {
@@ -1098,35 +985,14 @@ void gl_shader_draw_execute_model(texture_type *texture,int txt_idx,int frame,in
 
 	glVertexAttribPointerARB(shader->var_locs.dim3Vertex,3,GL_FLOAT,GL_FALSE,stride,(void*)vertex_offset);
 	glVertexAttribPointerARB(shader->var_locs.dim3VertexUV,2,GL_FLOAT,GL_FALSE,stride,(void*)uv_offset);
-	glVertexAttribPointerARB(shader->var_locs.dim3VertexLightMapUV,2,GL_FLOAT,GL_FALSE,stride,(void*)lmap_uv_offset);
-	glVertexAttribPointerARB(shader->var_locs.dim3VertexTangent,3,GL_FLOAT,GL_FALSE,stride,(void*)tangent_offset);
 	glVertexAttribPointerARB(shader->var_locs.dim3VertexNormal,3,GL_FLOAT,GL_FALSE,stride,(void*)normal_offset);
+	if (shader->var_locs.dim3VertexTangent!=-1) glVertexAttribPointerARB(shader->var_locs.dim3VertexTangent,3,GL_FLOAT,GL_FALSE,stride,(void*)tangent_offset);
 	
-		// hiliting
-		
-	if (light_list->hilite) {
-		shader->in_hilite=TRUE;
-		gl_shader_ambient_hilite_override(shader,TRUE);
-	}
-	else {
-		if (shader->in_hilite) {
-			shader->in_hilite=FALSE;
-			gl_shader_ambient_hilite_override(shader,FALSE);
-		}
-	}
-	
-		// textures and per-texture variables
-		
-	gl_shader_set_texture(shader,core_shader_group_map,texture,txt_idx,lmap_txt_idx,frame);
-	
-		// per polygon variables
-		
+		// setup variables
+
+	gl_shader_hilite_override(shader,light_list);
+	gl_shader_set_texture(shader,core_shader_group_model,texture,txt_idx,-1,frame);
 	gl_shader_set_poly_variables(shader,alpha);
-
-		// lighting variables
-
-// ES2 -- make sure this is in for more			
-//	if (core_shader_group==core_shader_group_model) gl_shader_set_diffuse_variables(shader,light_list);
-
-	gl_shader_set_light_variables(shader,core_shader_group_map,is_core,light_list);
+	gl_shader_set_diffuse_variables(shader,light_list);
+	gl_shader_set_light_variables(shader,core_shader_group_model,is_core,light_list);
 }

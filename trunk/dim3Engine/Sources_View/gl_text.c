@@ -36,6 +36,7 @@ extern setup_type			setup;
 
 int							font_index,font_size;
 float						*gl_text_vertexes,*gl_text_uvs;
+unsigned char				*gl_text_colors;
 texture_font_type			fonts[2];
 
 /* =======================================================
@@ -62,6 +63,7 @@ void gl_text_initialize(void)
 		
 	gl_text_vertexes=(float*)malloc(((1024*4)*2)*sizeof(float));
 	gl_text_uvs=(float*)malloc(((1024*4)*2)*sizeof(float));
+	gl_text_colors=(unsigned char*)malloc(((1024*4)*4)*sizeof(unsigned char));
 }
 
 void gl_text_shutdown(void)
@@ -71,6 +73,7 @@ void gl_text_shutdown(void)
 	
 	free(gl_text_vertexes);
 	free(gl_text_uvs);
+	free(gl_text_colors);
 }
 
 /* =======================================================
@@ -135,7 +138,6 @@ int gl_text_get_string_width(int text_font,int text_size,char *str)
 
 void gl_text_start(int text_font,int text_size)
 {
-	GLfloat					fct[4];
 	texture_font_size_type	*font;
 	
 	font=gl_text_get_font(text_font,text_size);
@@ -145,35 +147,11 @@ void gl_text_start(int text_font,int text_size)
 	font_index=text_font;
 	font_size=text_size;
 	
-		// setup texture
+		// start shader
 		
-	glActiveTexture(GL_TEXTURE0);
-	glEnable(GL_TEXTURE_2D);
-	
-	gl_texture_bind(0,FALSE,font->bitmap.gl_id);
-	
-		// texture combines
-		
-	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_COMBINE);
-	glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_RGB,GL_MODULATE);
+	gl_shader_draw_simple_bitmap_start();
+	gl_shader_draw_execute_simple_bitmap_ptr(font->bitmap.gl_id,2,gl_text_vertexes,gl_text_uvs,gl_text_colors);
 
-	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_RGB,GL_TEXTURE);
-	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_RGB,GL_SRC_COLOR);
-	
-	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE1_RGB,GL_PRIMARY_COLOR);
-	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND1_RGB,GL_SRC_COLOR);
-	
-		// alpha
-		
-	glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_ALPHA,GL_MODULATE);
-	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_ALPHA,GL_TEXTURE);
-	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_ALPHA,GL_SRC_ALPHA);
-	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE1_ALPHA,GL_CONSTANT);
-	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND1_ALPHA,GL_SRC_ALPHA);
-
-	fct[0]=fct[1]=fct[2]=fct[3]=1.0f;	
-	glTexEnvfv(GL_TEXTURE_ENV,GL_TEXTURE_ENV_COLOR,fct);
-	
 		// no wrapping
 		
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE);
@@ -190,15 +168,19 @@ void gl_text_start(int text_font,int text_size)
 
 void gl_text_end(void)
 {
-	glDisable(GL_BLEND);
-	glDisable(GL_ALPHA_TEST);
-	
 		// restore wrapping
 		
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT);
-    
-	glDisable(GL_TEXTURE_2D);
+
+		// turn off shader
+
+	gl_shader_draw_simple_bitmap_end();
+
+		// restore default blending
+
+	glDisable(GL_BLEND);
+	glDisable(GL_ALPHA_TEST);
 }
 
 /* =======================================================
@@ -213,7 +195,9 @@ void gl_text_draw_internal(int x,int y,char *txt,int just,bool vcenter,d3col *co
 	float					f_lft,f_rgt,f_top,f_bot,f_wid,f_high,
 							gx_lft,gx_rgt,gy_top,gy_bot;
 	float					*vp,*uv;
+	unsigned char			*cp;
 	char					*c;
+	unsigned char			uc_r,uc_b,uc_g,uc_alpha;
 	GLfloat					fct[4];
 	texture_font_size_type	*font;
 
@@ -256,6 +240,14 @@ void gl_text_draw_internal(int x,int y,char *txt,int just,bool vcenter,d3col *co
 
 	vp=gl_text_vertexes;
 	uv=gl_text_uvs;
+	cp=gl_text_colors;
+
+		// color setup
+
+	uc_r=(unsigned char)(col->r*255.0f);
+	uc_g=(unsigned char)(col->g*255.0f);
+	uc_b=(unsigned char)(col->b*255.0f);
+	uc_alpha=(unsigned char)(alpha*255.0f);
 
 		// create the quads
 
@@ -312,6 +304,25 @@ void gl_text_draw_internal(int x,int y,char *txt,int just,bool vcenter,d3col *co
 		*uv++=gx_rgt;
 		*uv++=gy_bot;
 
+			// colors
+
+		*cp++=uc_r;
+		*cp++=uc_g;
+		*cp++=uc_b;
+		*cp++=uc_alpha;
+		*cp++=uc_r;
+		*cp++=uc_g;
+		*cp++=uc_b;
+		*cp++=uc_alpha;
+		*cp++=uc_r;
+		*cp++=uc_g;
+		*cp++=uc_b;
+		*cp++=uc_alpha;
+		*cp++=uc_r;
+		*cp++=uc_g;
+		*cp++=uc_b;
+		*cp++=uc_alpha;
+
 			// remember number of characters
 
 		cnt++;
@@ -319,16 +330,9 @@ void gl_text_draw_internal(int x,int y,char *txt,int just,bool vcenter,d3col *co
 
 		// draw text
 
-	glVertexPointer(2,GL_FLOAT,0,(GLvoid*)gl_text_vertexes);
-
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)gl_text_uvs);
-
 	for (n=0;n!=cnt;n++) {
 		glDrawArrays(GL_TRIANGLE_STRIP,(n*4),4);
 	}
-
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 }
 
 void gl_text_draw(int x,int y,char *txt,int just,bool vcenter,d3col *col,float alpha)

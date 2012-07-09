@@ -36,7 +36,8 @@ extern setup_type			setup;
 extern view_type			view;
 extern render_info_type		render_info;
 
-shader_type					color_shader,bitmap_shader,bitmap_rect_shader;
+shader_type					color_shader,black_shader,
+							bitmap_shader,bitmap_rect_shader;
 
 /* =======================================================
 
@@ -132,6 +133,100 @@ bool gl_simple_color_shader_create(shader_type *shader,char *err_str)
 		
 	glEnableVertexAttribArrayARB(shader->var_locs.dim3Vertex);
 	glEnableVertexAttribArrayARB(shader->var_locs.dim3VertexColor);
+
+	return(ok);
+}
+
+/* =======================================================
+
+      Build Simple Black Shader
+      
+======================================================= */
+
+char* gl_simple_black_shader_build_vert(void)
+{
+	char			*buf;
+
+		// memory for shader
+
+	buf=(char*)malloc(max_core_shader_data_sz);
+	if (buf==NULL) return(NULL);
+
+	bzero(buf,max_core_shader_data_sz);
+
+		// build vert shader
+
+	strcat(buf,"attribute vec3 dim3Vertex;\n");
+	
+	strcat(buf,"void main(void)\n");
+	strcat(buf,"{\n");
+	strcat(buf,"gl_Position=gl_ProjectionMatrix*gl_ModelViewMatrix*vec4(dim3Vertex,1.0);\n");
+	strcat(buf,"}\n");
+
+	return(buf);
+}
+
+char* gl_simple_black_shader_build_frag(void)
+{
+	char			*buf;
+
+		// memory for shader
+
+	buf=(char*)malloc(max_core_shader_data_sz);
+	if (buf==NULL) return(NULL);
+
+	bzero(buf,max_core_shader_data_sz);
+
+		// build frag shader
+		
+	strcat(buf,"uniform float dim3Alpha;\n");
+	
+	strcat(buf,"void main(void)\n");
+	strcat(buf,"{\n");
+	strcat(buf,"gl_FragColor=vec4(0,0,0,dim3Alpha);\n");
+	strcat(buf,"}\n");
+
+	return(buf);
+}
+
+bool gl_simple_black_shader_create(shader_type *shader,char *err_str)
+{
+	char				*vertex_data,*fragment_data;
+	bool				ok;
+	
+		// create the shader code
+
+	vertex_data=gl_simple_black_shader_build_vert();
+	if (vertex_data==NULL) {
+		strcpy(err_str,"Out of Memory");
+		return(FALSE);
+	}
+
+	fragment_data=gl_simple_black_shader_build_frag();
+	if (fragment_data==NULL) {
+		free(vertex_data);
+		strcpy(err_str,"Out of Memory");
+		return(FALSE);
+	}
+	
+		// create the name
+		
+	strcpy(shader->name,"simple_black");
+	sprintf(shader->vertex_name,"%s_vert",shader->name);
+	sprintf(shader->fragment_name,"%s_frag",shader->name);
+	
+		// compile the code
+
+	ok=gl_shader_code_compile(shader,vertex_data,fragment_data,err_str);
+
+		// free the code
+
+	free(vertex_data);
+	free(fragment_data);
+	
+		// activate the required attributes
+		
+	glEnableVertexAttribArrayARB(shader->var_locs.dim3Vertex);
 
 	return(ok);
 }
@@ -359,12 +454,18 @@ bool gl_simple_shader_initialize(char *err_str)
 		// clear simple shaders
 
 	gl_shader_code_clear(&color_shader);
+	gl_shader_code_clear(&black_shader);
 	gl_shader_code_clear(&bitmap_shader);
 	gl_shader_code_clear(&bitmap_rect_shader);
 
 		// initialize simple shaders	
 		
 	if (!gl_simple_color_shader_create(&color_shader,err_str)) {
+		gl_simple_shader_shutdown();
+		return(FALSE);
+	}
+
+	if (!gl_simple_black_shader_create(&black_shader,err_str)) {
 		gl_simple_shader_shutdown();
 		return(FALSE);
 	}
@@ -387,6 +488,7 @@ void gl_simple_shader_shutdown(void)
 		// shutdown shaders
 
 	gl_shader_code_shutdown(&color_shader);
+	gl_shader_code_shutdown(&black_shader);
 	gl_shader_code_shutdown(&bitmap_shader);
 	gl_shader_code_shutdown(&bitmap_rect_shader);
 }
