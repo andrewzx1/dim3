@@ -50,41 +50,6 @@ extern bitmap_type			lmap_black_bitmap,lmap_white_bitmap;
 
 /* =======================================================
 
-      OpenGL ES Shader Stubs
-      
-======================================================= */
-
-#ifdef D3_OPENGL_ES
-
-// supergumba -- es2 -- remove all this and maybe add a new c file for exectuion
-
-void gl_shader_code_clear(shader_type *shader) {}
-bool gl_shader_code_compile(shader_type *shader,char *vertex_data,char *fragment_data,char *err_str) { return(FALSE); }
-void gl_shader_code_shutdown(shader_type *shader) {}
-void gl_shader_attach_map(void) {}
-void gl_shader_attach_model(model_type *mdl) {}
-void gl_shader_draw_scene_code_start(shader_type *shader) {}
-void gl_shader_draw_scene_code_end(shader_type *shader) {}
-void gl_shader_draw_scene_start(void) {}
-void gl_shader_draw_start(void) {}
-void gl_shader_draw_reset_normal_tangent_attrib(void) {}
-void gl_shader_draw_end(void) {}
-void gl_shader_texture_override(GLuint gl_id,float alpha) {}
-void gl_shader_draw_execute(int core_shader_group,texture_type *texture,int txt_idx,int frame,int lmap_txt_idx,float alpha,view_glsl_light_list_type *light_list,int tangent_offset,int normal_offset,int stride) {}
-void gl_shader_draw_simple_color_start(void) {}
-void gl_shader_draw_simple_color_end(void) {}
-void gl_shader_draw_execute_simple_color(void) {}
-void gl_shader_draw_simple_bitmap_start(void) {}
-void gl_shader_draw_simple_bitmap_end(void) {}
-void gl_shader_draw_execute_simple_bitmap(unsigned long gl_id) {}
-void gl_shader_draw_simple_bitmap_rect_start(void) {}
-void gl_shader_draw_simple_bitmap_rect_end(void) {}
-void gl_shader_draw_execute_simple_bitmap_rect(unsigned long gl_id) {}
-
-#else
-
-/* =======================================================
-
       Setup Shader Variables
       
 ======================================================= */
@@ -124,6 +89,8 @@ void gl_shader_cache_dynamic_variable_locations(shader_type *shader)
 	int				n;
 	char			var_name[256];
 	
+		// cache variable locations
+		
 	shader->var_locs.dim3FrequencySecond=glGetUniformLocationARB(shader->program_obj,"dim3FrequencySecond");
 	shader->var_locs.dim3CameraPosition=glGetUniformLocationARB(shader->program_obj,"dim3CameraPosition");
 	shader->var_locs.dim3AmbientColor=glGetUniformLocationARB(shader->program_obj,"dim3AmbientColor");
@@ -134,6 +101,10 @@ void gl_shader_cache_dynamic_variable_locations(shader_type *shader)
 	shader->var_locs.dim3DiffuseVector=glGetUniformLocationARB(shader->program_obj,"dim3DiffuseVector");
 	shader->var_locs.dim3DiffuseBoost=glGetUniformLocationARB(shader->program_obj,"dim3DiffuseBoost");
 
+	shader->var_locs.dim3Vertex=glGetAttribLocationARB(shader->program_obj,"dim3Vertex");
+	shader->var_locs.dim3VertexColor=glGetAttribLocationARB(shader->program_obj,"dim3VertexColor");
+	shader->var_locs.dim3VertexUV=glGetAttribLocationARB(shader->program_obj,"dim3VertexUV");
+	shader->var_locs.dim3VertexLightMapUV=glGetAttribLocationARB(shader->program_obj,"dim3VertexLightMapUV");
 	shader->var_locs.dim3VertexTangent=glGetAttribLocationARB(shader->program_obj,"dim3VertexTangent");
 	shader->var_locs.dim3VertexNormal=glGetAttribLocationARB(shader->program_obj,"dim3VertexNormal");
 	
@@ -153,6 +124,16 @@ void gl_shader_cache_dynamic_variable_locations(shader_type *shader)
 		sprintf(var_name,"dim3Light_%d.lightMapMask",n);
 		shader->var_locs.dim3Lights[n].lightMapMask=glGetUniformLocationARB(shader->program_obj,var_name);
 	}
+	
+		// remember last setting so we
+		// don't reset if necessary
+		
+	shader->var_values.vertex=-1;
+	shader->var_values.color=-1;
+	shader->var_values.uv=-1;
+	shader->var_values.lmap_uv=-1;
+	shader->var_values.tangent=-1;
+	shader->var_values.normal=-1;
 }
 
 /* =======================================================
@@ -608,13 +589,10 @@ void gl_shader_set_poly_variables(shader_type *shader,float alpha)
 
 void gl_shader_set_tangent_normal_array(shader_type *shader,int tangent_offset,int normal_offset,int stride)
 {
+/* ES2 -- delete
 		// tangent array
 		
 	if (shader->var_locs.dim3VertexTangent!=-1) {
-	
-			// need to enable?
-		
-		if (shader->var_values.tangent_offset==-1) glEnableVertexAttribArrayARB(shader->var_locs.dim3VertexTangent);
 		
 			// setup array
 			
@@ -639,6 +617,7 @@ void gl_shader_set_tangent_normal_array(shader_type *shader,int tangent_offset,i
 			glVertexAttribPointerARB(shader->var_locs.dim3VertexNormal,3,GL_FLOAT,GL_FALSE,stride,(void*)normal_offset);
 		}
 	}
+	*/
 }
 
 /* =======================================================
@@ -662,15 +641,6 @@ void gl_shader_draw_scene_code_start(shader_type *shader)
 		// when we are in that mode
 		
 	shader->in_hilite=FALSE;
-	
-		// we want to remember the last offsets
-		// for tangent and normal arrays
-				
-	shader->var_values.tangent_offset=-1;
-	shader->var_values.normal_offset=-1;
-	
-	if (shader->var_locs.dim3VertexTangent!=-1) glEnableVertexAttribArrayARB(shader->var_locs.dim3VertexTangent);
-	if (shader->var_locs.dim3VertexNormal!=-1) glEnableVertexAttribArrayARB(shader->var_locs.dim3VertexNormal);
 		
 		// also setup some per poly current values
 		// so we can skip setting if the values haven't changed
@@ -752,6 +722,8 @@ void gl_shader_draw_start(void)
 
 void gl_shader_draw_reset_normal_tangent_attrib(void)
 {
+/* ES2 -- we have to look into this to see if it's still something I have to do
+
 	int				n,k;
 	
 		// reset vertex attributes because the
@@ -769,31 +741,11 @@ void gl_shader_draw_reset_normal_tangent_attrib(void)
 		user_shaders[n].var_values.tangent_offset=-1;
 		user_shaders[n].var_values.normal_offset=-1;
 	}
+	*/
 }
 
 void gl_shader_draw_end(void)
 {
-	int				n,k;
-	shader_type		*shader;
-	
-		// turn off any vertexe attributes
-		
-	for (k=0;k!=(max_shader_light+1);k++) {
-		for (n=0;n!=max_core_shader;n++) {
-			shader=&core_shaders[k][n];
-			if (shader->var_values.tangent_offset!=-1) glDisableVertexAttribArrayARB(shader->var_locs.dim3VertexTangent);
-			if (shader->var_values.normal_offset!=-1) glDisableVertexAttribArrayARB(shader->var_locs.dim3VertexNormal);
-		}
-	}
-	
-	shader=user_shaders;
-	
-	for (n=0;n!=nuser_shader;n++) {
-		if (shader->var_values.tangent_offset!=-1) glDisableVertexAttribArrayARB(shader->var_locs.dim3VertexTangent);
-		if (shader->var_values.normal_offset!=-1) glDisableVertexAttribArrayARB(shader->var_locs.dim3VertexNormal);
-		shader++;
-	}
-		
 		// deactivate any current shader
 		
 	if (gl_shader_current!=NULL) glUseProgramObjectARB(0);
@@ -845,7 +797,7 @@ void gl_shader_set_texture(shader_type *shader,int core_shader_group,texture_typ
 				gl_id=map.textures[lmap_txt_idx].frames[0].bitmap.gl_id;
 			}
 		}
-		if (gl_id!=-1) gl_texture_bind(4,gl_id);
+		if (gl_id!=-1) gl_texture_bind(4,FALSE,gl_id);
 	}
 
 		// glow map
@@ -853,7 +805,7 @@ void gl_shader_set_texture(shader_type *shader,int core_shader_group,texture_typ
 	gl_id=texture->frames[frame].glowmap.gl_id;
 
 	if (gl_id!=-1) {
-		gl_texture_bind(3,gl_id);
+		gl_texture_bind(3,FALSE,gl_id);
 		
 		if (shader->var_values.glow_factor!=texture->glow.current_color) {
 			shader->var_values.glow_factor=texture->glow.current_color;
@@ -866,7 +818,7 @@ void gl_shader_set_texture(shader_type *shader,int core_shader_group,texture_typ
 	gl_id=texture->frames[frame].specularmap.gl_id;
 
 	if (gl_id!=-1) {
-		gl_texture_bind(2,gl_id);
+		gl_texture_bind(2,FALSE,gl_id);
 		
 		if (shader->var_values.shine_factor!=texture->shine_factor) {
 			shader->var_values.shine_factor=texture->shine_factor;
@@ -877,19 +829,19 @@ void gl_shader_set_texture(shader_type *shader,int core_shader_group,texture_typ
 		// bump map
 
 	gl_id=texture->frames[frame].bumpmap.gl_id;
-	if (gl_id!=-1) gl_texture_bind(1,gl_id);
+	if (gl_id!=-1) gl_texture_bind(1,FALSE,gl_id);
 	
 		// color map
 
 	gl_id=texture->frames[frame].bitmap.gl_id;
-	if (gl_id!=-1) gl_texture_bind(0,gl_id);
+	if (gl_id!=-1) gl_texture_bind(0,FALSE,gl_id);
 }
 
 void gl_shader_texture_override(GLuint gl_id,float alpha)
 {
 		// normally used to override for back rendering
 
-	gl_texture_bind(0,gl_id);
+	gl_texture_bind(0,FALSE,gl_id);
 	
 		// nodes can override alpha
 		// multiply in alpha so fade effects still work
@@ -978,132 +930,203 @@ void gl_shader_draw_execute(int core_shader_group,texture_type *texture,int txt_
 	gl_shader_set_light_variables(shader,core_shader_group,is_core,light_list);
 }
 
-/* =======================================================
 
-      Execute Simple Color Shaders
-      
-======================================================= */
 
-void gl_shader_draw_simple_color_start(void)
+
+void gl_shader_draw_execute_map(texture_type *texture,int txt_idx,int frame,int lmap_txt_idx,float alpha,int vertex_offset,int uv_offset,int lmap_uv_offset,int tangent_offset,int normal_offset,int stride,view_glsl_light_list_type *light_list)
 {
-		// remember current shader
-
-	gl_shader_current=NULL;
-}
-
-void gl_shader_draw_simple_color_end(void)
-{
-		// deactivate any current shader
-		
-	if (gl_shader_current!=NULL) glUseProgramObjectARB(0);
-}
-
-void gl_shader_draw_execute_simple_color(void)
-{
-		// change over the shader
-		
-	if ((&color_shader)!=gl_shader_current) {
-		gl_shader_current=&color_shader;
-		glUseProgramObjectARB(color_shader.program_obj);
-	}
-}
-
-/* =======================================================
-
-      Execute Simple Bitmap Shaders
-      
-======================================================= */
-
-void gl_shader_draw_simple_bitmap_start(void)
-{
-		// remember current shader
-
-	gl_shader_current=NULL;
-
-		// enable texturing
-		
-	glEnable(GL_TEXTURE_2D);
-}
-
-void gl_shader_draw_simple_bitmap_end(void)
-{
-		// deactivate any current shader
-		
-	if (gl_shader_current!=NULL) glUseProgramObjectARB(0);
+	bool						is_core;
+	shader_type					*shader;
 	
-		// turn off any used textures
-
-	glDisable(GL_TEXTURE_2D);
-}
-
-void gl_shader_draw_execute_simple_bitmap(unsigned long gl_id)
-{
-		// change over the shader
+		// get shader based on number of lights
 		
-	if ((&bitmap_shader)!=gl_shader_current) {
-		gl_shader_current=&bitmap_shader;
-		glUseProgramObjectARB(bitmap_shader.program_obj);
+	if (texture->shader_idx==gl_shader_core_index) {
+		shader=gl_core_shader_find_ptr(light_list->nlight,core_shader_group_map,texture);
+		is_core=TRUE;
 	}
-
-		// bind the bitmap
-
-	gl_texture_bind(0,gl_id);
-}
-
-/* =======================================================
-
-      Execute Simple Bitmap Rectangle Shaders
-      
-======================================================= */
-
-void gl_shader_draw_simple_bitmap_rect_start(void)
-{
-#if defined(D3_OS_IPHONE) || defined(D3_OS_ANDRIOD)
-	gl_shader_draw_simple_bitmap_start(gl_id);
-#else
-		// remember current shader
-
-	gl_shader_current=NULL;
-
-		// enable texturing
-		
-	glEnable(GL_TEXTURE_RECTANGLE);
-#endif
-}
-
-void gl_shader_draw_simple_bitmap_rect_end(void)
-{
-#if defined(D3_OS_IPHONE) || defined(D3_OS_ANDRIOD)
-	gl_shader_draw_simple_bitmap_end(gl_id);
-#else
-		// deactivate any current shader
-		
-	if (gl_shader_current!=NULL) glUseProgramObjectARB(0);
+	else {
+		shader=&user_shaders[texture->shader_idx];
+		is_core=FALSE;
+	}
 	
-		// turn off any used textures
-
-	glBindTexture(GL_TEXTURE_RECTANGLE,0);
-	glDisable(GL_TEXTURE_RECTANGLE);
-#endif
-}
-
-void gl_shader_draw_execute_simple_bitmap_rect(unsigned long gl_id)
-{
-#if defined(D3_OS_IPHONE) || defined(D3_OS_ANDRIOD)
-	gl_shader_draw_execute_simple_bitmap(gl_id);
-#else
-
-		// change over the shader
+		// if we are not in this shader, then
+		// change over
 		
-	if ((&bitmap_rect_shader)!=gl_shader_current) {
-		gl_shader_current=&bitmap_rect_shader;
-		glUseProgramObjectARB(bitmap_rect_shader.program_obj);
+	if (shader!=gl_shader_current) {
+	
+			// set in the new program
+			
+		gl_shader_current=shader;
+		glUseProgramObjectARB(shader->program_obj);
+			
+			// set per-scene variables, only do this once
+			// as they don't change per scene
+		
+		if (!shader->per_scene_vars_set) {
+			shader->per_scene_vars_set=TRUE;
+			gl_shader_set_scene_variables(shader);
+		}
 	}
+	
+		// bind the required attributes
 
-		// bind the bitmap
+	glVertexAttribPointerARB(shader->var_locs.dim3Vertex,3,GL_FLOAT,GL_FALSE,stride,(void*)vertex_offset);
+	glVertexAttribPointerARB(shader->var_locs.dim3VertexUV,2,GL_FLOAT,GL_FALSE,stride,(void*)uv_offset);
+	glVertexAttribPointerARB(shader->var_locs.dim3VertexLightMapUV,2,GL_FLOAT,GL_FALSE,stride,(void*)lmap_uv_offset);
+	glVertexAttribPointerARB(shader->var_locs.dim3VertexTangent,3,GL_FLOAT,GL_FALSE,stride,(void*)tangent_offset);
+	glVertexAttribPointerARB(shader->var_locs.dim3VertexNormal,3,GL_FLOAT,GL_FALSE,stride,(void*)normal_offset);
+	
+		// hiliting
+		
+	if (light_list->hilite) {
+		shader->in_hilite=TRUE;
+		gl_shader_ambient_hilite_override(shader,TRUE);
+	}
+	else {
+		if (shader->in_hilite) {
+			shader->in_hilite=FALSE;
+			gl_shader_ambient_hilite_override(shader,FALSE);
+		}
+	}
+	
+		// textures and per-texture variables
+		
+	gl_shader_set_texture(shader,core_shader_group_map,texture,txt_idx,lmap_txt_idx,frame);
+	
+		// per polygon variables
+		
+	gl_shader_set_poly_variables(shader,alpha);
 
-	glBindTexture(GL_TEXTURE_RECTANGLE,gl_id);
-#endif
+		// lighting variables
+
+	gl_shader_set_light_variables(shader,core_shader_group_map,is_core,light_list);
 }
 
-#endif
+void gl_shader_draw_execute_liquid(texture_type *texture,int txt_idx,int frame,int lmap_txt_idx,float alpha,int vertex_offset,int uv_offset,int lmap_uv_offset,int tangent_offset,int normal_offset,int stride,view_glsl_light_list_type *light_list)
+{
+	bool						is_core;
+	shader_type					*shader;
+	
+		// get shader based on number of lights
+		
+	if (texture->shader_idx==gl_shader_core_index) {
+		shader=gl_core_shader_find_ptr(light_list->nlight,core_shader_group_liquid,texture);
+		is_core=TRUE;
+	}
+	else {
+		shader=&user_shaders[texture->shader_idx];
+		is_core=FALSE;
+	}
+	
+		// if we are not in this shader, then
+		// change over
+		
+	if (shader!=gl_shader_current) {
+	
+			// set in the new program
+			
+		gl_shader_current=shader;
+		glUseProgramObjectARB(shader->program_obj);
+			
+			// set per-scene variables, only do this once
+			// as they don't change per scene
+		
+		if (!shader->per_scene_vars_set) {
+			shader->per_scene_vars_set=TRUE;
+			gl_shader_set_scene_variables(shader);
+		}
+	}
+	
+		// bind the required attributes
+
+	glVertexAttribPointerARB(shader->var_locs.dim3Vertex,3,GL_FLOAT,GL_FALSE,stride,(void*)vertex_offset);
+	glVertexAttribPointerARB(shader->var_locs.dim3VertexUV,2,GL_FLOAT,GL_FALSE,stride,(void*)uv_offset);
+	glVertexAttribPointerARB(shader->var_locs.dim3VertexLightMapUV,2,GL_FLOAT,GL_FALSE,stride,(void*)lmap_uv_offset);
+	glVertexAttribPointerARB(shader->var_locs.dim3VertexTangent,3,GL_FLOAT,GL_FALSE,stride,(void*)tangent_offset);
+	glVertexAttribPointerARB(shader->var_locs.dim3VertexNormal,3,GL_FLOAT,GL_FALSE,stride,(void*)normal_offset);
+	
+		// textures and per-texture variables
+		
+	gl_shader_set_texture(shader,core_shader_group_liquid,texture,txt_idx,lmap_txt_idx,frame);
+	
+		// per polygon variables
+		
+	gl_shader_set_poly_variables(shader,alpha);
+
+		// lighting variables
+
+	gl_shader_set_light_variables(shader,core_shader_group_liquid,is_core,light_list);
+}
+
+// ES2 -- do this one
+void gl_shader_draw_execute_model(texture_type *texture,int txt_idx,int frame,int lmap_txt_idx,float alpha,int vertex_offset,int uv_offset,int lmap_uv_offset,int tangent_offset,int normal_offset,int stride,view_glsl_light_list_type *light_list)
+{
+	bool						is_core;
+	shader_type					*shader;
+	
+		// get shader based on number of lights
+		
+	if (texture->shader_idx==gl_shader_core_index) {
+		shader=gl_core_shader_find_ptr(light_list->nlight,core_shader_group_map,texture);
+		is_core=TRUE;
+	}
+	else {
+		shader=&user_shaders[texture->shader_idx];
+		is_core=FALSE;
+	}
+	
+		// if we are not in this shader, then
+		// change over
+		
+	if (shader!=gl_shader_current) {
+	
+			// set in the new program
+			
+		gl_shader_current=shader;
+		glUseProgramObjectARB(shader->program_obj);
+			
+			// set per-scene variables, only do this once
+			// as they don't change per scene
+		
+		if (!shader->per_scene_vars_set) {
+			shader->per_scene_vars_set=TRUE;
+			gl_shader_set_scene_variables(shader);
+		}
+	}
+	
+		// bind the required attributes
+
+	glVertexAttribPointerARB(shader->var_locs.dim3Vertex,3,GL_FLOAT,GL_FALSE,stride,(void*)vertex_offset);
+	glVertexAttribPointerARB(shader->var_locs.dim3VertexUV,2,GL_FLOAT,GL_FALSE,stride,(void*)uv_offset);
+	glVertexAttribPointerARB(shader->var_locs.dim3VertexLightMapUV,2,GL_FLOAT,GL_FALSE,stride,(void*)lmap_uv_offset);
+	glVertexAttribPointerARB(shader->var_locs.dim3VertexTangent,3,GL_FLOAT,GL_FALSE,stride,(void*)tangent_offset);
+	glVertexAttribPointerARB(shader->var_locs.dim3VertexNormal,3,GL_FLOAT,GL_FALSE,stride,(void*)normal_offset);
+	
+		// hiliting
+		
+	if (light_list->hilite) {
+		shader->in_hilite=TRUE;
+		gl_shader_ambient_hilite_override(shader,TRUE);
+	}
+	else {
+		if (shader->in_hilite) {
+			shader->in_hilite=FALSE;
+			gl_shader_ambient_hilite_override(shader,FALSE);
+		}
+	}
+	
+		// textures and per-texture variables
+		
+	gl_shader_set_texture(shader,core_shader_group_map,texture,txt_idx,lmap_txt_idx,frame);
+	
+		// per polygon variables
+		
+	gl_shader_set_poly_variables(shader,alpha);
+
+		// lighting variables
+
+// ES2 -- make sure this is in for more			
+//	if (core_shader_group==core_shader_group_model) gl_shader_set_diffuse_variables(shader,light_list);
+
+	gl_shader_set_light_variables(shader,core_shader_group_map,is_core,light_list);
+}

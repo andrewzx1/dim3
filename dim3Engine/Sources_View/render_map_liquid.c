@@ -162,15 +162,11 @@ bool liquid_render_liquid_create_vertex(map_liquid_type *liq,float uv_shift,bool
 					gx,gy,gx2,gy2,gx_add,gy_add,
 					lmap_gx,lmap_gy,lmap_gx2,lmap_gy2,lmap_gx_add,lmap_gy_add;
 	float			*cf;
-	unsigned char	*vertex_ptr,*vp,*cp;
-	bool			shader_on;
+	unsigned char	*vertex_ptr,*vp;
 	d3vct			normal;
 	
 		// setup vbo
-		// shaders don't need light lists
 		
-	shader_on=view_shader_on();
-
 	view_bind_mesh_liquid_vertex_object(&liq->vbo);
 
 	vertex_ptr=view_map_mesh_liquid_vertex_object(&liq->vbo);
@@ -304,29 +300,22 @@ bool liquid_render_liquid_create_vertex(map_liquid_type *liq,float uv_shift,bool
 			*cf++=lmap_gx;
 			*cf++=lmap_gy;
 			
-			if (shader_on) {
-				*cf++=1.0f;
-				*cf++=0.0f;
-				*cf++=0.0f;
-			
-				normal.x=0.0f;
-				normal.y=-1.0f;
-				normal.z=0.0f;
+			*cf++=1.0f;
+			*cf++=0.0f;
+			*cf++=0.0f;
+		
+			normal.x=0.0f;
+			normal.y=-1.0f;
+			normal.z=0.0f;
 
-				if (liq->wave.on) {
-					normal.z=liquid_normal_cycle_xz[div&0x3];
-					normal.y=liquid_normal_cycle_y[div&0x3];
-				}
-			
-				*cf++=normal.x;
-				*cf++=normal.y;
-				*cf++=normal.z;
+			if (liq->wave.on) {
+				normal.z=liquid_normal_cycle_xz[div&0x3];
+				normal.y=liquid_normal_cycle_y[div&0x3];
 			}
-			else {
-				cp=(unsigned char*)cf;
-				gl_lights_calc_color_light_cache_byte(liq->light_cache.count,liq->light_cache.indexes,FALSE,(float)lft,fy,(float)top,cp);
-				*(cp+3)=0xFF;
-			}
+		
+			*cf++=normal.x;
+			*cf++=normal.y;
+			*cf++=normal.z;
 			
 			vp+=liq->vbo.vertex_stride;
 
@@ -344,29 +333,22 @@ bool liquid_render_liquid_create_vertex(map_liquid_type *liq,float uv_shift,bool
 			*cf++=lmap_gx2;
 			*cf++=lmap_gy;
 				
-			if (shader_on) {
-				*cf++=1.0f;
-				*cf++=0.0f;
-				*cf++=0.0f;
-			
-				normal.x=0.0f;
-				normal.y=-1.0f;
-				normal.z=0.0f;
+			*cf++=1.0f;
+			*cf++=0.0f;
+			*cf++=0.0f;
+		
+			normal.x=0.0f;
+			normal.y=-1.0f;
+			normal.z=0.0f;
 
-				if (liq->wave.on) {
-					normal.z=liquid_normal_cycle_xz[div&0x3];
-					normal.y=liquid_normal_cycle_y[div&0x3];
-				}
-			
-				*cf++=normal.x;
-				*cf++=normal.y;
-				*cf++=normal.z;
+			if (liq->wave.on) {
+				normal.z=liquid_normal_cycle_xz[div&0x3];
+				normal.y=liquid_normal_cycle_y[div&0x3];
 			}
-			else {
-				cp=(unsigned char*)cf;
-				gl_lights_calc_color_light_cache_byte(liq->light_cache.count,liq->light_cache.indexes,FALSE,(float)rgt,fy,(float)top,cp);
-				*(cp+3)=0xFF;
-			}
+		
+			*cf++=normal.x;
+			*cf++=normal.y;
+			*cf++=normal.z;
 			
 			vp+=liq->vbo.vertex_stride;
 		}
@@ -387,29 +369,22 @@ bool liquid_render_liquid_create_vertex(map_liquid_type *liq,float uv_shift,bool
 			*cf++=lmap_gx;
 			*cf++=lmap_gy;
 			
-			if (shader_on) {
-				*cf++=1.0f;
-				*cf++=0.0f;
-				*cf++=0.0f;
-			
-				normal.x=0.0f;
-				normal.y=-1.0f;
-				normal.z=0.0f;
+			*cf++=1.0f;
+			*cf++=0.0f;
+			*cf++=0.0f;
+		
+			normal.x=0.0f;
+			normal.y=-1.0f;
+			normal.z=0.0f;
 
-				if (liq->wave.on) {
-					normal.x=liquid_normal_cycle_xz[div&0x3];
-					normal.y=liquid_normal_cycle_y[div&0x3];
-				}
-			
-				*cf++=normal.x;
-				*cf++=normal.y;
-				*cf++=normal.z;
+			if (liq->wave.on) {
+				normal.x=liquid_normal_cycle_xz[div&0x3];
+				normal.y=liquid_normal_cycle_y[div&0x3];
 			}
-			else {
-				cp=(unsigned char*)cf;
-				gl_lights_calc_color_light_cache_byte(liq->light_cache.count,liq->light_cache.indexes,FALSE,(float)lft,fy,(float)top,cp);
-				*(cp+3)=0xFF;
-			}
+		
+			*cf++=normal.x;
+			*cf++=normal.y;
+			*cf++=normal.z;
 			
 			vp+=liq->vbo.vertex_stride;
 
@@ -427,29 +402,22 @@ bool liquid_render_liquid_create_vertex(map_liquid_type *liq,float uv_shift,bool
 			*cf++=lmap_gx;
 			*cf++=lmap_gy2;
 			
-			if (shader_on) {
-				*cf++=1.0f;
-				*cf++=0.0f;
-				*cf++=0.0f;
-			
-				normal.x=0.0f;
-				normal.y=-1.0f;
-				normal.z=0.0f;
+			*cf++=1.0f;
+			*cf++=0.0f;
+			*cf++=0.0f;
+		
+			normal.x=0.0f;
+			normal.y=-1.0f;
+			normal.z=0.0f;
 
-				if (liq->wave.on) {
-					normal.x=liquid_normal_cycle_xz[div&0x3];
-					normal.y=liquid_normal_cycle_y[div&0x3];
-				}
-			
-				*cf++=normal.x;
-				*cf++=normal.y;
-				*cf++=normal.z;
+			if (liq->wave.on) {
+				normal.x=liquid_normal_cycle_xz[div&0x3];
+				normal.y=liquid_normal_cycle_y[div&0x3];
 			}
-			else {
-				cp=(unsigned char*)cf;
-				gl_lights_calc_color_light_cache_byte(liq->light_cache.count,liq->light_cache.indexes,FALSE,(float)lft,fy,(float)bot,cp);
-				*(cp+3)=0xFF;
-			}
+		
+			*cf++=normal.x;
+			*cf++=normal.y;
+			*cf++=normal.z;
 		
 			vp+=liq->vbo.vertex_stride;
 		}
@@ -492,7 +460,7 @@ bool liquid_render_liquid_create_vertex(map_liquid_type *liq,float uv_shift,bool
       
 ======================================================= */
 
-void liquid_render_liquid_shader(map_liquid_type *liq,int txt_idx,int lmap_txt_idx,bool back_rendering)
+void liquid_render_liquid_layer(map_liquid_type *liq,int txt_idx,int lmap_txt_idx,bool back_rendering)
 {
 	int							frame;
 	float						alpha;
@@ -517,23 +485,13 @@ void liquid_render_liquid_shader(map_liquid_type *liq,int txt_idx,int lmap_txt_i
 	view_bind_mesh_liquid_vertex_object(&liq->vbo);
 	view_bind_mesh_liquid_index_object(&liq->vbo);
 
-	glVertexPointer(3,GL_FLOAT,liq->vbo.vertex_stride,(GLvoid*)0);
-
-	glClientActiveTexture(GL_TEXTURE1);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glTexCoordPointer(2,GL_FLOAT,liq->vbo.vertex_stride,(GLvoid*)(5*sizeof(float)));
-	
-	glClientActiveTexture(GL_TEXTURE0);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glTexCoordPointer(2,GL_FLOAT,liq->vbo.vertex_stride,(GLvoid*)(3*sizeof(float)));
-
 		// shader lights and tangents
 
 	gl_lights_build_liquid_glsl_light_list(liq,&light_list);
 
 	gl_shader_draw_start();
 	gl_shader_draw_reset_normal_tangent_attrib();
-	gl_shader_draw_execute(core_shader_group_liquid,texture,txt_idx,frame,lmap_txt_idx,1.0f,&light_list,(7*sizeof(float)),(10*sizeof(float)),liq->vbo.vertex_stride);
+	gl_shader_draw_execute_liquid(texture,txt_idx,frame,lmap_txt_idx,1.0f,0,(3*sizeof(float)),(5*sizeof(float)),(7*sizeof(float)),(10*sizeof(float)),liq->vbo.vertex_stride,&light_list);
 			
 		// fix texture if any back rendering
 		
@@ -551,132 +509,16 @@ void liquid_render_liquid_shader(map_liquid_type *liq,int txt_idx,int lmap_txt_i
 	glDrawElements(GL_TRIANGLE_STRIP,liq->vbo.index_count,GL_UNSIGNED_SHORT,(GLvoid*)0);
 
 	gl_shader_draw_end();
-
-	glClientActiveTexture(GL_TEXTURE1);
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-	
-	glClientActiveTexture(GL_TEXTURE0);
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	
 	view_unbind_mesh_liquid_vertex_object();
 	view_unbind_mesh_liquid_index_object();
-}
-
-void liquid_render_liquid_fixed(map_liquid_type *liq,int txt_idx,int lmap_txt_idx,bool back_rendering)
-{
-	int						frame;
-	float					alpha;
-	GLuint					gl_id,lmap_gl_id;
-	texture_type			*texture;
-
-		// enable arrays
-
-	glEnableClientState(GL_COLOR_ARRAY);
-
-	glClientActiveTexture(GL_TEXTURE3);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-
-	glClientActiveTexture(GL_TEXTURE2);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-		
-	glClientActiveTexture(GL_TEXTURE1);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	
-	glClientActiveTexture(GL_TEXTURE0);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-
-		// setup texture
-
-	texture=&map.textures[txt_idx];
-	frame=texture->animate.current_frame&max_texture_frame_mask;
-
-	if (texture->additive) {
-		glBlendFunc(GL_SRC_ALPHA,GL_ONE);
-	}
-	else {
-		glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-	}
-
-		// start fixed textures
-
-	gl_texture_map_fixed_start();
-
-		// the liquid VBO
-	
-	view_bind_mesh_liquid_vertex_object(&liq->vbo);
-	view_bind_mesh_liquid_index_object(&liq->vbo);
-
-	glVertexPointer(3,GL_FLOAT,liq->vbo.vertex_stride,(GLvoid*)0);
-
-	glClientActiveTexture(GL_TEXTURE3);
-	glTexCoordPointer(2,GL_FLOAT,liq->vbo.vertex_stride,(GLvoid*)(3*sizeof(float)));
-
-	glClientActiveTexture(GL_TEXTURE2);
-	glTexCoordPointer(2,GL_FLOAT,liq->vbo.vertex_stride,(GLvoid*)(3*sizeof(float)));
-
-	glClientActiveTexture(GL_TEXTURE1);
-	glTexCoordPointer(2,GL_FLOAT,liq->vbo.vertex_stride,(GLvoid*)(5*sizeof(float)));
-	
-	glClientActiveTexture(GL_TEXTURE0);
-	glTexCoordPointer(2,GL_FLOAT,liq->vbo.vertex_stride,(GLvoid*)(3*sizeof(float)));
-
-	glColorPointer(4,GL_UNSIGNED_BYTE,liq->vbo.vertex_stride,(GLvoid*)(7*sizeof(float)));
-
-		// back rendering overrides
-		
-	gl_id=texture->frames[frame].bitmap.gl_id;
-	alpha=1.0f;
-		
-	if (back_rendering) {
-		if (!gl_back_render_get_texture(liq->camera,&gl_id,&alpha)) {
-			gl_id=texture->frames[frame].bitmap.gl_id;
-		}
-	}
-
-		// light map
-
-	if (lmap_txt_idx==-1) {
-		lmap_gl_id=lmap_black_bitmap.gl_id;
-	}
-	else {
-		lmap_gl_id=map.textures[lmap_txt_idx].frames[0].bitmap.gl_id;
-	}
-
-	gl_texture_map_fixed_set(gl_id,lmap_gl_id,lmap_black_bitmap.gl_id,0.0f,alpha);
-
-		// draw liquid
-	
-	glDrawElements(GL_TRIANGLE_STRIP,liq->vbo.index_count,GL_UNSIGNED_SHORT,(GLvoid*)0);
-	
-		// clear fixed state
-
-	view_unbind_mesh_liquid_vertex_object();
-	view_unbind_mesh_liquid_index_object();
-
-	gl_texture_map_fixed_end();
-
-	glDisableClientState(GL_COLOR_ARRAY);
-
-	glClientActiveTexture(GL_TEXTURE3);
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-	
-	glClientActiveTexture(GL_TEXTURE2);
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-
-	glClientActiveTexture(GL_TEXTURE1);
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-	
-	glClientActiveTexture(GL_TEXTURE0);
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 }
 
 void liquid_render_liquid(map_liquid_type *liq)
 {
 	int					lmap_txt_idx;
 	float				uv_shift;
-	bool				shader_on,is_transparent;
-
-	shader_on=view_shader_on();
+	bool				is_transparent;
 
 		// uv factor
 
@@ -696,12 +538,7 @@ void liquid_render_liquid(map_liquid_type *liq)
 
 	if (!liquid_render_liquid_create_vertex(liq,uv_shift,FALSE)) return;
 
-	if (shader_on) {
-		liquid_render_liquid_shader(liq,liq->txt_idx,lmap_txt_idx,TRUE);
-	}
-	else {
-		liquid_render_liquid_fixed(liq,liq->txt_idx,lmap_txt_idx,TRUE);
-	}
+	liquid_render_liquid_layer(liq,liq->txt_idx,lmap_txt_idx,TRUE);
 	
 		// count the liquid polys
 		
@@ -724,12 +561,7 @@ void liquid_render_liquid(map_liquid_type *liq)
 
 	if (!liquid_render_liquid_create_vertex(liq,(uv_shift*0.5f),TRUE)) return;
 
-	if (shader_on) {
-		liquid_render_liquid_shader(liq,liq->overlay.txt_idx,lmap_txt_idx,FALSE);
-	}
-	else {
-		liquid_render_liquid_fixed(liq,liq->overlay.txt_idx,lmap_txt_idx,FALSE);
-	}
+	liquid_render_liquid_layer(liq,liq->overlay.txt_idx,lmap_txt_idx,FALSE);
 
 	if (!is_transparent) {
 		glDisable(GL_BLEND);

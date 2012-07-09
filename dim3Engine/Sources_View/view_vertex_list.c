@@ -47,12 +47,9 @@ bool view_map_vbo_initialize_mesh(map_mesh_type *mesh)
 	unsigned short		idx;
 	unsigned short		*index_ptr;
 	float				*pf;
-	unsigned char		*vertex_ptr,*vp,*pc;
-	bool				shader_on;
+	unsigned char		*vertex_ptr,*vp;
 	d3pnt				*pnt;
 	map_mesh_poly_type	*poly;
-
-	shader_on=view_shader_on();
 	
 		// setup vertex pointer
 
@@ -87,21 +84,12 @@ bool view_map_vbo_initialize_mesh(map_mesh_type *mesh)
 			*pf++=poly->lmap_uv.uvs[k].x;
 			*pf++=poly->lmap_uv.uvs[k].y;
 
-			if (shader_on) {
-				*pf++=poly->tangent_space.tangent.x;
-				*pf++=poly->tangent_space.tangent.y;
-				*pf++=poly->tangent_space.tangent.z;
-				*pf++=poly->tangent_space.normal.x;
-				*pf++=poly->tangent_space.normal.y;
-				*pf++=poly->tangent_space.normal.z;
-			}
-			else {
-				pc=(unsigned char*)pf;
-				*pc++=0xFF;
-				*pc++=0xFF;
-				*pc++=0xFF;
-				*pc++=0xFF;
-			}
+			*pf++=poly->tangent_space.tangent.x;
+			*pf++=poly->tangent_space.tangent.y;
+			*pf++=poly->tangent_space.tangent.z;
+			*pf++=poly->tangent_space.normal.x;
+			*pf++=poly->tangent_space.normal.y;
+			*pf++=poly->tangent_space.normal.z;
 			
 			vp+=mesh->vbo.vertex_stride;
 		}
@@ -194,12 +182,9 @@ bool view_map_vbo_initialize(void)
 {
 	int					n,k,vertex_cnt,index_cnt,stride,
 						liq_div_count;
-	bool				shader_on;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
 	map_liquid_type		*liq;
-
-	shader_on=view_shader_on();
 
 		// meshes
 
@@ -221,21 +206,14 @@ bool view_map_vbo_initialize(void)
 
 		vertex_cnt=index_cnt;
 		
-		stride=(3+2+2)*sizeof(float);			// 3 vertex, 2 uv, 2 light map uv
-		if (shader_on) {
-			stride+=((3+3)*sizeof(float));		// 3 tangent, 3 normal
-		}
-		else {
-			stride+=(4*sizeof(unsigned char));	// 4 colors
-		}
+		stride=(3+2+2+3+3)*sizeof(float);			// 3 vertex, 2 uv, 2 light map uv, 3 tangent, 3 normal
 
 			// create the VBO
 			
 		view_create_mesh_liquid_vertex_object(&mesh->vbo,vertex_cnt,stride,index_cnt);
 
 		if (!view_map_vbo_initialize_mesh(mesh)) return(FALSE);
-		
-		if (!map_mesh_create_colors_cache(mesh)) return(FALSE);
+
 		mesh++;
 	}
 
@@ -254,13 +232,7 @@ bool view_map_vbo_initialize(void)
 		index_cnt=(liq_div_count+1)*2;				// strip drawing, so only one per vertex
 		vertex_cnt=(liq_div_count+1)*2;
 
-		stride=(3+2+2)*sizeof(float);				// 3 vertex, 2 uv, 2 light map uv
-		if (shader_on) {
-			stride+=((3+3)*sizeof(float));			// 3 tangent, 3 normal
-		}
-		else {
-			stride+=(4*sizeof(unsigned char));		// 4 colors
-		}
+		stride=(3+2+2+3+3)*sizeof(float);				// 3 vertex, 2 uv, 2 light map uv, 3 tangent, 3 normal
 
 			// create the liquid
 
@@ -313,14 +285,9 @@ void view_map_vbo_rebuild_mesh(map_mesh_type *mesh)
 	int					n,k;
 	float				x_shift_offset,y_shift_offset;
 	float				*pf;
-	unsigned char		ur,ug,ub;
-	unsigned char		*vertex_ptr,*vp,*pc,*pc2;
-	bool				shader_on,only_ambient,skip;
+	unsigned char		*vertex_ptr,*vp;
 	d3pnt				*pnt;
-	d3col				col;
 	map_mesh_poly_type	*poly;
-	
-	shader_on=view_shader_on();
 
 		// we don't immediately bind and map
 		// until we actually require a change
@@ -356,15 +323,14 @@ void view_map_vbo_rebuild_mesh(map_mesh_type *mesh)
 				*pf++=(float)pnt->y;
 				*pf++=(float)pnt->z;
 				
-				if (shader_on) {
-					pf+=4;
-					*pf++=poly->tangent_space.tangent.x;
-					*pf++=poly->tangent_space.tangent.y;
-					*pf++=poly->tangent_space.tangent.z;
-					*pf++=poly->tangent_space.normal.x;
-					*pf++=poly->tangent_space.normal.y;
-					*pf++=poly->tangent_space.normal.z;
-				}
+				pf+=4;
+				
+				*pf++=poly->tangent_space.tangent.x;
+				*pf++=poly->tangent_space.tangent.y;
+				*pf++=poly->tangent_space.tangent.z;
+				*pf++=poly->tangent_space.normal.x;
+				*pf++=poly->tangent_space.normal.y;
+				*pf++=poly->tangent_space.normal.z;
 				
 				vp+=mesh->vbo.vertex_stride;
 			}
@@ -412,118 +378,6 @@ void view_map_vbo_rebuild_mesh(map_mesh_type *mesh)
 			}
 
 			poly++;
-		}
-	}
-
-		// non-shader lighting
-		
-	if ((!shader_on) && (!mesh->flag.hilite)) {
-	
-			// get the lights for this mesh
-			// we have a special check for ambient only
-			// lighting which can skip a number of stages
-			
-		if (setup.debug_on) {
-			only_ambient=TRUE;
-			col.r=col.g=col.b=1.0f;
-		}
-		else {
-			only_ambient=(mesh->light_cache.count==0);
-		}
-
-			// we have a special flag to tell if we've already
-			// set it to ambient only the last draw and then skip it
-
-		skip=FALSE;
-		
-		if (only_ambient) {
-			if (mesh->draw.cur_ambient_only) {
-				skip=TRUE;
-			}
-			else {
-				mesh->draw.cur_ambient_only=TRUE;
-			}
-		}
-		else {
-			mesh->draw.cur_ambient_only=FALSE;
-		}
-			
-			// set the colors
-			
-		if (!skip) {
-
-				// get the color pointer
-
-			if (vertex_ptr==NULL) {
-				view_bind_mesh_liquid_vertex_object(&mesh->vbo);
-				vertex_ptr=view_map_mesh_liquid_vertex_object(&mesh->vbo);
-				if (vertex_ptr==NULL) {
-					view_unbind_mesh_liquid_vertex_object();
-					return;
-				}
-			}
-
-			vp=vertex_ptr;
-		
-				// colors when only ambient lighting
-				
-			if (only_ambient) {
-
-				gl_lights_calc_ambient_color(&col);
-
-				ur=(unsigned char)(col.r*255.0f);
-				ug=(unsigned char)(col.g*255.0f);
-				ub=(unsigned char)(col.b*255.0f);
-
-				for (n=0;n!=mesh->vbo.index_count;n++) {
-				
-					pc=vp+(7*sizeof(float));
-					
-					*pc++=ur;
-					*pc++=ug;
-					*pc++=ub;
-					*pc++=0xFF;
-					
-					vp+=mesh->vbo.vertex_stride;
-				}
-			}
-			
-				// colors hit by lights
-				// we use the color cache so we only
-				// calculate once per mesh vertex even though
-				// the vertex pointer is once per poly vertex
-				
-			else {
-							
-				pc2=mesh->draw.colors_cache;
-				pnt=mesh->vertexes;
-
-				for (n=0;n!=mesh->nvertex;n++) {
-					gl_lights_calc_color_light_cache_byte(mesh->light_cache.count,mesh->light_cache.indexes,TRUE,(float)pnt->x,(float)pnt->y,(float)pnt->z,pc2);
-					pc2+=3;
-					pnt++;
-				}
-
-				poly=mesh->polys;
-			
-				for (n=0;n!=mesh->npoly;n++) {
-			
-					for (k=0;k!=poly->ptsz;k++) {
-					
-						pc=vp+(7*sizeof(float));
-						pc2=mesh->draw.colors_cache+(poly->v[k]*3);
-						
-						*pc++=*pc2++;
-						*pc++=*pc2++;
-						*pc++=*pc2;
-						*pc++=0xFF;
-						
-						vp+=mesh->vbo.vertex_stride;
-					}
-
-					poly++;
-				}
-			}
 		}
 	}
 	

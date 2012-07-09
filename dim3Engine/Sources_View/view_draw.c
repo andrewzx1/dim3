@@ -277,7 +277,7 @@ void view_draw_scene_render(obj_type *obj,weapon_type *weap)
 
 		// setup per-scene shader variables
 
-	if (view_shader_on()) gl_shader_draw_scene_start();
+	gl_shader_draw_scene_start();
 
 		// rebuild anything in the map VBOs
 		// that needs chaning (lighting, UV shifts,

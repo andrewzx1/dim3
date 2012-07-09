@@ -99,19 +99,24 @@ void gl_texture_frame_start(void)
 	}
 }
 
-void gl_texture_bind(int unit,GLuint txt_id)
+void gl_texture_bind(int unit,bool rectangle,GLuint txt_id)
 {
 	if (gl_texture_current_binds[unit]==txt_id) return;
 
 	gl_texture_current_binds[unit]=txt_id;
 
 	glActiveTexture(GL_TEXTURE0+unit);
-	glBindTexture(GL_TEXTURE_2D,txt_id);
+	if (!rectangle) {
+		glBindTexture(GL_TEXTURE_2D,txt_id);
+	}
+	else {
+		glBindTexture(GL_TEXTURE_RECTANGLE,txt_id);
+	}
 }
 
-void gl_texture_clear(int unit)
+void gl_texture_clear(int unit,bool rectangle)
 {
-	gl_texture_bind(unit,0);
+	gl_texture_bind(unit,rectangle,0);
 	gl_texture_current_binds[unit]=-1;
 }
 
@@ -165,7 +170,7 @@ void gl_texture_map_fixed_start(void)
 	glActiveTexture(GL_TEXTURE2);
 	glEnable(GL_TEXTURE_2D);
 	
-	gl_texture_bind(2,lmap_black_bitmap.gl_id);					// needs a texture to function properly
+	gl_texture_bind(2,FALSE,lmap_black_bitmap.gl_id);					// needs a texture to function properly
 
 	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_COMBINE);
 
@@ -234,9 +239,9 @@ void gl_texture_map_fixed_set(GLuint txt_id,GLuint lmap_txt_id,GLuint glow_txt_i
 
 		// set the textures
 
-	gl_texture_bind(0,glow_txt_id);
-	gl_texture_bind(1,lmap_txt_id);
-	gl_texture_bind(3,txt_id);
+	gl_texture_bind(0,FALSE,glow_txt_id);
+	gl_texture_bind(1,FALSE,lmap_txt_id);
+	gl_texture_bind(3,FALSE,txt_id);
 
 		// set the alpha color
 
@@ -299,7 +304,7 @@ void gl_texture_model_fixed_start(void)
 	glActiveTexture(GL_TEXTURE1);
 	glEnable(GL_TEXTURE_2D);
 	
-	gl_texture_bind(1,lmap_black_bitmap.gl_id);					// needs a texture to function properly
+	gl_texture_bind(1,FALSE,lmap_black_bitmap.gl_id);					// needs a texture to function properly
 
 	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_COMBINE);
 
@@ -362,8 +367,8 @@ void gl_texture_model_fixed_set(GLuint txt_id,GLuint glow_txt_id,float glow_colo
 
 		// set the textures
 
-	gl_texture_bind(0,glow_txt_id);
-	gl_texture_bind(2,txt_id);
+	gl_texture_bind(0,FALSE,glow_txt_id);
+	gl_texture_bind(2,FALSE,txt_id);
 
 		// set the alpha color
 
@@ -430,7 +435,7 @@ void gl_texture_decal_set(GLuint txt_id,float r,float g,float b,float alpha)
 
 		// texture
 
-	gl_texture_bind(0,txt_id);
+	gl_texture_bind(0,FALSE,txt_id);
 	
 		// color and alpha
 	 
@@ -487,7 +492,7 @@ void gl_texture_simple_set(GLuint txt_id,bool clamp,float r,float g,float b,floa
 	
 		// set the texture
 		
-	gl_texture_bind(0,txt_id);
+	gl_texture_bind(0,FALSE,txt_id);
 	
 		// set the clamping
 		

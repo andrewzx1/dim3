@@ -181,7 +181,6 @@ void debug_dump(void)
 	debug_dump_info_int(file,"Max Texture Units",render_info.texture_unit_count);
 	debug_dump_info_int(file,"Max Texture Size",render_info.texture_max_size);
 	
-	debug_dump_info_enable(file,"GLSL",gl_check_shader_ok());
 	debug_dump_info_enable(file,"FBO",gl_check_frame_buffer_ok());
 	debug_dump_info_enable(file,"Rectangular Textures",gl_check_texture_rectangle_ok());
 	debug_dump_info_enable(file,"FSAA",gl_check_fsaa_ok());

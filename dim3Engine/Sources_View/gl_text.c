@@ -150,7 +150,7 @@ void gl_text_start(int text_font,int text_size)
 	glActiveTexture(GL_TEXTURE0);
 	glEnable(GL_TEXTURE_2D);
 	
-	gl_texture_bind(0,font->bitmap.gl_id);
+	gl_texture_bind(0,FALSE,font->bitmap.gl_id);
 	
 		// texture combines
 		

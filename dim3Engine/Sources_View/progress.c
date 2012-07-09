@@ -124,13 +124,14 @@ void progress_next(void)
 	gl_2D_view_interface();
 	
 		// draw background
-
-	gl_texture_clear(0);			// progress can be called while baseutility loads bitmaps, need to reset the current bitmap so it doesn't get lost
+		// progress can be called while baseutility loads bitmaps, need to reset the current bitmap so it doesn't get lost
 
 	if (gl_check_texture_rectangle_ok()) {
+		gl_texture_clear(0,TRUE);
 		view_primitive_2D_texture_quad_rectangle(progress_background_bitmap.gl_id,1.0f,0,iface.scale_x,0,iface.scale_y,progress_background_bitmap.wid,progress_background_bitmap.high);
 	}
 	else {
+		gl_texture_clear(0,FALSE);
 		view_primitive_2D_texture_quad(progress_background_bitmap.gl_id,NULL,1.0f,0,iface.scale_x,0,iface.scale_y,0.0f,1.0f,0.0f,1.0f,TRUE);
 	}
 	

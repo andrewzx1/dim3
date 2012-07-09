@@ -101,7 +101,6 @@ int map_mesh_add(map_type *map)
 	
 	mesh->nvertex=0;
 	mesh->vertexes=NULL;
-	mesh->draw.colors_cache=NULL;
 
 	mesh->copy.vertexes=NULL;
 	mesh->copy.tangent_spaces=NULL;
@@ -129,7 +128,6 @@ bool map_mesh_delete(map_type *map,int mesh_idx)
 	mesh=&map->mesh.meshes[mesh_idx];
 
 	if (mesh->vertexes!=NULL) free(mesh->vertexes);
-	if (mesh->draw.colors_cache!=NULL) free(mesh->draw.colors_cache);
 
 	if (mesh->copy.vertexes!=NULL) free(mesh->copy.vertexes);
 	if (mesh->copy.tangent_spaces!=NULL) free(mesh->copy.tangent_spaces);
@@ -908,18 +906,4 @@ int map_mesh_calculate_distance(map_mesh_type *mesh,d3pnt *pnt)
 	}
 	
 	return((int)sqrtf((fx*fx)+(fy*fy)+(fz*fz)));
-}
-
-/* =======================================================
-
-      Create Color Cache
-      
-======================================================= */
-
-bool map_mesh_create_colors_cache(map_mesh_type *mesh)
-{
-	if (mesh->draw.colors_cache!=NULL) return(TRUE);
-
-	mesh->draw.colors_cache=malloc((mesh->nvertex*3)*sizeof(unsigned char));
-	return(mesh->draw.colors_cache!=NULL);
 }

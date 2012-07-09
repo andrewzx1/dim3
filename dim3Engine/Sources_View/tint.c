@@ -69,8 +69,7 @@ void view_draw_liquid_tint(int liquid_idx)
 	glDisable(GL_ALPHA_TEST);
 	glDisable(GL_DEPTH_TEST);
 
-	glColor4f(liq->col.r,liq->col.g,liq->col.b,liq->tint_alpha);
-	view_primitive_2D_tint_screen();
+	view_primitive_2D_tint_screen(&liq->col,liq->tint_alpha);
 }
 
 /* =======================================================
@@ -136,7 +135,6 @@ void view_draw_effect_tint(void)
 	glDisable(GL_ALPHA_TEST);
 	glDisable(GL_DEPTH_TEST);
 
-	glColor4f(tint_col.r,tint_col.g,tint_col.b,(alpha*tint_alpha));
-	view_primitive_2D_tint_screen();
+	view_primitive_2D_tint_screen(&tint_col,(alpha*tint_alpha));
 }
 

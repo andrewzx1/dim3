@@ -102,7 +102,7 @@ void gl_fs_shader_initialize(void)
 
 	glGenTextures(1,&fs_shader_txt_id);
 	
-	gl_texture_clear(0);
+	gl_texture_clear(0,FALSE);
 	glBindTexture(GL_TEXTURE_RECTANGLE_ARB,fs_shader_txt_id);
 	
 	glTexImage2D(GL_TEXTURE_RECTANGLE_ARB,0,GL_RGBA,view.screen.x_sz,view.screen.y_sz,0,GL_RGBA,GL_UNSIGNED_BYTE,0);
@@ -188,7 +188,7 @@ void gl_fs_shader_map_start(void)
 {
 		// check if fbo and shaders are available
 		
-	fs_shader_on=gl_check_frame_buffer_ok()&&gl_check_shader_ok()&&gl_check_texture_rectangle_ok();
+	fs_shader_on=gl_check_frame_buffer_ok()&&gl_check_texture_rectangle_ok();
 
 		// no fs shader started
 

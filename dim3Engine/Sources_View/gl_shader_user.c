@@ -92,10 +92,6 @@ bool gl_user_shader_initialize(char *err_str)
 	iface_shader_type		*iface_shader;
 	shader_type				*shader;
 
-		// shaders on?
-
-	if (!gl_check_shader_ok()) return(TRUE);
-	
 		// start the shaders from the setup list
 	
 	nuser_shader=iface.shader_list.nshader;
@@ -167,8 +163,6 @@ void gl_user_shader_shutdown(void)
 {
 	int					n;
 	shader_type			*shader;
-
-	if (!gl_check_shader_ok()) return;
 
 		// shutdown shaders
 

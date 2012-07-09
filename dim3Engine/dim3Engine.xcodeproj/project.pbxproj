@@ -467,6 +467,7 @@
 		26E1844513CEA27800812348 /* dim3 Engine.app in Copy Application */ = {isa = PBXBuildFile; fileRef = F5CD87F70557721D0023AD9B /* dim3 Engine.app */; };
 		26EE3E1713DA7F78000ABAF1 /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26EE3E1613DA7F78000ABAF1 /* AudioUnit.framework */; };
 		26F0C43F1563297300AFE368 /* app_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 26F0C43E1563297300AFE368 /* app_defs.h */; };
+		26FF359E15A936820010C22E /* gl_shader_execute.c in Sources */ = {isa = PBXBuildFile; fileRef = 26FF359D15A936810010C22E /* gl_shader_execute.c */; };
 		26FF68A41523D5A200FACC3B /* base_iface_singleplayer.c in Sources */ = {isa = PBXBuildFile; fileRef = 26FF68A31523D5A200FACC3B /* base_iface_singleplayer.c */; };
 		26FF68B61523D61B00FACC3B /* script_singleplayer_high_score.c in Sources */ = {isa = PBXBuildFile; fileRef = 26FF68B31523D61B00FACC3B /* script_singleplayer_high_score.c */; };
 		26FF68B71523D61B00FACC3B /* script_singleplayer_setting.c in Sources */ = {isa = PBXBuildFile; fileRef = 26FF68B41523D61B00FACC3B /* script_singleplayer_setting.c */; };
@@ -966,6 +967,7 @@
 		26CBE2031581AD1E00093D7C /* simple_save_pick.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = simple_save_pick.c; sourceTree = "<group>"; };
 		26EE3E1613DA7F78000ABAF1 /* AudioUnit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioUnit.framework; path = ../../../../System/Library/Frameworks/AudioUnit.framework; sourceTree = "<group>"; };
 		26F0C43E1563297300AFE368 /* app_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = app_defs.h; path = Headers/app_defs.h; sourceTree = "<group>"; };
+		26FF359D15A936810010C22E /* gl_shader_execute.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = gl_shader_execute.c; sourceTree = "<group>"; };
 		26FF68A31523D5A200FACC3B /* base_iface_singleplayer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = base_iface_singleplayer.c; sourceTree = "<group>"; };
 		26FF68B31523D61B00FACC3B /* script_singleplayer_high_score.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_singleplayer_high_score.c; sourceTree = "<group>"; };
 		26FF68B41523D61B00FACC3B /* script_singleplayer_setting.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_singleplayer_setting.c; sourceTree = "<group>"; };
@@ -1435,6 +1437,7 @@
 				2682E44F159D1F7C001CE3DB /* gl_shader_simple.c */,
 				260B3F641411F781006ED023 /* gl_shader_fullscreen.c */,
 				260B3F651411F781006ED023 /* gl_shader_user.c */,
+				26FF359D15A936810010C22E /* gl_shader_execute.c */,
 				260B3F661411F781006ED023 /* gl_text.c */,
 				260B3F671411F781006ED023 /* gl_texture.c */,
 			);
@@ -2369,6 +2372,7 @@
 				267DEDBA158ACD9300216D36 /* script_obj_watch_position.c in Sources */,
 				262D75D7158FE8A00086B8BB /* script_obj_label.c in Sources */,
 				2682E450159D1F7C001CE3DB /* gl_shader_simple.c in Sources */,
+				26FF359E15A936820010C22E /* gl_shader_execute.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -36,7 +36,7 @@ extern server_type		server;
 extern view_type		view;
 extern setup_type		setup;
 
-extern bitmap_type			lmap_black_bitmap;
+extern bitmap_type		lmap_black_bitmap;
 
 /* =======================================================
 
@@ -68,94 +68,18 @@ inline float render_model_get_mesh_alpha(model_draw *draw,int mesh_idx)
 
 /* =======================================================
 
-      Model Colors and Normals
+      Model Normals
       
 ======================================================= */
 
-void render_model_create_color_vertexes(model_type *mdl,int mesh_mask,model_draw *draw)
-{
-	int				n,k;
-	float			*vp,*cp;
-	d3col			col;
-	model_mesh_type	*mesh;
-
-		// color lists for non-shader paths
-
-	for (n=0;n!=mdl->nmesh;n++) {
-		if ((mesh_mask&(0x1<<n))==0) continue;
-		
-		mesh=&mdl->meshes[n];
-		
-			// setup color list
-		
-		cp=draw->setup.mesh_arrays[n].gl_color_array;
-
-			// debug draw
-			
-		if (setup.debug_on) {
-		
-			for (k=0;k!=mesh->nvertex;k++) {
-				*cp++=1.0f;
-				*cp++=1.0f;
-				*cp++=1.0f;
-			}
-			
-			continue;
-		}
-	
-			// hilited meshes
-
-		if ((mesh->no_lighting) || (draw->ui_lighting)) {
-
-				// set vertexes to white
-
-			for (k=0;k!=mesh->nvertex;k++) {
-				*cp++=1.0f;
-				*cp++=1.0f;
-				*cp++=1.0f;
-			}
-
-			continue;
-		}
-		
-			// ambient only
-			
-		if (draw->light_cache.count==0) {
-		
-				// set vertexes to ambient color
-
-			gl_lights_calc_ambient_color(&col);
-		
-			for (k=0;k!=mesh->nvertex;k++) {
-				*cp++=col.r;
-				*cp++=col.g;
-				*cp++=col.b;
-			}
-			
-			continue;
-		}
-
-			// vertex lighting
-
-		vp=draw->setup.mesh_arrays[n].gl_vertex_array;
-
-		for (k=0;k!=mesh->nvertex;k++) {
-			gl_lights_calc_color_light_cache_float(draw->light_cache.count,draw->light_cache.indexes,FALSE,*vp,*(vp+1),*(vp+2),cp);
-			cp+=3;
-			vp+=3;
-		}
-
-	}
-}
-
-void render_model_create_normal_vertexes(model_type *mdl,int mesh_mask,model_draw *draw,bool shader_off)
+void render_model_create_normal_vertexes(model_type *mdl,int mesh_mask,model_draw *draw)
 {
 	int				n;
 
 	for (n=0;n!=mdl->nmesh;n++) {
 		if ((mesh_mask&(0x1<<n))==0) continue;
-		model_create_draw_normals(mdl,n,&draw->setup,shader_off);
-		if (draw->flip_x) model_flip_draw_normals(mdl,n,&draw->setup,shader_off);
+		model_create_draw_normals(mdl,n,&draw->setup);
+		if (draw->flip_x) model_flip_draw_normals(mdl,n,&draw->setup);
 	}
 }
 
@@ -230,64 +154,11 @@ void render_model_diffuse_color_vertexes(model_type *mdl,int mesh_mask,model_dra
 
 /* =======================================================
 
-      Specific Model Drawing Arrays
+      Setup Model Drawing Arrays
       
 ======================================================= */
 
-void render_model_vertex_object_no_shader(model_type *mdl,int mesh_idx,model_draw *draw,unsigned char *vertex_ptr)
-{
-	int					n,k,offset,stride;
-	float				*gx,*gy,*pf,
-						*va,*va_start,*ca,*ca_start;
-	unsigned char		*vp,*pc;
-	model_mesh_type		*mesh;
-	model_poly_type		*poly;
-	
-	mesh=&mdl->meshes[mesh_idx];
-	
-	vp=vertex_ptr;
-
-	va_start=draw->setup.mesh_arrays[mesh_idx].gl_vertex_array;
-	ca_start=draw->setup.mesh_arrays[mesh_idx].gl_color_array;
-
-	stride=draw->vbo[mesh_idx].vertex_stride;
-
-	poly=mesh->polys;
-	
-	for (n=0;n!=mesh->npoly;n++) {
-	
-		gx=poly->gx;
-		gy=poly->gy;
-
-		for (k=0;k!=poly->ptsz;k++) {
-			offset=poly->v[k]*3;
-			
-			va=va_start+offset;
-			ca=ca_start+offset;
-
-			pf=(float*)vp;
-
-			*pf++=*va++;
-			*pf++=*va++;
-			*pf++=*va;
-
-			*pf++=*gx++;
-			*pf++=*gy++;
-
-			pc=(unsigned char*)pf;
-			*pc++=(unsigned char)((*ca++)*255.0f);
-			*pc++=(unsigned char)((*ca++)*255.0f);
-			*pc++=(unsigned char)((*ca)*255.0f);
-			*pc=0xFF;
-
-			vp+=stride;
-		}
-
-		poly++;
-	}
-}
-
-void render_model_vertex_object_shader(model_type *mdl,int mesh_idx,model_draw *draw,unsigned char *vertex_ptr)
+void render_model_vertex_object_setup(model_type *mdl,int mesh_idx,model_draw *draw,unsigned char *vertex_ptr)
 {
 	int					n,k,offset,stride;
 	float				*gx,*gy,*pf,
@@ -354,16 +225,12 @@ bool render_model_initialize_vertex_objects(model_type *mdl,int mesh_idx,model_d
 {
 	int					stride;
 	unsigned char		*vertex_ptr;
-	bool				shader_on;
 	model_mesh_type		*mesh;
 	
  		// construct VBO
-		// non-shaders have vertex, uv, color
 		// shaders have vertex, uv, tangent space
 
 		// also remember some offsets for later pointer work
-		
-	shader_on=view_shader_on();
 		
 	mesh=&mdl->meshes[mesh_idx];
 
@@ -374,19 +241,10 @@ bool render_model_initialize_vertex_objects(model_type *mdl,int mesh_idx,model_d
 		return(FALSE);
 	}
 	
-		// non-shader drawing requires
-		// vertexes, UVs, and colors
-
-	if (!shader_on) {
-		render_model_vertex_object_no_shader(mdl,mesh_idx,draw,vertex_ptr);
-	}
-
 		// shader drawing requires
-		// vertexes, UVs, and tangent space
+		// vertexes, UVs, normals, and tangents
 
-	else {
-		render_model_vertex_object_shader(mdl,mesh_idx,draw,vertex_ptr);
-	}
+	render_model_vertex_object_setup(mdl,mesh_idx,draw,vertex_ptr);
 
 		// unmap VBO
 
@@ -399,24 +257,13 @@ bool render_model_initialize_vertex_objects(model_type *mdl,int mesh_idx,model_d
 
 	glVertexPointer(3,GL_FLOAT,stride,(GLvoid*)0);
 
-	if (!shader_on) {
-		glClientActiveTexture(GL_TEXTURE2);
-		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-		glTexCoordPointer(2,GL_FLOAT,stride,(GLvoid*)(3*sizeof(float)));
-	}
-
-	glClientActiveTexture(GL_TEXTURE1);
+	glClientActiveTexture(GL_TEXTURE1);		// ES2 -- this all is going to go
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glTexCoordPointer(2,GL_FLOAT,stride,(GLvoid*)(3*sizeof(float)));
 
 	glClientActiveTexture(GL_TEXTURE0);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glTexCoordPointer(2,GL_FLOAT,stride,(GLvoid*)(3*sizeof(float)));
-	
-	if (!shader_on) {
-		glEnableClientState(GL_COLOR_ARRAY);
-		glColorPointer(4,GL_UNSIGNED_BYTE,stride,(GLvoid*)((3+2)*sizeof(float)));
-	}
 
 	return(TRUE);
 }
@@ -443,90 +290,7 @@ void render_model_release_vertex_objects(void)
       
 ======================================================= */
 
-void render_model_opaque_fixed(model_type *mdl,int mesh_idx,model_draw *draw)
-{
-	int						n,v_idx,frame,txt_idx;
-	float					glow_color;
-	unsigned char			*cull_ptr;
-	GLuint					glow_gl_id;
-	model_mesh_type			*mesh;
-	model_poly_type			*poly;
-	model_draw_mesh_type	*draw_mesh;
-    texture_type			*texture;
-	
-	mesh=&mdl->meshes[mesh_idx];
-	draw_mesh=&draw->meshes[mesh_idx];
-	
-		// setup drawing
-
-	glDisable(GL_BLEND);
-		
-	glEnable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_NOTEQUAL,0);
-
-	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LEQUAL);
-	glDepthMask(GL_TRUE);
-
-	gl_texture_model_fixed_start();
-
-		// run through the polys
-
-	v_idx=0;
-	cull_ptr=draw->setup.mesh_arrays[mesh_idx].poly_cull_array;
-
-	poly=mesh->polys;
-
-	for (n=0;n!=mesh->npoly;n++) {
-	
-			// polygon culling
-			
-		if (*cull_ptr++==0x1) {
-			v_idx+=poly->ptsz;
-			poly++;
-			continue;
-		}
-
-			// is this poly texture opaque
-
-		txt_idx=poly->txt_idx;
-
-		if (!draw_mesh->textures[txt_idx].opaque) {
-			v_idx+=poly->ptsz;
-			poly++;
-			continue;
-		}
-
-			// get texture
-
-		frame=draw_mesh->textures[txt_idx].frame;
-		texture=&mdl->textures[txt_idx];
-
-		if (draw_mesh->textures[txt_idx].glow) {
-			glow_gl_id=texture->frames[frame].glowmap.gl_id;
-			glow_color=texture->glow.current_color;
-		}
-		else {
-			glow_gl_id=lmap_black_bitmap.gl_id;
-			glow_color=0.0f;
-		}
-
-		gl_texture_model_fixed_set(texture->frames[frame].bitmap.gl_id,glow_gl_id,glow_color,1.0f);
-
-			// draw poly
-			
-		glDrawArrays(GL_TRIANGLE_FAN,v_idx,poly->ptsz);
-		
-		v_idx+=poly->ptsz;
-		poly++;
-
-		view.count.model_poly++;
-	}
-
-	gl_texture_model_fixed_end();
-}
-
-void render_model_opaque_shader(model_type *mdl,int mesh_idx,model_draw *draw,view_glsl_light_list_type *light_list)
+void render_model_opaque_mesh(model_type *mdl,int mesh_idx,model_draw *draw,view_glsl_light_list_type *light_list)
 {
 	int						n,v_idx,frame,txt_idx,stride;
 	unsigned char			*cull_ptr;
@@ -611,100 +375,7 @@ void render_model_opaque_shader(model_type *mdl,int mesh_idx,model_draw *draw,vi
 	gl_shader_draw_end();
 }
 
-void render_model_transparent_fixed(model_type *mdl,int mesh_idx,model_draw *draw)
-{
-	int						n,v_idx,frame,txt_idx;
-	float					glow_color;
-	bool					cur_additive,is_additive;
-	GLuint					glow_gl_id;
-	model_mesh_type			*mesh;
-	model_poly_type			*poly;
- 	model_draw_mesh_type	*draw_mesh;
-    texture_type			*texture;
-
-	mesh=&mdl->meshes[mesh_idx];
-	draw_mesh=&draw->meshes[mesh_idx];
-
-		// setup drawing
-
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-
-	glEnable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_NOTEQUAL,0);
-		
-	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LEQUAL);
-	glDepthMask(GL_FALSE);
-	
-	gl_texture_model_fixed_start();
-
-		// minimize state changes
-
-	cur_additive=FALSE;
-	
-		// run through the polys
-
-	v_idx=0;
-	poly=mesh->polys;
-
-	for (n=0;n!=mesh->npoly;n++) {
-
-			// is this poly texture transparent
-
-		txt_idx=poly->txt_idx;
-
-		if (!draw_mesh->textures[txt_idx].transparent) {
-			v_idx+=poly->ptsz;
-			poly++;
-			continue;
-		}
-	
-			// set texture
-
-		frame=draw_mesh->textures[txt_idx].frame;
-		texture=&mdl->textures[txt_idx];
-
-		if (draw_mesh->textures[txt_idx].glow) {
-			glow_gl_id=texture->frames[frame].glowmap.gl_id;
-			glow_color=texture->glow.current_color;
-		}
-		else {
-			glow_gl_id=lmap_black_bitmap.gl_id;
-			glow_color=0.0f;
-		}
-
-		gl_texture_model_fixed_set(texture->frames[frame].bitmap.gl_id,glow_gl_id,glow_color,draw_mesh->alpha);
-
-			// blending changes
-			
-		is_additive=(mesh->blend_add) || (texture->additive);
-		if (is_additive!=cur_additive) {
-			cur_additive=is_additive;
-			if (cur_additive) {
-				glBlendFunc(GL_SRC_ALPHA,GL_ONE);
-			}
-			else {
-				glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-			}
-		}
-
-			// draw poly
-			
-		glDrawArrays(GL_TRIANGLE_FAN,v_idx,poly->ptsz);
-		
-		v_idx+=poly->ptsz;
-		poly++;
-
-		view.count.model_poly++;
-	}
-	
-	if (cur_additive) glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-
-	gl_texture_model_fixed_end();
-}
-
-void render_model_transparent_shader(model_type *mdl,int mesh_idx,model_draw *draw,view_glsl_light_list_type *light_list)
+void render_model_transparent_mesh(model_type *mdl,int mesh_idx,model_draw *draw,view_glsl_light_list_type *light_list)
 {
 	int						n,v_idx,frame,txt_idx,stride;
 	bool					cur_additive,is_additive;
@@ -934,7 +605,6 @@ void render_model_setup(model_draw *draw,int tick)
 		}
 		
 			// check for any transparent textures
-			// or shaders
 		
 		draw->meshes[n].has_opaque=FALSE;
 		draw->meshes[n].has_glow=FALSE;
@@ -988,7 +658,6 @@ void render_model_setup(model_draw *draw,int tick)
 void render_model_build_vertex_lists(model_draw *draw,bool always_build)
 {
 	int					n,k,t,idx;
-	bool				shader_off;
 	float				f,*va,*na;
 	unsigned char		*cull_ptr;
 	d3fpnt				pnt,camera_pnt;
@@ -1028,17 +697,9 @@ void render_model_build_vertex_lists(model_draw *draw,bool always_build)
 		model_translate_draw_vertex(mdl,n,draw->pnt.x,draw->pnt.y,draw->pnt.z,&draw->setup);
 	}
 
-		// setup the colors and normals
-		// shaders don't need color list
+		// setup the normals
 
-	shader_off=!view_shader_on();
-	
-	render_model_create_normal_vertexes(mdl,draw->render_mesh_mask,draw,shader_off);
-	
-	if (shader_off) {
-		render_model_create_color_vertexes(mdl,draw->render_mesh_mask,draw);
-		render_model_diffuse_color_vertexes(mdl,draw->render_mesh_mask,draw);
-	}
+	render_model_create_normal_vertexes(mdl,draw->render_mesh_mask,draw);
 
 		// setup culling
 
@@ -1107,7 +768,6 @@ void render_model_build_vertex_lists(model_draw *draw,bool always_build)
 void render_model_opaque(model_draw *draw)
 {
 	int							n;
-	bool						shader_on;
 	model_type					*mdl;
 	view_glsl_light_list_type	light_list;
 	
@@ -1123,14 +783,10 @@ void render_model_opaque(model_draw *draw)
 		// start glsl lighting
 
 		// if we are drawing this model in the UI,
-		// then if shaders are on we have to create
-		// a fake set of lights for the rendering
+		// then we have to create a fake set of
+		// lights for the rendering
 		
-	shader_on=view_shader_on();
-
-	if (shader_on) {
-		gl_lights_build_model_glsl_light_list(mdl,draw,&light_list);
-	}
+	gl_lights_build_model_glsl_light_list(mdl,draw,&light_list);
 
 		// draw opaque materials
 	
@@ -1142,14 +798,9 @@ void render_model_opaque(model_draw *draw)
 
 		if (!render_model_initialize_vertex_objects(mdl,n,draw)) return;
 
-			// render opaque segments
+			// render opaque mesh
 
-		if (!shader_on) {
-			render_model_opaque_fixed(mdl,n,draw);
-		}
-		else {
-			render_model_opaque_shader(mdl,n,draw,&light_list);
-		}
+		render_model_opaque_mesh(mdl,n,draw,&light_list);
 
 		render_model_release_vertex_objects();
 		
@@ -1162,7 +813,6 @@ void render_model_opaque(model_draw *draw)
 void render_model_transparent(model_draw *draw)
 {
 	int							n;
-	bool						shader_on;
 	model_type					*mdl;
 	view_glsl_light_list_type	light_list;
 
@@ -1177,9 +827,7 @@ void render_model_transparent(model_draw *draw)
 	
 		// start lighting
 		
-	shader_on=view_shader_on();
-
-	if (shader_on) gl_lights_build_model_glsl_light_list(mdl,draw,&light_list);
+	gl_lights_build_model_glsl_light_list(mdl,draw,&light_list);
 
 		// draw transparent materials
 
@@ -1193,12 +841,7 @@ void render_model_transparent(model_draw *draw)
 
 			// draw transparent mesh
 
-		if (!shader_on) {
-			render_model_transparent_fixed(mdl,n,draw);
-		}
-		else {
-			render_model_transparent_shader(mdl,n,draw,&light_list);
-		}
+		render_model_transparent_mesh(mdl,n,draw,&light_list);
 			
 			// release the vbo
 
