@@ -697,10 +697,10 @@ void hud_bars_draw_pie(iface_bar_type *bar)
 
 	glDisable(GL_DEPTH_TEST);
 
-	gl_shader_draw_simple_color_start();
+	gl_shader_draw_simple_gradient_start();
 	gl_shader_draw_execute_simple_gradient_ptr(2,vertexes,colors);
 	glDrawArrays(GL_TRIANGLES,0,(72*3));
-	gl_shader_draw_simple_color_end();
+	gl_shader_draw_simple_gradient_end();
 
 	glDisable(GL_BLEND);
 	glDisable(GL_ALPHA_TEST);

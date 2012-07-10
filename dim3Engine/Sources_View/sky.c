@@ -357,7 +357,7 @@ void sky_draw_dome_panoramic(void)
 	col.r=col.g=col.b=1.0f;
 
 	gl_shader_draw_simple_bitmap_start();
-	gl_shader_draw_execute_simple_bitmap_vbo_attribute(3,0,((pan_count*3)*sizeof(float)),&col,1.0f);
+	gl_shader_draw_execute_simple_bitmap_vbo_attribute(3,0,((pan_count*3)*sizeof(float)),0,&col,1.0f);
 	gl_shader_draw_execute_simple_bitmap_set_texture(texture->frames[texture->animate.current_frame].bitmap.gl_id);
 	glDrawArrays(GL_TRIANGLES,0,pan_count);
 	gl_shader_draw_simple_bitmap_end();
@@ -639,8 +639,6 @@ void sky_draw_dome_hemisphere(void)
 	
 		// setup texture
 		
-	gl_texture_simple_start();
-
 	glDisable(GL_BLEND);
 	glDisable(GL_ALPHA_TEST);
 	glDisable(GL_DEPTH_TEST);
@@ -663,7 +661,7 @@ void sky_draw_dome_hemisphere(void)
 		// draw the dome
 	
 	gl_shader_draw_simple_bitmap_start();
-	gl_shader_draw_execute_simple_bitmap_vbo_attribute(3,0,((dome_cnt*3)*sizeof(float)),&col,1.0f);
+	gl_shader_draw_execute_simple_bitmap_vbo_attribute(3,0,((dome_cnt*3)*sizeof(float)),0,&col,1.0f);
 	gl_shader_draw_execute_simple_bitmap_set_texture(texture->frames[texture->animate.current_frame].bitmap.gl_id);
 	glDrawArrays(GL_TRIANGLES,0,dome_cnt);
 	gl_shader_draw_simple_bitmap_end();
@@ -953,7 +951,7 @@ void sky_draw_cube(void)
 		// draw cube sides
 
 	gl_shader_draw_simple_bitmap_start();
-	gl_shader_draw_execute_simple_bitmap_vbo_attribute(3,0,(((6*4)*3)*sizeof(float)),&col,1.0f);
+	gl_shader_draw_execute_simple_bitmap_vbo_attribute(3,0,(((6*4)*3)*sizeof(float)),0,&col,1.0f);
 
 	offset=0;
 

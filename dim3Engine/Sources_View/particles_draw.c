@@ -422,12 +422,12 @@ void particle_draw(effect_type *effect,int count,int image_offset)
 	view_unmap_effect_index_object();
 
 		// draw arrays
-		
-	gl_texture_simple_start();
-	gl_texture_simple_set(view_images_get_gl_id(particle->image_idx),FALSE,col.r,col.g,col.b,alpha);
+
+	gl_shader_draw_simple_bitmap_start();
+	gl_shader_draw_execute_simple_bitmap_set_texture(view_images_get_gl_id(particle->image_idx));
+	gl_shader_draw_execute_simple_bitmap_vbo_attribute(3,0,(3*sizeof(float)),((3+2)*sizeof(float)),&col,alpha);
 
 	glEnable(GL_BLEND);
-
 	if (particle->blend_add) {
 		glBlendFunc(GL_SRC_ALPHA,GL_ONE);
 	}
@@ -442,18 +442,11 @@ void particle_draw(effect_type *effect,int count,int image_offset)
 	glDepthFunc(GL_LEQUAL);
 	glDepthMask(GL_FALSE);			// don't let alpha z's interfere with each other
 
-	glVertexPointer(3,GL_FLOAT,((3+2)*sizeof(float)),(GLvoid*)0);
-
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glTexCoordPointer(2,GL_FLOAT,((3+2)*sizeof(float)),(GLvoid*)(3*sizeof(float)));
-
 	glDrawElements(GL_TRIANGLES,nindex,GL_UNSIGNED_SHORT,(GLvoid*)0);
-
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 
 	glDepthMask(GL_TRUE);
 	
-	gl_texture_simple_end();
+	gl_shader_draw_simple_bitmap_end();
 
 		// unbind vertex/index object
 		

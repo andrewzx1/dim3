@@ -265,24 +265,25 @@ void effect_draw_lightning(effect_type *effect)
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
 	glDepthMask(GL_FALSE);
+
+	gl_shader_draw_simple_color_start();
+	gl_shader_draw_execute_simple_color_vbo(3,0,&lightning->col,0.1f);
 	
 	glLineWidth((float)(wid*5));
-	glColor4f(lightning->col.r,lightning->col.g,lightning->col.b,0.1f);
-	glVertexPointer(3,GL_FLOAT,0,(GLvoid*)0);
 	glDrawArrays(GL_LINES,0,(nline*2));
 
+	gl_shader_draw_execute_simple_color_set_color(&lightning->col,0.05f);
 	glLineWidth((float)(wid*3));
-	glColor4f(lightning->col.r,lightning->col.g,lightning->col.b,0.05f);
-	glVertexPointer(3,GL_FLOAT,0,(GLvoid*)0);
 	glDrawArrays(GL_LINES,0,(nline*2));
 
+	gl_shader_draw_execute_simple_color_set_color(&lightning->col,0.6f);
 	glLineWidth((float)wid);
-	glColor4f(lightning->col.r,lightning->col.g,lightning->col.b,0.6f);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-	glVertexPointer(3,GL_FLOAT,0,(GLvoid*)0);
 	glDrawArrays(GL_LINES,0,(nline*2));
 
 	glLineWidth(1.0f);
+
+	gl_shader_draw_simple_color_end();
 
 		// unbind vertex object
 		
@@ -351,17 +352,19 @@ void effect_draw_ray(effect_type *effect,int count)
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
 	glDepthMask(GL_FALSE);
-		
-	glVertexPointer(3,GL_FLOAT,0,(GLvoid*)vertexes);
+
+	gl_shader_draw_simple_color_start();
+	gl_shader_draw_execute_simple_color_ptr(3,vertexes,&ray->col,0.1f);
 	
 	while (wid>0) {
 	
 		glLineWidth((float)wid);
-		glColor4f(ray->col.r,ray->col.g,ray->col.b,0.1f);
 		glDrawArrays(GL_LINES,0,2);
 		
 		wid-=2;
 	}
+
+	gl_shader_draw_simple_color_end();
 }
 
 /* =======================================================

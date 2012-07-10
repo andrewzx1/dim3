@@ -69,7 +69,8 @@ void decal_render_stencil(map_mesh_type *mesh,map_mesh_poly_type *poly,int stenc
 	
 		// stencil
 
-	glVertexPointer(3,GL_FLOAT,0,(GLvoid*)vertexes);
+	gl_shader_draw_execute_simple_black_ptr(3,vertexes,1.0f);
+
 	glStencilFunc(GL_ALWAYS,stencil_idx,0xFF);
 	glDrawArrays(GL_TRIANGLE_FAN,0,poly->ptsz);
 
@@ -81,8 +82,10 @@ void decal_render_stencil(map_mesh_type *mesh,map_mesh_poly_type *poly,int stenc
 void decal_render_mark(int stencil_idx,decal_type *decal)
 {
 	int					k,tick,fade_out_start_tick;
-	float				alpha,g_size,gx,gy,cf[3],vertexes[20*3];
-	float				*pf;
+	float				alpha,g_size,gx,gy;
+	float				vertexes[12],uvs[8],cf[3];
+	float				*vp,*uv;
+	d3col				col;
 	iface_mark_type		*mark;
 	
 		// get the alpha
@@ -119,57 +122,55 @@ void decal_render_mark(int stencil_idx,decal_type *decal)
 		// get lighting
 		
 	if (mark->hilite) {
-		cf[0]=decal->tint.r;
-		cf[1]=decal->tint.g;
-		cf[2]=decal->tint.b;
+		col.r=decal->tint.r;
+		col.g=decal->tint.g;
+		col.b=decal->tint.b;
 	}
 	else {
 		gl_lights_calc_color((float)decal->x[0],(float)decal->y[0],(float)decal->z[0],cf);
-		cf[0]*=decal->tint.r;
-		cf[1]*=decal->tint.g;
-		cf[2]*=decal->tint.b;
+		col.r=cf[0]*decal->tint.r;
+		col.g=cf[1]*decal->tint.g;
+		col.b=cf[2]*decal->tint.b;
 	}
 
 		// setup vertex ptr
 
-	pf=vertexes;
+	vp=vertexes;
+	uv=uvs;
 
-    *pf++=(float)decal->x[0];
-	*pf++=(float)decal->y[0];
-	*pf++=(float)decal->z[0];
+    *vp++=(float)decal->x[0];
+	*vp++=(float)decal->y[0];
+	*vp++=(float)decal->z[0];
 
-    *pf++=gx;
-	*pf++=gy;
+    *uv++=gx;
+	*uv++=gy;
 
-    *pf++=(float)decal->x[3];
-	*pf++=(float)decal->y[3];
-	*pf++=(float)decal->z[3];
+    *vp++=(float)decal->x[3];
+	*vp++=(float)decal->y[3];
+	*vp++=(float)decal->z[3];
 
-    *pf++=gx;
-	*pf++=gy+g_size;
+    *uv++=gx;
+	*uv++=gy+g_size;
 
-    *pf++=(float)decal->x[1];
-	*pf++=(float)decal->y[1];
-	*pf++=(float)decal->z[1];
+    *vp++=(float)decal->x[1];
+	*vp++=(float)decal->y[1];
+	*vp++=(float)decal->z[1];
 
-    *pf++=gx+g_size;
-	*pf++=gy;
+    *uv++=gx+g_size;
+	*uv++=gy;
 
-    *pf++=(float)decal->x[2];
-	*pf++=(float)decal->y[2];
-	*pf++=(float)decal->z[2];
+    *vp++=(float)decal->x[2];
+	*vp++=(float)decal->y[2];
+	*vp++=(float)decal->z[2];
 
-    *pf++=gx+g_size;
-	*pf++=gy+g_size;
+    *uv++=gx+g_size;
+	*uv++=gy+g_size;
 	
          // draw the polygon
 
-	glVertexPointer(3,GL_FLOAT,(5*sizeof(float)),(GLvoid*)vertexes);
-	glTexCoordPointer(2,GL_FLOAT,(5*sizeof(float)),(GLvoid*)(vertexes+3));
+	gl_shader_draw_execute_simple_bitmap_ptr(view_images_get_gl_id(mark->image_idx),3,vertexes,uvs,&col,alpha);
 			
 	glStencilFunc(GL_EQUAL,stencil_idx,0xFF);
-	gl_texture_decal_set(view_images_get_gl_id(mark->image_idx),cf[0],cf[1],cf[2],alpha);
-
 	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
 }
 
@@ -220,7 +221,7 @@ void decal_render(void)
 
 	glStencilOp(GL_KEEP,GL_KEEP,GL_REPLACE);
 
-	glColor4f(0.0f,0.0f,0.0f,1.0f);
+	gl_shader_draw_simple_black_start();
 
 	stencil_idx=stencil_poly_start;
 
@@ -236,21 +237,18 @@ void decal_render(void)
 		}
 	}
 
+	gl_shader_draw_simple_black_end();
+
 	glColorMask(GL_TRUE,GL_TRUE,GL_TRUE,GL_TRUE);
-
-		// decals use tex coords
-
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
 		// draw decals to stencils
 
-	gl_texture_decal_start();
-				
 	glEnable(GL_BLEND);
-	
 	glDisable(GL_DEPTH_TEST);
 			
 	glStencilOp(GL_KEEP,GL_KEEP,GL_KEEP);
+
+	gl_shader_draw_simple_bitmap_start();
 
 	for (n=0;n!=max_decal_list;n++) {
 		decal=server.decal_list.decals[n];
@@ -262,9 +260,7 @@ void decal_render(void)
 		}
 	}
 
-	gl_texture_decal_end();
-	
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+	gl_shader_draw_simple_bitmap_end();
 
 	glDisable(GL_STENCIL_TEST);
 }

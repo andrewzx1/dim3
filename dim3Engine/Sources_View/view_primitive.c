@@ -109,10 +109,10 @@ void view_primitive_2D_color_poly(int x0,int y0,d3col *col0,int x1,int y1,d3col 
 
 		// draw the polygon
 
-	gl_shader_draw_simple_color_start();
+	gl_shader_draw_simple_gradient_start();
 	gl_shader_draw_execute_simple_gradient_ptr(2,vertexes,colors);
 	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
-	gl_shader_draw_simple_color_end();
+	gl_shader_draw_simple_gradient_end();
 		
 		// finish draw
 
@@ -246,10 +246,10 @@ void view_primitive_2D_color_arc(d3col *out_col,d3col *in_col,float alpha,int lf
 
 		// draw the trig
 		
-	gl_shader_draw_simple_color_start();
+	gl_shader_draw_simple_gradient_start();
 	gl_shader_draw_execute_simple_gradient_ptr(2,vertexes,colors);
 	glDrawArrays(GL_TRIANGLES,0,3);
-	gl_shader_draw_simple_color_end();
+	gl_shader_draw_simple_gradient_end();
 	
 		// finish draw
 
