@@ -241,6 +241,7 @@ void halo_draw_render(void)
 {
 	int						n,x,y,psz;
 	float					vertexes[8],uvs[8];
+	d3col					col;
 	halo_draw_type			*halo_draw;
 	
 		// any halos to draw?
@@ -262,8 +263,17 @@ void halo_draw_render(void)
 	glAlphaFunc(GL_NOTEQUAL,0);
 
 	glDisable(GL_DEPTH_TEST);
+
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE);
 	
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+		// get color
+
+	col.r=col.g=col.b=1.0f;
+
+		// draw halos
+
+	gl_shader_draw_simple_bitmap_start();
 
 	for (n=0;n!=view.render->halo_draw.count;n++) {
 		halo_draw=&view.render->halo_draw.halos[n];
@@ -298,16 +308,16 @@ void halo_draw_render(void)
 		uvs[7]=1.0f;
 
 			// draw halo
-
-		glVertexPointer(2,GL_FLOAT,0,(GLvoid*)vertexes);
-		glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)uvs);
-
-		gl_texture_simple_set(view_images_get_gl_id(iface.halo_list.halos[halo_draw->idx].image_idx),TRUE,1,1,1,halo_draw->alpha);
+	
+		gl_shader_draw_execute_simple_bitmap_ptr(view_images_get_gl_id(iface.halo_list.halos[halo_draw->idx].image_idx),2,vertexes,uvs,&col,halo_draw->alpha);
 		glDrawArrays(GL_TRIANGLE_STRIP,0,4);
 	}
-
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 		
-	gl_texture_simple_end();
+	gl_shader_draw_simple_bitmap_start();
+
+		// reset repeat
+
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT);
 }
 

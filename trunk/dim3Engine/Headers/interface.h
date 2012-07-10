@@ -782,29 +782,31 @@ extern void gl_shader_texture_override(GLuint gl_id,float alpha);
 // shader execution
 //
 
-extern void gl_shader_draw_simple_color_start(void);
-extern void gl_shader_draw_simple_color_end(void);
-extern void gl_shader_draw_execute_simple_color_ptr(int vertex_size,float *vertexes,d3col *col,float alpha);
+extern inline void gl_shader_draw_simple_color_start(void);
+extern inline void gl_shader_draw_simple_color_end(void);
+extern inline void gl_shader_draw_execute_simple_color_set_color(d3col *col,float alpha);
+extern inline void gl_shader_draw_execute_simple_color_ptr(int vertex_size,float *vertexes,d3col *col,float alpha);
+extern inline void gl_shader_draw_execute_simple_color_vbo(int vertex_size,int vertex_offset,d3col *col,float alpha);
 
-extern void gl_shader_draw_simple_gradient_start(void);
-extern void gl_shader_draw_simple_gradient_end(void);
-extern void gl_shader_draw_execute_simple_gradient_ptr(int vertex_size,float *vertexes,unsigned char *colors);
+extern inline void gl_shader_draw_simple_gradient_start(void);
+extern inline void gl_shader_draw_simple_gradient_end(void);
+extern inline void gl_shader_draw_execute_simple_gradient_ptr(int vertex_size,float *vertexes,unsigned char *colors);
 
-extern void gl_shader_draw_simple_black_start(void);
-extern void gl_shader_draw_simple_black_end(void);
-extern void gl_shader_draw_execute_simple_black_ptr(int vertex_size,float *vertexes,float alpha);
-extern void gl_shader_draw_execute_simple_black_vbo(int vertex_size,int vertex_offset,float alpha);
+extern inline void gl_shader_draw_simple_black_start(void);
+extern inline void gl_shader_draw_simple_black_end(void);
+extern inline void gl_shader_draw_execute_simple_black_ptr(int vertex_size,float *vertexes,float alpha);
+extern inline void gl_shader_draw_execute_simple_black_vbo(int vertex_size,int vertex_offset,float alpha);
 
-extern void gl_shader_draw_simple_bitmap_start(void);
-extern void gl_shader_draw_simple_bitmap_end(void);
-extern void gl_shader_draw_execute_simple_bitmap_set_color(d3col *col,float alpha);
-extern void gl_shader_draw_execute_simple_bitmap_set_texture(unsigned long gl_id);
-extern void gl_shader_draw_execute_simple_bitmap_ptr(unsigned long gl_id,int vertex_size,float *vertexes,float *uvs,d3col *col,float alpha);
-extern void gl_shader_draw_execute_simple_bitmap_vbo_attribute(int vertex_size,int vertex_offset,int uv_offset,d3col *col,float alpha);
+extern inline void gl_shader_draw_simple_bitmap_start(void);
+extern inline void gl_shader_draw_simple_bitmap_end(void);
+extern inline void gl_shader_draw_execute_simple_bitmap_set_color(d3col *col,float alpha);
+extern inline void gl_shader_draw_execute_simple_bitmap_set_texture(unsigned long gl_id);
+extern inline void gl_shader_draw_execute_simple_bitmap_ptr(unsigned long gl_id,int vertex_size,float *vertexes,float *uvs,d3col *col,float alpha);
+extern inline void gl_shader_draw_execute_simple_bitmap_vbo_attribute(int vertex_size,int vertex_offset,int uv_offset,int stride,d3col *col,float alpha);
 
-extern void gl_shader_draw_simple_bitmap_rect_start(void);
-extern void gl_shader_draw_simple_bitmap_rect_end(void);
-extern void gl_shader_draw_execute_simple_bitmap_rect_ptr(unsigned long gl_id,int vertex_size,float *vertexes,float *uvs,d3col *col,float alpha);
+extern inline void gl_shader_draw_simple_bitmap_rect_start(void);
+extern inline void gl_shader_draw_simple_bitmap_rect_end(void);
+extern inline void gl_shader_draw_execute_simple_bitmap_rect_ptr(unsigned long gl_id,int vertex_size,float *vertexes,float *uvs,d3col *col,float alpha);
 
 extern void gl_shader_draw_execute_map(texture_type *texture,int txt_idx,int frame,int lmap_txt_idx,float alpha,int vertex_offset,int uv_offset,int lmap_uv_offset,int tangent_offset,int normal_offset,int stride,view_glsl_light_list_type *light_list);
 extern void gl_shader_draw_execute_liquid(texture_type *texture,int txt_idx,int frame,int lmap_txt_idx,float alpha,int vertex_offset,int uv_offset,int lmap_uv_offset,int tangent_offset,int normal_offset,int stride,view_glsl_light_list_type *light_list);
@@ -913,15 +915,6 @@ extern void gl_texture_shutdown(void);
 extern void gl_texture_frame_start(void);
 extern inline void gl_texture_bind(int unit,bool rectangle,GLuint txt_id);
 extern inline void gl_texture_clear(int unit,bool rectangle);
-extern inline void gl_texture_map_fixed_start(void);
-extern inline void gl_texture_map_fixed_end(void);
-extern inline void gl_texture_map_fixed_set(GLuint txt_id,GLuint lmap_txt_id,GLuint glow_txt_id,float glow_color,float alpha);
-extern inline void gl_texture_model_fixed_start(void);
-extern inline void gl_texture_model_fixed_end(void);
-extern inline void gl_texture_model_fixed_set(GLuint txt_id,GLuint glow_txt_id,float glow_color,float alpha);
-extern inline void gl_texture_decal_start(void);
-extern inline void gl_texture_decal_end(void);
-extern inline void gl_texture_decal_set(GLuint txt_id,float r,float g,float b,float alpha);
 extern inline void gl_texture_simple_start(void);
 extern inline void gl_texture_simple_end(void);
 extern inline void gl_texture_simple_set(GLuint txt_id,bool clamp,float r,float g,float b,float alpha);

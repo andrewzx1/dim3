@@ -68,6 +68,7 @@ void fog_draw_textured(void)
 	float				r_ang,r_ang_2,r_add,fx,fz,fx_1,fx_2,fz_1,fz_2,f_ty,f_by,
 						f_radius,gx,gx_add,gx_shift;
 	float				*vertex_ptr,*uv_ptr;
+	d3col				col;
 	texture_type		*texture;
 	
 		// textured fog on?
@@ -219,6 +220,10 @@ void fog_draw_textured(void)
 	gl_texture_simple_set(gl_id,FALSE,1.0f,1.0f,1.0f,map.fog.alpha);
 
 		// draw the fog
+
+	gl_shader_draw_simple_bitmap_start();
+	gl_shader_draw_execute_simple_bitmap_set_texture(gl_id);
+void gl_shader_draw_execute_simple_bitmap_vbo_attribute(int vertex_size,int vertex_offset,int uv_offset,int stride,d3col *col,float alpha)
 	
 	glVertexPointer(3,GL_FLOAT,0,(GLvoid*)0);
 
@@ -227,11 +232,7 @@ void fog_draw_textured(void)
 
 	glDrawArrays(GL_TRIANGLES,0,((16*6)*count));
 
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-
-		// end texture
-
-	gl_texture_simple_end();
+	gl_shader_draw_simple_bitmap_end();
 
 		// unbind the vbo
 

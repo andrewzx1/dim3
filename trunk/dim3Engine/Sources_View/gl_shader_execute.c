@@ -63,10 +63,8 @@ void gl_shader_draw_simple_color_end(void)
 {
 }
 
-void gl_shader_draw_execute_simple_color_ptr(int vertex_size,float *vertexes,d3col *col,float alpha)
+void gl_shader_draw_execute_simple_color_set_color(d3col *col,float alpha)
 {
-		// set the color
-		
 	if ((color_shader.var_values.simple_color.r!=col->r) || (color_shader.var_values.simple_color.g!=col->g) || (color_shader.var_values.simple_color.b!=col->b) || (color_shader.var_values.simple_color.a!=alpha)) {
 		color_shader.var_values.simple_color.r=col->r;
 		color_shader.var_values.simple_color.g=col->g;
@@ -74,10 +72,28 @@ void gl_shader_draw_execute_simple_color_ptr(int vertex_size,float *vertexes,d3c
 		color_shader.var_values.simple_color.a=alpha;
 		glUniform4fARB(color_shader.var_locs.dim3SimpleColor,col->r,col->g,col->b,alpha);
 	}
+}
+
+void gl_shader_draw_execute_simple_color_ptr(int vertex_size,float *vertexes,d3col *col,float alpha)
+{
+		// set the color
+
+	gl_shader_draw_execute_simple_color_set_color(col,alpha);
 	
 		// bind the required attributes
 		
 	glVertexAttribPointerARB(color_shader.var_locs.dim3Vertex,vertex_size,GL_FLOAT,GL_FALSE,0,(void*)vertexes);
+}
+
+void gl_shader_draw_execute_simple_color_vbo(int vertex_size,int vertex_offset,d3col *col,float alpha)
+{
+		// set the color
+
+	gl_shader_draw_execute_simple_color_set_color(col,alpha);
+	
+		// bind the required attributes
+		
+	glVertexAttribPointerARB(color_shader.var_locs.dim3Vertex,vertex_size,GL_FLOAT,GL_FALSE,0,(void*)vertex_offset);
 }
 
 /* =======================================================
@@ -210,7 +226,7 @@ void gl_shader_draw_execute_simple_bitmap_ptr(unsigned long gl_id,int vertex_siz
 	glVertexAttribPointerARB(bitmap_shader.var_locs.dim3VertexUV,2,GL_FLOAT,GL_FALSE,0,(void*)uvs);
 }
 
-void gl_shader_draw_execute_simple_bitmap_vbo_attribute(int vertex_size,int vertex_offset,int uv_offset,d3col *col,float alpha)
+void gl_shader_draw_execute_simple_bitmap_vbo_attribute(int vertex_size,int vertex_offset,int uv_offset,int stride,d3col *col,float alpha)
 {
 		// set the color
 		
@@ -218,8 +234,8 @@ void gl_shader_draw_execute_simple_bitmap_vbo_attribute(int vertex_size,int vert
 	
 		// bind the required attributes
 
-	glVertexAttribPointerARB(bitmap_shader.var_locs.dim3Vertex,vertex_size,GL_FLOAT,GL_FALSE,0,(void*)vertex_offset);
-	glVertexAttribPointerARB(bitmap_shader.var_locs.dim3VertexUV,2,GL_FLOAT,GL_FALSE,0,(void*)uv_offset);
+	glVertexAttribPointerARB(bitmap_shader.var_locs.dim3Vertex,vertex_size,GL_FLOAT,GL_FALSE,stride,(void*)vertex_offset);
+	glVertexAttribPointerARB(bitmap_shader.var_locs.dim3VertexUV,2,GL_FLOAT,GL_FALSE,stride,(void*)uv_offset);
 }
 
 /* =======================================================
