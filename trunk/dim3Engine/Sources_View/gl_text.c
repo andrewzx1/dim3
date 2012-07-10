@@ -138,6 +138,7 @@ int gl_text_get_string_width(int text_font,int text_size,char *str)
 
 void gl_text_start(int text_font,int text_size)
 {
+	d3col					col;
 	texture_font_size_type	*font;
 	
 	font=gl_text_get_font(text_font,text_size);
@@ -147,10 +148,14 @@ void gl_text_start(int text_font,int text_size)
 	font_index=text_font;
 	font_size=text_size;
 	
+		// default color
+		
+	col.r=col.g=col.b=1.0f;
+	
 		// start shader
 		
 	gl_shader_draw_simple_bitmap_start();
-	gl_shader_draw_execute_simple_bitmap_ptr(font->bitmap.gl_id,2,gl_text_vertexes,gl_text_uvs,gl_text_colors);
+	gl_shader_draw_execute_simple_bitmap_ptr(font->bitmap.gl_id,2,gl_text_vertexes,gl_text_uvs,&col,1.0f);
 
 		// no wrapping
 		
@@ -195,10 +200,7 @@ void gl_text_draw_internal(int x,int y,char *txt,int just,bool vcenter,d3col *co
 	float					f_lft,f_rgt,f_top,f_bot,f_wid,f_high,
 							gx_lft,gx_rgt,gy_top,gy_bot;
 	float					*vp,*uv;
-	unsigned char			*cp;
 	char					*c;
-	unsigned char			uc_r,uc_b,uc_g,uc_alpha;
-	GLfloat					fct[4];
 	texture_font_size_type	*font;
 
 		// get text length
@@ -222,15 +224,6 @@ void gl_text_draw_internal(int x,int y,char *txt,int just,bool vcenter,d3col *co
 			break;
 	}
 	
-        // font color and alpha
-        
-	glColor4f(col->r,col->g,col->b,1.0f);
-
-	fct[0]=fct[1]=fct[2]=1.0f;
-	fct[3]=alpha;
-	
-	glTexEnvfv(GL_TEXTURE_ENV,GL_TEXTURE_ENV_COLOR,fct);
-    
 		// get width and height
 		
 	f_wid=(float)font_size;
@@ -240,14 +233,6 @@ void gl_text_draw_internal(int x,int y,char *txt,int just,bool vcenter,d3col *co
 
 	vp=gl_text_vertexes;
 	uv=gl_text_uvs;
-	cp=gl_text_colors;
-
-		// color setup
-
-	uc_r=(unsigned char)(col->r*255.0f);
-	uc_g=(unsigned char)(col->g*255.0f);
-	uc_b=(unsigned char)(col->b*255.0f);
-	uc_alpha=(unsigned char)(alpha*255.0f);
 
 		// create the quads
 
@@ -304,31 +289,14 @@ void gl_text_draw_internal(int x,int y,char *txt,int just,bool vcenter,d3col *co
 		*uv++=gx_rgt;
 		*uv++=gy_bot;
 
-			// colors
-
-		*cp++=uc_r;
-		*cp++=uc_g;
-		*cp++=uc_b;
-		*cp++=uc_alpha;
-		*cp++=uc_r;
-		*cp++=uc_g;
-		*cp++=uc_b;
-		*cp++=uc_alpha;
-		*cp++=uc_r;
-		*cp++=uc_g;
-		*cp++=uc_b;
-		*cp++=uc_alpha;
-		*cp++=uc_r;
-		*cp++=uc_g;
-		*cp++=uc_b;
-		*cp++=uc_alpha;
-
 			// remember number of characters
 
 		cnt++;
 	}
 
 		// draw text
+		
+	gl_shader_draw_execute_simple_bitmap_set_color(col,1.0f);
 
 	for (n=0;n!=cnt;n++) {
 		glDrawArrays(GL_TRIANGLE_STRIP,(n*4),4);

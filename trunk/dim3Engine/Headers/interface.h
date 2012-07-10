@@ -784,7 +784,11 @@ extern void gl_shader_texture_override(GLuint gl_id,float alpha);
 
 extern void gl_shader_draw_simple_color_start(void);
 extern void gl_shader_draw_simple_color_end(void);
-extern void gl_shader_draw_execute_simple_color_ptr(int vertex_size,float *vertexes,unsigned char *colors);
+extern void gl_shader_draw_execute_simple_color_ptr(int vertex_size,float *vertexes,d3col *col,float alpha);
+
+extern void gl_shader_draw_simple_gradient_start(void);
+extern void gl_shader_draw_simple_gradient_end(void);
+extern void gl_shader_draw_execute_simple_gradient_ptr(int vertex_size,float *vertexes,unsigned char *colors);
 
 extern void gl_shader_draw_simple_black_start(void);
 extern void gl_shader_draw_simple_black_end(void);
@@ -793,13 +797,14 @@ extern void gl_shader_draw_execute_simple_black_vbo(int vertex_size,int vertex_o
 
 extern void gl_shader_draw_simple_bitmap_start(void);
 extern void gl_shader_draw_simple_bitmap_end(void);
-extern void gl_shader_draw_execute_simple_bitmap_ptr(unsigned long gl_id,int vertex_size,float *vertexes,float *uvs,unsigned char *colors);
-extern void gl_shader_draw_execute_simple_bitmap_vbo_attribute(int vertex_size,int vertex_offset,int uv_offset,int color_offset);
-extern void gl_shader_draw_execute_simple_bitmap_vbo_texture(unsigned long gl_id);
+extern void gl_shader_draw_execute_simple_bitmap_set_color(d3col *col,float alpha);
+extern void gl_shader_draw_execute_simple_bitmap_set_texture(unsigned long gl_id);
+extern void gl_shader_draw_execute_simple_bitmap_ptr(unsigned long gl_id,int vertex_size,float *vertexes,float *uvs,d3col *col,float alpha);
+extern void gl_shader_draw_execute_simple_bitmap_vbo_attribute(int vertex_size,int vertex_offset,int uv_offset,d3col *col,float alpha);
 
 extern void gl_shader_draw_simple_bitmap_rect_start(void);
 extern void gl_shader_draw_simple_bitmap_rect_end(void);
-extern void gl_shader_draw_execute_simple_bitmap_rect_ptr(unsigned long gl_id,int vertex_size,float *vertexes,float *uvs,unsigned char *colors);
+extern void gl_shader_draw_execute_simple_bitmap_rect_ptr(unsigned long gl_id,int vertex_size,float *vertexes,float *uvs,d3col *col,float alpha);
 
 extern void gl_shader_draw_execute_map(texture_type *texture,int txt_idx,int frame,int lmap_txt_idx,float alpha,int vertex_offset,int uv_offset,int lmap_uv_offset,int tangent_offset,int normal_offset,int stride,view_glsl_light_list_type *light_list);
 extern void gl_shader_draw_execute_liquid(texture_type *texture,int txt_idx,int frame,int lmap_txt_idx,float alpha,int vertex_offset,int uv_offset,int lmap_uv_offset,int tangent_offset,int normal_offset,int stride,view_glsl_light_list_type *light_list);

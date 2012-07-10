@@ -94,9 +94,7 @@ void hud_bitmaps_draw(void)
 								wid,high,repeat_count;
 	float						gx,gy,gx2,gy2,g_size,alpha;
 	float						vertexes[8],uvs[8];
-	unsigned char				colors[16];
-	unsigned char				uc_r,uc_g,uc_b,uc_alpha;
-	d3col						team_tint;
+	d3col						col,team_tint;
 	iface_bitmap_type			*bitmap;
 	obj_type					*obj;
 	bitmap_type					*bitmap_data;
@@ -140,15 +138,13 @@ void hud_bitmaps_draw(void)
 			// tint
 			
 		if (!bitmap->team_tint) {
-			uc_r=uc_g=uc_b=255;
+			col.r=col.g=col.b=1.0f;
 		}
 		else {
-			uc_r=(unsigned char)(team_tint.r*255.0f);
-			uc_g=(unsigned char)(team_tint.g*255.0f);
-			uc_b=(unsigned char)(team_tint.b*255.0f);
+			col.r=team_tint.r;
+			col.g=team_tint.g;
+			col.b=team_tint.b;
 		}
-
-		uc_alpha=(unsigned char)(alpha*255.0f);
 
             // get bitmap and position
 			
@@ -212,14 +208,6 @@ void hud_bitmaps_draw(void)
 		ry=bitmap->repeat.y_add;
 		
 		wrap_count=0;
-
-			// colors (setup here as
-			// they are same across all repeats)
-
-		colors[0]=colors[4]=colors[8]=colors[12]=uc_r;
-		colors[1]=colors[5]=colors[9]=colors[13]=uc_g;
-		colors[2]=colors[6]=colors[10]=colors[14]=uc_b;
-		colors[3]=colors[7]=colors[11]=colors[15]=uc_alpha;
 
 			// draw the bitmap
 
@@ -309,7 +297,7 @@ void hud_bitmaps_draw(void)
 
 				// draw the quad
 
-			gl_shader_draw_execute_simple_bitmap_ptr(bitmap_data->gl_id,2,vertexes,uvs,colors);
+			gl_shader_draw_execute_simple_bitmap_ptr(bitmap_data->gl_id,2,vertexes,uvs,&col,alpha);
 			glDrawArrays(GL_TRIANGLE_STRIP,0,4);
 		}
 	}
@@ -710,7 +698,7 @@ void hud_bars_draw_pie(iface_bar_type *bar)
 	glDisable(GL_DEPTH_TEST);
 
 	gl_shader_draw_simple_color_start();
-	gl_shader_draw_execute_simple_color_ptr(2,vertexes,colors);
+	gl_shader_draw_execute_simple_gradient_ptr(2,vertexes,colors);
 	glDrawArrays(GL_TRIANGLES,0,(72*3));
 	gl_shader_draw_simple_color_end();
 
