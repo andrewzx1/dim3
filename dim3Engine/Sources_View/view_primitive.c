@@ -44,7 +44,6 @@ extern setup_type			setup;
 void view_primitive_2D_tint_screen(d3col *col,float alpha)
 {
 	float			vertexes[8];
-	unsigned char	colors[16];
 	
 	vertexes[0]=0.0f;
 	vertexes[1]=0.0f;
@@ -54,14 +53,9 @@ void view_primitive_2D_tint_screen(d3col *col,float alpha)
 	vertexes[5]=0.0f;
 	vertexes[6]=(float)view.screen.x_sz;
 	vertexes[7]=(float)view.screen.y_sz;
-	
-	colors[0]=colors[4]=colors[8]=colors[12]=(unsigned char)(col->r*255.0f);
-	colors[1]=colors[5]=colors[9]=colors[13]=(unsigned char)(col->g*255.0f);
-	colors[2]=colors[6]=colors[10]=colors[14]=(unsigned char)(col->b*255.0f);
-	colors[3]=colors[7]=colors[11]=colors[15]=(unsigned char)(alpha*255.0f);
 
 	gl_shader_draw_simple_color_start();
-	gl_shader_draw_execute_simple_color_ptr(2,vertexes,colors);
+	gl_shader_draw_execute_simple_color_ptr(2,vertexes,col,alpha);
 	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
 	gl_shader_draw_simple_color_end();
 }
@@ -116,7 +110,7 @@ void view_primitive_2D_color_poly(int x0,int y0,d3col *col0,int x1,int y1,d3col 
 		// draw the polygon
 
 	gl_shader_draw_simple_color_start();
-	gl_shader_draw_execute_simple_color_ptr(2,vertexes,colors);
+	gl_shader_draw_execute_simple_gradient_ptr(2,vertexes,colors);
 	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
 	gl_shader_draw_simple_color_end();
 		
@@ -134,7 +128,6 @@ void view_primitive_2D_color_quad(d3col *col,float alpha,int lft,int rgt,int top
 void view_primitive_2D_color_trig(d3col *col,float alpha,int lft,int rgt,int top,int bot,int dir)
 {
 	float			vertexes[6];
-	unsigned char	colors[12];
 
 	switch (dir) {
 
@@ -174,11 +167,6 @@ void view_primitive_2D_color_trig(d3col *col,float alpha,int lft,int rgt,int top
 			vertexes[5]=(float)bot;
 			break;
 	}
-	
-	colors[0]=colors[4]=colors[8]=(unsigned char)(col->r*255.0f);
-	colors[1]=colors[5]=colors[9]=(unsigned char)(col->g*255.0f);
-	colors[2]=colors[6]=colors[10]=(unsigned char)(col->b*255.0f);
-	colors[3]=colors[7]=colors[11]=(unsigned char)(alpha*255.0f);
 
 		// setup draw
 		
@@ -193,7 +181,7 @@ void view_primitive_2D_color_trig(d3col *col,float alpha,int lft,int rgt,int top
 		// draw the trig
 		
 	gl_shader_draw_simple_color_start();
-	gl_shader_draw_execute_simple_color_ptr(2,vertexes,colors);
+	gl_shader_draw_execute_simple_color_ptr(2,vertexes,col,alpha);
 	glDrawArrays(GL_TRIANGLES,0,3);
 	gl_shader_draw_simple_color_end();
 	
@@ -259,7 +247,7 @@ void view_primitive_2D_color_arc(d3col *out_col,d3col *in_col,float alpha,int lf
 		// draw the trig
 		
 	gl_shader_draw_simple_color_start();
-	gl_shader_draw_execute_simple_color_ptr(2,vertexes,colors);
+	gl_shader_draw_execute_simple_gradient_ptr(2,vertexes,colors);
 	glDrawArrays(GL_TRIANGLES,0,3);
 	gl_shader_draw_simple_color_end();
 	
@@ -278,17 +266,11 @@ void view_primitive_2D_color_arc(d3col *out_col,d3col *in_col,float alpha,int lf
 void view_primitive_2D_line(d3col *col,float alpha,int x0,int y0,int x1,int y1)
 {
 	float			vertexes[4];
-	unsigned char	colors[8];
 
 	vertexes[0]=(float)x0;
 	vertexes[1]=(float)y0;
 	vertexes[2]=(float)x1;
 	vertexes[3]=(float)y1;
-
-	colors[0]=colors[4]=(unsigned char)(col->r*255.0f);
-	colors[1]=colors[5]=(unsigned char)(col->g*255.0f);
-	colors[2]=colors[6]=(unsigned char)(col->b*255.0f);
-	colors[3]=colors[7]=(unsigned char)(alpha*255.0f);
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
@@ -301,7 +283,7 @@ void view_primitive_2D_line(d3col *col,float alpha,int x0,int y0,int x1,int y1)
 		// draw the quad
 		
 	gl_shader_draw_simple_color_start();
-	gl_shader_draw_execute_simple_color_ptr(2,vertexes,colors);
+	gl_shader_draw_execute_simple_color_ptr(2,vertexes,col,alpha);
 	glDrawArrays(GL_LINES,0,2);
 	gl_shader_draw_simple_color_end();
 
@@ -314,7 +296,6 @@ void view_primitive_2D_line(d3col *col,float alpha,int x0,int y0,int x1,int y1)
 void view_primitive_2D_line_poly(d3col *col,float alpha,int x0,int y0,int x1,int y1,int x2,int y2,int x3,int y3)
 {
 	float			vertexes[8];
-	unsigned char	colors[16];
 
 	vertexes[0]=(float)x0;
 	vertexes[1]=(float)y0;
@@ -324,11 +305,6 @@ void view_primitive_2D_line_poly(d3col *col,float alpha,int x0,int y0,int x1,int
 	vertexes[5]=(float)y2;
 	vertexes[6]=(float)x3;
 	vertexes[7]=(float)y3;
-
-	colors[0]=colors[4]=colors[8]=colors[12]=(unsigned char)(col->r*255.0f);
-	colors[1]=colors[5]=colors[9]=colors[13]=(unsigned char)(col->g*255.0f);
-	colors[2]=colors[6]=colors[10]=colors[14]=(unsigned char)(col->b*255.0f);
-	colors[3]=colors[7]=colors[11]=colors[15]=(unsigned char)(alpha*255.0f);
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
@@ -341,7 +317,7 @@ void view_primitive_2D_line_poly(d3col *col,float alpha,int x0,int y0,int x1,int
 		// draw the quad
 
 	gl_shader_draw_simple_color_start();
-	gl_shader_draw_execute_simple_color_ptr(2,vertexes,colors);
+	gl_shader_draw_execute_simple_color_ptr(2,vertexes,col,alpha);
 	glDrawArrays(GL_LINE_LOOP,0,4);
 	gl_shader_draw_simple_color_end();
 
@@ -359,7 +335,6 @@ void view_primitive_2D_line_quad(d3col *col,float alpha,int lft,int rgt,int top,
 void view_primitive_2D_line_trig(d3col *col,float alpha,int lft,int rgt,int top,int bot,int dir)
 {
 	float			vertexes[6];
-	unsigned char	colors[12];
 	
 		// get the vertexes
 
@@ -402,11 +377,6 @@ void view_primitive_2D_line_trig(d3col *col,float alpha,int lft,int rgt,int top,
 			break;
 	}
 
-	colors[0]=colors[4]=colors[8]=(unsigned char)(col->r*255.0f);
-	colors[1]=colors[5]=colors[9]=(unsigned char)(col->g*255.0f);
-	colors[2]=colors[6]=colors[10]=(unsigned char)(col->b*255.0f);
-	colors[3]=colors[7]=colors[11]=(unsigned char)(alpha*255.0f);
-
 		// setup draw
 
 	glEnable(GL_BLEND);
@@ -420,7 +390,7 @@ void view_primitive_2D_line_trig(d3col *col,float alpha,int lft,int rgt,int top,
 		// draw the quad
 		
 	gl_shader_draw_simple_color_start();
-	gl_shader_draw_execute_simple_color_ptr(2,vertexes,colors);
+	gl_shader_draw_execute_simple_color_ptr(2,vertexes,col,alpha);
 	glDrawArrays(GL_LINE_LOOP,0,3);
 	gl_shader_draw_simple_color_end();
 
@@ -439,7 +409,6 @@ void view_primitive_2D_line_trig(d3col *col,float alpha,int lft,int rgt,int top,
 void view_primitive_3D_line(d3col *col,float alpha,int x0,int y0,int z0,int x1,int y1,int z1)
 {
 	float			vertexes[6];
-	unsigned char	colors[8];
 
 	vertexes[0]=(float)x0;
 	vertexes[1]=(float)y0;
@@ -447,11 +416,6 @@ void view_primitive_3D_line(d3col *col,float alpha,int x0,int y0,int z0,int x1,i
 	vertexes[3]=(float)x1;
 	vertexes[4]=(float)y1;
 	vertexes[5]=(float)z1;
-	
-	colors[0]=colors[4]=(unsigned char)(col->r*255.0f);
-	colors[1]=colors[5]=(unsigned char)(col->g*255.0f);
-	colors[2]=colors[6]=(unsigned char)(col->b*255.0f);
-	colors[3]=colors[7]=(unsigned char)(alpha*255.0f);
 
 		// setup draw
 
@@ -464,7 +428,7 @@ void view_primitive_3D_line(d3col *col,float alpha,int x0,int y0,int z0,int x1,i
 		// draw the quad
 		
 	gl_shader_draw_simple_color_start();
-	gl_shader_draw_execute_simple_color_ptr(3,vertexes,colors);
+	gl_shader_draw_execute_simple_color_ptr(3,vertexes,col,alpha);
 	glDrawArrays(GL_LINES,0,2);
 	gl_shader_draw_simple_color_end();
 
@@ -479,31 +443,16 @@ void view_primitive_3D_line_cube(d3col *col,float alpha,int *px,int *py,int *pz)
 	int				n;
 	unsigned short	cube_indexes[24]={0,1,1,2,2,3,3,0,4,5,5,6,6,7,7,4,0,4,1,5,2,6,3,7};
 	float			vertexes[24];
-	unsigned char	colors[32],uc_r,uc_g,uc_b,uc_alpha;
 	float			*vptr;
-	unsigned char	*cptr;
-	
-		// get the colors
-		
-	uc_r=(unsigned char)(col->r*255.0f);
-	uc_g=(unsigned char)(col->g*255.0f);
-	uc_b=(unsigned char)(col->b*255.0f);
-	uc_alpha=(unsigned char)(alpha*255.0f);
 
 		// get the vertexes
 		
 	vptr=vertexes;
-	cptr=colors;
 	
 	for (n=0;n!=8;n++) {
 		*vptr++=(float)px[n];
 		*vptr++=(float)py[n];
 		*vptr++=(float)pz[n];
-		
-		*cptr++=uc_r;
-		*cptr++=uc_g;
-		*cptr++=uc_b;
-		*cptr++=uc_alpha;
 	}
 	
 		// setup draw
@@ -514,12 +463,10 @@ void view_primitive_3D_line_cube(d3col *col,float alpha,int *px,int *py,int *pz)
 	glDisable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_NOTEQUAL,0);
 
-	glColor4f(col->r,col->g,col->b,alpha);
-
 		// draw the quad
 		
 	gl_shader_draw_simple_color_start();
-	gl_shader_draw_execute_simple_color_ptr(3,vertexes,colors);
+	gl_shader_draw_execute_simple_color_ptr(3,vertexes,col,alpha);
 	glDrawElements(GL_LINES,24,GL_UNSIGNED_SHORT,(GLvoid*)cube_indexes);
 	gl_shader_draw_simple_color_end();
 
@@ -538,7 +485,7 @@ void view_primitive_3D_line_cube(d3col *col,float alpha,int *px,int *py,int *pz)
 void view_primitive_2D_texture_quad(GLuint gl_id,d3col *col,float alpha,int lft,int rgt,int top,int bot,float gx,float gx2,float gy,float gy2,bool clamp)
 {
 	float			vertexes[8],uvs[8];
-	unsigned char	colors[16],uc_alpha,uc_r,uc_g,uc_b;
+	d3col			col2,*col_ptr;
 
 		// setup the data
 
@@ -560,21 +507,13 @@ void view_primitive_2D_texture_quad(GLuint gl_id,d3col *col,float alpha,int lft,
 	uvs[6]=gx2;
 	uvs[7]=gy2;
 
-	uc_alpha=(unsigned char)(alpha*255.0f);
-
 	if (col==NULL) {
-		uc_r=uc_g=uc_b=255;
+		col2.r=col2.g=col2.b=1.0f;
+		col_ptr=&col2;
 	}
 	else {
-		uc_r=(unsigned char)(col->r*255.0f);
-		uc_g=(unsigned char)(col->g*255.0f);
-		uc_b=(unsigned char)(col->b*255.0f);
+		col_ptr=col;
 	}
-
-	colors[0]=colors[4]=colors[8]=colors[12]=uc_r;
-	colors[1]=colors[5]=colors[9]=colors[13]=uc_g;
-	colors[2]=colors[6]=colors[10]=colors[14]=uc_b;
-	colors[3]=colors[7]=colors[11]=colors[15]=uc_alpha;
 
 		// setup texture draw
 
@@ -594,7 +533,7 @@ void view_primitive_2D_texture_quad(GLuint gl_id,d3col *col,float alpha,int lft,
 		// draw the quad
 
 	gl_shader_draw_simple_bitmap_start();
-	gl_shader_draw_execute_simple_bitmap_ptr(gl_id,2,vertexes,uvs,colors);
+	gl_shader_draw_execute_simple_bitmap_ptr(gl_id,2,vertexes,uvs,col_ptr,alpha);
 	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
 	gl_shader_draw_simple_bitmap_end();
 
@@ -613,7 +552,7 @@ void view_primitive_2D_texture_quad_rot(GLuint gl_id,d3col *col,float alpha,int 
 {
 	int				px[4],py[4];
 	float			vertexes[8],uvs[8];
-	unsigned char	colors[16],uc_alpha,uc_r,uc_g,uc_b;
+	d3col			col2,*col_ptr;
 	
 	px[0]=px[3]=lft;
 	px[1]=px[2]=rgt;
@@ -642,21 +581,13 @@ void view_primitive_2D_texture_quad_rot(GLuint gl_id,d3col *col,float alpha,int 
 	uvs[6]=gx2;
 	uvs[7]=gy2;
 
-	uc_alpha=(unsigned char)(alpha*255.0f);
-
 	if (col==NULL) {
-		uc_r=uc_g=uc_b=255;
+		col2.r=col2.g=col2.b=1.0f;
+		col_ptr=&col2;
 	}
 	else {
-		uc_r=(unsigned char)(col->r*255.0f);
-		uc_g=(unsigned char)(col->g*255.0f);
-		uc_b=(unsigned char)(col->b*255.0f);
+		col_ptr=col;
 	}
-
-	colors[0]=colors[4]=colors[8]=colors[12]=uc_r;
-	colors[1]=colors[5]=colors[9]=colors[13]=uc_g;
-	colors[2]=colors[6]=colors[10]=colors[14]=uc_b;
-	colors[3]=colors[7]=colors[11]=colors[15]=uc_alpha;
 
 		// setup texture draw
 
@@ -671,7 +602,7 @@ void view_primitive_2D_texture_quad_rot(GLuint gl_id,d3col *col,float alpha,int 
 		// draw the quad
 
 	gl_shader_draw_simple_bitmap_start();
-	gl_shader_draw_execute_simple_bitmap_ptr(gl_id,2,vertexes,uvs,colors);
+	gl_shader_draw_execute_simple_bitmap_ptr(gl_id,2,vertexes,uvs,col_ptr,alpha);
 	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
 	gl_shader_draw_simple_bitmap_end();
 
@@ -687,7 +618,7 @@ void view_primitive_2D_texture_quad_rectangle(GLuint gl_id,float alpha,int lft,i
 	view_primitive_2D_texture_quad(gl_id,NULL,alpha,lft,rgt,top,bot,0.0f,1.0f,0.0f,1.0f,FALSE);
 #else
 	float			vertexes[8],uvs[8];
-	unsigned char	colors[16],uc_alpha;
+	d3col			col;
 
 		// setup the data
 
@@ -709,12 +640,7 @@ void view_primitive_2D_texture_quad_rectangle(GLuint gl_id,float alpha,int lft,i
 	uvs[6]=(float)pixel_wid;
 	uvs[7]=(float)pixel_high;
 
-	uc_alpha=(unsigned char)(alpha*255.0f);
-
-	colors[0]=colors[4]=colors[8]=colors[12]=255;
-	colors[1]=colors[5]=colors[9]=colors[13]=255;
-	colors[2]=colors[6]=colors[10]=colors[14]=255;
-	colors[3]=colors[7]=colors[11]=colors[15]=uc_alpha;
+	col.r=col.g=col.b=1.0f;
 	
 		// setup texture draw
 
@@ -729,7 +655,7 @@ void view_primitive_2D_texture_quad_rectangle(GLuint gl_id,float alpha,int lft,i
 		// draw the quad
 
 	gl_shader_draw_simple_bitmap_rect_start();
-	gl_shader_draw_execute_simple_bitmap_rect_ptr(gl_id,2,vertexes,uvs,colors);
+	gl_shader_draw_execute_simple_bitmap_rect_ptr(gl_id,2,vertexes,uvs,&col,alpha);
 	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
 	gl_shader_draw_simple_bitmap_rect_end();
 

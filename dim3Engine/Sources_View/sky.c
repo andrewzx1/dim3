@@ -46,7 +46,7 @@ void sky_draw_background_single(map_background_layer_type *layer)
 	float				f_screen_x_sz,f_screen_y_sz,ratio,
 						f_ty,f_by,gx_lft,gx_rgt,gy_top,gy_bot;
 	float				vertexes[8],uvs[8];
-	unsigned char		colors[16];
+	d3col				col;
 	texture_type		*texture;
 	bitmap_type			*bitmap;
 
@@ -94,15 +94,12 @@ void sky_draw_background_single(map_background_layer_type *layer)
 	uvs[1]=uvs[5]=gy_top;
 	uvs[3]=uvs[7]=gy_bot;
 
-	colors[0]=colors[4]=colors[8]=colors[12]=255;
-	colors[1]=colors[5]=colors[9]=colors[13]=255;
-	colors[2]=colors[6]=colors[10]=colors[14]=255;
-	colors[3]=colors[7]=colors[11]=colors[15]=255;
+	col.r=col.g=col.b=1.0f;
 
 		// draw the quad
 
 	gl_shader_draw_simple_bitmap_start();
-	gl_shader_draw_execute_simple_bitmap_ptr(bitmap->gl_id,2,vertexes,uvs,colors);
+	gl_shader_draw_execute_simple_bitmap_ptr(bitmap->gl_id,2,vertexes,uvs,&col,1.0f);
 	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
 	gl_shader_draw_simple_bitmap_end();
 }
@@ -163,7 +160,6 @@ void sky_draw_dome_panoramic_setup(void)
 						top_reduce,bot_reduce,f_radius,
 						rxz,rxz2,r_add;
 	float				*vertex_ptr,*uv_ptr;
-	unsigned char		*cp_ptr;
 
 		// dome setup
 
@@ -184,7 +180,7 @@ void sky_draw_dome_panoramic_setup(void)
 		// construct VBO
 
 	sz=((5*20)*6)+(20*3);
-	view_create_sky_vertex_object(((sz*(3+2))*sizeof(float))+((sz*4)*sizeof(unsigned char)));
+	view_create_sky_vertex_object(((sz*(3+2))*sizeof(float)));
 
 	view_bind_sky_vertex_object();
 
@@ -195,7 +191,6 @@ void sky_draw_dome_panoramic_setup(void)
 	}
 
 	uv_ptr=vertex_ptr+(sz*3);
-	cp_ptr=(unsigned char*)(vertex_ptr+(sz*(3+2)));
 
 		// create the dome vertexes
 
@@ -233,11 +228,6 @@ void sky_draw_dome_panoramic_setup(void)
 			*uv_ptr++=gx1;
 			*uv_ptr++=bgy;
 
-			*cp_ptr++=255;
-			*cp_ptr++=255;
-			*cp_ptr++=255;
-			*cp_ptr++=255;
-
 			*vertex_ptr++=-(sinf(rxz2)*bot_reduce);
 			*vertex_ptr++=f_by;
 			*vertex_ptr++=cosf(rxz2)*bot_reduce;
@@ -245,22 +235,12 @@ void sky_draw_dome_panoramic_setup(void)
 			*uv_ptr++=gx2;
 			*uv_ptr++=bgy;
 
-			*cp_ptr++=255;
-			*cp_ptr++=255;
-			*cp_ptr++=255;
-			*cp_ptr++=255;
-
 			*vertex_ptr++=-(sinf(rxz)*top_reduce);
 			*vertex_ptr++=f_ty;
 			*vertex_ptr++=cosf(rxz)*top_reduce;
 
 			*uv_ptr++=gx1;
 			*uv_ptr++=tgy;
-
-			*cp_ptr++=255;
-			*cp_ptr++=255;
-			*cp_ptr++=255;
-			*cp_ptr++=255;
 
 				// trig 2
 
@@ -270,11 +250,6 @@ void sky_draw_dome_panoramic_setup(void)
 
 			*uv_ptr++=gx2;
 			*uv_ptr++=bgy;
-
-			*cp_ptr++=255;
-			*cp_ptr++=255;
-			*cp_ptr++=255;
-			*cp_ptr++=255;
 			
 			*vertex_ptr++=-(sinf(rxz2)*top_reduce);
 			*vertex_ptr++=f_ty;
@@ -283,22 +258,12 @@ void sky_draw_dome_panoramic_setup(void)
 			*uv_ptr++=gx2;
 			*uv_ptr++=tgy;
 
-			*cp_ptr++=255;
-			*cp_ptr++=255;
-			*cp_ptr++=255;
-			*cp_ptr++=255;
-
 			*vertex_ptr++=-(sinf(rxz)*top_reduce);
 			*vertex_ptr++=f_ty;
 			*vertex_ptr++=cosf(rxz)*top_reduce;
 
 			*uv_ptr++=gx1;
 			*uv_ptr++=tgy;
-
-			*cp_ptr++=255;
-			*cp_ptr++=255;
-			*cp_ptr++=255;
-			*cp_ptr++=255;
 
 			rxz+=r_add;
 		}
@@ -324,11 +289,6 @@ void sky_draw_dome_panoramic_setup(void)
 
 		*uv_ptr++=gx1;
 		*uv_ptr++=bgy;
-		
-		*cp_ptr++=255;
-		*cp_ptr++=255;
-		*cp_ptr++=255;
-		*cp_ptr++=255;
 
 		*vertex_ptr++=-(sinf(rxz2)*bot_reduce);
 		*vertex_ptr++=f_by;
@@ -337,22 +297,12 @@ void sky_draw_dome_panoramic_setup(void)
 		*uv_ptr++=gx2;
 		*uv_ptr++=bgy;
 
-		*cp_ptr++=255;
-		*cp_ptr++=255;
-		*cp_ptr++=255;
-		*cp_ptr++=255;
-
 		*vertex_ptr++=0.0f;
 		*vertex_ptr++=f_ty;
 		*vertex_ptr++=0.0f;
 
 		*uv_ptr++=0.0f;
 		*uv_ptr++=0.0f;
-
-		*cp_ptr++=255;
-		*cp_ptr++=255;
-		*cp_ptr++=255;
-		*cp_ptr++=255;
 
 		rxz+=r_add;
 	}
@@ -367,6 +317,7 @@ void sky_draw_dome_panoramic(void)
 {
     int					k,tick,pan_count;
 	float				txt_x_shift,txt_y_shift;
+	d3col				col;
 	texture_type		*texture;
 	
 		// texture sizes
@@ -403,10 +354,11 @@ void sky_draw_dome_panoramic(void)
 	glTranslatef(txt_x_shift,txt_y_shift,0.0f);
 
 	texture=&map.textures[map.sky.fill];
+	col.r=col.g=col.b=1.0f;
 
 	gl_shader_draw_simple_bitmap_start();
-	gl_shader_draw_execute_simple_bitmap_vbo_attribute(3,0,((pan_count*3)*sizeof(float)),((pan_count*(3+2))*sizeof(float)));
-	gl_shader_draw_execute_simple_bitmap_vbo_texture(texture->frames[texture->animate.current_frame].bitmap.gl_id);
+	gl_shader_draw_execute_simple_bitmap_vbo_attribute(3,0,((pan_count*3)*sizeof(float)),&col,1.0f);
+	gl_shader_draw_execute_simple_bitmap_set_texture(texture->frames[texture->animate.current_frame].bitmap.gl_id);
 	glDrawArrays(GL_TRIANGLES,0,pan_count);
 	gl_shader_draw_simple_bitmap_end();
 		
@@ -431,7 +383,6 @@ void sky_draw_dome_hemisphere_setup(void)
 						top_reduce,bot_reduce,f_radius,
 						rxz,rxz2,r_add;
 	float				*vertex_ptr,*uv_ptr;
-	unsigned char		*cp_ptr;
 
 		// dome setup
 
@@ -454,7 +405,7 @@ void sky_draw_dome_hemisphere_setup(void)
 	sz=((4*20)*6)+(20*3);
 	if (map.sky.dome_mirror) sz*=2;
 
-	view_create_sky_vertex_object(((sz*(3+2))*sizeof(float))+((sz*4)*sizeof(unsigned char)));
+	view_create_sky_vertex_object(((sz*(3+2))*sizeof(float)));
 
 	view_bind_sky_vertex_object();
 
@@ -465,7 +416,6 @@ void sky_draw_dome_hemisphere_setup(void)
 	}
 
 	uv_ptr=vertex_ptr+(sz*3);
-	cp_ptr=(unsigned char*)(vertex_ptr+(sz*(3+2)));
 
 		// create the dome vertexes
 
@@ -510,11 +460,6 @@ void sky_draw_dome_hemisphere_setup(void)
 				*uv_ptr++=gx1;
 				*uv_ptr++=bgy;
 
-				*cp_ptr++=255;
-				*cp_ptr++=255;
-				*cp_ptr++=255;
-				*cp_ptr++=255;
-
 				*vertex_ptr++=-(sinf(rxz2)*bot_reduce);
 				*vertex_ptr++=f_by;
 				*vertex_ptr++=cosf(rxz2)*bot_reduce;
@@ -522,22 +467,12 @@ void sky_draw_dome_hemisphere_setup(void)
 				*uv_ptr++=gx2;
 				*uv_ptr++=bgy;
 
-				*cp_ptr++=255;
-				*cp_ptr++=255;
-				*cp_ptr++=255;
-				*cp_ptr++=255;
-
 				*vertex_ptr++=-(sinf(rxz)*top_reduce);
 				*vertex_ptr++=f_ty;
 				*vertex_ptr++=cosf(rxz)*top_reduce;
 
 				*uv_ptr++=gx1;
 				*uv_ptr++=tgy;
-
-				*cp_ptr++=255;
-				*cp_ptr++=255;
-				*cp_ptr++=255;
-				*cp_ptr++=255;
 
 					// trig 2
 
@@ -548,11 +483,6 @@ void sky_draw_dome_hemisphere_setup(void)
 				*uv_ptr++=gx2;
 				*uv_ptr++=bgy;
 
-				*cp_ptr++=255;
-				*cp_ptr++=255;
-				*cp_ptr++=255;
-				*cp_ptr++=255;
-
 				*vertex_ptr++=-(sinf(rxz2)*top_reduce);
 				*vertex_ptr++=f_ty;
 				*vertex_ptr++=cosf(rxz2)*top_reduce;
@@ -560,22 +490,12 @@ void sky_draw_dome_hemisphere_setup(void)
 				*uv_ptr++=gx2;
 				*uv_ptr++=tgy;
 
-				*cp_ptr++=255;
-				*cp_ptr++=255;
-				*cp_ptr++=255;
-				*cp_ptr++=255;
-
 				*vertex_ptr++=-(sinf(rxz)*top_reduce);
 				*vertex_ptr++=f_ty;
 				*vertex_ptr++=cosf(rxz)*top_reduce;
 
 				*uv_ptr++=gx1;
 				*uv_ptr++=tgy;
-
-				*cp_ptr++=255;
-				*cp_ptr++=255;
-				*cp_ptr++=255;
-				*cp_ptr++=255;
 			}
 			else {
 
@@ -588,11 +508,6 @@ void sky_draw_dome_hemisphere_setup(void)
 				*uv_ptr++=gx1;
 				*uv_ptr++=bgy;
 
-				*cp_ptr++=255;
-				*cp_ptr++=255;
-				*cp_ptr++=255;
-				*cp_ptr++=255;
-
 				*vertex_ptr++=-(sinf(rxz2)*bot_reduce);
 				*vertex_ptr++=f_by;
 				*vertex_ptr++=cosf(rxz2)*bot_reduce;
@@ -600,22 +515,12 @@ void sky_draw_dome_hemisphere_setup(void)
 				*uv_ptr++=gx2;
 				*uv_ptr++=bgy;
 
-				*cp_ptr++=255;
-				*cp_ptr++=255;
-				*cp_ptr++=255;
-				*cp_ptr++=255;
-
 				*vertex_ptr++=0.0f;
 				*vertex_ptr++=f_ty;
 				*vertex_ptr++=0.0f;
 
 				*uv_ptr++=(gx1+gx2)*0.5f;
 				*uv_ptr++=0.01f;
-
-				*cp_ptr++=255;
-				*cp_ptr++=255;
-				*cp_ptr++=255;
-				*cp_ptr++=255;
 			}
 
 				// flipped dome
@@ -633,11 +538,6 @@ void sky_draw_dome_hemisphere_setup(void)
 					*uv_ptr++=gx1;
 					*uv_ptr++=bgy;
 
-					*cp_ptr++=255;
-					*cp_ptr++=255;
-					*cp_ptr++=255;
-					*cp_ptr++=255;
-
 					*vertex_ptr++=-(sinf(rxz2)*bot_reduce);
 					*vertex_ptr++=f_by2;
 					*vertex_ptr++=cosf(rxz2)*bot_reduce;
@@ -645,22 +545,12 @@ void sky_draw_dome_hemisphere_setup(void)
 					*uv_ptr++=gx2;
 					*uv_ptr++=bgy;
 
-					*cp_ptr++=255;
-					*cp_ptr++=255;
-					*cp_ptr++=255;
-					*cp_ptr++=255;
-
 					*vertex_ptr++=-(sinf(rxz)*top_reduce);
 					*vertex_ptr++=f_ty2;
 					*vertex_ptr++=cosf(rxz)*top_reduce;
 					
 					*uv_ptr++=gx1;
 					*uv_ptr++=tgy;
-
-					*cp_ptr++=255;
-					*cp_ptr++=255;
-					*cp_ptr++=255;
-					*cp_ptr++=255;
 
 						// trig 2
 
@@ -671,11 +561,6 @@ void sky_draw_dome_hemisphere_setup(void)
 					*uv_ptr++=gx2;
 					*uv_ptr++=bgy;
 
-					*cp_ptr++=255;
-					*cp_ptr++=255;
-					*cp_ptr++=255;
-					*cp_ptr++=255;
-
 					*vertex_ptr++=-(sinf(rxz2)*top_reduce);
 					*vertex_ptr++=f_ty2;
 					*vertex_ptr++=cosf(rxz2)*top_reduce;
@@ -683,22 +568,12 @@ void sky_draw_dome_hemisphere_setup(void)
 					*uv_ptr++=gx2;
 					*uv_ptr++=tgy;
 
-					*cp_ptr++=255;
-					*cp_ptr++=255;
-					*cp_ptr++=255;
-					*cp_ptr++=255;
-
 					*vertex_ptr++=-(sinf(rxz)*top_reduce);
 					*vertex_ptr++=f_ty2;
 					*vertex_ptr++=cosf(rxz)*top_reduce;
 					
 					*uv_ptr++=gx1;
 					*uv_ptr++=tgy;
-
-					*cp_ptr++=255;
-					*cp_ptr++=255;
-					*cp_ptr++=255;
-					*cp_ptr++=255;
 				}
 				else {
 
@@ -711,11 +586,6 @@ void sky_draw_dome_hemisphere_setup(void)
 					*uv_ptr++=gx1;
 					*uv_ptr++=bgy;
 
-					*cp_ptr++=255;
-					*cp_ptr++=255;
-					*cp_ptr++=255;
-					*cp_ptr++=255;
-
 					*vertex_ptr++=-(sinf(rxz2)*bot_reduce);
 					*vertex_ptr++=f_by2;
 					*vertex_ptr++=cosf(rxz2)*bot_reduce;
@@ -723,22 +593,12 @@ void sky_draw_dome_hemisphere_setup(void)
 					*uv_ptr++=gx2;
 					*uv_ptr++=bgy;
 
-					*cp_ptr++=255;
-					*cp_ptr++=255;
-					*cp_ptr++=255;
-					*cp_ptr++=255;
-
 					*vertex_ptr++=0.0f;
 					*vertex_ptr++=f_ty2;
 					*vertex_ptr++=0.0f;
 
 					*uv_ptr++=(gx1+gx2)*0.5f;
 					*uv_ptr++=0.01f;
-
-					*cp_ptr++=255;
-					*cp_ptr++=255;
-					*cp_ptr++=255;
-					*cp_ptr++=255;
 				}
 			}
 			
@@ -756,6 +616,7 @@ void sky_draw_dome_hemisphere(void)
 {
     int					k,tick,dome_cnt;
 	float				txt_x_shift,txt_y_shift;
+	d3col				col;
 	texture_type		*texture;
 
 		// texture sizes
@@ -788,6 +649,7 @@ void sky_draw_dome_hemisphere(void)
 	glTranslatef(txt_x_shift,txt_y_shift,0.0f);
 
 	texture=&map.textures[map.sky.fill];
+	col.r=col.g=col.b=1.0f;
 
 		// bind the vbo
 
@@ -801,8 +663,8 @@ void sky_draw_dome_hemisphere(void)
 		// draw the dome
 	
 	gl_shader_draw_simple_bitmap_start();
-	gl_shader_draw_execute_simple_bitmap_vbo_attribute(3,0,((dome_cnt*3)*sizeof(float)),((dome_cnt*(3+2))*sizeof(float)));
-	gl_shader_draw_execute_simple_bitmap_vbo_texture(texture->frames[texture->animate.current_frame].bitmap.gl_id);
+	gl_shader_draw_execute_simple_bitmap_vbo_attribute(3,0,((dome_cnt*3)*sizeof(float)),&col,1.0f);
+	gl_shader_draw_execute_simple_bitmap_set_texture(texture->frames[texture->animate.current_frame].bitmap.gl_id);
 	glDrawArrays(GL_TRIANGLES,0,dome_cnt);
 	gl_shader_draw_simple_bitmap_end();
 
@@ -827,12 +689,11 @@ void sky_draw_cube_setup(void)
 	int					sz;
     float				f_radius;
 	float				*vertex_ptr,*uv_ptr;
-	unsigned char		*cp_ptr;
 
 		// construct VBO
 
 	sz=6*4;
-	view_create_sky_vertex_object(((sz*(3+2+4))*sizeof(float))+((sz*4)*sizeof(unsigned char)));
+	view_create_sky_vertex_object(((sz*(3+2+4))*sizeof(float)));
 
 	view_bind_sky_vertex_object();
 
@@ -843,7 +704,6 @@ void sky_draw_cube_setup(void)
 	}
 
 	uv_ptr=vertex_ptr+(sz*3);
-	cp_ptr=(unsigned char*)(vertex_ptr+(sz*(3+2)));
 
 		// setup cube quads
 		
@@ -859,22 +719,12 @@ void sky_draw_cube_setup(void)
 		*uv_ptr++=0.0f;
 		*uv_ptr++=1.0f;
 
-		*cp_ptr++=255;
-		*cp_ptr++=255;
-		*cp_ptr++=255;
-		*cp_ptr++=255;
-
 		*vertex_ptr++=-f_radius;
 		*vertex_ptr++=-f_radius;
 		*vertex_ptr++=f_radius;
 
 		*uv_ptr++=0.0f;
 		*uv_ptr++=0.0f;
-
-		*cp_ptr++=255;
-		*cp_ptr++=255;
-		*cp_ptr++=255;
-		*cp_ptr++=255;
 
 		*vertex_ptr++=f_radius;
 		*vertex_ptr++=-f_radius;
@@ -883,22 +733,12 @@ void sky_draw_cube_setup(void)
 		*uv_ptr++=1.0f;
 		*uv_ptr++=1.0f;
 
-		*cp_ptr++=255;
-		*cp_ptr++=255;
-		*cp_ptr++=255;
-		*cp_ptr++=255;
-
 		*vertex_ptr++=f_radius;
 		*vertex_ptr++=-f_radius;
 		*vertex_ptr++=f_radius;
 
 		*uv_ptr++=1.0f;
 		*uv_ptr++=0.0f;
-
-		*cp_ptr++=255;
-		*cp_ptr++=255;
-		*cp_ptr++=255;
-		*cp_ptr++=255;
 	}
 	
 		// bottom
@@ -911,22 +751,12 @@ void sky_draw_cube_setup(void)
 		*uv_ptr++=0.0f;
 		*uv_ptr++=1.0f;
 
-		*cp_ptr++=255;
-		*cp_ptr++=255;
-		*cp_ptr++=255;
-		*cp_ptr++=255;
-
 		*vertex_ptr++=-f_radius;
 		*vertex_ptr++=f_radius;
 		*vertex_ptr++=f_radius;
 
 		*uv_ptr++=0.0f;
 		*uv_ptr++=0.0f;
-
-		*cp_ptr++=255;
-		*cp_ptr++=255;
-		*cp_ptr++=255;
-		*cp_ptr++=255;
 
 		*vertex_ptr++=f_radius;
 		*vertex_ptr++=f_radius;
@@ -935,22 +765,12 @@ void sky_draw_cube_setup(void)
 		*uv_ptr++=1.0f;
 		*uv_ptr++=1.0f;
 
-		*cp_ptr++=255;
-		*cp_ptr++=255;
-		*cp_ptr++=255;
-		*cp_ptr++=255;
-
 		*vertex_ptr++=f_radius;
 		*vertex_ptr++=f_radius;
 		*vertex_ptr++=f_radius;
 
 		*uv_ptr++=1.0f;
 		*uv_ptr++=0.0f;
-
-		*cp_ptr++=255;
-		*cp_ptr++=255;
-		*cp_ptr++=255;
-		*cp_ptr++=255;
 	}
 	
 		// north
@@ -963,22 +783,12 @@ void sky_draw_cube_setup(void)
 		*uv_ptr++=0.0f;
 		*uv_ptr++=0.0f;
 
-		*cp_ptr++=255;
-		*cp_ptr++=255;
-		*cp_ptr++=255;
-		*cp_ptr++=255;
-
 		*vertex_ptr++=-f_radius;
 		*vertex_ptr++=f_radius;
 		*vertex_ptr++=f_radius;
 
 		*uv_ptr++=0.0f;
 		*uv_ptr++=1.0f;
-
-		*cp_ptr++=255;
-		*cp_ptr++=255;
-		*cp_ptr++=255;
-		*cp_ptr++=255;
 
 		*vertex_ptr++=f_radius;
 		*vertex_ptr++=-f_radius;
@@ -987,22 +797,12 @@ void sky_draw_cube_setup(void)
 		*uv_ptr++=1.0f;
 		*uv_ptr++=0.0f;
 
-		*cp_ptr++=255;
-		*cp_ptr++=255;
-		*cp_ptr++=255;
-		*cp_ptr++=255;
-
 		*vertex_ptr++=f_radius;
 		*vertex_ptr++=f_radius;
 		*vertex_ptr++=f_radius;
 
 		*uv_ptr++=1.0f;
 		*uv_ptr++=1.0f;
-
-		*cp_ptr++=255;
-		*cp_ptr++=255;
-		*cp_ptr++=255;
-		*cp_ptr++=255;
 	}
 	
 		// east
@@ -1015,22 +815,12 @@ void sky_draw_cube_setup(void)
 		*uv_ptr++=0.0f;
 		*uv_ptr++=0.0f;
 
-		*cp_ptr++=255;
-		*cp_ptr++=255;
-		*cp_ptr++=255;
-		*cp_ptr++=255;
-
 		*vertex_ptr++=f_radius;
 		*vertex_ptr++=f_radius;
 		*vertex_ptr++=f_radius;
 
 		*uv_ptr++=0.0f;
 		*uv_ptr++=1.0f;
-
-		*cp_ptr++=255;
-		*cp_ptr++=255;
-		*cp_ptr++=255;
-		*cp_ptr++=255;
 
 		*vertex_ptr++=f_radius;
 		*vertex_ptr++=-f_radius;
@@ -1039,22 +829,12 @@ void sky_draw_cube_setup(void)
 		*uv_ptr++=1.0f;
 		*uv_ptr++=0.0f;
 
-		*cp_ptr++=255;
-		*cp_ptr++=255;
-		*cp_ptr++=255;
-		*cp_ptr++=255;
-
 		*vertex_ptr++=f_radius;
 		*vertex_ptr++=f_radius;
 		*vertex_ptr++=-f_radius;
 
 		*uv_ptr++=1.0f;
 		*uv_ptr++=1.0f;
-
-		*cp_ptr++=255;
-		*cp_ptr++=255;
-		*cp_ptr++=255;
-		*cp_ptr++=255;
 	}
 	
 		// south
@@ -1067,22 +847,12 @@ void sky_draw_cube_setup(void)
 		*uv_ptr++=0.0f;
 		*uv_ptr++=0.0f;
 
-		*cp_ptr++=255;
-		*cp_ptr++=255;
-		*cp_ptr++=255;
-		*cp_ptr++=255;
-
 		*vertex_ptr++=f_radius;
 		*vertex_ptr++=f_radius;
 		*vertex_ptr++=-f_radius;
 
 		*uv_ptr++=0.0f;
 		*uv_ptr++=1.0f;
-
-		*cp_ptr++=255;
-		*cp_ptr++=255;
-		*cp_ptr++=255;
-		*cp_ptr++=255;
 
 		*vertex_ptr++=-f_radius;
 		*vertex_ptr++=-f_radius;
@@ -1091,22 +861,12 @@ void sky_draw_cube_setup(void)
 		*uv_ptr++=1.0f;
 		*uv_ptr++=0.0f;
 
-		*cp_ptr++=255;
-		*cp_ptr++=255;
-		*cp_ptr++=255;
-		*cp_ptr++=255;
-
 		*vertex_ptr++=-f_radius;
 		*vertex_ptr++=f_radius;
 		*vertex_ptr++=-f_radius;
 
 		*uv_ptr++=1.0f;
 		*uv_ptr++=1.0f;
-
-		*cp_ptr++=255;
-		*cp_ptr++=255;
-		*cp_ptr++=255;
-		*cp_ptr++=255;
 	}
 	
 		// west
@@ -1119,22 +879,12 @@ void sky_draw_cube_setup(void)
 		*uv_ptr++=0.0f;
 		*uv_ptr++=0.0f;
 
-		*cp_ptr++=255;
-		*cp_ptr++=255;
-		*cp_ptr++=255;
-		*cp_ptr++=255;
-
 		*vertex_ptr++=-f_radius;
 		*vertex_ptr++=f_radius;
 		*vertex_ptr++=-f_radius;
 
 		*uv_ptr++=0.0f;
 		*uv_ptr++=1.0f;
-
-		*cp_ptr++=255;
-		*cp_ptr++=255;
-		*cp_ptr++=255;
-		*cp_ptr++=255;
 
 		*vertex_ptr++=-f_radius;
 		*vertex_ptr++=-f_radius;
@@ -1143,22 +893,12 @@ void sky_draw_cube_setup(void)
 		*uv_ptr++=1.0f;
 		*uv_ptr++=0.0f;
 
-		*cp_ptr++=255;
-		*cp_ptr++=255;
-		*cp_ptr++=255;
-		*cp_ptr++=255;
-
 		*vertex_ptr++=-f_radius;
 		*vertex_ptr++=f_radius;
 		*vertex_ptr++=f_radius;
 
 		*uv_ptr++=1.0f;
 		*uv_ptr++=1.0f;
-
-		*cp_ptr++=255;
-		*cp_ptr++=255;
-		*cp_ptr++=255;
-		*cp_ptr++=255;
 	}
  
 		// unmap and unbind vbo
@@ -1171,6 +911,7 @@ void sky_draw_cube(void)
 {
     int					k,tick,offset;
     float				txt_fact,txt_x_shift,txt_y_shift;
+	d3col				col;
 	texture_type		*texture;
 					
 		// texture sizes
@@ -1195,8 +936,6 @@ void sky_draw_cube(void)
 
 		// setup texture
 		
-	gl_texture_simple_start();
-
 	glDisable(GL_BLEND);
 	glDisable(GL_ALPHA_TEST);
 	glDisable(GL_DEPTH_TEST);
@@ -1205,6 +944,8 @@ void sky_draw_cube(void)
 	glTranslatef(txt_x_shift,txt_y_shift,0.0f);
 	glScalef(txt_fact,txt_fact,1.0f);
 	
+	col.r=col.g=col.b=1.0f;
+	
 		// bind VBO
 
 	view_bind_sky_vertex_object();
@@ -1212,13 +953,13 @@ void sky_draw_cube(void)
 		// draw cube sides
 
 	gl_shader_draw_simple_bitmap_start();
-	gl_shader_draw_execute_simple_bitmap_vbo_attribute(3,0,(((6*4)*3)*sizeof(float)),(((6*4)*(3+2))*sizeof(float)));
+	gl_shader_draw_execute_simple_bitmap_vbo_attribute(3,0,(((6*4)*3)*sizeof(float)),&col,1.0f);
 
 	offset=0;
 
 	if (map.sky.fill!=-1) {
 		texture=&map.textures[map.sky.fill];
-		gl_shader_draw_execute_simple_bitmap_vbo_texture(texture->frames[texture->animate.current_frame].bitmap.gl_id);
+		gl_shader_draw_execute_simple_bitmap_set_texture(texture->frames[texture->animate.current_frame].bitmap.gl_id);
 		glDrawArrays(GL_TRIANGLE_STRIP,0,4);
 		
 		offset+=4;
@@ -1228,7 +969,7 @@ void sky_draw_cube(void)
 		
 	if (map.sky.bottom_fill!=-1) {
 		texture=&map.textures[map.sky.bottom_fill];
-		gl_shader_draw_execute_simple_bitmap_vbo_texture(texture->frames[texture->animate.current_frame].bitmap.gl_id);
+		gl_shader_draw_execute_simple_bitmap_set_texture(texture->frames[texture->animate.current_frame].bitmap.gl_id);
 		glDrawArrays(GL_TRIANGLE_STRIP,offset,4);
 		
 		offset+=4;
@@ -1238,7 +979,7 @@ void sky_draw_cube(void)
 		
 	if (map.sky.north_fill!=-1) {
 		texture=&map.textures[map.sky.north_fill];
-		gl_shader_draw_execute_simple_bitmap_vbo_texture(texture->frames[texture->animate.current_frame].bitmap.gl_id);
+		gl_shader_draw_execute_simple_bitmap_set_texture(texture->frames[texture->animate.current_frame].bitmap.gl_id);
 		glDrawArrays(GL_TRIANGLE_STRIP,offset,4);
 		
 		offset+=4;
@@ -1248,7 +989,7 @@ void sky_draw_cube(void)
 
 	if (map.sky.east_fill!=-1) {
 		texture=&map.textures[map.sky.east_fill];
-		gl_shader_draw_execute_simple_bitmap_vbo_texture(texture->frames[texture->animate.current_frame].bitmap.gl_id);
+		gl_shader_draw_execute_simple_bitmap_set_texture(texture->frames[texture->animate.current_frame].bitmap.gl_id);
 		glDrawArrays(GL_TRIANGLE_STRIP,offset,4);
 		
 		offset+=4;
@@ -1258,7 +999,7 @@ void sky_draw_cube(void)
 
 	if (map.sky.south_fill!=-1) {
 		texture=&map.textures[map.sky.south_fill];
-		gl_shader_draw_execute_simple_bitmap_vbo_texture(texture->frames[texture->animate.current_frame].bitmap.gl_id);
+		gl_shader_draw_execute_simple_bitmap_set_texture(texture->frames[texture->animate.current_frame].bitmap.gl_id);
 		glDrawArrays(GL_TRIANGLE_STRIP,offset,4);
 		
 		offset+=4;
@@ -1268,7 +1009,7 @@ void sky_draw_cube(void)
 
 	if (map.sky.west_fill!=-1) {
 		texture=&map.textures[map.sky.west_fill];
-		gl_shader_draw_execute_simple_bitmap_vbo_texture(texture->frames[texture->animate.current_frame].bitmap.gl_id);
+		gl_shader_draw_execute_simple_bitmap_set_texture(texture->frames[texture->animate.current_frame].bitmap.gl_id);
 		glDrawArrays(GL_TRIANGLE_STRIP,offset,4);
 	}
 

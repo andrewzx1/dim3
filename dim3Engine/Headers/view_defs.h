@@ -391,7 +391,8 @@ typedef struct		{
 															dim3Alpha,dim3DiffuseVector,dim3DiffuseBoost,
 															dim3Vertex,dim3VertexColor,
 															dim3VertexUV,dim3VertexLightMapUV,
-															dim3VertexTangent,dim3VertexNormal;
+															dim3VertexTangent,dim3VertexNormal,
+															dim3SimpleColor;
 						shader_cached_var_light_loc			dim3Lights[max_shader_light];
 					} shader_cached_var_loc;
 
@@ -404,12 +405,17 @@ typedef struct		{
 					} shader_current_var_light_value;
 
 typedef struct		{
+						float								r,g,b,a;
+					} shader_current_var_simple_color;
+
+typedef struct		{
 						int									nlight,light_idx[max_shader_light],
 															vertex,color,uv,lmap_uv,
 															tangent,normal;
 						float								alpha,shine_factor,glow_factor,
 															diffuse_boost;
 						d3vct								diffuse_vct;
+						shader_current_var_simple_color		simple_color;
 						shader_current_var_light_value		lights[max_shader_light];
 					} shader_current_var_value;
 

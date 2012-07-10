@@ -101,6 +101,7 @@ void gl_shader_cache_dynamic_variable_locations(shader_type *shader)
 	shader->var_locs.dim3Alpha=glGetUniformLocationARB(shader->program_obj,"dim3Alpha");
 	shader->var_locs.dim3DiffuseVector=glGetUniformLocationARB(shader->program_obj,"dim3DiffuseVector");
 	shader->var_locs.dim3DiffuseBoost=glGetUniformLocationARB(shader->program_obj,"dim3DiffuseBoost");
+	shader->var_locs.dim3SimpleColor=glGetUniformLocationARB(shader->program_obj,"dim3SimpleColor");
 
 	shader->var_locs.dim3Vertex=glGetAttribLocationARB(shader->program_obj,"dim3Vertex");
 	shader->var_locs.dim3VertexColor=glGetAttribLocationARB(shader->program_obj,"dim3VertexColor");
@@ -135,6 +136,8 @@ void gl_shader_cache_dynamic_variable_locations(shader_type *shader)
 	shader->var_values.lmap_uv=-1;
 	shader->var_values.tangent=-1;
 	shader->var_values.normal=-1;
+	
+	shader->var_values.simple_color.r=shader->var_values.simple_color.g=shader->var_values.simple_color.b=shader->var_values.simple_color.a=-1.0f;
 }
 
 /* =======================================================

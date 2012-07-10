@@ -36,7 +36,7 @@ extern setup_type			setup;
 extern view_type			view;
 extern render_info_type		render_info;
 
-shader_type					color_shader,black_shader,
+shader_type					color_shader,gradient_shader,black_shader,
 							bitmap_shader,bitmap_rect_shader;
 
 /* =======================================================
@@ -59,13 +59,10 @@ char* gl_simple_color_shader_build_vert(void)
 		// build vert shader
 
 	strcat(buf,"attribute vec3 dim3Vertex;\n");
-	strcat(buf,"attribute vec4 dim3VertexColor;\n");
-	strcat(buf,"varying vec4 color;\n");
 	
 	strcat(buf,"void main(void)\n");
 	strcat(buf,"{\n");
 	strcat(buf,"gl_Position=gl_ProjectionMatrix*gl_ModelViewMatrix*vec4(dim3Vertex,1.0);\n");
-	strcat(buf,"color=dim3VertexColor;\n");
 	strcat(buf,"}\n");
 
 	return(buf);
@@ -84,11 +81,11 @@ char* gl_simple_color_shader_build_frag(void)
 
 		// build frag shader
 		
-	strcat(buf,"varying vec4 color;\n");
+	strcat(buf,"uniform vec4 dim3SimpleColor;\n");
 	
 	strcat(buf,"void main(void)\n");
 	strcat(buf,"{\n");
-	strcat(buf,"gl_FragColor=color;\n");
+	strcat(buf,"gl_FragColor=dim3SimpleColor;\n");
 	strcat(buf,"}\n");
 
 	return(buf);
@@ -117,6 +114,103 @@ bool gl_simple_color_shader_create(shader_type *shader,char *err_str)
 		// create the name
 		
 	strcpy(shader->name,"simple_color");
+	sprintf(shader->vertex_name,"%s_vert",shader->name);
+	sprintf(shader->fragment_name,"%s_frag",shader->name);
+	
+		// compile the code
+
+	ok=gl_shader_code_compile(shader,vertex_data,fragment_data,err_str);
+
+		// free the code
+
+	free(vertex_data);
+	free(fragment_data);
+	
+		// activate the required attributes
+		
+	glEnableVertexAttribArrayARB(shader->var_locs.dim3Vertex);
+
+	return(ok);
+}
+
+/* =======================================================
+
+      Build Simple Gradient Shader
+      
+======================================================= */
+
+char* gl_simple_gradient_shader_build_vert(void)
+{
+	char			*buf;
+
+		// memory for shader
+
+	buf=(char*)malloc(max_core_shader_data_sz);
+	if (buf==NULL) return(NULL);
+
+	bzero(buf,max_core_shader_data_sz);
+
+		// build vert shader
+
+	strcat(buf,"attribute vec3 dim3Vertex;\n");
+	strcat(buf,"attribute vec4 dim3VertexColor;\n");
+	strcat(buf,"varying vec4 color;\n");
+	
+	strcat(buf,"void main(void)\n");
+	strcat(buf,"{\n");
+	strcat(buf,"gl_Position=gl_ProjectionMatrix*gl_ModelViewMatrix*vec4(dim3Vertex,1.0);\n");
+	strcat(buf,"color=dim3VertexColor;\n");
+	strcat(buf,"}\n");
+
+	return(buf);
+}
+
+char* gl_simple_gradient_shader_build_frag(void)
+{
+	char			*buf;
+
+		// memory for shader
+
+	buf=(char*)malloc(max_core_shader_data_sz);
+	if (buf==NULL) return(NULL);
+
+	bzero(buf,max_core_shader_data_sz);
+
+		// build frag shader
+		
+	strcat(buf,"varying vec4 color;\n");
+	
+	strcat(buf,"void main(void)\n");
+	strcat(buf,"{\n");
+	strcat(buf,"gl_FragColor=color;\n");
+	strcat(buf,"}\n");
+
+	return(buf);
+}
+
+bool gl_simple_gradient_shader_create(shader_type *shader,char *err_str)
+{
+	char				*vertex_data,*fragment_data;
+	bool				ok;
+	
+		// create the shader code
+
+	vertex_data=gl_simple_gradient_shader_build_vert();
+	if (vertex_data==NULL) {
+		strcpy(err_str,"Out of Memory");
+		return(FALSE);
+	}
+
+	fragment_data=gl_simple_gradient_shader_build_frag();
+	if (fragment_data==NULL) {
+		free(vertex_data);
+		strcpy(err_str,"Out of Memory");
+		return(FALSE);
+	}
+	
+		// create the name
+		
+	strcpy(shader->name,"simple_gradient");
 	sprintf(shader->vertex_name,"%s_vert",shader->name);
 	sprintf(shader->fragment_name,"%s_frag",shader->name);
 	
@@ -252,15 +346,12 @@ char* gl_simple_bitmap_shader_build_vert(void)
 
 	strcat(buf,"attribute vec3 dim3Vertex;\n");
 	strcat(buf,"attribute vec2 dim3VertexUV;\n");
-	strcat(buf,"attribute vec4 dim3VertexColor;\n");
 	strcat(buf,"varying vec2 uv;\n");
-	strcat(buf,"varying vec4 color;\n");
 	
 	strcat(buf,"void main(void)\n");
 	strcat(buf,"{\n");
 	strcat(buf,"gl_Position=gl_ProjectionMatrix*gl_ModelViewMatrix*vec4(dim3Vertex,1.0);\n");
 	strcat(buf,"uv=dim3VertexUV;\n");
-	strcat(buf,"color=dim3VertexColor;\n");
 	strcat(buf,"}\n");
 
 	return(buf);
@@ -280,14 +371,12 @@ char* gl_simple_bitmap_shader_build_frag(void)
 		// build frag shader
 		
 	strcat(buf,"uniform sampler2D dim3Tex;\n");
+	strcat(buf,"uniform vec4 dim3SimpleColor;\n");
 	strcat(buf,"varying vec2 uv;\n");
-	strcat(buf,"varying vec4 color;\n");
 	
 	strcat(buf,"void main(void)\n");
 	strcat(buf,"{\n");
-	strcat(buf,"vec4 tex=texture2D(dim3Tex,uv);\n");
-	strcat(buf,"gl_FragColor.rgb=tex.rgb*color.rgb;\n");
-	strcat(buf,"gl_FragColor.a=tex.a*color.a;\n");
+	strcat(buf,"gl_FragColor=texture2D(dim3Tex,uv)*dim3SimpleColor;\n");
 	strcat(buf,"}\n");
 
 	return(buf);
@@ -332,7 +421,6 @@ bool gl_simple_bitmap_shader_create(shader_type *shader,char *err_str)
 		
 	glEnableVertexAttribArrayARB(shader->var_locs.dim3Vertex);
 	glEnableVertexAttribArrayARB(shader->var_locs.dim3VertexUV);
-	glEnableVertexAttribArrayARB(shader->var_locs.dim3VertexColor);
 
 	return(ok);
 }
@@ -358,15 +446,12 @@ char* gl_simple_bitmap_rect_shader_build_vert(void)
 
 	strcat(buf,"attribute vec3 dim3Vertex;\n");
 	strcat(buf,"attribute vec2 dim3VertexUV;\n");
-	strcat(buf,"attribute vec4 dim3VertexColor;\n");
 	strcat(buf,"varying vec2 uv;\n");
-	strcat(buf,"varying vec4 color;\n");
 	
 	strcat(buf,"void main(void)\n");
 	strcat(buf,"{\n");
 	strcat(buf,"gl_Position=gl_ProjectionMatrix*gl_ModelViewMatrix*vec4(dim3Vertex,1.0);\n");
 	strcat(buf,"uv=dim3VertexUV;\n");
-	strcat(buf,"color=dim3VertexColor;\n");
 	strcat(buf,"}\n");
 
 	return(buf);
@@ -386,14 +471,12 @@ char* gl_simple_bitmap_rect_shader_build_frag(void)
 		// build frag shader
 		
 	strcat(buf,"uniform sampler2DRect dim3Tex;\n");
+	strcat(buf,"uniform vec4 dim3SimpleColor;\n");
 	strcat(buf,"varying vec2 uv;\n");
-	strcat(buf,"varying vec4 color;\n");
 	
 	strcat(buf,"void main(void)\n");
 	strcat(buf,"{\n");
-	strcat(buf,"vec4 tex=texture2DRect(dim3Tex,uv);\n");
-	strcat(buf,"gl_FragColor.rgb=tex.rgb*color.rgb;\n");
-	strcat(buf,"gl_FragColor.a=tex.a*color.a;\n");
+	strcat(buf,"gl_FragColor=texture2DRect(dim3Tex,uv)*dim3SimpleColor;\n");
 	strcat(buf,"}\n");
 
 	return(buf);
@@ -438,7 +521,6 @@ bool gl_simple_bitmap_rect_shader_create(shader_type *shader,char *err_str)
 		
 	glEnableVertexAttribArrayARB(shader->var_locs.dim3Vertex);
 	glEnableVertexAttribArrayARB(shader->var_locs.dim3VertexUV);
-	glEnableVertexAttribArrayARB(shader->var_locs.dim3VertexColor);
 
 	return(ok);
 }
@@ -454,6 +536,7 @@ bool gl_simple_shader_initialize(char *err_str)
 		// clear simple shaders
 
 	gl_shader_code_clear(&color_shader);
+	gl_shader_code_clear(&gradient_shader);
 	gl_shader_code_clear(&black_shader);
 	gl_shader_code_clear(&bitmap_shader);
 	gl_shader_code_clear(&bitmap_rect_shader);
@@ -461,6 +544,11 @@ bool gl_simple_shader_initialize(char *err_str)
 		// initialize simple shaders	
 		
 	if (!gl_simple_color_shader_create(&color_shader,err_str)) {
+		gl_simple_shader_shutdown();
+		return(FALSE);
+	}
+	
+	if (!gl_simple_gradient_shader_create(&gradient_shader,err_str)) {
 		gl_simple_shader_shutdown();
 		return(FALSE);
 	}
@@ -488,6 +576,7 @@ void gl_simple_shader_shutdown(void)
 		// shutdown shaders
 
 	gl_shader_code_shutdown(&color_shader);
+	gl_shader_code_shutdown(&gradient_shader);
 	gl_shader_code_shutdown(&black_shader);
 	gl_shader_code_shutdown(&bitmap_shader);
 	gl_shader_code_shutdown(&bitmap_rect_shader);

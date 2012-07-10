@@ -548,6 +548,7 @@ char* gl_core_model_shader_build_vert(int nlight,bool fog,bool bump,bool spec)
 	strcat(buf,";\n");
 	strcat(buf,"attribute vec2 dim3VertexUV;\n");
 	
+	strcat(buf,"varying vec2 uv;\n");
 	strcat(buf,"varying vec3 dirNormal,tangentSpaceNormal;\n");
 	if (fog) strcat(buf,"varying float fogFactor;\n");
 
@@ -562,12 +563,12 @@ char* gl_core_model_shader_build_vert(int nlight,bool fog,bool bump,bool spec)
 	strcat(buf,"void main(void)\n");
 	strcat(buf,"{\n");
 
-	strcat(buf,"gl_Position=ftransform();\n");
-	strcat(buf,"gl_TexCoord[0]=gl_MultiTexCoord0;\n");
+	strcat(buf,"gl_Position=gl_ProjectionMatrix*gl_ModelViewMatrix*vec4(dim3Vertex,1.0);\n");
+	strcat(buf,"uv=dim3VertexUV;\n");
 
 	strcat(buf,"dirNormal=normalize(dim3VertexNormal);\n");
 	
-	strcat(buf,"vec3 vtx=vec3(gl_ModelViewMatrix*gl_Vertex);\n");
+	strcat(buf,"vec3 vtx=vec3(gl_ModelViewMatrix*vec4(dim3Vertex,1.0));\n");
 	
 	if ((bump) || (spec)) {
 		strcat(buf,"vec3 tangentSpaceTangent=normalize(gl_NormalMatrix*dim3VertexTangent);\n");
@@ -592,7 +593,7 @@ char* gl_core_model_shader_build_vert(int nlight,bool fog,bool bump,bool spec)
 		}
 	}
 	
-	if (fog) strcat(buf,"fogFactor=clamp(((gl_Fog.end-distance(gl_Vertex.xyz,dim3CameraPosition))*gl_Fog.scale),0.0,1.0);\n");
+	if (fog) strcat(buf,"fogFactor=clamp(((gl_Fog.end-distance(dim3Vertex,dim3CameraPosition))*gl_Fog.scale),0.0,1.0);\n");
 	
 	strcat(buf,"}\n");
 
@@ -632,6 +633,7 @@ char* gl_core_model_shader_build_frag(int nlight,bool fog,bool bump,bool spec,bo
 	
 	strcat(buf,"uniform vec3 dim3AmbientColor,dim3DiffuseVector;\n");
 	
+	strcat(buf,"varying vec2 uv;\n");
 	strcat(buf,"varying vec3 dirNormal,tangentSpaceNormal;\n");
 	if (fog) strcat(buf,"varying float fogFactor;\n");
 
@@ -651,12 +653,12 @@ char* gl_core_model_shader_build_frag(int nlight,bool fog,bool bump,bool spec,bo
 	
 		// the texture map
 		
-	strcat(buf,"vec4 tex=texture2D(dim3Tex,gl_TexCoord[0].st);\n");
+	strcat(buf,"vec4 tex=texture2D(dim3Tex,uv);\n");
 	
 		// the bump map
 		
 	if (bump) {
-		strcat(buf,"vec3 bumpMap=normalize((texture2D(dim3TexBump,gl_TexCoord[0].st).rgb*2.0)-1.0);\n");
+		strcat(buf,"vec3 bumpMap=normalize((texture2D(dim3TexBump,uv).rgb*2.0)-1.0);\n");
 		strcat(buf,"bumpMap.y=-bumpMap.y;\n");
 		strcat(buf,"float bump=dot(vec3(0.0,0.0,0.5),bumpMap);\n");
 	}
@@ -665,7 +667,7 @@ char* gl_core_model_shader_build_frag(int nlight,bool fog,bool bump,bool spec,bo
 		
 	if (spec) {
 		strcat(buf,"vec3 spec=vec3(0.0,0.0,0.0),specHalfVector;\n");
-		strcat(buf,"vec3 specMap=texture2D(dim3TexSpecular,gl_TexCoord[0].st).rgb;\n");
+		strcat(buf,"vec3 specMap=texture2D(dim3TexSpecular,uv).rgb;\n");
 		strcat(buf,"float specFactor;\n");
 	}
 			
@@ -699,7 +701,7 @@ char* gl_core_model_shader_build_frag(int nlight,bool fog,bool bump,bool spec,bo
 		// if there's a glow, calculate the
 		// glow rgb
 
-	if (glow) strcat(buf,"vec3 glow=texture2D(dim3TexGlow,gl_TexCoord[0].st).rgb*dim3GlowFactor;\n");
+	if (glow) strcat(buf,"vec3 glow=texture2D(dim3TexGlow,uv).rgb*dim3GlowFactor;\n");
 	
 		// create the total diffuse
 		// out of (diffuse*bump)+boost

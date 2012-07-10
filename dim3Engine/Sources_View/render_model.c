@@ -202,8 +202,6 @@ void render_model_opaque_mesh(model_type *mdl,int mesh_idx,model_draw *draw,view
 	glDepthFunc(GL_LEQUAL);
 	glDepthMask(GL_TRUE);
 
-	gl_shader_draw_start();
-
 	stride=draw->vbo[mesh_idx].vertex_stride;
 
 		// run through the polys
@@ -259,8 +257,6 @@ void render_model_opaque_mesh(model_type *mdl,int mesh_idx,model_draw *draw,view
 
 		view.count.model_poly++;
 	}
-			
-	gl_shader_draw_end();
 }
 
 void render_model_transparent_mesh(model_type *mdl,int mesh_idx,model_draw *draw,view_glsl_light_list_type *light_list)
@@ -286,8 +282,6 @@ void render_model_transparent_mesh(model_type *mdl,int mesh_idx,model_draw *draw
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
 	glDepthMask(GL_FALSE);
-	
-	gl_shader_draw_start();
 
 	stride=draw->vbo[mesh_idx].vertex_stride;
 	
@@ -353,8 +347,6 @@ void render_model_transparent_mesh(model_type *mdl,int mesh_idx,model_draw *draw
 	}
 	
 	if (cur_additive) glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-			
-	gl_shader_draw_end();
 }
 
 /* =======================================================
@@ -676,6 +668,8 @@ void render_model_opaque(model_draw *draw)
 	gl_lights_build_model_glsl_light_list(mdl,draw,&light_list);
 
 		// draw opaque materials
+		
+	gl_shader_draw_start();
 	
 	for (n=0;n!=mdl->nmesh;n++) {
 		if ((draw->render_mesh_mask&(0x1<<n))==0) continue;
@@ -695,6 +689,8 @@ void render_model_opaque(model_draw *draw)
 		
 	//	render_model_debug_normals(mdl,n,draw);
 	}
+	
+	gl_shader_draw_end();
 }
 
 void render_model_transparent(model_draw *draw)
@@ -717,6 +713,8 @@ void render_model_transparent(model_draw *draw)
 	gl_lights_build_model_glsl_light_list(mdl,draw,&light_list);
 
 		// draw transparent materials
+		
+	gl_shader_draw_start();
 
 	for (n=0;n!=mdl->nmesh;n++) {
 		if ((draw->render_mesh_mask&(0x1<<n))==0) continue;
@@ -734,6 +732,8 @@ void render_model_transparent(model_draw *draw)
 
 		render_model_release_vertex_objects();
 	}
+	
+	gl_shader_draw_end();
 }
 
 /* =======================================================
@@ -816,10 +816,10 @@ void render_model_target(model_draw *draw,d3col *col)
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
 
-	glColor4f(col->r,col->g,col->b,1.0f);
-
 		// draw target
 		
-	glVertexPointer(3,GL_FLOAT,0,(GLvoid*)vertexes);
+	gl_shader_draw_simple_color_start();
+	gl_shader_draw_execute_simple_color_ptr(3,vertexes,col,1.0f);
 	glDrawArrays(GL_LINE_LOOP,0,4);
+	gl_shader_draw_simple_color_end();
 }

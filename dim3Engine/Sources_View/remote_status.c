@@ -53,7 +53,7 @@ void remote_draw_icon(obj_type *obj,unsigned long gl_id)
 {
 	int				x,y,z,x_sz,y_sz,z_sz;
 	float			vertexes[12],uvs[8];
-	unsigned char	colors[16];
+	d3col			col;
 	
 		// get the position and rotation
 		
@@ -96,11 +96,8 @@ void remote_draw_icon(obj_type *obj,unsigned long gl_id)
 	uvs[7]=1.0f;
 
 		// setup colors
-
-	colors[0]=colors[4]=colors[8]=colors[12]=255;
-	colors[1]=colors[5]=colors[9]=colors[13]=255;
-	colors[2]=colors[6]=colors[10]=colors[14]=255;
-	colors[3]=colors[7]=colors[11]=colors[15]=255;
+		
+	col.r=col.b=col.g=1.0f;
 
 		// draw the bitmap
 	
@@ -115,7 +112,7 @@ void remote_draw_icon(obj_type *obj,unsigned long gl_id)
 	glDepthMask(GL_TRUE);
 
 	gl_shader_draw_simple_bitmap_start();
-	gl_shader_draw_execute_simple_bitmap_ptr(gl_id,3,vertexes,uvs,colors);
+	gl_shader_draw_execute_simple_bitmap_ptr(gl_id,3,vertexes,uvs,&col,1.0f);
 	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
 	gl_shader_draw_simple_bitmap_end();
 }
