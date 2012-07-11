@@ -45,7 +45,7 @@ extern shader_type			*gl_shader_current,
 
 /* =======================================================
 
-      Shader Generic Set Program
+      Shader Generic Set Program and Variables
       
 ======================================================= */
 
@@ -54,6 +54,14 @@ void gl_shader_draw_execute_set_program(shader_type *shader)
 	if (shader!=gl_shader_current) {
 		gl_shader_current=shader;
 		glUseProgramObjectARB(shader->program_obj);
+	}
+}
+
+void gl_shader_draw_execute_set_vertex_pointer(shader_type *shader,int vertex_size,void* vertex,int stride)
+{
+	if (shader->var_values.vertex!=(long)vertex) {
+		shader->var_values.vertex=(long)vertex;
+		glVertexAttribPointerARB(shader->var_locs.dim3Vertex,vertex_size,GL_FLOAT,GL_FALSE,stride,vertex);
 	}
 }
 

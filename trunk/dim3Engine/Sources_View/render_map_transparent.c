@@ -207,8 +207,6 @@ void render_map_mesh_transparent(void)
 	in_additive=FALSE;
 	cur_mesh_idx=-1;
 	lighting_small=FALSE;
-	
-	gl_shader_draw_start();
 		
 	for (n=0;n!=trans_sort.count;n++) {
 
@@ -272,8 +270,6 @@ void render_map_mesh_transparent(void)
 		view_unbind_mesh_liquid_vertex_object();
 		view_unbind_mesh_liquid_index_object();
 	}
-
-	gl_shader_draw_end();
 		
 	if (in_additive) glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 	

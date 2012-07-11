@@ -69,13 +69,6 @@ void gl_shader_set_instance_variables(shader_type *shader)
 {
 	GLint					var;
 	
-		// need to use program before calling these
-		
-	if (gl_shader_current!=shader) {
-		gl_shader_current=shader;
-		glUseProgramObjectARB(shader->program_obj);
-	}
-	
 		// texture pointers
 		
 	var=glGetUniformLocationARB(shader->program_obj,"dim3Tex");
@@ -94,12 +87,44 @@ void gl_shader_set_instance_variables(shader_type *shader)
 	if (var!=-1) glUniform1iARB(var,4);
 }
 
+void gl_shader_reset_light_values(shader_type *shader)
+{
+	int				n;
+
+	shader->in_hilite=FALSE;
+
+	shader->var_values.nlight=-1;
+
+	for (n=0;n!=max_shader_light;n++) {
+		shader->var_values.lights[n].lightMapMask=-1.0f;
+		shader->var_values.lights[n].intensity=-1.0f;
+		shader->var_values.lights[n].invertIntensity=-1.0f;
+		shader->var_values.lights[n].exponent=-1.0f;
+		shader->var_values.lights[n].position.x=-1.0f;
+		shader->var_values.lights[n].position.y=-1.0f;
+		shader->var_values.lights[n].position.z=-1.0f;
+		shader->var_values.lights[n].direction=-1;
+		shader->var_values.lights[n].color.r=-1.0f;
+		shader->var_values.lights[n].color.g=-1.0f;
+		shader->var_values.lights[n].color.b=-1.0f;
+	}
+}
+
 void gl_shader_cache_dynamic_variable_locations(shader_type *shader)
 {
 	int				n;
 	char			var_name[256];
+
+		// cache attribute locations
+
+	shader->var_locs.dim3Vertex=glGetAttribLocationARB(shader->program_obj,"dim3Vertex");
+	shader->var_locs.dim3VertexColor=glGetAttribLocationARB(shader->program_obj,"dim3VertexColor");
+	shader->var_locs.dim3VertexUV=glGetAttribLocationARB(shader->program_obj,"dim3VertexUV");
+	shader->var_locs.dim3VertexLightMapUV=glGetAttribLocationARB(shader->program_obj,"dim3VertexLightMapUV");
+	shader->var_locs.dim3VertexTangent=glGetAttribLocationARB(shader->program_obj,"dim3VertexTangent");
+	shader->var_locs.dim3VertexNormal=glGetAttribLocationARB(shader->program_obj,"dim3VertexNormal");
 	
-		// cache variable locations
+		// cache uniform locations
 		
 	shader->var_locs.dim3FrequencySecond=glGetUniformLocationARB(shader->program_obj,"dim3FrequencySecond");
 	shader->var_locs.dim3CameraPosition=glGetUniformLocationARB(shader->program_obj,"dim3CameraPosition");
@@ -111,13 +136,6 @@ void gl_shader_cache_dynamic_variable_locations(shader_type *shader)
 	shader->var_locs.dim3DiffuseVector=glGetUniformLocationARB(shader->program_obj,"dim3DiffuseVector");
 	shader->var_locs.dim3DiffuseBoost=glGetUniformLocationARB(shader->program_obj,"dim3DiffuseBoost");
 	shader->var_locs.dim3SimpleColor=glGetUniformLocationARB(shader->program_obj,"dim3SimpleColor");
-
-	shader->var_locs.dim3Vertex=glGetAttribLocationARB(shader->program_obj,"dim3Vertex");
-	shader->var_locs.dim3VertexColor=glGetAttribLocationARB(shader->program_obj,"dim3VertexColor");
-	shader->var_locs.dim3VertexUV=glGetAttribLocationARB(shader->program_obj,"dim3VertexUV");
-	shader->var_locs.dim3VertexLightMapUV=glGetAttribLocationARB(shader->program_obj,"dim3VertexLightMapUV");
-	shader->var_locs.dim3VertexTangent=glGetAttribLocationARB(shader->program_obj,"dim3VertexTangent");
-	shader->var_locs.dim3VertexNormal=glGetAttribLocationARB(shader->program_obj,"dim3VertexNormal");
 	
 	for (n=0;n!=max_shader_light;n++) {
 		sprintf(var_name,"dim3Light_%d.position",n);
@@ -136,8 +154,8 @@ void gl_shader_cache_dynamic_variable_locations(shader_type *shader)
 		shader->var_locs.dim3Lights[n].lightMapMask=glGetUniformLocationARB(shader->program_obj,var_name);
 	}
 	
-		// remember last setting so we
-		// don't reset if necessary
+		// we remember all the last settings
+		// so we don't reset state when no necessary
 		
 	shader->var_values.vertex=-1;
 	shader->var_values.color=-1;
@@ -147,6 +165,14 @@ void gl_shader_cache_dynamic_variable_locations(shader_type *shader)
 	shader->var_values.normal=-1;
 	
 	shader->var_values.simple_color.r=shader->var_values.simple_color.g=shader->var_values.simple_color.b=shader->var_values.simple_color.a=-1.0f;
+
+	shader->var_values.alpha=-1.0f;
+	shader->var_values.shine_factor=-1.0f;
+	shader->var_values.glow_factor=-1.0f;
+	shader->var_values.diffuse_vct.x=shader->var_values.diffuse_vct.y=shader->var_values.diffuse_vct.z=-1.0f;
+	shader->var_values.diffuse_boost=-1.0f;
+
+	gl_shader_reset_light_values(shader);
 }
 
 /* =======================================================
@@ -304,13 +330,15 @@ bool gl_shader_code_compile(shader_type *shader,char *vertex_data,char *fragment
 	glLinkProgramARB(shader->program_obj);
 	if (!gl_shader_report_error(err_str,shader->vertex_name,shader->fragment_name,shader->program_obj,"Program",NULL,GL_OBJECT_LINK_STATUS_ARB)) return(FALSE);
 
-		// per instance shader variables
+		// set the shader and then
+		// setup the uniforms and attributes
+
+	glUseProgramObjectARB(shader->program_obj);
 
 	gl_shader_set_instance_variables(shader);
-	
-		// cache the location of the dymaic variables
-		
 	gl_shader_cache_dynamic_variable_locations(shader);
+
+	glUseProgramObjectARB(0);
 	
 		// timing only works for full screen shaders
 		
@@ -425,6 +453,17 @@ void gl_shader_set_light_variables(shader_type *shader,int core_shader_group,boo
 
 	if ((is_core) && (light_list->nlight==0)) return;
 	
+		// core shaders ignore lights outside their
+		// range, so we don't need to look through max
+		// lights for core shaders
+		
+	if (is_core) {
+		max_light=light_list->nlight;
+	}
+	else {
+		max_light=max_shader_light;
+	}
+	
 		// anything UI lite always replaces
 		
 	if (light_list->ui_light.on) {
@@ -440,7 +479,22 @@ void gl_shader_set_light_variables(shader_type *shader,int core_shader_group,boo
 		glUniform1fARB(loc_light->exponent,light_list->ui_light.exponent);
 		glUniform3fvARB(loc_light->direction,3,light_shader_direction[ld_all]);
 		glUniform1fARB(loc_light->lightMapMask,1.0f);
+
+		loc_light++;
+
+			// set all other lights off
+
+		for (n=1;n<max_light;n++) {
+			glUniform1fARB(loc_light->intensity,0.0f);
+			glUniform1fARB(loc_light->invertIntensity,0.0f);
+			loc_light++;
+		}
 	
+			// make sure lights are always marked
+			// as changed
+
+		gl_shader_reset_light_values(shader);
+
 		return;
 	}
 	
@@ -470,17 +524,6 @@ void gl_shader_set_light_variables(shader_type *shader,int core_shader_group,boo
 
 	shader->var_values.nlight=light_list->nlight;
 	
-		// core shaders ignore lights outside their
-		// range, so we don't need to look through max
-		// lights for core shaders
-		
-	if (is_core) {
-		max_light=light_list->nlight;
-	}
-	else {
-		max_light=max_shader_light;
-	}
-	
 		// set the lights uniforms
 		
 	for (n=0;n!=max_light;n++) {
@@ -492,7 +535,6 @@ void gl_shader_set_light_variables(shader_type *shader,int core_shader_group,boo
 			// have intensity of 0
 			
 		if (n>=light_list->nlight) {
-			if (loc_light->intensity==-1) continue;
 
 			if (cur_light->intensity!=0.0f) {
 				cur_light->intensity=0.0f;
@@ -623,51 +665,24 @@ void gl_shader_hilite_override(shader_type *shader,view_glsl_light_list_type *li
 
 /* =======================================================
 
-      Shader Per Scene Start/End
+      Shader Per Scene Start
       
 ======================================================= */
 
 void gl_shader_draw_scene_code_start(shader_type *shader)
 {
-	int					n;
-
 		// use this flag to mark scene only variables
 		// as needing a load.  In this way we optimize
 		// out the amount of variable setting we need to do
 	
 	shader->per_scene_vars_set=FALSE;
-	
-		// some model drawings can override the ambient
-		// for a highlight effect, need to remember
-		// when we are in that mode
 		
-	shader->in_hilite=FALSE;
-		
-		// also setup some per poly current values
-		// so we can skip setting if the values haven't changed
-		// we start with impossible values so they always get set
-		// the first time
+		// dim3 tries to remember if the same lights
+		// we set by looking into the light list.  The
+		// light list is generated per scene, so it needs
+		// to be reset here
 
 	shader->var_values.nlight=-1;
-	shader->var_values.alpha=-1.0f;
-	shader->var_values.shine_factor=-1.0f;
-	shader->var_values.glow_factor=-1.0f;
-	shader->var_values.diffuse_vct.x=shader->var_values.diffuse_vct.y=shader->var_values.diffuse_vct.z=-1.0f;
-	shader->var_values.diffuse_boost=-1.0f;
-
-	for (n=0;n!=max_shader_light;n++) {
-		shader->var_values.lights[n].lightMapMask=-1.0f;
-		shader->var_values.lights[n].intensity=-1.0f;
-		shader->var_values.lights[n].invertIntensity=-1.0f;
-		shader->var_values.lights[n].exponent=-1.0f;
-		shader->var_values.lights[n].position.x=-1.0f;
-		shader->var_values.lights[n].position.y=-1.0f;
-		shader->var_values.lights[n].position.z=-1.0f;
-		shader->var_values.lights[n].direction=-1;
-		shader->var_values.lights[n].color.r=-1.0f;
-		shader->var_values.lights[n].color.g=-1.0f;
-		shader->var_values.lights[n].color.b=-1.0f;
-	}
 }
 
 void gl_shader_draw_scene_start(void)
@@ -687,25 +702,6 @@ void gl_shader_draw_scene_start(void)
 		gl_shader_draw_scene_code_start(shader);
 		shader++;
 	}
-}
-
-/* =======================================================
-
-      Shader Per Draw Start/End
-      
-======================================================= */
-
-void gl_shader_draw_start(void)
-{
-		// remember current shader
-
-//	ES2 -- remove??
-}
-
-// ES2 -- remove?
-
-void gl_shader_draw_end(void)
-{
 }
 
 /* =======================================================

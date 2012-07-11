@@ -91,10 +91,6 @@ void render_map_mesh_opaque(void)
 
 	glDisable(GL_BLEND);
 	
-		// start shader
-
-	gl_shader_draw_start();
-	
 		// run through draw list
 
 	for (n=0;n!=view.render->draw_list.count;n++) {
@@ -166,7 +162,5 @@ void render_map_mesh_opaque(void)
 		view_unbind_mesh_liquid_vertex_object();
 		view_unbind_mesh_liquid_index_object();
 	}
-		
-	gl_shader_draw_end();
 }
 

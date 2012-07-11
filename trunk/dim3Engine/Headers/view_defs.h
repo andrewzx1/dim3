@@ -409,8 +409,8 @@ typedef struct		{
 					} shader_current_var_simple_color;
 
 typedef struct		{
-						int									nlight,light_idx[max_shader_light],
-															vertex,color,uv,lmap_uv,
+						int									nlight,light_idx[max_shader_light];
+						long								vertex,color,uv,lmap_uv,
 															tangent,normal;
 						float								alpha,shine_factor,glow_factor,
 															diffuse_boost;
