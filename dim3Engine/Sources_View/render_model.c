@@ -667,8 +667,6 @@ void render_model_opaque(model_draw *draw)
 
 		// draw opaque materials
 		
-	gl_shader_draw_start();
-	
 	for (n=0;n!=mdl->nmesh;n++) {
 		if ((draw->render_mesh_mask&(0x1<<n))==0) continue;
 		if (!draw->meshes[n].has_opaque) continue;
@@ -687,8 +685,6 @@ void render_model_opaque(model_draw *draw)
 		
 	//	render_model_debug_normals(mdl,n,draw);
 	}
-	
-	gl_shader_draw_end();
 }
 
 void render_model_transparent(model_draw *draw)
@@ -712,8 +708,6 @@ void render_model_transparent(model_draw *draw)
 
 		// draw transparent materials
 		
-	gl_shader_draw_start();
-
 	for (n=0;n!=mdl->nmesh;n++) {
 		if ((draw->render_mesh_mask&(0x1<<n))==0) continue;
 		if (!draw->meshes[n].has_transparent) continue;
@@ -730,8 +724,6 @@ void render_model_transparent(model_draw *draw)
 
 		render_model_release_vertex_objects();
 	}
-	
-	gl_shader_draw_end();
 }
 
 /* =======================================================

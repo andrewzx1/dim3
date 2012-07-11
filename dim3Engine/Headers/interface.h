@@ -776,13 +776,13 @@ extern void gl_shader_attach_model(model_type *mdl);
 extern void gl_shader_draw_scene_code_start(shader_type *shader);
 extern void gl_shader_draw_scene_code_end(shader_type *shader);
 extern void gl_shader_draw_scene_start(void);
-extern void gl_shader_draw_start(void);
-extern void gl_shader_draw_end(void);
 extern void gl_shader_texture_override(GLuint gl_id,float alpha);
 
 //
 // shader execution
 //
+
+extern void gl_shader_draw_execute_set_vertex_pointer(shader_type *shader,int vertex_size,void* vertex,int stride);
 
 extern inline void gl_shader_draw_execute_simple_color_set_color(d3col *col,float alpha);
 extern inline void gl_shader_draw_execute_simple_color_ptr(int vertex_size,float *vertexes,d3col *col,float alpha);
