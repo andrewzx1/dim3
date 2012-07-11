@@ -221,8 +221,6 @@ void decal_render(void)
 
 	glStencilOp(GL_KEEP,GL_KEEP,GL_REPLACE);
 
-	gl_shader_draw_simple_black_start();
-
 	stencil_idx=stencil_poly_start;
 
 	for (n=0;n!=max_decal_list;n++) {
@@ -237,8 +235,6 @@ void decal_render(void)
 		}
 	}
 
-	gl_shader_draw_simple_black_end();
-
 	glColorMask(GL_TRUE,GL_TRUE,GL_TRUE,GL_TRUE);
 
 		// draw decals to stencils
@@ -247,8 +243,6 @@ void decal_render(void)
 	glDisable(GL_DEPTH_TEST);
 			
 	glStencilOp(GL_KEEP,GL_KEEP,GL_KEEP);
-
-	gl_shader_draw_simple_bitmap_start();
 
 	for (n=0;n!=max_decal_list;n++) {
 		decal=server.decal_list.decals[n];
@@ -259,8 +253,6 @@ void decal_render(void)
 			decal_render_mark(poly->draw.decal_stencil_idx,decal);
 		}
 	}
-
-	gl_shader_draw_simple_bitmap_end();
 
 	glDisable(GL_STENCIL_TEST);
 }

@@ -432,9 +432,5 @@ void network_draw(void)
 		
 	network_chat_draw();
 	network_score_draw();
-	
-		// reset any color changes
-		
-	glColor4f(0.0f,0.0f,0.0f,1.0f);
 }
 

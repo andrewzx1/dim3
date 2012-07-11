@@ -211,28 +211,19 @@ void fog_draw_textured(void)
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
 	glDepthMask(GL_FALSE);
+	
+	col.r=col.g=col.b=1.0f;
 
 	texture=&map.textures[map.fog.texture_idx];
 	frame=texture->animate.current_frame&max_texture_frame_mask;
 	gl_id=texture->frames[frame].bitmap.gl_id;
-	
-	gl_texture_simple_start();
-	gl_texture_simple_set(gl_id,FALSE,1.0f,1.0f,1.0f,map.fog.alpha);
 
 		// draw the fog
 
-	gl_shader_draw_simple_bitmap_start();
 	gl_shader_draw_execute_simple_bitmap_set_texture(gl_id);
-void gl_shader_draw_execute_simple_bitmap_vbo_attribute(int vertex_size,int vertex_offset,int uv_offset,int stride,d3col *col,float alpha)
-	
-	glVertexPointer(3,GL_FLOAT,0,(GLvoid*)0);
-
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)((((16*6)*count)*3)*sizeof(float)));
+	gl_shader_draw_execute_simple_bitmap_vbo_attribute(3,0,((((16*6)*count)*3)*sizeof(float)),0,&col,map.fog.alpha);
 
 	glDrawArrays(GL_TRIANGLES,0,((16*6)*count));
-
-	gl_shader_draw_simple_bitmap_end();
 
 		// unbind the vbo
 

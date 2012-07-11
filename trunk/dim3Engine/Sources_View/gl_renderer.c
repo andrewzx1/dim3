@@ -222,34 +222,11 @@ bool gl_initialize(int screen_wid,int screen_high,int fsaa_mode,char *err_str)
 		
 	gl_texture_initialize();
 	
-		// we always use vertex
-		// pointers so we can initialize
-		// here
-
-		// tried to pre-initialize tex coords
-		// but that crashes some nvidia hardware
-		// so we have to take the cost of doing
-		// it on the fly
-	
-	glClientActiveTexture(GL_TEXTURE0);
-	glEnableClientState(GL_VERTEX_ARRAY);
-	
 	return(TRUE);
 }
 	
 void gl_shutdown(void)
 {
-		// disable pointers
-		
-	glClientActiveTexture(GL_TEXTURE0);
-	glDisableClientState(GL_VERTEX_ARRAY);
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-
-	glClientActiveTexture(GL_TEXTURE1);
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-
-	glClientActiveTexture(GL_TEXTURE0);
-
 		 // shut down textures
 		 
 	gl_texture_shutdown();

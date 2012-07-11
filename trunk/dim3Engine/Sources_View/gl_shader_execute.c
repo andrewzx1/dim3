@@ -45,23 +45,23 @@ extern shader_type			*gl_shader_current,
 
 /* =======================================================
 
-      Execute Simple Color Shaders
+      Shader Generic Set Program
       
 ======================================================= */
 
-void gl_shader_draw_simple_color_start(void)
+void gl_shader_draw_execute_set_program(shader_type *shader)
 {
-		// change over the shader
-		
-	if ((&color_shader)!=gl_shader_current) {
-		gl_shader_current=&color_shader;
-		glUseProgramObjectARB(color_shader.program_obj);
+	if (shader!=gl_shader_current) {
+		gl_shader_current=shader;
+		glUseProgramObjectARB(shader->program_obj);
 	}
 }
 
-void gl_shader_draw_simple_color_end(void)
-{
-}
+/* =======================================================
+
+      Execute Simple Color Shaders
+      
+======================================================= */
 
 void gl_shader_draw_execute_simple_color_set_color(d3col *col,float alpha)
 {
@@ -76,22 +76,16 @@ void gl_shader_draw_execute_simple_color_set_color(d3col *col,float alpha)
 
 void gl_shader_draw_execute_simple_color_ptr(int vertex_size,float *vertexes,d3col *col,float alpha)
 {
-		// set the color
-
+	gl_shader_draw_execute_set_program(&color_shader);
 	gl_shader_draw_execute_simple_color_set_color(col,alpha);
-	
-		// bind the required attributes
-		
+
 	glVertexAttribPointerARB(color_shader.var_locs.dim3Vertex,vertex_size,GL_FLOAT,GL_FALSE,0,(void*)vertexes);
 }
 
 void gl_shader_draw_execute_simple_color_vbo(int vertex_size,int vertex_offset,d3col *col,float alpha)
 {
-		// set the color
-
+	gl_shader_draw_execute_set_program(&color_shader);
 	gl_shader_draw_execute_simple_color_set_color(col,alpha);
-	
-		// bind the required attributes
 		
 	glVertexAttribPointerARB(color_shader.var_locs.dim3Vertex,vertex_size,GL_FLOAT,GL_FALSE,0,(void*)vertex_offset);
 }
@@ -102,26 +96,20 @@ void gl_shader_draw_execute_simple_color_vbo(int vertex_size,int vertex_offset,d
       
 ======================================================= */
 
-void gl_shader_draw_simple_gradient_start(void)
-{
-		// change over the shader
-		
-	if ((&gradient_shader)!=gl_shader_current) {
-		gl_shader_current=&gradient_shader;
-		glUseProgramObjectARB(gradient_shader.program_obj);
-	}
-}
-
-void gl_shader_draw_simple_gradient_end(void)
-{
-}
-
 void gl_shader_draw_execute_simple_gradient_ptr(int vertex_size,float *vertexes,unsigned char *colors)
 {
-		// bind the required attributes
+	gl_shader_draw_execute_set_program(&gradient_shader);
 		
 	glVertexAttribPointerARB(gradient_shader.var_locs.dim3Vertex,vertex_size,GL_FLOAT,GL_FALSE,0,(void*)vertexes);
 	glVertexAttribPointerARB(gradient_shader.var_locs.dim3VertexColor,4,GL_UNSIGNED_BYTE,GL_TRUE,0,(void*)colors);
+}
+
+void gl_shader_draw_execute_simple_gradient_vbo(int vertex_size,int vertex_offset,int color_offset)
+{
+	gl_shader_draw_execute_set_program(&gradient_shader);
+		
+	glVertexAttribPointerARB(gradient_shader.var_locs.dim3Vertex,vertex_size,GL_FLOAT,GL_FALSE,0,(void*)vertex_offset);
+	glVertexAttribPointerARB(gradient_shader.var_locs.dim3VertexColor,4,GL_UNSIGNED_BYTE,GL_TRUE,0,(void*)color_offset);
 }
 
 /* =======================================================
@@ -130,44 +118,26 @@ void gl_shader_draw_execute_simple_gradient_ptr(int vertex_size,float *vertexes,
       
 ======================================================= */
 
-void gl_shader_draw_simple_black_start(void)
+void gl_shader_draw_execute_simple_black_set_alpha(float alpha)
 {
-		// change over the shader
-		
-	if ((&black_shader)!=gl_shader_current) {
-		gl_shader_current=&black_shader;
-		glUseProgramObjectARB(black_shader.program_obj);
-	}
-}
-
-void gl_shader_draw_simple_black_end(void)
-{
-}
-
-void gl_shader_draw_execute_simple_black_ptr(int vertex_size,float *vertexes,float alpha)
-{
-		// set the alpha
-
 	if (black_shader.var_values.alpha!=alpha) {
 		black_shader.var_values.alpha=alpha;
 		glUniform1fARB(black_shader.var_locs.dim3Alpha,alpha);
 	}
+}
 
-		// bind the required attributes
+void gl_shader_draw_execute_simple_black_ptr(int vertex_size,float *vertexes,float alpha)
+{
+	gl_shader_draw_execute_set_program(&black_shader);
+	gl_shader_draw_execute_simple_black_set_alpha(alpha);
 		
 	glVertexAttribPointerARB(black_shader.var_locs.dim3Vertex,vertex_size,GL_FLOAT,GL_FALSE,0,(void*)vertexes);
 }
 
 void gl_shader_draw_execute_simple_black_vbo(int vertex_size,int vertex_offset,float alpha)
 {
-		// set the alpha
-
-	if (black_shader.var_values.alpha!=alpha) {
-		black_shader.var_values.alpha=alpha;
-		glUniform1fARB(black_shader.var_locs.dim3Alpha,alpha);
-	}
-
-		// bind the required attributes
+	gl_shader_draw_execute_set_program(&black_shader);
+	gl_shader_draw_execute_simple_black_set_alpha(alpha);
 		
 	glVertexAttribPointerARB(black_shader.var_locs.dim3Vertex,vertex_size,GL_FLOAT,GL_FALSE,0,(void*)vertex_offset);
 }
@@ -177,25 +147,6 @@ void gl_shader_draw_execute_simple_black_vbo(int vertex_size,int vertex_offset,f
       Execute Simple Bitmap Shaders
       
 ======================================================= */
-
-void gl_shader_draw_simple_bitmap_start(void)
-{
-		// change over the shader
-		
-	if ((&bitmap_shader)!=gl_shader_current) {
-		gl_shader_current=&bitmap_shader;
-		glUseProgramObjectARB(bitmap_shader.program_obj);
-	}
-
-		// enable texturing
-		
-	glEnable(GL_TEXTURE_2D);
-}
-
-void gl_shader_draw_simple_bitmap_end(void)
-{
-	glDisable(GL_TEXTURE_2D);
-}
 
 void gl_shader_draw_execute_simple_bitmap_set_color(d3col *col,float alpha)
 {
@@ -215,12 +166,9 @@ void gl_shader_draw_execute_simple_bitmap_set_texture(unsigned long gl_id)
 
 void gl_shader_draw_execute_simple_bitmap_ptr(unsigned long gl_id,int vertex_size,float *vertexes,float *uvs,d3col *col,float alpha)
 {
-		// bind the bitmap and color
-
+	gl_shader_draw_execute_set_program(&bitmap_shader);
 	gl_shader_draw_execute_simple_bitmap_set_texture(gl_id);
 	gl_shader_draw_execute_simple_bitmap_set_color(col,alpha);	
-	
-		// bind the required attributes
 		
 	glVertexAttribPointerARB(bitmap_shader.var_locs.dim3Vertex,vertex_size,GL_FLOAT,GL_FALSE,0,(void*)vertexes);
 	glVertexAttribPointerARB(bitmap_shader.var_locs.dim3VertexUV,2,GL_FLOAT,GL_FALSE,0,(void*)uvs);
@@ -228,11 +176,8 @@ void gl_shader_draw_execute_simple_bitmap_ptr(unsigned long gl_id,int vertex_siz
 
 void gl_shader_draw_execute_simple_bitmap_vbo_attribute(int vertex_size,int vertex_offset,int uv_offset,int stride,d3col *col,float alpha)
 {
-		// set the color
-		
+	gl_shader_draw_execute_set_program(&bitmap_shader);
 	gl_shader_draw_execute_simple_bitmap_set_color(col,alpha);	
-	
-		// bind the required attributes
 
 	glVertexAttribPointerARB(bitmap_shader.var_locs.dim3Vertex,vertex_size,GL_FLOAT,GL_FALSE,stride,(void*)vertex_offset);
 	glVertexAttribPointerARB(bitmap_shader.var_locs.dim3VertexUV,2,GL_FLOAT,GL_FALSE,stride,(void*)uv_offset);
@@ -243,33 +188,6 @@ void gl_shader_draw_execute_simple_bitmap_vbo_attribute(int vertex_size,int vert
       Execute Simple Bitmap Rectangle Shaders
       
 ======================================================= */
-
-void gl_shader_draw_simple_bitmap_rect_start(void)
-{
-#if defined(D3_OS_IPHONE) || defined(D3_OS_ANDRIOD)
-	gl_shader_draw_simple_bitmap_start(gl_id);
-#else
-		// change over the shader
-		
-	if ((&bitmap_rect_shader)!=gl_shader_current) {
-		gl_shader_current=&bitmap_rect_shader;
-		glUseProgramObjectARB(bitmap_rect_shader.program_obj);
-	}
-
-		// enable texturing
-		
-	glEnable(GL_TEXTURE_RECTANGLE);
-#endif
-}
-
-void gl_shader_draw_simple_bitmap_rect_end(void)
-{
-#if defined(D3_OS_IPHONE) || defined(D3_OS_ANDRIOD)
-	gl_shader_draw_simple_bitmap_end(gl_id);
-#else
-	glDisable(GL_TEXTURE_RECTANGLE);
-#endif
-}
 
 void gl_shader_draw_execute_simple_bitmap_rect_set_color(d3col *col,float alpha)
 {
@@ -287,13 +205,15 @@ void gl_shader_draw_execute_simple_bitmap_rect_ptr(unsigned long gl_id,int verte
 #if defined(D3_OS_IPHONE) || defined(D3_OS_ANDRIOD)
 	gl_shader_draw_execute_simple_bitmap_ptr(gl_id,vertex_size,vertexes,uvs,col,alpha);
 #else
-		// bind the bitmap
-
-	gl_texture_bind(0,TRUE,gl_id);
 	
 		// set color
 		
+	gl_shader_draw_execute_set_program(&bitmap_rect_shader);
 	gl_shader_draw_execute_simple_bitmap_rect_set_color(col,alpha);
+	
+		// bind the bitmap
+
+	gl_texture_bind(0,TRUE,gl_id);
 	
 		// bind the required attributes
 		

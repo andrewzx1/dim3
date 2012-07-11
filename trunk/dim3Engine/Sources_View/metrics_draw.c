@@ -220,10 +220,5 @@ void metrics_draw(void)
 	metrics_draw_single(y,"Contact:",str);
 	
 	gl_text_end();
-	
-		// reset any color changes
-		
-	glColor4f(0.0f,0.0f,0.0f,1.0f);
-
 }
 

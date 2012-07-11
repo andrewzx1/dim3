@@ -220,6 +220,8 @@ bool view_initialize_display(char *err_str)
 	}
 	
 		// start the shaders
+		
+	gl_shader_initialize();
 
 	if (!gl_simple_shader_initialize(err_str)) {
 		gl_shutdown();

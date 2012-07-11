@@ -285,19 +285,17 @@ void gl_fs_shader_render_finish(void)
 	glDisable(GL_BLEND);
 	glDisable(GL_ALPHA_TEST);
 	glDisable(GL_DEPTH_TEST);
-
-	glColor4f(1.0f,0.0f,1.0f,1.0f);
-
-	glActiveTexture(GL_TEXTURE0);
-	glEnable(GL_TEXTURE_RECTANGLE_ARB);
-	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_REPLACE);
-	glBindTexture(GL_TEXTURE_RECTANGLE_ARB,fs_shader_txt_id);
+	
+	gl_texture_bind(0,TRUE,fs_shader_txt_id);
 
 		// start the shader
 
 	shader=&user_shaders[fs_shader_idx];
 	
-	glUseProgramObjectARB(shader->program_obj);
+	if (gl_shader_current!=shader) {
+		gl_shader_current=shader;
+		glUseProgramObjectARB(shader->program_obj);
+	}
 
 	shader->start_tick=fs_shader_start_tick;			// make sure frequency matches start of shader
 	gl_shader_set_scene_variables(shader);
@@ -310,12 +308,6 @@ void gl_fs_shader_render_finish(void)
 		// draw the quad
 
 	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
-
-		// end the shader
-		// make sure currently no shader set
-
-	glUseProgramObjectARB(0);
-	gl_shader_current=NULL;
 
 		// finish fbo draw
 	

@@ -37,8 +37,6 @@ extern view_type		view;
 extern camera_type		camera;
 extern setup_type		setup;
 
-extern bitmap_type		lmap_black_bitmap,lmap_white_bitmap;
-
 map_poly_sort_type		trans_sort;
 
 /* =======================================================

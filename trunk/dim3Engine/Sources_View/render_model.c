@@ -36,8 +36,6 @@ extern server_type		server;
 extern view_type		view;
 extern setup_type		setup;
 
-extern bitmap_type		lmap_black_bitmap;
-
 /* =======================================================
 
       Texture and Alpha Utilities
@@ -818,8 +816,6 @@ void render_model_target(model_draw *draw,d3col *col)
 
 		// draw target
 		
-	gl_shader_draw_simple_color_start();
 	gl_shader_draw_execute_simple_color_ptr(3,vertexes,col,1.0f);
 	glDrawArrays(GL_LINE_LOOP,0,4);
-	gl_shader_draw_simple_color_end();
 }

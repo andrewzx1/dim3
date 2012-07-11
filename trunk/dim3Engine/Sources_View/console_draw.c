@@ -73,8 +73,6 @@ void console_draw(void)
 
 	gl_2D_view_interface();
 
-	glColor4f(0.0f,0.0f,0.0f,1.0f);
-
 	glDisable(GL_BLEND);
 	glDisable(GL_ALPHA_TEST);
 	glDisable(GL_DEPTH_TEST);

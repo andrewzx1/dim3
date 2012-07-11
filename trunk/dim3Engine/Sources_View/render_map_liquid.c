@@ -36,7 +36,7 @@ extern server_type			server;
 extern view_type			view;
 extern setup_type			setup;
 
-extern bitmap_type			lmap_black_bitmap,lmap_white_bitmap;
+extern bitmap_type			lmap_white_bitmap;
 
 float						liquid_normal_cycle_xz[4]={0.0f,0.5f,0.0f,-0.5f},
 							liquid_normal_cycle_y[4]={-1.0f,-0.5f,-1.0f,-0.5f};

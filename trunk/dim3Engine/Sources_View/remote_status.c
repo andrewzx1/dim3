@@ -111,10 +111,8 @@ void remote_draw_icon(obj_type *obj,unsigned long gl_id)
 	glDepthFunc(GL_LEQUAL);
 	glDepthMask(GL_TRUE);
 
-	gl_shader_draw_simple_bitmap_start();
 	gl_shader_draw_execute_simple_bitmap_ptr(gl_id,3,vertexes,uvs,&col,1.0f);
 	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
-	gl_shader_draw_simple_bitmap_end();
 }
 
 void remote_draw_status(obj_type *obj)

@@ -54,10 +54,8 @@ void view_primitive_2D_tint_screen(d3col *col,float alpha)
 	vertexes[6]=(float)view.screen.x_sz;
 	vertexes[7]=(float)view.screen.y_sz;
 
-	gl_shader_draw_simple_color_start();
 	gl_shader_draw_execute_simple_color_ptr(2,vertexes,col,alpha);
 	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
-	gl_shader_draw_simple_color_end();
 }
 
 /* =======================================================
@@ -109,10 +107,8 @@ void view_primitive_2D_color_poly(int x0,int y0,d3col *col0,int x1,int y1,d3col 
 
 		// draw the polygon
 
-	gl_shader_draw_simple_gradient_start();
 	gl_shader_draw_execute_simple_gradient_ptr(2,vertexes,colors);
 	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
-	gl_shader_draw_simple_gradient_end();
 		
 		// finish draw
 
@@ -180,10 +176,8 @@ void view_primitive_2D_color_trig(d3col *col,float alpha,int lft,int rgt,int top
 
 		// draw the trig
 		
-	gl_shader_draw_simple_color_start();
 	gl_shader_draw_execute_simple_color_ptr(2,vertexes,col,alpha);
 	glDrawArrays(GL_TRIANGLES,0,3);
-	gl_shader_draw_simple_color_end();
 	
 		// finish draw
 
@@ -246,10 +240,8 @@ void view_primitive_2D_color_arc(d3col *out_col,d3col *in_col,float alpha,int lf
 
 		// draw the trig
 		
-	gl_shader_draw_simple_gradient_start();
 	gl_shader_draw_execute_simple_gradient_ptr(2,vertexes,colors);
 	glDrawArrays(GL_TRIANGLES,0,3);
-	gl_shader_draw_simple_gradient_end();
 	
 		// finish draw
 
@@ -282,10 +274,8 @@ void view_primitive_2D_line(d3col *col,float alpha,int x0,int y0,int x1,int y1)
 
 		// draw the quad
 		
-	gl_shader_draw_simple_color_start();
 	gl_shader_draw_execute_simple_color_ptr(2,vertexes,col,alpha);
 	glDrawArrays(GL_LINES,0,2);
-	gl_shader_draw_simple_color_end();
 
 		// finish draw
 
@@ -316,10 +306,8 @@ void view_primitive_2D_line_poly(d3col *col,float alpha,int x0,int y0,int x1,int
 
 		// draw the quad
 
-	gl_shader_draw_simple_color_start();
 	gl_shader_draw_execute_simple_color_ptr(2,vertexes,col,alpha);
 	glDrawArrays(GL_LINE_LOOP,0,4);
-	gl_shader_draw_simple_color_end();
 
 		// finish draw
 
@@ -389,10 +377,8 @@ void view_primitive_2D_line_trig(d3col *col,float alpha,int lft,int rgt,int top,
 
 		// draw the quad
 		
-	gl_shader_draw_simple_color_start();
 	gl_shader_draw_execute_simple_color_ptr(2,vertexes,col,alpha);
 	glDrawArrays(GL_LINE_LOOP,0,3);
-	gl_shader_draw_simple_color_end();
 
 		// finish draw
 
@@ -427,10 +413,8 @@ void view_primitive_3D_line(d3col *col,float alpha,int x0,int y0,int z0,int x1,i
 
 		// draw the quad
 		
-	gl_shader_draw_simple_color_start();
 	gl_shader_draw_execute_simple_color_ptr(3,vertexes,col,alpha);
 	glDrawArrays(GL_LINES,0,2);
-	gl_shader_draw_simple_color_end();
 
 		// finish draw
 
@@ -465,10 +449,8 @@ void view_primitive_3D_line_cube(d3col *col,float alpha,int *px,int *py,int *pz)
 
 		// draw the quad
 		
-	gl_shader_draw_simple_color_start();
 	gl_shader_draw_execute_simple_color_ptr(3,vertexes,col,alpha);
 	glDrawElements(GL_LINES,24,GL_UNSIGNED_SHORT,(GLvoid*)cube_indexes);
-	gl_shader_draw_simple_color_end();
 
 		// finish draw
 
@@ -532,10 +514,8 @@ void view_primitive_2D_texture_quad(GLuint gl_id,d3col *col,float alpha,int lft,
 
 		// draw the quad
 
-	gl_shader_draw_simple_bitmap_start();
 	gl_shader_draw_execute_simple_bitmap_ptr(gl_id,2,vertexes,uvs,col_ptr,alpha);
 	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
-	gl_shader_draw_simple_bitmap_end();
 
 		// finish texture draw
 		
@@ -601,10 +581,8 @@ void view_primitive_2D_texture_quad_rot(GLuint gl_id,d3col *col,float alpha,int 
 
 		// draw the quad
 
-	gl_shader_draw_simple_bitmap_start();
 	gl_shader_draw_execute_simple_bitmap_ptr(gl_id,2,vertexes,uvs,col_ptr,alpha);
 	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
-	gl_shader_draw_simple_bitmap_end();
 
 		// finish texture draw
 
@@ -654,10 +632,8 @@ void view_primitive_2D_texture_quad_rectangle(GLuint gl_id,float alpha,int lft,i
 
 		// draw the quad
 
-	gl_shader_draw_simple_bitmap_rect_start();
 	gl_shader_draw_execute_simple_bitmap_rect_ptr(gl_id,2,vertexes,uvs,&col,alpha);
 	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
-	gl_shader_draw_simple_bitmap_rect_end();
 
 		// finish texture draw
 
