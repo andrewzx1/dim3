@@ -99,7 +99,6 @@ void view_fade_draw(void)
 
 	alpha=((float)tick)/((float)fade_screen_msec);
 	if (fade_screen_in) alpha=1.0f-alpha;
-	glColor4f(0.0f,0.0f,0.0f,alpha);
 	
 		// draw
 		

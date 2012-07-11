@@ -50,6 +50,17 @@ extern bitmap_type			lmap_black_bitmap,lmap_white_bitmap;
 
 /* =======================================================
 
+      Initialize Shaders
+      
+======================================================= */
+
+void gl_shader_initialize(void)
+{
+	gl_shader_current=NULL;
+}
+
+/* =======================================================
+
       Setup Shader Variables
       
 ======================================================= */
@@ -60,8 +71,11 @@ void gl_shader_set_instance_variables(shader_type *shader)
 	
 		// need to use program before calling these
 		
-	glUseProgramObjectARB(shader->program_obj);
-
+	if (gl_shader_current!=shader) {
+		gl_shader_current=shader;
+		glUseProgramObjectARB(shader->program_obj);
+	}
+	
 		// texture pointers
 		
 	var=glGetUniformLocationARB(shader->program_obj,"dim3Tex");
@@ -78,11 +92,6 @@ void gl_shader_set_instance_variables(shader_type *shader)
 	
 	var=glGetUniformLocationARB(shader->program_obj,"dim3TexLightMap");
 	if (var!=-1) glUniform1iARB(var,4);
-	
-		// cancel program
-		
-	glUseProgramObjectARB(0);
-	gl_shader_current=NULL;		// ES2 -- can get rid of all of this later
 }
 
 void gl_shader_cache_dynamic_variable_locations(shader_type *shader)
@@ -690,58 +699,13 @@ void gl_shader_draw_start(void)
 {
 		// remember current shader
 
-	gl_shader_current=NULL;
-
-		// make all textures replace
-		
-	glColor4f(1.0f,0.0f,1.0f,1.0f);
-
-	glActiveTexture(GL_TEXTURE4);
-	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_REPLACE);
-
-	glActiveTexture(GL_TEXTURE3);
-	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_REPLACE);
-	
-	glActiveTexture(GL_TEXTURE2);
-	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_REPLACE);
-
-	glActiveTexture(GL_TEXTURE1);
-	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_REPLACE);
-
-	glActiveTexture(GL_TEXTURE0);
-	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_REPLACE);
+//	ES2 -- remove??
 }
+
+// ES2 -- remove?
 
 void gl_shader_draw_end(void)
 {
-		// deactivate any current shader
-		
-	if (gl_shader_current!=NULL) {
-		gl_shader_current=NULL;
-		glUseProgramObjectARB(0);		// ES2 -- get rid of all of this later
-	}
-
-		// turn off any used textures
-
-	glActiveTexture(GL_TEXTURE4);
-	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
-	glDisable(GL_TEXTURE_2D);
-		
-	glActiveTexture(GL_TEXTURE3);
-	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
-	glDisable(GL_TEXTURE_2D);
-	
-	glActiveTexture(GL_TEXTURE2);
-	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
-	glDisable(GL_TEXTURE_2D);
-	
-	glActiveTexture(GL_TEXTURE1);
-	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
-	glDisable(GL_TEXTURE_2D);
-	
-	glActiveTexture(GL_TEXTURE0);
-	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
-	glDisable(GL_TEXTURE_2D);
 }
 
 /* =======================================================

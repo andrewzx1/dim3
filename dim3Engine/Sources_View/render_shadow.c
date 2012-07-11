@@ -504,10 +504,8 @@ void shadow_render_stencil_poly_draw(int ptsz,float *vertexes,int stencil_idx)
 	glStencilOp(GL_KEEP,GL_KEEP,GL_REPLACE);
 	glStencilFunc(GL_ALWAYS,stencil_idx,0xFF);
 
-	gl_shader_draw_simple_black_start();
 	gl_shader_draw_execute_simple_black_ptr(3,vertexes,1.0f);
 	glDrawArrays(GL_TRIANGLE_FAN,0,ptsz);
-	gl_shader_draw_simple_black_end();
 		
 	glColorMask(GL_TRUE,GL_TRUE,GL_TRUE,GL_TRUE);
 }
@@ -684,7 +682,6 @@ void shadow_render_model_mesh(model_type *mdl,int model_mesh_idx,model_draw *dra
 
 			// start shader
 
-		gl_shader_draw_simple_black_start();
 		gl_shader_draw_execute_simple_black_vbo(3,0,alpha);
 
 			// run through the shadow polygons
@@ -718,8 +715,6 @@ void shadow_render_model_mesh(model_type *mdl,int model_mesh_idx,model_draw *dra
 
 			view.count.shadow_poly++;
 		}
-
-		gl_shader_draw_simple_black_end();
 
 			// unbind the vertex and index object
 				

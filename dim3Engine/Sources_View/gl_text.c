@@ -154,7 +154,6 @@ void gl_text_start(int text_font,int text_size)
 	
 		// start shader
 		
-	gl_shader_draw_simple_bitmap_start();
 	gl_shader_draw_execute_simple_bitmap_ptr(font->bitmap.gl_id,2,gl_text_vertexes,gl_text_uvs,&col,1.0f);
 
 		// no wrapping
@@ -177,10 +176,6 @@ void gl_text_end(void)
 		
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT);
-
-		// turn off shader
-
-	gl_shader_draw_simple_bitmap_end();
 
 		// restore default blending
 

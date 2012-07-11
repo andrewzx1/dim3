@@ -3160,8 +3160,6 @@ void element_draw_model(element_type *element)
 
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
-
-	glColor4f(1.0f,1.0f,1.0f,1.0f);
 	
 		// force shaders
 		// if being used

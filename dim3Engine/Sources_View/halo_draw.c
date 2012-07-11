@@ -254,8 +254,6 @@ void halo_draw_render(void)
 
 		// setup texture drawing
 
-	gl_texture_simple_start();
-
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 
@@ -272,8 +270,6 @@ void halo_draw_render(void)
 	col.r=col.g=col.b=1.0f;
 
 		// draw halos
-
-	gl_shader_draw_simple_bitmap_start();
 
 	for (n=0;n!=view.render->halo_draw.count;n++) {
 		halo_draw=&view.render->halo_draw.halos[n];
@@ -312,8 +308,6 @@ void halo_draw_render(void)
 		gl_shader_draw_execute_simple_bitmap_ptr(view_images_get_gl_id(iface.halo_list.halos[halo_draw->idx].image_idx),2,vertexes,uvs,&col,halo_draw->alpha);
 		glDrawArrays(GL_TRIANGLE_STRIP,0,4);
 	}
-		
-	gl_shader_draw_simple_bitmap_start();
 
 		// reset repeat
 

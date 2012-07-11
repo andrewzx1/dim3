@@ -98,10 +98,8 @@ void sky_draw_background_single(map_background_layer_type *layer)
 
 		// draw the quad
 
-	gl_shader_draw_simple_bitmap_start();
 	gl_shader_draw_execute_simple_bitmap_ptr(bitmap->gl_id,2,vertexes,uvs,&col,1.0f);
 	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
-	gl_shader_draw_simple_bitmap_end();
 }
 
 void sky_draw_background(void)
@@ -116,14 +114,10 @@ void sky_draw_background(void)
 	
 		// draw the layers
 		
-	glActiveTexture(GL_TEXTURE0);
-	glEnable(GL_TEXTURE_2D);
-	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_REPLACE);
-
 	glDisable(GL_DEPTH_TEST);
 	
-		// first background draws with replace
-		// and no alpha
+		// first background draws with
+		// no alpha
 
 	sky_draw_background_single(&map.background.back);
 	
@@ -137,8 +131,6 @@ void sky_draw_background(void)
 
 	glEnable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_NOTEQUAL,0);
-
-	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
 
 	sky_draw_background_single(&map.background.middle);
 	sky_draw_background_single(&map.background.front);
@@ -356,11 +348,9 @@ void sky_draw_dome_panoramic(void)
 	texture=&map.textures[map.sky.fill];
 	col.r=col.g=col.b=1.0f;
 
-	gl_shader_draw_simple_bitmap_start();
 	gl_shader_draw_execute_simple_bitmap_vbo_attribute(3,0,((pan_count*3)*sizeof(float)),0,&col,1.0f);
 	gl_shader_draw_execute_simple_bitmap_set_texture(texture->frames[texture->animate.current_frame].bitmap.gl_id);
 	glDrawArrays(GL_TRIANGLES,0,pan_count);
-	gl_shader_draw_simple_bitmap_end();
 		
 	glMatrixMode(GL_TEXTURE);
 	glLoadIdentity();
@@ -660,11 +650,9 @@ void sky_draw_dome_hemisphere(void)
 
 		// draw the dome
 	
-	gl_shader_draw_simple_bitmap_start();
 	gl_shader_draw_execute_simple_bitmap_vbo_attribute(3,0,((dome_cnt*3)*sizeof(float)),0,&col,1.0f);
 	gl_shader_draw_execute_simple_bitmap_set_texture(texture->frames[texture->animate.current_frame].bitmap.gl_id);
 	glDrawArrays(GL_TRIANGLES,0,dome_cnt);
-	gl_shader_draw_simple_bitmap_end();
 
 		// end textures
 		
@@ -950,7 +938,6 @@ void sky_draw_cube(void)
 
 		// draw cube sides
 
-	gl_shader_draw_simple_bitmap_start();
 	gl_shader_draw_execute_simple_bitmap_vbo_attribute(3,0,(((6*4)*3)*sizeof(float)),0,&col,1.0f);
 
 	offset=0;
@@ -1010,8 +997,6 @@ void sky_draw_cube(void)
 		gl_shader_draw_execute_simple_bitmap_set_texture(texture->frames[texture->animate.current_frame].bitmap.gl_id);
 		glDrawArrays(GL_TRIANGLE_STRIP,offset,4);
 	}
-
-	gl_shader_draw_simple_bitmap_end();
 
 		// end texture
 

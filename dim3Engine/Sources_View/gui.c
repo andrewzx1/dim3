@@ -179,8 +179,6 @@ void gui_draw(float background_alpha,bool cursor)
 
 		// elements
 
-	glColor4f(0.0f,0.0f,0.0f,1.0f);
-
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 

@@ -37,8 +37,6 @@ extern setup_type		setup;
 extern camera_type		camera;
 extern view_type		view;
 
-extern bitmap_type		lmap_black_bitmap,lmap_white_bitmap;
-
 /* =======================================================
 
       Mesh-Poly Culling

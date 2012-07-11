@@ -107,10 +107,6 @@ void hud_bitmaps_draw(void)
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 	
-	glColor4f(0.0f,0.0f,0.0f,1.0f);
-
-	gl_shader_draw_simple_bitmap_start();
-
 		// timing for flashes and fades
 
 	tick=game_time_get();
@@ -301,8 +297,6 @@ void hud_bitmaps_draw(void)
 			glDrawArrays(GL_TRIANGLE_STRIP,0,4);
 		}
 	}
-
-	gl_shader_draw_simple_bitmap_end();
 }
 
 /* =======================================================
@@ -697,10 +691,8 @@ void hud_bars_draw_pie(iface_bar_type *bar)
 
 	glDisable(GL_DEPTH_TEST);
 
-	gl_shader_draw_simple_gradient_start();
 	gl_shader_draw_execute_simple_gradient_ptr(2,vertexes,colors);
 	glDrawArrays(GL_TRIANGLES,0,(72*3));
-	gl_shader_draw_simple_gradient_end();
 
 	glDisable(GL_BLEND);
 	glDisable(GL_ALPHA_TEST);
@@ -777,9 +769,5 @@ void hud_draw(void)
 	hud_bars_draw();
 	hud_bitmaps_draw();
 	hud_texts_draw();
-	
-		// reset any color changes
-		
-	glColor4f(0.0f,0.0f,0.0f,1.0f);
 }
 

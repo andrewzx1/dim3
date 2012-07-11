@@ -151,9 +151,5 @@ void virtual_control_draw(void)
 	for (n=0;n!=max_virtual_button;n++) {
 		if (iface.virtual_control.buttons[n].on) virtual_button_draw(&iface.virtual_control.buttons[n]);
 	}
-	
-		// reset any color changes
-		
-	glColor4f(0.0f,0.0f,0.0f,1.0f);
 }
 
