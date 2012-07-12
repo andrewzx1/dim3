@@ -409,12 +409,17 @@ typedef struct		{
 					} shader_current_var_simple_color;
 
 typedef struct		{
+						int									vertex_offset,color_offset,
+															uv_offset,lmap_uv_offset,
+															tangent_offset,normal_offset;
+					} shader_current_var_simple_attrib;
+
+typedef struct		{
 						int									nlight,light_idx[max_shader_light];
-						long								vertex,color,uv,lmap_uv,
-															tangent,normal;
 						float								alpha,shine_factor,glow_factor,
 															diffuse_boost;
 						d3vct								diffuse_vct;
+						shader_current_var_simple_attrib	attrib;
 						shader_current_var_simple_color		simple_color;
 						shader_current_var_light_value		lights[max_shader_light];
 					} shader_current_var_value;
