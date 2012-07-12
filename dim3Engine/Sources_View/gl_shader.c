@@ -157,12 +157,12 @@ void gl_shader_cache_dynamic_variable_locations(shader_type *shader)
 		// we remember all the last settings
 		// so we don't reset state when no necessary
 		
-	shader->var_values.vertex=-1;
-	shader->var_values.color=-1;
-	shader->var_values.uv=-1;
-	shader->var_values.lmap_uv=-1;
-	shader->var_values.tangent=-1;
-	shader->var_values.normal=-1;
+	shader->var_values.attrib.vertex_offset=-1;
+	shader->var_values.attrib.color_offset=-1;
+	shader->var_values.attrib.uv_offset=-1;
+	shader->var_values.attrib.lmap_uv_offset=-1;
+	shader->var_values.attrib.tangent_offset=-1;
+	shader->var_values.attrib.normal_offset=-1;
 	
 	shader->var_values.simple_color.r=shader->var_values.simple_color.g=shader->var_values.simple_color.b=shader->var_values.simple_color.a=-1.0f;
 
@@ -665,47 +665,6 @@ void gl_shader_hilite_override(shader_type *shader,view_glsl_light_list_type *li
 
 /* =======================================================
 
-      Shader Per Scene Start
-      
-======================================================= */
-
-void gl_shader_draw_scene_code_start(shader_type *shader)
-{
-		// use this flag to mark scene only variables
-		// as needing a load.  In this way we optimize
-		// out the amount of variable setting we need to do
-	
-	shader->per_scene_vars_set=FALSE;
-		
-		// dim3 tries to remember if the same lights
-		// we set by looking into the light list.  The
-		// light list is generated per scene, so it needs
-		// to be reset here
-
-	shader->var_values.nlight=-1;
-}
-
-void gl_shader_draw_scene_start(void)
-{
-	int					n,k;
-	shader_type			*shader;
-
-	for (k=0;k!=(max_shader_light+1);k++) {
-		for (n=0;n!=max_core_shader;n++) {
-			gl_shader_draw_scene_code_start(&core_shaders[k][n]);
-		}
-	}
-
-	shader=user_shaders;
-
-	for (n=0;n!=nuser_shader;n++) {
-		gl_shader_draw_scene_code_start(shader);
-		shader++;
-	}
-}
-
-/* =======================================================
-
       Set Shader Textures
       
 ======================================================= */
@@ -790,172 +749,41 @@ void gl_shader_texture_override(GLuint gl_id,float alpha)
 
 /* =======================================================
 
-      Execute Map Shaders
+      Shader Per Scene Start
       
 ======================================================= */
 
-// ES2 -- move these
-void gl_shader_draw_execute_map(texture_type *texture,int txt_idx,int frame,int lmap_txt_idx,float alpha,int vertex_offset,int uv_offset,int lmap_uv_offset,int tangent_offset,int normal_offset,int stride,view_glsl_light_list_type *light_list)
+void gl_shader_draw_scene_code_start(shader_type *shader)
 {
-	bool						is_core;
-	shader_type					*shader;
+		// use this flag to mark scene only variables
+		// as needing a load.  In this way we optimize
+		// out the amount of variable setting we need to do
 	
-		// get shader based on number of lights
+	shader->per_scene_vars_set=FALSE;
 		
-	if (texture->shader_idx==gl_shader_core_index) {
-		shader=gl_core_shader_find_ptr(light_list->nlight,core_shader_group_map,texture);
-		is_core=TRUE;
-	}
-	else {
-		shader=&user_shaders[texture->shader_idx];
-		is_core=FALSE;
-	}
-	
-		// if we are not in this shader, then
-		// change over
-		
-	if (shader!=gl_shader_current) {
-	
-			// set in the new program
-			
-		gl_shader_current=shader;
-		glUseProgramObjectARB(shader->program_obj);
-			
-			// set per-scene variables, only do this once
-			// as they don't change per scene
-		
-		if (!shader->per_scene_vars_set) {
-			shader->per_scene_vars_set=TRUE;
-			gl_shader_set_scene_variables(shader);
-		}
-	}
-	
-		// bind the required attributes
+		// dim3 tries to remember if the same lights
+		// we set by looking into the light list.  The
+		// light list is generated per scene, so it needs
+		// to be reset here
 
-	glVertexAttribPointerARB(shader->var_locs.dim3Vertex,3,GL_FLOAT,GL_FALSE,stride,(void*)vertex_offset);
-	glVertexAttribPointerARB(shader->var_locs.dim3VertexUV,2,GL_FLOAT,GL_FALSE,stride,(void*)uv_offset);
-	glVertexAttribPointerARB(shader->var_locs.dim3VertexLightMapUV,2,GL_FLOAT,GL_FALSE,stride,(void*)lmap_uv_offset);
-	glVertexAttribPointerARB(shader->var_locs.dim3VertexNormal,3,GL_FLOAT,GL_FALSE,stride,(void*)normal_offset);
-	if (shader->var_locs.dim3VertexTangent!=-1) glVertexAttribPointerARB(shader->var_locs.dim3VertexTangent,3,GL_FLOAT,GL_FALSE,stride,(void*)tangent_offset);
-	
-		// setup variables
-
-	gl_shader_hilite_override(shader,light_list);
-	gl_shader_set_texture(shader,core_shader_group_map,texture,txt_idx,lmap_txt_idx,frame);
-	gl_shader_set_poly_variables(shader,alpha);
-	gl_shader_set_light_variables(shader,core_shader_group_map,is_core,light_list);
+	shader->var_values.nlight=-1;
 }
 
-/* =======================================================
-
-      Execute Liquid Shaders
-      
-======================================================= */
-
-void gl_shader_draw_execute_liquid(texture_type *texture,int txt_idx,int frame,int lmap_txt_idx,float alpha,int vertex_offset,int uv_offset,int lmap_uv_offset,int tangent_offset,int normal_offset,int stride,view_glsl_light_list_type *light_list)
+void gl_shader_draw_scene_start(void)
 {
-	bool						is_core;
-	shader_type					*shader;
-	
-		// get shader based on number of lights
-		
-	if (texture->shader_idx==gl_shader_core_index) {
-		shader=gl_core_shader_find_ptr(light_list->nlight,core_shader_group_liquid,texture);
-		is_core=TRUE;
-	}
-	else {
-		shader=&user_shaders[texture->shader_idx];
-		is_core=FALSE;
-	}
-	
-		// if we are not in this shader, then
-		// change over
-		
-	if (shader!=gl_shader_current) {
-	
-			// set in the new program
-			
-		gl_shader_current=shader;
-		glUseProgramObjectARB(shader->program_obj);
-			
-			// set per-scene variables, only do this once
-			// as they don't change per scene
-		
-		if (!shader->per_scene_vars_set) {
-			shader->per_scene_vars_set=TRUE;
-			gl_shader_set_scene_variables(shader);
+	int					n,k;
+	shader_type			*shader;
+
+	for (k=0;k!=(max_shader_light+1);k++) {
+		for (n=0;n!=max_core_shader;n++) {
+			gl_shader_draw_scene_code_start(&core_shaders[k][n]);
 		}
 	}
-	
-		// bind the required attributes
 
-	glVertexAttribPointerARB(shader->var_locs.dim3Vertex,3,GL_FLOAT,GL_FALSE,stride,(void*)vertex_offset);
-	glVertexAttribPointerARB(shader->var_locs.dim3VertexUV,2,GL_FLOAT,GL_FALSE,stride,(void*)uv_offset);
-	glVertexAttribPointerARB(shader->var_locs.dim3VertexLightMapUV,2,GL_FLOAT,GL_FALSE,stride,(void*)lmap_uv_offset);
-	glVertexAttribPointerARB(shader->var_locs.dim3VertexNormal,3,GL_FLOAT,GL_FALSE,stride,(void*)normal_offset);
-	if (shader->var_locs.dim3VertexTangent!=-1) glVertexAttribPointerARB(shader->var_locs.dim3VertexTangent,3,GL_FLOAT,GL_FALSE,stride,(void*)tangent_offset);
-	
-		// setup variables
+	shader=user_shaders;
 
-	gl_shader_hilite_override(shader,light_list);
-	gl_shader_set_texture(shader,core_shader_group_liquid,texture,txt_idx,lmap_txt_idx,frame);
-	gl_shader_set_poly_variables(shader,alpha);
-	gl_shader_set_light_variables(shader,core_shader_group_liquid,is_core,light_list);
-}
-
-/* =======================================================
-
-      Execute Model Shaders
-      
-======================================================= */
-
-void gl_shader_draw_execute_model(texture_type *texture,int txt_idx,int frame,float alpha,int vertex_offset,int uv_offset,int tangent_offset,int normal_offset,int stride,view_glsl_light_list_type *light_list)
-{
-	bool						is_core;
-	shader_type					*shader;
-	
-		// get shader based on number of lights
-		
-	if (texture->shader_idx==gl_shader_core_index) {
-		shader=gl_core_shader_find_ptr(light_list->nlight,core_shader_group_model,texture);
-		is_core=TRUE;
+	for (n=0;n!=nuser_shader;n++) {
+		gl_shader_draw_scene_code_start(shader);
+		shader++;
 	}
-	else {
-		shader=&user_shaders[texture->shader_idx];
-		is_core=FALSE;
-	}
-	
-		// if we are not in this shader, then
-		// change over
-		
-	if (shader!=gl_shader_current) {
-	
-			// set in the new program
-			
-		gl_shader_current=shader;
-		glUseProgramObjectARB(shader->program_obj);
-			
-			// set per-scene variables, only do this once
-			// as they don't change per scene
-		
-		if (!shader->per_scene_vars_set) {
-			shader->per_scene_vars_set=TRUE;
-			gl_shader_set_scene_variables(shader);
-		}
-	}
-	
-		// bind the required attributes
-
-	glVertexAttribPointerARB(shader->var_locs.dim3Vertex,3,GL_FLOAT,GL_FALSE,stride,(void*)vertex_offset);
-	glVertexAttribPointerARB(shader->var_locs.dim3VertexUV,2,GL_FLOAT,GL_FALSE,stride,(void*)uv_offset);
-	glVertexAttribPointerARB(shader->var_locs.dim3VertexNormal,3,GL_FLOAT,GL_FALSE,stride,(void*)normal_offset);
-	if (shader->var_locs.dim3VertexTangent!=-1) glVertexAttribPointerARB(shader->var_locs.dim3VertexTangent,3,GL_FLOAT,GL_FALSE,stride,(void*)tangent_offset);
-	
-		// setup variables
-
-	gl_shader_hilite_override(shader,light_list);
-	gl_shader_set_texture(shader,core_shader_group_model,texture,txt_idx,-1,frame);
-	gl_shader_set_poly_variables(shader,alpha);
-	gl_shader_set_diffuse_variables(shader,light_list);
-	gl_shader_set_light_variables(shader,core_shader_group_model,is_core,light_list);
 }

@@ -771,18 +771,23 @@ extern void gl_shader_initialize(void);
 extern void gl_shader_code_clear(shader_type *shader);
 extern bool gl_shader_code_compile(shader_type *shader,char *vertex_data,char *fragment_data,char *err_str);
 extern void gl_shader_code_shutdown(shader_type *shader);
+
 extern void gl_shader_attach_map(void);
 extern void gl_shader_attach_model(model_type *mdl);
-extern void gl_shader_draw_scene_code_start(shader_type *shader);
-extern void gl_shader_draw_scene_code_end(shader_type *shader);
-extern void gl_shader_draw_scene_start(void);
+
+extern void gl_shader_set_scene_variables(shader_type *shader);
+extern void gl_shader_set_light_variables(shader_type *shader,int core_shader_group,bool is_core,view_glsl_light_list_type *light_list);
+extern void gl_shader_set_diffuse_variables(shader_type *shader,view_glsl_light_list_type *light_list);
+extern void gl_shader_set_poly_variables(shader_type *shader,float alpha);
+extern void gl_shader_hilite_override(shader_type *shader,view_glsl_light_list_type *light_list);
+extern void gl_shader_set_texture(shader_type *shader,int core_shader_group,texture_type *texture,int txt_idx,int lmap_txt_idx,int frame);
 extern void gl_shader_texture_override(GLuint gl_id,float alpha);
+
+extern void gl_shader_draw_scene_start(void);
 
 //
 // shader execution
 //
-
-extern void gl_shader_draw_execute_set_vertex_pointer(shader_type *shader,int vertex_size,void* vertex,int stride);
 
 extern inline void gl_shader_draw_execute_simple_color_set_color(d3col *col,float alpha);
 extern inline void gl_shader_draw_execute_simple_color_ptr(int vertex_size,float *vertexes,d3col *col,float alpha);
