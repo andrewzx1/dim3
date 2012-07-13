@@ -485,6 +485,8 @@ void liquid_render_liquid_layer(map_liquid_type *liq,int txt_idx,int lmap_txt_id
 	view_bind_mesh_liquid_vertex_object(&liq->vbo);
 	view_bind_mesh_liquid_index_object(&liq->vbo);
 
+	gl_shader_draw_execute_reset_cached_offsets();
+
 		// shader lights and tangents
 
 	gl_lights_build_liquid_glsl_light_list(liq,&light_list);

@@ -119,6 +119,7 @@ extern inline void matrix_vertex_multiply(matrix_type *mat,float *x,float *y,flo
 extern inline void matrix_vertex_multiply_ignore_transform(matrix_type *mat,float *x,float *y,float *z);
 extern inline void matrix_vertex_2_multiply_ignore_transform(matrix_type *mat,d3vct *vct);
 extern inline void matrix_angle_multiply(matrix_type *mat,float *x,float *y,float *z);
+extern void matrix_inverse_transpose(matrix_type *mat);
 extern void matrix_rotate_x(matrix_type *mat,float ang);
 extern void matrix_rotate_y(matrix_type *mat,float ang);
 extern void matrix_rotate_z(matrix_type *mat,float ang);

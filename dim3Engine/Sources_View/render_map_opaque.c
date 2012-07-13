@@ -109,6 +109,8 @@ void render_map_mesh_opaque(void)
 		view_bind_mesh_liquid_vertex_object(&mesh->vbo);
 		view_bind_mesh_liquid_index_object(&mesh->vbo);
 
+		gl_shader_draw_execute_reset_cached_offsets();
+
 			// small meshes don't create light lists
 			// per-poly, instead just use the mesh list
 			// if the mesh list always has less than

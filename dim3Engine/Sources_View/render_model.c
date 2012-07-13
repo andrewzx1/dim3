@@ -163,6 +163,8 @@ bool render_model_initialize_vertex_objects(model_type *mdl,int mesh_idx,model_d
 	render_model_fill_vertex_objects(mdl,mesh_idx,draw,vertex_ptr);
 	view_unmap_model_vertex_object();
 
+	gl_shader_draw_execute_reset_cached_offsets();
+
 	return(TRUE);
 }
 
