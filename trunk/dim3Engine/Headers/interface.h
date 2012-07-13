@@ -807,6 +807,7 @@ extern inline void gl_shader_draw_execute_simple_bitmap_vbo_attribute(int vertex
 
 extern inline void gl_shader_draw_execute_simple_bitmap_rect_ptr(unsigned long gl_id,int vertex_size,float *vertexes,float *uvs,d3col *col,float alpha);
 
+extern void gl_shader_draw_execute_reset_cached_offsets(void);
 extern void gl_shader_draw_execute_map(texture_type *texture,int txt_idx,int frame,int lmap_txt_idx,float alpha,int vertex_offset,int uv_offset,int lmap_uv_offset,int tangent_offset,int normal_offset,int stride,view_glsl_light_list_type *light_list);
 extern void gl_shader_draw_execute_liquid(texture_type *texture,int txt_idx,int frame,int lmap_txt_idx,float alpha,int vertex_offset,int uv_offset,int lmap_uv_offset,int tangent_offset,int normal_offset,int stride,view_glsl_light_list_type *light_list);
 extern void gl_shader_draw_execute_model(texture_type *texture,int txt_idx,int frame,float alpha,int vertex_offset,int uv_offset,int tangent_offset,int normal_offset,int stride,view_glsl_light_list_type *light_list);

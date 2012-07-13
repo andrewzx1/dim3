@@ -135,6 +135,45 @@ void matrix_angle_multiply(matrix_type *mat,float *x,float *y,float *z)
 
 /* =======================================================
 
+      Conversions
+      
+======================================================= */
+
+void matrix_inverse_transpose(matrix_type *mat)
+{
+	float			det,inv_det;
+	matrix_type		r_mat;
+
+	det=(mat->data[0][0]*((mat->data[1][1]*mat->data[2][2])-(mat->data[2][1]*mat->data[1][2])))
+		-(mat->data[0][1]*((mat->data[1][0]*mat->data[2][2])-(mat->data[1][2]*mat->data[2][0])))
+		+(mat->data[0][2]*((mat->data[1][0]*mat->data[2][1])-(mat->data[1][1]*mat->data[2][0])));
+
+	if (det==0.0f) return;
+
+	inv_det=1.0f/det;
+
+	r_mat.data[0][0]=((mat->data[1][1]*mat->data[2][2])-(mat->data[2][1]*mat->data[1][2]))*inv_det;
+	r_mat.data[1][0]=-((mat->data[0][1]*mat->data[2][2])-(mat->data[0][2]*mat->data[2][1]))*inv_det;
+	r_mat.data[2][0]=((mat->data[0][1]*mat->data[1][2])-(mat->data[0][2]*mat->data[1][1]))*inv_det;
+	r_mat.data[3][0]=0.0f;
+
+	r_mat.data[0][1]=-((mat->data[1][0]*mat->data[2][2])-(mat->data[1][2]*mat->data[2][0]))*inv_det;
+	r_mat.data[1][1]=((mat->data[0][0]*mat->data[2][2])-(mat->data[0][2]*mat->data[2][0]))*inv_det;
+	r_mat.data[2][1]=-((mat->data[0][0]*mat->data[1][2])-(mat->data[1][0]*mat->data[0][2]))*inv_det;
+	r_mat.data[3][1]=0.0f;
+
+	r_mat.data[0][2]=((mat->data[1][0]*mat->data[2][1])-(mat->data[2][0]*mat->data[1][1]))*inv_det;
+	r_mat.data[1][2]=-((mat->data[0][0]*mat->data[2][1])-(mat->data[2][0]*mat->data[0][1]))*inv_det;
+	r_mat.data[2][2]=((mat->data[0][0]*mat->data[1][1])-(mat->data[1][0]*mat->data[0][1]))*inv_det;
+	r_mat.data[3][2]=0.0f;
+
+	r_mat.data[0][3]=r_mat.data[1][3]=r_mat.data[2][3]=r_mat.data[3][3]=0.0f;
+
+ 	memmove(mat,&r_mat,sizeof(matrix_type));
+}
+
+/* =======================================================
+
       Rotation Matrixes
       
 ======================================================= */

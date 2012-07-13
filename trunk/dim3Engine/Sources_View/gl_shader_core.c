@@ -264,7 +264,7 @@ char* gl_core_map_shader_build_frag(int nlight,bool fog,bool bump,bool spec,bool
 		// if there's a glow, calculate the
 		// glow rgb
 
-	if (glow) strcat(buf,"vec3 glow=texture2D(dim3TexGlow,gl_TexCoord[0].st).rgb*dim3GlowFactor;\n");
+	if (glow) strcat(buf,"vec3 glow=texture2D(dim3TexGlow,uv).rgb*dim3GlowFactor;\n");
 	
 		// make the total ambient out of
 		// ambient*bump

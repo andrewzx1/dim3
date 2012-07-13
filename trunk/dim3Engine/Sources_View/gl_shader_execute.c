@@ -231,14 +231,81 @@ void gl_shader_draw_execute_simple_bitmap_rect_ptr(unsigned long gl_id,int verte
 	  going to be different.)  Map, liquid, and model
 	  VBO offset type shaders remember their settings
 	  to cut down on multiple sets.
+
+	  We have a special function to reset all these
+	  cahced offsets because VBO changes will force us
+	  to rebuild them.
       
 ======================================================= */
 
-void gl_shader_draw_execute_set_vertex_offset(shader_type *shader,int vertex_size,int vertex_offset,int stride)
+inline void gl_shader_draw_execute_reset_cached_offsets_shader(shader_type *shader)
+{
+	shader->var_values.attrib.vertex_offset=-1;
+	shader->var_values.attrib.color_offset=-1;
+	shader->var_values.attrib.uv_offset=-1;
+	shader->var_values.attrib.lmap_uv_offset=-1;
+	shader->var_values.attrib.tangent_offset=-1;
+	shader->var_values.attrib.normal_offset=-1;
+}
+
+void gl_shader_draw_execute_reset_cached_offsets(void)
+{
+	int					n,k;
+	shader_type			*shader;
+
+	for (k=0;k!=(max_shader_light+1);k++) {
+		for (n=0;n!=max_core_shader;n++) {
+			gl_shader_draw_execute_reset_cached_offsets_shader(&core_shaders[k][n]);
+		}
+	}
+
+	shader=user_shaders;
+
+	for (n=0;n!=nuser_shader;n++) {
+		gl_shader_draw_execute_reset_cached_offsets_shader(shader);
+		shader++;
+	}
+}
+
+inline void gl_shader_draw_execute_set_vertex_offset(shader_type *shader,int vertex_offset,int stride)
 {
 	if (shader->var_values.attrib.vertex_offset!=vertex_offset) {
 		shader->var_values.attrib.vertex_offset=vertex_offset;
-		glVertexAttribPointerARB(shader->var_locs.dim3Vertex,vertex_size,GL_FLOAT,GL_FALSE,stride,(void*)vertex_offset);
+		glVertexAttribPointerARB(shader->var_locs.dim3Vertex,3,GL_FLOAT,GL_FALSE,stride,(void*)vertex_offset);
+	}
+}
+
+inline void gl_shader_draw_execute_set_uv_offset(shader_type *shader,int uv_offset,int stride)
+{
+	if (shader->var_values.attrib.uv_offset!=uv_offset) {
+		shader->var_values.attrib.uv_offset=uv_offset;
+		glVertexAttribPointerARB(shader->var_locs.dim3VertexUV,2,GL_FLOAT,GL_FALSE,stride,(void*)uv_offset);
+	}
+}
+
+inline void gl_shader_draw_execute_set_lmap_uv_offset(shader_type *shader,int lmap_uv_offset,int stride)
+{
+	if (shader->var_values.attrib.lmap_uv_offset!=lmap_uv_offset) {
+		shader->var_values.attrib.lmap_uv_offset=lmap_uv_offset;
+		glVertexAttribPointerARB(shader->var_locs.dim3VertexLightMapUV,2,GL_FLOAT,GL_FALSE,stride,(void*)lmap_uv_offset);
+	}
+}
+
+inline void gl_shader_draw_execute_set_normal_offset(shader_type *shader,int normal_offset,int stride)
+{
+	if (shader->var_values.attrib.normal_offset!=normal_offset) {
+		shader->var_values.attrib.normal_offset=normal_offset;
+		glVertexAttribPointerARB(shader->var_locs.dim3VertexNormal,3,GL_FLOAT,GL_FALSE,stride,(void*)normal_offset);
+	}
+}
+
+inline void gl_shader_draw_execute_set_tangent_offset(shader_type *shader,int tangent_offset,int stride)
+{
+	if (shader->var_locs.dim3VertexTangent==-1) return;
+
+	if (shader->var_values.attrib.tangent_offset!=tangent_offset) {
+		shader->var_values.attrib.tangent_offset=tangent_offset;
+		glVertexAttribPointerARB(shader->var_locs.dim3VertexTangent,3,GL_FLOAT,GL_FALSE,stride,(void*)tangent_offset);
 	}
 }
 
@@ -285,11 +352,11 @@ void gl_shader_draw_execute_map(texture_type *texture,int txt_idx,int frame,int 
 	
 		// bind the required attributes
 
-	glVertexAttribPointerARB(shader->var_locs.dim3Vertex,3,GL_FLOAT,GL_FALSE,stride,(void*)vertex_offset);
-	glVertexAttribPointerARB(shader->var_locs.dim3VertexUV,2,GL_FLOAT,GL_FALSE,stride,(void*)uv_offset);
-	glVertexAttribPointerARB(shader->var_locs.dim3VertexLightMapUV,2,GL_FLOAT,GL_FALSE,stride,(void*)lmap_uv_offset);
-	glVertexAttribPointerARB(shader->var_locs.dim3VertexNormal,3,GL_FLOAT,GL_FALSE,stride,(void*)normal_offset);
-	if (shader->var_locs.dim3VertexTangent!=-1) glVertexAttribPointerARB(shader->var_locs.dim3VertexTangent,3,GL_FLOAT,GL_FALSE,stride,(void*)tangent_offset);
+	gl_shader_draw_execute_set_vertex_offset(shader,vertex_offset,stride);
+	gl_shader_draw_execute_set_uv_offset(shader,uv_offset,stride);
+	gl_shader_draw_execute_set_lmap_uv_offset(shader,lmap_uv_offset,stride);
+	gl_shader_draw_execute_set_normal_offset(shader,normal_offset,stride);
+	gl_shader_draw_execute_set_tangent_offset(shader,tangent_offset,stride);
 	
 		// setup variables
 
@@ -342,11 +409,11 @@ void gl_shader_draw_execute_liquid(texture_type *texture,int txt_idx,int frame,i
 	
 		// bind the required attributes
 
-	glVertexAttribPointerARB(shader->var_locs.dim3Vertex,3,GL_FLOAT,GL_FALSE,stride,(void*)vertex_offset);
-	glVertexAttribPointerARB(shader->var_locs.dim3VertexUV,2,GL_FLOAT,GL_FALSE,stride,(void*)uv_offset);
-	glVertexAttribPointerARB(shader->var_locs.dim3VertexLightMapUV,2,GL_FLOAT,GL_FALSE,stride,(void*)lmap_uv_offset);
-	glVertexAttribPointerARB(shader->var_locs.dim3VertexNormal,3,GL_FLOAT,GL_FALSE,stride,(void*)normal_offset);
-	if (shader->var_locs.dim3VertexTangent!=-1) glVertexAttribPointerARB(shader->var_locs.dim3VertexTangent,3,GL_FLOAT,GL_FALSE,stride,(void*)tangent_offset);
+	gl_shader_draw_execute_set_vertex_offset(shader,vertex_offset,stride);
+	gl_shader_draw_execute_set_uv_offset(shader,uv_offset,stride);
+	gl_shader_draw_execute_set_lmap_uv_offset(shader,lmap_uv_offset,stride);
+	gl_shader_draw_execute_set_normal_offset(shader,normal_offset,stride);
+	gl_shader_draw_execute_set_tangent_offset(shader,tangent_offset,stride);
 	
 		// setup variables
 
@@ -399,10 +466,10 @@ void gl_shader_draw_execute_model(texture_type *texture,int txt_idx,int frame,fl
 	
 		// bind the required attributes
 
-	glVertexAttribPointerARB(shader->var_locs.dim3Vertex,3,GL_FLOAT,GL_FALSE,stride,(void*)vertex_offset);
-	glVertexAttribPointerARB(shader->var_locs.dim3VertexUV,2,GL_FLOAT,GL_FALSE,stride,(void*)uv_offset);
-	glVertexAttribPointerARB(shader->var_locs.dim3VertexNormal,3,GL_FLOAT,GL_FALSE,stride,(void*)normal_offset);
-	if (shader->var_locs.dim3VertexTangent!=-1) glVertexAttribPointerARB(shader->var_locs.dim3VertexTangent,3,GL_FLOAT,GL_FALSE,stride,(void*)tangent_offset);
+	gl_shader_draw_execute_set_vertex_offset(shader,vertex_offset,stride);
+	gl_shader_draw_execute_set_uv_offset(shader,uv_offset,stride);
+	gl_shader_draw_execute_set_normal_offset(shader,normal_offset,stride);
+	gl_shader_draw_execute_set_tangent_offset(shader,tangent_offset,stride);
 	
 		// setup variables
 
