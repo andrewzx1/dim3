@@ -329,7 +329,8 @@ void matrix_ortho(matrix_type *mat,float x_min,float x_max,float y_min,float y_m
 
 /* =======================================================
 
-      Translate, Scale, Transpose, Inverse Matrix
+      Translate, Scale, Rotate,
+	  Transpose, Inverse Matrix
       
 ======================================================= */
 
@@ -385,6 +386,48 @@ void matrix_scale(matrix_type *mat,float x,float y,float z)
 	scale_mat.data[3][3]=1.0f;
 	
 	matrix_multiply(mat,&scale_mat);
+}
+
+void matrix_rotate(matrix_type *mat,float ang,float x,float y,float z)
+{
+	float				cs,rcs,sn;
+	d3vct				vct;
+	matrix_type			rot_mat;
+	
+		// make sure x/y/z is normalized
+
+	vct.x=x;
+	vct.y=y;
+	vct.z=z;
+	vector_normalize(&vct);
+
+		// create the rot matrix
+
+	cs=cosf(ang);
+	rcs=1.0f-cs;
+	sn=sinf(ang);
+
+	rot_mat.data[0][0]=((x*x)*rcs)+cs;
+	rot_mat.data[0][1]=((x*y)*rcs)-(z*sn);
+	rot_mat.data[0][2]=((x*z)*rcs)+(y*sn);
+	rot_mat.data[0][3]=0.0f;
+	
+	rot_mat.data[1][0]=((y*x)*rcs)+(z*sn);
+	rot_mat.data[1][1]=((y*y)*rcs)+cs;
+	rot_mat.data[1][2]=((y*z)*rcs)-(x*sn);
+	rot_mat.data[1][3]=0.0f;
+
+	rot_mat.data[2][0]=((x*z)*rcs)-(y*sn);
+	rot_mat.data[2][1]=((y*z)*rcs)+(x*sn);
+	rot_mat.data[2][2]=((z*z)*rcs)+cs;
+	rot_mat.data[2][3]=0.0f;
+
+	rot_mat.data[3][0]=0.0f;
+	rot_mat.data[3][1]=0.0f;
+	rot_mat.data[3][2]=0.0f;
+	rot_mat.data[3][3]=1.0f;
+	
+	matrix_multiply(mat,&rot_mat);
 }
 
 void matrix_transpose(matrix_type *mat)
@@ -445,6 +488,73 @@ void matrix_inverse_transpose(matrix_type *mat)
 	r_mat.data[0][3]=r_mat.data[1][3]=r_mat.data[2][3]=r_mat.data[3][3]=0.0f;
 
  	memmove(mat,&r_mat,sizeof(matrix_type));
+}
+
+/* =======================================================
+
+      LookAt matrix
+      
+======================================================= */
+
+void matrix_lookat(matrix_type *mat,float eye_x,float eye_y,float eye_z,float center_x,float center_y,float center_z,float up_x,float up_y,float up_z)
+{
+	d3vct			x,y,z;
+	matrix_type		look_mat;
+
+		// create the z vector
+
+	z.x=eye_x-center_x;
+	z.y=eye_y-center_y;
+	z.z=eye_z-center_z;
+	vector_normalize(&z);
+
+		// create the y vector
+
+	y.x=up_x;
+	y.y=up_y;
+	y.z=up_z;
+		
+		// create x vector, y cross z
+
+	vector_cross_product(&x,&y,&z);
+
+		// recreate the y from z cross x
+
+	vector_cross_product(&y,&z,&x);
+
+		// normalize x and y
+
+	vector_normalize(&x);
+	vector_normalize(&y);
+
+		// create and multiply in
+		// the rotational matrix
+	
+	look_mat.data[0][0]=x.x;
+	look_mat.data[0][1]=x.y;
+	look_mat.data[0][2]=x.z;
+	look_mat.data[0][3]=0.0f;
+
+	look_mat.data[1][0]=y.x;
+	look_mat.data[1][1]=y.y;
+	look_mat.data[1][2]=y.z;
+	look_mat.data[1][3]=0.0f;
+
+	look_mat.data[2][0]=z.x;
+	look_mat.data[2][1]=z.y;
+	look_mat.data[2][2]=z.z;
+	look_mat.data[2][3]=0.0f;
+
+	look_mat.data[3][0]=0.0f;
+	look_mat.data[3][1]=0.0f;
+	look_mat.data[3][2]=0.0f;
+	look_mat.data[3][3]=1.0f;
+
+	matrix_multiply(mat,&look_mat);
+
+		// translate eye to origin
+
+    matrix_translate(mat,-eye_x,-eye_y,-eye_z);
 }
 
 /* =======================================================

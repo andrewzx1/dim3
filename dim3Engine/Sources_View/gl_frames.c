@@ -43,8 +43,22 @@ extern camera_type			camera;
 extern SDL_Window			*sdl_wind;
 
 GLint						vport[4];
-float						mod_matrix[16],proj_matrix[16];		// supergmba -- remove all these later!
-float						gl_proj_matrix[16];
+float						gl_proj_matrix[16],gl_model_view_matrix[16];
+
+/* =======================================================
+
+      View Port
+      
+======================================================= */
+
+void gl_set_viewport(int x,int y,int wid,int high,bool force_shader_reset)
+{
+	glViewport(x,y,wid,high);
+
+		// force shaders to reset matrixes
+		
+	if (force_shader_reset) gl_shader_force_matrix_resets();
+}
 
 /* =======================================================
 
@@ -84,7 +98,7 @@ void gl_3D_view(void)
 
 		// default rotations
 
-	glMatrixMode(GL_MODELVIEW);
+	glMatrixMode(GL_MODELVIEW);		// supergumba -- delete
 	glLoadIdentity();
 	
 #ifdef D3_ROTATE_VIEW
@@ -93,6 +107,14 @@ void gl_3D_view(void)
 #endif
 	
 	glu_patch_gluLookAt((float)view.render->camera.pnt.x,(float)view.render->camera.pnt.y,(float)(view.render->camera.pnt.z+map.camera.plane.near_z),(float)view.render->camera.pnt.x,(float)view.render->camera.pnt.y,(float)view.render->camera.pnt.z,0.0f,1.0f,0.0f);
+
+
+
+
+
+
+
+
 
 
 
@@ -118,14 +140,20 @@ void gl_3D_view(void)
 	
 	matrix_to_opengl_uniform_4x4(&mat,gl_proj_matrix);
 
+		// create the model view matrix
+		// as a column ordered opengl matrix
 
-// supergumba
-//	glGetFloatv(GL_MODELVIEW_MATRIX,mod_matrix);
-//	glGetFloatv(GL_PROJECTION_MATRIX,proj_matrix);
-//	glGetIntegerv(GL_VIEWPORT,vport);
+	matrix_identity(&mat);
+
+#ifdef D3_ROTATE_VIEW
+	matrix_translate(&mat,(float)view.screen.y_sz,0.0f,0.0f);
+	matrix_rotate(&mat,-90.0f,0.0f,0.0f,1.0f);
+#endif
 	
-//	fprintf(stdout,"%d,%d,%d,%d\n",vport[0],vport[1],vport[2],vport[3]);		// 0,0,1024,640
+	matrix_lookat(&mat,(float)view.render->camera.pnt.x,(float)view.render->camera.pnt.y,(float)(view.render->camera.pnt.z+map.camera.plane.near_z),(float)view.render->camera.pnt.x,(float)view.render->camera.pnt.y,(float)view.render->camera.pnt.z,0.0f,1.0f,0.0f);
 
+	matrix_to_opengl_uniform_4x4(&mat,gl_model_view_matrix);
+	
 		// force shaders to reset matrixes
 		
 	gl_shader_force_matrix_resets();
@@ -134,15 +162,26 @@ void gl_3D_view(void)
 void gl_3D_rotate(d3pnt *pnt,d3ang *ang)
 {
 	float		fx,fz,fy,ang_x;
-	matrix_type	mat;
+	matrix_type	mat,look_mat;
 
-	glMatrixMode(GL_MODELVIEW);
+	glMatrixMode(GL_MODELVIEW);		// supergumba -- delete
 	glLoadIdentity();
 	
 #ifdef D3_ROTATE_VIEW
 	glTranslatef((float)view.screen.y_sz,0.0f,0.0f);
 	glRotatef(-90.0f,0.0f,0.0f,1.0f);
 #endif
+
+		// create the model view matrix
+		// as a column ordered opengl matrix
+
+	matrix_identity(&mat);
+
+#ifdef D3_ROTATE_VIEW
+	matrix_translate(&mat,(float)view.screen.y_sz,0.0f,0.0f);
+	matrix_rotate(&mat,-90.0f,0.0f,0.0f,1.0f);
+#endif
+
 	
 		// need to cap look up/down at 90
 		
@@ -152,17 +191,31 @@ void gl_3D_rotate(d3pnt *pnt,d3ang *ang)
 
 		// create the look at vector
 		
-	matrix_rotate_zyx(&mat,ang_x,ang->y,ang->z);
+	matrix_rotate_zyx(&look_mat,ang_x,ang->y,ang->z);
 	fx=fy=0.0f;
 	fz=-400.0f;			// the default near z
-	matrix_vertex_multiply(&mat,&fx,&fy,&fz);
+	matrix_vertex_multiply(&look_mat,&fx,&fy,&fz);
 
-	if (pnt==NULL) {
+		// create
+
+	if (pnt==NULL) {		// supergumba -- delete
 		glu_patch_gluLookAt(fx,fy,fz,0.0f,0.0f,0.0f,0.0f,1.0f,0.0f);
 	}
 	else {
 		glu_patch_gluLookAt((((float)pnt->x)+fx),(((float)pnt->y)+fy),(((float)pnt->z)+fz),(float)pnt->x,(float)pnt->y,(float)pnt->z,0.0f,1.0f,0.0f);
 	}
+
+
+
+
+	if (pnt==NULL) {
+		matrix_lookat(&mat,fx,fy,fz,0.0f,0.0f,0.0f,0.0f,1.0f,0.0f);
+	}
+	else {
+		matrix_lookat(&mat,(((float)pnt->x)+fx),(((float)pnt->y)+fy),(((float)pnt->z)+fz),(float)pnt->x,(float)pnt->y,(float)pnt->z,0.0f,1.0f,0.0f);
+	}
+
+	matrix_to_opengl_uniform_4x4(&mat,gl_model_view_matrix);
 	
 		// force shaders to reset matrixes
 		
@@ -203,13 +256,27 @@ void gl_2D_view_screen(void)
 
 
 
-	glMatrixMode(GL_MODELVIEW);
+	glMatrixMode(GL_MODELVIEW);		// supergumba -- delete
 	glLoadIdentity();
 	
 #ifdef D3_ROTATE_VIEW
 	glTranslatef((float)view.screen.y_sz,0.0f,0.0f);
 	glRotatef(90.0f,0.0f,0.0f,1.0f);
 #endif
+
+
+
+		// create the model view matrix
+		// as a column ordered opengl matrix
+
+	matrix_identity(&mat);
+
+#ifdef D3_ROTATE_VIEW
+	matrix_translate(&mat,(float)view.screen.y_sz,0.0f,0.0f);
+	matrix_rotate(&mat,90.0f,0.0f,0.0f,1.0f);
+#endif
+
+	matrix_to_opengl_uniform_4x4(&mat,gl_model_view_matrix);
 
 		// force shaders to reset matrixes
 		
@@ -245,13 +312,26 @@ void gl_2D_view_interface(void)
 
 
 
-	glMatrixMode(GL_MODELVIEW);
+	glMatrixMode(GL_MODELVIEW);		// supergumba -- delete
 	glLoadIdentity();
 
 #ifdef D3_ROTATE_VIEW
 	glTranslatef((float)iface.scale_y,0.0f,0.0f);
 	glRotatef(90.0f,0.0f,0.0f,1.0f);
 #endif
+
+
+		// create the model view matrix
+		// as a column ordered opengl matrix
+
+	matrix_identity(&mat);
+
+#ifdef D3_ROTATE_VIEW
+	matrix_translate(&mat,(float)view.screen.y_sz,0.0f,0.0f);
+	matrix_rotate(&mat,90.0f,0.0f,0.0f,1.0f);
+#endif
+
+	matrix_to_opengl_uniform_4x4(&mat,gl_model_view_matrix);
 
 		// force shaders to reset matrixes
 		
@@ -306,12 +386,25 @@ void gl_3D_view_interface_model()
 
 
 
-	glMatrixMode(GL_MODELVIEW);
+	glMatrixMode(GL_MODELVIEW);		// supergumba -- delete
 	glLoadIdentity();
 	
 #ifdef D3_ROTATE_VIEW
 	glRotatef(90.0f,0.0f,0.0f,1.0f);
 #endif
+
+
+
+		// create the model view matrix
+		// as a column ordered opengl matrix
+
+	matrix_identity(&mat);
+
+#ifdef D3_ROTATE_VIEW
+	matrix_rotate(&mat,90.0f,0.0f,0.0f,1.0f);
+#endif
+
+	matrix_to_opengl_uniform_4x4(&mat,gl_model_view_matrix);
 
 		// force shaders to reset matrixes
 		
@@ -375,7 +468,7 @@ void gl_frame_swap(void)
 
 /* =======================================================
 
-      Interface to Screen Coordinates
+      Scissoring
       
 ======================================================= */
 
@@ -408,14 +501,15 @@ void gl_2D_scissor_end(void)
 
 void gl_setup_project(void)
 {
-	glGetFloatv(GL_MODELVIEW_MATRIX,mod_matrix);
-	glGetFloatv(GL_PROJECTION_MATRIX,proj_matrix);
+	// supergumba -- delete all this
+	// we will need gs_set_viewport that records all the viewport changes,
+	// and one to save/restore it (for back rendering)
 	glGetIntegerv(GL_VIEWPORT,vport);
 }
 
 bool gl_project_in_view_z(int x,int y,int z)
 {
-	return(((((float)x)*mod_matrix[2])+(((float)y)*mod_matrix[6])+(((float)z)*mod_matrix[10])+mod_matrix[14])>0.0);
+	return(((((float)x)*gl_model_view_matrix[2])+(((float)y)*gl_model_view_matrix[6])+(((float)z)*gl_model_view_matrix[10])+gl_model_view_matrix[14])>0.0);
 }
 
 void gl_project_point(int *x,int *y,int *z)
@@ -423,13 +517,13 @@ void gl_project_point(int *x,int *y,int *z)
 	float		dx,dy,dz;
 
 #ifndef D3_ROTATE_VIEW
-	glu_patch_gluProject((float)*x,(float)*y,(float)*z,mod_matrix,proj_matrix,vport,&dx,&dy,&dz);
+	glu_patch_gluProject((float)*x,(float)*y,(float)*z,gl_model_view_matrix,gl_proj_matrix,vport,&dx,&dy,&dz);
 	
 	*x=(int)dx;
 	*y=(int)dy;
 	*z=(int)dz;
 #else
-	glu_patch_gluProject((float)*x,(float)*y,(float)*z,mod_matrix,proj_matrix,vport,&dy,&dx,&dz);
+	glu_patch_gluProject((float)*x,(float)*y,(float)*z,gl_model_view_matrix,gl_proj_matrix,vport,&dy,&dx,&dz);
 	
 	*x=(int)(vport[3]-dx);
 	*y=(int)dy;
@@ -441,7 +535,7 @@ float gl_project_get_depth(int x,int y,int z)
 {
 	float		dx,dy,dz;
 
-	glu_patch_gluProject((float)x,(float)y,(float)z,mod_matrix,proj_matrix,vport,&dx,&dy,&dz);	
+	glu_patch_gluProject((float)x,(float)y,(float)z,gl_model_view_matrix,gl_proj_matrix,vport,&dx,&dy,&dz);	
 	return((float)dz);
 }
 
@@ -453,7 +547,7 @@ void gl_project_to_eye_coordinates(float *x,float *y,float *z)
 	fy=*y;
 	fz=*z;
 	
-	*x=(float)((fx*mod_matrix[0])+(fy*mod_matrix[4])+(fz*mod_matrix[8])+mod_matrix[12]);
-	*y=(float)((fx*mod_matrix[1])+(fy*mod_matrix[5])+(fz*mod_matrix[9])+mod_matrix[13]);
-	*z=(float)((fx*mod_matrix[2])+(fy*mod_matrix[6])+(fz*mod_matrix[10])+mod_matrix[14]);
+	*x=(float)((fx*gl_model_view_matrix[0])+(fy*gl_model_view_matrix[4])+(fz*gl_model_view_matrix[8])+gl_model_view_matrix[12]);
+	*y=(float)((fx*gl_model_view_matrix[1])+(fy*gl_model_view_matrix[5])+(fz*gl_model_view_matrix[9])+gl_model_view_matrix[13]);
+	*z=(float)((fx*gl_model_view_matrix[2])+(fy*gl_model_view_matrix[6])+(fz*gl_model_view_matrix[10])+gl_model_view_matrix[14]);
 }

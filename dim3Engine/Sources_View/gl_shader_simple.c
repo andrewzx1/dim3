@@ -58,12 +58,12 @@ char* gl_simple_color_shader_build_vert(void)
 
 		// build vert shader
 
-	strcat(buf,"uniform mat4 dim3ProjectionMatrix;\n");
+	strcat(buf,"uniform mat4 dim3ProjectionMatrix,dim3ModelViewMatrix;\n");
 	strcat(buf,"attribute vec3 dim3Vertex;\n");
 	
 	strcat(buf,"void main(void)\n");
 	strcat(buf,"{\n");
-	strcat(buf,"gl_Position=dim3ProjectionMatrix*gl_ModelViewMatrix*vec4(dim3Vertex,1.0);\n");
+	strcat(buf,"gl_Position=dim3ProjectionMatrix*dim3ModelViewMatrix*vec4(dim3Vertex,1.0);\n");
 	strcat(buf,"}\n");
 
 	return(buf);
@@ -153,14 +153,14 @@ char* gl_simple_gradient_shader_build_vert(void)
 
 		// build vert shader
 
-	strcat(buf,"uniform mat4 dim3ProjectionMatrix;\n");
+	strcat(buf,"uniform mat4 dim3ProjectionMatrix,dim3ModelViewMatrix;\n");
 	strcat(buf,"attribute vec3 dim3Vertex;\n");
 	strcat(buf,"attribute vec4 dim3VertexColor;\n");
 	strcat(buf,"varying vec4 color;\n");
 	
 	strcat(buf,"void main(void)\n");
 	strcat(buf,"{\n");
-	strcat(buf,"gl_Position=dim3ProjectionMatrix*gl_ModelViewMatrix*vec4(dim3Vertex,1.0);\n");
+	strcat(buf,"gl_Position=dim3ProjectionMatrix*dim3ModelViewMatrix*vec4(dim3Vertex,1.0);\n");
 	strcat(buf,"color=dim3VertexColor;\n");
 	strcat(buf,"}\n");
 
@@ -252,12 +252,12 @@ char* gl_simple_black_shader_build_vert(void)
 
 		// build vert shader
 
-	strcat(buf,"uniform mat4 dim3ProjectionMatrix;\n");
+	strcat(buf,"uniform mat4 dim3ProjectionMatrix,dim3ModelViewMatrix;\n");
 	strcat(buf,"attribute vec3 dim3Vertex;\n");
 	
 	strcat(buf,"void main(void)\n");
 	strcat(buf,"{\n");
-	strcat(buf,"gl_Position=dim3ProjectionMatrix*gl_ModelViewMatrix*vec4(dim3Vertex,1.0);\n");
+	strcat(buf,"gl_Position=dim3ProjectionMatrix*dim3ModelViewMatrix*vec4(dim3Vertex,1.0);\n");
 	strcat(buf,"}\n");
 
 	return(buf);
@@ -347,14 +347,14 @@ char* gl_simple_bitmap_shader_build_vert(void)
 
 		// build vert shader
 
-	strcat(buf,"uniform mat4 dim3ProjectionMatrix;\n");
+	strcat(buf,"uniform mat4 dim3ProjectionMatrix,dim3ModelViewMatrix;\n");
 	strcat(buf,"attribute vec3 dim3Vertex;\n");
 	strcat(buf,"attribute vec2 dim3VertexUV;\n");
 	strcat(buf,"varying vec2 uv;\n");
 	
 	strcat(buf,"void main(void)\n");
 	strcat(buf,"{\n");
-	strcat(buf,"gl_Position=dim3ProjectionMatrix*gl_ModelViewMatrix*vec4(dim3Vertex,1.0);\n");
+	strcat(buf,"gl_Position=dim3ProjectionMatrix*dim3ModelViewMatrix*vec4(dim3Vertex,1.0);\n");
 	strcat(buf,"uv=dim3VertexUV;\n");
 	strcat(buf,"}\n");
 
@@ -448,14 +448,14 @@ char* gl_simple_bitmap_rect_shader_build_vert(void)
 
 		// build vert shader
 
-	strcat(buf,"uniform mat4 dim3ProjectionMatrix;\n");
+	strcat(buf,"uniform mat4 dim3ProjectionMatrix,dim3ModelViewMatrix;\n");
 	strcat(buf,"attribute vec3 dim3Vertex;\n");
 	strcat(buf,"attribute vec2 dim3VertexUV;\n");
 	strcat(buf,"varying vec2 uv;\n");
 	
 	strcat(buf,"void main(void)\n");
 	strcat(buf,"{\n");
-	strcat(buf,"gl_Position=dim3ProjectionMatrix*gl_ModelViewMatrix*vec4(dim3Vertex,1.0);\n");
+	strcat(buf,"gl_Position=dim3ProjectionMatrix*dim3ModelViewMatrix*vec4(dim3Vertex,1.0);\n");
 	strcat(buf,"uv=dim3VertexUV;\n");
 	strcat(buf,"}\n");
 

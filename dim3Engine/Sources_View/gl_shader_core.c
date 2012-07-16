@@ -96,7 +96,7 @@ char* gl_core_map_shader_build_vert(int nlight,bool fog,bool bump,bool spec)
 		
 	gl_core_shader_build_generic_light_struct(nlight,buf);
 
-	strcat(buf,"uniform mat4 dim3ProjectionMatrix;\n");
+	strcat(buf,"uniform mat4 dim3ProjectionMatrix,dim3ModelViewMatrix;\n");
 	strcat(buf,"uniform vec3 dim3CameraPosition;\n");
 	if (fog) strcat(buf,"uniform float dim3FogEnd,dim3FogScale;\n");
 	
@@ -120,13 +120,13 @@ char* gl_core_map_shader_build_vert(int nlight,bool fog,bool bump,bool spec)
 	strcat(buf,"void main(void)\n");
 	strcat(buf,"{\n");
 
-	strcat(buf,"gl_Position=dim3ProjectionMatrix*gl_ModelViewMatrix*vec4(dim3Vertex,1.0);\n");
+	strcat(buf,"gl_Position=dim3ProjectionMatrix*dim3ModelViewMatrix*vec4(dim3Vertex,1.0);\n");
 	strcat(buf,"uv=dim3VertexUV;\n");
 	strcat(buf,"lightMapUV=dim3VertexLightMapUV;\n");
 	
 	strcat(buf,"dirNormal=normalize(dim3VertexNormal);\n");
 
-	strcat(buf,"vec3 vtx=vec3(gl_ModelViewMatrix*vec4(dim3Vertex,1.0));\n");
+	strcat(buf,"vec3 vtx=vec3(dim3ModelViewMatrix*vec4(dim3Vertex,1.0));\n");
 	
 	if ((bump) || (spec)) {
 		strcat(buf,"vec3 tangentSpaceTangent=normalize(gl_NormalMatrix*dim3VertexTangent);\n");
@@ -380,7 +380,7 @@ char* gl_core_liquid_shader_build_vert(int nlight)
 		
 	gl_core_shader_build_generic_light_struct(nlight,buf);
 
-	strcat(buf,"uniform mat4 dim3ProjectionMatrix;\n");
+	strcat(buf,"uniform mat4 dim3ProjectionMatrix,dim3ModelViewMatrix;\n");
 	strcat(buf,"uniform vec3 dim3CameraPosition;\n");
 	strcat(buf,"attribute vec3 dim3Vertex,dim3VertexNormal;\n");
 	strcat(buf,"attribute vec2 dim3VertexUV,dim3VertexLightMapUV;\n");
@@ -395,13 +395,13 @@ char* gl_core_liquid_shader_build_vert(int nlight)
 	strcat(buf,"void main(void)\n");
 	strcat(buf,"{\n");
 
-	strcat(buf,"gl_Position=dim3ProjectionMatrix*gl_ModelViewMatrix*vec4(dim3Vertex,1.0);\n");
+	strcat(buf,"gl_Position=dim3ProjectionMatrix*dim3ModelViewMatrix*vec4(dim3Vertex,1.0);\n");
 	strcat(buf,"uv=dim3VertexUV;\n");
 	strcat(buf,"lightMapUV=dim3VertexLightMapUV;\n");
 	
 	strcat(buf,"dirNormal=normalize(dim3VertexNormal);\n");
 
-	strcat(buf,"vec3 vtx=vec3(gl_ModelViewMatrix*vec4(dim3Vertex,1.0));\n");
+	strcat(buf,"vec3 vtx=vec3(dim3ModelViewMatrix*vec4(dim3Vertex,1.0));\n");
 	
 	for (n=0;n!=nlight;n++) {
 		sprintf(strchr(buf,0),"lightVector_%d=dim3Light_%d.position-vtx;\n",n,n);
@@ -547,7 +547,7 @@ char* gl_core_model_shader_build_vert(int nlight,bool fog,bool bump,bool spec)
 		
 	gl_core_shader_build_generic_light_struct(nlight,buf);
 
-	strcat(buf,"uniform mat4 dim3ProjectionMatrix;\n");
+	strcat(buf,"uniform mat4 dim3ProjectionMatrix,dim3ModelViewMatrix;\n");
 	strcat(buf,"uniform vec3 dim3CameraPosition;\n");
 	if (fog) strcat(buf,"uniform float dim3FogEnd,dim3FogScale;\n");
 	
@@ -571,12 +571,12 @@ char* gl_core_model_shader_build_vert(int nlight,bool fog,bool bump,bool spec)
 	strcat(buf,"void main(void)\n");
 	strcat(buf,"{\n");
 
-	strcat(buf,"gl_Position=dim3ProjectionMatrix*gl_ModelViewMatrix*vec4(dim3Vertex,1.0);\n");
+	strcat(buf,"gl_Position=dim3ProjectionMatrix*dim3ModelViewMatrix*vec4(dim3Vertex,1.0);\n");
 	strcat(buf,"uv=dim3VertexUV;\n");
 
 	strcat(buf,"dirNormal=normalize(dim3VertexNormal);\n");
 	
-	strcat(buf,"vec3 vtx=vec3(gl_ModelViewMatrix*vec4(dim3Vertex,1.0));\n");
+	strcat(buf,"vec3 vtx=vec3(dim3ModelViewMatrix*vec4(dim3Vertex,1.0));\n");
 	
 	if ((bump) || (spec)) {
 		strcat(buf,"vec3 tangentSpaceTangent=normalize(gl_NormalMatrix*dim3VertexTangent);\n");
