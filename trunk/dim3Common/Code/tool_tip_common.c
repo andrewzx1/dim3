@@ -128,9 +128,6 @@ void tool_tip_draw(void)
 
 	glDisable(GL_DEPTH_TEST);
 
-	glEnable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_NOTEQUAL,0);
-
 		// background and line
 
 	vertexes[0]=vertexes[6]=(float)tool_tip_box.lx;

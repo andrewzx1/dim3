@@ -78,9 +78,6 @@ void texture_palette_draw(texture_type *txt_list)
 		// draw setup
 
 	glDisable(GL_DEPTH_TEST);
-
-	glEnable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_NOTEQUAL,0);
 	
 		// settings
 		
@@ -170,9 +167,6 @@ void texture_palette_draw(texture_type *txt_list)
 		
 		x=tbox.lx+texture_palette_page_list_width();
 		
-		glEnable(GL_ALPHA_TEST);
-		glAlphaFunc(GL_NOTEQUAL,0);
-		
 		glColor4f(1.0f,1.0f,1.0f,1.0f);
 
 		glEnable(GL_TEXTURE_2D);
@@ -204,7 +198,6 @@ void texture_palette_draw(texture_type *txt_list)
 		glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 		
 		glDisable(GL_TEXTURE_2D);
-		glDisable(GL_ALPHA_TEST);
 	}
 
 		// right fill

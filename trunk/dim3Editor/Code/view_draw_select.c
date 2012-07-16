@@ -464,9 +464,6 @@ void view_draw_select_box(editor_view_type *view)
 
 	view_set_2D_projection(view);
 	
-	glEnable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_NOTEQUAL,0);
-
 	vertexes[0]=vertexes[6]=(float)lx;
 	vertexes[2]=vertexes[4]=(float)rx;
 	vertexes[1]=vertexes[3]=(float)ty;
@@ -479,8 +476,6 @@ void view_draw_select_box(editor_view_type *view)
 
 	glColor4f(1.0f,1.0f,1.0f,0.7f);
 	glDrawArrays(GL_LINE_LOOP,0,4);
-
-	glDisable(GL_ALPHA_TEST);
 }
 
 /* =======================================================

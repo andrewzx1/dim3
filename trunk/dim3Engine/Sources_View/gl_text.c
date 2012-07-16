@@ -165,9 +165,6 @@ void gl_text_start(int text_font,int text_size)
 		
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-	
-	glEnable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_NOTEQUAL,0);
 }
 
 void gl_text_end(void)
@@ -180,7 +177,6 @@ void gl_text_end(void)
 		// restore default blending
 
 	glDisable(GL_BLEND);
-	glDisable(GL_ALPHA_TEST);
 }
 
 /* =======================================================

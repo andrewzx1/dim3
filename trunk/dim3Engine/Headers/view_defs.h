@@ -385,10 +385,12 @@ typedef struct		{
 					} shader_cached_var_light_loc;
 					
 typedef struct		{
-						GLint								dim3FrequencySecond,
+						GLint								dim3ProjectionMatrix,dim3ModelViewMatrix,
+															dim3NormalMatrix,dim3FrequencySecond,
 															dim3CameraPosition,dim3AmbientColor,
 															dim3LightMapBoost,dim3ShineFactor,dim3GlowFactor,
 															dim3Alpha,dim3DiffuseVector,dim3DiffuseBoost,
+															dim3FogEnd,dim3FogScale,dim3FogColor,
 															dim3Vertex,dim3VertexColor,
 															dim3VertexUV,dim3VertexLightMapUV,
 															dim3VertexTangent,dim3VertexNormal,
@@ -428,8 +430,8 @@ typedef struct		{
 						int									start_tick;
 						char								name[64],
 															vertex_name[64],fragment_name[64];
-						bool								per_scene_vars_set,in_hilite;
-						GLhandleARB							vertex_obj,fragment_obj,program_obj;
+						bool								need_matrix_reset,need_frame_reset,in_hilite;
+						GLuint								vertex_obj,fragment_obj,program_obj;
 						shader_cached_var_loc				var_locs;
 						shader_current_var_value			var_values;
 					} shader_type;

@@ -123,20 +123,13 @@ void sky_draw_background(void)
 	
 		// other background draw with alpha
 	
-	glEnable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_NOTEQUAL,0);
-	
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-
-	glEnable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_NOTEQUAL,0);
 
 	sky_draw_background_single(&map.background.middle);
 	sky_draw_background_single(&map.background.front);
 
 	glDisable(GL_BLEND);
-	glDisable(GL_ALPHA_TEST);
 }
 
 /* =======================================================
@@ -339,7 +332,6 @@ void sky_draw_dome_panoramic(void)
 		// draw textured dome
 		
 	glDisable(GL_BLEND);
-	glDisable(GL_ALPHA_TEST);
 	glDisable(GL_DEPTH_TEST);
 	
 	glMatrixMode(GL_TEXTURE);
@@ -630,7 +622,6 @@ void sky_draw_dome_hemisphere(void)
 		// setup texture
 		
 	glDisable(GL_BLEND);
-	glDisable(GL_ALPHA_TEST);
 	glDisable(GL_DEPTH_TEST);
 	
 	glMatrixMode(GL_TEXTURE);
@@ -923,7 +914,6 @@ void sky_draw_cube(void)
 		// setup texture
 		
 	glDisable(GL_BLEND);
-	glDisable(GL_ALPHA_TEST);
 	glDisable(GL_DEPTH_TEST);
 
 	glMatrixMode(GL_TEXTURE);

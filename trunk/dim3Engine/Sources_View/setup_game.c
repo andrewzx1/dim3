@@ -73,7 +73,6 @@ and can be sold or given away.
 #define ctrl_debug_metrics_on_id			74
 #define ctrl_debug_debug_on_id				75
 #define ctrl_debug_ignore_fps_lock_id		76
-#define ctrl_debug_disable_shaders_id		77
 
 #define ctrl_tab_id							80
 
@@ -394,7 +393,7 @@ void setup_game_debug_pane(void)
 	int			x,y,control_y_add,control_y_sz;
 	
 	control_y_add=element_get_control_separation_high();
-	control_y_sz=control_y_add*8;
+	control_y_sz=control_y_add*7;
 	
 	x=(int)(((float)iface.scale_x)*0.6f);
 	y=((iface.scale_y>>1)+(element_get_button_high()>>1))-(control_y_sz>>1);
@@ -412,8 +411,6 @@ void setup_game_debug_pane(void)
 	element_checkbox_add("Debug Mode",setup.debug_on,ctrl_debug_debug_on_id,x,y,TRUE);
 	y+=control_y_add;
 	element_checkbox_add("Ignore FPS Lock",setup.ignore_fps_lock,ctrl_debug_ignore_fps_lock_id,x,y,TRUE);
-	y+=control_y_add;
-	element_checkbox_add("Disable Shaders",setup.disable_shaders,ctrl_debug_disable_shaders_id,x,y,TRUE);
 }
 
 void setup_game_create_pane(void)
@@ -909,10 +906,6 @@ void setup_game_handle_click(int id)
 			setup.ignore_fps_lock=element_get_value(ctrl_debug_ignore_fps_lock_id);
 			break;
 
-		case ctrl_debug_disable_shaders_id:
-			setup.disable_shaders=element_get_value(ctrl_debug_disable_shaders_id);
-			break;
-			
 	}
 }
 

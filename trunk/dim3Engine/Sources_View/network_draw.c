@@ -423,9 +423,6 @@ void network_draw(void)
 		
 	gl_2D_view_interface();
 	
-	glEnable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_NOTEQUAL,0);
-	
 	glDisable(GL_DEPTH_TEST);
 	
 		// draw the score and chat

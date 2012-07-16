@@ -39,7 +39,7 @@ extern server_type			server;
 extern iface_type			iface;
 extern setup_type			setup;
 
-float						view_cull_frustum[6][4];
+float						gl_proj_matrix[16],view_cull_frustum[6][4];
 
 /* =======================================================
 
@@ -50,32 +50,31 @@ float						view_cull_frustum[6][4];
 void view_cull_setup_frustum_clipping_planes(void)
 {
 	int			n;
-	float		f,proj_matrix[16],mod_matrix[16],clip[16];
+	float		f,mod_matrix[16],clip[16];
 
 		// combine the matrixes
 
-	glGetFloatv(GL_PROJECTION_MATRIX,proj_matrix);
 	glGetFloatv(GL_MODELVIEW_MATRIX,mod_matrix);
 
-	clip[0]=(mod_matrix[0]*proj_matrix[0])+(mod_matrix[1]*proj_matrix[4])+(mod_matrix[2]*proj_matrix[8])+(mod_matrix[3]*proj_matrix[12]);
-	clip[1]=(mod_matrix[0]*proj_matrix[1])+(mod_matrix[1]*proj_matrix[5])+(mod_matrix[2]*proj_matrix[9])+(mod_matrix[3]*proj_matrix[13]);
-	clip[2]=(mod_matrix[0]*proj_matrix[2])+(mod_matrix[1]*proj_matrix[6])+(mod_matrix[2]*proj_matrix[10])+(mod_matrix[3]*proj_matrix[14]);
-	clip[3]=(mod_matrix[0]*proj_matrix[3])+(mod_matrix[1]*proj_matrix[7])+(mod_matrix[2]*proj_matrix[11])+(mod_matrix[3]*proj_matrix[15]);
+	clip[0]=(mod_matrix[0]*gl_proj_matrix[0])+(mod_matrix[1]*gl_proj_matrix[4])+(mod_matrix[2]*gl_proj_matrix[8])+(mod_matrix[3]*gl_proj_matrix[12]);
+	clip[1]=(mod_matrix[0]*gl_proj_matrix[1])+(mod_matrix[1]*gl_proj_matrix[5])+(mod_matrix[2]*gl_proj_matrix[9])+(mod_matrix[3]*gl_proj_matrix[13]);
+	clip[2]=(mod_matrix[0]*gl_proj_matrix[2])+(mod_matrix[1]*gl_proj_matrix[6])+(mod_matrix[2]*gl_proj_matrix[10])+(mod_matrix[3]*gl_proj_matrix[14]);
+	clip[3]=(mod_matrix[0]*gl_proj_matrix[3])+(mod_matrix[1]*gl_proj_matrix[7])+(mod_matrix[2]*gl_proj_matrix[11])+(mod_matrix[3]*gl_proj_matrix[15]);
 
-	clip[4]=(mod_matrix[4]*proj_matrix[0])+(mod_matrix[5]*proj_matrix[4])+(mod_matrix[6]*proj_matrix[8])+(mod_matrix[7]*proj_matrix[12]);
-	clip[5]=(mod_matrix[4]*proj_matrix[1])+(mod_matrix[5]*proj_matrix[5])+(mod_matrix[6]*proj_matrix[9])+(mod_matrix[7]*proj_matrix[13]);
-	clip[6]=(mod_matrix[4]*proj_matrix[2])+(mod_matrix[5]*proj_matrix[6])+(mod_matrix[6]*proj_matrix[10])+(mod_matrix[7]*proj_matrix[14]);
-	clip[7]=(mod_matrix[4]*proj_matrix[3])+(mod_matrix[5]*proj_matrix[7])+(mod_matrix[6]*proj_matrix[11])+(mod_matrix[7]*proj_matrix[15]);
+	clip[4]=(mod_matrix[4]*gl_proj_matrix[0])+(mod_matrix[5]*gl_proj_matrix[4])+(mod_matrix[6]*gl_proj_matrix[8])+(mod_matrix[7]*gl_proj_matrix[12]);
+	clip[5]=(mod_matrix[4]*gl_proj_matrix[1])+(mod_matrix[5]*gl_proj_matrix[5])+(mod_matrix[6]*gl_proj_matrix[9])+(mod_matrix[7]*gl_proj_matrix[13]);
+	clip[6]=(mod_matrix[4]*gl_proj_matrix[2])+(mod_matrix[5]*gl_proj_matrix[6])+(mod_matrix[6]*gl_proj_matrix[10])+(mod_matrix[7]*gl_proj_matrix[14]);
+	clip[7]=(mod_matrix[4]*gl_proj_matrix[3])+(mod_matrix[5]*gl_proj_matrix[7])+(mod_matrix[6]*gl_proj_matrix[11])+(mod_matrix[7]*gl_proj_matrix[15]);
 
-	clip[8]=(mod_matrix[8]*proj_matrix[0])+(mod_matrix[9]*proj_matrix[4])+(mod_matrix[10]*proj_matrix[8])+(mod_matrix[11]*proj_matrix[12]);
-	clip[9]=(mod_matrix[8]*proj_matrix[1])+(mod_matrix[9]*proj_matrix[5])+(mod_matrix[10]*proj_matrix[9])+(mod_matrix[11]*proj_matrix[13]);
-	clip[10]=(mod_matrix[8]*proj_matrix[2])+(mod_matrix[9]*proj_matrix[6])+(mod_matrix[10]*proj_matrix[10])+(mod_matrix[11]*proj_matrix[14]);
-	clip[11]=(mod_matrix[8]*proj_matrix[3])+(mod_matrix[9]*proj_matrix[7])+(mod_matrix[10]*proj_matrix[11])+(mod_matrix[11]*proj_matrix[15]);
+	clip[8]=(mod_matrix[8]*gl_proj_matrix[0])+(mod_matrix[9]*gl_proj_matrix[4])+(mod_matrix[10]*gl_proj_matrix[8])+(mod_matrix[11]*gl_proj_matrix[12]);
+	clip[9]=(mod_matrix[8]*gl_proj_matrix[1])+(mod_matrix[9]*gl_proj_matrix[5])+(mod_matrix[10]*gl_proj_matrix[9])+(mod_matrix[11]*gl_proj_matrix[13]);
+	clip[10]=(mod_matrix[8]*gl_proj_matrix[2])+(mod_matrix[9]*gl_proj_matrix[6])+(mod_matrix[10]*gl_proj_matrix[10])+(mod_matrix[11]*gl_proj_matrix[14]);
+	clip[11]=(mod_matrix[8]*gl_proj_matrix[3])+(mod_matrix[9]*gl_proj_matrix[7])+(mod_matrix[10]*gl_proj_matrix[11])+(mod_matrix[11]*gl_proj_matrix[15]);
 
-	clip[12]=(mod_matrix[12]*proj_matrix[0])+(mod_matrix[13]*proj_matrix[4])+(mod_matrix[14]*proj_matrix[8])+(mod_matrix[15]*proj_matrix[12]);
-	clip[13]=(mod_matrix[12]*proj_matrix[1])+(mod_matrix[13]*proj_matrix[5])+(mod_matrix[14]*proj_matrix[9])+(mod_matrix[15]*proj_matrix[13]);
-	clip[14]=(mod_matrix[12]*proj_matrix[2])+(mod_matrix[13]*proj_matrix[6])+(mod_matrix[14]*proj_matrix[10])+(mod_matrix[15]*proj_matrix[14]);
-	clip[15]=(mod_matrix[12]*proj_matrix[3])+(mod_matrix[13]*proj_matrix[7])+(mod_matrix[14]*proj_matrix[11])+(mod_matrix[15]*proj_matrix[15]);
+	clip[12]=(mod_matrix[12]*gl_proj_matrix[0])+(mod_matrix[13]*gl_proj_matrix[4])+(mod_matrix[14]*gl_proj_matrix[8])+(mod_matrix[15]*gl_proj_matrix[12]);
+	clip[13]=(mod_matrix[12]*gl_proj_matrix[1])+(mod_matrix[13]*gl_proj_matrix[5])+(mod_matrix[14]*gl_proj_matrix[9])+(mod_matrix[15]*gl_proj_matrix[13]);
+	clip[14]=(mod_matrix[12]*gl_proj_matrix[2])+(mod_matrix[13]*gl_proj_matrix[6])+(mod_matrix[14]*gl_proj_matrix[10])+(mod_matrix[15]*gl_proj_matrix[14]);
+	clip[15]=(mod_matrix[12]*gl_proj_matrix[3])+(mod_matrix[13]*gl_proj_matrix[7])+(mod_matrix[14]*gl_proj_matrix[11])+(mod_matrix[15]*gl_proj_matrix[15]);
 
 		// left plane
 		

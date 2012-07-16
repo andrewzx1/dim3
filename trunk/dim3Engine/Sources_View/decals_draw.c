@@ -209,9 +209,6 @@ void decal_render(void)
 		// stencil decal segments
 
 	glDisable(GL_BLEND);
-			
-	glEnable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_NOTEQUAL,0);
 
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);

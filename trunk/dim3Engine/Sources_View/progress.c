@@ -118,6 +118,7 @@ void progress_next(void)
 		// start the frame
 	
 	gl_frame_clear(FALSE);
+	gl_shader_frame_start();
 	
 		// setup draw
 		

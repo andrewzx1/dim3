@@ -206,8 +206,6 @@ void fog_draw_textured(void)
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 
-	glDisable(GL_ALPHA_TEST);
-
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
 	glDepthMask(GL_FALSE);
@@ -240,34 +238,3 @@ bool fog_solid_on(void)
 {
 	return((map.fog.on) && (map.fog.use_solid_color));
 }
-
-void fog_solid_start(void)
-{
-	GLfloat		col[4];
-
-	glEnable(GL_FOG);
-
-	col[0]=map.fog.col.r;
-	col[1]=map.fog.col.g;
-	col[2]=map.fog.col.b;
-	col[3]=1.0f;
-
-#ifndef D3_OPENGL_ES
-	glFogfv(GL_FOG_COLOR,col);
-	glFogi(GL_FOG_MODE,GL_LINEAR);
-	glFogi(GL_FOG_START,map.fog.inner_radius);
-	glFogi(GL_FOG_END,map.fog.outer_radius);
-	glFogi(GL_FOG_COORD_SRC,GL_FRAGMENT_DEPTH);
-#else
-	glFogfv(GL_FOG_COLOR,col);
-	glFogx(GL_FOG_MODE,GL_LINEAR);
-	glFogf(GL_FOG_START,(GLfloat)map.fog.inner_radius);
-	glFogf(GL_FOG_END,(GLfloat)map.fog.outer_radius);
-#endif
-}
-
-void fog_solid_end(void)
-{
-	glDisable(GL_FOG);
-}
-

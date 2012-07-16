@@ -266,14 +266,6 @@ void view_draw_scene_render(obj_type *obj,weapon_type *weap)
 	
 	sky_draw_background();
 	sky_draw();
-	
-		// turn on obscuring fog
-	
-	if (fog_solid_on()) fog_solid_start();
-
-		// setup per-scene shader variables
-
-	gl_shader_draw_scene_start();
 
 		// rebuild anything in the map VBOs
 		// that needs chaning (lighting, UV shifts,
@@ -310,7 +302,6 @@ void view_draw_scene_render(obj_type *obj,weapon_type *weap)
 		
 	rain_draw();
 	fog_draw_textured();
-	if (fog_solid_on()) fog_solid_end();
 	
 		// setup halos, crosshairs, zoom masks
 		
@@ -441,6 +432,7 @@ bool view_draw_node(node_type *node)
 		// clear the frame
 	
 	gl_frame_clear(TRUE);
+	gl_shader_frame_start();
 		
 		// build the scene
 		

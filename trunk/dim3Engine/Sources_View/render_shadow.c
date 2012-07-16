@@ -609,7 +609,6 @@ void shadow_render_model_mesh(model_type *mdl,int model_mesh_idx,model_draw *dra
 		// never write to the depth buffer during this operation
 
 	glEnable(GL_STENCIL_TEST);
-	glDisable(GL_ALPHA_TEST);
 
 	glDepthMask(GL_FALSE);
 

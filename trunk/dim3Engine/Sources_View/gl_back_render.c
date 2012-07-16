@@ -55,19 +55,19 @@ void gl_back_render_initialize(void)
 	if (!back_render_on) return;
 	
 		// create depth buffer and stencil object
-
-	glGenRenderbuffersEXT(1,&back_render_fbo_depth_stencil_id);
-	glBindRenderbufferEXT(GL_RENDERBUFFER_EXT,back_render_fbo_depth_stencil_id);
-	glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT,GL_DEPTH_STENCIL_EXT,back_render_texture_pixel_size,back_render_texture_pixel_size);
-	glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT,GL_DEPTH_ATTACHMENT_EXT,GL_RENDERBUFFER_EXT,back_render_fbo_depth_stencil_id);
-	glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT,GL_STENCIL_ATTACHMENT_EXT,GL_RENDERBUFFER_EXT,back_render_fbo_depth_stencil_id);
+		
+	glGenRenderbuffers(1,&back_render_fbo_depth_stencil_id);
+	glBindRenderbuffer(GL_RENDERBUFFER,back_render_fbo_depth_stencil_id);
+	glRenderbufferStorage(GL_RENDERBUFFER,GL_DEPTH24_STENCIL8,back_render_texture_pixel_size,back_render_texture_pixel_size);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER,GL_DEPTH_ATTACHMENT,GL_RENDERBUFFER,back_render_fbo_depth_stencil_id);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER,GL_STENCIL_ATTACHMENT,GL_RENDERBUFFER,back_render_fbo_depth_stencil_id);
 
 		// create the frame buffer object and attach depth/stencil
 
-	glGenFramebuffersEXT(1,&back_render_fbo_id);
-	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT,back_render_fbo_id);
-	glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT,GL_DEPTH_ATTACHMENT_EXT,GL_RENDERBUFFER_EXT,back_render_fbo_depth_stencil_id);
-	glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT,GL_STENCIL_ATTACHMENT_EXT,GL_RENDERBUFFER_EXT,back_render_fbo_depth_stencil_id);
+	glGenFramebuffers(1,&back_render_fbo_id);
+	glBindFramebuffer(GL_FRAMEBUFFER,back_render_fbo_id);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER,GL_DEPTH_ATTACHMENT,GL_RENDERBUFFER,back_render_fbo_depth_stencil_id);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER,GL_STENCIL_ATTACHMENT,GL_RENDERBUFFER,back_render_fbo_depth_stencil_id);
 
 		// some additional setup
 		
@@ -75,7 +75,7 @@ void gl_back_render_initialize(void)
 
 		// turn off framebuffer
 		
-	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT,0);
+	glBindFramebuffer(GL_FRAMEBUFFER,0);
 }
 
 void gl_back_render_shutdown(void)
@@ -84,8 +84,8 @@ void gl_back_render_shutdown(void)
 
 		// destroy frame buffer and depth/stencil
 
-	glDeleteFramebuffersEXT(1,&back_render_fbo_id);
-	glDeleteRenderbuffersEXT(1,&back_render_fbo_depth_stencil_id);
+	glDeleteFramebuffers(1,&back_render_fbo_id);
+	glDeleteRenderbuffers(1,&back_render_fbo_depth_stencil_id);
 }
 
 /* =======================================================
@@ -189,7 +189,7 @@ void gl_back_render_frame_node(char *node_name)
 		// remember old fbo and viewport
 		
 	glGetIntegerv(GL_VIEWPORT,old_vport);
-	glGetIntegerv(GL_FRAMEBUFFER_BINDING_EXT,&old_fbo);
+	glGetIntegerv(GL_FRAMEBUFFER_BINDING,&old_fbo);
 	
 		// new viewport
 		
@@ -203,13 +203,13 @@ void gl_back_render_frame_node(char *node_name)
 
 		// setup fbo
 
-	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT,back_render_fbo_id);
-	glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT,GL_COLOR_ATTACHMENT0_EXT,GL_TEXTURE_2D,node->back_render.txt_id,0);
-	glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT,GL_DEPTH_ATTACHMENT_EXT,GL_RENDERBUFFER_EXT,back_render_fbo_depth_stencil_id);
-	glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT,GL_STENCIL_ATTACHMENT_EXT,GL_RENDERBUFFER_EXT,back_render_fbo_depth_stencil_id);
+	glBindFramebuffer(GL_FRAMEBUFFER,back_render_fbo_id);
+	glFramebufferTexture2D(GL_FRAMEBUFFER,GL_COLOR_ATTACHMENT0,GL_TEXTURE_2D,node->back_render.txt_id,0);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER,GL_DEPTH_ATTACHMENT,GL_RENDERBUFFER,back_render_fbo_depth_stencil_id);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER,GL_STENCIL_ATTACHMENT,GL_RENDERBUFFER,back_render_fbo_depth_stencil_id);
 	
-	if (glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT)!=GL_FRAMEBUFFER_COMPLETE_EXT) {
-		glBindFramebufferEXT(GL_FRAMEBUFFER_EXT,0);
+	if (glCheckFramebufferStatus(GL_FRAMEBUFFER)!=GL_FRAMEBUFFER_COMPLETE) {
+		glBindFramebuffer(GL_FRAMEBUFFER,0);
 		return;
 	}
 
@@ -221,13 +221,13 @@ void gl_back_render_frame_node(char *node_name)
 	
 		// restore old fbo and viewport
 		
-	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT,old_fbo);
+	glBindFramebuffer(GL_FRAMEBUFFER,old_fbo);
 	glViewport(old_vport[0],old_vport[1],old_vport[2],old_vport[3]);
 
 		// generate mipmaps
 		
 	gl_texture_bind(0,FALSE,node->back_render.txt_id);
-	glGenerateMipmapEXT(GL_TEXTURE_2D);
+	glGenerateMipmap(GL_TEXTURE_2D);
 	gl_texture_clear(0,FALSE);
 
 		// mark as rendered for this frame

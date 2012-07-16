@@ -166,7 +166,6 @@ void map_textures_read_texture(map_type *map,int txt_idx)
 			file_paths_data(&file_path_setup,path,"Bitmaps/Textures",frame->name,"png");
 			bitmap_open(&frame->bitmap,path,TRUE,texture->compress,texture->pixelated,FALSE,FALSE);
 
-#ifdef D3_ENGINE
 				// bumpmap
 				
 			sprintf(name,"%s_n",frame->name);
@@ -178,7 +177,6 @@ void map_textures_read_texture(map_type *map,int txt_idx)
 			sprintf(name,"%s_s",frame->name);
 			file_paths_data(&file_path_setup,path,"Bitmaps/Textures",name,"png");
 			bitmap_open(&frame->specularmap,path,TRUE,texture->compress,texture->pixelated,FALSE,FALSE);
-#endif
 
 				// glow map
 				

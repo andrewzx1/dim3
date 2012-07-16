@@ -136,14 +136,9 @@ void draw_model_mesh_polygons(int mesh_idx,bool opaque)
 
 		if (vertex_mask_check_hide_poly(mesh_idx,poly)) continue;
 
-			// opaque?
+			// opaque or transparent?
 
-		if (opaque) {
-			if (model.textures[poly->txt_idx].frames[0].bitmap.alpha_mode==alpha_mode_transparent) continue;
-		}
-		else {
-			if (model.textures[poly->txt_idx].frames[0].bitmap.alpha_mode!=alpha_mode_transparent) continue;
-		}
+		if (opaque!=model.textures[poly->txt_idx].frames[0].bitmap.opaque) continue;
 
 			// switch texture?
 
@@ -177,9 +172,6 @@ void draw_model(int mesh_idx)
 		// model vertexes and normal arrays
 		
 	mesh=&model.meshes[mesh_idx];
-	
-	glEnable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_NOTEQUAL,0);
 
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	
@@ -207,8 +199,6 @@ void draw_model(int mesh_idx)
 	draw_model_mesh_polygons(mesh_idx,FALSE);
 	
 	glDepthMask(GL_TRUE);
-    
-	glDisable(GL_ALPHA_TEST);
 
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 

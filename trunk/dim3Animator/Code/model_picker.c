@@ -82,8 +82,6 @@ bool model_pick_list_start(int count)
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
 
-	glDisable(GL_ALPHA_TEST);
-
 	return(TRUE);
 }
 

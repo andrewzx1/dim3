@@ -90,7 +90,6 @@ void main_wind_gl_setup(void)
 	glHint(GL_LINE_SMOOTH_HINT,GL_NICEST);
 	
 	glEnable(GL_DEPTH_TEST);
-	glDisable(GL_ALPHA_TEST);
 	
  	glEnableClientState(GL_VERTEX_ARRAY);
 }

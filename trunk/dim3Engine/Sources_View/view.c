@@ -568,6 +568,7 @@ void view_loop_draw(void)
 		// start frame
 		
 	gl_frame_clear(TRUE);
+	gl_shader_frame_start();
 	
 		// squish for open console
 		
@@ -632,9 +633,11 @@ void view_loop_draw(void)
 
 void view_capture_draw(char *path)
 {
-		// draw view
-
 	gl_frame_clear(FALSE);
+	gl_shader_frame_start();
+
+		// draw view
+	
 	view_draw();
 	
 		// make screenshot

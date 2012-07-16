@@ -35,6 +35,8 @@ typedef struct		{
 						float			x,y,z;
 					} d3_d_vct;
 
+// supergumba -- remove all this!
+
 /* =======================================================
 
       OpenGL ES Missing Functions

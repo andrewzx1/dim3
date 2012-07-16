@@ -776,6 +776,8 @@ extern void gl_shader_attach_map(void);
 extern void gl_shader_attach_model(model_type *mdl);
 
 extern void gl_shader_set_scene_variables(shader_type *shader);
+
+extern void gl_shader_set_draw_matrix_variables(shader_type *shader);
 extern void gl_shader_set_light_variables(shader_type *shader,int core_shader_group,bool is_core,view_glsl_light_list_type *light_list);
 extern void gl_shader_set_diffuse_variables(shader_type *shader,view_glsl_light_list_type *light_list);
 extern void gl_shader_set_poly_variables(shader_type *shader,float alpha);
@@ -783,7 +785,8 @@ extern void gl_shader_hilite_override(shader_type *shader,view_glsl_light_list_t
 extern void gl_shader_set_texture(shader_type *shader,int core_shader_group,texture_type *texture,int txt_idx,int lmap_txt_idx,int frame);
 extern void gl_shader_texture_override(GLuint gl_id,float alpha);
 
-extern void gl_shader_draw_scene_start(void);
+extern void gl_shader_frame_start(void);
+extern void gl_shader_force_matrix_resets(void);
 
 //
 // shader execution
@@ -979,8 +982,6 @@ extern inline bool fog_solid_on(void);
 extern void fog_draw_init(void);
 extern void fog_draw_release(void);
 extern void fog_draw_textured(void);
-extern void fog_solid_start(void);
-extern void fog_solid_end(void);
 
 extern void rain_draw_init(void);
 extern void rain_draw_release(void);

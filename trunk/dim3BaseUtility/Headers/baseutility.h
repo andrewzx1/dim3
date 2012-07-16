@@ -31,7 +31,7 @@ and can be sold or given away.
       
 ======================================================= */
 
-#define dim3_version					"0016"
+#define dim3_version					"0017"
 
 /* =======================================================
 
@@ -119,7 +119,6 @@ extern inline void matrix_vertex_multiply(matrix_type *mat,float *x,float *y,flo
 extern inline void matrix_vertex_multiply_ignore_transform(matrix_type *mat,float *x,float *y,float *z);
 extern inline void matrix_vertex_2_multiply_ignore_transform(matrix_type *mat,d3vct *vct);
 extern inline void matrix_angle_multiply(matrix_type *mat,float *x,float *y,float *z);
-extern void matrix_inverse_transpose(matrix_type *mat);
 extern void matrix_rotate_x(matrix_type *mat,float ang);
 extern void matrix_rotate_y(matrix_type *mat,float ang);
 extern void matrix_rotate_z(matrix_type *mat,float ang);
@@ -128,7 +127,15 @@ extern void matrix_rotate_xyz(matrix_type *mat,float x_ang,float y_ang,float z_a
 extern void matrix_rotate_zyx(matrix_type *mat,float x_ang,float y_ang,float z_ang);
 extern void matrix_rotate_xzy(matrix_type *mat,float x_ang,float y_ang,float z_ang);
 extern bool matrix_has_rotation(matrix_type *mat);
+extern void matrix_frustum(matrix_type *mat,float x_min,float x_max,float y_min,float y_max,float near_z,float far_z);
+extern void matrix_perspective(matrix_type *mat,float fov_y,float aspect,float near_z,float far_z);
+extern void matrix_ortho(matrix_type *mat,float x_min,float x_max,float y_min,float y_max,float near_z,float far_z);
 extern void matrix_translate(matrix_type *mat,float x,float y,float z);
+extern void matrix_scale(matrix_type *mat,float x,float y,float z);
+extern void matrix_transpose(matrix_type *mat);
+extern void matrix_inverse_transpose(matrix_type *mat);
+extern void matrix_to_opengl_uniform_4x4(matrix_type *mat,float *mp);
+extern void matrix_to_opengl_uniform_3x3(matrix_type *mat,float *mp);
 extern void matrix_average(matrix_type *mat,int nmatrix,matrix_type *mats);
 
 extern void vector_normalize(d3vct *v);
@@ -341,14 +348,6 @@ extern void xml_key_write_color(char *name,d3col *value);
 ======================================================= */
 
 //
-// alpha modes
-//
-
-#define alpha_mode_none							0
-#define alpha_mode_cut_out						1
-#define alpha_mode_transparent					2
-
-//
 // texture maximums
 //
 
@@ -368,7 +367,8 @@ typedef struct		{
 //
 
 typedef struct		{
-						int						wid,high,alpha_mode;
+						int						wid,high;
+						bool					opaque;
 						GLuint					gl_id;
 					} bitmap_type;
 
@@ -1394,7 +1394,7 @@ typedef struct		{
 
 typedef struct		{
 						char							name[name_str_len];
-						bool							modernize,no_shaders,
+						bool							modernize,
 														simple_save,load_requires_click;
 					} iface_project_type;
 

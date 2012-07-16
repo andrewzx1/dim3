@@ -31,8 +31,6 @@ and can be sold or given away.
 
 #include "interface.h"
 
-extern void gl_shader_set_scene_variables(shader_type *shader);
-
 extern map_type				map;
 extern setup_type			setup;
 extern view_type			view;
@@ -78,18 +76,18 @@ void gl_fs_shader_initialize(void)
 	
 		// create depth buffer and stencil object
 
-	glGenRenderbuffersEXT(1,&fs_shader_fbo_depth_stencil_id);
-	glBindRenderbufferEXT(GL_RENDERBUFFER_EXT,fs_shader_fbo_depth_stencil_id);
-	glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT,GL_DEPTH_STENCIL_EXT,view.screen.x_sz,view.screen.y_sz);
-	glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT,GL_DEPTH_ATTACHMENT_EXT,GL_RENDERBUFFER_EXT,fs_shader_fbo_depth_stencil_id);
-	glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT,GL_STENCIL_ATTACHMENT_EXT,GL_RENDERBUFFER_EXT,fs_shader_fbo_depth_stencil_id);
+	glGenRenderbuffers(1,&fs_shader_fbo_depth_stencil_id);
+	glBindRenderbuffer(GL_RENDERBUFFER,fs_shader_fbo_depth_stencil_id);
+	glRenderbufferStorage(GL_RENDERBUFFER,GL_DEPTH24_STENCIL8,view.screen.x_sz,view.screen.y_sz);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER,GL_DEPTH_ATTACHMENT,GL_RENDERBUFFER,fs_shader_fbo_depth_stencil_id);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER,GL_STENCIL_ATTACHMENT,GL_RENDERBUFFER,fs_shader_fbo_depth_stencil_id);
 
 		// create the frame buffer object and attach depth/stencil
 
-	glGenFramebuffersEXT(1,&fs_shader_fbo_id);
-	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT,fs_shader_fbo_id);
-	glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT,GL_DEPTH_ATTACHMENT_EXT,GL_RENDERBUFFER_EXT,fs_shader_fbo_depth_stencil_id);
-	glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT,GL_STENCIL_ATTACHMENT_EXT,GL_RENDERBUFFER_EXT,fs_shader_fbo_depth_stencil_id);
+	glGenFramebuffers(1,&fs_shader_fbo_id);
+	glBindFramebuffer(GL_FRAMEBUFFER,fs_shader_fbo_id);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER,GL_DEPTH_ATTACHMENT,GL_RENDERBUFFER,fs_shader_fbo_depth_stencil_id);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER,GL_STENCIL_ATTACHMENT,GL_RENDERBUFFER,fs_shader_fbo_depth_stencil_id);
 	
 		// some additional setup
 		
@@ -97,7 +95,7 @@ void gl_fs_shader_initialize(void)
 
 		// turn off framebuffer
 		
-	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT,0);
+	glBindFramebuffer(GL_FRAMEBUFFER,0);
 
 		// create the texture
 
@@ -128,8 +126,8 @@ void gl_fs_shader_shutdown(void)
 		// destroy frame buffer and depth/stencil
 
 	glDeleteTextures(1,&fs_shader_txt_id);
-	glDeleteFramebuffersEXT(1,&fs_shader_fbo_id);
-	glDeleteRenderbuffersEXT(1,&fs_shader_fbo_depth_stencil_id);
+	glDeleteFramebuffers(1,&fs_shader_fbo_id);
+	glDeleteRenderbuffers(1,&fs_shader_fbo_depth_stencil_id);
 
 		// shader stopped
 
@@ -225,13 +223,13 @@ void gl_fs_shader_render_begin(void)
 
 		// setup fbo
 
-	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT,fs_shader_fbo_id);
-	glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT,GL_COLOR_ATTACHMENT0_EXT,GL_TEXTURE_RECTANGLE_ARB,fs_shader_txt_id,0);
-	glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT,GL_DEPTH_ATTACHMENT_EXT,GL_RENDERBUFFER_EXT,fs_shader_fbo_depth_stencil_id);
-	glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT,GL_STENCIL_ATTACHMENT_EXT,GL_RENDERBUFFER_EXT,fs_shader_fbo_depth_stencil_id);
+	glBindFramebuffer(GL_FRAMEBUFFER,fs_shader_fbo_id);
+	glFramebufferTexture2D(GL_FRAMEBUFFER,GL_COLOR_ATTACHMENT0,GL_TEXTURE_RECTANGLE_ARB,fs_shader_txt_id,0);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER,GL_DEPTH_ATTACHMENT,GL_RENDERBUFFER,fs_shader_fbo_depth_stencil_id);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER,GL_STENCIL_ATTACHMENT,GL_RENDERBUFFER,fs_shader_fbo_depth_stencil_id);
 	
-	if (glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT)!=GL_FRAMEBUFFER_COMPLETE_EXT) {
-		glBindFramebufferEXT(GL_FRAMEBUFFER_EXT,0);
+	if (glCheckFramebufferStatus(GL_FRAMEBUFFER)!=GL_FRAMEBUFFER_COMPLETE) {
+		glBindFramebuffer(GL_FRAMEBUFFER,0);
 		fs_shader_active=FALSE;
 	}
 	
@@ -240,6 +238,7 @@ void gl_fs_shader_render_begin(void)
 		// clear buffer
 
 	gl_frame_clear(TRUE);
+	gl_shader_frame_start();
 }
 
 void gl_fs_shader_render_finish(void)
@@ -255,7 +254,7 @@ void gl_fs_shader_render_finish(void)
 
 		// turn off the fbo
 
-	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT,0);
+	glBindFramebuffer(GL_FRAMEBUFFER,0);
 	glViewport(0,0,view.screen.x_sz,view.screen.y_sz);
 
 		// create the vertexes and uv
@@ -283,7 +282,6 @@ void gl_fs_shader_render_finish(void)
 	gl_2D_view_screen();
 
 	glDisable(GL_BLEND);
-	glDisable(GL_ALPHA_TEST);
 	glDisable(GL_DEPTH_TEST);
 	
 	gl_texture_bind(0,TRUE,fs_shader_txt_id);
@@ -294,7 +292,7 @@ void gl_fs_shader_render_finish(void)
 	
 	if (gl_shader_current!=shader) {
 		gl_shader_current=shader;
-		glUseProgramObjectARB(shader->program_obj);
+		glUseProgram(shader->program_obj);
 	}
 
 	shader->start_tick=fs_shader_start_tick;			// make sure frequency matches start of shader
@@ -302,8 +300,8 @@ void gl_fs_shader_render_finish(void)
 
 		// required attributes
 
-	glVertexAttribPointerARB(shader->var_locs.dim3Vertex,2,GL_FLOAT,GL_FALSE,0,(void*)vertexes);
-	glVertexAttribPointerARB(shader->var_locs.dim3VertexUV,2,GL_FLOAT,GL_FALSE,0,(void*)uvs);
+	glVertexAttribPointer(shader->var_locs.dim3Vertex,2,GL_FLOAT,GL_FALSE,0,(void*)vertexes);
+	glVertexAttribPointer(shader->var_locs.dim3VertexUV,2,GL_FLOAT,GL_FALSE,0,(void*)uvs);
 
 		// draw the quad
 

@@ -74,7 +74,6 @@ void console_draw(void)
 	gl_2D_view_interface();
 
 	glDisable(GL_BLEND);
-	glDisable(GL_ALPHA_TEST);
 	glDisable(GL_DEPTH_TEST);
 
 		// line
