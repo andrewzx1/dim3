@@ -183,6 +183,10 @@ void score_limit_run(void)
 	char			err_str[256];
 
 	gl_frame_clear(FALSE);
+	gl_shader_frame_start();
+	
+		// draw
+		
 	view_primitive_2D_color_quad(&iface.color.background,1.0f,0,iface.scale_x,0,iface.scale_y);
 	network_score_draw();
 	gl_frame_swap();

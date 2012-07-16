@@ -135,45 +135,6 @@ void matrix_angle_multiply(matrix_type *mat,float *x,float *y,float *z)
 
 /* =======================================================
 
-      Conversions
-      
-======================================================= */
-
-void matrix_inverse_transpose(matrix_type *mat)
-{
-	float			det,inv_det;
-	matrix_type		r_mat;
-
-	det=(mat->data[0][0]*((mat->data[1][1]*mat->data[2][2])-(mat->data[2][1]*mat->data[1][2])))
-		-(mat->data[0][1]*((mat->data[1][0]*mat->data[2][2])-(mat->data[1][2]*mat->data[2][0])))
-		+(mat->data[0][2]*((mat->data[1][0]*mat->data[2][1])-(mat->data[1][1]*mat->data[2][0])));
-
-	if (det==0.0f) return;
-
-	inv_det=1.0f/det;
-
-	r_mat.data[0][0]=((mat->data[1][1]*mat->data[2][2])-(mat->data[2][1]*mat->data[1][2]))*inv_det;
-	r_mat.data[1][0]=-((mat->data[0][1]*mat->data[2][2])-(mat->data[0][2]*mat->data[2][1]))*inv_det;
-	r_mat.data[2][0]=((mat->data[0][1]*mat->data[1][2])-(mat->data[0][2]*mat->data[1][1]))*inv_det;
-	r_mat.data[3][0]=0.0f;
-
-	r_mat.data[0][1]=-((mat->data[1][0]*mat->data[2][2])-(mat->data[1][2]*mat->data[2][0]))*inv_det;
-	r_mat.data[1][1]=((mat->data[0][0]*mat->data[2][2])-(mat->data[0][2]*mat->data[2][0]))*inv_det;
-	r_mat.data[2][1]=-((mat->data[0][0]*mat->data[1][2])-(mat->data[1][0]*mat->data[0][2]))*inv_det;
-	r_mat.data[3][1]=0.0f;
-
-	r_mat.data[0][2]=((mat->data[1][0]*mat->data[2][1])-(mat->data[2][0]*mat->data[1][1]))*inv_det;
-	r_mat.data[1][2]=-((mat->data[0][0]*mat->data[2][1])-(mat->data[2][0]*mat->data[0][1]))*inv_det;
-	r_mat.data[2][2]=((mat->data[0][0]*mat->data[1][1])-(mat->data[1][0]*mat->data[0][1]))*inv_det;
-	r_mat.data[3][2]=0.0f;
-
-	r_mat.data[0][3]=r_mat.data[1][3]=r_mat.data[2][3]=r_mat.data[3][3]=0.0f;
-
- 	memmove(mat,&r_mat,sizeof(matrix_type));
-}
-
-/* =======================================================
-
       Rotation Matrixes
       
 ======================================================= */
@@ -298,17 +259,242 @@ bool matrix_has_rotation(matrix_type *mat)
 
 /* =======================================================
 
-      Translate Matrix
+      Frustum and Ortho Matrix
+      
+======================================================= */
+
+void matrix_frustum(matrix_type *mat,float x_min,float x_max,float y_min,float y_max,float near_z,float far_z)
+{
+		// frustum matrix equation
+		
+	mat->data[0][0]=(2.0f*near_z)/(x_max-x_min);
+	mat->data[0][1]=0.0f;
+	mat->data[0][2]=(x_max+x_min)/(x_max-x_min);
+	mat->data[0][3]=0.0f;
+	
+	mat->data[1][0]=0.0f;
+	mat->data[1][1]=(2.0f*near_z)/(y_max-y_min);
+	mat->data[1][2]=(y_max+y_min)/(y_max-y_min);
+	mat->data[1][3]=0.0f;
+	
+	mat->data[2][0]=0.0f;
+	mat->data[2][1]=0.0f;
+	mat->data[2][2]=-((far_z+near_z)/(far_z-near_z));
+	mat->data[2][3]=-((2.0f*far_z*near_z)/(far_z-near_z));
+	
+	mat->data[3][0]=0.0f;
+	mat->data[3][1]=0.0f;
+	mat->data[3][2]=-1.0f;
+	mat->data[3][3]=0.0f;
+}
+
+void matrix_perspective(matrix_type *mat,float fov_y,float aspect,float near_z,float far_z)
+{
+	float			x_min,x_max,y_min,y_max;
+	
+		// turn prespective into frustum
+	
+	y_max=near_z*tanf((fov_y*TRIG_PI)/360.0f);
+	y_min=-y_max;
+	x_min=y_min*aspect;
+	x_max=y_max*aspect;
+	
+	matrix_frustum(mat,x_min,x_max,y_min,y_max,near_z,far_z);
+}
+
+void matrix_ortho(matrix_type *mat,float x_min,float x_max,float y_min,float y_max,float near_z,float far_z)
+{
+		// ortho matrix equation
+		
+	mat->data[0][0]=2.0f/(x_max-x_min);
+	mat->data[0][1]=0.0f;
+	mat->data[0][2]=0.0f;
+	mat->data[0][3]=-((x_max+x_min)/(x_max-x_min));
+	
+	mat->data[1][0]=0.0f;
+	mat->data[1][1]=2.0f/(y_max-y_min);
+	mat->data[1][2]=0.0f;
+	mat->data[1][3]=-((y_max+y_min)/(y_max-y_min));
+	
+	mat->data[2][0]=0.0f;
+	mat->data[2][1]=0.0f;
+	mat->data[2][2]=-2.0f/(far_z-near_z);
+	mat->data[2][3]=-((far_z+near_z)/(far_z-near_z));
+	
+	mat->data[3][0]=0.0f;
+	mat->data[3][1]=0.0f;
+	mat->data[3][2]=0.0f;
+	mat->data[3][3]=1.0f;
+}
+
+/* =======================================================
+
+      Translate, Scale, Transpose, Inverse Matrix
       
 ======================================================= */
 
 void matrix_translate(matrix_type *mat,float x,float y,float z)
 {
-	matrix_identity(mat);
+	matrix_type			trans_mat;
+
+	trans_mat.data[0][0]=1.0f;
+	trans_mat.data[0][1]=0.0f;
+	trans_mat.data[0][2]=0.0f;
+	trans_mat.data[0][3]=x;
 	
-	mat->data[0][3]=x;
-	mat->data[1][3]=y;
-	mat->data[2][3]=z;
+	trans_mat.data[1][0]=0.0f;
+	trans_mat.data[1][1]=1.0f;
+	trans_mat.data[1][2]=0.0f;
+	trans_mat.data[1][3]=y;
+
+	trans_mat.data[2][0]=0.0f;
+	trans_mat.data[2][1]=0.0f;
+	trans_mat.data[2][2]=1.0f;
+	trans_mat.data[2][3]=z;
+
+	trans_mat.data[3][0]=0.0f;
+	trans_mat.data[3][1]=0.0f;
+	trans_mat.data[3][2]=0.0f;
+	trans_mat.data[3][3]=1.0f;
+	
+	matrix_multiply(mat,&trans_mat);
+}
+
+void matrix_scale(matrix_type *mat,float x,float y,float z)
+{
+	matrix_type			scale_mat;
+	
+	scale_mat.data[0][0]=x;
+	scale_mat.data[0][1]=0.0f;
+	scale_mat.data[0][2]=0.0f;
+	scale_mat.data[0][3]=0.0f;
+	
+	scale_mat.data[1][0]=0.0f;
+	scale_mat.data[1][1]=y;
+	scale_mat.data[1][2]=0.0f;
+	scale_mat.data[1][3]=0.0f;
+
+	scale_mat.data[2][0]=0.0f;
+	scale_mat.data[2][1]=0.0f;
+	scale_mat.data[2][2]=z;
+	scale_mat.data[2][3]=0.0f;
+
+	scale_mat.data[3][0]=0.0f;
+	scale_mat.data[3][1]=0.0f;
+	scale_mat.data[3][2]=0.0f;
+	scale_mat.data[3][3]=1.0f;
+	
+	matrix_multiply(mat,&scale_mat);
+}
+
+void matrix_transpose(matrix_type *mat)
+{
+	matrix_type			trans_mat;
+
+	memmove(&trans_mat,&mat,sizeof(matrix_type));
+	
+	mat->data[0][0]=trans_mat.data[0][0];
+	mat->data[0][1]=trans_mat.data[1][0];
+	mat->data[0][2]=trans_mat.data[2][0];
+	mat->data[0][3]=trans_mat.data[3][0];
+	
+	mat->data[1][0]=trans_mat.data[0][1];
+	mat->data[1][1]=trans_mat.data[1][1];
+	mat->data[1][2]=trans_mat.data[2][1];
+	mat->data[1][3]=trans_mat.data[3][1];
+
+	mat->data[2][0]=trans_mat.data[0][2];
+	mat->data[2][1]=trans_mat.data[1][2];
+	mat->data[2][2]=trans_mat.data[2][2];
+	mat->data[2][3]=trans_mat.data[3][2];
+
+	mat->data[3][0]=trans_mat.data[0][3];
+	mat->data[3][1]=trans_mat.data[1][3];
+	mat->data[3][2]=trans_mat.data[2][3];
+	mat->data[3][3]=trans_mat.data[3][3];
+}
+
+void matrix_inverse_transpose(matrix_type *mat)
+{
+	float			det,inv_det;
+	matrix_type		r_mat;
+
+	det=(mat->data[0][0]*((mat->data[1][1]*mat->data[2][2])-(mat->data[2][1]*mat->data[1][2])))
+		-(mat->data[0][1]*((mat->data[1][0]*mat->data[2][2])-(mat->data[1][2]*mat->data[2][0])))
+		+(mat->data[0][2]*((mat->data[1][0]*mat->data[2][1])-(mat->data[1][1]*mat->data[2][0])));
+
+	if (det==0.0f) return;
+
+	inv_det=1.0f/det;
+
+	r_mat.data[0][0]=((mat->data[1][1]*mat->data[2][2])-(mat->data[2][1]*mat->data[1][2]))*inv_det;
+	r_mat.data[1][0]=-((mat->data[0][1]*mat->data[2][2])-(mat->data[0][2]*mat->data[2][1]))*inv_det;
+	r_mat.data[2][0]=((mat->data[0][1]*mat->data[1][2])-(mat->data[0][2]*mat->data[1][1]))*inv_det;
+	r_mat.data[3][0]=0.0f;
+
+	r_mat.data[0][1]=-((mat->data[1][0]*mat->data[2][2])-(mat->data[1][2]*mat->data[2][0]))*inv_det;
+	r_mat.data[1][1]=((mat->data[0][0]*mat->data[2][2])-(mat->data[0][2]*mat->data[2][0]))*inv_det;
+	r_mat.data[2][1]=-((mat->data[0][0]*mat->data[1][2])-(mat->data[1][0]*mat->data[0][2]))*inv_det;
+	r_mat.data[3][1]=0.0f;
+
+	r_mat.data[0][2]=((mat->data[1][0]*mat->data[2][1])-(mat->data[2][0]*mat->data[1][1]))*inv_det;
+	r_mat.data[1][2]=-((mat->data[0][0]*mat->data[2][1])-(mat->data[2][0]*mat->data[0][1]))*inv_det;
+	r_mat.data[2][2]=((mat->data[0][0]*mat->data[1][1])-(mat->data[1][0]*mat->data[0][1]))*inv_det;
+	r_mat.data[3][2]=0.0f;
+
+	r_mat.data[0][3]=r_mat.data[1][3]=r_mat.data[2][3]=r_mat.data[3][3]=0.0f;
+
+ 	memmove(mat,&r_mat,sizeof(matrix_type));
+}
+
+/* =======================================================
+
+      OpenGL Matrix Uniform
+      
+======================================================= */
+
+void matrix_to_opengl_uniform_4x4(matrix_type *mat,float *mp)
+{
+		// uniforms in column order
+		// our matrixes are row order
+		
+	*mp++=mat->data[0][0];
+	*mp++=mat->data[1][0];
+	*mp++=mat->data[2][0];
+	*mp++=mat->data[3][0];
+
+	*mp++=mat->data[0][1];
+	*mp++=mat->data[1][1];
+	*mp++=mat->data[2][1];
+	*mp++=mat->data[3][1];
+
+	*mp++=mat->data[0][2];
+	*mp++=mat->data[1][2];
+	*mp++=mat->data[2][2];
+	*mp++=mat->data[3][2];
+
+	*mp++=mat->data[0][3];
+	*mp++=mat->data[1][3];
+	*mp++=mat->data[2][3];
+	*mp=mat->data[3][3];
+}
+
+void matrix_to_opengl_uniform_3x3(matrix_type *mat,float *mp)
+{
+		// uniforms in column order
+		// our matrixes are row order
+		
+	*mp++=mat->data[0][0];
+	*mp++=mat->data[1][0];
+	*mp++=mat->data[2][0];
+
+	*mp++=mat->data[0][1];
+	*mp++=mat->data[1][1];
+	*mp++=mat->data[2][1];
+
+	*mp++=mat->data[0][2];
+	*mp++=mat->data[1][2];
+	*mp=mat->data[2][2];
 }
 
 /* =======================================================

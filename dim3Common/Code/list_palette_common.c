@@ -1249,9 +1249,6 @@ void list_palette_pane_draw_item_button(list_palette_pane_type *pane,d3rect *box
 	ty=((box->ty+item->y)-list_item_font_high)-pane->scroll_offset;
 	by=ty+16;
 
-	glEnable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_NOTEQUAL,0);
-
 	vertexes[0]=vertexes[6]=(float)lx;
 	vertexes[2]=vertexes[4]=(float)rx;
 	vertexes[1]=vertexes[3]=(float)ty;
@@ -1277,7 +1274,6 @@ void list_palette_pane_draw_item_button(list_palette_pane_type *pane,d3rect *box
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	
 	glDisable(GL_TEXTURE_2D);
-	glDisable(GL_ALPHA_TEST);
 }
 
 /* =======================================================
@@ -1310,9 +1306,6 @@ void list_palette_pane_draw_setup(list_palette_pane_type *pane,d3rect *box)
 		// draw setup
 
 	glDisable(GL_DEPTH_TEST);
-
-	glEnable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_NOTEQUAL,0);
 
 		// background
 
@@ -1393,9 +1386,6 @@ void list_palette_pane_draw_title(list_palette_pane_type *pane,d3rect *box)
 	ty=box->ty+((high-16)/2);
 	by=ty+32;
 
-	glEnable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_NOTEQUAL,0);
-
 	if (!pane->back_push_on) {
 		glColor4f(1.0f,1.0f,1.0f,1.0f);
 	}
@@ -1421,7 +1411,6 @@ void list_palette_pane_draw_title(list_palette_pane_type *pane,d3rect *box)
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	
 	glDisable(GL_TEXTURE_2D);
-	glDisable(GL_ALPHA_TEST);
 }
 
 void list_palette_pane_draw_scrollbar(list_palette_pane_type *pane,d3rect *box,bool left)
@@ -1814,8 +1803,6 @@ void list_palette_pane_draw(list_palette_pane_type *pane,d3rect *box,bool draw_b
 	list_palette_pane_draw_scrollbar(pane,box,left);
 	list_palette_pane_draw_title(pane,box);
 	if (draw_border) list_palette_draw_border(box,left);
-
-	glDisable(GL_ALPHA_TEST);
 }
 
 void list_palette_draw(list_palette_type *list)

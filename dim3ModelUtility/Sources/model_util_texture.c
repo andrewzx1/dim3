@@ -98,7 +98,6 @@ void model_textures_read(model_type *model)
 				file_paths_data(&file_path_setup,path,sub_path,frame->name,"png");
 				bitmap_open(&frame->bitmap,path,TRUE,texture->compress,texture->pixelated,FALSE,FALSE);
 
-#ifdef D3_ENGINE
 					// bumpmap
 
 				sprintf(name,"%s_n",frame->name);
@@ -110,7 +109,6 @@ void model_textures_read(model_type *model)
 				sprintf(name,"%s_s",frame->name);
 				file_paths_data(&file_path_setup,path,sub_path,name,"png");
 				bitmap_open(&frame->specularmap,path,TRUE,texture->compress,texture->pixelated,FALSE,FALSE);
-#endif
 
 					// glow map
 

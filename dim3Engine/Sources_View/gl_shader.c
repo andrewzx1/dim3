@@ -42,9 +42,11 @@ shader_type					*gl_shader_current;
 extern int					nuser_shader;
 extern shader_type			user_shaders[max_iface_user_shader],
 							core_shaders[max_shader_light+1][max_core_shader],
-							color_shader,bitmap_shader,bitmap_rect_shader;
+							color_shader,gradient_shader,black_shader,
+							bitmap_shader,bitmap_rect_shader;
 
-extern float				light_shader_direction[7][3];
+extern float				gl_proj_matrix[16],
+							light_shader_direction[7][3];
 
 extern bitmap_type			lmap_black_bitmap,lmap_white_bitmap;
 
@@ -71,20 +73,20 @@ void gl_shader_set_instance_variables(shader_type *shader)
 	
 		// texture pointers
 		
-	var=glGetUniformLocationARB(shader->program_obj,"dim3Tex");
-	if (var!=-1) glUniform1iARB(var,0);
+	var=glGetUniformLocation(shader->program_obj,"dim3Tex");
+	if (var!=-1) glUniform1i(var,0);
 
-	var=glGetUniformLocationARB(shader->program_obj,"dim3TexBump");
-	if (var!=-1) glUniform1iARB(var,1);
+	var=glGetUniformLocation(shader->program_obj,"dim3TexBump");
+	if (var!=-1) glUniform1i(var,1);
 	
-	var=glGetUniformLocationARB(shader->program_obj,"dim3TexSpecular");
-	if (var!=-1) glUniform1iARB(var,2);
+	var=glGetUniformLocation(shader->program_obj,"dim3TexSpecular");
+	if (var!=-1) glUniform1i(var,2);
 
-	var=glGetUniformLocationARB(shader->program_obj,"dim3TexGlow");
-	if (var!=-1) glUniform1iARB(var,3);
+	var=glGetUniformLocation(shader->program_obj,"dim3TexGlow");
+	if (var!=-1) glUniform1i(var,3);
 	
-	var=glGetUniformLocationARB(shader->program_obj,"dim3TexLightMap");
-	if (var!=-1) glUniform1iARB(var,4);
+	var=glGetUniformLocation(shader->program_obj,"dim3TexLightMap");
+	if (var!=-1) glUniform1i(var,4);
 }
 
 void gl_shader_reset_light_values(shader_type *shader)
@@ -117,46 +119,55 @@ void gl_shader_cache_dynamic_variable_locations(shader_type *shader)
 
 		// cache attribute locations
 
-	shader->var_locs.dim3Vertex=glGetAttribLocationARB(shader->program_obj,"dim3Vertex");
-	shader->var_locs.dim3VertexColor=glGetAttribLocationARB(shader->program_obj,"dim3VertexColor");
-	shader->var_locs.dim3VertexUV=glGetAttribLocationARB(shader->program_obj,"dim3VertexUV");
-	shader->var_locs.dim3VertexLightMapUV=glGetAttribLocationARB(shader->program_obj,"dim3VertexLightMapUV");
-	shader->var_locs.dim3VertexTangent=glGetAttribLocationARB(shader->program_obj,"dim3VertexTangent");
-	shader->var_locs.dim3VertexNormal=glGetAttribLocationARB(shader->program_obj,"dim3VertexNormal");
+	shader->var_locs.dim3Vertex=glGetAttribLocation(shader->program_obj,"dim3Vertex");
+	shader->var_locs.dim3VertexColor=glGetAttribLocation(shader->program_obj,"dim3VertexColor");
+	shader->var_locs.dim3VertexUV=glGetAttribLocation(shader->program_obj,"dim3VertexUV");
+	shader->var_locs.dim3VertexLightMapUV=glGetAttribLocation(shader->program_obj,"dim3VertexLightMapUV");
+	shader->var_locs.dim3VertexTangent=glGetAttribLocation(shader->program_obj,"dim3VertexTangent");
+	shader->var_locs.dim3VertexNormal=glGetAttribLocation(shader->program_obj,"dim3VertexNormal");
 	
 		// cache uniform locations
 		
-	shader->var_locs.dim3FrequencySecond=glGetUniformLocationARB(shader->program_obj,"dim3FrequencySecond");
-	shader->var_locs.dim3CameraPosition=glGetUniformLocationARB(shader->program_obj,"dim3CameraPosition");
-	shader->var_locs.dim3AmbientColor=glGetUniformLocationARB(shader->program_obj,"dim3AmbientColor");
-	shader->var_locs.dim3LightMapBoost=glGetUniformLocationARB(shader->program_obj,"dim3LightMapBoost");
-	shader->var_locs.dim3ShineFactor=glGetUniformLocationARB(shader->program_obj,"dim3ShineFactor");
-	shader->var_locs.dim3GlowFactor=glGetUniformLocationARB(shader->program_obj,"dim3GlowFactor");
-	shader->var_locs.dim3Alpha=glGetUniformLocationARB(shader->program_obj,"dim3Alpha");
-	shader->var_locs.dim3DiffuseVector=glGetUniformLocationARB(shader->program_obj,"dim3DiffuseVector");
-	shader->var_locs.dim3DiffuseBoost=glGetUniformLocationARB(shader->program_obj,"dim3DiffuseBoost");
-	shader->var_locs.dim3SimpleColor=glGetUniformLocationARB(shader->program_obj,"dim3SimpleColor");
+	shader->var_locs.dim3ProjectionMatrix=glGetUniformLocation(shader->program_obj,"dim3ProjectionMatrix");
+	shader->var_locs.dim3ModelViewMatrix=glGetUniformLocation(shader->program_obj,"dim3ModelViewMatrix");
+	shader->var_locs.dim3NormalMatrix=glGetUniformLocation(shader->program_obj,"dim3NormalMatrix");
+		
+	shader->var_locs.dim3FrequencySecond=glGetUniformLocation(shader->program_obj,"dim3FrequencySecond");
+	shader->var_locs.dim3CameraPosition=glGetUniformLocation(shader->program_obj,"dim3CameraPosition");
+	shader->var_locs.dim3AmbientColor=glGetUniformLocation(shader->program_obj,"dim3AmbientColor");
+	shader->var_locs.dim3LightMapBoost=glGetUniformLocation(shader->program_obj,"dim3LightMapBoost");
+	shader->var_locs.dim3ShineFactor=glGetUniformLocation(shader->program_obj,"dim3ShineFactor");
+	shader->var_locs.dim3GlowFactor=glGetUniformLocation(shader->program_obj,"dim3GlowFactor");
+	shader->var_locs.dim3Alpha=glGetUniformLocation(shader->program_obj,"dim3Alpha");
+	shader->var_locs.dim3DiffuseVector=glGetUniformLocation(shader->program_obj,"dim3DiffuseVector");
+	shader->var_locs.dim3DiffuseBoost=glGetUniformLocation(shader->program_obj,"dim3DiffuseBoost");
+
+	shader->var_locs.dim3FogEnd=glGetUniformLocation(shader->program_obj,"dim3FogEnd");
+	shader->var_locs.dim3FogScale=glGetUniformLocation(shader->program_obj,"dim3FogScale");
+	shader->var_locs.dim3FogColor=glGetUniformLocation(shader->program_obj,"dim3FogColor");
+
+	shader->var_locs.dim3SimpleColor=glGetUniformLocation(shader->program_obj,"dim3SimpleColor");
 	
 	for (n=0;n!=max_shader_light;n++) {
 		sprintf(var_name,"dim3Light_%d.position",n);
-		shader->var_locs.dim3Lights[n].position=glGetUniformLocationARB(shader->program_obj,var_name);
+		shader->var_locs.dim3Lights[n].position=glGetUniformLocation(shader->program_obj,var_name);
 		sprintf(var_name,"dim3Light_%d.color",n);
-		shader->var_locs.dim3Lights[n].color=glGetUniformLocationARB(shader->program_obj,var_name);
+		shader->var_locs.dim3Lights[n].color=glGetUniformLocation(shader->program_obj,var_name);
 		sprintf(var_name,"dim3Light_%d.intensity",n);
-		shader->var_locs.dim3Lights[n].intensity=glGetUniformLocationARB(shader->program_obj,var_name);
+		shader->var_locs.dim3Lights[n].intensity=glGetUniformLocation(shader->program_obj,var_name);
 		sprintf(var_name,"dim3Light_%d.invertIntensity",n);
-		shader->var_locs.dim3Lights[n].invertIntensity=glGetUniformLocationARB(shader->program_obj,var_name);
+		shader->var_locs.dim3Lights[n].invertIntensity=glGetUniformLocation(shader->program_obj,var_name);
 		sprintf(var_name,"dim3Light_%d.exponent",n);
-		shader->var_locs.dim3Lights[n].exponent=glGetUniformLocationARB(shader->program_obj,var_name);
+		shader->var_locs.dim3Lights[n].exponent=glGetUniformLocation(shader->program_obj,var_name);
 		sprintf(var_name,"dim3Light_%d.direction",n);
-		shader->var_locs.dim3Lights[n].direction=glGetUniformLocationARB(shader->program_obj,var_name);
+		shader->var_locs.dim3Lights[n].direction=glGetUniformLocation(shader->program_obj,var_name);
 		sprintf(var_name,"dim3Light_%d.lightMapMask",n);
-		shader->var_locs.dim3Lights[n].lightMapMask=glGetUniformLocationARB(shader->program_obj,var_name);
+		shader->var_locs.dim3Lights[n].lightMapMask=glGetUniformLocation(shader->program_obj,var_name);
 	}
 	
 		// we remember all the last settings
 		// so we don't reset state when no necessary
-		
+			
 	shader->var_values.attrib.vertex_offset=-1;
 	shader->var_values.attrib.color_offset=-1;
 	shader->var_values.attrib.uv_offset=-1;
@@ -181,7 +192,7 @@ void gl_shader_cache_dynamic_variable_locations(shader_type *shader)
       
 ======================================================= */
 
-bool gl_shader_report_error(char *err_str,char *vertex_name,char *fragment_name,GLhandleARB hand,char *err_type,char *code,int check_type)
+bool gl_shader_report_shader_error(char *err_str,char *vertex_name,char *fragment_name,GLuint shader_obj,char *err_type,char *code,int check_type)
 {
 	int				line;
 	GLint			result,len;
@@ -192,7 +203,7 @@ bool gl_shader_report_error(char *err_str,char *vertex_name,char *fragment_name,
 	
 		// operation OK?
 		
-	glGetObjectParameterivARB(hand,check_type,&result);
+	glGetShaderiv(shader_obj,check_type,&result);
 	if (result==1) return(TRUE);
 	
 		// start or append log file
@@ -230,11 +241,11 @@ bool gl_shader_report_error(char *err_str,char *vertex_name,char *fragment_name,
 
 		// the error
 		
-	glGetObjectParameterivARB(hand,GL_OBJECT_INFO_LOG_LENGTH_ARB,&len);
+	glGetShaderiv(shader_obj,GL_INFO_LOG_LENGTH,&len);
 	if (len>0) {
 		str=malloc(len);
 		if (str!=NULL) {
-			glGetInfoLogARB(hand,len,NULL,str);
+			glGetShaderInfoLog(shader_obj,len,NULL,str);
 
 			fwrite(str,1,len,file);
 			fwrite("\n",1,1,file);
@@ -279,7 +290,110 @@ bool gl_shader_report_error(char *err_str,char *vertex_name,char *fragment_name,
 
 		// fatal error string
 
-	strcpy(err_str,"GLSL: Could not compile or link code, check out Debug\\glsl_error_log.txt for more information");
+	strcpy(err_str,"GLSL: Could not compile shader.\nSee Debug\\glsl_error_log.txt for more information");
+	
+	return(FALSE);
+}
+
+bool gl_shader_report_program_error(char *err_str,char *vertex_name,char *fragment_name,GLuint program_obj,char *err_type,char *code,int check_type)
+{
+	int				line;
+	GLint			result,len;
+	char			*c,*str,path[1024],log_line[256];
+	FILE			*file;
+	struct tm		*tm;
+	time_t			curtime;
+	
+		// operation OK?
+		
+	glGetProgramiv(program_obj,check_type,&result);
+	if (result==1) return(TRUE);
+	
+		// start or append log file
+		
+	file_paths_app_data(&file_path_setup,path,"Debug","glsl_error_log","txt");
+
+	file=fopen(path,"w");
+	if (file==NULL) {
+		strcpy(err_str,"GLSL Error: Could not write log file");
+		return(FALSE);
+	}
+	
+		// header
+		
+	fwrite("***\n",1,4,file);
+
+	sprintf(log_line,"Error Type: %s\n",err_type);
+	fwrite(log_line,1,strlen(log_line),file);
+	
+	if (vertex_name!=NULL) {
+		sprintf(log_line,"Vertex: %s\n",vertex_name);
+		fwrite(log_line,1,strlen(log_line),file);
+	}
+
+	if (fragment_name!=NULL) {
+		sprintf(log_line,"Fragment: %s\n",fragment_name);
+		fwrite(log_line,1,strlen(log_line),file);
+	}
+
+	curtime=time(NULL);
+	tm=localtime(&curtime);
+	
+	sprintf(log_line,"Time: %.4d %.2d %.2d %.2d:%.2d.%.2d\n",(tm->tm_year+1900),(tm->tm_mon+1),tm->tm_mday,tm->tm_hour,tm->tm_min,tm->tm_sec);
+	fwrite(log_line,1,strlen(log_line),file);
+
+		// the error
+		
+	glGetProgramiv(program_obj,GL_INFO_LOG_LENGTH,&len);
+	if (len>0) {
+		str=malloc(len);
+		if (str!=NULL) {
+			glGetProgramInfoLog(program_obj,len,NULL,str);
+
+			fwrite(str,1,len,file);
+			fwrite("\n",1,1,file);
+
+			free(str);
+		}
+	}
+	
+		// the code
+		
+	if (code!=NULL) {
+	
+		c=code;
+		line=2;
+		
+		fwrite("001:",1,4,file);
+		
+		while (*c!=0x0) {
+			
+			if (*c=='\r') {
+				c++;
+				continue;
+			}
+			
+			fwrite(c,1,1,file);
+			
+			if (*c=='\n') {
+				sprintf(log_line,"%.3d:",line);
+				fwrite(log_line,1,4,file);
+				line++;
+			}
+
+			c++;
+		}
+	}
+	
+	fwrite("\n",1,1,file);
+		
+		// finish log
+
+	fclose(file);
+
+		// fatal error string
+
+	strcpy(err_str,"GLSL: Could not link shader program.\nSee Debug\\glsl_error_log.txt for more information");
 	
 	return(FALSE);
 }
@@ -299,46 +413,46 @@ void gl_shader_code_clear(shader_type *shader)
 
 bool gl_shader_code_compile(shader_type *shader,char *vertex_data,char *fragment_data,char *err_str)
 {
-	const GLcharARB			*vertex_ptr,*fragment_ptr;
+	const GLchar			*vertex_ptr,*fragment_ptr;
 
 		// create the shader
 			
-	shader->program_obj=glCreateProgramObjectARB();
+	shader->program_obj=glCreateProgram();
 		
-	shader->vertex_obj=glCreateShaderObjectARB(GL_VERTEX_SHADER_ARB);
+	shader->vertex_obj=glCreateShader(GL_VERTEX_SHADER);
 	
 	vertex_ptr=vertex_data;
-	glShaderSourceARB(shader->vertex_obj,1,&vertex_ptr,NULL);
+	glShaderSource(shader->vertex_obj,1,&vertex_ptr,NULL);
 
-	glCompileShaderARB(shader->vertex_obj);
-	if (!gl_shader_report_error(err_str,shader->vertex_name,NULL,shader->vertex_obj,"Vertex",vertex_data,GL_OBJECT_COMPILE_STATUS_ARB)) return(FALSE);
+	glCompileShader(shader->vertex_obj);
+	if (!gl_shader_report_shader_error(err_str,shader->vertex_name,NULL,shader->vertex_obj,"Vertex",vertex_data,GL_COMPILE_STATUS)) return(FALSE);
 
-	glAttachObjectARB(shader->program_obj,shader->vertex_obj);
+	glAttachShader(shader->program_obj,shader->vertex_obj);
 	
-	shader->fragment_obj=glCreateShaderObjectARB(GL_FRAGMENT_SHADER_ARB);
+	shader->fragment_obj=glCreateShader(GL_FRAGMENT_SHADER);
 	
 	fragment_ptr=fragment_data;
-	glShaderSourceARB(shader->fragment_obj,1,&fragment_ptr,NULL);
+	glShaderSource(shader->fragment_obj,1,&fragment_ptr,NULL);
 	
-	glCompileShaderARB(shader->fragment_obj);
-	if (!gl_shader_report_error(err_str,NULL,shader->fragment_name,shader->fragment_obj,"Fragment",fragment_data,GL_OBJECT_COMPILE_STATUS_ARB)) return(FALSE);
+	glCompileShader(shader->fragment_obj);
+	if (!gl_shader_report_shader_error(err_str,NULL,shader->fragment_name,shader->fragment_obj,"Fragment",fragment_data,GL_COMPILE_STATUS)) return(FALSE);
 	
-	glAttachObjectARB(shader->program_obj,shader->fragment_obj);
+	glAttachShader(shader->program_obj,shader->fragment_obj);
 	
 		// link shaders into program
 		
-	glLinkProgramARB(shader->program_obj);
-	if (!gl_shader_report_error(err_str,shader->vertex_name,shader->fragment_name,shader->program_obj,"Program",NULL,GL_OBJECT_LINK_STATUS_ARB)) return(FALSE);
+	glLinkProgram(shader->program_obj);
+	if (!gl_shader_report_program_error(err_str,shader->vertex_name,shader->fragment_name,shader->program_obj,"Program",NULL,GL_LINK_STATUS)) return(FALSE);
 
 		// set the shader and then
 		// setup the uniforms and attributes
 
-	glUseProgramObjectARB(shader->program_obj);
+	glUseProgram(shader->program_obj);
 
 	gl_shader_set_instance_variables(shader);
 	gl_shader_cache_dynamic_variable_locations(shader);
 
-	glUseProgramObjectARB(0);
+	glUseProgram(0);
 	
 		// timing only works for full screen shaders
 		
@@ -350,16 +464,16 @@ bool gl_shader_code_compile(shader_type *shader,char *vertex_data,char *fragment
 void gl_shader_code_shutdown(shader_type *shader)
 {
 	if (shader->vertex_obj!=0) {
-		glDetachObjectARB(shader->program_obj,shader->vertex_obj);
-		glDeleteObjectARB(shader->vertex_obj);
+		glDetachShader(shader->program_obj,shader->vertex_obj);
+		glDeleteShader(shader->vertex_obj);
 	}
 
 	if (shader->fragment_obj!=0) {
-		glDetachObjectARB(shader->program_obj,shader->fragment_obj);
-		glDeleteObjectARB(shader->fragment_obj);
+		glDetachShader(shader->program_obj,shader->fragment_obj);
+		glDeleteShader(shader->fragment_obj);
 	}
 
-	if (shader->program_obj!=0) glDeleteObjectARB(shader->program_obj);
+	if (shader->program_obj!=0) glDeleteProgram(shader->program_obj);
 }
 
 /* =======================================================
@@ -406,39 +520,61 @@ void gl_shader_attach_model(model_type *mdl)
 
 /* =======================================================
 
-      Shader Variables
+      Scene Shader Variables
       
 ======================================================= */
 
 void gl_shader_set_scene_variables(shader_type *shader)
 {
 	d3col			col;
+		
+		// other dim3 uniforms
 	
-	if (shader->var_locs.dim3FrequencySecond!=-1) glUniform1fARB(shader->var_locs.dim3FrequencySecond,game_time_fequency_second_get(shader->start_tick));
-	if (shader->var_locs.dim3CameraPosition!=-1) glUniform3fARB(shader->var_locs.dim3CameraPosition,(float)view.render->camera.pnt.x,(float)view.render->camera.pnt.y,(float)view.render->camera.pnt.z);
+	if (shader->var_locs.dim3FrequencySecond!=-1) glUniform1f(shader->var_locs.dim3FrequencySecond,game_time_fequency_second_get(shader->start_tick));
+	if (shader->var_locs.dim3CameraPosition!=-1) glUniform3f(shader->var_locs.dim3CameraPosition,(float)view.render->camera.pnt.x,(float)view.render->camera.pnt.y,(float)view.render->camera.pnt.z);
 
 	if (shader->var_locs.dim3AmbientColor!=-1) {
 		gl_lights_calc_ambient_color(&col);
-		glUniform3fARB(shader->var_locs.dim3AmbientColor,col.r,col.g,col.b);
+		glUniform3f(shader->var_locs.dim3AmbientColor,col.r,col.g,col.b);
 	}
 	
-	if (shader->var_locs.dim3LightMapBoost!=-1) glUniform1fARB(shader->var_locs.dim3LightMapBoost,map.ambient.light_map_boost);
+	if (shader->var_locs.dim3LightMapBoost!=-1) glUniform1f(shader->var_locs.dim3LightMapBoost,map.ambient.light_map_boost);
+	
+	if (fog_solid_on()) {
+		if (shader->var_locs.dim3FogEnd!=-1) glUniform1f(shader->var_locs.dim3FogEnd,(float)map.fog.outer_radius);
+		if (shader->var_locs.dim3FogScale!=-1) glUniform1f(shader->var_locs.dim3FogScale,(1.0f/(float)(map.fog.outer_radius-map.fog.inner_radius)));
+		if (shader->var_locs.dim3FogColor!=-1) glUniform3f(shader->var_locs.dim3FogColor,map.fog.col.r,map.fog.col.g,map.fog.col.b);
+	}
 }
 
-void gl_shader_ambient_hilite_override(shader_type *shader,bool hilite)
+/* =======================================================
+
+      Drawing Matrix Shader Variables
+      
+======================================================= */
+
+void gl_shader_set_draw_matrix_variables(shader_type *shader)
 {
-	d3col			col;
+		// only change matrix when we've reset any
+		// of them, which happens per frame and anytime
+		// certain view calls are made
+		
+	if (!shader->need_matrix_reset) return;
 	
-	if (shader->var_locs.dim3AmbientColor==-1) return;
+		// reset the matrixes
+		
+	shader->need_matrix_reset=FALSE;
 	
-	if (hilite) {
-		glUniform3fARB(shader->var_locs.dim3AmbientColor,1.0f,1.0f,1.0f);
-		return;
-	}
+	if (shader->var_locs.dim3ProjectionMatrix!=-1) glUniformMatrix4fv(shader->var_locs.dim3ProjectionMatrix,1,GL_FALSE,gl_proj_matrix);
 	
-	gl_lights_calc_ambient_color(&col);
-	glUniform3fARB(shader->var_locs.dim3AmbientColor,col.r,col.g,col.b);
+	
 }
+
+/* =======================================================
+
+      Drawing Shader Variables
+      
+======================================================= */
 
 void gl_shader_set_light_variables(shader_type *shader,int core_shader_group,bool is_core,view_glsl_light_list_type *light_list)
 {
@@ -472,21 +608,21 @@ void gl_shader_set_light_variables(shader_type *shader,int core_shader_group,boo
 	
 		f_intensity=(float)light_list->ui_light.intensity;
 	
-		glUniform3fARB(loc_light->position,(GLfloat)light_list->ui_light.pnt.x,(GLfloat)light_list->ui_light.pnt.y,(GLfloat)light_list->ui_light.pnt.z);
-		glUniform3fARB(loc_light->color,light_list->ui_light.col.r,light_list->ui_light.col.g,light_list->ui_light.col.b);
-		glUniform1fARB(loc_light->intensity,f_intensity);
-		glUniform1fARB(loc_light->invertIntensity,(1.0f/f_intensity));
-		glUniform1fARB(loc_light->exponent,light_list->ui_light.exponent);
-		glUniform3fvARB(loc_light->direction,3,light_shader_direction[ld_all]);
-		glUniform1fARB(loc_light->lightMapMask,1.0f);
+		glUniform3f(loc_light->position,(GLfloat)light_list->ui_light.pnt.x,(GLfloat)light_list->ui_light.pnt.y,(GLfloat)light_list->ui_light.pnt.z);
+		glUniform3f(loc_light->color,light_list->ui_light.col.r,light_list->ui_light.col.g,light_list->ui_light.col.b);
+		glUniform1f(loc_light->intensity,f_intensity);
+		glUniform1f(loc_light->invertIntensity,(1.0f/f_intensity));
+		glUniform1f(loc_light->exponent,light_list->ui_light.exponent);
+		glUniform3fv(loc_light->direction,3,light_shader_direction[ld_all]);
+		glUniform1f(loc_light->lightMapMask,1.0f);
 
 		loc_light++;
 
 			// set all other lights off
 
 		for (n=1;n<max_light;n++) {
-			glUniform1fARB(loc_light->intensity,0.0f);
-			glUniform1fARB(loc_light->invertIntensity,0.0f);
+			glUniform1f(loc_light->intensity,0.0f);
+			glUniform1f(loc_light->invertIntensity,0.0f);
 			loc_light++;
 		}
 	
@@ -538,12 +674,12 @@ void gl_shader_set_light_variables(shader_type *shader,int core_shader_group,boo
 
 			if (cur_light->intensity!=0.0f) {
 				cur_light->intensity=0.0f;
-				glUniform1fARB(loc_light->intensity,0.0f);
+				glUniform1f(loc_light->intensity,0.0f);
 			}
 			
 			if (cur_light->invertIntensity!=0.0f) {
 				cur_light->invertIntensity=0.0f;
-				glUniform1fARB(loc_light->invertIntensity,0.0f);
+				glUniform1f(loc_light->invertIntensity,0.0f);
 			}
 
 			continue;
@@ -558,7 +694,7 @@ void gl_shader_set_light_variables(shader_type *shader,int core_shader_group,boo
 				cur_light->position.x=lspot->pnt_eye_space.x;
 				cur_light->position.y=lspot->pnt_eye_space.y;
 				cur_light->position.z=lspot->pnt_eye_space.z;
-				glUniform3fARB(loc_light->position,lspot->pnt_eye_space.x,lspot->pnt_eye_space.y,lspot->pnt_eye_space.z);
+				glUniform3f(loc_light->position,lspot->pnt_eye_space.x,lspot->pnt_eye_space.y,lspot->pnt_eye_space.z);
 			}
 		}
 
@@ -567,35 +703,35 @@ void gl_shader_set_light_variables(shader_type *shader,int core_shader_group,boo
 				cur_light->color.r=lspot->col.r;
 				cur_light->color.g=lspot->col.g;
 				cur_light->color.b=lspot->col.b;
-				glUniform3fARB(loc_light->color,lspot->col.r,lspot->col.g,lspot->col.b);
+				glUniform3f(loc_light->color,lspot->col.r,lspot->col.g,lspot->col.b);
 			}
 		}
 
 		if (loc_light->intensity!=-1) {
 			if (cur_light->intensity!=lspot->f_intensity) {
 				cur_light->intensity=lspot->f_intensity;
-				glUniform1fARB(loc_light->intensity,lspot->f_intensity);
+				glUniform1f(loc_light->intensity,lspot->f_intensity);
 			}
 		}
 		
 		if (loc_light->invertIntensity!=-1) {
 			if (cur_light->invertIntensity!=lspot->f_inv_intensity) {
 				cur_light->invertIntensity=lspot->f_inv_intensity;
-				glUniform1fARB(loc_light->invertIntensity,lspot->f_inv_intensity);
+				glUniform1f(loc_light->invertIntensity,lspot->f_inv_intensity);
 			}
 		}
 
 		if (loc_light->exponent!=-1) {
 			if (cur_light->exponent!=lspot->f_exponent) {
 				cur_light->exponent=lspot->f_exponent;
-				glUniform1fARB(loc_light->exponent,lspot->f_exponent);
+				glUniform1f(loc_light->exponent,lspot->f_exponent);
 			}
 		}
 
 		if (loc_light->direction!=-1) {
 			if (cur_light->direction!=lspot->direction) {
 				cur_light->direction=lspot->direction;
-				glUniform3fvARB(loc_light->direction,3,light_shader_direction[lspot->direction]);
+				glUniform3fv(loc_light->direction,3,light_shader_direction[lspot->direction]);
 			}
 		}
 
@@ -603,7 +739,7 @@ void gl_shader_set_light_variables(shader_type *shader,int core_shader_group,boo
 			light_map_mask=(lspot->light_map?0.0f:1.0f);
 			if (cur_light->lightMapMask!=light_map_mask) {
 				cur_light->lightMapMask=light_map_mask;
-				glUniform1fARB(loc_light->lightMapMask,light_map_mask);
+				glUniform1f(loc_light->lightMapMask,light_map_mask);
 			}
 		}
 	}
@@ -616,7 +752,7 @@ void gl_shader_set_diffuse_variables(shader_type *shader,view_glsl_light_list_ty
 	if (shader->var_locs.dim3DiffuseVector!=-1) {
 		if ((shader->var_values.diffuse_vct.x!=light_list->diffuse.vct.x) || (shader->var_values.diffuse_vct.y!=light_list->diffuse.vct.y) || (shader->var_values.diffuse_vct.z!=light_list->diffuse.vct.z)) {
 			memmove(&shader->var_values.diffuse_vct,&light_list->diffuse.vct,sizeof(d3vct));
-			glUniform3fARB(shader->var_locs.dim3DiffuseVector,light_list->diffuse.vct.x,light_list->diffuse.vct.y,light_list->diffuse.vct.z);
+			glUniform3f(shader->var_locs.dim3DiffuseVector,light_list->diffuse.vct.x,light_list->diffuse.vct.y,light_list->diffuse.vct.z);
 		}
 	}
 	
@@ -625,7 +761,7 @@ void gl_shader_set_diffuse_variables(shader_type *shader,view_glsl_light_list_ty
 	if (shader->var_locs.dim3DiffuseBoost!=-1) {
 		if (shader->var_values.diffuse_boost!=light_list->diffuse.boost) {
 			shader->var_values.diffuse_boost=light_list->diffuse.boost;
-			glUniform1fARB(shader->var_locs.dim3DiffuseBoost,light_list->diffuse.boost);
+			glUniform1f(shader->var_locs.dim3DiffuseBoost,light_list->diffuse.boost);
 		}
 	}
 }
@@ -637,9 +773,24 @@ void gl_shader_set_poly_variables(shader_type *shader,float alpha)
 	if (shader->var_locs.dim3Alpha!=-1) {
 		if (shader->var_values.alpha!=alpha) {
 			shader->var_values.alpha=alpha;
-			glUniform1fARB(shader->var_locs.dim3Alpha,alpha);
+			glUniform1f(shader->var_locs.dim3Alpha,alpha);
 		}
 	}
+}
+
+void gl_shader_ambient_hilite_override(shader_type *shader,bool hilite)
+{
+	d3col			col;
+	
+	if (shader->var_locs.dim3AmbientColor==-1) return;
+	
+	if (hilite) {
+		glUniform3f(shader->var_locs.dim3AmbientColor,1.0f,1.0f,1.0f);
+		return;
+	}
+	
+	gl_lights_calc_ambient_color(&col);
+	glUniform3f(shader->var_locs.dim3AmbientColor,col.r,col.g,col.b);
 }
 
 void gl_shader_hilite_override(shader_type *shader,view_glsl_light_list_type *light_list)
@@ -699,7 +850,7 @@ void gl_shader_set_texture(shader_type *shader,int core_shader_group,texture_typ
 		
 		if (shader->var_values.glow_factor!=texture->glow.current_color) {
 			shader->var_values.glow_factor=texture->glow.current_color;
-			if (shader->var_locs.dim3GlowFactor!=-1) glUniform1fARB(shader->var_locs.dim3GlowFactor,texture->glow.current_color);
+			if (shader->var_locs.dim3GlowFactor!=-1) glUniform1f(shader->var_locs.dim3GlowFactor,texture->glow.current_color);
 		}
 	}
 	
@@ -712,7 +863,7 @@ void gl_shader_set_texture(shader_type *shader,int core_shader_group,texture_typ
 		
 		if (shader->var_values.shine_factor!=texture->shine_factor) {
 			shader->var_values.shine_factor=texture->shine_factor;
-			if (shader->var_locs.dim3ShineFactor!=-1) glUniform1fARB(shader->var_locs.dim3ShineFactor,texture->shine_factor);
+			if (shader->var_locs.dim3ShineFactor!=-1) glUniform1f(shader->var_locs.dim3ShineFactor,texture->shine_factor);
 		}
 	}
 
@@ -742,48 +893,100 @@ void gl_shader_texture_override(GLuint gl_id,float alpha)
 		alpha*=gl_shader_current->var_values.alpha;
 		if (gl_shader_current->var_values.alpha!=alpha) {
 			gl_shader_current->var_values.alpha=alpha;
-			glUniform1fARB(gl_shader_current->var_locs.dim3Alpha,alpha);
+			glUniform1f(gl_shader_current->var_locs.dim3Alpha,alpha);
 		}
 	}
 }
 
 /* =======================================================
 
-      Shader Per Scene Start
+      Shader Per Frame Setup
       
 ======================================================= */
 
-void gl_shader_draw_scene_code_start(shader_type *shader)
+inline void gl_shader_frame_start_per_shader(shader_type *shader)
 {
-		// use this flag to mark scene only variables
+		// this flag marks when we need to reset
+		// the matrixes (projection, model view, etc)
+		// it's set per frame and then can get reset
+		// if any of the specific view calls are hit
+		
+	shader->need_matrix_reset=TRUE;
+	
+		// use this flag to mark frame only variables
 		// as needing a load.  In this way we optimize
 		// out the amount of variable setting we need to do
 	
-	shader->per_scene_vars_set=FALSE;
+	shader->need_frame_reset=TRUE;
 		
 		// dim3 tries to remember if the same lights
 		// we set by looking into the light list.  The
-		// light list is generated per scene, so it needs
+		// light list is generated per frame, so it needs
 		// to be reset here
 
 	shader->var_values.nlight=-1;
 }
 
-void gl_shader_draw_scene_start(void)
+void gl_shader_frame_start(void)
 {
 	int					n,k;
 	shader_type			*shader;
 
+		// regular shaders
+		
 	for (k=0;k!=(max_shader_light+1);k++) {
 		for (n=0;n!=max_core_shader;n++) {
-			gl_shader_draw_scene_code_start(&core_shaders[k][n]);
+			gl_shader_frame_start_per_shader(&core_shaders[k][n]);
 		}
 	}
+	
+		// simple shaders
+		
+	gl_shader_frame_start_per_shader(&color_shader);
+	gl_shader_frame_start_per_shader(&gradient_shader);
+	gl_shader_frame_start_per_shader(&black_shader);
+	gl_shader_frame_start_per_shader(&bitmap_shader);
+	gl_shader_frame_start_per_shader(&bitmap_rect_shader);
 
+		// user shaders
+		
 	shader=user_shaders;
 
 	for (n=0;n!=nuser_shader;n++) {
-		gl_shader_draw_scene_code_start(shader);
+		gl_shader_frame_start_per_shader(shader);
 		shader++;
 	}
 }
+
+void gl_shader_force_matrix_resets(void)
+{
+	int					n,k;
+	shader_type			*shader;
+
+		// regular shaders
+		
+	for (k=0;k!=(max_shader_light+1);k++) {
+		for (n=0;n!=max_core_shader;n++) {
+			core_shaders[k][n].need_matrix_reset=TRUE;
+		}
+	}
+	
+		// simple shaders
+		
+	color_shader.need_matrix_reset=TRUE;
+	gradient_shader.need_matrix_reset=TRUE;
+	black_shader.need_matrix_reset=TRUE;
+	bitmap_shader.need_matrix_reset=TRUE;
+	bitmap_rect_shader.need_matrix_reset=TRUE;
+
+		// user shaders
+		
+	shader=user_shaders;
+
+	for (n=0;n!=nuser_shader;n++) {
+		shader->need_matrix_reset=TRUE;
+		shader++;
+	}
+}
+
+

@@ -172,6 +172,7 @@ void gui_draw(float background_alpha,bool cursor)
 		// clear background
 
 	gl_frame_clear(FALSE);
+	gl_shader_frame_start();
 
 		// background
 
@@ -182,7 +183,6 @@ void gui_draw(float background_alpha,bool cursor)
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 
-	glDisable(GL_ALPHA_TEST);
 	glDisable(GL_DEPTH_TEST);
 
 	element_draw(TRUE);
@@ -202,6 +202,7 @@ void gui_draw_message(char *txt)
 	d3col			col;
 	
 	gl_frame_clear(FALSE);
+	gl_shader_frame_start();
 
 		// background
 

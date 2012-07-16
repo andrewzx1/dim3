@@ -194,9 +194,6 @@ void render_model_opaque_mesh(model_type *mdl,int mesh_idx,model_draw *draw,view
 		// setup drawing
 
 	glDisable(GL_BLEND);
-
-	glEnable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_NOTEQUAL,0);
 	
 	glEnable(GL_DEPTH_TEST); 
 	glDepthFunc(GL_LEQUAL);
@@ -275,9 +272,6 @@ void render_model_transparent_mesh(model_type *mdl,int mesh_idx,model_draw *draw
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-
-	glEnable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_NOTEQUAL,0);
 		
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
@@ -471,7 +465,7 @@ void render_model_setup(model_draw *draw,int tick)
 			draw->meshes[n].textures[k].frame=frame;
 
 			draw->meshes[n].textures[k].glow=(texture->frames[frame].glowmap.gl_id!=-1);
-			if ((texture->frames[frame].bitmap.alpha_mode==alpha_mode_transparent) || (draw->meshes[n].alpha!=1.0f)) {
+			if ((!texture->frames[frame].bitmap.opaque) || (draw->meshes[n].alpha!=1.0f)) {
 				draw->meshes[n].textures[k].opaque=FALSE;
 				draw->meshes[n].textures[k].transparent=TRUE;
 			}
@@ -520,7 +514,7 @@ void render_model_setup(model_draw *draw,int tick)
 				draw->has_glow=TRUE;
 			}
 	
-			if (texture->frames[frame].bitmap.alpha_mode==alpha_mode_transparent) {
+			if (!texture->frames[frame].bitmap.opaque) {
 				draw->meshes[n].has_transparent=TRUE;
 				draw->has_transparent=TRUE;
 			}
@@ -803,7 +797,6 @@ void render_model_target(model_draw *draw,d3col *col)
 		// setup draw
 
 	glDisable(GL_BLEND);
-	glDisable(GL_ALPHA_TEST);
 			
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);

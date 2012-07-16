@@ -66,7 +66,6 @@ void view_draw_liquid_tint(int liquid_idx)
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 
-	glDisable(GL_ALPHA_TEST);
 	glDisable(GL_DEPTH_TEST);
 
 	view_primitive_2D_tint_screen(&liq->col,liq->tint_alpha);
@@ -132,7 +131,6 @@ void view_draw_effect_tint(void)
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 
-	glDisable(GL_ALPHA_TEST);
 	glDisable(GL_DEPTH_TEST);
 
 	view_primitive_2D_tint_screen(&tint_col,(alpha*tint_alpha));

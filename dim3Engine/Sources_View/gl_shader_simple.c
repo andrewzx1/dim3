@@ -58,11 +58,12 @@ char* gl_simple_color_shader_build_vert(void)
 
 		// build vert shader
 
+	strcat(buf,"uniform mat4 dim3ProjectionMatrix;\n");
 	strcat(buf,"attribute vec3 dim3Vertex;\n");
 	
 	strcat(buf,"void main(void)\n");
 	strcat(buf,"{\n");
-	strcat(buf,"gl_Position=gl_ProjectionMatrix*gl_ModelViewMatrix*vec4(dim3Vertex,1.0);\n");
+	strcat(buf,"gl_Position=dim3ProjectionMatrix*gl_ModelViewMatrix*vec4(dim3Vertex,1.0);\n");
 	strcat(buf,"}\n");
 
 	return(buf);
@@ -128,7 +129,7 @@ bool gl_simple_color_shader_create(shader_type *shader,char *err_str)
 	
 		// activate the required attributes
 		
-	glEnableVertexAttribArrayARB(shader->var_locs.dim3Vertex);
+	glEnableVertexAttribArray(shader->var_locs.dim3Vertex);
 
 	return(ok);
 }
@@ -152,13 +153,14 @@ char* gl_simple_gradient_shader_build_vert(void)
 
 		// build vert shader
 
+	strcat(buf,"uniform mat4 dim3ProjectionMatrix;\n");
 	strcat(buf,"attribute vec3 dim3Vertex;\n");
 	strcat(buf,"attribute vec4 dim3VertexColor;\n");
 	strcat(buf,"varying vec4 color;\n");
 	
 	strcat(buf,"void main(void)\n");
 	strcat(buf,"{\n");
-	strcat(buf,"gl_Position=gl_ProjectionMatrix*gl_ModelViewMatrix*vec4(dim3Vertex,1.0);\n");
+	strcat(buf,"gl_Position=dim3ProjectionMatrix*gl_ModelViewMatrix*vec4(dim3Vertex,1.0);\n");
 	strcat(buf,"color=dim3VertexColor;\n");
 	strcat(buf,"}\n");
 
@@ -225,8 +227,8 @@ bool gl_simple_gradient_shader_create(shader_type *shader,char *err_str)
 	
 		// activate the required attributes
 		
-	glEnableVertexAttribArrayARB(shader->var_locs.dim3Vertex);
-	glEnableVertexAttribArrayARB(shader->var_locs.dim3VertexColor);
+	glEnableVertexAttribArray(shader->var_locs.dim3Vertex);
+	glEnableVertexAttribArray(shader->var_locs.dim3VertexColor);
 
 	return(ok);
 }
@@ -250,11 +252,12 @@ char* gl_simple_black_shader_build_vert(void)
 
 		// build vert shader
 
+	strcat(buf,"uniform mat4 dim3ProjectionMatrix;\n");
 	strcat(buf,"attribute vec3 dim3Vertex;\n");
 	
 	strcat(buf,"void main(void)\n");
 	strcat(buf,"{\n");
-	strcat(buf,"gl_Position=gl_ProjectionMatrix*gl_ModelViewMatrix*vec4(dim3Vertex,1.0);\n");
+	strcat(buf,"gl_Position=dim3ProjectionMatrix*gl_ModelViewMatrix*vec4(dim3Vertex,1.0);\n");
 	strcat(buf,"}\n");
 
 	return(buf);
@@ -320,7 +323,7 @@ bool gl_simple_black_shader_create(shader_type *shader,char *err_str)
 	
 		// activate the required attributes
 		
-	glEnableVertexAttribArrayARB(shader->var_locs.dim3Vertex);
+	glEnableVertexAttribArray(shader->var_locs.dim3Vertex);
 
 	return(ok);
 }
@@ -344,13 +347,14 @@ char* gl_simple_bitmap_shader_build_vert(void)
 
 		// build vert shader
 
+	strcat(buf,"uniform mat4 dim3ProjectionMatrix;\n");
 	strcat(buf,"attribute vec3 dim3Vertex;\n");
 	strcat(buf,"attribute vec2 dim3VertexUV;\n");
 	strcat(buf,"varying vec2 uv;\n");
 	
 	strcat(buf,"void main(void)\n");
 	strcat(buf,"{\n");
-	strcat(buf,"gl_Position=gl_ProjectionMatrix*gl_ModelViewMatrix*vec4(dim3Vertex,1.0);\n");
+	strcat(buf,"gl_Position=dim3ProjectionMatrix*gl_ModelViewMatrix*vec4(dim3Vertex,1.0);\n");
 	strcat(buf,"uv=dim3VertexUV;\n");
 	strcat(buf,"}\n");
 
@@ -419,8 +423,8 @@ bool gl_simple_bitmap_shader_create(shader_type *shader,char *err_str)
 	
 		// activate the required attributes
 		
-	glEnableVertexAttribArrayARB(shader->var_locs.dim3Vertex);
-	glEnableVertexAttribArrayARB(shader->var_locs.dim3VertexUV);
+	glEnableVertexAttribArray(shader->var_locs.dim3Vertex);
+	glEnableVertexAttribArray(shader->var_locs.dim3VertexUV);
 
 	return(ok);
 }
@@ -444,13 +448,14 @@ char* gl_simple_bitmap_rect_shader_build_vert(void)
 
 		// build vert shader
 
+	strcat(buf,"uniform mat4 dim3ProjectionMatrix;\n");
 	strcat(buf,"attribute vec3 dim3Vertex;\n");
 	strcat(buf,"attribute vec2 dim3VertexUV;\n");
 	strcat(buf,"varying vec2 uv;\n");
 	
 	strcat(buf,"void main(void)\n");
 	strcat(buf,"{\n");
-	strcat(buf,"gl_Position=gl_ProjectionMatrix*gl_ModelViewMatrix*vec4(dim3Vertex,1.0);\n");
+	strcat(buf,"gl_Position=dim3ProjectionMatrix*gl_ModelViewMatrix*vec4(dim3Vertex,1.0);\n");
 	strcat(buf,"uv=dim3VertexUV;\n");
 	strcat(buf,"}\n");
 
@@ -519,8 +524,8 @@ bool gl_simple_bitmap_rect_shader_create(shader_type *shader,char *err_str)
 	
 		// activate the required attributes
 		
-	glEnableVertexAttribArrayARB(shader->var_locs.dim3Vertex);
-	glEnableVertexAttribArrayARB(shader->var_locs.dim3VertexUV);
+	glEnableVertexAttribArray(shader->var_locs.dim3Vertex);
+	glEnableVertexAttribArray(shader->var_locs.dim3VertexUV);
 
 	return(ok);
 }

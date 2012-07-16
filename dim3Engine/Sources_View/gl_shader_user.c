@@ -159,11 +159,11 @@ bool gl_user_shader_initialize(char *err_str)
 			// if user shaders don't properly set 
 			// the others but they aren't required
 			
-		glEnableVertexAttribArrayARB(shader->var_locs.dim3Vertex);
-		glEnableVertexAttribArrayARB(shader->var_locs.dim3VertexUV);
-		if (shader->var_locs.dim3VertexLightMapUV!=-1) glEnableVertexAttribArrayARB(shader->var_locs.dim3VertexLightMapUV);
-		if (shader->var_locs.dim3VertexNormal!=-1) glEnableVertexAttribArrayARB(shader->var_locs.dim3VertexNormal);
-		if (shader->var_locs.dim3VertexTangent!=-1) glEnableVertexAttribArrayARB(shader->var_locs.dim3VertexTangent);
+		glEnableVertexAttribArray(shader->var_locs.dim3Vertex);
+		glEnableVertexAttribArray(shader->var_locs.dim3VertexUV);
+		if (shader->var_locs.dim3VertexLightMapUV!=-1) glEnableVertexAttribArray(shader->var_locs.dim3VertexLightMapUV);
+		if (shader->var_locs.dim3VertexNormal!=-1) glEnableVertexAttribArray(shader->var_locs.dim3VertexNormal);
+		if (shader->var_locs.dim3VertexTangent!=-1) glEnableVertexAttribArray(shader->var_locs.dim3VertexTangent);
 
 		shader++;
 	}

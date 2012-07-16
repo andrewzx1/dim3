@@ -2841,7 +2841,6 @@ void element_draw_tab(element_type *element,int sel_id,int x,int y)
 	}
 
 	glDisable(GL_BLEND);
-	glDisable(GL_ALPHA_TEST);
 }
 
 /* =======================================================
@@ -2973,7 +2972,6 @@ void element_draw_text_box(element_type *element)
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 
 	glDisable(GL_BLEND);
-	glDisable(GL_ALPHA_TEST);
 	
 		// background
 
@@ -3160,11 +3158,6 @@ void element_draw_model(element_type *element)
 
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
-	
-		// force shaders
-		// if being used
-		
-	gl_shader_draw_scene_start();
 
 		// setup drawing
 
@@ -3303,7 +3296,6 @@ void element_draw_lock(bool cursor_hilite)
 		// setup draw
 
 	glDisable(GL_BLEND);
-	glDisable(GL_ALPHA_TEST);
 	glDisable(GL_DEPTH_TEST);
 
 	glLineWidth(1.0f);

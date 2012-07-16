@@ -227,7 +227,7 @@ void map_mesh_polygon_draw_flag_setup(void)
 
 				// set the flags
 
-			poly->draw.transparent_on=(texture->frames[0].bitmap.alpha_mode==alpha_mode_transparent);
+			poly->draw.transparent_on=!texture->frames[0].bitmap.opaque;
 			poly->draw.glow_on=(texture->frames[0].glowmap.gl_id!=-1);
 
 				// or to the mesh flags

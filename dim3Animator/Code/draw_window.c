@@ -114,7 +114,6 @@ void draw_model_gl_setup(int z_offset)
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 	
 	glEnable(GL_DEPTH_TEST);
-	glDisable(GL_ALPHA_TEST);
 }
 
 void draw_model_gl_setup_2D(void)
@@ -189,7 +188,7 @@ void draw_model_setup_bones_vertexes(int mesh_idx)
 	for (n=0;n!=model.nmesh;n++) {
 		if ((n==mesh_idx) || (state.show_mesh[n])) {
 			model_create_draw_vertexes(&model,n,&draw_setup);
-			model_create_draw_normals(&model,n,&draw_setup,(n!=mesh_idx));
+			model_create_draw_normals(&model,n,&draw_setup);
 		}
 	}
 }

@@ -109,7 +109,7 @@ bool bitmap_texture_open(bitmap_type *bitmap,unsigned char *data,bool mipmap,boo
 		// opengl es doesn't support compression
 
 #ifndef D3_OPENGL_ES
-	if (bitmap->alpha_mode==alpha_mode_none) {
+	if (bitmap->opaque) {
 		gl_txttype=GL_RGB;
 		gl_txtformat=compress?GL_COMPRESSED_RGB:GL_RGB;
 	}
@@ -118,7 +118,7 @@ bool bitmap_texture_open(bitmap_type *bitmap,unsigned char *data,bool mipmap,boo
 		gl_txtformat=compress?GL_COMPRESSED_RGBA:GL_RGBA;
 	}
 #else
-	if (bitmap->alpha_mode==alpha_mode_none) {
+	if (bitmap->opaque) {
 		gl_txttype=gl_txtformat=GL_RGB;
 	}
 	else {
@@ -134,7 +134,7 @@ bool bitmap_texture_open(bitmap_type *bitmap,unsigned char *data,bool mipmap,boo
 
 	if ((mipmap) && (!pixelated) && (!rectangle)) {
 		glEnable(GL_TEXTURE_2D);
-		glGenerateMipmapEXT(GL_TEXTURE_2D);
+		glGenerateMipmap(GL_TEXTURE_2D);
 		glDisable(GL_TEXTURE_2D);
 	}
 

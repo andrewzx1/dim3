@@ -63,22 +63,22 @@ bool gl_in_window_mode(void)
 
 void gl_setup_context(void)
 {
-		// perspective correction
-		
-	glHint(GL_PERSPECTIVE_CORRECTION_HINT,GL_NICEST);
-		
-		// smoothing
+		// regular setup
 		
 	glDisable(GL_DITHER);
 	
+#ifndef D3_OPENGL_ES
 	glEnable(GL_LINE_SMOOTH);
-	glHint(GL_LINE_SMOOTH_HINT,GL_NICEST);
+#endif
 	
-		// texture compression
+		// hints
 
 #ifndef D3_OPENGL_ES		
+	glHint(GL_PERSPECTIVE_CORRECTION_HINT,GL_NICEST);
+	glHint(GL_LINE_SMOOTH_HINT,GL_NICEST);
 	glHint(GL_TEXTURE_COMPRESSION_HINT,GL_NICEST);
 #endif
+
 	glHint(GL_GENERATE_MIPMAP_HINT,GL_NICEST);
 }
 
@@ -91,12 +91,12 @@ void gl_setup_context(void)
 bool gl_initialize(int screen_wid,int screen_high,int fsaa_mode,char *err_str)
 {
 	int						sdl_flags;
-    GLint					ntxtunit,ntxtsize;
+    GLint					ntxtsize;
 #if defined(D3_OS_LINUX) || defined(D3_OS_WINDOWS)
 	GLenum					glew_error;
 #endif
 #ifdef D3_OS_IPHONE
-	const GLenum			discards[]={GL_DEPTH_ATTACHMENT_EXT,GL_STENCIL_ATTACHMENT_EXT};
+	const GLenum			discards[]={GL_DEPTH_ATTACHMENT,GL_STENCIL_ATTACHMENT};
 #endif
 
 		// reset sizes to the desktop
@@ -130,6 +130,9 @@ bool gl_initialize(int screen_wid,int screen_high,int fsaa_mode,char *err_str)
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER,1);
 	
 #ifdef D3_OS_IPHONE
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION,2);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION,0);
+	
 	SDL_GL_SetAttribute(SDL_GL_RETAINED_BACKING,1);
 #endif
 	
@@ -181,9 +184,6 @@ bool gl_initialize(int screen_wid,int screen_high,int fsaa_mode,char *err_str)
 	strncpy(render_info.ext_string,(char*)glGetString(GL_EXTENSIONS),8192);
 	render_info.ext_string[8191]=0x0;
 			
-	glGetIntegerv(GL_MAX_TEXTURE_UNITS,&ntxtunit);
-	render_info.texture_unit_count=(int)ntxtunit;
-
 	glGetIntegerv(GL_MAX_TEXTURE_SIZE,&ntxtsize);
 	render_info.texture_max_size=(int)ntxtsize;
 	
@@ -199,7 +199,7 @@ bool gl_initialize(int screen_wid,int screen_high,int fsaa_mode,char *err_str)
 	glClear(GL_COLOR_BUFFER_BIT);
 	
 #ifdef D3_OS_IPHONE
-	glDiscardFramebufferEXT(GL_FRAMEBUFFER_EXT,2,discards);
+	glDiscardFramebufferEXT(GL_FRAMEBUFFER,2,discards);
 #endif
 
 	SDL_GL_SwapWindow(sdl_wind);
@@ -211,12 +211,10 @@ bool gl_initialize(int screen_wid,int screen_high,int fsaa_mode,char *err_str)
 #endif
 
 	gl_setup_context();
-		
-	if (fsaa_mode!=fsaa_mode_none) glEnable(GL_MULTISAMPLE);
 	
-		// all alphas by 8 bit component
-		
-	glDisable(GL_ALPHA_TEST);
+#ifndef D3_OPENGL_ES
+	if (fsaa_mode!=fsaa_mode_none) glEnable(GL_MULTISAMPLE);
+#endif
 
 		// texture utility initialize
 		

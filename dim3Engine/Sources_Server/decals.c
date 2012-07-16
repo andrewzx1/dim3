@@ -117,7 +117,7 @@ int decal_count_list(void)
 
 bool decal_segment_ok(map_mesh_poly_type *poly,int mark_idx)
 {
-	if (map.textures[poly->txt_idx].frames[0].bitmap.alpha_mode!=alpha_mode_transparent) return(!iface.mark_list.marks[mark_idx].no_opaque);
+	if (map.textures[poly->txt_idx].frames[0].bitmap.opaque) return(!iface.mark_list.marks[mark_idx].no_opaque);
 	return(!iface.mark_list.marks[mark_idx].no_transparent);
 }
 

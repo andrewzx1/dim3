@@ -199,9 +199,6 @@ void tool_palette_draw(void)
 
 	glDisable(GL_DEPTH_TEST);
 
-	glEnable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_NOTEQUAL,0);
-
 		// background
 
 	vertexes[0]=vertexes[6]=(float)tbox.lx;
@@ -241,8 +238,6 @@ void tool_palette_draw(void)
 		tool_palette_draw_icon(x,tbox.ty,tool_bitmaps[n].gl_id,tool_get_highlight_state(n),tool_get_disabled_state(n),(tool_palette_push_idx==n));
 		x+=pixel_sz;
 	}
-
-	glDisable(GL_ALPHA_TEST);
 	
 		// border
 

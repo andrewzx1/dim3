@@ -43,7 +43,8 @@ extern camera_type			camera;
 extern SDL_Window			*sdl_wind;
 
 GLint						vport[4];
-float						mod_matrix[16],proj_matrix[16];
+float						mod_matrix[16],proj_matrix[16];		// supergmba -- remove all these later!
+float						gl_proj_matrix[16];
 
 /* =======================================================
 
@@ -54,10 +55,12 @@ float						mod_matrix[16],proj_matrix[16];
 void gl_3D_view(void)
 {
 	float			ratio;
-
+	matrix_type		mat;
+	
+	
 		// setup projections
 
-	glMatrixMode(GL_PROJECTION);
+	glMatrixMode(GL_PROJECTION);		// supergumba -- delete
 	glLoadIdentity();
 
 #ifndef D3_ROTATE_VIEW
@@ -90,6 +93,42 @@ void gl_3D_view(void)
 #endif
 	
 	glu_patch_gluLookAt((float)view.render->camera.pnt.x,(float)view.render->camera.pnt.y,(float)(view.render->camera.pnt.z+map.camera.plane.near_z),(float)view.render->camera.pnt.x,(float)view.render->camera.pnt.y,(float)view.render->camera.pnt.z,0.0f,1.0f,0.0f);
+
+
+
+		// create the projection matrix
+		// as a column ordered opengl matrix
+		
+#ifndef D3_ROTATE_VIEW
+	ratio=(((float)view.screen.x_sz)/((float)view.screen.y_sz))*map.camera.plane.aspect_ratio;
+#else
+	ratio=(((float)view.screen.y_sz)/((float)view.screen.x_sz))*map.camera.plane.aspect_ratio;
+#endif
+	
+	matrix_perspective(&mat,view.render->camera.fov,ratio,(float)map.camera.plane.near_z,(float)map.camera.plane.far_z);
+
+	if (view.render->camera.flip) {
+		matrix_scale(&mat,1.0f,1.0f,-1.0f);
+	}
+	else {
+		matrix_scale(&mat,-1.0f,-1.0f,-1.0f);
+	}
+	
+	matrix_translate(&mat,0.0f,0.0f,(float)(map.camera.plane.near_z_offset+view.render->camera.z_adjust));
+	
+	matrix_to_opengl_uniform_4x4(&mat,gl_proj_matrix);
+
+
+// supergumba
+//	glGetFloatv(GL_MODELVIEW_MATRIX,mod_matrix);
+//	glGetFloatv(GL_PROJECTION_MATRIX,proj_matrix);
+//	glGetIntegerv(GL_VIEWPORT,vport);
+	
+//	fprintf(stdout,"%d,%d,%d,%d\n",vport[0],vport[1],vport[2],vport[3]);		// 0,0,1024,640
+
+		// force shaders to reset matrixes
+		
+	gl_shader_force_matrix_resets();
 }
 
 void gl_3D_rotate(d3pnt *pnt,d3ang *ang)
@@ -124,6 +163,10 @@ void gl_3D_rotate(d3pnt *pnt,d3ang *ang)
 	else {
 		glu_patch_gluLookAt((((float)pnt->x)+fx),(((float)pnt->y)+fy),(((float)pnt->z)+fz),(float)pnt->x,(float)pnt->y,(float)pnt->z,0.0f,1.0f,0.0f);
 	}
+	
+		// force shaders to reset matrixes
+		
+	gl_shader_force_matrix_resets();
 }
 
 /* =======================================================
@@ -134,7 +177,9 @@ void gl_3D_rotate(d3pnt *pnt,d3ang *ang)
 
 void gl_2D_view_screen(void)
 {
-	glMatrixMode(GL_PROJECTION);
+	matrix_type			mat;
+	
+	glMatrixMode(GL_PROJECTION);		// supergumba -- delete
 	glLoadIdentity();
 	
 #ifndef D3_ROTATE_VIEW
@@ -143,6 +188,21 @@ void gl_2D_view_screen(void)
 	glOrtho(0.0f,(GLfloat)view.screen.y_sz,(GLfloat)view.screen.x_sz,0.0f,-1.0f,1.0f);
 #endif
 
+
+		// create the projection matrix
+		// as a column ordered opengl matrix
+				
+#ifndef D3_ROTATE_VIEW
+	matrix_ortho(&mat,0.0f,(float)view.screen.x_sz,(float)view.screen.y_sz,0.0f,-1.0f,1.0f);
+#else
+	matrix_ortho(&mat,0.0f,(float)view.screen.y_sz,(float)view.screen.x_sz,0.0f,-1.0f,1.0f);
+#endif
+
+	matrix_to_opengl_uniform_4x4(&mat,gl_proj_matrix);
+
+
+
+
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	
@@ -150,11 +210,17 @@ void gl_2D_view_screen(void)
 	glTranslatef((float)view.screen.y_sz,0.0f,0.0f);
 	glRotatef(90.0f,0.0f,0.0f,1.0f);
 #endif
+
+		// force shaders to reset matrixes
+		
+	gl_shader_force_matrix_resets();
 }
 
 void gl_2D_view_interface(void)
 {
-	glMatrixMode(GL_PROJECTION);
+	matrix_type		mat;
+	
+	glMatrixMode(GL_PROJECTION);			// supergumba -- delete
 	glLoadIdentity();
 	
 #ifndef D3_ROTATE_VIEW
@@ -163,6 +229,22 @@ void gl_2D_view_interface(void)
 	glOrtho(0.0f,(GLfloat)iface.scale_y,(GLfloat)iface.scale_x,0.0f,-1.0f,1.0f);
 #endif
 
+
+		// create the projection matrix
+		// as a column ordered opengl matrix
+				
+#ifndef D3_ROTATE_VIEW
+	matrix_ortho(&mat,0.0f,(float)iface.scale_x,(float)iface.scale_y,0.0f,-1.0f,1.0f);
+#else
+	matrix_ortho(&mat,0.0f,(float)iface.scale_y,(float)iface.scale_x,0.0f,-1.0f,1.0f);
+#endif
+
+	matrix_to_opengl_uniform_4x4(&mat,gl_proj_matrix);
+
+
+
+
+
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
@@ -170,6 +252,10 @@ void gl_2D_view_interface(void)
 	glTranslatef((float)iface.scale_y,0.0f,0.0f);
 	glRotatef(90.0f,0.0f,0.0f,1.0f);
 #endif
+
+		// force shaders to reset matrixes
+		
+	gl_shader_force_matrix_resets();
 }
 
 /* =======================================================
@@ -181,8 +267,9 @@ void gl_2D_view_interface(void)
 void gl_3D_view_interface_model()
 {
 	float				x,y;
+	matrix_type			mat;
 
-	glMatrixMode(GL_PROJECTION);
+	glMatrixMode(GL_PROJECTION);		// supergumba -- delete
 	glLoadIdentity();
 
 	x=(float)(iface.scale_x>>1);
@@ -196,6 +283,28 @@ void gl_3D_view_interface_model()
 
 	glScalef(1.0f,-1.0f,-1.0f);
 	glTranslatef(0.0f,0.0f,5000.0f);
+	
+	
+		// create the projection matrix
+		// as a column ordered opengl matrix
+		
+	x=(float)(iface.scale_x>>1);
+	y=(float)(iface.scale_y>>1);
+
+#ifndef D3_ROTATE_VIEW
+	matrix_frustum(&mat,-x,x,-y,y,1000.0f,21000.0f);
+#else
+	matrix_frustum(&mat,-y,y,-x,x,1000.0f,21000.0f);
+#endif
+
+	matrix_scale(&mat,1.0f,-1.0f,-1.0f);
+	matrix_translate(&mat,0.0f,0.0f,5000.0f);
+	
+	matrix_to_opengl_uniform_4x4(&mat,gl_proj_matrix);
+
+
+
+
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -203,6 +312,10 @@ void gl_3D_view_interface_model()
 #ifdef D3_ROTATE_VIEW
 	glRotatef(90.0f,0.0f,0.0f,1.0f);
 #endif
+
+		// force shaders to reset matrixes
+		
+	gl_shader_force_matrix_resets();
 }
 
 /* =======================================================
@@ -231,7 +344,7 @@ void gl_frame_clear(bool in_view)
 void gl_frame_swap(void)
 {
 #ifdef D3_OS_IPHONE
-	const GLenum		discards[]={GL_DEPTH_ATTACHMENT_EXT,GL_STENCIL_ATTACHMENT_EXT};
+	const GLenum		discards[]={GL_DEPTH_ATTACHMENT,GL_STENCIL_ATTACHMENT};
 #endif
 	d3col				col;
 	
@@ -243,7 +356,6 @@ void gl_frame_swap(void)
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 
-		glDisable(GL_ALPHA_TEST);
 		glDisable(GL_DEPTH_TEST);
 		
 		col.r=col.g=col.b=0.0f;

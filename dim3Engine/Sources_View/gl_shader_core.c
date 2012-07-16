@@ -96,7 +96,10 @@ char* gl_core_map_shader_build_vert(int nlight,bool fog,bool bump,bool spec)
 		
 	gl_core_shader_build_generic_light_struct(nlight,buf);
 
+	strcat(buf,"uniform mat4 dim3ProjectionMatrix;\n");
 	strcat(buf,"uniform vec3 dim3CameraPosition;\n");
+	if (fog) strcat(buf,"uniform float dim3FogEnd,dim3FogScale;\n");
+	
 	strcat(buf,"attribute vec3 dim3Vertex,dim3VertexNormal");
 	if ((bump) || (spec)) strcat(buf,",dim3VertexTangent");
 	strcat(buf,";\n");
@@ -117,7 +120,7 @@ char* gl_core_map_shader_build_vert(int nlight,bool fog,bool bump,bool spec)
 	strcat(buf,"void main(void)\n");
 	strcat(buf,"{\n");
 
-	strcat(buf,"gl_Position=gl_ProjectionMatrix*gl_ModelViewMatrix*vec4(dim3Vertex,1.0);\n");
+	strcat(buf,"gl_Position=dim3ProjectionMatrix*gl_ModelViewMatrix*vec4(dim3Vertex,1.0);\n");
 	strcat(buf,"uv=dim3VertexUV;\n");
 	strcat(buf,"lightMapUV=dim3VertexLightMapUV;\n");
 	
@@ -147,7 +150,7 @@ char* gl_core_map_shader_build_vert(int nlight,bool fog,bool bump,bool spec)
 		}
 	}
 	
-	if (fog) strcat(buf,"fogFactor=clamp(((gl_Fog.end-distance(dim3Vertex,dim3CameraPosition))*gl_Fog.scale),0.0,1.0);\n");
+	if (fog) strcat(buf,"fogFactor=clamp(((dim3FogEnd-distance(dim3Vertex,dim3CameraPosition))*dim3FogScale),0.0,1.0);\n");
 
 	strcat(buf,"}\n");
 
@@ -185,7 +188,9 @@ char* gl_core_map_shader_build_frag(int nlight,bool fog,bool bump,bool spec,bool
 	if (glow) strcat(buf,",dim3GlowFactor");
 	strcat(buf,";\n");
 	
-	strcat(buf,"uniform vec3 dim3AmbientColor;\n");
+	strcat(buf,"uniform vec3 dim3AmbientColor");
+	if (fog) strcat(buf,",dim3FogColor");
+	strcat(buf,";\n");
 	
 	strcat(buf,"varying vec2 uv,lightMapUV;\n");
 	strcat(buf,"varying vec3 dirNormal;\n");
@@ -279,7 +284,7 @@ char* gl_core_map_shader_build_frag(int nlight,bool fog,bool bump,bool spec,bool
 
 		// output the fragment
 		// and add in the spec and glow
-
+		
 	if (!fog) {
 		strcat(buf,"gl_FragColor.rgb=");
 	}
@@ -294,7 +299,7 @@ char* gl_core_map_shader_build_frag(int nlight,bool fog,bool bump,bool spec,bool
 	if (glow) strcat(buf,")+glow");
 	strcat(buf,";\n");
 
-	if (fog) strcat(buf,"gl_FragColor.rgb=mix(gl_Fog.color.rgb,frag,fogFactor);\n");
+	if (fog) strcat(buf,"gl_FragColor.rgb=mix(dim3FogColor,frag,fogFactor);\n");
 	
 	strcat(buf,"gl_FragColor.a=tex.a*dim3Alpha;\n");
 	strcat(buf,"}\n");
@@ -344,11 +349,11 @@ bool gl_core_map_shader_create(shader_type *shader,int nlight,bool fog,bool bump
 	
 		// activate the required attributes
 		
-	glEnableVertexAttribArrayARB(shader->var_locs.dim3Vertex);
-	glEnableVertexAttribArrayARB(shader->var_locs.dim3VertexUV);
-	glEnableVertexAttribArrayARB(shader->var_locs.dim3VertexLightMapUV);
-	glEnableVertexAttribArrayARB(shader->var_locs.dim3VertexNormal);
-	if ((bump) || (spec)) glEnableVertexAttribArrayARB(shader->var_locs.dim3VertexTangent);
+	glEnableVertexAttribArray(shader->var_locs.dim3Vertex);
+	glEnableVertexAttribArray(shader->var_locs.dim3VertexUV);
+	glEnableVertexAttribArray(shader->var_locs.dim3VertexLightMapUV);
+	glEnableVertexAttribArray(shader->var_locs.dim3VertexNormal);
+	if ((bump) || (spec)) glEnableVertexAttribArray(shader->var_locs.dim3VertexTangent);
 
 	return(ok);
 }
@@ -375,6 +380,7 @@ char* gl_core_liquid_shader_build_vert(int nlight)
 		
 	gl_core_shader_build_generic_light_struct(nlight,buf);
 
+	strcat(buf,"uniform mat4 dim3ProjectionMatrix;\n");
 	strcat(buf,"uniform vec3 dim3CameraPosition;\n");
 	strcat(buf,"attribute vec3 dim3Vertex,dim3VertexNormal;\n");
 	strcat(buf,"attribute vec2 dim3VertexUV,dim3VertexLightMapUV;\n");
@@ -389,7 +395,7 @@ char* gl_core_liquid_shader_build_vert(int nlight)
 	strcat(buf,"void main(void)\n");
 	strcat(buf,"{\n");
 
-	strcat(buf,"gl_Position=gl_ProjectionMatrix*gl_ModelViewMatrix*vec4(dim3Vertex,1.0);\n");
+	strcat(buf,"gl_Position=dim3ProjectionMatrix*gl_ModelViewMatrix*vec4(dim3Vertex,1.0);\n");
 	strcat(buf,"uv=dim3VertexUV;\n");
 	strcat(buf,"lightMapUV=dim3VertexLightMapUV;\n");
 	
@@ -507,10 +513,10 @@ bool gl_core_liquid_shader_create(shader_type *shader,int nlight,char *err_str)
 	
 		// activate the required attributes
 		
-	glEnableVertexAttribArrayARB(shader->var_locs.dim3Vertex);
-	glEnableVertexAttribArrayARB(shader->var_locs.dim3VertexUV);
-	glEnableVertexAttribArrayARB(shader->var_locs.dim3VertexLightMapUV);
-	glEnableVertexAttribArrayARB(shader->var_locs.dim3VertexNormal);
+	glEnableVertexAttribArray(shader->var_locs.dim3Vertex);
+	glEnableVertexAttribArray(shader->var_locs.dim3VertexUV);
+	glEnableVertexAttribArray(shader->var_locs.dim3VertexLightMapUV);
+	glEnableVertexAttribArray(shader->var_locs.dim3VertexNormal);
 
 	return(ok);
 }
@@ -541,8 +547,10 @@ char* gl_core_model_shader_build_vert(int nlight,bool fog,bool bump,bool spec)
 		
 	gl_core_shader_build_generic_light_struct(nlight,buf);
 
+	strcat(buf,"uniform mat4 dim3ProjectionMatrix;\n");
 	strcat(buf,"uniform vec3 dim3CameraPosition;\n");
-
+	if (fog) strcat(buf,"uniform float dim3FogEnd,dim3FogScale;\n");
+	
 	strcat(buf,"attribute vec3 dim3Vertex,dim3VertexNormal");
 	if ((bump) || (spec)) strcat(buf,",dim3VertexTangent");
 	strcat(buf,";\n");
@@ -563,7 +571,7 @@ char* gl_core_model_shader_build_vert(int nlight,bool fog,bool bump,bool spec)
 	strcat(buf,"void main(void)\n");
 	strcat(buf,"{\n");
 
-	strcat(buf,"gl_Position=gl_ProjectionMatrix*gl_ModelViewMatrix*vec4(dim3Vertex,1.0);\n");
+	strcat(buf,"gl_Position=dim3ProjectionMatrix*gl_ModelViewMatrix*vec4(dim3Vertex,1.0);\n");
 	strcat(buf,"uv=dim3VertexUV;\n");
 
 	strcat(buf,"dirNormal=normalize(dim3VertexNormal);\n");
@@ -593,7 +601,7 @@ char* gl_core_model_shader_build_vert(int nlight,bool fog,bool bump,bool spec)
 		}
 	}
 	
-	if (fog) strcat(buf,"fogFactor=clamp(((gl_Fog.end-distance(dim3Vertex,dim3CameraPosition))*gl_Fog.scale),0.0,1.0);\n");
+	if (fog) strcat(buf,"fogFactor=clamp(((dim3FogEnd-distance(dim3Vertex,dim3CameraPosition))*dim3FogScale),0.0,1.0);\n");
 	
 	strcat(buf,"}\n");
 
@@ -631,7 +639,9 @@ char* gl_core_model_shader_build_frag(int nlight,bool fog,bool bump,bool spec,bo
 	if (glow) strcat(buf,",dim3GlowFactor");
 	strcat(buf,";\n");
 	
-	strcat(buf,"uniform vec3 dim3AmbientColor,dim3DiffuseVector;\n");
+	strcat(buf,"uniform vec3 dim3AmbientColor");
+	if (fog) strcat(buf,",dim3FogColor");
+	strcat(buf,",dim3DiffuseVector;\n");
 	
 	strcat(buf,"varying vec2 uv;\n");
 	strcat(buf,"varying vec3 dirNormal,tangentSpaceNormal;\n");
@@ -731,7 +741,7 @@ char* gl_core_model_shader_build_frag(int nlight,bool fog,bool bump,bool spec,bo
 	if (glow) strcat(buf,")+glow");
 	strcat(buf,";\n");
 	
-	if (fog) strcat(buf,"gl_FragColor.rgb=mix(gl_Fog.color.rgb,frag,fogFactor);\n");
+	if (fog) strcat(buf,"gl_FragColor.rgb=mix(dim3FogColor,frag,fogFactor);\n");
 
 	strcat(buf,"gl_FragColor.a=tex.a*dim3Alpha;\n");
 	strcat(buf,"}\n");
@@ -781,10 +791,10 @@ bool gl_core_model_shader_create(shader_type *shader,int nlight,bool fog,bool bu
 	
 		// activate the required attributes
 		
-	glEnableVertexAttribArrayARB(shader->var_locs.dim3Vertex);
-	glEnableVertexAttribArrayARB(shader->var_locs.dim3VertexUV);
-	glEnableVertexAttribArrayARB(shader->var_locs.dim3VertexNormal);
-	if ((bump) || (spec)) glEnableVertexAttribArrayARB(shader->var_locs.dim3VertexTangent);
+	glEnableVertexAttribArray(shader->var_locs.dim3Vertex);
+	glEnableVertexAttribArray(shader->var_locs.dim3VertexUV);
+	glEnableVertexAttribArray(shader->var_locs.dim3VertexNormal);
+	if ((bump) || (spec)) glEnableVertexAttribArray(shader->var_locs.dim3VertexTangent);
 
 	return(ok);
 }

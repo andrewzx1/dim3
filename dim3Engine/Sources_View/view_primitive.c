@@ -100,9 +100,6 @@ void view_primitive_2D_color_poly(int x0,int y0,d3col *col0,int x1,int y1,d3col 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 
-	glDisable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_NOTEQUAL,0);
-
 	glDisable(GL_DEPTH_TEST);
 
 		// draw the polygon
@@ -113,7 +110,6 @@ void view_primitive_2D_color_poly(int x0,int y0,d3col *col0,int x1,int y1,d3col 
 		// finish draw
 
 	glDisable(GL_BLEND);
-	glDisable(GL_ALPHA_TEST);
 }
 
 void view_primitive_2D_color_quad(d3col *col,float alpha,int lft,int rgt,int top,int bot)
@@ -169,9 +165,6 @@ void view_primitive_2D_color_trig(d3col *col,float alpha,int lft,int rgt,int top
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 
-	glDisable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_NOTEQUAL,0);
-
 	glDisable(GL_DEPTH_TEST);
 
 		// draw the trig
@@ -182,7 +175,6 @@ void view_primitive_2D_color_trig(d3col *col,float alpha,int lft,int rgt,int top
 		// finish draw
 
 	glDisable(GL_BLEND);
-	glDisable(GL_ALPHA_TEST);
 }
 
 void view_primitive_2D_color_arc(d3col *out_col,d3col *in_col,float alpha,int lft,int rgt,int top,int bot,float start_perc,float end_perc)
@@ -233,9 +225,6 @@ void view_primitive_2D_color_arc(d3col *out_col,d3col *in_col,float alpha,int lf
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 
-	glDisable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_NOTEQUAL,0);
-
 	glDisable(GL_DEPTH_TEST);
 
 		// draw the trig
@@ -246,7 +235,6 @@ void view_primitive_2D_color_arc(d3col *out_col,d3col *in_col,float alpha,int lf
 		// finish draw
 
 	glDisable(GL_BLEND);
-	glDisable(GL_ALPHA_TEST);
 }
 
 /* =======================================================
@@ -267,9 +255,6 @@ void view_primitive_2D_line(d3col *col,float alpha,int x0,int y0,int x1,int y1)
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 
-	glDisable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_NOTEQUAL,0);
-
 	glDisable(GL_DEPTH_TEST);
 
 		// draw the quad
@@ -280,7 +265,6 @@ void view_primitive_2D_line(d3col *col,float alpha,int x0,int y0,int x1,int y1)
 		// finish draw
 
 	glDisable(GL_BLEND);
-	glDisable(GL_ALPHA_TEST);
 }
 
 void view_primitive_2D_line_poly(d3col *col,float alpha,int x0,int y0,int x1,int y1,int x2,int y2,int x3,int y3)
@@ -299,9 +283,6 @@ void view_primitive_2D_line_poly(d3col *col,float alpha,int x0,int y0,int x1,int
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 
-	glDisable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_NOTEQUAL,0);
-
 	glDisable(GL_DEPTH_TEST);
 
 		// draw the quad
@@ -312,7 +293,6 @@ void view_primitive_2D_line_poly(d3col *col,float alpha,int x0,int y0,int x1,int
 		// finish draw
 
 	glDisable(GL_BLEND);
-	glDisable(GL_ALPHA_TEST);
 }
 
 void view_primitive_2D_line_quad(d3col *col,float alpha,int lft,int rgt,int top,int bot)
@@ -370,9 +350,6 @@ void view_primitive_2D_line_trig(d3col *col,float alpha,int lft,int rgt,int top,
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 
-	glDisable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_NOTEQUAL,0);
-
 	glDisable(GL_DEPTH_TEST);
 
 		// draw the quad
@@ -383,7 +360,6 @@ void view_primitive_2D_line_trig(d3col *col,float alpha,int lft,int rgt,int top,
 		// finish draw
 
 	glDisable(GL_BLEND);
-	glDisable(GL_ALPHA_TEST);
 }
 
 /* =======================================================
@@ -408,9 +384,6 @@ void view_primitive_3D_line(d3col *col,float alpha,int x0,int y0,int z0,int x1,i
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 
-	glDisable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_NOTEQUAL,0);
-
 		// draw the quad
 		
 	gl_shader_draw_execute_simple_color_ptr(3,vertexes,col,alpha);
@@ -419,7 +392,6 @@ void view_primitive_3D_line(d3col *col,float alpha,int x0,int y0,int z0,int x1,i
 		// finish draw
 
 	glDisable(GL_BLEND);
-	glDisable(GL_ALPHA_TEST);
 }
 
 void view_primitive_3D_line_cube(d3col *col,float alpha,int *px,int *py,int *pz)
@@ -444,9 +416,6 @@ void view_primitive_3D_line_cube(d3col *col,float alpha,int *px,int *py,int *pz)
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 
-	glDisable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_NOTEQUAL,0);
-
 		// draw the quad
 		
 	gl_shader_draw_execute_simple_color_ptr(3,vertexes,col,alpha);
@@ -455,7 +424,6 @@ void view_primitive_3D_line_cube(d3col *col,float alpha,int *px,int *py,int *pz)
 		// finish draw
 
 	glDisable(GL_BLEND);
-	glDisable(GL_ALPHA_TEST);
 }
 
 /* =======================================================
@@ -502,9 +470,6 @@ void view_primitive_2D_texture_quad(GLuint gl_id,d3col *col,float alpha,int lft,
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 
-	glEnable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_NOTEQUAL,0);
-
 	glDisable(GL_DEPTH_TEST);
 	
 	if (clamp) {
@@ -525,7 +490,6 @@ void view_primitive_2D_texture_quad(GLuint gl_id,d3col *col,float alpha,int lft,
 	}
 
 	glDisable(GL_BLEND);
-	glDisable(GL_ALPHA_TEST);
 }
 
 void view_primitive_2D_texture_quad_rot(GLuint gl_id,d3col *col,float alpha,int lft,int rgt,int top,int bot,float ang,float gx,float gx2,float gy,float gy2)
@@ -574,9 +538,6 @@ void view_primitive_2D_texture_quad_rot(GLuint gl_id,d3col *col,float alpha,int 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 
-	glEnable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_NOTEQUAL,0);
-
 	glDisable(GL_DEPTH_TEST);
 
 		// draw the quad
@@ -587,7 +548,6 @@ void view_primitive_2D_texture_quad_rot(GLuint gl_id,d3col *col,float alpha,int 
 		// finish texture draw
 
 	glDisable(GL_BLEND);
-	glDisable(GL_ALPHA_TEST);
 }
 
 void view_primitive_2D_texture_quad_rectangle(GLuint gl_id,float alpha,int lft,int rgt,int top,int bot,int pixel_wid,int pixel_high)
@@ -625,9 +585,6 @@ void view_primitive_2D_texture_quad_rectangle(GLuint gl_id,float alpha,int lft,i
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 
-	glEnable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_NOTEQUAL,0);
-
 	glDisable(GL_DEPTH_TEST);
 
 		// draw the quad
@@ -638,7 +595,6 @@ void view_primitive_2D_texture_quad_rectangle(GLuint gl_id,float alpha,int lft,i
 		// finish texture draw
 
 	glDisable(GL_BLEND);
-	glDisable(GL_ALPHA_TEST);
 	
 #endif
 }

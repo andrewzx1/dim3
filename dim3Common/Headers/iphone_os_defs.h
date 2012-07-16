@@ -50,8 +50,8 @@ and can be sold or given away.
 
 #include <pthread.h>
 
-#include <OpenGLES/es1/gl.h>
-#include <OpenGLES/es1/glext.h>
+#include <OpenGLES/es2/gl.h>
+#include <OpenGLES/es2/glext.h>
 
 #include <zlib.h>
 
@@ -68,36 +68,7 @@ and can be sold or given away.
 // OpenGL ES re-defines
 //
 
-#define GL_SOURCE0_RGB					GL_SRC0_RGB
-#define GL_SOURCE1_RGB					GL_SRC1_RGB
-#define GL_SOURCE0_ALPHA				GL_SRC0_ALPHA
-#define GL_SOURCE1_ALPHA				GL_SRC1_ALPHA
-
-#define glMapBuffer						glMapBufferOES
-#define glUnmapBuffer					glUnmapBufferOES
-
-#define GL_WRITE_ONLY					GL_WRITE_ONLY_OES
-
-#define glGenerateMipmapEXT				glGenerateMipmapOES
-#define glFramebufferRenderbufferEXT	glFramebufferRenderbufferOES
-#define glGenFramebuffersEXT			glGenFramebuffersOES
-#define glBindFramebufferEXT			glBindFramebufferOES
-#define glDeleteFramebuffersEXT			glDeleteFramebuffersOES
-#define glFramebufferTexture2DEXT		glFramebufferTexture2DOES
-#define glCheckFramebufferStatusEXT		glCheckFramebufferStatusOES
-#define glGenRenderbuffersEXT			glGenRenderbuffersOES
-#define glRenderbufferStorageEXT		glRenderbufferStorageOES
-#define glBindRenderbufferEXT			glBindRenderbufferOES
-#define glDeleteRenderbuffersEXT		glDeleteRenderbuffersOES
-
-#define GL_RENDERBUFFER_EXT				GL_RENDERBUFFER_OES
-#define GL_FRAMEBUFFER_EXT				GL_FRAMEBUFFER_OES
-#define GL_DEPTH_ATTACHMENT_EXT			GL_DEPTH_ATTACHMENT_OES
-#define GL_DEPTH_STENCIL_EXT			GL_DEPTH_STENCIL_OES
-#define GL_STENCIL_ATTACHMENT_EXT		GL_STENCIL_ATTACHMENT_OES
-#define GL_FRAMEBUFFER_BINDING_EXT		GL_FRAMEBUFFER_BINDING_OES
-#define GL_COLOR_ATTACHMENT0_EXT		GL_COLOR_ATTACHMENT0_OES
-#define GL_FRAMEBUFFER_COMPLETE_EXT		GL_FRAMEBUFFER_COMPLETE_OES
+#define GL_DEPTH24_STENCIL8				GL_DEPTH24_STENCIL8_OES
 
 #define glOrtho							glOrthof
 #define glFrustum						glFrustumf
@@ -123,8 +94,6 @@ typedef unsigned char			byte;
 typedef unsigned char*			ptr;
 typedef unsigned char			bool8;
 typedef int						d3socket;
-
-typedef unsigned int			GLhandleARB;
 
 #define D3_NULL_SOCKET			-1
 #define closesocket(x)			close(x)

@@ -260,8 +260,6 @@ void effect_draw_lightning(effect_type *effect)
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE);
 
-	glDisable(GL_ALPHA_TEST);
-
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
 	glDepthMask(GL_FALSE);
@@ -343,8 +341,6 @@ void effect_draw_ray(effect_type *effect,int count)
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE);
-	
-	glEnable(GL_ALPHA_TEST);
 
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);

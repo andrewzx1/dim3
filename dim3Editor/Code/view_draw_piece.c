@@ -482,9 +482,6 @@ void view_draw_meshes_texture(editor_view_type *view,bool opaque)
 		glEnable(GL_BLEND);
 	}
 	
-	glEnable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_NOTEQUAL,0);
-	
 	glEnable(GL_DEPTH_TEST);
 	if (opaque) {
 		glDepthMask(GL_TRUE);
@@ -532,13 +529,7 @@ void view_draw_meshes_texture(editor_view_type *view,bool opaque)
 				// opaque or transparent flag
 				
 			texture=&map.textures[poly->txt_idx];
-			
-			if (opaque) {
-				if (texture->frames[0].bitmap.alpha_mode==alpha_mode_transparent) continue;
-			}
-			else {
-				if (texture->frames[0].bitmap.alpha_mode!=alpha_mode_transparent) continue;
-			}
+			if (opaque!=texture->frames[0].bitmap.opaque) continue;
 			
 				// need to switch to light map?
 				
@@ -588,7 +579,6 @@ void view_draw_meshes_texture(editor_view_type *view,bool opaque)
 
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	
-	glDisable(GL_ALPHA_TEST);
 	if (opaque) glEnable(GL_BLEND);
 	if (!opaque) glDepthMask(GL_TRUE);
 
@@ -608,7 +598,6 @@ void view_draw_meshes_line(editor_view_type *view,bool opaque)
 
 	glDisable(GL_TEXTURE_2D);
 	glEnable(GL_BLEND);
-	glDisable(GL_ALPHA_TEST);
 
 	glDepthMask(GL_FALSE);
 	
@@ -635,13 +624,7 @@ void view_draw_meshes_line(editor_view_type *view,bool opaque)
 				// opaque or transparent flag
 
 			texture=&map.textures[poly->txt_idx];
-		
-			if (opaque) {
-				if (texture->frames[0].bitmap.alpha_mode==alpha_mode_transparent) continue;
-			}
-			else {
-				if (texture->frames[0].bitmap.alpha_mode!=alpha_mode_transparent) continue;
-			}
+			if (opaque!=texture->frames[0].bitmap.opaque) continue;
 			
 				// check for clipping
 				
@@ -687,9 +670,6 @@ void view_draw_liquids(editor_view_type *view,bool opaque)
 		glEnable(GL_BLEND);
 	}
 	
-	glEnable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_NOTEQUAL,0);
-	
 	glEnable(GL_DEPTH_TEST);
 	if (opaque) {
 		glDepthMask(GL_TRUE);
@@ -727,12 +707,7 @@ void view_draw_liquids(editor_view_type *view,bool opaque)
 			uv=&liquid->lmap_uv;
 		}
 	
-		if (opaque) {
-			if (texture->frames[0].bitmap.alpha_mode==alpha_mode_transparent) continue;
-		}
-		else {
-			if (texture->frames[0].bitmap.alpha_mode!=alpha_mode_transparent) continue;
-		}
+		if (opaque!=texture->frames[0].bitmap.opaque) continue;
 		
 		if (texture->frames[0].bitmap.gl_id!=old_gl_id) {
 			old_gl_id=texture->frames[0].bitmap.gl_id;
@@ -862,7 +837,6 @@ void view_draw_liquids(editor_view_type *view,bool opaque)
 		glDrawArrays(GL_LINES,0,8);
 	}
 	
-	glDisable(GL_ALPHA_TEST);
 	if (opaque) glEnable(GL_BLEND);
 	if (!opaque) glDepthMask(GL_TRUE);
 }
@@ -882,7 +856,6 @@ void view_draw_meshes_normals(editor_view_type *view)
 	map_mesh_poly_type	*poly;
 
 	glDisable(GL_TEXTURE_2D);
-	glDisable(GL_ALPHA_TEST);
 
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
@@ -991,7 +964,6 @@ void view_draw_movements(editor_view_type *view)
 
 	glDisable(GL_TEXTURE_2D);
 	glEnable(GL_BLEND);
-	glDisable(GL_ALPHA_TEST);
 	
 	glLineWidth(2.0f);
 	glPointSize(10.0f);
@@ -1089,8 +1061,6 @@ void view_draw_nodes(editor_view_type *view)
 	if (!state.show_node) return;
 	
 		// angles
-		
-	glDisable(GL_ALPHA_TEST);
 		
 	glLineWidth(3.0f);
 	glColor4f(1.0f,0.7f,0.0f,1.0f);

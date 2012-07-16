@@ -131,7 +131,6 @@ void zoom_draw(obj_type *obj,weapon_type *weap)
 	gl_2D_view_screen();
 
 	glDisable(GL_BLEND);
-	glDisable(GL_ALPHA_TEST);
 	glDisable(GL_DEPTH_TEST);
 	
 		// borders

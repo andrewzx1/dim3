@@ -38,7 +38,7 @@ and can be sold or given away.
 void bitmap_new(bitmap_type *bitmap)
 {
 	bitmap->wid=bitmap->high=0;
-	bitmap->alpha_mode=alpha_mode_none;
+	bitmap->opaque=TRUE;
 	bitmap->gl_id=-1;
 }
 
@@ -69,7 +69,7 @@ void bitmap_set_alpha_mode(bitmap_type *bitmap,unsigned char *png_data)
 
 		// assume it's opaque until we see different data
 
-	bitmap->alpha_mode=alpha_mode_none;
+	bitmap->opaque=TRUE;
 					
 		// search for transparencies
 
@@ -78,17 +78,10 @@ void bitmap_set_alpha_mode(bitmap_type *bitmap,unsigned char *png_data)
 		
 	for (n=0;n<psz;n+=4) {
 			
-			// a single non-0xFF and non-0x00 means transparency
-			
-		if ((*data!=0xFF) && (*data!=0x0)) {
-			bitmap->alpha_mode=alpha_mode_transparent;
+		if (*data!=0xFF) {
+			bitmap->opaque=FALSE;
 			return;
 		}
-		
-			// a single 0x0 means it's possibly a cut out
-			// but never an opaque
-			
-		if (*data==0x0) bitmap->alpha_mode=alpha_mode_cut_out;
 
 		data+=4;
 	}
@@ -268,7 +261,7 @@ unsigned char* bitmap_setup_alpha(bitmap_type *bitmap,unsigned char *png_data,bo
 {
 	unsigned char				*strip_data;
 	
-	bitmap->alpha_mode=alpha_mode_none;
+	bitmap->opaque=TRUE;
 
 	if (alpha_channel) {
 
@@ -281,9 +274,9 @@ unsigned char* bitmap_setup_alpha(bitmap_type *bitmap,unsigned char *png_data,bo
 
 		bitmap_set_alpha_mode(bitmap,png_data);
 		
-			// if alpha is actually all 0x0, then strip it
+			// if alpha is actually all 0xFF, then strip it
 			
-		if (bitmap->alpha_mode==alpha_mode_none) {
+		if (bitmap->opaque) {
 			strip_data=bitmap_strip_alpha(bitmap,png_data);
 			if (strip_data!=NULL) {
 				free(png_data);
@@ -351,7 +344,7 @@ bool bitmap_color(bitmap_type *bitmap,d3col *col)
 	bool			ok;
 	
 	bitmap->wid=bitmap->high=32;
-	bitmap->alpha_mode=alpha_mode_none;
+	bitmap->opaque=TRUE;
 	
 	png_data=malloc((32*32)*3);
 	if (png_data==NULL) return(FALSE);
@@ -393,7 +386,7 @@ bool bitmap_data(bitmap_type *bitmap,unsigned char *data,int wid,int high,bool a
 	
 		// find if bitmap has transparencies
 	
-	bitmap->alpha_mode=alpha_mode_none;
+	bitmap->opaque=TRUE;
 	if (alpha_channel) bitmap_set_alpha_mode(bitmap,data);
 	
 		// get the texture

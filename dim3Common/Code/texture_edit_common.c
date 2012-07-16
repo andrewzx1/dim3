@@ -210,7 +210,6 @@ void texture_edit_draw(void)
 	int					n,ty,by,wid,high,frame_count;
 	float				vertexes[8];
 	char				str[256];
-	char				type_str[3][32]={"Opaque","Cut-Out","Transparent"};
 	d3rect				wbox,box,tbox;
 	texture_type		*texture;
 
@@ -247,9 +246,6 @@ void texture_edit_draw(void)
 		// draw setup
 
 	glDisable(GL_DEPTH_TEST);
-
-	glEnable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_NOTEQUAL,0);
 
 		// the textures
 
@@ -327,7 +323,12 @@ void texture_edit_draw(void)
 			sprintf(str,"Size: %dx%d",texture->frames[n].bitmap.wid,texture->frames[n].bitmap.high);
 			text_draw(470,(ty+55),15.0f,NULL,str);
 
-			sprintf(str,"Alpha: %s",type_str[texture->frames[n].bitmap.alpha_mode]);
+			if (texture->frames[n].bitmap.opaque) {
+				strcpy(str,"Opaque");
+			}
+			else {
+				strcpy(str,"Transparent");
+			}
 			text_draw(470,(ty+75),15.0f,NULL,str);
 
 			sprintf(str,"Wait: %d",texture->animate.wait[n]);

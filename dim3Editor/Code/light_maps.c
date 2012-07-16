@@ -975,7 +975,7 @@ bool light_map_bitmap_transparency_check(d3pnt *spt,d3vct *vct,map_mesh_type *me
 
 		// if no alpha or not loaded for some reason, it's immediately a hit
 	
-	if ((bitmap->gl_id==-1) || (bitmap->alpha_mode==alpha_mode_none)) return(TRUE);
+	if ((bitmap->gl_id==-1) || (bitmap->opaque)) return(TRUE);
 	
 		// need to load up this bitmap
 		

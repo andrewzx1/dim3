@@ -145,7 +145,7 @@ bool liquid_is_transparent(map_liquid_type *liq)
 	texture_type				*texture;
 
 	texture=&map.textures[liq->txt_idx];
-	return(texture->frames[texture->animate.current_frame&max_texture_frame_mask].bitmap.alpha_mode==alpha_mode_transparent);
+	return(!texture->frames[texture->animate.current_frame&max_texture_frame_mask].bitmap.opaque);
 }
 
 /* =======================================================
@@ -588,9 +588,6 @@ void render_map_liquid_opaque(void)
 
 	glDisable(GL_BLEND);
 
-	glEnable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_NOTEQUAL,0);
-						
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
 	glDepthMask(GL_TRUE);
@@ -622,9 +619,6 @@ void render_map_liquid_transparent(void)
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-
-	glEnable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_NOTEQUAL,0);
 						
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);

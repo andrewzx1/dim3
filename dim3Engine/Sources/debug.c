@@ -178,7 +178,6 @@ void debug_dump(void)
 	debug_dump_info_str(file,"GPU",render_info.name);
 	sprintf(str,"%d,%d @ %d",render_info.desktop.wid,render_info.desktop.high,render_info.monitor_refresh_rate);
 	debug_dump_info_str(file,"Screen",str);
-	debug_dump_info_int(file,"Max Texture Units",render_info.texture_unit_count);
 	debug_dump_info_int(file,"Max Texture Size",render_info.texture_max_size);
 	
 	debug_dump_info_enable(file,"FBO",gl_check_frame_buffer_ok());

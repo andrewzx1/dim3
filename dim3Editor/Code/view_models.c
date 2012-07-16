@@ -230,14 +230,9 @@ void view_model_draw_polys(model_type *model,model_draw_setup *draw_setup,int *t
 	for (n=0;n!=mesh->npoly;n++) {
 		poly=&mesh->polys[n];
 
-			// opaque?
+			// opaque or transparent
 
-		if (opaque) {
-			if (model->textures[poly->txt_idx].frames[0].bitmap.alpha_mode==alpha_mode_transparent) continue;
-		}
-		else {
-			if (model->textures[poly->txt_idx].frames[0].bitmap.alpha_mode!=alpha_mode_transparent) continue;
-		}
+		if (opaque!=model->textures[poly->txt_idx].frames[0].bitmap.opaque) continue;
 
 			// new texture
 
@@ -309,9 +304,6 @@ bool view_model_draw(d3pnt *pnt,d3ang *ang,char *name,float resize,int *texture_
 	
 	glEnable(GL_TEXTURE_2D);
 	
-	glEnable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_NOTEQUAL,0);
-	
 	glEnable(GL_DEPTH_TEST);
 
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -332,7 +324,6 @@ bool view_model_draw(d3pnt *pnt,d3ang *ang,char *name,float resize,int *texture_
 	view_model_draw_polys(model,&draw_setup,texture_frame,frame_count,FALSE);
 	
 	glDepthMask(GL_TRUE);
-	glDisable(GL_ALPHA_TEST);
 
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	

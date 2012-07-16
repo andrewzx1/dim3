@@ -686,16 +686,12 @@ void hud_bars_draw_pie(iface_bar_type *bar)
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 
-	glDisable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_NOTEQUAL,0);
-
 	glDisable(GL_DEPTH_TEST);
 
 	gl_shader_draw_execute_simple_gradient_ptr(2,vertexes,colors);
 	glDrawArrays(GL_TRIANGLES,0,(72*3));
 
 	glDisable(GL_BLEND);
-	glDisable(GL_ALPHA_TEST);
 }
 
 void hud_bars_draw(void)
@@ -758,9 +754,6 @@ void hud_draw(void)
 		// set up view
 		
 	gl_2D_view_interface();
-	
-	glEnable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_NOTEQUAL,0);
 	
 	glDisable(GL_DEPTH_TEST);
 	

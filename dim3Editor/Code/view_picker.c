@@ -90,8 +90,6 @@ bool view_pick_list_start(editor_view_type *view,bool in_2D,int count)
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
 
-	glDisable(GL_ALPHA_TEST);
-
 	return(TRUE);
 }
 
