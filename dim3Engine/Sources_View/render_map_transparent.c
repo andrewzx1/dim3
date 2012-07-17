@@ -184,7 +184,6 @@ void render_map_mesh_transparent(void)
 
 	gl_3D_view();
 	gl_3D_rotate(&view.render->camera.pnt,&view.render->camera.ang);
-	gl_setup_project();
 	
 		// sort meshes
 

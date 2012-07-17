@@ -46,6 +46,7 @@ extern shader_type			user_shaders[max_iface_user_shader],
 							bitmap_shader,bitmap_rect_shader;
 
 extern float				gl_proj_matrix[16],gl_model_view_matrix[16],
+							gl_normal_matrix[9],
 							light_shader_direction[7][3];
 
 extern bitmap_type			lmap_black_bitmap,lmap_white_bitmap;
@@ -567,8 +568,7 @@ void gl_shader_set_draw_matrix_variables(shader_type *shader)
 	
 	if (shader->var_locs.dim3ProjectionMatrix!=-1) glUniformMatrix4fv(shader->var_locs.dim3ProjectionMatrix,1,GL_FALSE,gl_proj_matrix);
 	if (shader->var_locs.dim3ModelViewMatrix!=-1) glUniformMatrix4fv(shader->var_locs.dim3ModelViewMatrix,1,GL_FALSE,gl_model_view_matrix);
-	
-	
+	if (shader->var_locs.dim3NormalMatrix!=-1) glUniformMatrix3fv(shader->var_locs.dim3NormalMatrix,1,GL_FALSE,gl_normal_matrix);
 }
 
 /* =======================================================

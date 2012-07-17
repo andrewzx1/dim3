@@ -183,7 +183,6 @@ void view_draw_debug_info(char *name,char *info,d3pnt *pnt,d3pnt *size,d3ang *an
 
 	gl_3D_view();
 	gl_3D_rotate(&view.render->camera.pnt,&view.render->camera.ang);
-	gl_setup_project();
 }
 
 /* =======================================================

@@ -80,7 +80,6 @@ void render_map_mesh_opaque(void)
 
 	gl_3D_view();
 	gl_3D_rotate(&view.render->camera.pnt,&view.render->camera.ang);
-	gl_setup_project();
 	
 	glEnable(GL_DEPTH_TEST); 
 	glDepthFunc(GL_LEQUAL);

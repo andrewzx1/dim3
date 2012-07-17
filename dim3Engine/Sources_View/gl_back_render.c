@@ -172,7 +172,7 @@ GLuint gl_back_render_create_texture(void)
 void gl_back_render_frame_node(char *node_name)
 {
 	int				node_idx;
-	GLint			old_vport[4],old_fbo;
+	GLint			old_fbo;
 	node_type		*node;
 
 		// get node
@@ -188,12 +188,12 @@ void gl_back_render_frame_node(char *node_name)
 	
 		// remember old fbo and viewport
 		
-	glGetIntegerv(GL_VIEWPORT,old_vport);
 	glGetIntegerv(GL_FRAMEBUFFER_BINDING,&old_fbo);
 	
 		// new viewport
 		
-	glViewport(0,0,back_render_texture_pixel_size,back_render_texture_pixel_size);
+	gl_save_viewport();
+	gl_set_viewport(0,0,back_render_texture_pixel_size,back_render_texture_pixel_size);
 
 		// need to create a texture?
 
@@ -222,7 +222,7 @@ void gl_back_render_frame_node(char *node_name)
 		// restore old fbo and viewport
 		
 	glBindFramebuffer(GL_FRAMEBUFFER,old_fbo);
-	glViewport(old_vport[0],old_vport[1],old_vport[2],old_vport[3]);
+	gl_restore_viewport();
 
 		// generate mipmaps
 		

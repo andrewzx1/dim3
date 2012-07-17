@@ -205,9 +205,9 @@ bool gl_initialize(int screen_wid,int screen_high,int fsaa_mode,char *err_str)
 	SDL_GL_SwapWindow(sdl_wind);
 
 #ifndef D3_ROTATE_VIEW
-	glViewport(0,0,view.screen.x_sz,view.screen.y_sz);
+	gl_set_viewport(0,0,view.screen.x_sz,view.screen.y_sz);
 #else
-	glViewport(0,0,view.screen.y_sz,view.screen.x_sz);
+	gl_set_viewport(0,0,view.screen.y_sz,view.screen.x_sz);
 #endif
 
 	gl_setup_context();

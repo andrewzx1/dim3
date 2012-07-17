@@ -74,7 +74,6 @@ void view_draw_model_opaque(void)
 		
 	gl_3D_view();
 	gl_3D_rotate(&view.render->camera.pnt,&view.render->camera.ang);
-	gl_setup_project();
 
 		// render the models
 
@@ -112,7 +111,6 @@ void view_draw_model_transparent(void)
 		
 	gl_3D_view();
 	gl_3D_rotate(&view.render->camera.pnt,&view.render->camera.ang);
-	gl_setup_project();
 
 		// render the models
 		// draw backwards to sort back to front
@@ -153,7 +151,6 @@ void view_draw_models_final(void)
 		
 	gl_3D_view();
 	gl_3D_rotate(&view.render->camera.pnt,&view.render->camera.ang);
-	gl_setup_project();
 
 		// shadow overrides
 
@@ -218,7 +215,6 @@ void view_draw_scene_build(void)
 
 	gl_3D_view();
 	gl_3D_rotate(&view.render->camera.pnt,&view.render->camera.ang);
-	gl_setup_project();
 	
 	view_cull_setup_frustum_clipping_planes();
 
@@ -260,7 +256,6 @@ void view_draw_scene_render(obj_type *obj,weapon_type *weap)
 
 	gl_3D_view();
 	gl_3D_rotate(&view.render->camera.pnt,&view.render->camera.ang);
-	gl_setup_project();
 
 		// draw background and sky
 	

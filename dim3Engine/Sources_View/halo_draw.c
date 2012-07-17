@@ -102,7 +102,6 @@ void halo_draw_setup(void)
 		
 	gl_3D_view();
 	gl_3D_rotate(&view.render->camera.pnt,&view.render->camera.ang);
-	gl_setup_project();
 
 	for (n=0;n!=view.render->halo_draw.count;n++) {
 		halo_draw=&view.render->halo_draw.halos[n];

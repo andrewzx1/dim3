@@ -575,10 +575,10 @@ void view_loop_draw(void)
 	if (view.console.on) {
 		#ifndef D3_ROTATE_VIEW
 			y_add=(int)(((float)view.screen.y_sz)*console_screen_percent);
-			glViewport(0,y_add,view.screen.x_sz,(view.screen.y_sz-y_add));
+			gl_set_viewport(0,y_add,view.screen.x_sz,(view.screen.y_sz-y_add));
 		#else
 			y_add=(int)(((float)view.screen.y_sz)*console_screen_percent);
-			glViewport(y_add,0,(view.screen.y_sz-y_add),view.screen.x_sz);
+			gl_set_viewport(y_add,0,(view.screen.y_sz-y_add),view.screen.x_sz);
 		#endif
 	}
 	
@@ -611,9 +611,9 @@ void view_loop_draw(void)
 		
 	if (view.console.on) {
 		#ifndef D3_ROTATE_VIEW
-			glViewport(0,0,view.screen.x_sz,view.screen.y_sz);
+			gl_set_viewport(0,0,view.screen.x_sz,view.screen.y_sz);
 		#else
-			glViewport(0,0,view.screen.y_sz,view.screen.x_sz);
+			gl_set_viewport(0,0,view.screen.y_sz,view.screen.x_sz);
 		#endif
 		console_draw();
 	}

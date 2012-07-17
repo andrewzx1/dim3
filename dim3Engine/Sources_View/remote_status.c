@@ -159,7 +159,6 @@ void remote_draw_names_setup(void)
 		
 	gl_3D_view();
 	gl_3D_rotate(&view.render->camera.pnt,&view.render->camera.ang);
-	gl_setup_project();
 	
 	for (n=0;n!=view.render->draw_list.count;n++) {
 		if (view.render->draw_list.items[n].type!=view_render_type_object) continue;
