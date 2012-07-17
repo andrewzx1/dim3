@@ -864,10 +864,7 @@ extern bool gl_back_render_get_texture(char *node_name,GLuint *txt_id,float *alp
 // opengl es patches
 //
 
-extern void glu_patch_gluPerspective(float fovy,float aspect,float zNear,float zFar);
-extern void glu_patch_gluLookAt(float eyex,float eyey,float eyez,float centerx,float centery,float centerz,float upx,float upy,float upz);
 extern bool glu_patch_gluProject(float objx,float objy,float objz,float modelMatrix[16],float projMatrix[16],int viewport[4],float *winx,float *winy,float *winz);
-extern bool glu_patch_gluUnProject(float winx,float winy,float winz,float modelMatrix[16],float projMatrix[16],int viewport[4],float *objx, float *objy, float *objz);
 
 //
 // view
@@ -876,7 +873,9 @@ extern bool glu_patch_gluUnProject(float winx,float winy,float winz,float modelM
 extern void gl_frame_clear(bool in_view);
 extern void gl_frame_swap(void);
 
-extern void gl_set_viewport(int x,int y,int wid,int high,bool force_shader_reset);
+extern void gl_set_viewport(int x,int y,int wid,int high);
+extern void gl_save_viewport(void);
+extern void gl_restore_viewport(void);
 
 extern void gl_3D_view(void);
 extern void gl_3D_rotate(d3pnt *pnt,d3ang *ang);
@@ -887,7 +886,6 @@ extern void gl_3D_view_interface_model(void);
 extern void gl_2D_scissor_start(int lx,int rx,int ty,int by);
 extern void gl_2D_scissor_end(void);
 
-extern inline void gl_setup_project(void);
 extern inline bool gl_project_in_view_z(int x,int y,int z);
 extern inline  void gl_project_point(int *x,int *y,int *z);
 extern inline float gl_project_get_depth(int x,int y,int z);

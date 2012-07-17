@@ -97,6 +97,7 @@ char* gl_core_map_shader_build_vert(int nlight,bool fog,bool bump,bool spec)
 	gl_core_shader_build_generic_light_struct(nlight,buf);
 
 	strcat(buf,"uniform mat4 dim3ProjectionMatrix,dim3ModelViewMatrix;\n");
+	strcat(buf,"uniform mat3 dim3NormalMatrix;\n");
 	strcat(buf,"uniform vec3 dim3CameraPosition;\n");
 	if (fog) strcat(buf,"uniform float dim3FogEnd,dim3FogScale;\n");
 	
@@ -129,9 +130,9 @@ char* gl_core_map_shader_build_vert(int nlight,bool fog,bool bump,bool spec)
 	strcat(buf,"vec3 vtx=vec3(dim3ModelViewMatrix*vec4(dim3Vertex,1.0));\n");
 	
 	if ((bump) || (spec)) {
-		strcat(buf,"vec3 tangentSpaceTangent=normalize(gl_NormalMatrix*dim3VertexTangent);\n");
-		strcat(buf,"vec3 tangentSpaceBinormal=normalize(gl_NormalMatrix*cross(dim3VertexNormal,dim3VertexTangent));\n");
-		strcat(buf,"vec3 tangentSpaceNormal=normalize(gl_NormalMatrix*dim3VertexNormal);\n");
+		strcat(buf,"vec3 tangentSpaceTangent=normalize(dim3NormalMatrix*dim3VertexTangent);\n");
+		strcat(buf,"vec3 tangentSpaceBinormal=normalize(dim3NormalMatrix*cross(dim3VertexNormal,dim3VertexTangent));\n");
+		strcat(buf,"vec3 tangentSpaceNormal=normalize(dim3NormalMatrix*dim3VertexNormal);\n");
 	}
 	
 	if (spec) {
@@ -548,6 +549,7 @@ char* gl_core_model_shader_build_vert(int nlight,bool fog,bool bump,bool spec)
 	gl_core_shader_build_generic_light_struct(nlight,buf);
 
 	strcat(buf,"uniform mat4 dim3ProjectionMatrix,dim3ModelViewMatrix;\n");
+	strcat(buf,"uniform mat3 dim3NormalMatrix;\n");
 	strcat(buf,"uniform vec3 dim3CameraPosition;\n");
 	if (fog) strcat(buf,"uniform float dim3FogEnd,dim3FogScale;\n");
 	
@@ -579,11 +581,11 @@ char* gl_core_model_shader_build_vert(int nlight,bool fog,bool bump,bool spec)
 	strcat(buf,"vec3 vtx=vec3(dim3ModelViewMatrix*vec4(dim3Vertex,1.0));\n");
 	
 	if ((bump) || (spec)) {
-		strcat(buf,"vec3 tangentSpaceTangent=normalize(gl_NormalMatrix*dim3VertexTangent);\n");
-		strcat(buf,"vec3 tangentSpaceBinormal=normalize(gl_NormalMatrix*cross(dim3VertexNormal,dim3VertexTangent));\n");
+		strcat(buf,"vec3 tangentSpaceTangent=normalize(dim3NormalMatrix*dim3VertexTangent);\n");
+		strcat(buf,"vec3 tangentSpaceBinormal=normalize(dim3NormalMatrix*cross(dim3VertexNormal,dim3VertexTangent));\n");
 	}
 	
-	strcat(buf,"tangentSpaceNormal=normalize(gl_NormalMatrix*dim3VertexNormal);\n");	// always need normal for diffuse
+	strcat(buf,"tangentSpaceNormal=normalize(dim3NormalMatrix*dim3VertexNormal);\n");	// always need normal for diffuse
 	
 	if (spec) {
 		strcat(buf,"eyeVector.x=dot(-vtx,tangentSpaceTangent);\n");

@@ -233,7 +233,7 @@ void gl_fs_shader_render_begin(void)
 		fs_shader_active=FALSE;
 	}
 	
-	glViewport(0,0,view.screen.x_sz,view.screen.y_sz);
+	gl_set_viewport(0,0,view.screen.x_sz,view.screen.y_sz);
 
 		// clear buffer
 
@@ -255,7 +255,7 @@ void gl_fs_shader_render_finish(void)
 		// turn off the fbo
 
 	glBindFramebuffer(GL_FRAMEBUFFER,0);
-	glViewport(0,0,view.screen.x_sz,view.screen.y_sz);
+	gl_set_viewport(0,0,view.screen.x_sz,view.screen.y_sz);
 
 		// create the vertexes and uv
 

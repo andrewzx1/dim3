@@ -582,7 +582,6 @@ void render_map_liquid_opaque(void)
 
 	gl_3D_view();
 	gl_3D_rotate(&view.render->camera.pnt,&view.render->camera.ang);
-	gl_setup_project();
 	
 		// common setup
 
@@ -613,7 +612,6 @@ void render_map_liquid_transparent(void)
 
 	gl_3D_view();
 	gl_3D_rotate(&view.render->camera.pnt,&view.render->camera.ang);
-	gl_setup_project();
 	
 		// common setup
 

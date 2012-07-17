@@ -321,7 +321,6 @@ void sky_draw_dome_panoramic(void)
 
 	gl_3D_view();
 	gl_3D_rotate(NULL,&view.render->camera.ang);
-	gl_setup_project();
 	
 		// construct vbo
 
@@ -617,7 +616,6 @@ void sky_draw_dome_hemisphere(void)
 
 	gl_3D_view();
 	gl_3D_rotate(NULL,&view.render->camera.ang);
-	gl_setup_project();
 	
 		// setup texture
 		
@@ -909,7 +907,6 @@ void sky_draw_cube(void)
 
 	gl_3D_view();
 	gl_3D_rotate(NULL,&view.render->camera.ang);
-	gl_setup_project();
 
 		// setup texture
 		

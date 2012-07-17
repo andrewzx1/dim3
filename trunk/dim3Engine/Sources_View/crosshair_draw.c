@@ -104,7 +104,6 @@ bool crosshair_get_location(obj_type *obj,weapon_type *weap,int *kx,int *ky,int 
 	else {
 		gl_3D_view();
 		gl_3D_rotate(&view.render->camera.pnt,&view.render->camera.ang);
-		gl_setup_project();
 		
 		tx=contact.hpt.x;
 		ty=contact.hpt.y;

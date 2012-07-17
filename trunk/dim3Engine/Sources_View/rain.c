@@ -280,7 +280,6 @@ void rain_draw(void)
 
 	gl_3D_view();
 	gl_3D_rotate(&view.render->camera.pnt,&view.render->camera.ang);
-	gl_setup_project();
 	
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);

@@ -726,7 +726,6 @@ void view_script_transform_3D_to_2D(int x,int y,int z,int *x2,int *y2)
 {
 	gl_3D_view();
 	gl_3D_rotate(&view.render->camera.pnt,&view.render->camera.ang);
-	gl_setup_project();
 	
 	gl_project_point(&x,&y,&z);
 	

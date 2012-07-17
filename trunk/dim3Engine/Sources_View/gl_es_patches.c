@@ -37,24 +37,6 @@ typedef struct		{
 
 // supergumba -- remove all this!
 
-/* =======================================================
-
-      OpenGL ES Missing Functions
-	  gluPerspective
-      
-======================================================= */
-
-void glu_patch_gluPerspective(float fovy,float aspect,float zNear,float zFar)
-{
-	float		x_min,x_max,y_min,y_max;
-
-	y_max=zNear*tanf((fovy*TRIG_PI)/360.0f);
-	y_min=-y_max;
-	x_min=y_min*aspect;
-	x_max=y_max*aspect;
-
-	glFrustum(x_min,x_max,y_min,y_max,zNear,zFar);
-}
 
 /* =======================================================
 
@@ -87,66 +69,7 @@ void glu_patch_vector_cross_product(d3_d_vct *v,d3_d_vct *v1,d3_d_vct *v2)
     v->z=(v1->x*v2->y)-(v2->x*v1->y);
 }
 
- void glu_patch_gluLookAt(float eyex,float eyey,float eyez,float centerx,float centery,float centerz,float upx,float upy,float upz)
- {
-	float			mat[16];
-	d3_d_vct		x,y,z;
-
-		// create the z vector
-
-	z.x=eyex-centerx;
-	z.y=eyey-centery;
-	z.z=eyez-centerz;
-	glu_patch_vector_normalize(&z);
-
-		// create the y vector
-
-	y.x=upx;
-	y.y=upy;
-	y.z=upz;
-		
-		// create x vector, y cross z
-
-	glu_patch_vector_cross_product(&x,&y,&z);
-
-		// recreate the y from z cross x
-
-	glu_patch_vector_cross_product(&y,&z,&x);
-
-		// normalize x and y
-
-	glu_patch_vector_normalize(&x);
-	glu_patch_vector_normalize(&y);
-
-		// create the rotate matrix
-	
-	mat[0+0]=x.x;
-	mat[0+4]=x.y;
-	mat[0+8]=x.z;
-	mat[0+12]=0.0f;
-
-	mat[1+0]=y.x;
-	mat[1+4]=y.y;
-	mat[1+8]=y.z;
-	mat[1+12]=0.0f;
-
-	mat[2+0]=z.x;
-	mat[2+4]=z.y;
-	mat[2+8]=z.z;
-	mat[2+12]=0.0f;
-
-	mat[3+0]=0.0f;
-	mat[3+4]=0.0f;
-	mat[3+8]=0.0f;
-	mat[3+12]=1.0f;
-
-	glMultMatrixf(mat);
-
-		// translate eye to origin
-
-    glTranslatef(-eyex,-eyey,-eyez);
-}
-
+ 
 /* =======================================================
 
       OpenGL ES Missing Functions
@@ -347,31 +270,3 @@ bool glu_patch_gluProject(float objx,float objy,float objz,float modelMatrix[16]
     return(TRUE);
 }
 
-bool glu_patch_gluUnProject(float winx,float winy,float winz,float modelMatrix[16],float projMatrix[16],int viewport[4],float *objx, float *objy, float *objz)
-{
-    float		mat[16],in[4],out[4];
-
-    glu_patch_matrix_mult_matrix(modelMatrix,projMatrix,mat);
-    if (!glu_patch_matrix_invert(mat,mat)) return(FALSE);
-
-    in[0]=winx;
-    in[1]=winy;
-    in[2]=winz;
-    in[3]=1.0f;
-
-    in[0]=(in[0]-viewport[0])/viewport[2];
-    in[1]=(in[1]-viewport[1])/viewport[3];
-
-    in[0]=(in[0]*2)-1.0f;
-    in[1]=(in[1]*2)-1.0f;
-    in[2]=(in[2]*2)-1.0f;
-
-    glu_patch_matrix_mult_vector(mat,in,out);
-    if (out[3]==0.0f) return(FALSE);
-
-    *objx=out[0]/out[3];
-    *objy=out[1]/out[3];
-    *objz=out[2]/out[3];
-
-    return(TRUE);
-}

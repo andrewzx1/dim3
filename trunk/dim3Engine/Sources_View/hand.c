@@ -73,7 +73,6 @@ void draw_weapon_hand(obj_type *obj,weapon_type *weap)
 
 	gl_3D_view();
 	gl_3D_rotate(&view.render->camera.pnt,&view.render->camera.ang);
-	gl_setup_project();
 	
 	glDepthMask(GL_TRUE);
 	glClear(GL_DEPTH_BUFFER_BIT);
