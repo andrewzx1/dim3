@@ -434,7 +434,7 @@ void matrix_transpose(matrix_type *mat)
 {
 	matrix_type			trans_mat;
 
-	memmove(&trans_mat,&mat,sizeof(matrix_type));
+	memmove(&trans_mat,mat,sizeof(matrix_type));
 	
 	mat->data[0][0]=trans_mat.data[0][0];
 	mat->data[0][1]=trans_mat.data[1][0];
@@ -457,37 +457,136 @@ void matrix_transpose(matrix_type *mat)
 	mat->data[3][3]=trans_mat.data[3][3];
 }
 
-void matrix_inverse_transpose(matrix_type *mat)
+void matrix_inverse(matrix_type *mat)
 {
-	float			det,inv_det;
-	matrix_type		r_mat;
+	int				n;
+	float			det,*m1,*m2;
+	matrix_type		mat_inv;
 
-	det=(mat->data[0][0]*((mat->data[1][1]*mat->data[2][2])-(mat->data[2][1]*mat->data[1][2])))
-		-(mat->data[0][1]*((mat->data[1][0]*mat->data[2][2])-(mat->data[1][2]*mat->data[2][0])))
-		+(mat->data[0][2]*((mat->data[1][0]*mat->data[2][1])-(mat->data[1][1]*mat->data[2][0])));
+    mat_inv.data[0][0]=
+		(mat->data[1][1]*mat->data[2][2]*mat->data[3][3])-
+		(mat->data[1][1]*mat->data[3][2]*mat->data[2][3])-
+		(mat->data[1][2]*mat->data[2][1]*mat->data[3][3])+
+		(mat->data[1][2]*mat->data[3][1]*mat->data[2][3])+
+		(mat->data[1][3]*mat->data[2][1]*mat->data[3][2])-
+		(mat->data[1][3]*mat->data[3][1]*mat->data[2][2]);
+    mat_inv.data[0][1]=
+		(-mat->data[0][1]*mat->data[2][2]*mat->data[3][3])+
+		(mat->data[0][1]*mat->data[3][2]*mat->data[2][3])+
+		(mat->data[0][2]*mat->data[2][1]*mat->data[3][3])-
+		(mat->data[0][2]*mat->data[3][1]*mat->data[2][3])-
+		(mat->data[0][3]*mat->data[2][1]*mat->data[3][2])+
+		(mat->data[0][3]*mat->data[3][1]*mat->data[2][2]);
+    mat_inv.data[0][2]=
+		(mat->data[0][1]*mat->data[1][2]*mat->data[3][3])-
+		(mat->data[0][1]*mat->data[3][2]*mat->data[1][3])-
+		(mat->data[0][2]*mat->data[1][1]*mat->data[3][3])+
+		(mat->data[0][2]*mat->data[3][1]*mat->data[1][3])+
+		(mat->data[0][3]*mat->data[1][1]*mat->data[3][2])-
+		(mat->data[0][3]*mat->data[3][1]*mat->data[1][2]);
+    mat_inv.data[0][3]=
+		(-mat->data[0][1]*mat->data[1][2]*mat->data[2][3])+
+		(mat->data[0][1]*mat->data[2][2]*mat->data[1][3])+
+		(mat->data[0][2]*mat->data[1][1]*mat->data[2][3])-
+		(mat->data[0][2]*mat->data[2][1]*mat->data[1][3])-
+		(mat->data[0][3]*mat->data[1][1]*mat->data[2][2])+
+		(mat->data[0][3]*mat->data[2][1]*mat->data[1][2]);
+    mat_inv.data[1][0]=
+		(-mat->data[1][0]*mat->data[2][2]*mat->data[3][3])+
+		(mat->data[1][0]*mat->data[3][2]*mat->data[2][3])+
+		(mat->data[1][2]*mat->data[2][0]*mat->data[3][3])-
+		(mat->data[1][2]*mat->data[3][0]*mat->data[2][3])-
+		(mat->data[1][3]*mat->data[2][0]*mat->data[3][2])+
+		(mat->data[1][3]*mat->data[3][0]*mat->data[2][2]);
+    mat_inv.data[1][1]=
+		(mat->data[0][0]*mat->data[2][2]*mat->data[3][3])-
+		(mat->data[0][0]*mat->data[3][2]*mat->data[2][3])-
+		(mat->data[0][2]*mat->data[2][0]*mat->data[3][3])+
+		(mat->data[0][2]*mat->data[3][0]*mat->data[2][3])+
+		(mat->data[0][3]*mat->data[2][0]*mat->data[3][2])-
+		(mat->data[0][3]*mat->data[3][0]*mat->data[2][2]);
+    mat_inv.data[1][2]=
+		(-mat->data[0][0]*mat->data[1][2]*mat->data[3][3])+
+		(mat->data[0][0]*mat->data[3][2]*mat->data[1][3])+
+		(mat->data[0][2]*mat->data[1][0]*mat->data[3][3])-
+		(mat->data[0][2]*mat->data[3][0]*mat->data[1][3])-
+		(mat->data[0][3]*mat->data[1][0]*mat->data[3][2])+
+		(mat->data[0][3]*mat->data[3][0]*mat->data[1][2]);
+    mat_inv.data[1][3]=
+		(mat->data[0][0]*mat->data[1][2]*mat->data[2][3])-
+		(mat->data[0][0]*mat->data[2][2]*mat->data[1][3])-
+		(mat->data[0][2]*mat->data[1][0]*mat->data[2][3])+
+		(mat->data[0][2]*mat->data[2][0]*mat->data[1][3])+
+		(mat->data[0][3]*mat->data[1][0]*mat->data[2][2])-
+		(mat->data[0][3]*mat->data[2][0]*mat->data[1][2]);
+    mat_inv.data[2][0]=
+		(mat->data[1][0]*mat->data[2][1]*mat->data[3][3])-
+		(mat->data[1][0]*mat->data[3][1]*mat->data[2][3])-
+		(mat->data[1][1]*mat->data[2][0]*mat->data[3][3])+
+		(mat->data[1][1]*mat->data[3][0]*mat->data[2][3])+
+		(mat->data[1][3]*mat->data[2][0]*mat->data[3][1])-
+		(mat->data[1][3]*mat->data[3][0]*mat->data[2][1]);
+    mat_inv.data[2][1]=
+		(-mat->data[0][0]*mat->data[2][1]*mat->data[3][3])+
+		(mat->data[0][0]*mat->data[3][1]*mat->data[2][3])+
+		(mat->data[0][1]*mat->data[2][0]*mat->data[3][3])-
+		(mat->data[0][1]*mat->data[3][0]*mat->data[2][3])-
+		(mat->data[0][3]*mat->data[2][0]*mat->data[3][1])+
+		(mat->data[0][3]*mat->data[3][0]*mat->data[2][1]);
+    mat_inv.data[2][2]=
+		(mat->data[0][0]*mat->data[1][1]*mat->data[3][3])-
+		(mat->data[0][0]*mat->data[3][1]*mat->data[1][3])-
+		(mat->data[0][1]*mat->data[1][0]*mat->data[3][3])+
+		(mat->data[0][1]*mat->data[3][0]*mat->data[1][3])+
+		(mat->data[0][3]*mat->data[1][0]*mat->data[3][1])-
+		(mat->data[0][3]*mat->data[3][0]*mat->data[1][1]);
+    mat_inv.data[2][3]=
+		(-mat->data[0][0]*mat->data[1][1]*mat->data[2][3])+
+		(mat->data[0][0]*mat->data[2][1]*mat->data[1][3])+
+		(mat->data[0][1]*mat->data[1][0]*mat->data[2][3])-
+		(mat->data[0][1]*mat->data[2][0]*mat->data[1][3])-
+		(mat->data[0][3]*mat->data[1][0]*mat->data[2][1])+
+		(mat->data[0][3]*mat->data[2][0]*mat->data[1][1]);
+    mat_inv.data[3][0]=
+		(-mat->data[1][0]*mat->data[2][1]*mat->data[3][2])+
+		(mat->data[1][0]*mat->data[3][1]*mat->data[2][2])+
+		(mat->data[1][1]*mat->data[2][0]*mat->data[3][2])-
+		(mat->data[1][1]*mat->data[3][0]*mat->data[2][2])-
+		(mat->data[1][2]*mat->data[2][0]*mat->data[3][1])+
+		(mat->data[1][2]*mat->data[3][0]*mat->data[2][1]);
+    mat_inv.data[3][1]=
+		(mat->data[0][0]*mat->data[2][1]*mat->data[3][2])-
+		(mat->data[0][0]*mat->data[3][1]*mat->data[2][2])-
+		(mat->data[0][1]*mat->data[2][0]*mat->data[3][2])+
+		(mat->data[0][1]*mat->data[3][0]*mat->data[2][2])+
+		(mat->data[0][2]*mat->data[2][0]*mat->data[3][1])-
+		(mat->data[0][2]*mat->data[3][0]*mat->data[2][1]);
+    mat_inv.data[3][2]=
+		(-mat->data[0][0]*mat->data[1][1]*mat->data[3][2])+
+		(mat->data[0][0]*mat->data[3][1]*mat->data[1][2])+
+		(mat->data[0][1]*mat->data[1][0]*mat->data[3][2])-
+		(mat->data[0][1]*mat->data[3][0]*mat->data[1][2])-
+		(mat->data[0][2]*mat->data[1][0]*mat->data[3][1])+
+		(mat->data[0][2]*mat->data[3][0]*mat->data[1][1]);
+    mat_inv.data[3][3]=
+		(mat->data[0][0]*mat->data[1][1]*mat->data[2][2])-
+		(mat->data[0][0]*mat->data[2][1]*mat->data[1][2])-
+		(mat->data[0][1]*mat->data[1][0]*mat->data[2][2])+
+		(mat->data[0][1]*mat->data[2][0]*mat->data[1][2])+
+		(mat->data[0][2]*mat->data[1][0]*mat->data[2][1])-
+		(mat->data[0][2]*mat->data[2][0]*mat->data[1][1]);
 
-	if (det==0.0f) return;
+    det=(mat->data[0][0]*mat_inv.data[0][0])+(mat->data[1][0]*mat_inv.data[0][1])+(mat->data[2][0]*mat_inv.data[0][2])+(mat->data[3][0]*mat_inv.data[0][3]);
+    if (det==0.0f) return;
 
-	inv_det=1.0f/det;
+    det=1.0f/det;
 
-	r_mat.data[0][0]=((mat->data[1][1]*mat->data[2][2])-(mat->data[2][1]*mat->data[1][2]))*inv_det;
-	r_mat.data[1][0]=-((mat->data[0][1]*mat->data[2][2])-(mat->data[0][2]*mat->data[2][1]))*inv_det;
-	r_mat.data[2][0]=((mat->data[0][1]*mat->data[1][2])-(mat->data[0][2]*mat->data[1][1]))*inv_det;
-	r_mat.data[3][0]=0.0f;
+	m1=&mat->data[0][0];
+	m2=&mat_inv.data[0][0];
 
-	r_mat.data[0][1]=-((mat->data[1][0]*mat->data[2][2])-(mat->data[1][2]*mat->data[2][0]))*inv_det;
-	r_mat.data[1][1]=((mat->data[0][0]*mat->data[2][2])-(mat->data[0][2]*mat->data[2][0]))*inv_det;
-	r_mat.data[2][1]=-((mat->data[0][0]*mat->data[1][2])-(mat->data[1][0]*mat->data[0][2]))*inv_det;
-	r_mat.data[3][1]=0.0f;
-
-	r_mat.data[0][2]=((mat->data[1][0]*mat->data[2][1])-(mat->data[2][0]*mat->data[1][1]))*inv_det;
-	r_mat.data[1][2]=-((mat->data[0][0]*mat->data[2][1])-(mat->data[2][0]*mat->data[0][1]))*inv_det;
-	r_mat.data[2][2]=((mat->data[0][0]*mat->data[1][1])-(mat->data[1][0]*mat->data[0][1]))*inv_det;
-	r_mat.data[3][2]=0.0f;
-
-	r_mat.data[0][3]=r_mat.data[1][3]=r_mat.data[2][3]=r_mat.data[3][3]=0.0f;
-
- 	memmove(mat,&r_mat,sizeof(matrix_type));
+	for (n=0;n!=16;n++) {
+        *m1++=(*m2++)*det;
+	}
 }
 
 /* =======================================================
