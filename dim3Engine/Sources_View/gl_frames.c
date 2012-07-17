@@ -83,7 +83,9 @@ void gl_create_normal_matrix(matrix_type *model_mat)
 	matrix_type			mat;
 	
 	memmove(&mat,model_mat,sizeof(matrix_type));
-	matrix_inverse_transpose(&mat);
+
+	matrix_inverse(&mat);
+	matrix_transpose(&mat);
 	
 	matrix_to_opengl_uniform_3x3(&mat,gl_normal_matrix);
 }

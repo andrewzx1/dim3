@@ -134,7 +134,7 @@ extern void matrix_translate(matrix_type *mat,float x,float y,float z);
 extern void matrix_scale(matrix_type *mat,float x,float y,float z);
 extern void matrix_rotate(matrix_type *mat,float ang,float x,float y,float z);
 extern void matrix_transpose(matrix_type *mat);
-extern void matrix_inverse_transpose(matrix_type *mat);
+extern void matrix_inverse(matrix_type *mat);
 extern void matrix_lookat(matrix_type *mat,float eye_x,float eye_y,float eye_z,float center_x,float center_y,float center_z,float up_x,float up_y,float up_z);
 extern void matrix_to_opengl_uniform_4x4(matrix_type *mat,float *mp);
 extern void matrix_to_opengl_uniform_3x3(matrix_type *mat,float *mp);
