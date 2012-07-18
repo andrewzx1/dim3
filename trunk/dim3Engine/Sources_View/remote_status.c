@@ -157,9 +157,6 @@ void remote_draw_names_setup(void)
 		// remove names behind z or off-screen
 		// ignore console as it won't matter for projection
 		
-	gl_3D_view();
-	gl_3D_rotate(&view.render->camera.pnt,&view.render->camera.ang);
-	
 	for (n=0;n!=view.render->draw_list.count;n++) {
 		if (view.render->draw_list.items[n].type!=view_render_type_object) continue;
 		obj=server.obj_list.objs[view.render->draw_list.items[n].idx];
@@ -274,8 +271,6 @@ void remote_draw_names_render(void)
 	
 	if (net_setup.mode==net_mode_none) return;
 	if (!setup.network.show_names) return;
-
-	gl_2D_view_interface();
 	
 	glDisable(GL_DEPTH_TEST);
 	

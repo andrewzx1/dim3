@@ -100,9 +100,6 @@ void halo_draw_setup(void)
 		// remove halos behind z or off-screen
 		// ignore console as it won't matter for projection
 		
-	gl_3D_view();
-	gl_3D_rotate(&view.render->camera.pnt,&view.render->camera.ang);
-
 	for (n=0;n!=view.render->halo_draw.count;n++) {
 		halo_draw=&view.render->halo_draw.halos[n];
 		
@@ -246,10 +243,6 @@ void halo_draw_render(void)
 		// any halos to draw?
 		
 	if (view.render->halo_draw.in_view_count==0) return;
-		
-		// halos are post-render overlay effects
-		
-	gl_2D_view_screen();
 
 		// setup texture drawing
 

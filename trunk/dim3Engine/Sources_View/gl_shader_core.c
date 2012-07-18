@@ -1066,7 +1066,7 @@ static inline int gl_core_shader_find_for_mode(int core_shader_group,texture_typ
 	bump=(texture->frames[0].bumpmap.gl_id!=-1);
 	spec=(texture->frames[0].specularmap.gl_id!=-1);
 	glow=(texture->frames[0].glowmap.gl_id!=-1);
-	
+
 		// spec requires a bump, so turn
 		// it off if no bump
 		

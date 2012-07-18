@@ -63,12 +63,12 @@ void progress_initialize(char *map_name,int max)
 		
 	if (map_name!=NULL) {
 		file_paths_data(&file_path_setup,path,"Bitmaps/Backgrounds_Map",map_name,"png");
-		bitmap_ok=bitmap_open(&progress_background_bitmap,path,FALSE,FALSE,FALSE,gl_check_texture_rectangle_ok(),FALSE);
+		bitmap_ok=bitmap_open(&progress_background_bitmap,path,FALSE,FALSE,FALSE,gl_check_npot_textures_ok(),FALSE);
 	}
 	
 	if (!bitmap_ok) {
 		view_file_paths_bitmap_check_wide(path,"Bitmaps/Backgrounds","load");
-		bitmap_open(&progress_background_bitmap,path,FALSE,FALSE,FALSE,gl_check_texture_rectangle_ok(),FALSE);
+		bitmap_open(&progress_background_bitmap,path,FALSE,FALSE,FALSE,gl_check_npot_textures_ok(),FALSE);
 	}
 
 		// overlay bitmap
@@ -127,14 +127,8 @@ void progress_next(void)
 		// draw background
 		// progress can be called while baseutility loads bitmaps, need to reset the current bitmap so it doesn't get lost
 
-	if (gl_check_texture_rectangle_ok()) {
-		gl_texture_clear(0,TRUE);
-		view_primitive_2D_texture_quad_rectangle(progress_background_bitmap.gl_id,1.0f,0,iface.scale_x,0,iface.scale_y,progress_background_bitmap.wid,progress_background_bitmap.high);
-	}
-	else {
-		gl_texture_clear(0,FALSE);
-		view_primitive_2D_texture_quad(progress_background_bitmap.gl_id,NULL,1.0f,0,iface.scale_x,0,iface.scale_y,0.0f,1.0f,0.0f,1.0f,TRUE);
-	}
+	gl_texture_clear(0);
+	view_primitive_2D_texture_quad(progress_background_bitmap.gl_id,NULL,1.0f,0,iface.scale_x,0,iface.scale_y,0.0f,1.0f,0.0f,1.0f,TRUE);
 	
 		// draw the progress background
 		

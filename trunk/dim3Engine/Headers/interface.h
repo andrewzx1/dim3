@@ -664,13 +664,11 @@ extern bool gl_screen_shot(int lft_x,int top_y,int wid,int high,bool thumbnail,c
 // gl settings
 //
 
-extern void gl_check_initialize(void);
+extern bool gl_check_initialize(char *err_str);
 extern inline bool gl_check_frame_buffer_ok(void);
 extern inline bool gl_check_fsaa_ok(void);
-extern inline bool gl_check_texture_anisotropic_filter_ok(void);
 extern inline bool gl_check_texture_generate_mipmaps_ok(void);
-extern inline bool gl_check_texture_rectangle_ok(void);
-extern inline bool gl_check_textured_point_ok(void);
+extern inline bool gl_check_npot_textures_ok(void);
 
 //
 // lights
@@ -760,7 +758,6 @@ extern void view_primitive_3D_line(d3col *col,float alpha,int x0,int y0,int z0,i
 extern void view_primitive_3D_line_cube(d3col *col,float alpha,int *px,int *py,int *pz);
 extern void view_primitive_2D_texture_quad(GLuint gl_id,d3col *col,float alpha,int lft,int rgt,int top,int bot,float gx,float gx2,float gy,float gy2,bool clamp);
 extern void view_primitive_2D_texture_quad_rot(GLuint gl_id,d3col *col,float alpha,int lft,int rgt,int top,int bot,float ang,float gx,float gx2,float gy,float gy2);
-extern void view_primitive_2D_texture_quad_rectangle(GLuint gl_id,float alpha,int lft,int rgt,int top,int bot,int pixel_wid,int pixel_high);
 
 //
 // shaders
@@ -807,8 +804,6 @@ extern inline void gl_shader_draw_execute_simple_bitmap_set_color(d3col *col,flo
 extern inline void gl_shader_draw_execute_simple_bitmap_set_texture(unsigned long gl_id);
 extern inline void gl_shader_draw_execute_simple_bitmap_ptr(unsigned long gl_id,int vertex_size,float *vertexes,float *uvs,d3col *col,float alpha);
 extern inline void gl_shader_draw_execute_simple_bitmap_vbo_attribute(int vertex_size,int vertex_offset,int uv_offset,int stride,d3col *col,float alpha);
-
-extern inline void gl_shader_draw_execute_simple_bitmap_rect_ptr(unsigned long gl_id,int vertex_size,float *vertexes,float *uvs,d3col *col,float alpha);
 
 extern void gl_shader_draw_execute_reset_cached_offsets(void);
 extern void gl_shader_draw_execute_map(texture_type *texture,int txt_idx,int frame,int lmap_txt_idx,float alpha,int vertex_offset,int uv_offset,int lmap_uv_offset,int tangent_offset,int normal_offset,int stride,view_glsl_light_list_type *light_list);
@@ -918,8 +913,8 @@ extern void view_obscure_run(void);
 
 extern void gl_texture_initialize(void);
 extern void gl_texture_shutdown(void);
-extern inline void gl_texture_bind(int unit,bool rectangle,GLuint txt_id);
-extern inline void gl_texture_clear(int unit,bool rectangle);
+extern inline void gl_texture_bind(int unit,GLuint txt_id);
+extern inline void gl_texture_clear(int unit);
 
 //
 // text
@@ -939,7 +934,7 @@ extern void gl_text_draw(int x,int y,char *txt,int just,bool vcenter,d3col *col,
 
 extern void view_images_initialize(void);
 extern void view_images_shutdown(void);
-extern int view_images_load_single(char *path,bool rectangle,bool simple);
+extern int view_images_load_single(char *path,bool npot,bool simple);
 extern void view_images_free_single(int idx);
 extern void view_images_cached_load(void);
 extern void view_images_cached_free(void);

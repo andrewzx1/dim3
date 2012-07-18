@@ -40,8 +40,7 @@ extern int					nuser_shader;
 extern shader_type			*gl_shader_current,
 							user_shaders[max_iface_user_shader],
 							core_shaders[max_shader_light+1][max_core_shader],
-							color_shader,gradient_shader,black_shader,
-							bitmap_shader,bitmap_rect_shader;
+							color_shader,gradient_shader,black_shader,bitmap_shader;
 
 /* =======================================================
 
@@ -167,7 +166,7 @@ void gl_shader_draw_execute_simple_bitmap_set_color(d3col *col,float alpha)
 
 void gl_shader_draw_execute_simple_bitmap_set_texture(unsigned long gl_id)
 {
-	gl_texture_bind(0,FALSE,gl_id);
+	gl_texture_bind(0,gl_id);
 }
 
 void gl_shader_draw_execute_simple_bitmap_ptr(unsigned long gl_id,int vertex_size,float *vertexes,float *uvs,d3col *col,float alpha)
@@ -189,46 +188,6 @@ void gl_shader_draw_execute_simple_bitmap_vbo_attribute(int vertex_size,int vert
 	
 	glVertexAttribPointer(bitmap_shader.var_locs.dim3Vertex,vertex_size,GL_FLOAT,GL_FALSE,stride,(void*)vertex_offset);
 	glVertexAttribPointer(bitmap_shader.var_locs.dim3VertexUV,2,GL_FLOAT,GL_FALSE,stride,(void*)uv_offset);
-}
-
-/* =======================================================
-
-      Execute Simple Bitmap Rectangle Shaders
-      
-======================================================= */
-
-void gl_shader_draw_execute_simple_bitmap_rect_set_color(d3col *col,float alpha)
-{
-	if ((bitmap_rect_shader.var_values.simple_color.r!=col->r) || (bitmap_rect_shader.var_values.simple_color.g!=col->g) || (bitmap_rect_shader.var_values.simple_color.b!=col->b) || (bitmap_rect_shader.var_values.simple_color.a!=alpha)) {
-		bitmap_rect_shader.var_values.simple_color.r=col->r;
-		bitmap_rect_shader.var_values.simple_color.g=col->g;
-		bitmap_rect_shader.var_values.simple_color.b=col->b;
-		bitmap_rect_shader.var_values.simple_color.a=alpha;
-		glUniform4f(bitmap_rect_shader.var_locs.dim3SimpleColor,col->r,col->g,col->b,alpha);
-	}
-}
-
-void gl_shader_draw_execute_simple_bitmap_rect_ptr(unsigned long gl_id,int vertex_size,float *vertexes,float *uvs,d3col *col,float alpha)
-{
-#if defined(D3_OS_IPHONE) || defined(D3_OS_ANDRIOD)
-	gl_shader_draw_execute_simple_bitmap_ptr(gl_id,vertex_size,vertexes,uvs,col,alpha);
-#else
-	
-		// set color
-		
-	gl_shader_draw_execute_set_program(&bitmap_rect_shader);
-	gl_shader_set_draw_matrix_variables(&bitmap_rect_shader);
-	gl_shader_draw_execute_simple_bitmap_rect_set_color(col,alpha);
-	
-		// bind the bitmap
-
-	gl_texture_bind(0,TRUE,gl_id);
-	
-		// bind the required attributes
-		
-	glVertexAttribPointer(bitmap_rect_shader.var_locs.dim3Vertex,vertex_size,GL_FLOAT,GL_FALSE,0,(void*)vertexes);
-	glVertexAttribPointer(bitmap_rect_shader.var_locs.dim3VertexUV,2,GL_FLOAT,GL_FALSE,0,(void*)uvs);
-#endif
 }
 
 /* =======================================================

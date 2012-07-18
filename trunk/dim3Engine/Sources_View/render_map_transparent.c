@@ -179,11 +179,6 @@ void render_map_mesh_transparent(void)
 	map_mesh_type				*mesh;
 	map_mesh_poly_type			*poly;
 	view_glsl_light_list_type	light_list;
-
-		// setup view
-
-	gl_3D_view();
-	gl_3D_rotate(&view.render->camera.pnt,&view.render->camera.ang);
 	
 		// sort meshes
 

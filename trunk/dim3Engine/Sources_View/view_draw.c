@@ -69,11 +69,6 @@ void view_draw_model_opaque(void)
 	int					n;
 	obj_type			*obj;
 	proj_type			*proj;
-	
-		// setup draw
-		
-	gl_3D_view();
-	gl_3D_rotate(&view.render->camera.pnt,&view.render->camera.ang);
 
 		// render the models
 
@@ -106,11 +101,6 @@ void view_draw_model_transparent(void)
 	int					n;
 	obj_type			*obj;
 	proj_type			*proj;
-	
-		// setup draw
-		
-	gl_3D_view();
-	gl_3D_rotate(&view.render->camera.pnt,&view.render->camera.ang);
 
 		// render the models
 		// draw backwards to sort back to front
@@ -146,11 +136,6 @@ void view_draw_models_final(void)
 	d3col				col;
 	obj_type			*obj;
 	proj_type			*proj;
-	
-		// setup draw
-		
-	gl_3D_view();
-	gl_3D_rotate(&view.render->camera.pnt,&view.render->camera.ang);
 
 		// shadow overrides
 
@@ -212,6 +197,7 @@ void view_draw_scene_build(void)
 	tick=game_time_get();
 
 		// setup projection
+		// and clipping planes
 
 	gl_3D_view();
 	gl_3D_rotate(&view.render->camera.pnt,&view.render->camera.ang);
@@ -252,21 +238,34 @@ void view_draw_scene_build(void)
 
 void view_draw_scene_render(obj_type *obj,weapon_type *weap)
 {
-		// setup projection
-
-	gl_3D_view();
-	gl_3D_rotate(&view.render->camera.pnt,&view.render->camera.ang);
-
-		// draw background and sky
+		// draw background
+		// backgrounds are on the 2D screen
 	
-	sky_draw_background();
-	sky_draw();
+	if (map.background.on) {
+		gl_2D_view_screen();
+		sky_draw_background();
+	}
+
+		// draw skies, on non-rotated
+		// 3D view
+
+	if (map.sky.on) {
+		gl_3D_view();
+		gl_3D_rotate(NULL,&view.render->camera.ang);
+		sky_draw();
+	}
 
 		// rebuild anything in the map VBOs
 		// that needs chaning (lighting, UV shifts,
 		// moving meshes, etc)
 	
 	view_map_vbo_rebuild();
+
+		// these next drawings are done
+		// in rotated 3D
+
+	gl_3D_view();
+	gl_3D_rotate(&view.render->camera.pnt,&view.render->camera.ang);
 
 		// draw opaque scene items
 
@@ -297,8 +296,16 @@ void view_draw_scene_render(obj_type *obj,weapon_type *weap)
 		
 	rain_draw();
 	fog_draw_textured();
+
+		// weapon in hand
+
+	if ((obj!=NULL) && (weap!=NULL)) {
+		if ((map.camera.mode==cv_fpp) && (!setup.no_draw_weapon)) draw_weapon_hand(obj,weap);
+	}
 	
 		// setup halos, crosshairs, zoom masks
+		// this happens in 3D space, and the 2D
+		// x,y is created
 		
 	remote_draw_names_setup();
 	halo_draw_setup();
@@ -306,14 +313,14 @@ void view_draw_scene_render(obj_type *obj,weapon_type *weap)
 	if ((obj!=NULL) && (weap!=NULL)) {
 		crosshair_setup(obj,weap);
 		zoom_setup(obj,weap);
-	
-			// draw the weapons in hand
-
-		if ((map.camera.mode==cv_fpp) && (!setup.no_draw_weapon)) draw_weapon_hand(obj,weap);
 	}
 
-		// draw the remote names, halos, crosshairs, and zoom masks
+		// draw the remote names, halos,
+		// crosshairs, and zoom masks
+		// this happens in 2D space
 	
+	gl_2D_view_interface();
+
 	remote_draw_names_render();
 	halo_draw_render();
 	

@@ -102,9 +102,6 @@ bool crosshair_get_location(obj_type *obj,weapon_type *weap,int *kx,int *ky,int 
 		if (dist!=NULL) *dist=0;
 	}
 	else {
-		gl_3D_view();
-		gl_3D_rotate(&view.render->camera.pnt,&view.render->camera.ang);
-		
 		tx=contact.hpt.x;
 		ty=contact.hpt.y;
 		tz=contact.hpt.z;
@@ -301,8 +298,6 @@ void crosshair_draw(obj_type *obj,weapon_type *weap)
 	
 		// draw the crosshair
 		
-	gl_2D_view_screen();
-	
 	half_sz=crosshair_draw->sz>>1;
 	
 	lft=crosshair_draw->x-half_sz;

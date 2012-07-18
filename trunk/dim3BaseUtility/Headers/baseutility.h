@@ -433,9 +433,9 @@ typedef struct		{
 //
 
 extern void bitmap_new(bitmap_type *bitmap);
-extern bool bitmap_open(bitmap_type *bitmap,char *path,bool mipmap,bool compress,bool pixelated,bool rectangle,bool scrub_black_to_alpha);
+extern bool bitmap_open(bitmap_type *bitmap,char *path,bool mipmap,bool compress,bool pixelated,bool npot,bool scrub_black_to_alpha);
 extern bool bitmap_color(bitmap_type *bitmap,d3col *col);
-extern bool bitmap_data(bitmap_type *bitmap,unsigned char *data,int wid,int high,bool alpha_channel,bool mipmap,bool compress,bool pixelated,bool rectangle);
+extern bool bitmap_data(bitmap_type *bitmap,unsigned char *data,int wid,int high,bool alpha_channel,bool mipmap,bool compress,bool pixelated,bool npot);
 extern void bitmap_close(bitmap_type *bitmap);
 
 extern int bitmap_texture_get_current_frame(texture_type *texture,bool reverse,int tick);

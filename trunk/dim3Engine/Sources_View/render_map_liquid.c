@@ -577,11 +577,6 @@ void render_map_liquid_opaque(void)
 {
 	int					n;
 	map_liquid_type		*liq;
-
-		// setup view
-
-	gl_3D_view();
-	gl_3D_rotate(&view.render->camera.pnt,&view.render->camera.ang);
 	
 		// common setup
 
@@ -607,11 +602,6 @@ void render_map_liquid_transparent(void)
 {
 	int					n;
 	map_liquid_type		*liq;
-
-		// setup view
-
-	gl_3D_view();
-	gl_3D_rotate(&view.render->camera.pnt,&view.render->camera.ang);
 	
 		// common setup
 

@@ -33,11 +33,8 @@ and can be sold or given away.
 
 bool						gl_check_value_frame_buffer,
 							gl_check_value_fsaa,
-							gl_check_value_texture_compress,
-							gl_check_value_texture_anisotropic_filter,
 							gl_check_value_texture_generate_mipmaps,
-							gl_check_value_texture_rectangle,
-							gl_check_value_textured_point;
+							gl_check_value_npot_textures;
 
 extern setup_type			setup;
 extern render_info_type		render_info;
@@ -48,46 +45,68 @@ extern render_info_type		render_info;
       
 ======================================================= */
 
-bool gl_check_initialize_shader(void)
+bool gl_check_initialize(char *err_str)
 {
+	bool			shader_ok;
 #ifdef D3_OS_MAC
 	GLint			fragGPU,vertGPU;
 #endif
 
+		// determine if shaders are active as
+		// they are required.  Shaders are just part
+		// of the ES2 spec
+
+#ifndef D3_OPENGL_ES
+
+	shader_ok=TRUE;
+
 		// check GL string
 		
-	if (strstr(render_info.ext_string,"GL_ARB_shader_objects")==NULL) return(FALSE);
-	if (strstr(render_info.ext_string,"GL_ARB_fragment_shader")==NULL) return(FALSE);
-	if (strstr(render_info.ext_string,"GL_ARB_vertex_shader")==NULL) return(FALSE);
-	if (strstr(render_info.ext_string,"GL_ARB_shading_language_100")==NULL) return(FALSE);
+	if (strstr(render_info.ext_string,"GL_ARB_shader_objects")==NULL) shader_ok=FALSE;
+	if (strstr(render_info.ext_string,"GL_ARB_fragment_shader")==NULL) shader_ok=FALSE;
+	if (strstr(render_info.ext_string,"GL_ARB_vertex_shader")==NULL) shader_ok=FALSE;
+	if (strstr(render_info.ext_string,"GL_ARB_shading_language_100")==NULL) shader_ok=FALSE;
 	
 		// check if GPU will actually handle it
 		
 #ifdef D3_OS_MAC
 	CGLGetParameter(CGLGetCurrentContext(),kCGLCPGPUFragmentProcessing,&fragGPU);
 	CGLGetParameter(CGLGetCurrentContext(),kCGLCPGPUVertexProcessing,&vertGPU);
-	if (!(fragGPU && vertGPU)) return(FALSE);
+	shader_ok=(fragGPU && vertGPU);
 #endif
 
-	return(TRUE);
-}
+	if (!shader_ok) {
+		strcpy(err_str,"A GPU capable of running shader programs are required to for dim3");
+		return(FALSE);
+	}
 
-void gl_check_initialize(void)
-{
-	gl_check_value_frame_buffer=FALSE;
-	
+#endif
+
+		// cache optional values
+		// luckily, in ES2, a lot of these are just
+		// part of the spec
+
 #ifndef D3_OPENGL_ES
+
+	gl_check_value_frame_buffer=FALSE;
 	if (strstr(render_info.ext_string,"GL_EXT_framebuffer_object")!=NULL) {
 		gl_check_value_frame_buffer=(strstr(render_info.ext_string,"GL_EXT_packed_depth_stencil")!=NULL);
 	}
+
+	gl_check_value_texture_generate_mipmaps=(strstr(render_info.ext_string,"GL_SGIS_generate_mipmap")!=NULL);
+	gl_check_value_npot_textures=(strstr(render_info.ext_string,"GL_ARB_texture_non_power_of_two")!=NULL);
+
+#else
+	gl_check_value_frame_buffer=TRUE;
+	gl_check_value_texture_generate_mipmaps=TRUE;
+	gl_check_value_npot_textures=TRUE;
 #endif
 
-	gl_check_value_texture_compress=(strstr(render_info.ext_string,"GL_ARB_texture_compression")!=NULL);
+		// generic checks
+
 	gl_check_value_fsaa=(strstr(render_info.ext_string,"GL_ARB_multisample")!=NULL);
-	gl_check_value_texture_anisotropic_filter=(strstr(render_info.ext_string,"GL_EXT_texture_filter_anisotropic")!=NULL);
-	gl_check_value_texture_generate_mipmaps=(strstr(render_info.ext_string,"GL_SGIS_generate_mipmap")!=NULL);
-	gl_check_value_texture_rectangle=(strstr(render_info.ext_string,"GL_ARB_texture_rectangle")!=NULL);
-	gl_check_value_textured_point=(strstr(render_info.ext_string,"GL_ARB_point_sprite")!=NULL);
+
+	return(TRUE);
 }
 
 /* =======================================================
@@ -106,23 +125,12 @@ bool gl_check_fsaa_ok(void)
 	return(gl_check_value_fsaa);
 }
 
-bool gl_check_texture_anisotropic_filter_ok(void)
-{
-	return(gl_check_value_texture_anisotropic_filter);
-}
-
 bool gl_check_texture_generate_mipmaps_ok(void)
 {
 	return(gl_check_value_texture_generate_mipmaps);
 }
 
-bool gl_check_texture_rectangle_ok(void)
+bool gl_check_npot_textures_ok(void)
 {
-	return(gl_check_value_texture_rectangle);
+	return(gl_check_value_npot_textures);
 }
-
-bool gl_check_textured_point_ok(void)
-{
-	return(gl_check_value_textured_point);
-}
-

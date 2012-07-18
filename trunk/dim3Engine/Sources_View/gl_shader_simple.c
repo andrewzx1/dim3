@@ -36,8 +36,7 @@ extern setup_type			setup;
 extern view_type			view;
 extern render_info_type		render_info;
 
-shader_type					color_shader,gradient_shader,black_shader,
-							bitmap_shader,bitmap_rect_shader;
+shader_type					color_shader,gradient_shader,black_shader,bitmap_shader;
 
 /* =======================================================
 
@@ -431,107 +430,6 @@ bool gl_simple_bitmap_shader_create(shader_type *shader,char *err_str)
 
 /* =======================================================
 
-      Build Simple Bitmap Rectangle Shader
-      
-======================================================= */
-
-char* gl_simple_bitmap_rect_shader_build_vert(void)
-{
-	char			*buf;
-
-		// memory for shader
-
-	buf=(char*)malloc(max_core_shader_data_sz);
-	if (buf==NULL) return(NULL);
-
-	bzero(buf,max_core_shader_data_sz);
-
-		// build vert shader
-
-	strcat(buf,"uniform mat4 dim3ProjectionMatrix,dim3ModelViewMatrix;\n");
-	strcat(buf,"attribute vec3 dim3Vertex;\n");
-	strcat(buf,"attribute vec2 dim3VertexUV;\n");
-	strcat(buf,"varying vec2 uv;\n");
-	
-	strcat(buf,"void main(void)\n");
-	strcat(buf,"{\n");
-	strcat(buf,"gl_Position=dim3ProjectionMatrix*dim3ModelViewMatrix*vec4(dim3Vertex,1.0);\n");
-	strcat(buf,"uv=dim3VertexUV;\n");
-	strcat(buf,"}\n");
-
-	return(buf);
-}
-
-char* gl_simple_bitmap_rect_shader_build_frag(void)
-{
-	char			*buf;
-
-		// memory for shader
-
-	buf=(char*)malloc(max_core_shader_data_sz);
-	if (buf==NULL) return(NULL);
-
-	bzero(buf,max_core_shader_data_sz);
-
-		// build frag shader
-		
-	strcat(buf,"uniform sampler2DRect dim3Tex;\n");
-	strcat(buf,"uniform vec4 dim3SimpleColor;\n");
-	strcat(buf,"varying vec2 uv;\n");
-	
-	strcat(buf,"void main(void)\n");
-	strcat(buf,"{\n");
-	strcat(buf,"gl_FragColor=texture2DRect(dim3Tex,uv)*dim3SimpleColor;\n");
-	strcat(buf,"}\n");
-
-	return(buf);
-}
-
-bool gl_simple_bitmap_rect_shader_create(shader_type *shader,char *err_str)
-{
-	char				*vertex_data,*fragment_data;
-	bool				ok;
-	
-		// create the shader code
-
-	vertex_data=gl_simple_bitmap_rect_shader_build_vert();
-	if (vertex_data==NULL) {
-		strcpy(err_str,"Out of Memory");
-		return(FALSE);
-	}
-
-	fragment_data=gl_simple_bitmap_rect_shader_build_frag();
-	if (fragment_data==NULL) {
-		free(vertex_data);
-		strcpy(err_str,"Out of Memory");
-		return(FALSE);
-	}
-	
-		// create the name
-		
-	strcpy(shader->name,"simple_bitmap_rect");
-	sprintf(shader->vertex_name,"%s_vert",shader->name);
-	sprintf(shader->fragment_name,"%s_frag",shader->name);
-	
-		// compile the code
-
-	ok=gl_shader_code_compile(shader,vertex_data,fragment_data,err_str);
-
-		// free the code
-
-	free(vertex_data);
-	free(fragment_data);
-	
-		// activate the required attributes
-		
-	glEnableVertexAttribArray(shader->var_locs.dim3Vertex);
-	glEnableVertexAttribArray(shader->var_locs.dim3VertexUV);
-
-	return(ok);
-}
-
-/* =======================================================
-
       Simple Shader Initialize/Shutdown
       
 ======================================================= */
@@ -544,7 +442,6 @@ bool gl_simple_shader_initialize(char *err_str)
 	gl_shader_code_clear(&gradient_shader);
 	gl_shader_code_clear(&black_shader);
 	gl_shader_code_clear(&bitmap_shader);
-	gl_shader_code_clear(&bitmap_rect_shader);
 
 		// initialize simple shaders	
 		
@@ -568,11 +465,6 @@ bool gl_simple_shader_initialize(char *err_str)
 		return(FALSE);
 	}
 	
-	if (!gl_simple_bitmap_rect_shader_create(&bitmap_rect_shader,err_str)) {
-		gl_simple_shader_shutdown();
-		return(FALSE);
-	}
-	
 	return(TRUE);
 }
 
@@ -584,6 +476,5 @@ void gl_simple_shader_shutdown(void)
 	gl_shader_code_shutdown(&gradient_shader);
 	gl_shader_code_shutdown(&black_shader);
 	gl_shader_code_shutdown(&bitmap_shader);
-	gl_shader_code_shutdown(&bitmap_rect_shader);
 }
 

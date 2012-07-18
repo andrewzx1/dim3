@@ -104,14 +104,6 @@ void sky_draw_background_single(map_background_layer_type *layer)
 
 void sky_draw_background(void)
 {
-		// is there a background?
-	
-	if (!map.background.on) return;
-
-		// setup view
-
-	gl_2D_view_screen();
-	
 		// draw the layers
 		
 	glDisable(GL_DEPTH_TEST);
@@ -316,11 +308,6 @@ void sky_draw_dome_panoramic(void)
 	txt_y_shift=((float)tick*0.0005f)*map.sky.txt_shift.y;
 	k=(int)txt_y_shift;
 	txt_y_shift=txt_y_shift-(float)k;
-					
-		// setup view
-
-	gl_3D_view();
-	gl_3D_rotate(NULL,&view.render->camera.ang);
 	
 		// construct vbo
 
@@ -611,11 +598,6 @@ void sky_draw_dome_hemisphere(void)
 	txt_y_shift=((float)tick*0.0005f)*map.sky.txt_shift.y;
 	k=(int)txt_y_shift;
 	txt_y_shift=txt_y_shift-(float)k;
-
-		// setup view
-
-	gl_3D_view();
-	gl_3D_rotate(NULL,&view.render->camera.ang);
 	
 		// setup texture
 		
@@ -903,11 +885,6 @@ void sky_draw_cube(void)
 	k=(int)txt_y_shift;
 	txt_y_shift=txt_y_shift-(float)k;
 
-		// setup view
-
-	gl_3D_view();
-	gl_3D_rotate(NULL,&view.render->camera.ang);
-
 		// setup texture
 		
 	glDisable(GL_BLEND);
@@ -1038,12 +1015,6 @@ void sky_draw_release(void)
 
 void sky_draw(void)
 {
-		// is there a sky?
-	
-	if (!map.sky.on) return;
-	
-		// draw specific sky type
-
 	switch (map.sky.type) {
 	
 		case st_dome_panoramic:

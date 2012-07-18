@@ -42,8 +42,7 @@ shader_type					*gl_shader_current;
 extern int					nuser_shader;
 extern shader_type			user_shaders[max_iface_user_shader],
 							core_shaders[max_shader_light+1][max_core_shader],
-							color_shader,gradient_shader,black_shader,
-							bitmap_shader,bitmap_rect_shader;
+							color_shader,gradient_shader,black_shader,bitmap_shader;
 
 extern float				gl_proj_matrix[16],gl_model_view_matrix[16],
 							gl_normal_matrix[9],
@@ -839,7 +838,7 @@ void gl_shader_set_texture(shader_type *shader,int core_shader_group,texture_typ
 				gl_id=map.textures[lmap_txt_idx].frames[0].bitmap.gl_id;
 			}
 		}
-		if (gl_id!=-1) gl_texture_bind(4,FALSE,gl_id);
+		if (gl_id!=-1) gl_texture_bind(4,gl_id);
 	}
 
 		// glow map
@@ -847,7 +846,7 @@ void gl_shader_set_texture(shader_type *shader,int core_shader_group,texture_typ
 	gl_id=texture->frames[frame].glowmap.gl_id;
 
 	if (gl_id!=-1) {
-		gl_texture_bind(3,FALSE,gl_id);
+		gl_texture_bind(3,gl_id);
 		
 		if (shader->var_values.glow_factor!=texture->glow.current_color) {
 			shader->var_values.glow_factor=texture->glow.current_color;
@@ -860,7 +859,7 @@ void gl_shader_set_texture(shader_type *shader,int core_shader_group,texture_typ
 	gl_id=texture->frames[frame].specularmap.gl_id;
 
 	if (gl_id!=-1) {
-		gl_texture_bind(2,FALSE,gl_id);
+		gl_texture_bind(2,gl_id);
 		
 		if (shader->var_values.shine_factor!=texture->shine_factor) {
 			shader->var_values.shine_factor=texture->shine_factor;
@@ -871,19 +870,19 @@ void gl_shader_set_texture(shader_type *shader,int core_shader_group,texture_typ
 		// bump map
 
 	gl_id=texture->frames[frame].bumpmap.gl_id;
-	if (gl_id!=-1) gl_texture_bind(1,FALSE,gl_id);
+	if (gl_id!=-1) gl_texture_bind(1,gl_id);
 	
 		// color map
 
 	gl_id=texture->frames[frame].bitmap.gl_id;
-	if (gl_id!=-1) gl_texture_bind(0,FALSE,gl_id);
+	if (gl_id!=-1) gl_texture_bind(0,gl_id);
 }
 
 void gl_shader_texture_override(GLuint gl_id,float alpha)
 {
 		// normally used to override for back rendering
 
-	gl_texture_bind(0,FALSE,gl_id);
+	gl_texture_bind(0,gl_id);
 	
 		// nodes can override alpha
 		// multiply in alpha so fade effects still work
@@ -947,7 +946,6 @@ void gl_shader_frame_start(void)
 	gl_shader_frame_start_per_shader(&gradient_shader);
 	gl_shader_frame_start_per_shader(&black_shader);
 	gl_shader_frame_start_per_shader(&bitmap_shader);
-	gl_shader_frame_start_per_shader(&bitmap_rect_shader);
 
 		// user shaders
 		
@@ -978,7 +976,6 @@ void gl_shader_force_matrix_resets(void)
 	gradient_shader.need_matrix_reset=TRUE;
 	black_shader.need_matrix_reset=TRUE;
 	bitmap_shader.need_matrix_reset=TRUE;
-	bitmap_rect_shader.need_matrix_reset=TRUE;
 
 		// user shaders
 		
