@@ -365,7 +365,7 @@ void gl_frame_swap(void)
 		// discard the depth and stencil
 	
 #ifdef D3_OS_IPHONE
-	glDiscardFramebufferEXT(GL_FRAMEBUFFER_EXT,2,discards);
+	glDiscardFramebufferEXT(GL_FRAMEBUFFER,2,discards);
 #endif
 
 		// swap buffer
@@ -424,7 +424,7 @@ void gl_project_point(int *x,int *y,int *z)
 #else
 	glu_patch_gluProject((float)*x,(float)*y,(float)*z,gl_model_view_matrix,gl_proj_matrix,gl_viewport,&dy,&dx,&dz);
 	
-	*x=(int)(vport[3]-dx);
+	*x=(int)(gl_viewport[3]-dx);
 	*y=(int)dy;
 	*z=(int)dz;
 #endif
