@@ -43,7 +43,6 @@ extern shader_type			*gl_shader_current,
 							color_shader,gradient_shader,black_shader,
 							bitmap_shader,bitmap_rect_shader;
 
-extern float gl_proj_matrix[16];
 /* =======================================================
 
       Shader Generic Set Program and Variables

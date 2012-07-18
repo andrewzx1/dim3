@@ -225,7 +225,12 @@ char* gl_core_map_shader_build_frag(int nlight,bool fog,bool bump,bool spec,bool
 	if (bump) {
 		strcat(buf,"vec3 bumpMap=normalize((texture2D(dim3TexBump,uv).rgb*2.0)-1.0);\n");
 		strcat(buf,"bumpMap.y=-bumpMap.y;\n");
-		strcat(buf,"float bump=dot(vec3(0.0,0.0,0.5),bumpMap);\n");
+		if (nlight==0) {
+			strcat(buf,"float bump=dot(vec3(0.0,0.0,0.5),bumpMap);\n");
+		}
+		else {
+			strcat(buf,"float bump=0.0;\n");
+		}
 	}
 	
 		// the spec map
@@ -299,7 +304,7 @@ char* gl_core_map_shader_build_frag(int nlight,bool fog,bool bump,bool spec,bool
 	if (spec) strcat(buf,")+spec");
 	if (glow) strcat(buf,")+glow");
 	strcat(buf,";\n");
-
+	
 	if (fog) strcat(buf,"gl_FragColor.rgb=mix(dim3FogColor,frag,fogFactor);\n");
 	
 	strcat(buf,"gl_FragColor.a=tex.a*dim3Alpha;\n");
@@ -672,7 +677,12 @@ char* gl_core_model_shader_build_frag(int nlight,bool fog,bool bump,bool spec,bo
 	if (bump) {
 		strcat(buf,"vec3 bumpMap=normalize((texture2D(dim3TexBump,uv).rgb*2.0)-1.0);\n");
 		strcat(buf,"bumpMap.y=-bumpMap.y;\n");
-		strcat(buf,"float bump=dot(vec3(0.0,0.0,0.5),bumpMap);\n");
+		if (nlight==0) {
+			strcat(buf,"float bump=dot(vec3(0.0,0.0,0.5),bumpMap);\n");
+		}
+		else {
+			strcat(buf,"float bump=0.0;\n");
+		}
 	}
 	
 		// the spec map
