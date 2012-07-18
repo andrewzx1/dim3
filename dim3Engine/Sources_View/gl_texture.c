@@ -87,7 +87,7 @@ void gl_texture_shutdown(void)
       
 ======================================================= */
 
-void gl_texture_bind(int unit,bool rectangle,GLuint txt_id)
+void gl_texture_bind(int unit,GLuint txt_id)
 {
 	if (gl_texture_current_binds[unit]==txt_id) return;
 
@@ -98,17 +98,12 @@ void gl_texture_bind(int unit,bool rectangle,GLuint txt_id)
 		glActiveTexture(GL_TEXTURE0+unit);
 	}
 	
-	if (!rectangle) {
-		glBindTexture(GL_TEXTURE_2D,txt_id);
-	}
-	else {
-		glBindTexture(GL_TEXTURE_RECTANGLE,txt_id);
-	}
+	glBindTexture(GL_TEXTURE_2D,txt_id);
 }
 
-void gl_texture_clear(int unit,bool rectangle)
+void gl_texture_clear(int unit)
 {
-	gl_texture_bind(unit,rectangle,0);
+	gl_texture_bind(unit,0);
 	gl_texture_current_binds[unit]=-1;
 }
 

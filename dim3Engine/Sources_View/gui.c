@@ -51,7 +51,7 @@ void gui_background_load(char *background_path,char *bitmap_name)
 	char		path[1024];
 
 	if (!view_file_paths_bitmap_check_wide(path,background_path,bitmap_name)) return;
-	gui_background_image_idx=view_images_load_single(path,gl_check_texture_rectangle_ok(),TRUE);
+	gui_background_image_idx=view_images_load_single(path,gl_check_npot_textures_ok(),TRUE);
 }
 
 /* =======================================================
@@ -143,13 +143,7 @@ void gui_draw_background(float alpha)
 		// background image
 
 	bitmap=view_images_get_bitmap(gui_background_image_idx);
-
-	if (gl_check_texture_rectangle_ok()) {
-		view_primitive_2D_texture_quad_rectangle(bitmap->gl_id,alpha,0,iface.scale_x,0,iface.scale_y,bitmap->wid,bitmap->high);
-	}
-	else {
-		view_primitive_2D_texture_quad(bitmap->gl_id,NULL,alpha,0,iface.scale_x,0,iface.scale_y,0.0f,1.0f,0.0f,1.0f,TRUE);
-	}
+	view_primitive_2D_texture_quad(bitmap->gl_id,NULL,alpha,0,iface.scale_x,0,iface.scale_y,0.0f,1.0f,0.0f,1.0f,TRUE);
 }
 
 /* =======================================================

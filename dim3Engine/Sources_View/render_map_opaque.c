@@ -77,9 +77,6 @@ void render_map_mesh_opaque(void)
 	view_glsl_light_list_type	light_list;
 
 		// setup view
-
-	gl_3D_view();
-	gl_3D_rotate(&view.render->camera.pnt,&view.render->camera.ang);
 	
 	glEnable(GL_DEPTH_TEST); 
 	glDepthFunc(GL_LEQUAL);

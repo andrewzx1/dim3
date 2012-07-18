@@ -414,11 +414,6 @@ void effect_draw(void)
 {
 	int				n,idx,tick,count;
 	effect_type		*effect;
-
-		// setup view
-
-	gl_3D_view();
-	gl_3D_rotate(&view.render->camera.pnt,&view.render->camera.ang);
 		
 		// draw effects
 		// draw backwards to sort back to front

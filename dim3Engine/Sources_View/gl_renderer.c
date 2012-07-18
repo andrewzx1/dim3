@@ -187,7 +187,7 @@ bool gl_initialize(int screen_wid,int screen_high,int fsaa_mode,char *err_str)
 	glGetIntegerv(GL_MAX_TEXTURE_SIZE,&ntxtsize);
 	render_info.texture_max_size=(int)ntxtsize;
 	
-	gl_check_initialize();
+	if (!gl_check_initialize(err_str)) return(FALSE);
 	
 		// stick refresh rate to 60
 

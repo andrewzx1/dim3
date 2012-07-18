@@ -294,7 +294,7 @@ unsigned char* bitmap_setup_alpha(bitmap_type *bitmap,unsigned char *png_data,bo
       
 ======================================================= */
 
-bool bitmap_open(bitmap_type *bitmap,char *path,bool mipmap,bool compress,bool pixelated,bool rectangle,bool scrub_black_to_alpha)
+bool bitmap_open(bitmap_type *bitmap,char *path,bool mipmap,bool compress,bool pixelated,bool npot,bool scrub_black_to_alpha)
 {
 	unsigned char		*png_data;
 	bool				ok,alpha_channel;
@@ -306,17 +306,10 @@ bool bitmap_open(bitmap_type *bitmap,char *path,bool mipmap,bool compress,bool p
 	png_data=png_utility_read(path,&bitmap->wid,&bitmap->high,&alpha_channel);
 	if (png_data==NULL) return(FALSE);
 
-		// if not a rectangle, fix size
-		// if not a power of two and do any
-		// texture quality changes
+		// if not a non-power-of-two, fix size
+		// if data is not a power of two
 
-		// opengl es doesn't support non-square textures
-		
-#ifndef D3_OPENGL_ES
-	if (!rectangle) png_data=bitmap_fix_power_2(bitmap,alpha_channel,png_data);
-#else
-	png_data=bitmap_fix_power_2(bitmap,alpha_channel,png_data);
-#endif
+	if (!npot) png_data=bitmap_fix_power_2(bitmap,alpha_channel,png_data);
 
 		// set alphas and scrubbing
 		
@@ -324,7 +317,7 @@ bool bitmap_open(bitmap_type *bitmap,char *path,bool mipmap,bool compress,bool p
 		
 		// get the texture
 		
-	ok=bitmap_texture_open(bitmap,png_data,mipmap,compress,pixelated,rectangle);
+	ok=bitmap_texture_open(bitmap,png_data,mipmap,compress,pixelated,npot);
 		
 	free(png_data);
 	
@@ -374,15 +367,15 @@ bool bitmap_color(bitmap_type *bitmap,d3col *col)
       
 ======================================================= */
 
-bool bitmap_data(bitmap_type *bitmap,unsigned char *data,int wid,int high,bool alpha_channel,bool mipmap,bool compress,bool pixelated,bool rectangle)
+bool bitmap_data(bitmap_type *bitmap,unsigned char *data,int wid,int high,bool alpha_channel,bool mipmap,bool compress,bool pixelated,bool npot)
 {
 	bitmap->wid=wid;
 	bitmap->high=high;
 
-		// if not a rectangle, fix size
-		// if not a power of two
+		// if not a non-power-of-two, fix size
+		// if data is not a power of two
 
-	if (!rectangle) data=bitmap_fix_power_2(bitmap,alpha_channel,data);
+	if (!npot) data=bitmap_fix_power_2(bitmap,alpha_channel,data);
 	
 		// find if bitmap has transparencies
 	
@@ -391,7 +384,7 @@ bool bitmap_data(bitmap_type *bitmap,unsigned char *data,int wid,int high,bool a
 	
 		// get the texture
 		
-	return(bitmap_texture_open(bitmap,data,mipmap,compress,pixelated,rectangle));
+	return(bitmap_texture_open(bitmap,data,mipmap,compress,pixelated,npot));
 }
 
 /* =======================================================

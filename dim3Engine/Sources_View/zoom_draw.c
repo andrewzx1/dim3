@@ -128,8 +128,6 @@ void zoom_draw(obj_type *obj,weapon_type *weap)
 	
 		// setup drawing
 		
-	gl_2D_view_screen();
-
 	glDisable(GL_BLEND);
 	glDisable(GL_DEPTH_TEST);
 	

@@ -84,11 +84,6 @@ void fog_draw_textured(void)
 		view_create_fog_vertex_object(mem_sz);
 	}
 
-		// setup viewpoint
-		
-	gl_3D_view();
-	gl_3D_rotate(&view.render->camera.pnt,&view.render->camera.ang);
-
 		// drawing layers
 	
 	count=map.fog.count;

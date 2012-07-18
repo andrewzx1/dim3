@@ -128,16 +128,16 @@ int view_images_find_first_free(void)
       
 ======================================================= */
 
-bool view_images_load_single_normal(view_image_type *image,char *path,bool rectangle,bool simple)
+bool view_images_load_single_normal(view_image_type *image,char *path,bool npot,bool simple)
 {
 	image->nbitmap=1;
 	image->total_msec=0;
 	
-	if (simple) return(bitmap_open(&image->bitmaps[0].bitmap,path,FALSE,FALSE,FALSE,rectangle,FALSE));
-	return(bitmap_open(&image->bitmaps[0].bitmap,path,TRUE,FALSE,FALSE,rectangle,FALSE));
+	if (simple) return(bitmap_open(&image->bitmaps[0].bitmap,path,FALSE,FALSE,FALSE,npot,FALSE));
+	return(bitmap_open(&image->bitmaps[0].bitmap,path,TRUE,FALSE,FALSE,npot,FALSE));
 }
 
-bool view_images_load_single_animated(view_image_type *image,char *path,bool rectangle,bool simple)
+bool view_images_load_single_animated(view_image_type *image,char *path,bool npot,bool simple)
 {
 	int				n,animations_head_tag,animation_tag;
 	char			*c,xml_path[1024],bitmap_path[1024],name[256];
@@ -171,10 +171,10 @@ bool view_images_load_single_animated(view_image_type *image,char *path,bool rec
 		sprintf(bitmap_path,"%s/%s.png",path,name);
 		
 		if (simple) {
-			if (!bitmap_open(&image->bitmaps[n].bitmap,bitmap_path,FALSE,FALSE,FALSE,rectangle,FALSE)) return(FALSE);
+			if (!bitmap_open(&image->bitmaps[n].bitmap,bitmap_path,FALSE,FALSE,FALSE,npot,FALSE)) return(FALSE);
 		}
 		else {
-			if (!bitmap_open(&image->bitmaps[n].bitmap,bitmap_path,TRUE,FALSE,FALSE,rectangle,FALSE)) return(FALSE);
+			if (!bitmap_open(&image->bitmaps[n].bitmap,bitmap_path,TRUE,FALSE,FALSE,npot,FALSE)) return(FALSE);
 		}
 		
 		image->bitmaps[n].msec=xml_get_attribute_int(animation_tag,"msec");
@@ -186,7 +186,7 @@ bool view_images_load_single_animated(view_image_type *image,char *path,bool rec
 	return(TRUE);
 }
 
-int view_images_load_single(char *path,bool rectangle,bool simple)
+int view_images_load_single(char *path,bool npot,bool simple)
 {
 	int					idx;
 	FILE				*file;
@@ -215,7 +215,7 @@ int view_images_load_single(char *path,bool rectangle,bool simple)
 		
 	file=fopen(path,"rb");
 	if (file==NULL) {
-		if (!view_images_load_single_animated(image,path,rectangle,simple)) {
+		if (!view_images_load_single_animated(image,path,npot,simple)) {
 			image->path[0]=0x0;
 			return(0);
 		}
@@ -227,7 +227,7 @@ int view_images_load_single(char *path,bool rectangle,bool simple)
 	
 		// normal non-animated file
 		
-	if (!view_images_load_single_normal(image,path,rectangle,simple)) {
+	if (!view_images_load_single_normal(image,path,npot,simple)) {
 		image->path[0]=0x0;
 		return(0);
 	}

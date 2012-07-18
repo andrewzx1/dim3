@@ -101,17 +101,17 @@ void gl_fs_shader_initialize(void)
 
 	glGenTextures(1,&fs_shader_txt_id);
 	
-	gl_texture_clear(0,FALSE);
-	glBindTexture(GL_TEXTURE_RECTANGLE_ARB,fs_shader_txt_id);
+	gl_texture_clear(0);
+	glBindTexture(GL_TEXTURE_2D,fs_shader_txt_id);
 	
-	glTexImage2D(GL_TEXTURE_RECTANGLE_ARB,0,GL_RGBA,view.screen.x_sz,view.screen.y_sz,0,GL_RGBA,GL_UNSIGNED_BYTE,0);
+	glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,view.screen.x_sz,view.screen.y_sz,0,GL_RGBA,GL_UNSIGNED_BYTE,0);
 	
-	glTexParameterf(GL_TEXTURE_RECTANGLE_ARB,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-	glTexParameterf(GL_TEXTURE_RECTANGLE_ARB,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_RECTANGLE_ARB,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_RECTANGLE_ARB,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE);
+	glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+	glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE);
 	
-	glBindTexture(GL_TEXTURE_RECTANGLE_ARB,0);
+	glBindTexture(GL_TEXTURE_2D,0);
 
 		// shader started
 
@@ -187,7 +187,7 @@ void gl_fs_shader_map_start(void)
 {
 		// check if fbo and shaders are available
 		
-	fs_shader_on=gl_check_frame_buffer_ok()&&gl_check_texture_rectangle_ok();
+	fs_shader_on=gl_check_frame_buffer_ok()&&gl_check_npot_textures_ok();
 
 		// no fs shader started
 
@@ -224,7 +224,7 @@ void gl_fs_shader_render_begin(void)
 		// setup fbo
 
 	glBindFramebuffer(GL_FRAMEBUFFER,fs_shader_fbo_id);
-	glFramebufferTexture2D(GL_FRAMEBUFFER,GL_COLOR_ATTACHMENT0,GL_TEXTURE_RECTANGLE_ARB,fs_shader_txt_id,0);
+	glFramebufferTexture2D(GL_FRAMEBUFFER,GL_COLOR_ATTACHMENT0,GL_TEXTURE_2D,fs_shader_txt_id,0);
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER,GL_DEPTH_ATTACHMENT,GL_RENDERBUFFER,fs_shader_fbo_depth_stencil_id);
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER,GL_STENCIL_ATTACHMENT,GL_RENDERBUFFER,fs_shader_fbo_depth_stencil_id);
 	
@@ -284,7 +284,7 @@ void gl_fs_shader_render_finish(void)
 	glDisable(GL_BLEND);
 	glDisable(GL_DEPTH_TEST);
 	
-	gl_texture_bind(0,TRUE,fs_shader_txt_id);
+	gl_texture_bind(0,fs_shader_txt_id);
 
 		// start the shader
 
@@ -309,7 +309,7 @@ void gl_fs_shader_render_finish(void)
 
 		// finish fbo draw
 	
-	glDisable(GL_TEXTURE_RECTANGLE_ARB);
+	glDisable(GL_TEXTURE_2D);
 }
 
 #endif
