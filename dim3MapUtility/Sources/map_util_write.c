@@ -253,7 +253,6 @@ void write_map_settings_xml(map_type *map)
     xml_add_attribute_int("east_index",map->sky.east_fill);
     xml_add_attribute_int("west_index",map->sky.west_fill);
     xml_add_attribute_float("factor",map->sky.txt_fact);
-    xml_add_attribute_2_coord_float("shift",map->sky.txt_shift.x,map->sky.txt_shift.y);
     xml_add_tagend(TRUE);
     xml_add_tagclose("Sky");
 

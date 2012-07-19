@@ -199,7 +199,6 @@ void decode_map_settings_xml(map_type *map,int map_head)
 			map->sky.east_fill=xml_get_attribute_int_default(tag,"east_index",-1);
 			map->sky.west_fill=xml_get_attribute_int_default(tag,"west_index",-1);
 			map->sky.txt_fact=xml_get_attribute_float_default(tag,"factor",1);
-			xml_get_attribute_2_coord_float(tag,"shift",&map->sky.txt_shift.x,&map->sky.txt_shift.y);
 		}
     }
 

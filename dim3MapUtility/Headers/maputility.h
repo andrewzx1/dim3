@@ -668,7 +668,6 @@ typedef struct		{
 															fill,bottom_fill,north_fill,south_fill,east_fill,west_fill;
 						float								txt_fact;
 						bool								on,dome_mirror;
-						d3uv								txt_shift;
 					} map_sky_type;
 					
 typedef struct		{
