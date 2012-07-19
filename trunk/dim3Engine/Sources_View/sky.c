@@ -292,22 +292,9 @@ void sky_draw_dome_panoramic_setup(void)
 
 void sky_draw_dome_panoramic(void)
 {
-    int					k,tick,pan_count;
-	float				txt_x_shift,txt_y_shift;
+    int					pan_count;
 	d3col				col;
 	texture_type		*texture;
-	
-		// texture sizes
-		
-	tick=game_time_get();
-		
-	txt_x_shift=((float)tick*0.0005f)*map.sky.txt_shift.x;
-	k=(int)txt_x_shift;
-	txt_x_shift=txt_x_shift-(float)k;
-	
-	txt_y_shift=((float)tick*0.0005f)*map.sky.txt_shift.y;
-	k=(int)txt_y_shift;
-	txt_y_shift=txt_y_shift-(float)k;
 	
 		// construct vbo
 
@@ -319,9 +306,6 @@ void sky_draw_dome_panoramic(void)
 		
 	glDisable(GL_BLEND);
 	glDisable(GL_DEPTH_TEST);
-	
-	glMatrixMode(GL_TEXTURE);
-	glTranslatef(txt_x_shift,txt_y_shift,0.0f);
 
 	texture=&map.textures[map.sky.fill];
 	col.r=col.g=col.b=1.0f;
@@ -329,9 +313,6 @@ void sky_draw_dome_panoramic(void)
 	gl_shader_draw_execute_simple_bitmap_vbo_attribute(3,0,((pan_count*3)*sizeof(float)),0,&col,1.0f);
 	gl_shader_draw_execute_simple_bitmap_set_texture(texture->frames[texture->animate.current_frame].bitmap.gl_id);
 	glDrawArrays(GL_TRIANGLES,0,pan_count);
-		
-	glMatrixMode(GL_TEXTURE);
-	glLoadIdentity();
 
 		// unbind the vbo
 
@@ -582,30 +563,14 @@ void sky_draw_dome_hemisphere_setup(void)
 
 void sky_draw_dome_hemisphere(void)
 {
-    int					k,tick,dome_cnt;
-	float				txt_x_shift,txt_y_shift;
+    int					dome_cnt;
 	d3col				col;
 	texture_type		*texture;
-
-		// texture sizes
-		
-	tick=game_time_get();
-		
-	txt_x_shift=((float)tick*0.0005f)*map.sky.txt_shift.x;
-	k=(int)txt_x_shift;
-	txt_x_shift=txt_x_shift-(float)k;
-	
-	txt_y_shift=((float)tick*0.0005f)*map.sky.txt_shift.y;
-	k=(int)txt_y_shift;
-	txt_y_shift=txt_y_shift-(float)k;
 	
 		// setup texture
 		
 	glDisable(GL_BLEND);
 	glDisable(GL_DEPTH_TEST);
-	
-	glMatrixMode(GL_TEXTURE);
-	glTranslatef(txt_x_shift,txt_y_shift,0.0f);
 
 	texture=&map.textures[map.sky.fill];
 	col.r=col.g=col.b=1.0f;
@@ -625,11 +590,6 @@ void sky_draw_dome_hemisphere(void)
 	gl_shader_draw_execute_simple_bitmap_set_texture(texture->frames[texture->animate.current_frame].bitmap.gl_id);
 	glDrawArrays(GL_TRIANGLES,0,dome_cnt);
 
-		// end textures
-		
-	glMatrixMode(GL_TEXTURE);
-	glLoadIdentity();
-
 		// unbind the vbo
 
 	view_unbind_sky_vertex_object();
@@ -644,7 +604,7 @@ void sky_draw_dome_hemisphere(void)
 void sky_draw_cube_setup(void)
 {
 	int					sz;
-    float				f_radius;
+    float				f_radius,txt_fact;
 	float				*vertex_ptr,*uv_ptr;
 
 		// construct VBO
@@ -662,6 +622,8 @@ void sky_draw_cube_setup(void)
 
 	uv_ptr=vertex_ptr+(sz*3);
 
+	txt_fact=map.sky.txt_fact;
+
 		// setup cube quads
 		
 	f_radius=(float)map.sky.radius;
@@ -674,7 +636,7 @@ void sky_draw_cube_setup(void)
 		*vertex_ptr++=-f_radius;
 
 		*uv_ptr++=0.0f;
-		*uv_ptr++=1.0f;
+		*uv_ptr++=txt_fact;
 
 		*vertex_ptr++=-f_radius;
 		*vertex_ptr++=-f_radius;
@@ -687,14 +649,14 @@ void sky_draw_cube_setup(void)
 		*vertex_ptr++=-f_radius;
 		*vertex_ptr++=-f_radius;
 
-		*uv_ptr++=1.0f;
-		*uv_ptr++=1.0f;
+		*uv_ptr++=txt_fact;
+		*uv_ptr++=txt_fact;
 
 		*vertex_ptr++=f_radius;
 		*vertex_ptr++=-f_radius;
 		*vertex_ptr++=f_radius;
 
-		*uv_ptr++=1.0f;
+		*uv_ptr++=txt_fact;
 		*uv_ptr++=0.0f;
 	}
 	
@@ -706,7 +668,7 @@ void sky_draw_cube_setup(void)
 		*vertex_ptr++=-f_radius;
 
 		*uv_ptr++=0.0f;
-		*uv_ptr++=1.0f;
+		*uv_ptr++=txt_fact;
 
 		*vertex_ptr++=-f_radius;
 		*vertex_ptr++=f_radius;
@@ -719,14 +681,14 @@ void sky_draw_cube_setup(void)
 		*vertex_ptr++=f_radius;
 		*vertex_ptr++=-f_radius;
 
-		*uv_ptr++=1.0f;
-		*uv_ptr++=1.0f;
+		*uv_ptr++=txt_fact;
+		*uv_ptr++=txt_fact;
 
 		*vertex_ptr++=f_radius;
 		*vertex_ptr++=f_radius;
 		*vertex_ptr++=f_radius;
 
-		*uv_ptr++=1.0f;
+		*uv_ptr++=txt_fact;
 		*uv_ptr++=0.0f;
 	}
 	
@@ -745,21 +707,21 @@ void sky_draw_cube_setup(void)
 		*vertex_ptr++=f_radius;
 
 		*uv_ptr++=0.0f;
-		*uv_ptr++=1.0f;
+		*uv_ptr++=txt_fact;
 
 		*vertex_ptr++=f_radius;
 		*vertex_ptr++=-f_radius;
 		*vertex_ptr++=f_radius;
 
-		*uv_ptr++=1.0f;
+		*uv_ptr++=txt_fact;
 		*uv_ptr++=0.0f;
 
 		*vertex_ptr++=f_radius;
 		*vertex_ptr++=f_radius;
 		*vertex_ptr++=f_radius;
 
-		*uv_ptr++=1.0f;
-		*uv_ptr++=1.0f;
+		*uv_ptr++=txt_fact;
+		*uv_ptr++=txt_fact;
 	}
 	
 		// east
@@ -777,21 +739,21 @@ void sky_draw_cube_setup(void)
 		*vertex_ptr++=f_radius;
 
 		*uv_ptr++=0.0f;
-		*uv_ptr++=1.0f;
+		*uv_ptr++=txt_fact;
 
 		*vertex_ptr++=f_radius;
 		*vertex_ptr++=-f_radius;
 		*vertex_ptr++=-f_radius;
 
-		*uv_ptr++=1.0f;
+		*uv_ptr++=txt_fact;
 		*uv_ptr++=0.0f;
 
 		*vertex_ptr++=f_radius;
 		*vertex_ptr++=f_radius;
 		*vertex_ptr++=-f_radius;
 
-		*uv_ptr++=1.0f;
-		*uv_ptr++=1.0f;
+		*uv_ptr++=txt_fact;
+		*uv_ptr++=txt_fact;
 	}
 	
 		// south
@@ -809,21 +771,21 @@ void sky_draw_cube_setup(void)
 		*vertex_ptr++=-f_radius;
 
 		*uv_ptr++=0.0f;
-		*uv_ptr++=1.0f;
+		*uv_ptr++=txt_fact;
 
 		*vertex_ptr++=-f_radius;
 		*vertex_ptr++=-f_radius;
 		*vertex_ptr++=-f_radius;
 
-		*uv_ptr++=1.0f;
+		*uv_ptr++=txt_fact;
 		*uv_ptr++=0.0f;
 
 		*vertex_ptr++=-f_radius;
 		*vertex_ptr++=f_radius;
 		*vertex_ptr++=-f_radius;
 
-		*uv_ptr++=1.0f;
-		*uv_ptr++=1.0f;
+		*uv_ptr++=txt_fact;
+		*uv_ptr++=txt_fact;
 	}
 	
 		// west
@@ -841,21 +803,21 @@ void sky_draw_cube_setup(void)
 		*vertex_ptr++=-f_radius;
 
 		*uv_ptr++=0.0f;
-		*uv_ptr++=1.0f;
+		*uv_ptr++=txt_fact;
 
 		*vertex_ptr++=-f_radius;
 		*vertex_ptr++=-f_radius;
 		*vertex_ptr++=f_radius;
 
-		*uv_ptr++=1.0f;
+		*uv_ptr++=txt_fact;
 		*uv_ptr++=0.0f;
 
 		*vertex_ptr++=-f_radius;
 		*vertex_ptr++=f_radius;
 		*vertex_ptr++=f_radius;
 
-		*uv_ptr++=1.0f;
-		*uv_ptr++=1.0f;
+		*uv_ptr++=txt_fact;
+		*uv_ptr++=txt_fact;
 	}
  
 		// unmap and unbind vbo
@@ -866,33 +828,14 @@ void sky_draw_cube_setup(void)
 
 void sky_draw_cube(void)
 {
-    int					k,tick,offset;
-    float				txt_fact,txt_x_shift,txt_y_shift;
+    int					offset;
 	d3col				col;
 	texture_type		*texture;
 					
-		// texture sizes
-		
-	tick=game_time_get();
-		
-	txt_fact=map.sky.txt_fact;
-	
-	txt_x_shift=((float)tick*0.0005f)*map.sky.txt_shift.x;
-	k=(int)txt_x_shift;
-	txt_x_shift=txt_x_shift-(float)k;
-	
-	txt_y_shift=((float)tick*0.0005f)*map.sky.txt_shift.y;
-	k=(int)txt_y_shift;
-	txt_y_shift=txt_y_shift-(float)k;
-
 		// setup texture
 		
 	glDisable(GL_BLEND);
 	glDisable(GL_DEPTH_TEST);
-
-	glMatrixMode(GL_TEXTURE);
-	glTranslatef(txt_x_shift,txt_y_shift,0.0f);
-	glScalef(txt_fact,txt_fact,1.0f);
 	
 	col.r=col.g=col.b=1.0f;
 	
@@ -961,10 +904,6 @@ void sky_draw_cube(void)
 		gl_shader_draw_execute_simple_bitmap_set_texture(texture->frames[texture->animate.current_frame].bitmap.gl_id);
 		glDrawArrays(GL_TRIANGLE_STRIP,offset,4);
 	}
-
-		// end texture
-
-	glLoadIdentity();
 
 		// unbind the vbo
 

@@ -205,8 +205,6 @@ bool map_new(map_type *map,char *name)
 	map->sky.dome_y=0;
 	map->sky.dome_mirror=FALSE;
 	map->sky.txt_fact=1.0f;
-	map->sky.txt_shift.x=0.0f;
-	map->sky.txt_shift.y=0.0f;
 	
 		// fog
 		
