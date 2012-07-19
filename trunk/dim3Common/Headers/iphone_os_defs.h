@@ -69,9 +69,10 @@ and can be sold or given away.
 //
 
 #define GL_DEPTH24_STENCIL8				GL_DEPTH24_STENCIL8_OES
+#define GL_WRITE_ONLY					GL_WRITE_ONLY_OES
 
-#define glOrtho							glOrthof
-#define glFrustum						glFrustumf
+#define glMapBuffer						glMapBufferOES
+#define glUnmapBuffer					glUnmapBufferOES
 
 //
 // os specific keys

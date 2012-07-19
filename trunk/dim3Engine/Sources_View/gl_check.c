@@ -47,7 +47,9 @@ extern render_info_type		render_info;
 
 bool gl_check_initialize(char *err_str)
 {
+#ifndef D3_OPENGL_ES
 	bool			shader_ok;
+#endif
 #ifdef D3_OS_MAC
 	GLint			fragGPU,vertGPU;
 #endif
