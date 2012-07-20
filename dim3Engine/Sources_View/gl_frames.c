@@ -406,47 +406,79 @@ void gl_2D_scissor_end(void)
       
 ======================================================= */
 
-bool gl_project_in_view_z(int x,int y,int z)
+void gl_project_point_patch(d3pnt *pnt,d3fpnt *win_pnt)
 {
-	return(((((float)x)*gl_model_view_matrix[2])+(((float)y)*gl_model_view_matrix[6])+(((float)z)*gl_model_view_matrix[10])+gl_model_view_matrix[14])>0.0);
+    float		in[4],out[4];
+
+		// duplicate the gl_Position calculation
+
+		// multiply by modelview matrix
+		// last part of vector is always 1.0 here
+
+	out[0]=(pnt->x*gl_model_view_matrix[0])+(pnt->y*gl_model_view_matrix[4])+(pnt->z*gl_model_view_matrix[8])+gl_model_view_matrix[12];
+	out[1]=(pnt->x*gl_model_view_matrix[1])+(pnt->y*gl_model_view_matrix[5])+(pnt->z*gl_model_view_matrix[9])+gl_model_view_matrix[13];
+	out[2]=(pnt->x*gl_model_view_matrix[2])+(pnt->y*gl_model_view_matrix[6])+(pnt->z*gl_model_view_matrix[10])+gl_model_view_matrix[14];
+	out[3]=(pnt->x*gl_model_view_matrix[3])+(pnt->y*gl_model_view_matrix[7])+(pnt->z*gl_model_view_matrix[11])+gl_model_view_matrix[15];
+
+		// now multiply by the projection matrix
+
+	in[0]=(out[0]*gl_proj_matrix[0])+(out[1]*gl_proj_matrix[4])+(out[2]*gl_proj_matrix[8])+(out[3]*gl_proj_matrix[12]);
+	in[1]=(out[0]*gl_proj_matrix[1])+(out[1]*gl_proj_matrix[5])+(out[2]*gl_proj_matrix[9])+(out[3]*gl_proj_matrix[13]);
+	in[2]=(out[0]*gl_proj_matrix[2])+(out[1]*gl_proj_matrix[6])+(out[2]*gl_proj_matrix[10])+(out[3]*gl_proj_matrix[14]);
+	in[3]=(out[0]*gl_proj_matrix[3])+(out[1]*gl_proj_matrix[7])+(out[2]*gl_proj_matrix[11])+(out[3]*gl_proj_matrix[15]);
+
+	if (in[3]==0.0f) return;
+
+	in[0]=((in[0]/in[3])*0.5f)+0.5f;
+    in[1]=((in[1]/in[3])*0.5f)+0.5f;
+    in[2]=((in[2]/in[3])*0.5f)+0.5f;
+
+    win_pnt->x=(in[0]*gl_viewport[2])+gl_viewport[0];
+    win_pnt->z=(in[1]*gl_viewport[3])+gl_viewport[1];
+	win_pnt->z=in[2];
 }
 
-void gl_project_point(int *x,int *y,int *z)
+bool gl_project_in_view_z(d3pnt *pnt)
 {
-	float		dx,dy,dz;
+	return(((((float)pnt->x)*gl_model_view_matrix[2])+(((float)pnt->y)*gl_model_view_matrix[6])+(((float)pnt->z)*gl_model_view_matrix[10])+gl_model_view_matrix[14])>0.0);
+}
+
+void gl_project_point(d3pnt *pnt)
+{
+	d3fpnt			win_pnt;
 
 #ifndef D3_ROTATE_VIEW
-	glu_patch_gluProject((float)*x,(float)*y,(float)*z,gl_model_view_matrix,gl_proj_matrix,gl_viewport,&dx,&dy,&dz);
-	
-	*x=(int)dx;
-	*y=(int)dy;
-	*z=(int)dz;
+	gl_project_point_patch(pnt,&win_pnt);
+
+	pnt->x=(int)win_pnt.x;
+	pnt->y=(int)win_pnt.y;
+	pnt->z=(int)win_pnt.z;
 #else
-	glu_patch_gluProject((float)*x,(float)*y,(float)*z,gl_model_view_matrix,gl_proj_matrix,gl_viewport,&dy,&dx,&dz);
-	
-	*x=(int)(gl_viewport[3]-dx);
-	*y=(int)dy;
-	*z=(int)dz;
+	gl_project_point_patch(pnt,&win_pnt);
+
+	pnt->x=(int)(gl_viewport[3]-win_pnt.y);
+	pnt->y=(int)win_pnt.x;
+	pnt->z=(int)win_pnt.z;
 #endif
 }
 
-float gl_project_get_depth(int x,int y,int z)
+float gl_project_get_depth(d3pnt *pnt)
 {
-	float		dx,dy,dz;
+	d3fpnt			win_pnt;
 
-	glu_patch_gluProject((float)x,(float)y,(float)z,gl_model_view_matrix,gl_proj_matrix,gl_viewport,&dx,&dy,&dz);	
-	return((float)dz);
+	gl_project_point_patch(pnt,&win_pnt);	
+	return(win_pnt.z);
 }
 
-void gl_project_to_eye_coordinates(float *x,float *y,float *z)
+void gl_project_to_eye_coordinates(d3vct *vct)
 {
 	float		fx,fy,fz;
 	
-	fx=*x;
-	fy=*y;
-	fz=*z;
+	fx=vct->x;
+	fy=vct->y;
+	fz=vct->z;
 	
-	*x=(float)((fx*gl_model_view_matrix[0])+(fy*gl_model_view_matrix[4])+(fz*gl_model_view_matrix[8])+gl_model_view_matrix[12]);
-	*y=(float)((fx*gl_model_view_matrix[1])+(fy*gl_model_view_matrix[5])+(fz*gl_model_view_matrix[9])+gl_model_view_matrix[13]);
-	*z=(float)((fx*gl_model_view_matrix[2])+(fy*gl_model_view_matrix[6])+(fz*gl_model_view_matrix[10])+gl_model_view_matrix[14]);
+	vct->x=(float)((fx*gl_model_view_matrix[0])+(fy*gl_model_view_matrix[4])+(fz*gl_model_view_matrix[8])+gl_model_view_matrix[12]);
+	vct->y=(float)((fx*gl_model_view_matrix[1])+(fy*gl_model_view_matrix[5])+(fz*gl_model_view_matrix[9])+gl_model_view_matrix[13]);
+	vct->z=(float)((fx*gl_model_view_matrix[2])+(fy*gl_model_view_matrix[6])+(fz*gl_model_view_matrix[10])+gl_model_view_matrix[14]);
 }

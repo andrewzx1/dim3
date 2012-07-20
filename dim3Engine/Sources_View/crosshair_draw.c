@@ -58,8 +58,7 @@ void crosshair_show_alt(obj_type *obj)
 
 bool crosshair_get_location(obj_type *obj,weapon_type *weap,int *kx,int *ky,int *hit_obj_idx,int *dist)
 {
-	int						tx,ty,tz;
-	d3pnt					fpt;
+	d3pnt					fpt,win_pnt;
 	d3ang					ang;
 	ray_trace_contact_type	contact;
 
@@ -102,14 +101,14 @@ bool crosshair_get_location(obj_type *obj,weapon_type *weap,int *kx,int *ky,int 
 		if (dist!=NULL) *dist=0;
 	}
 	else {
-		tx=contact.hpt.x;
-		ty=contact.hpt.y;
-		tz=contact.hpt.z;
+		win_pnt.x=contact.hpt.x;
+		win_pnt.y=contact.hpt.y;
+		win_pnt.z=contact.hpt.z;
 		
-		gl_project_point(&tx,&ty,&tz);
+		gl_project_point(&win_pnt);
 		
-		*kx=tx;
-		*ky=view.screen.y_sz-ty;
+		*kx=win_pnt.x;
+		*ky=view.screen.y_sz-win_pnt.y;
 		
 		if (dist!=NULL) *dist=distance_get(view.render->camera.pnt.x,view.render->camera.pnt.y,view.render->camera.pnt.z,contact.hpt.x,contact.hpt.y,contact.hpt.z);
 	}

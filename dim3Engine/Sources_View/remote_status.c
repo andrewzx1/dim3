@@ -105,7 +105,6 @@ void remote_draw_icon(obj_type *obj,unsigned long gl_id)
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 
 	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LEQUAL);
 	glDepthMask(GL_TRUE);
 
 	gl_shader_draw_execute_simple_bitmap_ptr(gl_id,3,vertexes,uvs,&col,1.0f);
@@ -191,11 +190,11 @@ void remote_draw_names_setup(void)
 		
 			// is it behind the z?
 
-		if (!gl_project_in_view_z(pnt.x,pnt.y,pnt.z)) continue;
+		if (!gl_project_in_view_z(&pnt)) continue;
 				
 			// project names
 
-		gl_project_point(&pnt.x,&pnt.y,&pnt.z);
+		gl_project_point(&pnt);
 
 		obj->draw.remote_name.proj_pnt.x=pnt.x;
 		obj->draw.remote_name.proj_pnt.y=pnt.y;

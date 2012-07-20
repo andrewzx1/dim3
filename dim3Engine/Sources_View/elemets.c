@@ -3157,7 +3157,6 @@ void element_draw_model(element_type *element)
 	gl_3D_view_interface_model();
 
 	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LEQUAL);
 
 		// setup drawing
 

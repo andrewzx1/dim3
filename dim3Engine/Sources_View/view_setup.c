@@ -143,8 +143,9 @@ bool view_proj_in_draw_list(int proj_idx)
 
 void view_add_mesh_draw_list(int start_mesh_idx)
 {
-	int					n,dist;
+	int					n,k,dist;
 	map_mesh_type		*start_mesh,*mesh;
+	map_mesh_poly_type	*poly;
 	
 	start_mesh=&map.mesh.meshes[start_mesh_idx];
 	
@@ -158,6 +159,15 @@ void view_add_mesh_draw_list(int start_mesh_idx)
 			// check if bound box is within view
 				
 		if (!view_cull_mesh(mesh)) continue;
+
+			// cull polygons
+
+		poly=mesh->polys;
+
+		for (k=0;k!=mesh->npoly;k++) {
+			poly->draw.culled=view_cull_poly(mesh,poly);
+			poly++;
+		}
 
 			// sort meshes into drawing list
 
@@ -722,14 +732,11 @@ void view_calculate_bump(obj_type *obj)
       
 ======================================================= */
 
-void view_script_transform_3D_to_2D(int x,int y,int z,int *x2,int *y2)
+void view_script_transform_3D_to_2D(d3pnt *pnt)
 {
 	gl_3D_view();
 	gl_3D_rotate(&view.render->camera.pnt,&view.render->camera.ang);
 	
-	gl_project_point(&x,&y,&z);
-	
-	*x2=x;
-	*y2=y;
+	gl_project_point(pnt);
 }
 

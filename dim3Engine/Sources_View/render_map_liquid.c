@@ -583,7 +583,6 @@ void render_map_liquid_opaque(void)
 	glDisable(GL_BLEND);
 
 	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LEQUAL);
 	glDepthMask(GL_TRUE);
 
 		// draw opaque liquids
@@ -609,7 +608,6 @@ void render_map_liquid_transparent(void)
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 						
 	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LEQUAL);
 	glDepthMask(GL_FALSE);
 
 		// draw transparent liquids

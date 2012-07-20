@@ -816,6 +816,7 @@ extern void gl_shader_draw_execute_model(texture_type *texture,int txt_idx,int f
 
 extern bool gl_core_shader_initialize(char *err_str);
 extern void gl_core_shader_shutdown(void);
+extern void gl_core_shader_build_generic_precision_defines(char *buf);
 extern shader_type* gl_core_shader_find_ptr(int nlight,int core_shader_group,texture_type *texture);
 
 //
@@ -881,10 +882,10 @@ extern void gl_3D_view_interface_model(void);
 extern void gl_2D_scissor_start(int lx,int rx,int ty,int by);
 extern void gl_2D_scissor_end(void);
 
-extern inline bool gl_project_in_view_z(int x,int y,int z);
-extern inline  void gl_project_point(int *x,int *y,int *z);
-extern inline float gl_project_get_depth(int x,int y,int z);
-extern inline void gl_project_to_eye_coordinates(float *x,float *y,float *z);
+extern inline bool gl_project_in_view_z(d3pnt *pnt);
+extern inline void gl_project_point(d3pnt *pnt);
+extern inline float gl_project_get_depth(d3pnt *pnt);
+extern inline void gl_project_to_eye_coordinates(d3vct *vct);
 
 //
 // view culling
@@ -898,6 +899,7 @@ extern bool view_cull_model(model_draw *draw);
 extern bool view_model_shadow(model_draw *draw);
 extern bool view_cull_effect(effect_type *effect,d3pnt *center_pnt);
 extern bool view_cull_halo(d3pnt *pnt);
+extern bool view_cull_poly(map_mesh_type *mesh,map_mesh_poly_type *poly);
 
 //
 // map obscuring
@@ -946,7 +948,6 @@ extern inline unsigned long view_images_get_gl_id(int idx);
 // map rendering
 //
 
-extern inline bool render_check_poly_cull(map_mesh_type *mesh,map_mesh_poly_type *poly);
 extern void render_map_mesh_opaque(void);
 extern void render_map_mesh_transparent(void);
 

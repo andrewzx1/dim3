@@ -39,13 +39,12 @@ and can be sold or given away.
 #define kMapPropertyDomeY						4
 #define kMapPropertyDomeMirror					5
 #define kMapPropertyTextureRepeat				6
-#define kMapPropertyTextureShift				7
-#define kMapPropertyTextureFill					8
-#define kMapPropertyTextureBottomFill			9
-#define kMapPropertyTextureNorthFill			10
-#define kMapPropertyTextureSouthFill			11
-#define kMapPropertyTextureEastFill				12
-#define kMapPropertyTextureWestFill				13
+#define kMapPropertyTextureFill					7
+#define kMapPropertyTextureBottomFill			8
+#define kMapPropertyTextureNorthFill			9
+#define kMapPropertyTextureSouthFill			10
+#define kMapPropertyTextureEastFill				11
+#define kMapPropertyTextureWestFill				12
 
 #define kMapPropertyBackgroundOn				20
 #define kMapPropertyBackgroundFrontFill			21
@@ -117,7 +116,6 @@ void property_palette_fill_sky_weather(void)
 	list_palette_add_int(&property_palette,kMapPropertyDomeY,"Dome Height",&map.sky.dome_y,FALSE);
 	list_palette_add_checkbox(&property_palette,kMapPropertyDomeMirror,"Mirror Dome",&map.sky.dome_mirror,FALSE);
 	list_palette_add_float(&property_palette,kMapPropertyTextureRepeat,"Texture Repeat",&map.sky.txt_fact,FALSE);
-	list_palette_add_uv(&property_palette,kMapPropertyTextureShift,"Texture Shift",&map.sky.txt_shift,FALSE);
 	
 	list_palette_add_header(&property_palette,0,"Map Sky Textures");
 	list_palette_add_picker_list_int(&property_palette,kMapPropertyTextureFill,"Fill/Cube Top Fill",(char*)map.textures,max_map_texture,sizeof(texture_type),(int)offsetof(texture_type,frames[0].name),TRUE,&map.sky.fill,FALSE);

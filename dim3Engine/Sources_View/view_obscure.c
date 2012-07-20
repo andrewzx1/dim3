@@ -214,7 +214,13 @@ bool view_obscure_create_obscuring_poly_list(void)
 		poly_idx=mesh->poly_list.obscure_idxs;
 
 		for (k=0;k!=mesh->poly_list.obscure_count;k++) {
+
+				// skip culled polygons
+
 			poly=&mesh->polys[poly_idx[k]];
+			if (poly->draw.culled) continue;
+
+				// add polygon to list
 
 			obs_poly->poly_idx=poly_idx[k];
 
@@ -519,7 +525,7 @@ bool view_obscure_check_box(d3pnt *camera_pnt,int skip_mesh_idx,d3pnt *min,d3pnt
 		obs_poly=obs_mesh->polys;
 
 		for (k=0;k!=obs_mesh->npoly;k++) {
-		
+
 				// distance poly elimination
 				
 			if (obs_poly->dist>dist) {
@@ -528,7 +534,7 @@ bool view_obscure_check_box(d3pnt *camera_pnt,int skip_mesh_idx,d3pnt *min,d3pnt
 			}
 
 				// min-max poly elimination
-				
+
 			poly=&mesh->polys[obs_poly->poly_idx];
 			
 			if ((ray_max.x<poly->box.min.x) || (ray_min.x>poly->box.max.x) || (ray_max.y<poly->box.min.y) || (ray_min.y>poly->box.max.y) || (ray_max.z<poly->box.min.z) || (ray_min.z>poly->box.max.z)) {
@@ -658,7 +664,7 @@ void view_obscure_run(void)
 				min.z=liq->top;
 				max.z=liq->bot;
 
-				if (!view_obscure_check_box(&camera_pnt,mesh_idx,&min,&max,dist)) {
+				if (!view_obscure_check_box(&camera_pnt,-1,&min,&max,dist)) {
 					view.render->draw_list.items[n].type=view_render_type_none;
 					remove_count++;
 					view.count.liquid--;

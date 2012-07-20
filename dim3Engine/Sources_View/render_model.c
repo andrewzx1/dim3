@@ -187,18 +187,9 @@ void render_model_opaque_mesh(model_type *mdl,int mesh_idx,model_draw *draw,view
 	model_poly_type			*poly;
  	model_draw_mesh_type	*draw_mesh;
 	texture_type			*texture;
-	
+
 	mesh=&mdl->meshes[mesh_idx];
 	draw_mesh=&draw->meshes[mesh_idx];
-	
-		// setup drawing
-
-	glDisable(GL_BLEND);
-	
-	glEnable(GL_DEPTH_TEST); 
-	glDepthFunc(GL_LEQUAL);
-	glDepthMask(GL_TRUE);
-
 	stride=draw->vbo[mesh_idx].vertex_stride;
 
 		// run through the polys
@@ -267,16 +258,6 @@ void render_model_transparent_mesh(model_type *mdl,int mesh_idx,model_draw *draw
 	
 	mesh=&mdl->meshes[mesh_idx];
 	draw_mesh=&draw->meshes[mesh_idx];
-
-		// setup drawing
-
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-		
-	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LEQUAL);
-	glDepthMask(GL_FALSE);
-
 	stride=draw->vbo[mesh_idx].vertex_stride;
 	
 		// minimize state changes
@@ -359,7 +340,6 @@ void render_model_debug_normals(model_type *mdl,int mesh_idx,model_draw *draw)
  	model_poly_type			*poly;
 	
 	glEnable(GL_DEPTH_TEST); 
-	glDepthFunc(GL_LEQUAL);
 	glDepthMask(GL_TRUE);
 	
 	col.r=1.0f;
@@ -652,6 +632,13 @@ void render_model_opaque(model_draw *draw)
 		// get model
 
 	mdl=server.model_list.models[draw->model_idx];
+	
+		// setup drawing
+
+	glEnable(GL_DEPTH_TEST); 
+	glDepthMask(GL_TRUE);
+
+	glDisable(GL_BLEND);
 
 		// start glsl lighting
 
@@ -697,6 +684,14 @@ void render_model_transparent(model_draw *draw)
 		// get model
 
 	mdl=server.model_list.models[draw->model_idx];
+
+		// setup drawing
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+		
+	glEnable(GL_DEPTH_TEST);
+	glDepthMask(GL_FALSE);
 	
 		// start lighting
 		
@@ -799,7 +794,6 @@ void render_model_target(model_draw *draw,d3col *col)
 	glDisable(GL_BLEND);
 			
 	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LEQUAL);
 
 		// draw target
 		

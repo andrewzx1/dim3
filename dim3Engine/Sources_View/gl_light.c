@@ -434,7 +434,7 @@ void gl_lights_compile_add(int tick,d3pnt *pnt,int light_type,bool light_map,int
 	lspot->pnt_eye_space.y=lspot->f_y;
 	lspot->pnt_eye_space.z=lspot->f_z;
 		
-	gl_project_to_eye_coordinates(&lspot->pnt_eye_space.x,&lspot->pnt_eye_space.y,&lspot->pnt_eye_space.z);
+	gl_project_to_eye_coordinates(&lspot->pnt_eye_space);
 
 	view.render->light.count++;
 }

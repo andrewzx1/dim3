@@ -103,30 +103,24 @@ void view_draw_debug_bounding_box(d3pnt *pnt,d3ang *ang,d3pnt *size)
 
 void view_draw_debug_info(char *name,char *info,d3pnt *pnt,d3pnt *size,d3ang *ang)
 {
-	int						x,y,z,dist,font_size;
+	int						x,y,dist,font_size;
 	char					str[256];
 	d3col					col;
-	d3pnt					spt,ept;
+	d3pnt					spt,ept,win_pnt;
 	ray_trace_contact_type	contact;
 
 		// get size and fade
 
-	x=pnt->x;
-	y=pnt->y;
-	z=pnt->z;
-
-	dist=distance_get(x,y,z,view.render->camera.pnt.x,view.render->camera.pnt.y,view.render->camera.pnt.z);
+	dist=distance_get(pnt->x,pnt->y,pnt->z,view.render->camera.pnt.x,view.render->camera.pnt.y,view.render->camera.pnt.z);
 		
 	font_size=iface.font.text_size_medium-((iface.font.text_size_medium*dist)/75000);
 	if (font_size<1) return;
 
-	y-=size->y;
-
 		// ray trace check
 
-	spt.x=x;
-	spt.y=y;
-	spt.z=z;
+	spt.x=pnt->x;
+	spt.y=pnt->y-size->y;
+	spt.z=pnt->z;
 
 	ept.x=view.render->camera.pnt.x;
 	ept.y=view.render->camera.pnt.y;
@@ -141,7 +135,11 @@ void view_draw_debug_info(char *name,char *info,d3pnt *pnt,d3pnt *size,d3ang *an
 
 		// project the mid point
 
-	gl_project_point(&x,&y,&z);
+	win_pnt.x=pnt->x;
+	win_pnt.y=pnt->y-size->y;
+	win_pnt.z=pnt->z;
+
+	gl_project_point(&win_pnt);
 
 		// draw the info
 
@@ -151,8 +149,8 @@ void view_draw_debug_info(char *name,char *info,d3pnt *pnt,d3pnt *size,d3ang *an
 	
 		// covert to interface resolution
 
-	x=(x*iface.scale_x)/view.screen.x_sz;
-	y=((view.screen.y_sz-y)*iface.scale_y)/view.screen.y_sz;
+	x=(win_pnt.x*iface.scale_x)/view.screen.x_sz;
+	y=((view.screen.y_sz-win_pnt.y)*iface.scale_y)/view.screen.y_sz;
 
 	y-=(font_size*2);
 	if (info!=NULL) y-=font_size;

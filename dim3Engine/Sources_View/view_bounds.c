@@ -346,3 +346,29 @@ bool view_cull_halo(d3pnt *pnt)
 	return(view_cull_distance_to_view_center(pnt->x,pnt->y,pnt->z)<obscure_dist);
 }
 
+/* =======================================================
+
+      Mesh-Poly Culling
+      
+======================================================= */
+
+bool view_cull_poly(map_mesh_type *mesh,map_mesh_poly_type *poly)
+{
+		// view culling
+
+	if (!view_cull_boundbox_in_frustum(&poly->box.min,&poly->box.max)) return(TRUE);
+
+		// check for never cull 
+		// by normal flags
+
+	if (mesh->flag.never_cull) return(FALSE);
+	if (poly->flag.never_cull) return(FALSE);
+	if (map.optimize.never_cull) return(FALSE);
+
+		// skip polys with away facing normals
+		// do dot product between normal and vector
+		// from poly mid-eye point
+
+	return(((poly->tangent_space.normal.x*(float)(poly->box.mid.x-view.render->camera.pnt.x))+(poly->tangent_space.normal.y*(float)(poly->box.mid.y-view.render->camera.pnt.y))+(poly->tangent_space.normal.z*(float)(poly->box.mid.z-view.render->camera.pnt.z)))>map.optimize.cull_angle);
+}
+

@@ -80,7 +80,6 @@ typedef struct		{
 					
 typedef struct		{
 						float							*gl_vertex_array,
-														*gl_color_array,
 														*gl_tangent_array,
 														*gl_normal_array;
 						unsigned char					*poly_cull_array;

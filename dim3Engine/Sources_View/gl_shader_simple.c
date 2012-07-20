@@ -55,10 +55,15 @@ char* gl_simple_color_shader_build_vert(void)
 
 	bzero(buf,max_core_shader_data_sz);
 
+		// need to define out lowp/mediump/highp
+		// for non ES2 shaders
+
+	gl_core_shader_build_generic_precision_defines(buf);
+
 		// build vert shader
 
-	strcat(buf,"uniform mat4 dim3ProjectionMatrix,dim3ModelViewMatrix;\n");
-	strcat(buf,"attribute vec3 dim3Vertex;\n");
+	strcat(buf,"uniform highp mat4 dim3ProjectionMatrix,dim3ModelViewMatrix;\n");
+	strcat(buf,"attribute highp vec3 dim3Vertex;\n");
 	
 	strcat(buf,"void main(void)\n");
 	strcat(buf,"{\n");
@@ -79,9 +84,14 @@ char* gl_simple_color_shader_build_frag(void)
 
 	bzero(buf,max_core_shader_data_sz);
 
+		// need to define out lowp/mediump/highp
+		// for non ES2 shaders
+
+	gl_core_shader_build_generic_precision_defines(buf);
+
 		// build frag shader
 		
-	strcat(buf,"uniform vec4 dim3SimpleColor;\n");
+	strcat(buf,"uniform lowp vec4 dim3SimpleColor;\n");
 	
 	strcat(buf,"void main(void)\n");
 	strcat(buf,"{\n");
@@ -150,12 +160,17 @@ char* gl_simple_gradient_shader_build_vert(void)
 
 	bzero(buf,max_core_shader_data_sz);
 
+		// need to define out lowp/mediump/highp
+		// for non ES2 shaders
+
+	gl_core_shader_build_generic_precision_defines(buf);
+
 		// build vert shader
 
-	strcat(buf,"uniform mat4 dim3ProjectionMatrix,dim3ModelViewMatrix;\n");
-	strcat(buf,"attribute vec3 dim3Vertex;\n");
-	strcat(buf,"attribute vec4 dim3VertexColor;\n");
-	strcat(buf,"varying vec4 color;\n");
+	strcat(buf,"uniform highp mat4 dim3ProjectionMatrix,dim3ModelViewMatrix;\n");
+	strcat(buf,"attribute highp vec3 dim3Vertex;\n");
+	strcat(buf,"attribute lowp vec4 dim3VertexColor;\n");
+	strcat(buf,"varying lowp vec4 color;\n");
 	
 	strcat(buf,"void main(void)\n");
 	strcat(buf,"{\n");
@@ -177,9 +192,14 @@ char* gl_simple_gradient_shader_build_frag(void)
 
 	bzero(buf,max_core_shader_data_sz);
 
+		// need to define out lowp/mediump/highp
+		// for non ES2 shaders
+
+	gl_core_shader_build_generic_precision_defines(buf);
+
 		// build frag shader
 		
-	strcat(buf,"varying vec4 color;\n");
+	strcat(buf,"varying lowp vec4 color;\n");
 	
 	strcat(buf,"void main(void)\n");
 	strcat(buf,"{\n");
@@ -249,10 +269,15 @@ char* gl_simple_black_shader_build_vert(void)
 
 	bzero(buf,max_core_shader_data_sz);
 
+		// need to define out lowp/mediump/highp
+		// for non ES2 shaders
+
+	gl_core_shader_build_generic_precision_defines(buf);
+
 		// build vert shader
 
-	strcat(buf,"uniform mat4 dim3ProjectionMatrix,dim3ModelViewMatrix;\n");
-	strcat(buf,"attribute vec3 dim3Vertex;\n");
+	strcat(buf,"uniform highp mat4 dim3ProjectionMatrix,dim3ModelViewMatrix;\n");
+	strcat(buf,"attribute highp vec3 dim3Vertex;\n");
 	
 	strcat(buf,"void main(void)\n");
 	strcat(buf,"{\n");
@@ -273,9 +298,14 @@ char* gl_simple_black_shader_build_frag(void)
 
 	bzero(buf,max_core_shader_data_sz);
 
+		// need to define out lowp/mediump/highp
+		// for non ES2 shaders
+
+	gl_core_shader_build_generic_precision_defines(buf);
+
 		// build frag shader
 		
-	strcat(buf,"uniform float dim3Alpha;\n");
+	strcat(buf,"uniform lowp float dim3Alpha;\n");
 	
 	strcat(buf,"void main(void)\n");
 	strcat(buf,"{\n");
@@ -344,12 +374,17 @@ char* gl_simple_bitmap_shader_build_vert(void)
 
 	bzero(buf,max_core_shader_data_sz);
 
+		// need to define out lowp/mediump/highp
+		// for non ES2 shaders
+
+	gl_core_shader_build_generic_precision_defines(buf);
+
 		// build vert shader
 
-	strcat(buf,"uniform mat4 dim3ProjectionMatrix,dim3ModelViewMatrix;\n");
-	strcat(buf,"attribute vec3 dim3Vertex;\n");
-	strcat(buf,"attribute vec2 dim3VertexUV;\n");
-	strcat(buf,"varying vec2 uv;\n");
+	strcat(buf,"uniform highp mat4 dim3ProjectionMatrix,dim3ModelViewMatrix;\n");
+	strcat(buf,"attribute highp vec3 dim3Vertex;\n");
+	strcat(buf,"attribute mediump vec2 dim3VertexUV;\n");
+	strcat(buf,"varying mediump vec2 uv;\n");
 	
 	strcat(buf,"void main(void)\n");
 	strcat(buf,"{\n");
@@ -371,11 +406,16 @@ char* gl_simple_bitmap_shader_build_frag(void)
 
 	bzero(buf,max_core_shader_data_sz);
 
+		// need to define out lowp/mediump/highp
+		// for non ES2 shaders
+
+	gl_core_shader_build_generic_precision_defines(buf);
+
 		// build frag shader
 		
-	strcat(buf,"uniform sampler2D dim3Tex;\n");
-	strcat(buf,"uniform vec4 dim3SimpleColor;\n");
-	strcat(buf,"varying vec2 uv;\n");
+	strcat(buf,"uniform lowp sampler2D dim3Tex;\n");
+	strcat(buf,"uniform lowp vec4 dim3SimpleColor;\n");
+	strcat(buf,"varying mediump vec2 uv;\n");
 	
 	strcat(buf,"void main(void)\n");
 	strcat(buf,"{\n");
