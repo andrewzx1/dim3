@@ -39,27 +39,6 @@ extern view_type		view;
 
 /* =======================================================
 
-      Mesh-Poly Culling
-      
-======================================================= */
-
-bool render_check_poly_cull(map_mesh_type *mesh,map_mesh_poly_type *poly)
-{
-		// check for never cull flags
-
-	if (mesh->flag.never_cull) return(FALSE);
-	if (poly->flag.never_cull) return(FALSE);
-	if (map.optimize.never_cull) return(FALSE);
-
-		// skip polys with away facing normals
-		// do dot product between normal and vector
-		// from poly mid-eye point
-
-	return(((poly->tangent_space.normal.x*(float)(poly->box.mid.x-view.render->camera.pnt.x))+(poly->tangent_space.normal.y*(float)(poly->box.mid.y-view.render->camera.pnt.y))+(poly->tangent_space.normal.z*(float)(poly->box.mid.z-view.render->camera.pnt.z)))>map.optimize.cull_angle);
-}
-
-/* =======================================================
-
       Opaque Map Rendering
       
 ======================================================= */
@@ -79,7 +58,6 @@ void render_map_mesh_opaque(void)
 		// setup view
 	
 	glEnable(GL_DEPTH_TEST); 
-	glDepthFunc(GL_LEQUAL);
 	glDepthMask(GL_TRUE);
 
 	glDisable(GL_BLEND);
@@ -120,14 +98,7 @@ void render_map_mesh_opaque(void)
 
 				// skip transparent polys
 
-			if (poly->draw.transparent_on) {
-				poly++;
-				continue;
-			}
-		
-				// skip culling
-
-			if (render_check_poly_cull(mesh,poly)) {
+			if ((poly->draw.transparent_on) || (poly->draw.culled)) {
 				poly++;
 				continue;
 			}

@@ -242,7 +242,7 @@ typedef struct		{
 typedef struct		{
 						int									vertex_offset,decal_stencil_idx,
 															txt_frame_offset;
-						bool								bump_ok,shadow_ok,
+						bool								culled,bump_ok,shadow_ok,
 															shift_on,transparent_on,glow_on;
 						d3uv								shift_offset;
 					} map_mesh_poly_draw_type;

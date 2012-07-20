@@ -84,9 +84,9 @@ float render_transparent_poly_far_z(map_mesh_type *mesh,map_mesh_poly_type *poly
 
 		pt=&mesh->vertexes[poly->v[n]];
 
-		if (!gl_project_in_view_z(pt->x,pt->y,pt->z)) continue;
+		if (!gl_project_in_view_z(pt)) continue;
 		
-		d=gl_project_get_depth(pt->x,pt->y,pt->z);
+		d=gl_project_get_depth(pt);
 		if (d>dist) dist=d;
 	}
 
@@ -117,14 +117,7 @@ void render_transparent_sort(void)
 		for (k=0;k!=mesh->npoly;k++) {
 		
 			poly=&mesh->polys[k];
-			if (!poly->draw.transparent_on) continue;
-						
-				// skip culling
-
-			if (render_check_poly_cull(mesh,poly)) {
-				poly++;
-				continue;
-			}
+			if ((!poly->draw.transparent_on) || (poly->draw.culled)) continue;
 			
 				// find distance from camera
 
@@ -187,7 +180,6 @@ void render_map_mesh_transparent(void)
 		// setup
 		
 	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LEQUAL);
 	glDepthMask(GL_FALSE);
 	
 	glEnable(GL_BLEND);

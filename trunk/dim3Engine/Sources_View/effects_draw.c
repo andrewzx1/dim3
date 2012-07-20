@@ -261,7 +261,6 @@ void effect_draw_lightning(effect_type *effect)
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE);
 
 	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LEQUAL);
 	glDepthMask(GL_FALSE);
 
 	gl_shader_draw_execute_simple_color_vbo(3,0,&lightning->col,0.1f);
@@ -343,7 +342,6 @@ void effect_draw_ray(effect_type *effect,int count)
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE);
 
 	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LEQUAL);
 	glDepthMask(GL_FALSE);
 
 	gl_shader_draw_execute_simple_color_ptr(3,vertexes,&ray->col,0.1f);

@@ -211,7 +211,6 @@ void decal_render(void)
 	glDisable(GL_BLEND);
 
 	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LEQUAL);
 	glDepthMask(GL_FALSE);
 
 	glColorMask(GL_FALSE,GL_FALSE,GL_FALSE,GL_FALSE);

@@ -77,7 +77,7 @@ void halo_draw_add(d3pnt *pnt,int obj_idx,int halo_idx)
 
 void halo_draw_setup(void)
 {
-	int						n,x,y,z,radius,pixel_sz,dist,d;
+	int						n,radius,pixel_sz,dist,d;
 	float					alpha;
 	bool					hit;
 	d3pnt					spt,ept;
@@ -103,26 +103,20 @@ void halo_draw_setup(void)
 	for (n=0;n!=view.render->halo_draw.count;n++) {
 		halo_draw=&view.render->halo_draw.halos[n];
 		
-			// translate and rotate point
-			
-		x=halo_draw->pnt.x;
-		y=halo_draw->pnt.y;
-		z=halo_draw->pnt.z;
-		
 			// is it behind the z?
 
-		if (!gl_project_in_view_z(x,y,z)) {
+		if (!gl_project_in_view_z(&halo_draw->pnt)) {
 			halo_draw->in_view=FALSE;
 			continue;
 		}
 				
 			// project halos
-			
-		gl_project_point(&x,&y,&z);
 
-		halo_draw->proj_pnt.x=x;
-		halo_draw->proj_pnt.y=y;
-		halo_draw->proj_pnt.z=z;
+		halo_draw->proj_pnt.x=halo_draw->pnt.x;
+		halo_draw->proj_pnt.y=halo_draw->pnt.y;
+		halo_draw->proj_pnt.z=halo_draw->pnt.z;
+			
+		gl_project_point(&halo_draw->proj_pnt);
 	}
 
 		// ray trace halos to camera's eye level

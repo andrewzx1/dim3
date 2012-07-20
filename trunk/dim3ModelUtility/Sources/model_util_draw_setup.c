@@ -44,7 +44,6 @@ bool model_draw_setup_initialize(model_type *model,model_draw_setup *draw_setup,
 
 	for (n=0;n!=model->nmesh;n++) {
 		draw_setup->mesh_arrays[n].gl_vertex_array=NULL;
-		draw_setup->mesh_arrays[n].gl_color_array=NULL;
 		draw_setup->mesh_arrays[n].gl_tangent_array=NULL;
 		draw_setup->mesh_arrays[n].gl_normal_array=NULL;
 		draw_setup->mesh_arrays[n].poly_cull_array=NULL;
@@ -61,10 +60,6 @@ bool model_draw_setup_initialize(model_type *model,model_draw_setup *draw_setup,
 		draw_setup->mesh_arrays[n].gl_vertex_array=(float*)malloc(sz);
 		if (draw_setup->mesh_arrays[n].gl_vertex_array==NULL) return(FALSE);
 		bzero(draw_setup->mesh_arrays[n].gl_vertex_array,sz);
-
-		draw_setup->mesh_arrays[n].gl_color_array=(float*)malloc(sz);
-		if (draw_setup->mesh_arrays[n].gl_color_array==NULL) return(FALSE);
-		bzero(draw_setup->mesh_arrays[n].gl_color_array,sz);
 		
 		if (tangent_space) {
 			draw_setup->mesh_arrays[n].gl_tangent_array=(float*)malloc(sz);
@@ -94,7 +89,6 @@ void model_draw_setup_shutdown(model_type *model,model_draw_setup *draw_setup)
 
 	for (n=0;n!=model->nmesh;n++) {
 		if (draw_setup->mesh_arrays[n].gl_vertex_array!=NULL) free(draw_setup->mesh_arrays[n].gl_vertex_array);
-		if (draw_setup->mesh_arrays[n].gl_color_array!=NULL) free(draw_setup->mesh_arrays[n].gl_color_array);
 		if (draw_setup->mesh_arrays[n].gl_tangent_array!=NULL) free(draw_setup->mesh_arrays[n].gl_tangent_array);
 		if (draw_setup->mesh_arrays[n].gl_normal_array!=NULL) free(draw_setup->mesh_arrays[n].gl_normal_array);
 		if (draw_setup->mesh_arrays[n].poly_cull_array!=NULL) free(draw_setup->mesh_arrays[n].poly_cull_array);

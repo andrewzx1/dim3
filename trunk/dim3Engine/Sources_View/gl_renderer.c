@@ -66,6 +66,8 @@ void gl_setup_context(void)
 		// regular setup
 		
 	glDisable(GL_DITHER);
+
+	glDepthFunc(GL_LEQUAL);
 	
 #ifndef D3_OPENGL_ES
 	glEnable(GL_LINE_SMOOTH);
