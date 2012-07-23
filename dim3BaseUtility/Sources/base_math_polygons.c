@@ -143,6 +143,25 @@ bool polygon_2D_point_inside(int ptsz,int *px,int *py,int x,int y)
 	return(cnt!=0);
 }
 
+bool polygon_2D_point_inside_f(int ptsz,d3fpnt *poly_pnt,d3fpnt *pnt)
+{
+	int			i,j,cnt;
+	
+		// find the crossings
+	
+	cnt=0;
+	j=ptsz-1;
+	
+	for (i=0;i!=ptsz;i++) {
+        if ((((poly_pnt[i].y<=pnt->y) && (pnt->y<poly_pnt[j].y)) || ((poly_pnt[j].y<=pnt->y) && (pnt->y<poly_pnt[i].y))) && (pnt->x<(poly_pnt[j].x-poly_pnt[i].x)*(pnt->y-poly_pnt[i].y)/(poly_pnt[j].y-poly_pnt[i].y)+poly_pnt[i].x)) cnt=!cnt;
+		j=i;
+	}
+	
+		// inside if crossing are odd
+		
+	return(cnt!=0);
+}
+
 bool polygon_2D_polygon_points_inside(int ptsz,int *px,int *py,int ptsz_2,int *px_2,int *py_2)
 {
 	int			n;

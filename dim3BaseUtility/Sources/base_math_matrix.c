@@ -407,19 +407,19 @@ void matrix_rotate(matrix_type *mat,float ang,float x,float y,float z)
 	rcs=1.0f-cs;
 	sn=sinf(ang);
 
-	rot_mat.data[0][0]=((x*x)*rcs)+cs;
-	rot_mat.data[0][1]=((x*y)*rcs)-(z*sn);
-	rot_mat.data[0][2]=((x*z)*rcs)+(y*sn);
+	rot_mat.data[0][0]=((vct.x*vct.x)*rcs)+cs;
+	rot_mat.data[0][1]=((vct.x*vct.y)*rcs)-(vct.z*sn);
+	rot_mat.data[0][2]=((vct.x*vct.z)*rcs)+(vct.y*sn);
 	rot_mat.data[0][3]=0.0f;
 	
-	rot_mat.data[1][0]=((y*x)*rcs)+(z*sn);
-	rot_mat.data[1][1]=((y*y)*rcs)+cs;
-	rot_mat.data[1][2]=((y*z)*rcs)-(x*sn);
+	rot_mat.data[1][0]=((vct.y*vct.x)*rcs)+(vct.z*sn);
+	rot_mat.data[1][1]=((vct.y*vct.y)*rcs)+cs;
+	rot_mat.data[1][2]=((vct.y*vct.z)*rcs)-(vct.x*sn);
 	rot_mat.data[1][3]=0.0f;
 
-	rot_mat.data[2][0]=((x*z)*rcs)-(y*sn);
-	rot_mat.data[2][1]=((y*z)*rcs)+(x*sn);
-	rot_mat.data[2][2]=((z*z)*rcs)+cs;
+	rot_mat.data[2][0]=((vct.x*vct.z)*rcs)-(vct.y*sn);
+	rot_mat.data[2][1]=((vct.y*vct.z)*rcs)+(vct.x*sn);
+	rot_mat.data[2][2]=((vct.z*vct.z)*rcs)+cs;
 	rot_mat.data[2][3]=0.0f;
 
 	rot_mat.data[3][0]=0.0f;

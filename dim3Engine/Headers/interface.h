@@ -884,6 +884,7 @@ extern void gl_2D_scissor_end(void);
 
 extern inline bool gl_project_in_view_z(d3pnt *pnt);
 extern inline void gl_project_point(d3pnt *pnt);
+extern inline void gl_project_point_f(d3pnt *pnt,d3fpnt *f_pnt);
 extern inline float gl_project_get_depth(d3pnt *pnt);
 extern inline void gl_project_to_eye_coordinates(d3vct *vct);
 

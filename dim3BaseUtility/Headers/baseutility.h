@@ -175,6 +175,7 @@ extern void polygon_get_box(int ptsz,int *px,int *py,int *pz,int *p_min_x,int *p
 extern void polygon_find_center(int ptsz,int *px,int *py,int *pz,int *mx,int *my,int *mz);
 extern void polygon_2D_get_box(int ptsz,int *px,int *py,int *p_lft,int *p_rgt,int *p_top,int *p_bot);
 extern bool polygon_2D_point_inside(int ptsz,int *px,int *py,int x,int y);
+extern bool polygon_2D_point_inside_f(int ptsz,d3fpnt *poly_pnt,d3fpnt *pnt);
 extern bool polygon_2D_polygon_points_inside(int ptsz,int *px,int *py,int ptsz_2,int *px_2,int *py_2);
 extern bool polygon_2D_polygon_lines_intersect(int ptsz,int *px,int *py,int ptsz_2,int *px_2,int *py_2);
 extern void polygon_2D_collision_setup(int ptsz,int *px,int *py);

@@ -462,6 +462,21 @@ void gl_project_point(d3pnt *pnt)
 #endif
 }
 
+void gl_project_point_f(d3pnt *pnt,d3fpnt *f_pnt)
+{
+#ifndef D3_ROTATE_VIEW
+	gl_project_point_patch(pnt,f_pnt);
+#else
+	d3fpnt			win_pnt;
+
+	gl_project_point_patch(pnt,&win_pnt);
+
+	f_pnt->x=gl_viewport[3]-win_pnt.y;
+	f_pnt->y=win_pnt.x;
+	f_pnt->z=win_pnt.z;
+#endif
+}
+
 float gl_project_get_depth(d3pnt *pnt)
 {
 	d3fpnt			win_pnt;
