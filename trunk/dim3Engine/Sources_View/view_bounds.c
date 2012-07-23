@@ -352,7 +352,7 @@ bool view_cull_halo(d3pnt *pnt)
       
 ======================================================= */
 
-bool view_cull_poly(map_mesh_type *mesh,map_mesh_poly_type *poly)
+inline bool view_cull_poly(map_mesh_type *mesh,map_mesh_poly_type *poly)
 {
 		// view culling
 
@@ -370,5 +370,27 @@ bool view_cull_poly(map_mesh_type *mesh,map_mesh_poly_type *poly)
 		// from poly mid-eye point
 
 	return(((poly->tangent_space.normal.x*(float)(poly->box.mid.x-view.render->camera.pnt.x))+(poly->tangent_space.normal.y*(float)(poly->box.mid.y-view.render->camera.pnt.y))+(poly->tangent_space.normal.z*(float)(poly->box.mid.z-view.render->camera.pnt.z)))>map.optimize.cull_angle);
+}
+
+void view_cull_draw_list_mesh_poly(void)
+{
+	int					n,k,mesh_idx;
+	map_mesh_type		*mesh;
+	map_mesh_poly_type	*poly;
+	
+	
+	for (n=0;n!=view.render->draw_list.count;n++) {
+		if (view.render->draw_list.items[n].type!=view_render_type_mesh) continue;
+	
+		mesh_idx=view.render->draw_list.items[n].idx;
+		mesh=&map.mesh.meshes[mesh_idx];
+		
+		poly=mesh->polys;
+		
+		for (k=0;k!=mesh->npoly;k++) {
+			poly->draw.culled=view_cull_poly(mesh,poly);
+			poly++;
+		}
+	}
 }
 

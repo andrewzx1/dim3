@@ -899,7 +899,7 @@ extern bool view_cull_model(model_draw *draw);
 extern bool view_model_shadow(model_draw *draw);
 extern bool view_cull_effect(effect_type *effect,d3pnt *center_pnt);
 extern bool view_cull_halo(d3pnt *pnt);
-extern bool view_cull_poly(map_mesh_type *mesh,map_mesh_poly_type *poly);
+extern void view_cull_draw_list_mesh_poly(void);
 
 //
 // map obscuring

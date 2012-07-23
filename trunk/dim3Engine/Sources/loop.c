@@ -179,8 +179,9 @@ void SDL_iOSEvent_DidBecomeActive(void)
 
 int loop_event_callback(void *userdata,SDL_Event *event)
 {
+
 	switch (event->type) {
-	
+
 		case SDL_IOS_WILLTERMINATE:
 			SDL_iOSEvent_WillTerminate();
 			return(0);
@@ -204,7 +205,7 @@ int loop_event_callback(void *userdata,SDL_Event *event)
 		case SDL_IOS_WILLENTERFOREGROUND:
 			SDL_iOSEvent_WillEnterForeground();
 			return(0);
-			
+
 	}
 	
 	return(1);

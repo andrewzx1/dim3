@@ -363,7 +363,7 @@ void gl_frame_swap(void)
 	}
 	
 		// discard the depth and stencil
-	
+
 #ifdef D3_OS_IPHONE
 	glDiscardFramebufferEXT(GL_FRAMEBUFFER,2,discards);
 #endif
@@ -434,7 +434,7 @@ void gl_project_point_patch(d3pnt *pnt,d3fpnt *win_pnt)
     in[2]=((in[2]/in[3])*0.5f)+0.5f;
 
     win_pnt->x=(in[0]*gl_viewport[2])+gl_viewport[0];
-    win_pnt->z=(in[1]*gl_viewport[3])+gl_viewport[1];
+    win_pnt->y=(in[1]*gl_viewport[3])+gl_viewport[1];
 	win_pnt->z=in[2];
 }
 

@@ -43,18 +43,27 @@ and can be sold or given away.
 
 #define max_view_render_item								5120
 
-#define max_light_spot										128				// maximum number of lights in a scene
-#define max_shader_light									4				// maximum number of lights passed to a shader
+#define max_light_spot										128	
 
 #define join_info_max_players								24				// needs to reflect host_max_remote_count in network_defs.h
 
 //
 // shaders
 //
+// Note that the iPhone has a severe limitation
+// on varrying variables in shaders, so we need to cut
+// the light list in half
+//
 
 #define max_shader_custom_vars								8
 
 #define max_core_shader_data_sz								10240
+
+#ifdef D3_OS_IPHONE
+	#define max_shader_light								2
+#else
+	#define max_shader_light								4
+#endif
 
 #define max_core_shader										25
 

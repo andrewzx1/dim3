@@ -215,12 +215,7 @@ bool view_obscure_create_obscuring_poly_list(void)
 
 		for (k=0;k!=mesh->poly_list.obscure_count;k++) {
 
-				// skip culled polygons
-
 			poly=&mesh->polys[poly_idx[k]];
-			if (poly->draw.culled) continue;
-
-				// add polygon to list
 
 			obs_poly->poly_idx=poly_idx[k];
 

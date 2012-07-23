@@ -230,6 +230,10 @@ void view_draw_scene_build(void)
 		// do view obscuring
 
 	view_obscure_run();
+		
+		// setup polygon obscuring
+		
+	view_cull_draw_list_mesh_poly();
 	
 		// compile all lights in map
 		
