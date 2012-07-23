@@ -36,7 +36,6 @@ extern app_type				app;
 extern setup_type			setup;
 extern file_path_setup_type	file_path_setup;
 
-
 extern bool dim3_osx_appstore_main(void);
 
 /* =======================================================
@@ -271,6 +270,7 @@ int main(int argc,char *argv[])
 				}
 
 			}
+			
 		}
 
 		app_end();

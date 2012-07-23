@@ -247,16 +247,12 @@ char* gl_core_map_shader_build_frag(int nlight,bool fog,bool bump,bool spec,bool
 	strcat(buf,"lowp vec4 tex=texture2D(dim3Tex,uv);\n");
 		
 		// the bump map
+		// note we include an all over ambient (no directional) bump value first
 		
 	if (bump) {
 		strcat(buf,"mediump vec3 bumpMap=normalize((texture2D(dim3TexBump,uv).rgb*2.0)-1.0);\n");
 		strcat(buf,"bumpMap.y=-bumpMap.y;\n");
-		if (nlight==0) {
-			strcat(buf,"mediump float bump=dot(vec3(0.0,0.0,0.5),bumpMap);\n");
-		}
-		else {
-			strcat(buf,"mediump float bump=0.0;\n");
-		}
+		strcat(buf,"mediump float bump=dot(vec3(0.33,0.33,0.33),bumpMap);\n");
 	}
 	
 		// the spec map
@@ -321,7 +317,7 @@ char* gl_core_map_shader_build_frag(int nlight,bool fog,bool bump,bool spec,bool
 		strcat(buf,"gl_FragColor.rgb=");
 	}
 	else {
-		strcat(buf,"vec3 frag=");
+		strcat(buf,"lowp vec3 frag=");
 	}
 
 	if (spec) strcat(buf,"(");
@@ -330,7 +326,7 @@ char* gl_core_map_shader_build_frag(int nlight,bool fog,bool bump,bool spec,bool
 	if (spec) strcat(buf,")+spec");
 	if (glow) strcat(buf,")+glow");
 	strcat(buf,";\n");
-	
+
 	if (fog) strcat(buf,"gl_FragColor.rgb=mix(dim3FogColor,frag,fogFactor);\n");
 	
 	strcat(buf,"gl_FragColor.a=tex.a*dim3Alpha;\n");
@@ -722,16 +718,12 @@ char* gl_core_model_shader_build_frag(int nlight,bool fog,bool bump,bool spec,bo
 	strcat(buf,"lowp vec4 tex=texture2D(dim3Tex,uv);\n");
 	
 		// the bump map
+		// note we include an all over ambient (no directional) bump value first
 		
 	if (bump) {
 		strcat(buf,"mediump vec3 bumpMap=normalize((texture2D(dim3TexBump,uv).rgb*2.0)-1.0);\n");
 		strcat(buf,"bumpMap.y=-bumpMap.y;\n");
-		if (nlight==0) {
-			strcat(buf,"mediump float bump=dot(vec3(0.0,0.0,0.5),bumpMap);\n");
-		}
-		else {
-			strcat(buf,"mediump float bump=0.0;\n");
-		}
+		strcat(buf,"mediump float bump=dot(vec3(0.33,0.33,0.33),bumpMap);\n");
 	}
 	
 		// the spec map
@@ -792,7 +784,7 @@ char* gl_core_model_shader_build_frag(int nlight,bool fog,bool bump,bool spec,bo
 		strcat(buf,"gl_FragColor.rgb=");
 	}
 	else {
-		strcat(buf,"vec3 frag=");
+		strcat(buf,"lowp vec3 frag=");
 	}
 
 	if (spec) strcat(buf,"(");

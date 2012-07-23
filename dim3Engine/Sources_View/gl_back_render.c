@@ -49,18 +49,20 @@ extern bool view_draw_node(node_type *node);
 
 void gl_back_render_initialize(void)
 {
+	GLint				old_fbo;
+	
 		// check if back rendering is enabled
 		
 	back_render_on=gl_check_frame_buffer_ok();
 	if (!back_render_on) return;
+	
+	glGetIntegerv(GL_FRAMEBUFFER_BINDING,&old_fbo);
 	
 		// create depth buffer and stencil object
 		
 	glGenRenderbuffers(1,&back_render_fbo_depth_stencil_id);
 	glBindRenderbuffer(GL_RENDERBUFFER,back_render_fbo_depth_stencil_id);
 	glRenderbufferStorage(GL_RENDERBUFFER,GL_DEPTH24_STENCIL8,back_render_texture_pixel_size,back_render_texture_pixel_size);
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER,GL_DEPTH_ATTACHMENT,GL_RENDERBUFFER,back_render_fbo_depth_stencil_id);
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER,GL_STENCIL_ATTACHMENT,GL_RENDERBUFFER,back_render_fbo_depth_stencil_id);
 
 		// create the frame buffer object and attach depth/stencil
 
@@ -75,7 +77,7 @@ void gl_back_render_initialize(void)
 
 		// turn off framebuffer
 		
-	glBindFramebuffer(GL_FRAMEBUFFER,0);
+	glBindFramebuffer(GL_FRAMEBUFFER,old_fbo);
 }
 
 void gl_back_render_shutdown(void)
@@ -209,7 +211,7 @@ void gl_back_render_frame_node(char *node_name)
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER,GL_STENCIL_ATTACHMENT,GL_RENDERBUFFER,back_render_fbo_depth_stencil_id);
 	
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER)!=GL_FRAMEBUFFER_COMPLETE) {
-		glBindFramebuffer(GL_FRAMEBUFFER,0);
+		glBindFramebuffer(GL_FRAMEBUFFER,old_fbo);
 		return;
 	}
 

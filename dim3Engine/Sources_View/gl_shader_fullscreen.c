@@ -36,6 +36,7 @@ extern setup_type			setup;
 extern view_type			view;
 extern render_info_type		render_info;
 
+GLint						fs_shader_old_fbo;
 GLuint						fs_shader_fbo_id,fs_shader_fbo_depth_stencil_id,fs_shader_txt_id;
 int							fs_shader_idx,fs_shader_life_msec,fs_shader_start_tick;
 bool						fs_shader_on,fs_shader_init,fs_shader_active;
@@ -45,42 +46,27 @@ extern shader_type			*gl_shader_current,
 
 /* =======================================================
 
-      OpenGL ES Stubs
-      
-======================================================= */
-
-#ifdef D3_OPENGL_ES
-
-void gl_fs_shader_map_start(void) {}
-void gl_fs_shader_map_end(void) {}
-bool gl_fs_shader_start(char *shader_name,int life_msec,char *err_str) { return(FALSE); }
-void gl_fs_shader_end(void) {}
-void gl_fs_shader_render_begin(void) {}
-void gl_fs_shader_render_finish(void) {}
-
-#else
-
-/* =======================================================
-
       Initialize Full Screen Shader
       
 ======================================================= */
 
 void gl_fs_shader_initialize(void)
 {
+	GLint			old_fbo;
+	
 		// check if fbo and shaders are available
 		// or already started
 		
 	if (!fs_shader_on) return;
 	if (fs_shader_init) return;
 	
+	glGetIntegerv(GL_FRAMEBUFFER_BINDING,&old_fbo);
+	
 		// create depth buffer and stencil object
 
 	glGenRenderbuffers(1,&fs_shader_fbo_depth_stencil_id);
 	glBindRenderbuffer(GL_RENDERBUFFER,fs_shader_fbo_depth_stencil_id);
 	glRenderbufferStorage(GL_RENDERBUFFER,GL_DEPTH24_STENCIL8,view.screen.x_sz,view.screen.y_sz);
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER,GL_DEPTH_ATTACHMENT,GL_RENDERBUFFER,fs_shader_fbo_depth_stencil_id);
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER,GL_STENCIL_ATTACHMENT,GL_RENDERBUFFER,fs_shader_fbo_depth_stencil_id);
 
 		// create the frame buffer object and attach depth/stencil
 
@@ -95,7 +81,7 @@ void gl_fs_shader_initialize(void)
 
 		// turn off framebuffer
 		
-	glBindFramebuffer(GL_FRAMEBUFFER,0);
+	glBindFramebuffer(GL_FRAMEBUFFER,old_fbo);
 
 		// create the texture
 
@@ -220,6 +206,8 @@ void gl_fs_shader_render_begin(void)
 			return;
 		}
 	}
+	
+	glGetIntegerv(GL_FRAMEBUFFER_BINDING,&fs_shader_old_fbo);
 
 		// setup fbo
 
@@ -229,11 +217,11 @@ void gl_fs_shader_render_begin(void)
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER,GL_STENCIL_ATTACHMENT,GL_RENDERBUFFER,fs_shader_fbo_depth_stencil_id);
 	
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER)!=GL_FRAMEBUFFER_COMPLETE) {
-		glBindFramebuffer(GL_FRAMEBUFFER,0);
+		glBindFramebuffer(GL_FRAMEBUFFER,fs_shader_old_fbo);
 		fs_shader_active=FALSE;
 	}
 	
-	gl_set_viewport(0,0,view.screen.x_sz,view.screen.y_sz);
+//	gl_set_viewport(0,0,view.screen.x_sz,view.screen.y_sz);		// supergumba
 
 		// clear buffer
 
@@ -254,27 +242,27 @@ void gl_fs_shader_render_finish(void)
 
 		// turn off the fbo
 
-	glBindFramebuffer(GL_FRAMEBUFFER,0);
-	gl_set_viewport(0,0,view.screen.x_sz,view.screen.y_sz);
+	glBindFramebuffer(GL_FRAMEBUFFER,fs_shader_old_fbo);
+//	gl_set_viewport(0,0,view.screen.x_sz,view.screen.y_sz);		// supergumba
 
 		// create the vertexes and uv
 
 	vertexes[0]=0.0f;
 	vertexes[1]=0.0f;
 	vertexes[2]=0.0f;
-	vertexes[3]=(float)view.screen.y_sz;
-	vertexes[4]=(float)view.screen.x_sz;
+	vertexes[3]=(float)1.0f; // view.screen.y_sz;
+	vertexes[4]=(float)1.0f; //view.screen.x_sz;
 	vertexes[5]=0.0f;
-	vertexes[6]=(float)view.screen.x_sz;
-	vertexes[7]=(float)view.screen.y_sz;
+	vertexes[6]=(float)1.0f; //view.screen.x_sz;
+	vertexes[7]=(float)1.0f; //view.screen.y_sz;
 
 	uvs[0]=0.0f;
-	uvs[1]=(float)view.screen.y_sz;
+	uvs[1]=(float)1.0f; //view.screen.y_sz;
 	uvs[2]=0.0f;
 	uvs[3]=0.0f;
-	uvs[4]=(float)view.screen.x_sz;
-	uvs[5]=(float)view.screen.y_sz;
-	uvs[6]=(float)view.screen.x_sz;
+	uvs[4]=(float)1.0f; //view.screen.x_sz;
+	uvs[5]=(float)1.0f;//view.screen.y_sz;
+	uvs[6]=(float)1.0f;//view.screen.x_sz;
 	uvs[7]=0.0f;
 
 		// setup fbo texture draw
@@ -295,10 +283,15 @@ void gl_fs_shader_render_finish(void)
 		glUseProgram(shader->program_obj);
 	}
 
+		// need to force some values
+		
 	shader->start_tick=fs_shader_start_tick;			// make sure frequency matches start of shader
-	gl_shader_set_scene_variables(shader);
+	shader->need_matrix_reset=TRUE;
 
-		// required attributes
+		// required uniforms and attributes
+	
+	gl_shader_set_scene_variables(shader);
+	gl_shader_set_draw_matrix_variables(shader);
 
 	glVertexAttribPointer(shader->var_locs.dim3Vertex,2,GL_FLOAT,GL_FALSE,0,(void*)vertexes);
 	glVertexAttribPointer(shader->var_locs.dim3VertexUV,2,GL_FLOAT,GL_FALSE,0,(void*)uvs);
@@ -311,5 +304,3 @@ void gl_fs_shader_render_finish(void)
 	
 	glDisable(GL_TEXTURE_2D);
 }
-
-#endif

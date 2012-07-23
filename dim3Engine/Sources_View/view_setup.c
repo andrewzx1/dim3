@@ -143,9 +143,8 @@ bool view_proj_in_draw_list(int proj_idx)
 
 void view_add_mesh_draw_list(int start_mesh_idx)
 {
-	int					n,k,dist;
+	int					n,dist;
 	map_mesh_type		*start_mesh,*mesh;
-	map_mesh_poly_type	*poly;
 	
 	start_mesh=&map.mesh.meshes[start_mesh_idx];
 	
@@ -159,15 +158,6 @@ void view_add_mesh_draw_list(int start_mesh_idx)
 			// check if bound box is within view
 				
 		if (!view_cull_mesh(mesh)) continue;
-
-			// cull polygons
-
-		poly=mesh->polys;
-
-		for (k=0;k!=mesh->npoly;k++) {
-			poly->draw.culled=view_cull_poly(mesh,poly);
-			poly++;
-		}
 
 			// sort meshes into drawing list
 

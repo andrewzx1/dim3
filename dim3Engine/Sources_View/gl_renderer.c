@@ -131,13 +131,15 @@ bool gl_initialize(int screen_wid,int screen_high,int fsaa_mode,char *err_str)
 	SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE,8);
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER,1);
 	
-#ifdef D3_OS_IPHONE
+#ifdef D3_OPENGL_ES
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION,2);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION,0);
-	
+#endif
+
+#ifdef D3_OS_IPHONE
 	SDL_GL_SetAttribute(SDL_GL_RETAINED_BACKING,1);
 #endif
-	
+
 		// full screen anti-aliasing attributes
 		
 	switch (fsaa_mode) {
@@ -195,17 +197,6 @@ bool gl_initialize(int screen_wid,int screen_high,int fsaa_mode,char *err_str)
 
 	render_info.monitor_refresh_rate=60;
 
-        // clear the entire window so it doesn't flash
-        
-	glClearColor(0.0f,0.0f,0.0f,0.0f);
-	glClear(GL_COLOR_BUFFER_BIT);
-	
-#ifdef D3_OS_IPHONE
-	glDiscardFramebufferEXT(GL_FRAMEBUFFER,2,discards);
-#endif
-
-	SDL_GL_SwapWindow(sdl_wind);
-
 #ifndef D3_ROTATE_VIEW
 	gl_set_viewport(0,0,view.screen.x_sz,view.screen.y_sz);
 #else
@@ -217,6 +208,17 @@ bool gl_initialize(int screen_wid,int screen_high,int fsaa_mode,char *err_str)
 #ifndef D3_OPENGL_ES
 	if (fsaa_mode!=fsaa_mode_none) glEnable(GL_MULTISAMPLE);
 #endif
+
+        // clear the entire window so it doesn't flash
+        
+	glClearColor(0.0f,0.0f,0.0f,0.0f);
+	glClear(GL_COLOR_BUFFER_BIT);
+	
+#ifdef D3_OS_IPHONE
+	glDiscardFramebufferEXT(GL_FRAMEBUFFER,2,discards);
+#endif
+
+	SDL_GL_SwapWindow(sdl_wind);	
 
 		// texture utility initialize
 		
