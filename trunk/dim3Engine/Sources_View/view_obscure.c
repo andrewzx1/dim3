@@ -714,3 +714,276 @@ void view_obscure_run(void)
 
 	view.count.obscure_percent=(100*remove_count)/org_count;
 }
+
+
+
+
+
+// *******************************************************************************************************************
+// *******************************************************************************************************************
+// *******************************************************************************************************************
+// *******************************************************************************************************************
+// *******************************************************************************************************************
+// *******************************************************************************************************************
+// *******************************************************************************************************************
+// *******************************************************************************************************************
+// *******************************************************************************************************************
+
+
+
+
+
+
+bool view_obscure_check_box_2(int skip_mesh_idx,d3pnt *min,d3pnt *max,int dist)
+{
+	int						n,k,t;
+	float					mz;
+	bool					skip;
+	d3pnt					pnt;
+	d3fpnt					fpnt[8],box_fpnt[8];
+	map_mesh_type			*mesh;
+	map_mesh_poly_type		*poly;
+	view_obscure_mesh_type	*obs_mesh;
+	view_obscure_poly_type	*obs_poly;
+
+		// convert box to 2D
+
+	pnt.z=min->z;
+
+	pnt.x=min->x;
+	pnt.y=min->y;
+	gl_project_point_f(&pnt,&box_fpnt[0]);
+
+	pnt.x=max->x;
+	pnt.y=min->y;
+	gl_project_point_f(&pnt,&box_fpnt[1]);
+
+	pnt.x=min->x;
+	pnt.y=max->y;
+	gl_project_point_f(&pnt,&box_fpnt[2]);
+
+	pnt.x=max->x;
+	pnt.y=max->y;
+	gl_project_point_f(&pnt,&box_fpnt[3]);
+
+	pnt.z=max->z;
+
+	pnt.x=min->x;
+	pnt.y=min->y;
+	gl_project_point_f(&pnt,&box_fpnt[4]);
+
+	pnt.x=max->x;
+	pnt.y=min->y;
+	gl_project_point_f(&pnt,&box_fpnt[5]);
+
+	pnt.x=min->x;
+	pnt.y=max->y;
+	gl_project_point_f(&pnt,&box_fpnt[6]);
+
+	pnt.x=max->x;
+	pnt.y=max->y;
+	gl_project_point_f(&pnt,&box_fpnt[7]);
+
+		// compare against obscuring polys
+
+	for (n=0;n!=view_obscure_check_mesh_count;n++) {
+		obs_mesh=&view_obscure_meshes[n];
+
+			// is this mesh has been obscured,
+			// we don't need to check it's
+			// obscuring polys
+
+		if (obs_mesh->skip_obscured) continue;
+
+			// if we are comparing meshes, don't
+			// compare against itself
+
+		if (skip_mesh_idx==obs_mesh->mesh_idx) continue;
+
+			// check obscuring polys
+
+		mesh=&map.mesh.meshes[obs_mesh->mesh_idx];
+
+		for (k=0;k!=obs_mesh->npoly;k++) {
+			obs_poly=&obs_mesh->polys[k];
+
+				// convert poly to 2D
+				// supergumba -- do this BEFORE HAND!
+
+			skip=FALSE;
+				
+			mz=0.0f;
+			poly=&mesh->polys[obs_poly->poly_idx];
+
+			for (t=0;t!=poly->ptsz;t++) {
+				gl_project_point_f(&mesh->vertexes[poly->v[t]],&fpnt[t]);
+				if (t==0) {
+					mz=fpnt[t].z;
+				}
+				else {
+					if (fpnt[t].z<mz) mz=fpnt[t].z;
+				}
+
+				if (!gl_project_in_view_z(&mesh->vertexes[poly->v[t]])) {
+					skip=TRUE;
+					break;
+				}
+			}
+
+			if (skip) continue;
+
+				// compare Zs
+				// we don't compare boxes that have
+				// smaller Zs
+
+			skip=FALSE;
+
+			for (t=0;t!=8;t++) {
+				if (box_fpnt[t].z<=mz) {
+					skip=TRUE;
+					break;
+				}
+			}
+
+			if (skip) continue;
+
+				// check if inside poly
+
+			for (t=0;t!=8;t++) {
+				if (!polygon_2D_point_inside_f(poly->ptsz,fpnt,&box_fpnt[t])) {
+					skip=TRUE;
+					break;
+				}
+			}
+
+			if (!skip) return(FALSE);
+		}
+	}
+
+	return(TRUE);
+}
+
+void view_obscure_run_2(void)
+{
+	int						n,dist,remove_count,org_count,
+							mesh_idx,liq_idx;
+	d3pnt					min,max;
+	map_mesh_type			*mesh;
+	map_liquid_type			*liq;
+	obj_type				*obj;
+	proj_type				*proj;
+	model_type				*mdl;
+	effect_type				*effect;
+	
+		// view obscure on?
+
+	if (view_obscure_meshes==NULL) return;
+
+		// build the obscure polygons
+		// to ray trace against
+
+	if (!view_obscure_create_obscuring_poly_list()) return;
+
+		// run through and obscure all
+		// meshes, liquids, models, and effects
+
+	remove_count=0;
+	org_count=view.render->draw_list.count;
+
+	for (n=0;n!=view.render->draw_list.count;n++) {
+
+			// if too close, don't obscure
+
+		dist=view.render->draw_list.items[n].dist;
+		if (dist<view_obscure_skip_range) continue;
+
+			// check for removal
+
+		switch (view.render->draw_list.items[n].type) {
+
+				// mesh
+				// if we remove a mesh, remove any of it's
+				// polys from the removal list as they aren't
+				// blocking anymore
+
+			case view_render_type_mesh:
+				mesh_idx=view.render->draw_list.items[n].idx;
+				mesh=&map.mesh.meshes[mesh_idx];
+				if (mesh->flag.never_obscure) break;
+
+				if (!view_obscure_check_box_2(mesh_idx,&mesh->box.min,&mesh->box.max,dist)) {
+					view.render->draw_list.items[n].type=view_render_type_none;
+					view_obscure_remove_mesh_from_obscuring_poly_list(mesh_idx);
+					remove_count++;
+					view.count.mesh--;
+				}
+				break;
+				
+				// liquids
+				
+			case view_render_type_liquid:
+				liq_idx=view.render->draw_list.items[n].idx;
+				liq=&map.liquid.liquids[liq_idx];
+				if (liq->flag.never_obscure) break;
+				
+				min.x=liq->lft;
+				max.x=liq->rgt;
+				min.y=max.y=liq->y;
+				min.z=liq->top;
+				max.z=liq->bot;
+
+				if (!view_obscure_check_box_2(-1,&min,&max,dist)) {
+					view.render->draw_list.items[n].type=view_render_type_none;
+					remove_count++;
+					view.count.liquid--;
+				}
+				break;
+
+				// model
+
+			case view_render_type_object:
+				obj=server.obj_list.objs[view.render->draw_list.items[n].idx];
+				if ((obj->draw.model_idx==-1) || (!obj->draw.on)) break;
+	
+				mdl=server.model_list.models[obj->draw.model_idx];
+				model_get_view_complex_bounding_volume(mdl,&obj->draw.pnt,&obj->ang,&min,&max);
+
+				if (!view_obscure_check_box_2(-1,&min,&max,dist)) {
+					view.render->draw_list.items[n].type=view_render_type_none;
+					remove_count++;
+					view.count.model--;
+				}
+				break;
+
+			case view_render_type_projectile:
+				proj=server.proj_list.projs[view.render->draw_list.items[n].idx];
+				if ((proj->draw.model_idx==-1) || (!proj->draw.on)) break;
+	
+				mdl=server.model_list.models[proj->draw.model_idx];
+				model_get_view_complex_bounding_volume(mdl,&proj->draw.pnt,&proj->ang,&min,&max);
+
+				if (!view_obscure_check_box_2(-1,&min,&max,dist)) {
+					view.render->draw_list.items[n].type=view_render_type_none;
+					remove_count++;
+					view.count.model--;
+				}
+				break;
+
+				// effects
+
+			case view_render_type_effect:
+				effect=server.effect_list.effects[view.render->draw_list.items[n].idx];
+				effect_draw_get_bound_box(effect,&min,&max);
+
+				if (!view_obscure_check_box_2(-1,&min,&max,dist)) {
+					view.render->draw_list.items[n].type=view_render_type_none;
+					remove_count++;
+					view.count.effect--;
+				}
+				break;
+
+		}
+	}
+
+	view.count.obscure_percent=(100*remove_count)/org_count;
+}
