@@ -255,7 +255,7 @@ void gl_2D_view_interface(void)
 	matrix_identity(&mat);
 
 #ifdef D3_ROTATE_VIEW
-	matrix_translate(&mat,(float)view.screen.y_sz,0.0f,0.0f);
+	matrix_translate(&mat,(float)iface.scale_y,0.0f,0.0f);
 	matrix_rotate(&mat,90.0f,0.0f,0.0f,1.0f);
 #endif
 

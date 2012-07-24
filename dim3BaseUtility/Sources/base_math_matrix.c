@@ -390,7 +390,7 @@ void matrix_scale(matrix_type *mat,float x,float y,float z)
 
 void matrix_rotate(matrix_type *mat,float ang,float x,float y,float z)
 {
-	float				cs,rcs,sn;
+	float				rad,cs,rcs,sn;
 	d3vct				vct;
 	matrix_type			rot_mat;
 	
@@ -403,9 +403,10 @@ void matrix_rotate(matrix_type *mat,float ang,float x,float y,float z)
 
 		// create the rot matrix
 
-	cs=cosf(ang);
+	rad=ang*ANG_to_RAD;
+	cs=cosf(rad);
 	rcs=1.0f-cs;
-	sn=sinf(ang);
+	sn=sinf(rad);
 
 	rot_mat.data[0][0]=((vct.x*vct.x)*rcs)+cs;
 	rot_mat.data[0][1]=((vct.x*vct.y)*rcs)-(vct.z*sn);
