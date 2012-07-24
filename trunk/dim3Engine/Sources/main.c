@@ -36,7 +36,16 @@ extern app_type				app;
 extern setup_type			setup;
 extern file_path_setup_type	file_path_setup;
 
+extern SDL_Window					*sdl_wind;
+
 extern bool dim3_osx_appstore_main(void);
+
+void test_loop(void *v)
+{
+	char		err_str[256];
+	
+	loop_main(err_str);
+}
 
 /* =======================================================
 
@@ -259,6 +268,9 @@ int main(int argc,char *argv[])
 			// main loop
 
 		if (app_run_ok) {
+		
+		//	SDL_iPhoneSetAnimationCallback(sdl_wind,1,test_loop,0);
+		//	return(0);
 
 			while (!app.loop_quit) {
 

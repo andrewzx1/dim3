@@ -132,7 +132,7 @@ char* gl_core_map_shader_build_vert(int nlight,bool fog,bool bump,bool spec)
 	if (fog) strcat(buf,"varying mediump float fogFactor;\n");
 
 	for (n=0;n!=nlight;n++) {
-		sprintf(strchr(buf,0),"varying mediump vec3 lightVector_%d",n);
+		sprintf(strchr(buf,0),"varying highp vec3 lightVector_%d",n);
 		if (bump) sprintf(strchr(buf,0),",lightVertexVector_%d",n);
 		strcat(buf,";\n");
 	}
@@ -224,7 +224,7 @@ char* gl_core_map_shader_build_frag(int nlight,bool fog,bool bump,bool spec,bool
 	if (fog) strcat(buf,"varying mediump float fogFactor;\n");
 	
 	for (n=0;n!=nlight;n++) {
-		sprintf(strchr(buf,0),"varying mediump vec3 lightVector_%d",n);
+		sprintf(strchr(buf,0),"varying highp vec3 lightVector_%d",n);
 		if (bump) sprintf(strchr(buf,0),",lightVertexVector_%d",n);
 		strcat(buf,";\n");
 	}
@@ -258,7 +258,7 @@ char* gl_core_map_shader_build_frag(int nlight,bool fog,bool bump,bool spec,bool
 		// the spec map
 		
 	if (spec) {
-		strcat(buf,"highp vec3 spec=vec3(0.0,0.0,0.0),specHalfVector;\n");
+		strcat(buf,"mediump vec3 spec=vec3(0.0,0.0,0.0),specHalfVector;\n");
 		strcat(buf,"lowp vec3 specMap=texture2D(dim3TexSpecular,uv).rgb;\n");
 		strcat(buf,"mediump float specFactor;\n");
 	}
@@ -423,7 +423,7 @@ char* gl_core_liquid_shader_build_vert(int nlight)
 	strcat(buf,"varying mediump vec3 dirNormal;\n");
 
 	for (n=0;n!=nlight;n++) {
-		sprintf(strchr(buf,0),"varying mediump vec3 lightVector_%d;\n",n);
+		sprintf(strchr(buf,0),"varying highp vec3 lightVector_%d;\n",n);
 	}
 	
 	strcat(buf,"void main(void)\n");
@@ -475,7 +475,7 @@ char* gl_core_liquid_shader_build_frag(int nlight)
 	strcat(buf,"varying mediump vec3 dirNormal;\n");
 	
 	for (n=0;n!=nlight;n++) {
-		sprintf(strchr(buf,0),"varying mediump vec3 lightVector_%d;\n",n);
+		sprintf(strchr(buf,0),"varying highp vec3 lightVector_%d;\n",n);
 	}
 	
 	strcat(buf,"void main(void)\n");
@@ -597,7 +597,7 @@ char* gl_core_model_shader_build_vert(int nlight,bool fog,bool bump,bool spec)
 	if (fog) strcat(buf,"uniform highp float dim3FogEnd,dim3FogScale;\n");
 	
 	strcat(buf,"attribute highp vec3 dim3Vertex;\n");
-	strcat(buf,"attribute mediump vec3 dim3VertexNormal");
+	strcat(buf,"attribute highp vec3 dim3VertexNormal");
 	if ((bump) || (spec)) strcat(buf,",dim3VertexTangent");
 	strcat(buf,";\n");
 	strcat(buf,"attribute mediump vec2 dim3VertexUV;\n");
@@ -607,7 +607,7 @@ char* gl_core_model_shader_build_vert(int nlight,bool fog,bool bump,bool spec)
 	if (fog) strcat(buf,"varying mediump float fogFactor;\n");
 
 	for (n=0;n!=nlight;n++) {
-		sprintf(strchr(buf,0),"varying mediump vec3 lightVector_%d",n);
+		sprintf(strchr(buf,0),"varying highp vec3 lightVector_%d",n);
 		if (bump) sprintf(strchr(buf,0),",lightVertexVector_%d",n);
 		strcat(buf,";\n");
 	}
@@ -700,7 +700,7 @@ char* gl_core_model_shader_build_frag(int nlight,bool fog,bool bump,bool spec,bo
 	if (fog) strcat(buf,"varying mediump float fogFactor;\n");
 
 	for (n=0;n!=nlight;n++) {
-		sprintf(strchr(buf,0),"varying mediump vec3 lightVector_%d",n);
+		sprintf(strchr(buf,0),"varying highp vec3 lightVector_%d",n);
 		if (bump) sprintf(strchr(buf,0),",lightVertexVector_%d",n);
 		strcat(buf,";\n");
 	}
@@ -729,7 +729,7 @@ char* gl_core_model_shader_build_frag(int nlight,bool fog,bool bump,bool spec,bo
 		// the spec map
 		
 	if (spec) {
-		strcat(buf,"highp vec3 spec=vec3(0.0,0.0,0.0),specHalfVector;\n");
+		strcat(buf,"mediump vec3 spec=vec3(0.0,0.0,0.0),specHalfVector;\n");
 		strcat(buf,"lowp vec3 specMap=texture2D(dim3TexSpecular,uv).rgb;\n");
 		strcat(buf,"mediump float specFactor;\n");
 	}
