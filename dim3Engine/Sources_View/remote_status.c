@@ -105,7 +105,6 @@ void remote_draw_icon(obj_type *obj,unsigned long gl_id)
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 
 	glEnable(GL_DEPTH_TEST);
-	glDepthMask(GL_TRUE);
 
 	gl_shader_draw_execute_simple_bitmap_ptr(gl_id,3,vertexes,uvs,&col,1.0f);
 	glDrawArrays(GL_TRIANGLE_STRIP,0,4);

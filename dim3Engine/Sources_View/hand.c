@@ -71,7 +71,6 @@ void draw_weapon_hand(obj_type *obj,weapon_type *weap)
 
 		// setup drawing
 	
-	glDepthMask(GL_TRUE);
 	glClear(GL_DEPTH_BUFFER_BIT);
 
 		// regular weapon model

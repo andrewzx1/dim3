@@ -232,6 +232,7 @@ void decal_render(void)
 	}
 
 	glColorMask(GL_TRUE,GL_TRUE,GL_TRUE,GL_TRUE);
+	glDepthMask(GL_TRUE);
 
 		// draw decals to stencils
 

@@ -58,7 +58,6 @@ void render_map_mesh_opaque(void)
 		// setup view
 	
 	glEnable(GL_DEPTH_TEST); 
-	glDepthMask(GL_TRUE);
 
 	glDisable(GL_BLEND);
 	

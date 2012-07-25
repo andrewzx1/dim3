@@ -278,6 +278,8 @@ void effect_draw_lightning(effect_type *effect)
 	glDrawArrays(GL_LINES,0,(nline*2));
 
 	glLineWidth(1.0f);
+	
+	glDepthMask(GL_TRUE);
 
 		// unbind vertex object
 		
@@ -353,6 +355,8 @@ void effect_draw_ray(effect_type *effect,int count)
 		
 		wid-=2;
 	}
+	
+	glDepthMask(GL_TRUE);
 }
 
 /* =======================================================
