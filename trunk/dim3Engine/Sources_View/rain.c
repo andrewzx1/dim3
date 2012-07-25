@@ -292,6 +292,8 @@ void rain_draw(void)
 	glDrawArrays(GL_LINES,0,(density*2));
 
 	glLineWidth(1.0f);
+	
+	glDepthMask(GL_TRUE);
 
 		// unbind the vbo
 

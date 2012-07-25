@@ -516,7 +516,6 @@ void liquid_render_liquid(map_liquid_type *liq)
 {
 	int					lmap_txt_idx;
 	float				uv_shift;
-	bool				is_transparent;
 
 		// uv factor
 
@@ -546,13 +545,6 @@ void liquid_render_liquid(map_liquid_type *liq)
 
 	if ((!liq->overlay.on) || (liq->overlay.txt_idx==-1)) return;
 
-	is_transparent=liquid_is_transparent(liq);
-
-	if (!is_transparent) {
-		glEnable(GL_BLEND);
-		glDepthMask(GL_FALSE);
-	}
-
 		// draw the overlay
 
 	view.count.liquid_poly+=((liq->vbo.vertex_count+2)>>2);
@@ -560,11 +552,6 @@ void liquid_render_liquid(map_liquid_type *liq)
 	if (!liquid_render_liquid_create_vertex(liq,(uv_shift*0.5f),TRUE)) return;
 
 	liquid_render_liquid_layer(liq,liq->overlay.txt_idx,lmap_txt_idx,FALSE);
-
-	if (!is_transparent) {
-		glDisable(GL_BLEND);
-		glDepthMask(GL_TRUE);
-	}
 }
 
 /* =======================================================
@@ -583,7 +570,6 @@ void render_map_liquid_opaque(void)
 	glDisable(GL_BLEND);
 
 	glEnable(GL_DEPTH_TEST);
-	glDepthMask(GL_TRUE);
 
 		// draw opaque liquids
 		
@@ -620,5 +606,8 @@ void render_map_liquid_transparent(void)
 			}
 		}
 	}
+	
+	glDisable(GL_BLEND);
+	glDepthMask(GL_TRUE);
 }
 

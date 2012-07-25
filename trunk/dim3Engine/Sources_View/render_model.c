@@ -340,7 +340,6 @@ void render_model_debug_normals(model_type *mdl,int mesh_idx,model_draw *draw)
  	model_poly_type			*poly;
 	
 	glEnable(GL_DEPTH_TEST); 
-	glDepthMask(GL_TRUE);
 	
 	col.r=1.0f;
 	col.g=0.0f;
@@ -636,7 +635,6 @@ void render_model_opaque(model_draw *draw)
 		// setup drawing
 
 	glEnable(GL_DEPTH_TEST); 
-	glDepthMask(GL_TRUE);
 
 	glDisable(GL_BLEND);
 
@@ -715,6 +713,8 @@ void render_model_transparent(model_draw *draw)
 
 		render_model_release_vertex_objects();
 	}
+	
+	glDepthMask(GL_TRUE);
 }
 
 /* =======================================================

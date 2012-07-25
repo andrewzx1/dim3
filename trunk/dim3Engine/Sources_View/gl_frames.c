@@ -337,7 +337,6 @@ void gl_frame_clear(bool in_view)
 
 		// clear the frame
 
-	glDepthMask(GL_TRUE);
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT|GL_STENCIL_BUFFER_BIT);
 }
 

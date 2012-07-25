@@ -215,6 +215,8 @@ void fog_draw_textured(void)
 	gl_shader_draw_execute_simple_bitmap_vbo_attribute(3,0,((((16*6)*count)*3)*sizeof(float)),0,&col,map.fog.alpha);
 
 	glDrawArrays(GL_TRIANGLES,0,((16*6)*count));
+	
+	glDepthMask(GL_TRUE);
 
 		// unbind the vbo
 
