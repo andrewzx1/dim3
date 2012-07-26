@@ -38,7 +38,7 @@ extern server_type			server;
 extern camera_type			camera;
 extern setup_type			setup;
 
-float						light_shader_direction[7][3]={{0.0f,0.0f,0.0f},{1.0f,0.0f,0.0f},{-1.0f,0.0f,0.0f},{0.0f,1.0f,0.0f},{0.0f,-1.0f,0.0f},{0.0f,0.0f,1.0f},{0.0f,0.0f,-1.0f}},
+float						light_shader_direction[7][3]={{1.0f,1.0f,1.0f},{1.0f,0.0f,0.0f},{-1.0f,0.0f,0.0f},{0.0f,1.0f,0.0f},{0.0f,-1.0f,0.0f},{0.0f,0.0f,1.0f},{0.0f,0.0f,-1.0f}},
 
 							light_flicker_value[64]={
 														1.00,1.00,1.00,1.00,1.00,1.00,1.00,1.00,
