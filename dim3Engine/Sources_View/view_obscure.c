@@ -595,6 +595,8 @@ void view_obscure_run(void)
 	proj_type				*proj;
 	model_type				*mdl;
 	effect_type				*effect;
+
+	return;		// supergumba -- testing fill rate
 	
 		// view obscure on?
 
