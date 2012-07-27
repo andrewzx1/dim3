@@ -1450,7 +1450,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.5;
 				OTHER_LDFLAGS = "-lz";
 				PRODUCT_NAME = "dim3 Editor";
-				SDKROOT = macosx10.6;
+				SDKROOT = macosx10.7;
 				SKIP_INSTALL = NO;
 				STRIP_STYLE = debugging;
 				VALID_ARCHS = i386;
