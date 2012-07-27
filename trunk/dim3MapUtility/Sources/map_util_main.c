@@ -145,7 +145,6 @@ bool map_new(map_type *map,char *name)
 		// ambients
 		
 	map->ambient.light_color.r=map->ambient.light_color.g=map->ambient.light_color.b=1.0f;
-	map->ambient.light_map_boost=0.0f;
 	map->ambient.sound_name[0]=0x0;
 	map->ambient.sound_pitch=1.0f;
 	

@@ -34,9 +34,8 @@ and can be sold or given away.
 #include "interface.h"
 
 #define kMapPropertyAmbientColor			0
-#define kMapPropertyAmbientLightMapBoost	1
-#define kMapPropertyAmbientSound			2
-#define kMapPropertyAmbientSoundPitch		3
+#define kMapPropertyAmbientSound			1
+#define kMapPropertyAmbientSoundPitch		2
 
 #define kMapPropertyLightMapQuality			10
 #define kMapPropertyLightMapSize			11
@@ -81,7 +80,6 @@ void property_palette_fill_light_media(void)
 
 	list_palette_add_header(&property_palette,0,"Map Ambient");
 	list_palette_add_pick_color(&property_palette,kMapPropertyAmbientColor,"Color",&map.ambient.light_color,FALSE);
-	list_palette_add_float(&property_palette,kMapPropertyAmbientLightMapBoost,"Light Map Boost",&map.ambient.light_map_boost,FALSE);
 	list_palette_add_picker_list_string(&property_palette,kMapPropertyAmbientSound,"Sound",(char*)iface.sound_list.sounds,iface.sound_list.nsound,sizeof(iface_sound_type),(int)offsetof(iface_sound_type,name),TRUE,map.ambient.sound_name,FALSE);
 	list_palette_add_float(&property_palette,kMapPropertyAmbientSoundPitch,"Sound Pitch",&map.ambient.sound_pitch,FALSE);
 

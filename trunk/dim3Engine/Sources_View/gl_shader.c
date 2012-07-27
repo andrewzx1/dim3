@@ -135,7 +135,6 @@ void gl_shader_cache_dynamic_variable_locations(shader_type *shader)
 	shader->var_locs.dim3FrequencySecond=glGetUniformLocation(shader->program_obj,"dim3FrequencySecond");
 	shader->var_locs.dim3CameraPosition=glGetUniformLocation(shader->program_obj,"dim3CameraPosition");
 	shader->var_locs.dim3AmbientColor=glGetUniformLocation(shader->program_obj,"dim3AmbientColor");
-	shader->var_locs.dim3LightMapBoost=glGetUniformLocation(shader->program_obj,"dim3LightMapBoost");
 	shader->var_locs.dim3ShineFactor=glGetUniformLocation(shader->program_obj,"dim3ShineFactor");
 	shader->var_locs.dim3GlowFactor=glGetUniformLocation(shader->program_obj,"dim3GlowFactor");
 	shader->var_locs.dim3Alpha=glGetUniformLocation(shader->program_obj,"dim3Alpha");
@@ -537,8 +536,6 @@ void gl_shader_set_scene_variables(shader_type *shader)
 		gl_lights_calc_ambient_color(&col);
 		glUniform3f(shader->var_locs.dim3AmbientColor,col.r,col.g,col.b);
 	}
-	
-	if (shader->var_locs.dim3LightMapBoost!=-1) glUniform1f(shader->var_locs.dim3LightMapBoost,map.ambient.light_map_boost);
 	
 	if (fog_solid_on()) {
 		if (shader->var_locs.dim3FogEnd!=-1) glUniform1f(shader->var_locs.dim3FogEnd,(float)map.fog.outer_radius);

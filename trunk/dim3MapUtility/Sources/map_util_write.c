@@ -209,7 +209,6 @@ void write_map_settings_xml(map_type *map)
 	
     xml_add_tagstart("Ambient_Light");
 	xml_add_attribute_color("rgb",&map->ambient.light_color);
-	xml_add_attribute_float("light_map_boost",map->ambient.light_map_boost);
     xml_add_tagend(TRUE);
 	
     xml_add_tagstart("Ambient_Sound");

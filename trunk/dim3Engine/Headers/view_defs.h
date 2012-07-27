@@ -397,7 +397,7 @@ typedef struct		{
 						GLint								dim3ProjectionMatrix,dim3ModelViewMatrix,
 															dim3NormalMatrix,dim3FrequencySecond,
 															dim3CameraPosition,dim3AmbientColor,
-															dim3LightMapBoost,dim3ShineFactor,dim3GlowFactor,
+															dim3ShineFactor,dim3GlowFactor,
 															dim3Alpha,dim3DiffuseVector,dim3DiffuseBoost,
 															dim3FogEnd,dim3FogScale,dim3FogColor,
 															dim3Vertex,dim3VertexColor,
