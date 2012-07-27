@@ -210,7 +210,7 @@ char* gl_core_map_shader_build_frag(int nlight,bool fog,bool bump,bool spec,bool
 	if (glow) strcat(buf,",dim3TexGlow");
 	strcat(buf,",dim3TexLightMap;\n");
 
-	strcat(buf,"uniform lowp float dim3Alpha,dim3LightMapBoost");
+	strcat(buf,"uniform lowp float dim3Alpha");
 	if (spec) strcat(buf,",dim3ShineFactor");
 	if (glow) strcat(buf,",dim3GlowFactor");
 	strcat(buf,";\n");
@@ -236,12 +236,10 @@ char* gl_core_map_shader_build_frag(int nlight,bool fog,bool bump,bool spec,bool
 	
 	strcat(buf,"highp float dist;\n");
 	strcat(buf,"lowp float att;\n");
-	strcat(buf,"lowp vec3 ambient=dim3AmbientColor;\n");
 
-		// the light map
+		// the ambient + light map
 
-	strcat(buf,"lowp vec3 lmap=texture2D(dim3TexLightMap,lightMapUV).rgb;\n");
-	strcat(buf,"ambient+=(lmap+(lmap*dim3LightMapBoost));\n");
+	strcat(buf,"lowp vec3 ambient=dim3AmbientColor+texture2D(dim3TexLightMap,lightMapUV).rgb;\n");
 	
 		// the texture map
 		
@@ -470,7 +468,7 @@ char* gl_core_liquid_shader_build_frag(int nlight)
 	gl_core_shader_build_generic_light_struct(nlight,buf);
 	
 	strcat(buf,"uniform lowp sampler2D dim3Tex,dim3TexLightMap;\n");
-	strcat(buf,"uniform lowp float dim3Alpha,dim3LightMapBoost;\n");
+	strcat(buf,"uniform lowp float dim3Alpha;\n");
 	strcat(buf,"uniform lowp vec3 dim3AmbientColor;\n");
 	
 	strcat(buf,"varying mediump vec2 uv,lightMapUV;\n");
@@ -484,12 +482,10 @@ char* gl_core_liquid_shader_build_frag(int nlight)
 	strcat(buf,"{\n");
 	
 	strcat(buf,"highp float att,dist;\n");
-	strcat(buf,"lowp vec3 ambient=dim3AmbientColor;\n");
 
-		// the light map
+		// the ambient plus light map
 
-	strcat(buf,"lowp vec3 lmap=texture2D(dim3TexLightMap,lightMapUV).rgb;\n");
-	strcat(buf,"ambient+=(lmap+(lmap*dim3LightMapBoost));\n");
+	strcat(buf,"lowp vec3 ambient=dim3AmbientColor+texture2D(dim3TexLightMap,lightMapUV).rgb;\n");
 	
 		// the texture map
 		

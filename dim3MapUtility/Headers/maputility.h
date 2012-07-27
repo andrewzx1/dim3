@@ -639,7 +639,7 @@ typedef struct		{
 					} map_optimize_type;					
 
 typedef struct		{
-						float								sound_pitch,light_map_boost;
+						float								sound_pitch;
 						char								sound_name[name_str_len];
 						d3col								light_color;
 					} map_ambient_type;					
