@@ -360,7 +360,7 @@ void menu_draw(void)
 
 			// text
 			
-		gl_text_start(font_interface_index,iface.font.text_size_large);
+		gl_text_start(font_interface_index,iface.font.text_size_large,FALSE);
 		gl_text_draw(x,y,item->data,tx_center,TRUE,&iface.color.menu.text,draw_alpha);
 		gl_text_end();
 

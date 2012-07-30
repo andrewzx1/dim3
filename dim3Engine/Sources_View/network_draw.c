@@ -96,7 +96,7 @@ void network_score_single_name_draw(char *name,int score,int lx,int rx,int ty,in
 	
 	sprintf(txt,"%d",score);
 		
-	gl_text_start(font_hud_index,fnt_sz);
+	gl_text_start(font_hud_index,fnt_sz,FALSE);
 	gl_text_draw((lx+5),(by+5),name,tx_left,FALSE,&col2,1.0f);
 	gl_text_draw((rx-5),(by+5),txt,tx_right,FALSE,&col2,1.0f);
 	gl_text_end();
@@ -105,8 +105,8 @@ void network_score_single_name_draw(char *name,int score,int lx,int rx,int ty,in
 			
 	if (!winner) return;
 	
-	lx=(lx+5)+gl_text_get_string_width(font_hud_index,fnt_sz,name);
-	rx=(rx-5)-gl_text_get_string_width(font_hud_index,fnt_sz,txt);
+	lx=(lx+5)+gl_text_get_string_width(font_hud_index,fnt_sz,FALSE,name);
+	rx=(rx-5)-gl_text_get_string_width(font_hud_index,fnt_sz,FALSE,txt);
 	
 	k=game_time_get_raw()%2000;
 	if (k>=1000) k=2000-k;
@@ -119,7 +119,7 @@ void network_score_single_name_draw(char *name,int score,int lx,int rx,int ty,in
 	x=(lx+rx)>>1;
 	y=(ty+by)>>1;
 	
-	gl_text_start(font_hud_index,((fnt_sz*2)/3));
+	gl_text_start(font_hud_index,((fnt_sz*2)/3),FALSE);
 	gl_text_draw(x,y,"Winner!",tx_center,TRUE,&col2,1.0f);
 	gl_text_end();
 
@@ -332,7 +332,7 @@ void network_score_draw(void)
 
 	sprintf(str,"%s at %s",iface.multiplayer.game_list.games[net_setup.game_idx].name,map.info.name);
 		
-	gl_text_start(font_hud_index,iface.font.text_size_large);
+	gl_text_start(font_hud_index,iface.font.text_size_large,FALSE);
 	gl_text_draw((iface.scale_x>>1),y,str,tx_center,TRUE,&col,1.0f);
 	gl_text_end();
 	
@@ -352,7 +352,7 @@ void network_score_draw(void)
 	}
 	
 	if (str[0]!=0x0) {
-		gl_text_start(font_hud_index,iface.font.text_size_medium);
+		gl_text_start(font_hud_index,iface.font.text_size_medium,FALSE);
 		gl_text_draw((iface.scale_x>>1),(y+y),str,tx_center,TRUE,&col,1.0f);
 		gl_text_end();
 	}
@@ -380,7 +380,7 @@ void network_chat_draw(void)
 
 		// draw text
 
-	gl_text_start(font_hud_index,iface.font.text_size_mini);
+	gl_text_start(font_hud_index,iface.font.text_size_mini,FALSE);
 
 		// currently typing?
 

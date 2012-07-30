@@ -89,7 +89,7 @@ void metrics_draw(void)
 
 		// fps
 		
-	gl_text_start(font_hud_index,metrics_txt_sz);
+	gl_text_start(font_hud_index,metrics_txt_sz,FALSE);
 		
 	hud_texts_fps(str);
 

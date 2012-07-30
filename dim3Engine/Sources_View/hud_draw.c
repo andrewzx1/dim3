@@ -422,9 +422,11 @@ void hud_texts_draw(void)
 {
 	int				n,high,cur_size;
 	float			alpha;
+	bool			cur_monospaced;
 	iface_text_type	*text;
 
 	cur_size=-1;
+	cur_monospaced=FALSE;
 
 	for (n=0;n!=iface.text_list.ntext;n++) {
 
@@ -433,10 +435,11 @@ void hud_texts_draw(void)
 
 			// time for a new text size?
 
-		if (text->size!=cur_size) {
+		if ((text->size!=cur_size) || (text->monospaced!=cur_monospaced)) {
 			cur_size=text->size;
+			cur_monospaced=text->monospaced;
 
-			gl_text_start(font_hud_index,cur_size);
+			gl_text_start(font_hud_index,cur_size,cur_monospaced);
 			high=gl_text_get_char_height(cur_size);
 		}
 

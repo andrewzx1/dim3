@@ -83,7 +83,7 @@ void console_draw(void)
 
 		// setup text drawing
 
-	gl_text_start(font_interface_index,txt_size);
+	gl_text_start(font_interface_index,txt_size,FALSE);
 
 		// console lines
 

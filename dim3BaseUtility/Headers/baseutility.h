@@ -649,7 +649,7 @@ typedef struct		{
 						int								size,just,special;
 						float							alpha;
 						char							name[name_str_len],data[max_hud_text_str_sz];
-						bool							show,old_show,has_return;
+						bool							show,old_show,monospaced,has_return;
 						d3pnt							pnt;
 						d3col							color;
 						iface_item_fade_type			fade;

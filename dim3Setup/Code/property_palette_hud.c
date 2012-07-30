@@ -270,6 +270,7 @@ void property_palette_click_hud(bool double_click)
 		strcpy(iface.text_list.texts[idx].name,name);
 		iface.text_list.texts[idx].data[0]=0x0;
 		iface.text_list.texts[idx].show=TRUE;
+		iface.text_list.texts[idx].monospaced=FALSE;
 		iface.text_list.texts[idx].has_return=FALSE;
 		iface.text_list.texts[idx].color.r=1.0f;
 		iface.text_list.texts[idx].color.g=1.0f;
