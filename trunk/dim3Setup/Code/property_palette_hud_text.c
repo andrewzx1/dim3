@@ -42,14 +42,15 @@ and can be sold or given away.
 
 #define kTextOptionSize							5
 #define kTextOptionJust							6
-#define kTextOptionSpecial						7
-#define kTextOptionAlpha						8
-#define kTextOptionColor						9
+#define kTextOptionMonospaced					7
+#define kTextOptionSpecial						8
+#define kTextOptionAlpha						9
+#define kTextOptionColor						10
 
-#define kTextFadeOn								10
-#define kTextFadeInTick							11
-#define kTextFadeLifeTick						12
-#define kTextFadeOutTick						13
+#define kTextFadeOn								20
+#define kTextFadeInTick							21
+#define kTextFadeLifeTick						22
+#define kTextFadeOutTick						23
 
 extern iface_type				iface;
 extern setup_state_type			state;
@@ -89,6 +90,7 @@ void property_palette_fill_hud_text(int hud_text_idx)
 
 	list_palette_add_header(&property_palette,0,"Options");
 	list_palette_add_int(&property_palette,kTextOptionSize,"Text Size",&text->size,FALSE);
+	list_palette_add_checkbox(&property_palette,kTextOptionMonospaced,"Monospaced",&text->monospaced,FALSE);
 	list_palette_add_picker_list_int(&property_palette,kTextOptionJust,"Justification",(char*)hud_text_just_type_str,-1,name_str_len,0,FALSE,&text->just,FALSE);
 	list_palette_add_picker_list_int(&property_palette,kTextOptionSpecial,"Special",(char*)hud_text_special_type_str,-1,name_str_len,0,FALSE,&text->special,FALSE);
 	list_palette_add_float(&property_palette,kTextOptionAlpha,"Alpha",&text->alpha,FALSE);

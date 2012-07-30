@@ -167,6 +167,7 @@ void iface_read_settings_text(iface_type *iface,int text_tag)
 	text->size=iface->font.text_size_small;
 	text->color.r=text->color.g=text->color.b=1;
 	text->show=TRUE;
+	text->monospaced=FALSE;
 	text->special=text_special_none;
 	text->just=tx_left;
 	text->alpha=1.0f;
@@ -181,6 +182,7 @@ void iface_read_settings_text(iface_type *iface,int text_tag)
 		xml_get_attribute_color(tag,"color",&text->color);
 		text->just=xml_get_attribute_list(tag,"just",(char*)just_mode_str);
 		text->show=!xml_get_attribute_boolean(tag,"hide");
+		text->monospaced=xml_get_attribute_boolean(tag,"monospaced");
 		text->special=xml_get_attribute_list(tag,"special",(char*)text_special_str);
 	}
 
@@ -1170,6 +1172,7 @@ bool iface_write_settings_interface(iface_type *iface,char *err_str)
 		xml_add_attribute_color("color",&text->color);
 		xml_add_attribute_list("just",(char*)just_mode_str,text->just);
 		xml_add_attribute_boolean("hide",!text->show);
+		xml_add_attribute_boolean("monospaced",text->monospaced);
 		xml_add_attribute_list("special",(char*)text_special_str,text->special);
 		xml_add_tagend(TRUE);
 

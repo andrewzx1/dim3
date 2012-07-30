@@ -160,7 +160,7 @@ void view_draw_debug_info(char *name,char *info,d3pnt *pnt,d3pnt *size,d3ang *an
 	col.r=col.b=1.0f;
 	col.g=0.0f;
 	
-	gl_text_start(font_hud_index,font_size);
+	gl_text_start(font_hud_index,font_size,FALSE);
 
 	gl_text_draw(x,y,name,tx_center,FALSE,&col,1.0f);
 

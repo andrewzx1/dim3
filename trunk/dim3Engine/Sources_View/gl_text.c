@@ -35,6 +35,7 @@ extern iface_type			iface;
 extern setup_type			setup;
 
 int							font_index,font_size;
+bool						font_monospaced;
 float						*gl_text_vertexes,*gl_text_uvs;
 unsigned char				*gl_text_colors;
 texture_font_type			fonts[2];
@@ -99,7 +100,12 @@ int gl_text_get_char_height(int text_size)
 	return((int)(((float)text_size)*text_height_factor));
 }
 
-int gl_text_get_string_width(int text_font,int text_size,char *str)
+int gl_text_get_monospace_width(texture_font_size_type *font,int text_size)
+{
+	return((int)(((float)text_size)*font->char_size['0']));
+}
+
+int gl_text_get_string_width(int text_font,int text_size,bool monospaced,char *str)
 {
 	int						i,ch,len;
 	float					fx,f_wid;
@@ -108,12 +114,19 @@ int gl_text_get_string_width(int text_font,int text_size,char *str)
 	
 	font=gl_text_get_font(text_font,text_size);
 	
-	f_wid=(float)text_size;
+	len=strlen(str);
+
+		// monospaced just use character
+		// 0 for size, since most will be #s
+
+	if (monospaced) return(len*gl_text_get_monospace_width(font,text_size));
+
+		// regular propotional text
 	
 	c=str;
-	len=strlen(str);
 	
 	fx=0.0f;
+	f_wid=(float)text_size;
 	
 	for (i=0;i<len;i++) {
 		ch=(int)*c++;
@@ -136,7 +149,7 @@ int gl_text_get_string_width(int text_font,int text_size,char *str)
       
 ======================================================= */
 
-void gl_text_start(int text_font,int text_size)
+void gl_text_start(int text_font,int text_size,bool monospaced)
 {
 	d3col					col;
 	texture_font_size_type	*font;
@@ -147,6 +160,7 @@ void gl_text_start(int text_font,int text_size)
 		
 	font_index=text_font;
 	font_size=text_size;
+	font_monospaced=monospaced;
 	
 		// default color
 		
@@ -208,17 +222,23 @@ void gl_text_draw_internal(int x,int y,char *txt,int just,bool vcenter,d3col *co
         
 	switch (just) {
 		case tx_center:
-			x-=(gl_text_get_string_width(font_index,font_size,txt)>>1);
+			x-=(gl_text_get_string_width(font_index,font_size,font_monospaced,txt)>>1);
 			break;
 		case tx_right:
-			x-=gl_text_get_string_width(font_index,font_size,txt);
+			x-=gl_text_get_string_width(font_index,font_size,font_monospaced,txt);
 			break;
 	}
 	
 		// get width and height
 		
-	f_wid=(float)font_size;
-	f_high=f_wid*text_height_factor;
+	if (font_monospaced) {
+		f_wid=(float)gl_text_get_monospace_width(font,font_size);
+	}
+	else {
+		f_wid=(float)font_size;
+	}
+
+	f_high=((float)font_size)*text_height_factor;
 
 		// construct vertexes
 
@@ -259,7 +279,12 @@ void gl_text_draw_internal(int x,int y,char *txt,int just,bool vcenter,d3col *co
 		*vp++=f_rgt;
 		*vp++=f_bot;
 
-		f_lft+=(f_wid*font->char_size[ch]);
+		if (font_monospaced) {
+			f_lft+=f_wid;
+		}
+		else {
+			f_lft+=(f_wid*font->char_size[ch]);
+		}
 
 			// the UVs
 

@@ -516,7 +516,7 @@ void element_text_add(char *str,int id,int x,int y,int size,int just,d3col *col,
 		c2=strstr(c,"{r}");
 		if (c2!=NULL) *c2=0x0;
 		
-		wid=gl_text_get_string_width(font_interface_index,size,c);
+		wid=gl_text_get_string_width(font_interface_index,size,FALSE,c);
 		if (wid>element->wid) element->wid=wid;
 		
 		if (c2==NULL) break;
@@ -1172,7 +1172,7 @@ void element_draw_button_text(element_type *element,int sel_id)
 	x=(lft+rgt)>>1;
 	y=((top+bot)>>1)-(iface.font.text_size_medium/10);
 
-	gl_text_start(font_interface_index,iface.font.text_size_medium);
+	gl_text_start(font_interface_index,iface.font.text_size_medium,FALSE);
 	if (element->id!=sel_id) {
 		gl_text_draw(x,y,element->setup.button.name,tx_center,TRUE,&iface.color.button.text,alpha);
 	}
@@ -1391,7 +1391,7 @@ void element_draw_text(element_type *element,int sel_id)
 
 		// draw text
 
-	gl_text_start(font_interface_index,element->setup.text.size);
+	gl_text_start(font_interface_index,element->setup.text.size,FALSE);
 
 	c=element->str;
 	
@@ -1456,7 +1456,7 @@ void element_draw_text_field(element_type *element,int sel_id)
 
 	ky=y-(element->high>>1);
 		
-	gl_text_start(font_interface_index,iface.font.text_size_medium);
+	gl_text_start(font_interface_index,iface.font.text_size_medium,FALSE);
 	gl_text_draw((x-5),(ky-2),element->str,tx_right,TRUE,&iface.color.control.label,1.0f);
 	gl_text_draw(x,(ky-3),":",tx_center,TRUE,&iface.color.control.label,1.0f);
 	gl_text_end();
@@ -1485,7 +1485,7 @@ void element_draw_text_field(element_type *element,int sel_id)
 
 		// control text
 
-	gl_text_start(font_interface_index,iface.font.text_size_medium);
+	gl_text_start(font_interface_index,iface.font.text_size_medium,FALSE);
 		
 	if (element->enabled) {
 		if (element->id==element_open_text_field_id) {
@@ -1506,7 +1506,7 @@ void element_draw_text_field(element_type *element,int sel_id)
 	if (element_open_text_field_id!=element->id) return;
 	if ((game_time_get_raw()&0x200)==0x0) return;
 
-	wid=gl_text_get_string_width(font_interface_index,iface.font.text_size_medium,element->value_str);
+	wid=gl_text_get_string_width(font_interface_index,iface.font.text_size_medium,FALSE,element->value_str);
 
 	top+=3;
 	bot-=3;
@@ -1559,7 +1559,7 @@ void element_draw_number(element_type *element,int sel_id)
 
 	ky=y-(element->high>>1);
 		
-	gl_text_start(font_interface_index,iface.font.text_size_medium);
+	gl_text_start(font_interface_index,iface.font.text_size_medium,FALSE);
 	gl_text_draw((x-5),(ky-2),element->str,tx_right,TRUE,&iface.color.control.label,1.0f);
 	gl_text_draw(x,(ky-3),":",tx_center,TRUE,&iface.color.control.label,1.0f);
 	gl_text_end();
@@ -1601,7 +1601,7 @@ void element_draw_number(element_type *element,int sel_id)
 
 	sprintf(txt,"%d",element->value);
 
-	gl_text_start(font_interface_index,iface.font.text_size_medium);
+	gl_text_start(font_interface_index,iface.font.text_size_medium,FALSE);
 		
 	if (element->enabled) {
 		if (element->id==element_open_text_field_id) {
@@ -1711,7 +1711,7 @@ void element_draw_checkbox_control(int x,int y,int wid,bool checked,bool enabled
 
 		// text
 
-	gl_text_start(font_interface_index,iface.font.text_size_medium);
+	gl_text_start(font_interface_index,iface.font.text_size_medium,FALSE);
 	if (checked) {
 		gl_text_draw((rgt-(wid>>2)),(y-1),"on",tx_center,TRUE,&iface.color.control.label,1.0f);
 	}
@@ -1743,7 +1743,7 @@ void element_draw_checkbox(element_type *element,int sel_id)
 
 	ky=y-(element->high>>1);
 
-	gl_text_start(font_interface_index,iface.font.text_size_medium);
+	gl_text_start(font_interface_index,iface.font.text_size_medium,FALSE);
 	gl_text_draw((x-5),(ky-2),element->str,tx_right,TRUE,&iface.color.control.label,1.0f);
 	gl_text_draw(x,(ky-3),":",tx_center,TRUE,&iface.color.control.label,1.0f);
 	gl_text_end();
@@ -1841,7 +1841,7 @@ void element_draw_combo(element_type *element,int sel_id)
 	
 	ky=y-(element->high>>1);
 
-	gl_text_start(font_interface_index,iface.font.text_size_medium);
+	gl_text_start(font_interface_index,iface.font.text_size_medium,FALSE);
 	gl_text_draw((x-5),(ky-2),element->str,tx_right,TRUE,&iface.color.control.label,1.0f);
 	gl_text_draw(x,(ky-3),":",tx_center,TRUE,&iface.color.control.label,1.0f);
 	gl_text_end();
@@ -1896,7 +1896,7 @@ void element_draw_combo(element_type *element,int sel_id)
 
 	strcpy(str,(element->data+(element->value*32)));
 
-	gl_text_start(font_interface_index,iface.font.text_size_medium);
+	gl_text_start(font_interface_index,iface.font.text_size_medium,FALSE);
 	gl_text_draw((x+15),(ky-2),str,tx_left,TRUE,&iface.color.control.text,alpha);
 	gl_text_end();
 }
@@ -1965,7 +1965,7 @@ void element_draw_combo_open(element_type *element)
 
 			// text
 
-		gl_text_start(font_interface_index,iface.font.text_size_medium);
+		gl_text_start(font_interface_index,iface.font.text_size_medium,FALSE);
 		strcpy(str,(element->data+(n*32)));
 
 		if (sel_item_idx==n) {
@@ -2025,7 +2025,7 @@ void element_draw_slider(element_type *element,int sel_id)
 	
 	ky=y-(element->high>>1);
 
-	gl_text_start(font_interface_index,iface.font.text_size_medium);
+	gl_text_start(font_interface_index,iface.font.text_size_medium,FALSE);
 	gl_text_draw((x-5),(ky-2),element->str,tx_right,TRUE,&iface.color.control.label,1.0f);
 	gl_text_draw(x,(ky-3),":",tx_center,TRUE,&iface.color.control.label,1.0f);
 	gl_text_end();
@@ -2077,7 +2077,7 @@ void element_draw_slider(element_type *element,int sel_id)
 
 		// text
 
-	gl_text_start(font_interface_index,iface.font.text_size_medium);
+	gl_text_start(font_interface_index,iface.font.text_size_medium,FALSE);
 	sprintf(str,"%d%%",(int)(element->setup.slider.value*100.0f));
 	gl_text_draw((rgt-5),(ky-1),str,tx_right,TRUE,&iface.color.control.text,1.0f);
 	gl_text_end();
@@ -2302,7 +2302,7 @@ void element_draw_table_line_header(element_type *element,int x,int y,int wid,in
 	y+=((row_high>>1)-3);
 	
 	for (n=0;n!=element->setup.table.ncolumn;n++) {
-		gl_text_start(font_interface_index,iface.font.text_size_medium);
+		gl_text_start(font_interface_index,iface.font.text_size_medium,FALSE);
 		gl_text_draw((x+4),y,element->setup.table.cols[n].name,tx_left,TRUE,&col,1.0f);
 		gl_text_end();
 		
@@ -2390,7 +2390,7 @@ void element_draw_table_line_data_text(int x,int y,int row_high,d3col *txt_col,c
 	
 	high=gl_text_get_char_height(iface.font.text_size_medium);
 	
-	gl_text_start(font_interface_index,iface.font.text_size_medium);
+	gl_text_start(font_interface_index,iface.font.text_size_medium,FALSE);
 	
 		// any returns?
 		
@@ -2481,7 +2481,7 @@ void element_draw_table_line_data(element_type *element,int x,int y,int row,int 
 
 				col.r=col.g=col.b=1.0f;
 
-				gl_text_start(font_interface_index,iface.font.text_size_large);
+				gl_text_start(font_interface_index,iface.font.text_size_large,FALSE);
 				gl_text_draw((dx+(bitmap_sz>>1)),(y+(bitmap_sz>>1)),"?",tx_center,TRUE,&col,1.0f);
 				gl_text_end();
 			}
@@ -2808,7 +2808,7 @@ void element_draw_tab(element_type *element,int sel_id,int x,int y)
 			memmove(&col,&iface.color.tab.text_mouse_over,sizeof(d3col));
 		}
 
-		gl_text_start(font_interface_index,iface.font.text_size_medium);
+		gl_text_start(font_interface_index,iface.font.text_size_medium,FALSE);
 		gl_text_draw(((lx+rx)>>1),((ty+by)>>1),element->setup.tab.name[tab_idx],tx_center,TRUE,&col,1.0f);
 		gl_text_end();
 	}
@@ -2873,7 +2873,7 @@ void element_draw_color(element_type *element,int sel_id)
 	
 	ky=y-(element->high>>1);
 
-	gl_text_start(font_interface_index,iface.font.text_size_medium);
+	gl_text_start(font_interface_index,iface.font.text_size_medium,FALSE);
 	gl_text_draw((x-5),(ky-2),element->str,tx_right,TRUE,&iface.color.control.label,1.0f);
 	gl_text_draw(x,(ky-3),":",tx_center,TRUE,&iface.color.control.label,1.0f);
 	gl_text_end();
@@ -3005,7 +3005,7 @@ void element_draw_text_box(element_type *element)
 	x=lft+5;
 	y=element->y+(high+5);
 
-	gl_text_start(font_interface_index,iface.font.text_size_medium);
+	gl_text_start(font_interface_index,iface.font.text_size_medium,FALSE);
 
 	idx=0;
 	last_space_idx=-1;
@@ -3046,7 +3046,7 @@ void element_draw_text_box(element_type *element)
 			
 		str[idx]=0x0;
 		
-		wid=gl_text_get_string_width(font_interface_index,iface.font.text_size_medium,str);
+		wid=gl_text_get_string_width(font_interface_index,iface.font.text_size_medium,FALSE,str);
 		
 		if (wid>=wrap_wid) {
 			line_break=TRUE;
@@ -3122,7 +3122,7 @@ void element_draw_info_field(element_type *element)
 	
 	ky=y-(element->high>>1);
 		
-	gl_text_start(font_interface_index,iface.font.text_size_medium);
+	gl_text_start(font_interface_index,iface.font.text_size_medium,FALSE);
 	gl_text_draw((x-5),(ky-3),element->str,tx_right,TRUE,&iface.color.control.label,1.0f);
 	gl_text_draw(x,(ky-2),":",tx_center,TRUE,&iface.color.control.label,1.0f);
 	gl_text_draw((x+5),(ky-3),element->value_str,tx_left,TRUE,&iface.color.control.label,1.0f);
@@ -3232,7 +3232,7 @@ void element_draw_frame(element_type *element)
 		view_primitive_2D_color_poly(lft,head_top,&col,rgt,head_top,&col,rgt,y,&col2,lft,y,&col2,1.0f);
 		view_primitive_2D_color_poly(lft,y,&col2,rgt,y,&col2,rgt,top,&col,lft,top,&col,1.0f);
 
-		gl_text_start(font_interface_index,iface.font.text_size_medium);
+		gl_text_start(font_interface_index,iface.font.text_size_medium,FALSE);
 		gl_text_draw(((lft+rgt)/2),(y-2),element->str,tx_center,TRUE,&iface.color.dialog.title,1.0f);
 		gl_text_end();
 	}

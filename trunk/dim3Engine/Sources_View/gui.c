@@ -228,7 +228,7 @@ void gui_draw_message(char *txt)
 	
 	col.r=col.g=col.b=0.0f;
 	
-	gl_text_start(font_interface_index,iface.font.text_size_large);
+	gl_text_start(font_interface_index,iface.font.text_size_large,FALSE);
 	gl_text_draw(x,y,txt,tx_center,TRUE,&col,1.0f);
 	gl_text_end();
 	
