@@ -104,7 +104,6 @@ bool model_read_xml(model_type *model)
     
     tag=xml_findfirstchild("Options",model_head);
 	model->comulative_rotation=xml_get_attribute_boolean(tag,"comulative_rotation");
-	model->diffuse_boost=xml_get_attribute_float_default(tag,"diffuse_boost",0.0f);
 	
         // center
     
@@ -602,7 +601,6 @@ bool model_write_xml(model_type *model,char *err_str)
     
     xml_add_tagstart("Options");
 	xml_add_attribute_boolean("comulative_rotation",model->comulative_rotation);
-	xml_add_attribute_float("diffuse_boost",model->diffuse_boost);
 	xml_add_tagend(TRUE);
  	
         // center

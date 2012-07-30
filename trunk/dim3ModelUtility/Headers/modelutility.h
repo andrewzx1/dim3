@@ -307,7 +307,6 @@ typedef struct		{
 typedef struct		{
 						int								uid,
 														nmesh,nbone,npose,nanimate,nhit_box;
-						float							diffuse_boost;
 						bool							comulative_rotation;
 						char							name[name_str_len],load_base_path[1024];
 						d3pnt							center;

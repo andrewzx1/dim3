@@ -390,7 +390,7 @@ typedef struct		{
 typedef struct		{
 						GLint								position,color,
 															intensity,invertIntensity,exponent,
-															direction,lightMapMask;					
+															direction;
 					} shader_cached_var_light_loc;
 					
 typedef struct		{
@@ -398,7 +398,7 @@ typedef struct		{
 															dim3NormalMatrix,dim3FrequencySecond,
 															dim3CameraPosition,dim3AmbientColor,
 															dim3ShineFactor,dim3GlowFactor,
-															dim3Alpha,dim3DiffuseVector,dim3DiffuseBoost,
+															dim3Alpha,dim3DiffuseVector,
 															dim3FogEnd,dim3FogScale,dim3FogColor,
 															dim3Vertex,dim3VertexColor,
 															dim3VertexUV,dim3VertexLightMapUV,
@@ -409,8 +409,7 @@ typedef struct		{
 
 typedef struct		{
 						int									direction;
-						float								intensity,invertIntensity,exponent,
-															lightMapMask;
+						float								intensity,invertIntensity,exponent;
 						d3fpnt								position;
 						d3col								color;
 					} shader_current_var_light_value;
@@ -427,8 +426,7 @@ typedef struct		{
 
 typedef struct		{
 						int									nlight,light_idx[max_shader_light];
-						float								alpha,shine_factor,glow_factor,
-															diffuse_boost;
+						float								alpha,shine_factor,glow_factor;
 						d3vct								diffuse_vct;
 						shader_current_var_simple_attrib	attrib;
 						shader_current_var_simple_color		simple_color;
