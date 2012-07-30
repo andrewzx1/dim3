@@ -98,7 +98,6 @@ void gl_shader_reset_light_values(shader_type *shader)
 	shader->var_values.nlight=-1;
 
 	for (n=0;n!=max_shader_light;n++) {
-		shader->var_values.lights[n].lightMapMask=-1.0f;
 		shader->var_values.lights[n].intensity=-1.0f;
 		shader->var_values.lights[n].invertIntensity=-1.0f;
 		shader->var_values.lights[n].exponent=-1.0f;
@@ -139,7 +138,6 @@ void gl_shader_cache_dynamic_variable_locations(shader_type *shader)
 	shader->var_locs.dim3GlowFactor=glGetUniformLocation(shader->program_obj,"dim3GlowFactor");
 	shader->var_locs.dim3Alpha=glGetUniformLocation(shader->program_obj,"dim3Alpha");
 	shader->var_locs.dim3DiffuseVector=glGetUniformLocation(shader->program_obj,"dim3DiffuseVector");
-	shader->var_locs.dim3DiffuseBoost=glGetUniformLocation(shader->program_obj,"dim3DiffuseBoost");
 
 	shader->var_locs.dim3FogEnd=glGetUniformLocation(shader->program_obj,"dim3FogEnd");
 	shader->var_locs.dim3FogScale=glGetUniformLocation(shader->program_obj,"dim3FogScale");
@@ -160,8 +158,6 @@ void gl_shader_cache_dynamic_variable_locations(shader_type *shader)
 		shader->var_locs.dim3Lights[n].exponent=glGetUniformLocation(shader->program_obj,var_name);
 		sprintf(var_name,"dim3Light_%d.direction",n);
 		shader->var_locs.dim3Lights[n].direction=glGetUniformLocation(shader->program_obj,var_name);
-		sprintf(var_name,"dim3Light_%d.lightMapMask",n);
-		shader->var_locs.dim3Lights[n].lightMapMask=glGetUniformLocation(shader->program_obj,var_name);
 	}
 	
 		// we remember all the last settings
@@ -180,7 +176,6 @@ void gl_shader_cache_dynamic_variable_locations(shader_type *shader)
 	shader->var_values.shine_factor=-1.0f;
 	shader->var_values.glow_factor=-1.0f;
 	shader->var_values.diffuse_vct.x=shader->var_values.diffuse_vct.y=shader->var_values.diffuse_vct.z=-1.0f;
-	shader->var_values.diffuse_boost=-1.0f;
 
 	gl_shader_reset_light_values(shader);
 }
@@ -576,7 +571,8 @@ void gl_shader_set_draw_matrix_variables(shader_type *shader)
 void gl_shader_set_light_variables(shader_type *shader,int core_shader_group,bool is_core,view_glsl_light_list_type *light_list)
 {
 	int								n,k,count,max_light;
-	float							f_intensity,light_map_mask;
+	float							f_intensity;
+	d3col							*col,col_lmap={0.0f,0.0f,0.0f};
 	view_light_spot_type			*lspot;
 	shader_cached_var_light_loc		*loc_light;
 	shader_current_var_light_value	*cur_light;
@@ -611,7 +607,6 @@ void gl_shader_set_light_variables(shader_type *shader,int core_shader_group,boo
 		glUniform1f(loc_light->invertIntensity,(1.0f/f_intensity));
 		glUniform1f(loc_light->exponent,light_list->ui_light.exponent);
 		glUniform3fv(loc_light->direction,3,light_shader_direction[ld_all]);
-		glUniform1f(loc_light->lightMapMask,1.0f);
 
 		loc_light++;
 
@@ -696,11 +691,21 @@ void gl_shader_set_light_variables(shader_type *shader,int core_shader_group,boo
 		}
 
 		if (loc_light->color!=-1) {
-			if ((cur_light->color.r!=lspot->col.r) || (cur_light->color.g!=lspot->col.g) || (cur_light->color.b!=lspot->col.b)) {
-				cur_light->color.r=lspot->col.r;
-				cur_light->color.g=lspot->col.g;
-				cur_light->color.b=lspot->col.b;
-				glUniform3f(loc_light->color,lspot->col.r,lspot->col.g,lspot->col.b);
+		
+				// for non-models, anything that is light map
+				// only gets an ambient of 0
+			
+			col=&lspot->col;
+			
+			if (core_shader_group!=core_shader_group_model) {
+				if (lspot->light_map) col=&col_lmap;
+			}
+			
+			if ((cur_light->color.r!=col->r) || (cur_light->color.g!=col->g) || (cur_light->color.b!=col->b)) {
+				cur_light->color.r=col->r;
+				cur_light->color.g=col->g;
+				cur_light->color.b=col->b;
+				glUniform3f(loc_light->color,col->r,col->g,col->b);
 			}
 		}
 
@@ -731,14 +736,6 @@ void gl_shader_set_light_variables(shader_type *shader,int core_shader_group,boo
 				glUniform3fv(loc_light->direction,3,light_shader_direction[lspot->direction]);
 			}
 		}
-
-		if (loc_light->lightMapMask!=-1) {
-			light_map_mask=(lspot->light_map?0.0f:1.0f);
-			if (cur_light->lightMapMask!=light_map_mask) {
-				cur_light->lightMapMask=light_map_mask;
-				glUniform1f(loc_light->lightMapMask,light_map_mask);
-			}
-		}
 	}
 }
 
@@ -750,15 +747,6 @@ void gl_shader_set_diffuse_variables(shader_type *shader,view_glsl_light_list_ty
 		if ((shader->var_values.diffuse_vct.x!=light_list->diffuse.vct.x) || (shader->var_values.diffuse_vct.y!=light_list->diffuse.vct.y) || (shader->var_values.diffuse_vct.z!=light_list->diffuse.vct.z)) {
 			memmove(&shader->var_values.diffuse_vct,&light_list->diffuse.vct,sizeof(d3vct));
 			glUniform3f(shader->var_locs.dim3DiffuseVector,light_list->diffuse.vct.x,light_list->diffuse.vct.y,light_list->diffuse.vct.z);
-		}
-	}
-	
-		// diffuse boost
-
-	if (shader->var_locs.dim3DiffuseBoost!=-1) {
-		if (shader->var_values.diffuse_boost!=light_list->diffuse.boost) {
-			shader->var_values.diffuse_boost=light_list->diffuse.boost;
-			glUniform1f(shader->var_locs.dim3DiffuseBoost,light_list->diffuse.boost);
 		}
 	}
 }

@@ -54,7 +54,6 @@ bool model_new(model_type *model,char *name)
 		// default settings
 	
 	model->comulative_rotation=TRUE;
-	model->diffuse_boost=0.0f;
 	
 	model->import.factor=1.0f;
 	

@@ -60,7 +60,7 @@ bool view_map_vbo_initialize_mesh(map_mesh_type *mesh)
 		return(FALSE);
 	}
 
-		// vertexes, uvs, tangents, normals and color
+		// vertexes, uvs, tangents, normals
 		
 	vp=vertex_ptr;
 

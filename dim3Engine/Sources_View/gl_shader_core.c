@@ -72,7 +72,6 @@ void gl_core_shader_build_generic_light_struct(int nlight,char *buf)
 	strcat(buf," mediump float invertIntensity;\n");
 	strcat(buf," mediump float exponent;\n");
 	strcat(buf," mediump vec3 direction;\n");
-	strcat(buf," lowp float lightMapMask;\n");
 	strcat(buf,"};\n");
 	
 	strcat(buf,"uniform dim3LightType ");
@@ -249,6 +248,7 @@ char* gl_core_map_shader_build_frag(int nlight,bool fog,bool bump,bool spec,bool
 		// note we include an all over ambient (no directional) bump value first
 		
 	if (bump) {
+		strcat(buf,"highp vec3 bumpLightVertexVector;\n");
 		strcat(buf,"lowp vec3 bumpMap=normalize((texture2D(dim3TexBump,uv).rgb*2.0)-1.0);\n");
 		strcat(buf,"bumpMap.y=-bumpMap.y;\n");
 		strcat(buf,"lowp float bump=dot(vec3(0.33,0.33,0.33),bumpMap);\n");
@@ -270,16 +270,19 @@ char* gl_core_map_shader_build_frag(int nlight,bool fog,bool bump,bool spec,bool
 		sprintf(strchr(buf,0)," if (dot(dirNormal,dim3Light_%d.direction)>=0.0) {\n",n);
 		sprintf(strchr(buf,0),"  att=1.0-(dist*dim3Light_%d.invertIntensity);\n",n);
 		sprintf(strchr(buf,0),"  att+=pow(att,dim3Light_%d.exponent);\n",n);
-		sprintf(strchr(buf,0),"  ambient+=((dim3Light_%d.color*att)*dim3Light_%d.lightMapMask);\n",n,n);
+		sprintf(strchr(buf,0),"  ambient+=(dim3Light_%d.color*att);\n",n);
 
 			// per-light bump calc
 			
-		if (bump) sprintf(strchr(buf,0),"  bump+=(dot(normalize(lightVertexVector_%d),bumpMap)*att);\n",n);
+		if (bump) {
+			sprintf(strchr(buf,0),"  bumpLightVertexVector=normalize(lightVertexVector_%d);\n",n);
+			sprintf(strchr(buf,0),"  bump+=(dot(bumpLightVertexVector,bumpMap)*att);\n");
+		}
 		
 			// per-light spec count
 		
 		if (spec) {
-			sprintf(strchr(buf,0),"  specHalfVector=normalize(normalize(eyeVector)+normalize(lightVertexVector_%d));\n",n);
+			strcat(buf,"  specHalfVector=normalize(normalize(eyeVector)+bumpLightVertexVector);\n");
 			strcat(buf,"  specFactor=max(dot(bumpMap,specHalfVector),0.0);\n");
 			strcat(buf,"  spec+=((specMap*pow(specFactor,dim3ShineFactor))*att);\n");
 		}
@@ -298,16 +301,11 @@ char* gl_core_map_shader_build_frag(int nlight,bool fog,bool bump,bool spec,bool
 
 	if (glow) strcat(buf,"lowp vec3 glow=texture2D(dim3TexGlow,uv).rgb*dim3GlowFactor;\n");
 	
-		// make the total ambient out of
-		// ambient*bump
-		// and make sure pixel ambient is never
+		// if we have a bump, add it into
+		// the ambient and make sure it's never
 		// less than 10% of the map ambient
 
-	strcat(buf,"ambient=clamp(");
-	if (bump) strcat(buf,"(");
-	strcat(buf,"ambient");
-	if (bump) strcat(buf,"*bump)");
-	strcat(buf,",(dim3AmbientColor*0.9),lowp vec3(1.0));\n");
+	if (bump) strcat(buf,"ambient=max((ambient*bump),(dim3AmbientColor*0.9));\n");
 
 		// output the fragment
 		// and add in the spec and glow
@@ -318,14 +316,14 @@ char* gl_core_map_shader_build_frag(int nlight,bool fog,bool bump,bool spec,bool
 	else {
 		strcat(buf,"lowp vec3 frag=");
 	}
-
+	
 	if (spec) strcat(buf,"(");
 	if (glow) strcat(buf,"(");
 	strcat(buf,"tex.rgb*ambient");
 	if (spec) strcat(buf,")+spec");
 	if (glow) strcat(buf,")+glow");
 	strcat(buf,";\n");
-
+	
 	if (fog) strcat(buf,"gl_FragColor.rgb=mix(dim3FogColor,frag,fogFactor);\n");
 	
 	strcat(buf,"gl_FragColor.a=tex.a*dim3Alpha;\n");
@@ -499,7 +497,7 @@ char* gl_core_liquid_shader_build_frag(int nlight)
 		sprintf(strchr(buf,0)," if (dot(dirNormal,dim3Light_%d.direction)>=0.0) {\n",n);
 		sprintf(strchr(buf,0),"  att=1.0-(dist*dim3Light_%d.invertIntensity);\n",n);
 		sprintf(strchr(buf,0),"  att+=pow(att,dim3Light_%d.exponent);\n",n);
-		sprintf(strchr(buf,0),"  ambient+=((dim3Light_%d.color*att)*dim3Light_%d.lightMapMask);\n",n,n);
+		sprintf(strchr(buf,0),"  ambient+=(dim3Light_%d.color*att);\n",n);
 		strcat(buf," }\n");
 		strcat(buf,"}\n");
 	}
@@ -683,7 +681,7 @@ char* gl_core_model_shader_build_frag(int nlight,bool fog,bool bump,bool spec,bo
 	if (glow) strcat(buf,",dim3TexGlow");
 	strcat(buf,";\n");
 
-	strcat(buf,"uniform lowp float dim3Alpha,dim3DiffuseBoost");
+	strcat(buf,"uniform lowp float dim3Alpha");
 	if (spec) strcat(buf,",dim3ShineFactor");
 	if (glow) strcat(buf,",dim3GlowFactor");
 	strcat(buf,";\n");
@@ -719,6 +717,7 @@ char* gl_core_model_shader_build_frag(int nlight,bool fog,bool bump,bool spec,bo
 		// note we include an all over ambient (no directional) bump value first
 		
 	if (bump) {
+		strcat(buf,"highp vec3 bumpLightVertexVector;\n");
 		strcat(buf,"mediump vec3 bumpMap=normalize((texture2D(dim3TexBump,uv).rgb*2.0)-1.0);\n");
 		strcat(buf,"bumpMap.y=-bumpMap.y;\n");
 		strcat(buf,"mediump float bump=dot(vec3(0.33,0.33,0.33),bumpMap);\n");
@@ -734,7 +733,7 @@ char* gl_core_model_shader_build_frag(int nlight,bool fog,bool bump,bool spec,bo
 			
 		// diffuse
 		
-	strcat(buf,"mediump float diffuse=(dot(dim3DiffuseVector,tangentSpaceNormal)+1.0)*0.5;\n");
+	strcat(buf,"lowp float diffuse=(dot(dim3DiffuseVector,tangentSpaceNormal)+1.0)*0.5;\n");
 	
 		// the texture lighting
 		
@@ -746,11 +745,17 @@ char* gl_core_model_shader_build_frag(int nlight,bool fog,bool bump,bool spec,bo
 		sprintf(strchr(buf,0)," if (dot(dirNormal,dim3Light_%d.direction)>=0.0) {\n",n);
 		sprintf(strchr(buf,0),"  ambient+=(dim3Light_%d.color*att);\n",n);
 		
-			// bump and spec
+			// per light bump calc
 			
-		if (bump) sprintf(strchr(buf,0),"  bump+=(dot(normalize(lightVertexVector_%d),bumpMap)*att);\n",n);
+		if (bump) {
+			sprintf(strchr(buf,0),"  bumpLightVertexVector=normalize(lightVertexVector_%d);\n",n);
+			strcat(buf,"  bump+=(dot(bumpLightVertexVector,bumpMap)*att);\n");
+		}
+		
+			// per light spec calc
+			
 		if (spec) {
-			sprintf(strchr(buf,0),"  specHalfVector=normalize(normalize(eyeVector)+normalize(lightVertexVector_%d));\n",n);
+			strcat(buf,"  specHalfVector=normalize(normalize(eyeVector)+bumpLightVertexVector);\n");
 			strcat(buf,"  specFactor=max(dot(bumpMap,specHalfVector),0.0);\n");
 			strcat(buf,"  spec+=((specMap*pow(specFactor,dim3ShineFactor))*att);\n");
 		}
@@ -763,17 +768,14 @@ char* gl_core_model_shader_build_frag(int nlight,bool fog,bool bump,bool spec,bo
 		// glow rgb
 
 	if (glow) strcat(buf,"lowp vec3 glow=texture2D(dim3TexGlow,uv).rgb*dim3GlowFactor;\n");
-	
-		// create the total diffuse
-		// out of (diffuse*bump)+boost
-		// and make sure it doesn't over boost
-		// to white
 
-	strcat(buf,"diffuse=");
-	if (bump) strcat(buf,"(");
-	strcat(buf,"diffuse");
-	if (bump) strcat(buf,"*bump)");
-	strcat(buf,"+dim3DiffuseBoost;\n");
+		// create the ambient with ambient*diffuse*bump
+		// and make sure it's never
+		// less than 10% of the map ambient
+
+	strcat(buf,"ambient=max((ambient*diffuse");
+	if (bump) strcat(buf,"*bump");
+	strcat(buf,"),(dim3AmbientColor*0.9));\n");
 
 		// output the fragment
 		// and add in the spec and glow
@@ -787,7 +789,7 @@ char* gl_core_model_shader_build_frag(int nlight,bool fog,bool bump,bool spec,bo
 
 	if (spec) strcat(buf,"(");
 	if (glow) strcat(buf,"(");
-	strcat(buf,"tex.rgb*(ambient*diffuse)");
+	strcat(buf,"tex.rgb*ambient");
 	if (spec) strcat(buf,")+spec");
 	if (glow) strcat(buf,")+glow");
 	strcat(buf,";\n");

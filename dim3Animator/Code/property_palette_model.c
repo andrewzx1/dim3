@@ -34,7 +34,6 @@ and can be sold or given away.
 #include "interface.h"
 
 #define kModelPropertyRotateMode				0
-#define kModelPropertyDiffuseBoost				1
 
 #define kModelPropertyCenterOffset				2
 #define kModelPropertyViewBoxOffset				3
@@ -88,7 +87,6 @@ void property_palette_fill_model(void)
 		
 	list_palette_add_header(&property_palette,0,"Model Options");
 	list_palette_add_checkbox(&property_palette,kModelPropertyRotateMode,"Cumulative Rotation",&model.comulative_rotation,FALSE);
-	list_palette_add_float(&property_palette,kModelPropertyDiffuseBoost,"Diffuse+Bump Boost",&model.diffuse_boost,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Model Positions");
 	list_palette_add_point(&property_palette,kModelPropertyCenterOffset,"Center",&model.center,FALSE);

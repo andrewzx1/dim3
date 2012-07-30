@@ -228,12 +228,6 @@ void render_model_opaque_mesh(model_type *mdl,int mesh_idx,model_draw *draw,view
 			// mesh basis
 					
 		light_list->hilite=(mesh->no_lighting);
-		if (!mesh->diffuse) {
-			light_list->diffuse.boost=1.0f;
-		}
-		else {
-			light_list->diffuse.boost=mdl->diffuse_boost;
-		}
 
 			// run the shader
 			
@@ -303,12 +297,6 @@ void render_model_transparent_mesh(model_type *mdl,int mesh_idx,model_draw *draw
 			// mesh basis
 		
 		light_list->hilite=(mesh->no_lighting);
-		if (!mesh->diffuse) {
-			light_list->diffuse.boost=1.0f;
-		}
-		else {
-			light_list->diffuse.boost=mdl->diffuse_boost;
-		}
 
 			// draw poly
 			
