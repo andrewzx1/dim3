@@ -102,7 +102,8 @@ int gl_text_get_char_height(int text_size)
 
 int gl_text_get_monospace_width(texture_font_size_type *font,int text_size)
 {
-	return((int)(((float)text_size)*font->char_size['0']));
+	return((int)(((float)text_size)*0.45f));
+	return((int)(((float)text_size)*font->char_size['0'-'!']));
 }
 
 int gl_text_get_string_width(int text_font,int text_size,bool monospaced,char *str)
