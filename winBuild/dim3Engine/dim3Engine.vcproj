@@ -3464,6 +3464,10 @@
 						</FileConfiguration>
 					</File>
 					<File
+						RelativePath="..\..\dim3Engine\Sources_View\label.c"
+						>
+					</File>
+					<File
 						RelativePath="..\..\dim3Engine\Sources_View\menu_draw.c"
 						>
 						<FileConfiguration

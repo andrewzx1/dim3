@@ -96,6 +96,7 @@ and can be sold or given away.
 
 #define cursor_size_factor						0.05f
 #define text_height_factor						1.2f
+#define text_monospaced_factor					0.45f
 
 #define element_table_max_image					16
 #define element_table_bitmap_size				0.07f

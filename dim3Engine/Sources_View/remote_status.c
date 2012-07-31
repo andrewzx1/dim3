@@ -135,6 +135,7 @@ void remote_draw_status(obj_type *obj)
 
 void remote_draw_names_setup(void)
 {
+	/* supergumba -- move all this
 	int						n,dist;
 	bool					hit;
 	d3pnt					pnt,spt,ept;
@@ -171,99 +172,67 @@ void remote_draw_names_setup(void)
 		pnt.x=obj->pnt.x;
 		pnt.y=obj->pnt.y;
 		pnt.z=obj->pnt.z;
-
-		if (!model_get_name_position(mdl,&obj->draw.setup,&pnt)) {
-			pnt.x=obj->pnt.x;
-			pnt.y=(obj->pnt.y-obj->size.y)-(crosshair_max_ray_trace_distance>>1);
-			pnt.z=obj->pnt.z;
-		}
+		model_get_name_position(mdl,&obj->draw.setup,&pnt);
 		
-			// translate and rotate point
+			// ignore if past fade distance
 			
 		dist=distance_get(pnt.x,pnt.y,pnt.z,view.render->camera.pnt.x,view.render->camera.pnt.y,view.render->camera.pnt.z);
-		if (dist>=remote_name_max_distance) continue;
+		if (dist>=label_name_max_distance) continue;
+
+			// ignore if obscured by ray trace
+
+		contact.obj.on=TRUE;
+		contact.proj.on=FALSE;
+		contact.origin=poly_ray_trace_origin_object;
+
+		spt.x=obj->draw.remote_name.pnt.x;
+		spt.y=obj->draw.remote_name.pnt.y;
+		spt.z=obj->draw.remote_name.pnt.z;
+		
+		ept.x=view.render->camera.pnt.x;
+		ept.y=view.render->camera.pnt.y;
+		ept.z=view.render->camera.pnt.z;
+
+		contact.obj.ignore_idx=obj->idx;
+		
+		hit=ray_trace_map_by_point(&pnt,&ept,&contact);
+		
+		if (map.camera.mode==cv_fpp) {
+			if (!hit) continue;
+			if (contact.obj.idx!=server.player_obj_idx) continue;
+		}
+		else {
+			if (hit) continue;
+		}
+		
+			// translate to 2D
+
+		if (!gl_project_in_view_z(&pnt)) continue;
+		gl_project_point(&pnt);
 
 		obj->draw.remote_name.pnt.x=pnt.x;
 		obj->draw.remote_name.pnt.y=pnt.y;
 		obj->draw.remote_name.pnt.z=pnt.z;
 		
-			// is it behind the z?
-
-		if (!gl_project_in_view_z(&pnt)) continue;
-				
-			// project names
-
-		gl_project_point(&pnt);
-
-		obj->draw.remote_name.proj_pnt.x=pnt.x;
-		obj->draw.remote_name.proj_pnt.y=pnt.y;
-		obj->draw.remote_name.proj_pnt.z=pnt.z;
-		
 			// calculate the fade
 			
-		if (dist<remote_name_min_distance) {
+		if (dist<label_name_min_distance) {
 			obj->draw.remote_name.fade=1.0f;
 		}
 		else {
-			obj->draw.remote_name.fade=1.0f-((float)(dist-remote_name_min_distance)/(float)(remote_name_max_distance-remote_name_min_distance));
+			obj->draw.remote_name.fade=1.0f-((float)(dist-remote_name_min_distance)/(float)(label_name_max_distance-label_name_min_distance));
 		}
-		
-		obj->draw.remote_name.size=iface.font.text_size_medium-(int)((float)(iface.font.text_size_medium*dist)/(float)(remote_name_max_distance-remote_name_min_distance));
-		if (obj->draw.remote_name.size<10) obj->draw.remote_name.size=10;
 		
 		obj->draw.remote_name.on=TRUE;
 	}
-
-		// ray trace remote name to camera's eye level
-		// to check for visibility
-
-	ept.x=view.render->camera.pnt.x;
-	ept.y=view.render->camera.pnt.y;
-	ept.z=view.render->camera.pnt.z;
-
-	contact.obj.on=TRUE;
-	contact.proj.on=FALSE;
-
-	contact.origin=poly_ray_trace_origin_object;
-
-	for (n=0;n!=view.render->draw_list.count;n++) {
-		if (view.render->draw_list.items[n].type!=view_render_type_object) continue;
-
-		obj=server.obj_list.objs[view.render->draw_list.items[n].idx];
-		if (!obj->draw.remote_name.on) continue;
-
-		spt.x=obj->draw.remote_name.pnt.x;
-		spt.y=obj->draw.remote_name.pnt.y;
-		spt.z=obj->draw.remote_name.pnt.z;
-
-		contact.obj.ignore_idx=obj->idx;
-		
-		hit=ray_trace_map_by_point(&spt,&ept,&contact);
-		
-		if (map.camera.mode==cv_fpp) {
-			if (hit) {
-				if (contact.obj.idx!=server.player_obj_idx) {
-					obj->draw.remote_name.on=FALSE;
-					continue;
-				}
-			}
-			else {
-				obj->draw.remote_name.on=FALSE;
-				continue;
-			}
-		}
-		else {
-			if (hit) {
-				obj->draw.remote_name.on=FALSE;
-				continue;
-			}
-		}
-	}
+	*/
 }
 
 void remote_draw_names_render(void)
 {
-	int					n,x,y,text_size;
+	/*
+	int					n,x,y;
+	bool				use_text;
 	d3col				col;
 	obj_type			*obj;
 	
@@ -274,35 +243,26 @@ void remote_draw_names_render(void)
 	
 		// draw all names
 
-	text_size=-1;
+	use_text=FALSE;
 
 	for (n=0;n!=view.render->draw_list.count;n++) {
 		if (view.render->draw_list.items[n].type!=view_render_type_object) continue;
 
 		obj=server.obj_list.objs[view.render->draw_list.items[n].idx];	
-		if (obj->draw.remote_name.on) {
-
-				// get 2D position in screen resolution
-
-			x=obj->draw.remote_name.proj_pnt.x;
-			y=view.screen.y_sz-obj->draw.remote_name.proj_pnt.y;
-
-				// covert to interface resolution
-
-			x=(x*iface.scale_x)/view.screen.x_sz;
-			y=(y*iface.scale_y)/view.screen.y_sz;
-
-				// draw text
+		if (!obj->draw.remote_name.on) continue;
 				
-			if (text_size!=obj->draw.remote_name.size) {
-				text_size=obj->draw.remote_name.size;
-				gl_text_start(font_hud_index,text_size,FALSE);
-			}
-
-			object_get_tint(obj,&col);
-			gl_text_draw(x,y,obj->name,tx_center,FALSE,&col,obj->draw.remote_name.fade);
+		if (!use_text) {
+			use_text=TRUE;
+			gl_text_start(font_hud_index,iface.font.text_size_mini,FALSE);
 		}
+
+		x=obj->draw.remote_name.pnt.x;
+		y=view.screen.y_sz-obj->draw.remote_name.pnt.y;
+
+		object_get_tint(obj,&col);
+		gl_text_draw(x,y,obj->name,tx_center,FALSE,&col,obj->draw.remote_name.fade);
 	}
 
-	gl_text_end();		// can call end without a start
+	if (use_text) gl_text_end();
+	*/
 }

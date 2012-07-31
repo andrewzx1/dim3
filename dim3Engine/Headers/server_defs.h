@@ -278,13 +278,6 @@ typedef struct		{
 					} model_draw_connect;
 
 typedef struct		{
-						int								size;
-						float							fade;
-						bool							on;
-						d3pnt							pnt,proj_pnt;
-					} model_draw_remote_name;
-
-typedef struct		{
 						int								start_tick,fade_in_msec,fade_life_msec,fade_out_msec;
 						float							alpha;
 						bool							on;
@@ -340,7 +333,6 @@ typedef struct		{
 						model_draw_dynamic_bone			dynamic_bones[max_model_dynamic_bone];
 						model_draw_shadow				shadow;
 						model_draw_fade					fade;
-						model_draw_remote_name			remote_name;
 						model_light_cache				light_cache;
 						model_texture_type				textures[max_model_texture];
 						model_vbo_type					vbo[max_model_mesh];
@@ -662,9 +654,38 @@ typedef struct		{
 //
 
 typedef struct		{
-						int						image_idx;
-						char					text[32],bitmap_name[name_str_len];
-						bool					health;
+						float					size_factor,alpha;
+						bool					on;
+						d3pnt					pnt;
+					} obj_label_draw;
+
+typedef struct		{
+						int						size;
+						char					str[32];
+						obj_label_draw			draw;
+					} obj_label_text;
+
+typedef struct		{
+						int						image_idx,wid,high;
+						char					name[name_str_len];
+						obj_label_draw			draw;
+					} obj_label_bitmap;
+
+typedef struct		{
+						int						wid,high;
+						bool					on;
+						obj_label_draw			draw;
+					} obj_label_health;
+
+typedef struct		{
+						obj_label_draw			draw;
+					} obj_label_remote_name;
+
+typedef struct		{
+						obj_label_text			text;
+						obj_label_bitmap		bitmap;
+						obj_label_health		health;
+						obj_label_remote_name	remote_name;
 					} obj_label;
 
 //

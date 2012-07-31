@@ -697,10 +697,15 @@ int object_create(char *name,int type,int bind)
 	obj->auto_walk.mode=aw_none;
 	obj->auto_walk.dodge.on=FALSE;
 
-	obj->label.text[0]=0x0;
-	obj->label.bitmap_name[0]=0x0;
-	obj->label.image_idx=-1;
-	obj->label.health=FALSE;
+	obj->label.text.str[0]=0x0;
+	obj->label.text.size=25;
+	obj->label.bitmap.name[0]=0x0;
+	obj->label.bitmap.image_idx=-1;
+	obj->label.bitmap.wid=100;
+	obj->label.bitmap.high=100;
+	obj->label.health.on=FALSE;
+	obj->label.health.wid=150;
+	obj->label.health.high=25;
 
 	obj->debug.str[0]=0x0;
 	
