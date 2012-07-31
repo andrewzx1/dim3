@@ -74,14 +74,9 @@ void gl_core_shader_build_generic_light_struct(int nlight,char *buf)
 	strcat(buf," mediump vec3 direction;\n");
 	strcat(buf,"};\n");
 	
-	strcat(buf,"uniform dim3LightType ");
-	
 	for (n=0;n!=nlight;n++) {
-		if (n!=0) strcat(buf,",");
-		sprintf(strchr(buf,0),"dim3Light_%d",n);
+		sprintf(strchr(buf,0),"uniform dim3LightType dim3Light_%d;\n",n);
 	}
-	
-	strcat(buf,";\n");
 }
 
 /* =======================================================
@@ -115,15 +110,18 @@ char* gl_core_map_shader_build_vert(int nlight,bool fog,bool bump,bool spec)
 		
 	gl_core_shader_build_generic_light_struct(nlight,buf);
 
-	strcat(buf,"uniform highp mat4 dim3ProjectionMatrix,dim3ModelViewMatrix;\n");
+	strcat(buf,"uniform highp mat4 dim3ProjectionMatrix;\n");
+	strcat(buf,"uniform highp mat4 dim3ModelViewMatrix;\n");
 	strcat(buf,"uniform highp mat3 dim3NormalMatrix;\n");
 	strcat(buf,"uniform highp vec3 dim3CameraPosition;\n");
-	if (fog) strcat(buf,"uniform highp float dim3FogEnd,dim3FogScale;\n");
-	
+	if (fog) {
+		strcat(buf,"uniform highp float dim3FogEnd;\n");
+		strcat(buf,"uniform highp float dim3FogScale;\n");
+	}
+
 	strcat(buf,"attribute highp vec3 dim3Vertex;\n");
-	strcat(buf,"attribute mediump vec3 dim3VertexNormal");
-	if ((bump) || (spec)) strcat(buf,",dim3VertexTangent");
-	strcat(buf,";\n");
+	strcat(buf,"attribute mediump vec3 dim3VertexNormal;\n");
+	if ((bump) || (spec)) strcat(buf,"attribute mediump vec3 dim3VertexTangent;\n");
 	strcat(buf,"attribute mediump vec2 dim3VertexUV,dim3VertexLightMapUV;\n");
 	
 	strcat(buf,"varying mediump vec2 uv,lightMapUV;\n");
@@ -131,9 +129,8 @@ char* gl_core_map_shader_build_vert(int nlight,bool fog,bool bump,bool spec)
 	if (fog) strcat(buf,"varying mediump float fogFactor;\n");
 
 	for (n=0;n!=nlight;n++) {
-		sprintf(strchr(buf,0),"varying highp vec3 lightVector_%d",n);
-		if (bump) sprintf(strchr(buf,0),",lightVertexVector_%d",n);
-		strcat(buf,";\n");
+		sprintf(strchr(buf,0),"varying highp vec3 lightVector_%d;\n",n);
+		if (bump) sprintf(strchr(buf,0),"varying highp vec3 lightVertexVector_%d;\n",n);
 	}
 
 	if (spec) strcat(buf,"varying mediump vec3 eyeVector;\n");
@@ -203,29 +200,26 @@ char* gl_core_map_shader_build_frag(int nlight,bool fog,bool bump,bool spec,bool
 		
 	gl_core_shader_build_generic_light_struct(nlight,buf);
 	
-	strcat(buf,"uniform lowp sampler2D dim3Tex");
-	if (bump) strcat(buf,",dim3TexBump");
-	if (spec) strcat(buf,",dim3TexSpecular");
-	if (glow) strcat(buf,",dim3TexGlow");
-	strcat(buf,",dim3TexLightMap;\n");
+	strcat(buf,"uniform lowp sampler2D dim3Tex;\n");
+	if (bump) strcat(buf,"uniform lowp sampler2D dim3TexBump;\n");
+	if (spec) strcat(buf,"uniform lowp sampler2D dim3TexSpecular;\n");
+	if (glow) strcat(buf,"uniform lowp sampler2D dim3TexGlow;\n");
+	strcat(buf,"uniform lowp sampler2D dim3TexLightMap;\n");
 
-	strcat(buf,"uniform lowp float dim3Alpha");
-	if (spec) strcat(buf,",dim3ShineFactor");
-	if (glow) strcat(buf,",dim3GlowFactor");
-	strcat(buf,";\n");
+	strcat(buf,"uniform lowp float dim3Alpha;\n");
+	if (spec) strcat(buf,"uniform lowp float dim3ShineFactor;\n");
+	if (glow) strcat(buf,"uniform lowp float dim3GlowFactor;\n");
 	
-	strcat(buf,"uniform lowp vec3 dim3AmbientColor");
-	if (fog) strcat(buf,",dim3FogColor");
-	strcat(buf,";\n");
+	strcat(buf,"uniform lowp vec3 dim3AmbientColor;\n");
+	if (fog) strcat(buf,"uniform lowp vec3 dim3FogColor;\n");
 	
 	strcat(buf,"varying mediump vec2 uv,lightMapUV;\n");
 	strcat(buf,"varying mediump vec3 dirNormal;\n");
 	if (fog) strcat(buf,"varying mediump float fogFactor;\n");
 	
 	for (n=0;n!=nlight;n++) {
-		sprintf(strchr(buf,0),"varying highp vec3 lightVector_%d",n);
-		if (bump) sprintf(strchr(buf,0),",lightVertexVector_%d",n);
-		strcat(buf,";\n");
+		sprintf(strchr(buf,0),"varying highp vec3 lightVector_%d;\n",n);
+		if (bump) sprintf(strchr(buf,0),"varying highp vec3 lightVertexVector_%d;\n",n);
 	}
 
 	if (spec) strcat(buf,"varying mediump vec3 eyeVector;\n");
@@ -411,7 +405,8 @@ char* gl_core_liquid_shader_build_vert(int nlight)
 		
 	gl_core_shader_build_generic_light_struct(nlight,buf);
 
-	strcat(buf,"uniform highp mat4 dim3ProjectionMatrix,dim3ModelViewMatrix;\n");
+	strcat(buf,"uniform highp mat4 dim3ProjectionMatrix;\n");
+	strcat(buf,"uniform highp mat4 dim3ModelViewMatrix;\n");
 	strcat(buf,"uniform highp vec3 dim3CameraPosition;\n");
 	strcat(buf,"attribute highp vec3 dim3Vertex;\n");
 	strcat(buf,"attribute mediump vec3 dim3VertexNormal;\n");
@@ -465,7 +460,8 @@ char* gl_core_liquid_shader_build_frag(int nlight)
 		
 	gl_core_shader_build_generic_light_struct(nlight,buf);
 	
-	strcat(buf,"uniform lowp sampler2D dim3Tex,dim3TexLightMap;\n");
+	strcat(buf,"uniform lowp sampler2D dim3Tex;\n");
+	strcat(buf,"uniform lowp sampler2D dim3TexLightMap;\n");
 	strcat(buf,"uniform lowp float dim3Alpha;\n");
 	strcat(buf,"uniform lowp vec3 dim3AmbientColor;\n");
 	
@@ -587,25 +583,28 @@ char* gl_core_model_shader_build_vert(int nlight,bool fog,bool bump,bool spec)
 		
 	gl_core_shader_build_generic_light_struct(nlight,buf);
 
-	strcat(buf,"uniform highp mat4 dim3ProjectionMatrix,dim3ModelViewMatrix;\n");
+	strcat(buf,"uniform highp mat4 dim3ProjectionMatrix;\n");
+	strcat(buf,"uniform highp mat4 dim3ModelViewMatrix;\n");
 	strcat(buf,"uniform highp mat3 dim3NormalMatrix;\n");
 	strcat(buf,"uniform highp vec3 dim3CameraPosition;\n");
-	if (fog) strcat(buf,"uniform highp float dim3FogEnd,dim3FogScale;\n");
-	
+	if (fog) {
+		strcat(buf,"uniform highp float dim3FogEnd;\n");
+		strcat(buf,"uniform highp float dim3FogScale;\n");
+	}
+
 	strcat(buf,"attribute highp vec3 dim3Vertex;\n");
-	strcat(buf,"attribute highp vec3 dim3VertexNormal");
-	if ((bump) || (spec)) strcat(buf,",dim3VertexTangent");
-	strcat(buf,";\n");
+	strcat(buf,"attribute highp vec3 dim3VertexNormal;\n");
+	if ((bump) || (spec)) strcat(buf,"attribute highp vec3 dim3VertexTangent;\n");
 	strcat(buf,"attribute mediump vec2 dim3VertexUV;\n");
 	
 	strcat(buf,"varying mediump vec2 uv;\n");
-	strcat(buf,"varying mediump vec3 dirNormal,tangentSpaceNormal;\n");
+	strcat(buf,"varying mediump vec3 dirNormal;\n");
+	strcat(buf,"varying mediump vec3 tangentSpaceNormal;\n");
 	if (fog) strcat(buf,"varying mediump float fogFactor;\n");
 
 	for (n=0;n!=nlight;n++) {
-		sprintf(strchr(buf,0),"varying highp vec3 lightVector_%d",n);
-		if (bump) sprintf(strchr(buf,0),",lightVertexVector_%d",n);
-		strcat(buf,";\n");
+		sprintf(strchr(buf,0),"varying highp vec3 lightVector_%d;\n",n);
+		if (bump) sprintf(strchr(buf,0),"varying highp vec3 lightVertexVector_%d;\n",n);
 	}
 
 	if (spec) strcat(buf,"varying mediump vec3 eyeVector;\n");
@@ -675,30 +674,27 @@ char* gl_core_model_shader_build_frag(int nlight,bool fog,bool bump,bool spec,bo
 		
 	gl_core_shader_build_generic_light_struct(nlight,buf);
 	
-	strcat(buf,"uniform lowp sampler2D dim3Tex");
-	if (bump) strcat(buf,",dim3TexBump");
-	if (spec) strcat(buf,",dim3TexSpecular");
-	if (glow) strcat(buf,",dim3TexGlow");
-	strcat(buf,";\n");
+	strcat(buf,"uniform lowp sampler2D dim3Tex;\n");
+	if (bump) strcat(buf,"uniform lowp sampler2D dim3TexBump;\n");
+	if (spec) strcat(buf,"uniform lowp sampler2D dim3TexSpecular;\n");
+	if (glow) strcat(buf,"uniform lowp sampler2D dim3TexGlow;\n");
 
-	strcat(buf,"uniform lowp float dim3Alpha");
-	if (spec) strcat(buf,",dim3ShineFactor");
-	if (glow) strcat(buf,",dim3GlowFactor");
-	strcat(buf,";\n");
+	strcat(buf,"uniform lowp float dim3Alpha;\n");
+	if (spec) strcat(buf,"uniform lowp float dim3ShineFactor;\n");
+	if (glow) strcat(buf,"uniform lowp float dim3GlowFactor;\n");
 	
-	strcat(buf,"uniform lowp vec3 dim3AmbientColor");
-	if (fog) strcat(buf,",dim3FogColor");
-	strcat(buf,";\n");
+	strcat(buf,"uniform lowp vec3 dim3AmbientColor;\n");
+	if (fog) strcat(buf,"uniform lowp vec3 dim3FogColor;\n");
 	strcat(buf,"uniform mediump vec3 dim3DiffuseVector;\n");
 	
 	strcat(buf,"varying mediump vec2 uv;\n");
-	strcat(buf,"varying mediump vec3 dirNormal,tangentSpaceNormal;\n");
+	strcat(buf,"varying mediump vec3 dirNormal;\n");
+	strcat(buf,"varying mediump vec3 tangentSpaceNormal;\n");
 	if (fog) strcat(buf,"varying mediump float fogFactor;\n");
 
 	for (n=0;n!=nlight;n++) {
-		sprintf(strchr(buf,0),"varying highp vec3 lightVector_%d",n);
-		if (bump) sprintf(strchr(buf,0),",lightVertexVector_%d",n);
-		strcat(buf,";\n");
+		sprintf(strchr(buf,0),"varying highp vec3 lightVector_%d;\n",n);
+		if (bump) sprintf(strchr(buf,0),"varying highp vec3 lightVertexVector_%d;\n",n);
 	}
 
 	if (spec) strcat(buf,"varying mediump vec3 eyeVector;\n");

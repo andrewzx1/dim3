@@ -39,16 +39,31 @@ extern js_type				js;
 extern file_path_setup_type	file_path_setup;
 
 JSValueRef js_obj_label_get_text(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_obj_label_get_textSize(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_obj_label_get_bitmap(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
-JSValueRef js_obj_label_get_showHealth(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_obj_label_get_bitmapWidth(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_obj_label_get_bitmapHeight(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_obj_label_get_healthShow(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_obj_label_get_healthWidth(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_obj_label_get_healthHeight(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 bool js_obj_label_set_text(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_obj_label_set_textSize(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 bool js_obj_label_set_bitmap(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-bool js_obj_label_set_showHealth(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_obj_label_set_bitmapWidth(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_obj_label_set_bitmapHeight(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_obj_label_set_healthShow(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_obj_label_set_healthWidth(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_obj_label_set_healthHeight(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 
 JSStaticValue 		obj_label_props[]={
 							{"text",				js_obj_label_get_text,				js_obj_label_set_text,			kJSPropertyAttributeDontDelete},
+							{"textSize",			js_obj_label_get_textSize,			js_obj_label_set_textSize,		kJSPropertyAttributeDontDelete},
 							{"bitmap",				js_obj_label_get_bitmap,			js_obj_label_set_bitmap,		kJSPropertyAttributeDontDelete},
-							{"showHealth",			js_obj_label_get_showHealth,		js_obj_label_set_showHealth,	kJSPropertyAttributeDontDelete},
+							{"bitmapWidth",			js_obj_label_get_bitmapWidth,		js_obj_label_set_bitmapWidth,	kJSPropertyAttributeDontDelete},
+							{"bitmapHeight",		js_obj_label_get_bitmapHeight,		js_obj_label_set_bitmapHeight,	kJSPropertyAttributeDontDelete},
+							{"healthShow",			js_obj_label_get_healthShow,		js_obj_label_set_healthShow,	kJSPropertyAttributeDontDelete},
+							{"healthWidth",			js_obj_label_get_healthWidth,		js_obj_label_set_healthWidth,	kJSPropertyAttributeDontDelete},
+							{"healthHeight",		js_obj_label_get_healthHeight,		js_obj_label_set_healthHeight,	kJSPropertyAttributeDontDelete},
 							{0,0,0,0}};
 							
 JSClassRef			obj_label_class;
@@ -85,7 +100,15 @@ JSValueRef js_obj_label_get_text(JSContextRef cx,JSObjectRef j_obj,JSStringRef n
 	obj_type		*obj;
 
 	obj=object_get_attach(j_obj);
-	return(script_string_to_value(cx,obj->label.text));
+	return(script_string_to_value(cx,obj->label.text.str));
+}
+
+JSValueRef js_obj_label_get_textSize(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
+{
+	obj_type		*obj;
+
+	obj=object_get_attach(j_obj);
+	return(script_int_to_value(cx,obj->label.text.size));
 }
 
 JSValueRef js_obj_label_get_bitmap(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
@@ -93,15 +116,47 @@ JSValueRef js_obj_label_get_bitmap(JSContextRef cx,JSObjectRef j_obj,JSStringRef
 	obj_type		*obj;
 
 	obj=object_get_attach(j_obj);
-	return(script_string_to_value(cx,obj->label.bitmap_name));
+	return(script_string_to_value(cx,obj->label.bitmap.name));
 }
 
-JSValueRef js_obj_label_get_showHealth(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
+JSValueRef js_obj_label_get_bitmapWidth(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	obj_type		*obj;
 
 	obj=object_get_attach(j_obj);
-	return(script_bool_to_value(cx,obj->label.health));
+	return(script_int_to_value(cx,obj->label.bitmap.wid));
+}
+
+JSValueRef js_obj_label_get_bitmapHeight(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
+{
+	obj_type		*obj;
+
+	obj=object_get_attach(j_obj);
+	return(script_int_to_value(cx,obj->label.bitmap.high));
+}
+
+JSValueRef js_obj_label_get_healthShow(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
+{
+	obj_type		*obj;
+
+	obj=object_get_attach(j_obj);
+	return(script_bool_to_value(cx,obj->label.health.on));
+}
+
+JSValueRef js_obj_label_get_healthWidth(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
+{
+	obj_type		*obj;
+
+	obj=object_get_attach(j_obj);
+	return(script_int_to_value(cx,obj->label.health.wid));
+}
+
+JSValueRef js_obj_label_get_healthHeight(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
+{
+	obj_type		*obj;
+
+	obj=object_get_attach(j_obj);
+	return(script_int_to_value(cx,obj->label.health.high));
 }
 
 /* =======================================================
@@ -115,7 +170,17 @@ bool js_obj_label_set_text(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JS
 	obj_type		*obj;
 	
 	obj=object_get_attach(j_obj);
-	script_value_to_string(cx,vp,obj->label.text,32);
+	script_value_to_string(cx,vp,obj->label.text.str,32);
+	
+	return(TRUE);
+}
+
+bool js_obj_label_set_textSize(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
+{
+	obj_type		*obj;
+	
+	obj=object_get_attach(j_obj);
+	obj->label.text.size=script_value_to_int(cx,vp);
 	
 	return(TRUE);
 }
@@ -130,29 +195,68 @@ bool js_obj_label_set_bitmap(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,
 		// if set to NULL, then remove image
 
 	if (script_is_value_null(cx,vp)) {
-		if (obj->label.image_idx!=-1) view_images_free_single(obj->label.image_idx);
-		obj->label.image_idx=-1;
-		obj->label.bitmap_name[0]=0x0;
+		if (obj->label.bitmap.image_idx!=-1) view_images_free_single(obj->label.bitmap.image_idx);
+		obj->label.bitmap.image_idx=-1;
+		obj->label.bitmap.name[0]=0x0;
 		return(TRUE);
 	}
 	
 		// load new image
 
-	script_value_to_string(cx,vp,obj->label.bitmap_name,name_str_len);
-	file_paths_data(&file_path_setup,path,"Bitmaps/Labels",obj->label.bitmap_name,"png");
+	script_value_to_string(cx,vp,obj->label.bitmap.name,name_str_len);
+	file_paths_data(&file_path_setup,path,"Bitmaps/Labels",obj->label.bitmap.name,"png");
 
-	obj->label.image_idx=view_images_load_single(path,FALSE,TRUE);
+	obj->label.bitmap.image_idx=view_images_load_single(path,FALSE,TRUE);
 	
 	return(TRUE);
 }
 
-bool js_obj_label_set_showHealth(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
+bool js_obj_label_set_bitmapWidth(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_get_attach(j_obj);
-	obj->label.health=script_value_to_bool(cx,vp);
+	obj->label.bitmap.wid=script_value_to_int(cx,vp);
 	
 	return(TRUE);
 }
 
+bool js_obj_label_set_bitmapHeight(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
+{
+	obj_type		*obj;
+	
+	obj=object_get_attach(j_obj);
+	obj->label.bitmap.high=script_value_to_int(cx,vp);
+	
+	return(TRUE);
+}
+
+bool js_obj_label_set_healthShow(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
+{
+	obj_type		*obj;
+	
+	obj=object_get_attach(j_obj);
+	obj->label.health.on=script_value_to_bool(cx,vp);
+	
+	return(TRUE);
+}
+
+bool js_obj_label_set_healthWidth(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
+{
+	obj_type		*obj;
+	
+	obj=object_get_attach(j_obj);
+	obj->label.health.wid=script_value_to_int(cx,vp);
+	
+	return(TRUE);
+}
+
+bool js_obj_label_set_healthHeight(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
+{
+	obj_type		*obj;
+	
+	obj=object_get_attach(j_obj);
+	obj->label.health.high=script_value_to_int(cx,vp);
+	
+	return(TRUE);
+}

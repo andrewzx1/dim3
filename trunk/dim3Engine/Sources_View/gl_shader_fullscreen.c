@@ -136,6 +136,13 @@ bool gl_fs_shader_start(char *shader_name,int life_msec,char *err_str)
 		
 	if (!fs_shader_on) return(FALSE);
 
+		// see if shader is already
+		// active
+
+	if (fs_shader_active) {
+		if (fs_shader_idx==gl_user_shader_find(shader_name)) return(TRUE);
+	}
+
 		// set the shader
 
 	fs_shader_idx=gl_user_shader_find(shader_name);
@@ -220,8 +227,6 @@ void gl_fs_shader_render_begin(void)
 		glBindFramebuffer(GL_FRAMEBUFFER,fs_shader_old_fbo);
 		fs_shader_active=FALSE;
 	}
-	
-//	gl_set_viewport(0,0,view.screen.x_sz,view.screen.y_sz);		// supergumba
 
 		// clear buffer
 
@@ -243,26 +248,25 @@ void gl_fs_shader_render_finish(void)
 		// turn off the fbo
 
 	glBindFramebuffer(GL_FRAMEBUFFER,fs_shader_old_fbo);
-//	gl_set_viewport(0,0,view.screen.x_sz,view.screen.y_sz);		// supergumba
 
 		// create the vertexes and uv
 
 	vertexes[0]=0.0f;
 	vertexes[1]=0.0f;
 	vertexes[2]=0.0f;
-	vertexes[3]=(float)1.0f; // view.screen.y_sz;
-	vertexes[4]=(float)1.0f; //view.screen.x_sz;
+	vertexes[3]=(float)view.screen.y_sz;
+	vertexes[4]=(float)view.screen.x_sz;
 	vertexes[5]=0.0f;
-	vertexes[6]=(float)1.0f; //view.screen.x_sz;
-	vertexes[7]=(float)1.0f; //view.screen.y_sz;
+	vertexes[6]=(float)view.screen.x_sz;
+	vertexes[7]=(float)view.screen.y_sz;
 
 	uvs[0]=0.0f;
-	uvs[1]=(float)1.0f; //view.screen.y_sz;
+	uvs[1]=1.0f;
 	uvs[2]=0.0f;
 	uvs[3]=0.0f;
-	uvs[4]=(float)1.0f; //view.screen.x_sz;
-	uvs[5]=(float)1.0f;//view.screen.y_sz;
-	uvs[6]=(float)1.0f;//view.screen.x_sz;
+	uvs[4]=1.0f;
+	uvs[5]=1.0f;
+	uvs[6]=1.0f;
 	uvs[7]=0.0f;
 
 		// setup fbo texture draw
@@ -299,8 +303,4 @@ void gl_fs_shader_render_finish(void)
 		// draw the quad
 
 	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
-
-		// finish fbo draw
-	
-	glDisable(GL_TEXTURE_2D);
 }

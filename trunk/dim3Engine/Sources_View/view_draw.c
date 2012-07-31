@@ -312,6 +312,7 @@ void view_draw_scene_render(obj_type *obj,weapon_type *weap)
 		// x,y is created
 		
 	remote_draw_names_setup();
+	label_draw_setup();
 	halo_draw_setup();
 	
 	if ((obj!=NULL) && (weap!=NULL)) {
@@ -323,9 +324,10 @@ void view_draw_scene_render(obj_type *obj,weapon_type *weap)
 		// crosshairs, and zoom masks
 		// this happens in 2D space
 	
-	gl_2D_view_interface();
+	gl_2D_view_screen();
 
 	remote_draw_names_render();
+	label_draw_render();
 	halo_draw_render();
 	
 	if (!view.cinema.on) {
