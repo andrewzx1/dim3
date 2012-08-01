@@ -218,6 +218,32 @@ void iface_default_settings(iface_type *iface)
 		// radar
 
 	iface->radar.on=FALSE;
+
+		// labels
+
+	iface->label.min_dist=5000;
+	iface->label.max_dist=75000;
+
+	iface->label.text.size=20;
+	iface->label.text.col.r=0.0f;
+	iface->label.text.col.g=1.0f;
+	iface->label.text.col.b=0.0f;
+
+	iface->label.bitmap.size=50;
+
+	iface->label.health.wid=50;
+	iface->label.health.high=10;
+	iface->label.health.border_on=TRUE;
+	iface->label.health.background_on=TRUE;
+	iface->label.health.border_col.r=1.0f;
+	iface->label.health.border_col.g=1.0f;
+	iface->label.health.border_col.b=1.0f;
+	iface->label.health.background_col.r=0.0f;
+	iface->label.health.background_col.g=0.0f;
+	iface->label.health.background_col.b=0.0f;
+	iface->label.health.bar_col.r=1.0f;
+	iface->label.health.bar_col.g=0.0f;
+	iface->label.health.bar_col.b=0.0f;
 	
 		// sounds
 		

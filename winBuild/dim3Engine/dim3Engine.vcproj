@@ -3511,19 +3511,6 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\dim3Engine\Sources_View\remote_status.c"
-						>
-						<FileConfiguration
-							Name="Release|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								AdditionalIncludeDirectories=""
-								PreprocessorDefinitions=""
-							/>
-						</FileConfiguration>
-					</File>
-					<File
 						RelativePath="..\..\dim3Engine\Sources_View\score_limit.c"
 						>
 						<FileConfiguration

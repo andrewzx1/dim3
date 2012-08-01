@@ -39,8 +39,7 @@ extern setup_type			setup;
 extern network_setup_type	net_setup;
 extern file_path_setup_type	file_path_setup;
 
-extern int					remote_slow_image_idx,remote_talk_image_idx;
-
+int							remote_slow_image_idx,remote_talk_image_idx;
 bitmap_type					empty_bitmap;
 
 /* =======================================================
@@ -133,8 +132,8 @@ bool view_images_load_single_normal(view_image_type *image,char *path,bool npot,
 	image->nbitmap=1;
 	image->total_msec=0;
 	
-	if (simple) return(bitmap_open(&image->bitmaps[0].bitmap,path,FALSE,FALSE,FALSE,npot,FALSE));
-	return(bitmap_open(&image->bitmaps[0].bitmap,path,TRUE,FALSE,FALSE,npot,FALSE));
+	if (simple) return(bitmap_open(&image->bitmaps[0].bitmap,path,FALSE,FALSE,FALSE,npot,FALSE,FALSE));
+	return(bitmap_open(&image->bitmaps[0].bitmap,path,TRUE,FALSE,FALSE,npot,FALSE,FALSE));
 }
 
 bool view_images_load_single_animated(view_image_type *image,char *path,bool npot,bool simple)
@@ -171,10 +170,10 @@ bool view_images_load_single_animated(view_image_type *image,char *path,bool npo
 		sprintf(bitmap_path,"%s/%s.png",path,name);
 		
 		if (simple) {
-			if (!bitmap_open(&image->bitmaps[n].bitmap,bitmap_path,FALSE,FALSE,FALSE,npot,FALSE)) return(FALSE);
+			if (!bitmap_open(&image->bitmaps[n].bitmap,bitmap_path,FALSE,FALSE,FALSE,npot,FALSE,FALSE)) return(FALSE);
 		}
 		else {
-			if (!bitmap_open(&image->bitmaps[n].bitmap,bitmap_path,TRUE,FALSE,FALSE,npot,FALSE)) return(FALSE);
+			if (!bitmap_open(&image->bitmaps[n].bitmap,bitmap_path,TRUE,FALSE,FALSE,npot,FALSE,FALSE)) return(FALSE);
 		}
 		
 		image->bitmaps[n].msec=xml_get_attribute_int(animation_tag,"msec");

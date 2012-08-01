@@ -152,6 +152,10 @@ void property_palette_fill_level_1(void)
 			property_palette_fill_radar();
 			return;
 
+		case item_interface_label:
+			property_palette_fill_label();
+			return;
+
 		case item_interface_menu:
 			property_palette_fill_menus();
 			return;
@@ -506,6 +510,10 @@ void property_palette_click_level_1(bool double_click)
 
 		case item_interface_radar:
 			property_palette_click_radar(double_click);
+			break;
+
+		case item_interface_label:
+			property_palette_click_label(double_click);
 			break;
 
 		case item_interface_menu:

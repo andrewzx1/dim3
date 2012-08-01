@@ -420,7 +420,8 @@ typedef struct		{
 typedef struct		{
 						int						shader_idx;
 						float					shine_factor;
-						bool					additive,pixelated,compress;
+						bool					additive,pixelated,compress,
+												flip_normal;
 						char					material_name[name_str_len],
 												shader_name[name_str_len];
 						texture_animate_type	animate;
@@ -434,7 +435,7 @@ typedef struct		{
 //
 
 extern void bitmap_new(bitmap_type *bitmap);
-extern bool bitmap_open(bitmap_type *bitmap,char *path,bool mipmap,bool compress,bool pixelated,bool npot,bool scrub_black_to_alpha);
+extern bool bitmap_open(bitmap_type *bitmap,char *path,bool mipmap,bool compress,bool pixelated,bool npot,bool scrub_black_to_alpha,bool flip_normal);
 extern bool bitmap_color(bitmap_type *bitmap,d3col *col);
 extern bool bitmap_data(bitmap_type *bitmap,unsigned char *data,int wid,int high,bool alpha_channel,bool mipmap,bool compress,bool pixelated,bool npot);
 extern void bitmap_close(bitmap_type *bitmap);
@@ -1047,7 +1048,33 @@ typedef struct		{
 						int								ncrosshair;
 						iface_crosshair_type			*crosshairs;
 					} iface_crosshair_list;
-					
+
+//
+// labels
+//
+
+typedef struct		{
+						int								size;
+						d3col							col;
+					} iface_label_text_type;
+
+typedef struct		{
+						int								size;
+					} iface_label_bitmap_type;
+
+typedef struct		{
+						int								wid,high;
+						bool							border_on,background_on;
+						d3col							border_col,background_col,bar_col;
+					} iface_label_health_type;
+
+typedef struct		{
+						int								min_dist,max_dist;
+						iface_label_text_type			text;
+						iface_label_bitmap_type			bitmap;
+						iface_label_health_type			health;
+					} iface_label_type;
+
 //
 // configurable control names
 //
@@ -1434,6 +1461,7 @@ typedef struct		{
 						iface_sound_list				sound_list;
 						iface_shader_list				shader_list;
 						iface_radar_type				radar;
+						iface_label_type				label;
 						iface_chat_type					chat;
 						iface_preload_model_type		preload_model;
 						iface_simple_save_list			simple_save_list;
