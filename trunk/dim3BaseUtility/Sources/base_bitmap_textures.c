@@ -306,6 +306,7 @@ void bitmap_texture_read_xml(texture_type *texture,int main_tag,bool read_scale)
 	texture->additive=xml_get_attribute_boolean(main_tag,"additive");
 	texture->pixelated=xml_get_attribute_boolean(main_tag,"pixelated");
 	texture->compress=xml_get_attribute_boolean(main_tag,"compress");
+	texture->flip_normal=xml_get_attribute_boolean(main_tag,"flip_normal");
 
 	texture->shine_factor=xml_get_attribute_float_default(main_tag,"shine_factor",10.0f);
 
@@ -365,6 +366,7 @@ void bitmap_texture_write_xml(texture_type *texture,int frame_count,bool write_s
 	xml_add_attribute_boolean("additive",texture->additive);
 	xml_add_attribute_boolean("pixelated",texture->pixelated);
 	xml_add_attribute_boolean("compress",texture->compress);
+	xml_add_attribute_boolean("flip_normal",texture->flip_normal);
 
 	xml_add_attribute_float("shine_factor",texture->shine_factor);
 	

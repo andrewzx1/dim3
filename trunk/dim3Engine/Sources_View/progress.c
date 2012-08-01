@@ -63,19 +63,19 @@ void progress_initialize(char *map_name,int max)
 		
 	if (map_name!=NULL) {
 		file_paths_data(&file_path_setup,path,"Bitmaps/Backgrounds_Map",map_name,"png");
-		bitmap_ok=bitmap_open(&progress_background_bitmap,path,FALSE,FALSE,FALSE,gl_check_npot_textures_ok(),FALSE);
+		bitmap_ok=bitmap_open(&progress_background_bitmap,path,FALSE,FALSE,FALSE,gl_check_npot_textures_ok(),FALSE,FALSE);
 	}
 	
 	if (!bitmap_ok) {
 		view_file_paths_bitmap_check_wide(path,"Bitmaps/Backgrounds","load");
-		bitmap_open(&progress_background_bitmap,path,FALSE,FALSE,FALSE,gl_check_npot_textures_ok(),FALSE);
+		bitmap_open(&progress_background_bitmap,path,FALSE,FALSE,FALSE,gl_check_npot_textures_ok(),FALSE,FALSE);
 	}
 
 		// overlay bitmap
 
 	if (iface.progress.overlay) {
 		file_paths_data(&file_path_setup,path,"Bitmaps/UI_Elements","progress_overlay","png");
-		bitmap_open(&progress_overlay_bitmap,path,FALSE,FALSE,FALSE,FALSE,FALSE);
+		bitmap_open(&progress_overlay_bitmap,path,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE);
 	}
 	
 		// current progress

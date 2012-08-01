@@ -288,13 +288,41 @@ unsigned char* bitmap_setup_alpha(bitmap_type *bitmap,unsigned char *png_data,bo
 	return(png_data);
 }
 
+void bitmap_flip_normals(bitmap_type *bitmap,unsigned char *png_data)
+{
+	int					n,psz,byte_sz;
+	unsigned char		*data;
+
+		// is it 3 or 4 bytes?
+
+	if (!bitmap->opaque) {
+		byte_sz=4;
+	}
+	else {
+		byte_sz=3;
+	}
+
+		// run through and flip
+		// Y on normals so shaders
+		// don't have to do it
+
+	data=png_data;
+	
+	psz=(bitmap->wid*byte_sz)*bitmap->high;
+		
+	for (n=0;n<psz;n+=4) {
+		*(data+1)=(0xFF-(*(data+1)));
+		data+=byte_sz;
+	}
+}
+
 /* =======================================================
 
       Open Bitmaps
       
 ======================================================= */
 
-bool bitmap_open(bitmap_type *bitmap,char *path,bool mipmap,bool compress,bool pixelated,bool npot,bool scrub_black_to_alpha)
+bool bitmap_open(bitmap_type *bitmap,char *path,bool mipmap,bool compress,bool pixelated,bool npot,bool scrub_black_to_alpha,bool flip_normal)
 {
 	unsigned char		*png_data;
 	bool				ok,alpha_channel;
@@ -312,8 +340,10 @@ bool bitmap_open(bitmap_type *bitmap,char *path,bool mipmap,bool compress,bool p
 	if (!npot) png_data=bitmap_fix_power_2(bitmap,alpha_channel,png_data);
 
 		// set alphas and scrubbing
+		// and any normal flipping
 		
 	png_data=bitmap_setup_alpha(bitmap,png_data,alpha_channel,scrub_black_to_alpha);
+	if (flip_normal) bitmap_flip_normals(bitmap,png_data);
 		
 		// get the texture
 		

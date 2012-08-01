@@ -660,19 +660,17 @@ typedef struct		{
 					} obj_label_draw;
 
 typedef struct		{
-						int						size;
 						char					str[32];
 						obj_label_draw			draw;
 					} obj_label_text;
 
 typedef struct		{
-						int						image_idx,wid,high;
+						int						image_idx;
 						char					name[name_str_len];
 						obj_label_draw			draw;
 					} obj_label_bitmap;
 
 typedef struct		{
-						int						wid,high;
 						bool					on;
 						obj_label_draw			draw;
 					} obj_label_health;

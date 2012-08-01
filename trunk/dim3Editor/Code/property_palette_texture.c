@@ -78,6 +78,7 @@ void property_palette_fill_texture(int texture_idx)
 	list_palette_add_checkbox(&property_palette,kTexturePropertyAlphaAdditive,"Alpha Additive",&texture->additive,FALSE);
 	list_palette_add_checkbox(&property_palette,kTexturePropertyPixelated,"Pixelated",&texture->pixelated,FALSE);
 	list_palette_add_checkbox(&property_palette,kTexturePropertyCompress,"Compressed",&texture->compress,FALSE);
+	list_palette_add_checkbox(&property_palette,-1,"Flip Normals",&texture->flip_normal,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Texture Options");
 	list_palette_add_picker_list_string(&property_palette,kTexturePropertyShader,"Shader Override",(char*)iface.shader_list.shaders,iface.shader_list.nshader,sizeof(iface_shader_type),(int)offsetof(iface_shader_type,name),TRUE,texture->shader_name,FALSE);

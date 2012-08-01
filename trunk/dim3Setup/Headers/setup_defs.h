@@ -54,17 +54,18 @@ and can be sold or given away.
 #define item_interface_hud						10
 #define item_interface_virtual_control			11
 #define item_interface_radar					12
-#define item_interface_menu						13
-#define item_interface_chooser					14
-#define item_interface_sound					15
-#define item_interface_particle					16
-#define item_interface_ring						17
-#define item_interface_halo						18
-#define item_interface_mark						19
-#define item_interface_crosshair				20
-#define item_interface_action					21
-#define item_interface_shader					22
-#define item_interface_preload_models			23
+#define item_interface_label					13
+#define item_interface_menu						14
+#define item_interface_chooser					15
+#define item_interface_sound					16
+#define item_interface_particle					17
+#define item_interface_ring						18
+#define item_interface_halo						19
+#define item_interface_mark						20
+#define item_interface_crosshair				21
+#define item_interface_action					22
+#define item_interface_shader					23
+#define item_interface_preload_models			24
 
 //
 // intro button types

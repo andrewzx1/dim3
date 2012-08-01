@@ -159,7 +159,6 @@ void view_draw_models_final(void)
 				}
 
 				if ((view.render->draw_list.items[n].flag&view_list_item_flag_model_in_view)!=0x0) {
-					if (obj->type==object_type_remote_player) remote_draw_status(obj);
 					if (object_is_targetted(obj,&col)) render_model_target(&obj->draw,&col);
 					if (setup.debug_on) view_draw_debug_object(obj);
 				}
@@ -311,7 +310,6 @@ void view_draw_scene_render(obj_type *obj,weapon_type *weap)
 		// this happens in 3D space, and the 2D
 		// x,y is created
 		
-	remote_draw_names_setup();
 	label_draw_setup();
 	halo_draw_setup();
 	
@@ -326,7 +324,6 @@ void view_draw_scene_render(obj_type *obj,weapon_type *weap)
 	
 	gl_2D_view_screen();
 
-	remote_draw_names_render();
 	label_draw_render();
 	halo_draw_render();
 	

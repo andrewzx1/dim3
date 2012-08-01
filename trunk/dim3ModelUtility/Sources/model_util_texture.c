@@ -96,25 +96,25 @@ void model_textures_read(model_type *model)
 					// bitmap
 
 				file_paths_data(&file_path_setup,path,sub_path,frame->name,"png");
-				bitmap_open(&frame->bitmap,path,TRUE,texture->compress,texture->pixelated,FALSE,FALSE);
+				bitmap_open(&frame->bitmap,path,TRUE,texture->compress,texture->pixelated,FALSE,FALSE,FALSE);
 
 					// bumpmap
 
 				sprintf(name,"%s_n",frame->name);
 				file_paths_data(&file_path_setup,path,sub_path,name,"png");	// compress messes up normals
-				bitmap_open(&frame->bumpmap,path,TRUE,FALSE,texture->pixelated,FALSE,FALSE);
+				bitmap_open(&frame->bumpmap,path,TRUE,FALSE,texture->pixelated,FALSE,FALSE,texture->flip_normal);
 				
 					// specular map
 
 				sprintf(name,"%s_s",frame->name);
 				file_paths_data(&file_path_setup,path,sub_path,name,"png");
-				bitmap_open(&frame->specularmap,path,TRUE,texture->compress,texture->pixelated,FALSE,FALSE);
+				bitmap_open(&frame->specularmap,path,TRUE,texture->compress,texture->pixelated,FALSE,FALSE,FALSE);
 
 					// glow map
 
 				sprintf(name,"%s_g",frame->name);
 				file_paths_data(&file_path_setup,path,sub_path,name,"png");
-				bitmap_open(&frame->glowmap,path,TRUE,texture->compress,texture->pixelated,FALSE,TRUE);
+				bitmap_open(&frame->glowmap,path,TRUE,texture->compress,texture->pixelated,FALSE,TRUE,FALSE);
 			}
 			
 			frame++;

@@ -145,15 +145,6 @@ and can be sold or given away.
 #define stencil_shadow										1
 
 //
-// labels
-//
-
-#define label_name_max_distance								75000				// how far away you can see map labels
-#define label_name_min_distance								15000				// closest you can see label names in full
-
-#define remote_status_icon_size								300
-
-//
 // render item type
 //
 
