@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2602769315C88619007B19CD /* label.c in Sources */ = {isa = PBXBuildFile; fileRef = 2602769215C88619007B19CD /* label.c */; };
 		260B3C721411EFED006ED023 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 260B3C711411EFED006ED023 /* Foundation.framework */; };
 		260B3C741411EFF6006ED023 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 260B3C731411EFF6006ED023 /* AppKit.framework */; };
 		260B3DED1411F67B006ED023 /* bitmap_cocoa.m in Sources */ = {isa = PBXBuildFile; fileRef = 260B3DC31411F67B006ED023 /* bitmap_cocoa.m */; };
@@ -506,6 +507,7 @@
 /* Begin PBXFileReference section */
 		00CA825D00BF848B7F000001 /* dim3 Engine.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = "dim3 Engine.icns"; path = "Resources/dim3 Engine.icns"; sourceTree = "<group>"; };
 		0867D6ABFE840B52C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		2602769215C88619007B19CD /* label.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = label.c; sourceTree = "<group>"; };
 		260B3C711411EFED006ED023 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = ../../../../System/Library/Frameworks/Foundation.framework; sourceTree = "<group>"; };
 		260B3C731411EFF6006ED023 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = ../../../../System/Library/Frameworks/AppKit.framework; sourceTree = "<group>"; };
 		260B3DC31411F67B006ED023 /* bitmap_cocoa.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = bitmap_cocoa.m; sourceTree = "<group>"; };
@@ -1534,6 +1536,7 @@
 				260B3F6A1411F781006ED023 /* hand.c */,
 				260B3F6C1411F781006ED023 /* hud_draw.c */,
 				260B3F791411F781006ED023 /* radar_draw.c */,
+				2602769215C88619007B19CD /* label.c */,
 				260B3F751411F781006ED023 /* network_draw.c */,
 				260B3F531411F781006ED023 /* crosshair_draw.c */,
 				260B3F4F1411F781006ED023 /* chooser_draw.c */,
@@ -2369,6 +2372,7 @@
 				262D75D7158FE8A00086B8BB /* script_obj_label.c in Sources */,
 				2682E450159D1F7C001CE3DB /* gl_shader_simple.c in Sources */,
 				26FF359E15A936820010C22E /* gl_shader_execute.c in Sources */,
+				2602769315C88619007B19CD /* label.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

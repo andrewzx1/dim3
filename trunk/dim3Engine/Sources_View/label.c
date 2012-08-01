@@ -51,8 +51,7 @@ void label_draw_setup_single(obj_type *obj,int bone_idx,obj_label_draw *label_dr
 {
 	int						dist;
 	bool					hit;
-	d3pnt					spt,ept;
-	model_type				*mdl;
+	d3pnt					ept;
 	ray_trace_contact_type	contact;
 
 		// get bone position
@@ -68,19 +67,15 @@ void label_draw_setup_single(obj_type *obj,int bone_idx,obj_label_draw *label_dr
 	if (!gl_project_in_view_z(&label_draw->pnt)) return;
 
 		// ignore if past fade distance
-			
+
 	dist=distance_get(label_draw->pnt.x,label_draw->pnt.y,label_draw->pnt.z,view.render->camera.pnt.x,view.render->camera.pnt.y,view.render->camera.pnt.z);
-	if (dist>=label_name_max_distance) continue;
+	if (dist>=label_name_max_distance) return;
 
 		// ignore if obscured by ray trace
 
 	contact.obj.on=TRUE;
 	contact.proj.on=FALSE;
 	contact.origin=poly_ray_trace_origin_object;
-
-	spt.x=label_draw->pnt.x;
-	spt.y=label_draw->pnt.y;
-	spt.z=label_draw->pnt.z;
 	
 	ept.x=view.render->camera.pnt.x;
 	ept.y=view.render->camera.pnt.y;
@@ -88,14 +83,14 @@ void label_draw_setup_single(obj_type *obj,int bone_idx,obj_label_draw *label_dr
 
 	contact.obj.ignore_idx=obj->idx;
 	
-	hit=ray_trace_map_by_point(&pnt,&ept,&contact);
+	hit=ray_trace_map_by_point(&label_draw->pnt,&ept,&contact);
 	
 	if (map.camera.mode==cv_fpp) {
-		if (!hit) continue;
-		if (contact.obj.idx!=server.player_obj_idx) continue;
+		if (!hit) return;
+		if (contact.obj.idx!=server.player_obj_idx) return;
 	}
 	else {
-		if (hit) continue;
+		if (hit) return;
 	}
 
 		// calculate fade and size
@@ -105,7 +100,7 @@ void label_draw_setup_single(obj_type *obj,int bone_idx,obj_label_draw *label_dr
 		label_draw->size_factor=1.0f;
 	}
 	else {
-		label_draw->alpha=1.0f-((float)(dist-remote_name_min_distance)/(float)(label_name_max_distance-label_name_min_distance));
+		label_draw->alpha=1.0f-((float)(dist-label_name_min_distance)/(float)(label_name_max_distance-label_name_min_distance));
 		label_draw->size_factor=label_draw->alpha;
 		if (label_draw->size_factor<0.1f) label_draw->size_factor=0.1f;
 	}
@@ -129,9 +124,10 @@ void label_draw_setup(void)
 		if (view.render->draw_list.items[n].type!=view_render_type_object) continue;
 
 		obj=server.obj_list.objs[view.render->draw_list.items[n].idx];
-		obj->label.text.draw_on=FALSE;
-		obj->label.bitmap.draw_on=FALSE;
-		obj->label.health.draw_on=FALSE;
+		obj->label.text.draw.on=FALSE;
+		obj->label.bitmap.draw.on=FALSE;
+		obj->label.health.draw.on=FALSE;
+		obj->label.remote_name.draw.on=FALSE;
 	}
 
 		// remove labels behind z or off-screen
@@ -178,18 +174,18 @@ void label_draw_render(void)
 
 			// health
 
-		if (obj->label.health.draw_on) {
+		if (obj->label.health.draw.on) {
 
 			col.r=1.0f;
 			col.g=1.0f;
 			col.b=0.0f;
-
+			
 			wid=(int)(((float)obj->label.health.wid)*obj->label.health.draw.size_factor);
 			high=(int)(((float)obj->label.health.high)*obj->label.health.draw.size_factor);
 
-			lft=obj->label.health.pnt.x-(wid>>1);
+			lft=obj->label.health.draw.pnt.x-(wid>>1);
 			rgt=lft+wid;
-			top=(view.screen.y_sz-obj->label.health.pnt.y)-(high>>1);
+			top=(view.screen.y_sz-obj->label.health.draw.pnt.y)-(high>>1);
 			bot=top+high;
 
 			view_primitive_2D_color_quad(&col,obj->label.health.draw.alpha,lft,rgt,top,bot);
