@@ -48,23 +48,14 @@ void main_wind_event_resize(void)
 {
 	Rect			wbox;
 	GLint			rect[4];
-	CGrafPtr		saveport;
 	
-		// erase window
-		
-	GetPort(&saveport);
-	SetPort(GetWindowPort(wind));
-    
-	GetWindowPortBounds(wind,&wbox);
-	EraseRect(&wbox);
-	
-	SetPort(saveport);
-
 		// fix all views and palettes
 		
 	aglUpdateContext(ctx);
 	
 		// update buffer rect
+		
+	GetWindowPortBounds(wind,&wbox);
 		
 	rect[0]=0;
 	rect[1]=0;
@@ -120,8 +111,8 @@ OSStatus main_wind_event_callback(EventHandlerCallRef eventhandler,EventRef even
 				case kEventWindowClickContentRgn:
 					GetEventParameter(event,kEventParamMouseLocation,typeQDPoint,NULL,sizeof(Point),NULL,&pt);
 
-                    SetPort(GetWindowPort(wind));
-                    GlobalToLocal(&pt);
+                    SetPortWindowPort(wind);
+					GlobalToLocal(&pt);
 					
 					GetWindowPortBounds(wind,&wbox);
 					
@@ -191,7 +182,7 @@ OSStatus main_wind_event_callback(EventHandlerCallRef eventhandler,EventRef even
 					
 					GetEventParameter(event,kEventParamMouseLocation,typeQDPoint,NULL,sizeof(Point),NULL,&pt);
 					
-					SetPort(GetWindowPort(wind));
+					SetPortWindowPort(wind);
 					GlobalToLocal(&pt);
 					
 					dpt.x=pt.h;
@@ -206,7 +197,7 @@ OSStatus main_wind_event_callback(EventHandlerCallRef eventhandler,EventRef even
 					if (wref!=wind) return(noErr);
 
 					GetEventParameter(event,kEventParamMouseLocation,typeQDPoint,NULL,sizeof(Point),NULL,&pt);
-					SetPort(GetWindowPort(wind));
+					SetPortWindowPort(wind);
                     GlobalToLocal(&pt);
 					
 					dpt.x=pt.h;
@@ -236,7 +227,8 @@ OSStatus main_wind_event_callback(EventHandlerCallRef eventhandler,EventRef even
 
 void main_wind_open(void)
 {
-	Rect						wbox;
+	HIRect						wbox;
+	Rect						box;
 	GLint						attrib[]={AGL_NO_RECOVERY,AGL_RGBA,AGL_DOUBLEBUFFER,AGL_WINDOW,AGL_ACCELERATED,AGL_PIXEL_SIZE,24,AGL_ALPHA_SIZE,8,AGL_DEPTH_SIZE,24,AGL_NONE};
 	GLint						rect[4];
 	CGDirectDisplayID			cg_display_id;
@@ -255,22 +247,29 @@ void main_wind_open(void)
 												{kEventClassMouse,kEventMouseMoved},
 												{kEventClassMouse,kEventMouseWheelMoved}};
 	
-        // open window
-        
-    GetAvailableWindowPositioningBounds(GetMainDevice(),&wbox);
+ 		// get display
+		
+	cg_display_id=CGMainDisplayID();
+	cg_display_mask=CGDisplayIDToOpenGLDisplayMask(cg_display_id);
+					
+		// create window
+		
+	HIWindowGetAvailablePositioningBounds(cg_display_id,kHICoordSpaceScreenPixel,&wbox);
+	
+	box.left=wbox.origin.x;
+	box.top=wbox.origin.y+22;
+	box.right=wbox.size.width;
+	box.bottom=wbox.size.height+22;
 
-	SetRect(&wbox,wbox.left,(wbox.top+22),wbox.right,wbox.bottom);
-	CreateNewWindow(kDocumentWindowClass,kWindowCloseBoxAttribute|kWindowCollapseBoxAttribute|kWindowFullZoomAttribute|kWindowResizableAttribute|kWindowLiveResizeAttribute|kWindowStandardHandlerAttribute|kWindowInWindowMenuAttribute,&wbox,&wind);
+	CreateNewWindow(kDocumentWindowClass,kWindowCloseBoxAttribute|kWindowCollapseBoxAttribute|kWindowFullZoomAttribute|kWindowResizableAttribute|kWindowLiveResizeAttribute|kWindowStandardHandlerAttribute|kWindowInWindowMenuAttribute,&box,&wind);
 
 		// show window
 		
 	ShowWindow(wind);
-	SetPort(GetWindowPort(wind));
+	SetPortWindowPort(wind);
 	
 		// opengl setup
 		
-	cg_display_id=CGMainDisplayID();
-	cg_display_mask=CGDisplayIDToOpenGLDisplayMask(cg_display_id);
 	pf=aglCreatePixelFormat(attrib);
 	ctx=aglCreateContext(pf,NULL);
 	aglSetCurrentContext(ctx);
@@ -282,12 +281,12 @@ void main_wind_open(void)
 	
 		// buffer rect clipping
 		
-	GetWindowPortBounds(wind,&wbox);
-
+	GetWindowPortBounds(wind,&box);
+		
 	rect[0]=0;
 	rect[1]=0;
-	rect[2]=wbox.right-wbox.left;
-	rect[3]=wbox.bottom-wbox.top;
+	rect[2]=box.right;
+	rect[3]=box.bottom;
 	
 	aglSetInteger(ctx,AGL_BUFFER_RECT,rect);
 	aglEnable(ctx,AGL_BUFFER_RECT);

@@ -105,7 +105,7 @@ OSStatus main_wind_event_handler(EventHandlerCallRef eventhandler,EventRef event
 				case kEventWindowClickContentRgn:
 					GetEventParameter(event,kEventParamMouseLocation,typeQDPoint,NULL,sizeof(Point),NULL,&pt);
 					
-					SetPort(GetWindowPort(wind));
+					SetPortWindowPort(wind);
 					GlobalToLocal(&pt);
 					
 					pnt.x=pt.h;
@@ -160,7 +160,7 @@ OSStatus main_wind_event_handler(EventHandlerCallRef eventhandler,EventRef event
 					
 					GetEventParameter(event,kEventParamMouseLocation,typeQDPoint,NULL,sizeof(Point),NULL,&pt);
 					
-					SetPort(GetWindowPort(wind));
+					SetPortWindowPort(wind);
 					GlobalToLocal(&pt);
 					
 					pnt.x=pt.h;
@@ -178,7 +178,7 @@ OSStatus main_wind_event_handler(EventHandlerCallRef eventhandler,EventRef event
 					if (axis!=kEventMouseWheelAxisY) return(noErr);
 						
 					GetEventParameter(event,kEventParamMouseLocation,typeQDPoint,NULL,sizeof(Point),NULL,&pt);
-					SetPort(GetWindowPort(wind));
+					SetPortWindowPort(wind);
 					
 					GlobalToLocal(&pt);
 					pnt.x=pt.h;
@@ -206,7 +206,8 @@ OSStatus main_wind_event_handler(EventHandlerCallRef eventhandler,EventRef event
 void main_wind_open(void)
 {
 	int							wid,high;
-	Rect						wbox,box;
+	HIRect						wbox;
+	Rect						box;
 	GLint						attrib[]={AGL_NO_RECOVERY,AGL_RGBA,AGL_DOUBLEBUFFER,AGL_WINDOW,AGL_ACCELERATED,AGL_PIXEL_SIZE,24,AGL_ALPHA_SIZE,8,AGL_DEPTH_SIZE,24,AGL_NONE};
 	CGDirectDisplayID			cg_display_id;
 	CGOpenGLDisplayMask			cg_display_mask;
@@ -222,13 +223,20 @@ void main_wind_open(void)
 									{kEventClassKeyboard,kEventRawKeyModifiersChanged},
 									{kEventClassMouse,kEventMouseMoved},
 									{kEventClassMouse,kEventMouseWheelMoved}};
-	
-    GetAvailableWindowPositioningBounds(GetMainDevice(),&wbox);
+								
+		// get display
+		
+	cg_display_id=CGMainDisplayID();
+	cg_display_mask=CGDisplayIDToOpenGLDisplayMask(cg_display_id);
+					
+		// create window
+		
+	HIWindowGetAvailablePositioningBounds(cg_display_id,kHICoordSpaceScreenPixel,&wbox);
 
 	wid=list_palette_tree_sz*2;
-	high=(wbox.bottom-wbox.top)-60;
+	high=wbox.size.height-60;
 
-	box.left=((wbox.right-wbox.left)-wid)/2;
+	box.left=(wbox.size.width-wid)/2;
 	box.top=60;
 	box.right=box.left+wid;
 	box.bottom=box.top+high;
@@ -239,12 +247,10 @@ void main_wind_open(void)
 		// show window
 		
 	ShowWindow(wind);
-	SetPort(GetWindowPort(wind));
+	SetPortWindowPort(wind);
 	
 		// opengl setup
 		
-	cg_display_id=CGMainDisplayID();
-	cg_display_mask=CGDisplayIDToOpenGLDisplayMask(cg_display_id);
 	pf=aglCreatePixelFormat(attrib);
 	ctx=aglCreateContext(pf,NULL);
 	aglSetCurrentContext(ctx);

@@ -255,7 +255,6 @@
 		260B42C51411F812006ED023 /* progress.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B41AE1411F812006ED023 /* progress.c */; };
 		260B42C61411F812006ED023 /* radar_draw.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B41AF1411F812006ED023 /* radar_draw.c */; };
 		260B42C71411F812006ED023 /* rain.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B41B01411F812006ED023 /* rain.c */; };
-		260B42C81411F812006ED023 /* remote_status.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B41B11411F812006ED023 /* remote_status.c */; };
 		260B42C91411F812006ED023 /* render_map_liquid.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B41B21411F812006ED023 /* render_map_liquid.c */; };
 		260B42CA1411F812006ED023 /* render_map_opaque.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B41B31411F812006ED023 /* render_map_opaque.c */; };
 		260B42CB1411F812006ED023 /* render_map_transparent.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B41B41411F812006ED023 /* render_map_transparent.c */; };
@@ -364,6 +363,7 @@
 		264356A614576B0F00CA4CFE /* model_util_file_model.c in Sources */ = {isa = PBXBuildFile; fileRef = 264356A514576B0F00CA4CFE /* model_util_file_model.c */; };
 		2647C977152767B3002FEA4B /* singleplayer_option.c in Sources */ = {isa = PBXBuildFile; fileRef = 2647C976152767B3002FEA4B /* singleplayer_option.c */; };
 		266B3DBF15845F31003E7787 /* simple_save_pick.c in Sources */ = {isa = PBXBuildFile; fileRef = 266B3DBE15845F31003E7787 /* simple_save_pick.c */; };
+		267A28DC15CA31160024FD7C /* label.c in Sources */ = {isa = PBXBuildFile; fileRef = 267A28DB15CA31160024FD7C /* label.c */; };
 		267DEDB2158ACD6400216D36 /* script_obj_watch_angle.c in Sources */ = {isa = PBXBuildFile; fileRef = 267DEDB0158ACD6400216D36 /* script_obj_watch_angle.c */; };
 		267DEDB3158ACD6400216D36 /* script_obj_watch_position.c in Sources */ = {isa = PBXBuildFile; fileRef = 267DEDB1158ACD6400216D36 /* script_obj_watch_position.c */; };
 		2682E456159D1F95001CE3DB /* gl_shader_simple.c in Sources */ = {isa = PBXBuildFile; fileRef = 2682E455159D1F95001CE3DB /* gl_shader_simple.c */; };
@@ -648,7 +648,6 @@
 		260B41AE1411F812006ED023 /* progress.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = progress.c; sourceTree = "<group>"; };
 		260B41AF1411F812006ED023 /* radar_draw.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = radar_draw.c; sourceTree = "<group>"; };
 		260B41B01411F812006ED023 /* rain.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = rain.c; sourceTree = "<group>"; };
-		260B41B11411F812006ED023 /* remote_status.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = remote_status.c; sourceTree = "<group>"; };
 		260B41B21411F812006ED023 /* render_map_liquid.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = render_map_liquid.c; sourceTree = "<group>"; };
 		260B41B31411F812006ED023 /* render_map_opaque.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = render_map_opaque.c; sourceTree = "<group>"; };
 		260B41B41411F812006ED023 /* render_map_transparent.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = render_map_transparent.c; sourceTree = "<group>"; };
@@ -767,6 +766,7 @@
 		264356A514576B0F00CA4CFE /* model_util_file_model.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = model_util_file_model.c; sourceTree = "<group>"; };
 		2647C976152767B3002FEA4B /* singleplayer_option.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = singleplayer_option.c; sourceTree = "<group>"; };
 		266B3DBE15845F31003E7787 /* simple_save_pick.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = simple_save_pick.c; sourceTree = "<group>"; };
+		267A28DB15CA31160024FD7C /* label.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = label.c; sourceTree = "<group>"; };
 		267DEDB0158ACD6400216D36 /* script_obj_watch_angle.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_obj_watch_angle.c; sourceTree = "<group>"; };
 		267DEDB1158ACD6400216D36 /* script_obj_watch_position.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_obj_watch_position.c; sourceTree = "<group>"; };
 		2682E455159D1F95001CE3DB /* gl_shader_simple.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = gl_shader_simple.c; sourceTree = "<group>"; };
@@ -1071,6 +1071,7 @@
 				260B41A71411F812006ED023 /* input_touch.c */,
 				260B41A81411F812006ED023 /* intro.c */,
 				260B41A91411F812006ED023 /* join.c */,
+				267A28DB15CA31160024FD7C /* label.c */,
 				26883072157823BC00A3E446 /* load_pause.c */,
 				260B41AA1411F812006ED023 /* menu_draw.c */,
 				269EA83C14B965DD0069CA6C /* metrics_draw.c */,
@@ -1080,7 +1081,6 @@
 				260B41AE1411F812006ED023 /* progress.c */,
 				260B41AF1411F812006ED023 /* radar_draw.c */,
 				260B41B01411F812006ED023 /* rain.c */,
-				260B41B11411F812006ED023 /* remote_status.c */,
 				260B41B21411F812006ED023 /* render_map_liquid.c */,
 				260B41B31411F812006ED023 /* render_map_opaque.c */,
 				260B41B41411F812006ED023 /* render_map_transparent.c */,
@@ -1943,7 +1943,6 @@
 				260B42C51411F812006ED023 /* progress.c in Sources */,
 				260B42C61411F812006ED023 /* radar_draw.c in Sources */,
 				260B42C71411F812006ED023 /* rain.c in Sources */,
-				260B42C81411F812006ED023 /* remote_status.c in Sources */,
 				260B42C91411F812006ED023 /* render_map_liquid.c in Sources */,
 				260B42CA1411F812006ED023 /* render_map_opaque.c in Sources */,
 				260B42CB1411F812006ED023 /* render_map_transparent.c in Sources */,
@@ -2061,6 +2060,7 @@
 				262D75DD158FE8C70086B8BB /* script_obj_label.c in Sources */,
 				2682E456159D1F95001CE3DB /* gl_shader_simple.c in Sources */,
 				26A3156215B787490055A01C /* gl_shader_execute.c in Sources */,
+				267A28DC15CA31160024FD7C /* label.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
