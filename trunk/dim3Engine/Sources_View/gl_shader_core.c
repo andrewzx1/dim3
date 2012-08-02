@@ -244,7 +244,6 @@ char* gl_core_map_shader_build_frag(int nlight,bool fog,bool bump,bool spec,bool
 	if (bump) {
 		strcat(buf,"highp vec3 bumpLightVertexVector;\n");
 		strcat(buf,"lowp vec3 bumpMap=normalize((texture2D(dim3TexBump,uv).rgb*2.0)-1.0);\n");
-		strcat(buf,"bumpMap.y=-bumpMap.y;\n");
 		strcat(buf,"lowp float bump=dot(vec3(0.33,0.33,0.33),bumpMap);\n");
 	}
 	
@@ -715,7 +714,6 @@ char* gl_core_model_shader_build_frag(int nlight,bool fog,bool bump,bool spec,bo
 	if (bump) {
 		strcat(buf,"highp vec3 bumpLightVertexVector;\n");
 		strcat(buf,"mediump vec3 bumpMap=normalize((texture2D(dim3TexBump,uv).rgb*2.0)-1.0);\n");
-		strcat(buf,"bumpMap.y=-bumpMap.y;\n");
 		strcat(buf,"mediump float bump=dot(vec3(0.33,0.33,0.33),bumpMap);\n");
 	}
 	

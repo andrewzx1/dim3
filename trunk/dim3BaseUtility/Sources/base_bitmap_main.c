@@ -308,9 +308,9 @@ void bitmap_flip_normals(bitmap_type *bitmap,unsigned char *png_data)
 
 	data=png_data;
 	
-	psz=(bitmap->wid*byte_sz)*bitmap->high;
+	psz=bitmap->wid*bitmap->high;
 		
-	for (n=0;n<psz;n+=4) {
+	for (n=0;n!=psz;n++) {
 		*(data+1)=(0xFF-(*(data+1)));
 		data+=byte_sz;
 	}

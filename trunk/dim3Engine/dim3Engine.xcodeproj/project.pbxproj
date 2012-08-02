@@ -339,7 +339,6 @@
 		260B40901411F781006ED023 /* progress.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B3F781411F781006ED023 /* progress.c */; };
 		260B40911411F781006ED023 /* radar_draw.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B3F791411F781006ED023 /* radar_draw.c */; };
 		260B40921411F781006ED023 /* rain.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B3F7A1411F781006ED023 /* rain.c */; };
-		260B40931411F781006ED023 /* remote_status.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B3F7B1411F781006ED023 /* remote_status.c */; };
 		260B40941411F781006ED023 /* render_map_liquid.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B3F7C1411F781006ED023 /* render_map_liquid.c */; };
 		260B40951411F781006ED023 /* render_map_opaque.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B3F7D1411F781006ED023 /* render_map_opaque.c */; };
 		260B40961411F781006ED023 /* render_map_transparent.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B3F7E1411F781006ED023 /* render_map_transparent.c */; };
@@ -839,7 +838,6 @@
 		260B3F781411F781006ED023 /* progress.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = progress.c; sourceTree = "<group>"; };
 		260B3F791411F781006ED023 /* radar_draw.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = radar_draw.c; sourceTree = "<group>"; };
 		260B3F7A1411F781006ED023 /* rain.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = rain.c; sourceTree = "<group>"; };
-		260B3F7B1411F781006ED023 /* remote_status.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = remote_status.c; sourceTree = "<group>"; };
 		260B3F7C1411F781006ED023 /* render_map_liquid.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = render_map_liquid.c; sourceTree = "<group>"; };
 		260B3F7D1411F781006ED023 /* render_map_opaque.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = render_map_opaque.c; sourceTree = "<group>"; };
 		260B3F7E1411F781006ED023 /* render_map_transparent.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = render_map_transparent.c; sourceTree = "<group>"; };
@@ -1573,7 +1571,6 @@
 				260B3F761411F781006ED023 /* particles_draw.c */,
 				260B3F811411F781006ED023 /* rings_draw.c */,
 				260B3F691411F781006ED023 /* halo_draw.c */,
-				260B3F7B1411F781006ED023 /* remote_status.c */,
 			);
 			name = Effects;
 			sourceTree = "<group>";
@@ -2326,7 +2323,6 @@
 				260B40901411F781006ED023 /* progress.c in Sources */,
 				260B40911411F781006ED023 /* radar_draw.c in Sources */,
 				260B40921411F781006ED023 /* rain.c in Sources */,
-				260B40931411F781006ED023 /* remote_status.c in Sources */,
 				260B40941411F781006ED023 /* render_map_liquid.c in Sources */,
 				260B40951411F781006ED023 /* render_map_opaque.c in Sources */,
 				260B40961411F781006ED023 /* render_map_transparent.c in Sources */,
