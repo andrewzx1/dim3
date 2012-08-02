@@ -42,6 +42,8 @@ extern bool				quit;
 extern HINSTANCE		hinst;
 extern HWND				wnd;
 extern HDC				wnd_gl_dc;
+extern HMENU			wnd_menu;
+extern HACCEL			wnd_accel;
 
 HCURSOR					cur_arrow,cur_wait,cur_hand,cur_drag,cur_resize,
 						cur_add,cur_subtract;
@@ -147,6 +149,133 @@ void os_set_title_window(char *title)
 void os_swap_gl_buffer(void)
 {
 	SwapBuffers(wnd_gl_dc);
+}
+
+/* =======================================================
+
+      Menus
+      
+======================================================= */
+
+void os_menu_create(os_menu_item_type *os_menus)
+{
+	int						len,accel_count;
+	char					last_menu_name[32],item_name[64];
+	os_menu_item_type		*menu;
+	HMENU					sub_menu;
+	ACCEL					accels[64];
+
+		// create the menu
+
+	wnd_menu=CreateMenu();
+
+	menu=os_menus;
+
+	last_menu_name[0]=0x0;
+	sub_menu=NULL;
+
+	while (TRUE) {
+		if (menu->menu_name[0]==0x0) break;
+
+			// switching to a new menu
+
+		if (strcmp(menu->menu_name,last_menu_name)!=0) {
+			if (sub_menu!=NULL) AppendMenu(wnd_menu,(MF_STRING|MF_POPUP),(UINT)sub_menu,last_menu_name);
+			strcpy(last_menu_name,menu->menu_name);
+			sub_menu=CreatePopupMenu();
+		}
+
+			// add item
+
+		if (menu->item_name[0]!=0x0) {
+
+				// add in ctrl/alt/shift
+
+			strcpy(item_name,menu->item_name);
+
+			switch (menu->key_type) {
+
+				case os_menu_key_cmd:
+					strcat(item_name,"\tCtrl+");
+					len=strlen(item_name);
+					item_name[len]=menu->key;
+					item_name[len+1]=0x0;
+					break;
+
+				case os_menu_key_cmd_opt:
+					strcat(item_name,"\tCtrl+Alt+");
+					len=strlen(item_name);
+					item_name[len]=menu->key;
+					item_name[len+1]=0x0;
+					break;
+
+				case os_menu_key_cmd_shift:
+					strcat(item_name,"\tCtrl+Shift+");
+					len=strlen(item_name);
+					item_name[len]=menu->key;
+					item_name[len+1]=0x0;
+					break;
+
+			}
+
+			AppendMenu(sub_menu,MF_STRING,menu->id,item_name);
+		}
+		else {
+			AppendMenu(sub_menu,MF_SEPARATOR,0,"");
+		}
+
+			// next menu item
+
+		menu++;
+	}
+
+		// set the menu
+
+	SetMenu(wnd,wnd_menu);
+
+		// create the accelerators
+
+	accel_count=0;
+	menu=os_menus;
+
+	while (TRUE) {
+		if (menu->menu_name[0]==0x0) break;
+
+		switch (menu->key_type) {
+
+			case os_menu_key_cmd:
+				accels[accel_count].fVirt=FVIRTKEY|FCONTROL;
+				accels[accel_count].key=menu->key;
+				accels[accel_count].cmd=menu->id;
+				accel_count++;
+				break;
+
+			case os_menu_key_cmd_opt:
+				accels[accel_count].fVirt=FVIRTKEY|FCONTROL|FALT;
+				accels[accel_count].key=menu->key;
+				accels[accel_count].cmd=menu->id;
+				accel_count++;
+				break;
+
+			case os_menu_key_cmd_shift:
+				accels[accel_count].fVirt=FVIRTKEY|FCONTROL|FSHIFT;
+				accels[accel_count].key=menu->key;
+				accels[accel_count].cmd=menu->id;
+				accel_count++;
+				break;
+
+		}
+
+		menu++;
+	}
+
+	wnd_accel=CreateAcceleratorTable(accels,accel_count);
+}
+
+void os_menu_dispose(void)
+{
+	DestroyAcceleratorTable(wnd_accel);
+	DestroyMenu(wnd_menu);
 }
 
 /* =======================================================

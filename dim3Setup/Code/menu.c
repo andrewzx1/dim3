@@ -34,6 +34,37 @@ and can be sold or given away.
 
 extern iface_type				iface;
 
+os_menu_item_type	setup_menu[]={
+
+							// File menu
+
+						{"File","Save",app_menu_item_FileSave,os_menu_key_cmd,'S'},
+						{"File","",0,os_menu_key_none,0x0},
+					#ifndef D3_OS_WINDOWS
+						{"File","Quit",app_menu_item_FileQuit,os_menu_key_cmd,'Q'},
+					#else
+						{"File","Exit",app_menu_item_FileQuit,os_menu_key_none,0x0},
+					#endif
+
+						{"","",-1,os_menu_key_none,0x0},
+				};
+
+/* =======================================================
+
+      Create Menu
+      
+======================================================= */
+
+void menu_create(void)
+{
+	os_menu_create(setup_menu);
+}
+
+void menu_dispose(void)
+{
+	os_menu_dispose();
+}
+
 /* =======================================================
 
       Menu Enable/Disable
@@ -84,17 +115,17 @@ bool menu_event_run(int cmd)
 	
 			// apple menu
    
-        case kCommandAbout:
+        case app_menu_item_About:
 			dialog_about_run();
             return(TRUE);
 		
 			// file menu
 			
-		case kCommandFileSave:
+		case app_menu_item_Save:
 			menu_save();
 			return(TRUE);						
 
-		case kCommandFileQuit:
+		case app_menu_item_Quit:
 			if (menu_quit_save()) os_application_quit();
 			return(TRUE);
 							

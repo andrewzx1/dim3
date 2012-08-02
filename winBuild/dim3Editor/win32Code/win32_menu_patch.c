@@ -30,6 +30,7 @@ and can be sold or given away.
 
 	// remapping for menu items
 
+/*
 int				win32_menu_remap[][2]={
 					{kCommandFileSave,ID_FILE_SAVE},
 					{kCommandFilePreference,ID_FILE_PREFERENCE},
@@ -117,6 +118,7 @@ int				win32_menu_remap[][2]={
 
 					{-1,-1},
 				};
+*/
 
 /* =======================================================
 
@@ -126,8 +128,10 @@ int				win32_menu_remap[][2]={
 		
 int os_win32_menu_lookup(int id)
 {
-	int			idx;
+//	int			idx;
 
+	return(id);
+/*
 	idx=0;
 
 	while (TRUE) {
@@ -137,4 +141,5 @@ int os_win32_menu_lookup(int id)
 	}
 
 	return(-1);
+	*/
 }

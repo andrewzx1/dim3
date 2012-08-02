@@ -59,6 +59,8 @@ extern bool setup_xml_write(void);
 // menu
 //
 
+extern void menu_create(void);
+extern void menu_dispose(void);
 extern void menu_fix_enable(void);
 extern void menu_update_view(void);
 extern bool menu_event_run(int cmd);

@@ -32,10 +32,10 @@ and can be sold or given away.
 #define app_menu_apple							128
 #define app_menu_file							129
 
-#define kCommandAbout							FOUR_CHAR_CODE('abot')
+#define app_menu_item_About						5000
 
-#define kCommandFileSave						FOUR_CHAR_CODE('save')
-#define kCommandFileQuit						FOUR_CHAR_CODE('quit')
+#define app_menu_item_Save						5100
+#define app_menu_item_Quit						5101
 
 //
 // Item types

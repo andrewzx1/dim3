@@ -25,6 +25,25 @@ and can be sold or given away.
  
 *********************************************************************/
 
+//
+// structures
+//
+
+#define os_menu_key_none		0
+#define os_menu_key_cmd			1
+#define os_menu_key_cmd_opt		2
+#define os_menu_key_cmd_shift	3
+
+typedef struct {
+					char		menu_name[32],item_name[32];
+					int			id,key_type;
+					char		key;
+				} os_menu_item_type;
+
+//
+// functions
+//
+
 extern void os_glue_start(void);
 extern void os_glue_end(void);
 
@@ -36,6 +55,9 @@ extern void os_get_window_box(d3rect *box);
 extern void os_select_window(void);
 extern void os_set_title_window(char *title);
 extern void os_swap_gl_buffer(void);
+
+extern void os_menu_create(os_menu_item_type *os_menus);
+extern void os_menu_dispose(void);
 
 extern void os_set_arrow_cursor(void);
 extern void os_set_wait_cursor(void);
