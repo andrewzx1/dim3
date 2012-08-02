@@ -46,8 +46,6 @@ bool							quit;
 extern iface_type				iface;
 extern file_path_setup_type		file_path_setup;
 
-extern int os_win32_menu_lookup(int id);
-
 /* =======================================================
 
       Unused About Dialog
@@ -117,10 +115,7 @@ LRESULT CALLBACK setup_wnd_proc(HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam)
 			break;
 
 		case WM_COMMAND:
-			cmd=os_win32_menu_lookup(LOWORD(wParam));
-			if (cmd==-1) break;
-
-			menu_event_run(cmd);
+			menu_event_run(LOWORD(wParam));
 			break;
 
 		case WM_CLOSE:
@@ -191,11 +186,7 @@ void win32_main_wind_open(void)
 
 		// menu
 
-	wnd_menu=LoadMenu(hinst,MAKEINTRESOURCE(IDR_MAIN_MENU));
-	SetMenu(wnd,wnd_menu);
-
-	wnd_accel=LoadAccelerators(hinst,MAKEINTRESOURCE(IDR_ACCELERATOR));
-
+	menu_create();
 	menu_update();
 
 		// show window
@@ -250,8 +241,7 @@ void win32_main_wind_close(void)
 
 		// delete menu
 
-	DestroyAcceleratorTable(wnd_accel);
-	DestroyMenu(wnd_menu);
+	menu_dispose();
 
 		// delete window
 

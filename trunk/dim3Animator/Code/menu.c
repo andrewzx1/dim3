@@ -40,6 +40,48 @@ extern animator_state_type		state;
 
 extern list_palette_type		property_palette;
 
+os_menu_item_type	animator_menu[]={
+
+							// File menu
+
+						{"File","Save",app_menu_item_FileSave,os_menu_key_cmd,'S'},
+						{"File","",0,os_menu_key_none,0x0},
+						{"File","Preferences",app_menu_item_FilePreference,os_menu_key_none,0x0},
+						{"File","",0,os_menu_key_none,0x0},
+					#ifndef D3_OS_WINDOWS
+						{"File","Quit",app_menu_item_FileQuit,os_menu_key_cmd,'Q'},
+					#else
+						{"File","Exit",app_menu_item_FileQuit,os_menu_key_none,0x0},
+					#endif
+
+							// edit menu
+
+						{"Edit","Undo",app_menu_item_EditUndo,os_menu_key_cmd,'Z'},
+						{"Edit","",0,os_menu_key_none,0x0},
+						{"Edit","Delete",app_menu_item_EditDelete,os_menu_key_none,0x0},
+						{"Edit","Duplicate",app_menu_item_EditDuplicate,os_menu_key_cmd,'D'},
+						{"Edit","",0,os_menu_key_none,0x0},
+						{"Edit","Select More",app_menu_item_EditSelectMore,os_menu_key_cmd,'M'},
+
+						{"","",-1,os_menu_key_none,0x0},
+				};
+
+/* =======================================================
+
+      Create Menu
+      
+======================================================= */
+
+void menu_create(void)
+{
+	os_menu_create(animator_menu);
+}
+
+void menu_dispose(void)
+{
+	os_menu_dispose();
+}
+
 /* =======================================================
 
       Menu Enable/Disable
@@ -103,24 +145,24 @@ bool menu_event_run(int cmd)
 	
 			// apple menu
    
-        case kCommandAbout:
+        case app_menu_item_About:
 			dialog_about_run();
             return(TRUE);
 		
 			// file menu
 
-		case kCommandFileSave:
+		case app_menu_item_FileSave:
 			file_save_model();
 			return(TRUE);
 
-		case kCommandFilePreference:
+		case app_menu_item_FilePreference:
 			state.in_preference=!state.in_preference;
 			property_palette_reset();
 			list_palette_set_level(&property_palette,0);
 			main_wind_draw();
 			return(TRUE);
 
-		case kCommandFileQuit:
+		case app_menu_item_FileQuit:
 			if (file_close_model()) {
 				os_application_quit();
 			}
@@ -128,112 +170,112 @@ bool menu_event_run(int cmd)
 			
 			// edit menu
 
-		case kCommandEditUndo:
+		case app_menu_item_EditUndo:
 			undo_run();
 			main_wind_draw();
 			return(TRUE);
 
-		case kCommandEditSelectMore:
+		case app_menu_item_EditSelectMore:
 			poly_mask_select_more(state.cur_mesh_idx);
 			main_wind_draw();
 			return(TRUE);
 			
 			// model menu
         
-		case kCommandPrepareModel:
+		case app_menu_item_PrepareModel:
             prepare_model();
             main_wind_draw();
 			return(TRUE);
 			
-		case kCommandCalcBoxes:
+		case app_menu_item_CalcBoxes:
             model_recalc_boxes(&model);
             main_wind_draw();
 			return(TRUE);
             
-		case kCommandCalcNormals:
+		case app_menu_item_CalcNormals:
             model_recalc_normals(&model,FALSE);
             main_wind_draw();
 			return(TRUE);
            
-		case kCommandScaleAll:
+		case app_menu_item_ScaleAll:
 			if (!dialog_scale_run(&model,&fx,&fy,&fz)) return(TRUE);
 			model_scale_all(&model,fx,fy,fz);
             main_wind_draw();
 			return(TRUE);
 			
-		case kCommandFlipXAll:
+		case app_menu_item_FlipXAll:
 			model_flip_all(&model,TRUE,FALSE,FALSE);
             main_wind_draw();
 			return(TRUE);
 			
-		case kCommandFlipYAll:
+		case app_menu_item_FlipYAll:
 			model_flip_all(&model,FALSE,TRUE,FALSE);
             main_wind_draw();
 			return(TRUE);
 
-		case kCommandFlipZAll:
+		case app_menu_item_FlipZAll:
 			model_flip_all(&model,FALSE,FALSE,TRUE);
             main_wind_draw();
 			return(TRUE);
 			
-		case kCommandSwapXZAll:
+		case app_menu_item_SwapXZAll:
 			model_swap_xz_all(&model);
             main_wind_draw();
 			return(TRUE);
 			
-		case kCommandSwapYZAll:
+		case app_menu_item_SwapYZAll:
 			model_swap_yz_all(&model);
             main_wind_draw();
 			return(TRUE);
             
-		case kCommandCenterXZAll:
+		case app_menu_item_CenterXZAll:
 			model_center_xz_all(&model);
             main_wind_draw();
 			return(TRUE);
             
-		case kCommandFloorYAll:
+		case app_menu_item_FloorYAll:
 			model_floor_all(&model);
             main_wind_draw();
 			return(TRUE);
 
-		case kCommandAddHitBox:
+		case app_menu_item_AddHitBox:
 			model_piece_add_hit_box();
             main_wind_draw();
 			return(TRUE);
 						
 			// view menu
 					
-		case kCommandFront:
+		case app_menu_item_Front:
 			state.ang.x=0;
 			state.ang.y=180;
 			main_wind_draw();
 			return(TRUE);
 			
-		case kCommandLeft:
+		case app_menu_item_Left:
 			state.ang.x=0;
 			state.ang.y=270;
 			main_wind_draw();
 			return(TRUE);
 			
-		case kCommandRight:
+		case app_menu_item_Right:
 			state.ang.x=0;
 			state.ang.y=90;
 			main_wind_draw();
 			return(TRUE);
 			
-		case kCommandBack:
+		case app_menu_item_Back:
 			state.ang.x=0;
 			state.ang.y=0;
 			main_wind_draw();
 			return(TRUE);
 			
-		case kCommandTop:
+		case app_menu_item_Top:
 			state.ang.x=270;
 			state.ang.y=0;
 			main_wind_draw();
 			return(TRUE);
 			
-		case kCommandBottom:
+		case app_menu_item_Bottom:
 			state.ang.x=90;
 			state.ang.y=0;
 			main_wind_draw();
@@ -241,196 +283,196 @@ bool menu_event_run(int cmd)
 						
 			// mesh menu
 			
-		case kCommandNewMesh:
+		case app_menu_item_NewMesh:
 			model_piece_add_mesh();
 			main_wind_draw();
 			return(TRUE);
 			
-		case kCommandDuplicateMesh:
+		case app_menu_item_DuplicateMesh:
 			if (state.cur_mesh_idx==-1) return(TRUE);
 			model_piece_duplicate_mesh(state.cur_mesh_idx);
 			main_wind_draw();
 			return(TRUE);
 			
-		case kCommandImportOBJ:
+		case app_menu_item_ImportOBJ:
 			main_wind_play(play_mode_stop);
 			file_import_mesh_obj(FALSE);
 			return(TRUE);
 			
-		case kCommandReplaceOBJ:
+		case app_menu_item_ReplaceOBJ:
 			main_wind_play(play_mode_stop);
 			file_import_mesh_obj(TRUE);
 			return(TRUE);
 			
-		case kCommandInsertXML:
+		case app_menu_item_InsertXML:
 			main_wind_play(play_mode_stop);
 			file_insert_mesh_dim3_model();
 			return(TRUE);
 			
-		case kCommandScale:
+		case app_menu_item_Scale:
 			if (!dialog_scale_run(&model,&fx,&fy,&fz)) return(TRUE);
 			model_scale(&model,state.cur_mesh_idx,fx,fy,fz);
             main_wind_draw();
 			return(TRUE);
 			
-		case kCommandFlipX:
+		case app_menu_item_FlipX:
 			model_flip(&model,state.cur_mesh_idx,TRUE,FALSE,FALSE);
             main_wind_draw();
 			return(TRUE);
 
-		case kCommandFlipY:
+		case app_menu_item_FlipY:
 			model_flip(&model,state.cur_mesh_idx,FALSE,TRUE,FALSE);
             main_wind_draw();
 			return(TRUE);
 			
-		case kCommandFlipZ:
+		case app_menu_item_FlipZ:
 			model_flip(&model,state.cur_mesh_idx,FALSE,FALSE,TRUE);
             main_wind_draw();
 			return(TRUE);
 			
-		case kCommandFlipU:
+		case app_menu_item_FlipU:
 			model_flip_uv(&model,state.cur_mesh_idx,TRUE,FALSE);
             main_wind_draw();
 			return(TRUE);
 			
-		case kCommandFlipV:
+		case app_menu_item_FlipV:
 			model_flip_uv(&model,state.cur_mesh_idx,FALSE,TRUE);
             main_wind_draw();
 			return(TRUE);
 			
-		case kCommandSwapXZ:
+		case app_menu_item_SwapXZ:
 			model_swap_xz(&model,state.cur_mesh_idx);
             main_wind_draw();
 			return(TRUE);
 			
-		case kCommandSwapYZ:
+		case app_menu_item_SwapYZ:
 			model_swap_yz(&model,state.cur_mesh_idx);
             main_wind_draw();
 			return(TRUE);
             
-		case kCommandCenterXZ:
+		case app_menu_item_CenterXZ:
 			model_center_xz(&model,state.cur_mesh_idx);
             main_wind_draw();
 			return(TRUE);
             
-		case kCommandFloorY:
+		case app_menu_item_FloorY:
 			model_floor(&model,state.cur_mesh_idx);
             main_wind_draw();
 			return(TRUE);
 
-		case kCommandMeshTessellate:
+		case app_menu_item_MeshTessellate:
 			polygon_tessellate(state.cur_mesh_idx,FALSE);
 			main_wind_draw();
 			return(TRUE);
 			
 			// vertex menu
 			
-		case kCommandVertexSelectAll:
+		case app_menu_item_VertexSelectAll:
 			state.select_mode=select_mode_vertex;
 			vertex_mask_set_sel_all(state.cur_mesh_idx);
 			main_wind_draw();
 			return(TRUE);
 			
-		case kCommandVertexSelectNotAttached:
+		case app_menu_item_VertexSelectNotAttached:
 			state.select_mode=select_mode_vertex;
 			vertex_mask_set_sel_no_bone(state.cur_mesh_idx);
 			main_wind_draw();
 			return(TRUE);
 			
-		case kCommandVertexInvertNormals:
+		case app_menu_item_VertexInvertNormals:
 			vertex_invert_normals(state.cur_mesh_idx);
 			main_wind_draw();
 			return(TRUE);
 			
-		case kCommandVertexSetNormals:
+		case app_menu_item_VertexSetNormals:
 			vertex_set_normals(state.cur_mesh_idx);
 			main_wind_draw();
 			return(TRUE);
 
-		case kCommandVertexSetNormalsOut:
+		case app_menu_item_VertexSetNormalsOut:
 			vertex_set_normals_in_out(state.cur_mesh_idx,TRUE);
 			main_wind_draw();
 			return(TRUE);
 
-		case kCommandVertexSetNormalsIn:
+		case app_menu_item_VertexSetNormalsIn:
 			vertex_set_normals_in_out(state.cur_mesh_idx,FALSE);
 			main_wind_draw();
 			return(TRUE);
 		
-		case kCommandVertexClearBones:
+		case app_menu_item_VertexClearBones:
 			state.select_mode=select_mode_vertex;
 			vertex_clear_bone_attachments_sel_vertexes(state.cur_mesh_idx);
 			main_wind_draw();
 			return(TRUE);
 			
-		case kCommandVertexAutoBones:
+		case app_menu_item_VertexAutoBones:
 			state.select_mode=select_mode_vertex;
 			vertex_auto_bone_attachments(state.cur_mesh_idx);
 			main_wind_draw();
 			return(TRUE);
 				
-		case kCommandVertexHideSelected:
+		case app_menu_item_VertexHideSelected:
 			vertex_mask_hide_set_sel_vertexes(state.cur_mesh_idx);
 			main_wind_draw();
 			return(TRUE);
 			
-		case kCommandVertexHideNonSelected:
+		case app_menu_item_VertexHideNonSelected:
 			vertex_mask_hide_set_non_sel_vertexes(state.cur_mesh_idx);
 			main_wind_draw();
 			return(TRUE);
 			
-		case kCommandVertexShowAll:
+		case app_menu_item_VertexShowAll:
 			vertex_mask_hide_show_all_vertexes(state.cur_mesh_idx);
 			main_wind_draw();
 			return(TRUE);
 			
-		case kCommandVertexDelete:
+		case app_menu_item_VertexDelete:
 			state.select_mode=select_mode_vertex;
 			vertex_delete_sel_vertex(state.cur_mesh_idx);
 			main_wind_draw();
 			return(TRUE);
 			
-		case kCommandVertexPolygonDelete:
+		case app_menu_item_VertexPolygonDelete:
 			if (state.select_mode!=select_mode_polygon) return(TRUE);
 			vertex_delete_sel_poly(state.cur_mesh_idx);
 			main_wind_draw();
 			return(TRUE);
 			
-		case kCommandVertexCollapseSelected:
+		case app_menu_item_VertexCollapseSelected:
 			if (state.select_mode==select_mode_mesh) return(TRUE);
 			vertex_collapse_selected(state.cur_mesh_idx);
 			main_wind_draw();
 			return(TRUE);
 
-		case kCommandVertexCollapseSimilar:
+		case app_menu_item_VertexCollapseSimilar:
 			vertex_collapse_similar(state.cur_mesh_idx);
 			main_wind_draw();
 			return(TRUE);
 
-		case kCommandVertexMakeQuad:
+		case app_menu_item_VertexMakeQuad:
 			polygon_make_quad(state.cur_mesh_idx);
 			main_wind_draw();
 			return(TRUE);
 
-		case kCommandVertexTessellatePoly:
+		case app_menu_item_VertexTessellatePoly:
 			polygon_tessellate(state.cur_mesh_idx,TRUE);
 			main_wind_draw();
 			return(TRUE);
 			
 			// bone menu
 			
-		case kCommandNewBone:
+		case app_menu_item_NewBone:
 			model_piece_add_bone();
 			main_wind_draw();
 			return(TRUE);
 			
-		case kCommandSetBone:
+		case app_menu_item_SetBone:
 			if (!dialog_set_vertex_bone_run(&major_bone_idx,&minor_bone_idx,&bone_factor)) return(TRUE);
 			vertex_mask_set_sel_vertex_to_bone(state.cur_mesh_idx,major_bone_idx,minor_bone_idx,bone_factor);
 			main_wind_draw();
 			return(TRUE);
 
-		case kCommandGoToParentBone:
+		case app_menu_item_GoToParentBone:
 			if (state.cur_bone_idx==-1) return(TRUE);
 			
 			parent_idx=model.bones[state.cur_bone_idx].parent_idx;
@@ -441,18 +483,18 @@ bool menu_event_run(int cmd)
 			
 			// pose menu
 			
-		case kCommandNewPose:
+		case app_menu_item_NewPose:
 			model_piece_add_pose();
 			main_wind_draw();
 			return(TRUE);
 			
-		case kCommandDupPose:
+		case app_menu_item_DupPose:
 			if (state.cur_pose_idx==-1) return(TRUE);
 			model_piece_duplicate_pose(state.cur_pose_idx);
 			main_wind_draw();
 			return(TRUE);
 			
-		case kCommandClearPose:
+		case app_menu_item_ClearPose:
 			if (state.cur_pose_idx==-1) return(TRUE);
 
 			model_pose_clear(&model,state.cur_pose_idx);
@@ -460,29 +502,29 @@ bool menu_event_run(int cmd)
 			
 			// animation menu
 			
-		case kCommandNewAnimate:
+		case app_menu_item_NewAnimate:
 			model_piece_add_animate();
 			main_wind_draw();
 			return(TRUE);
 			
-		case kCommandDupAnimate:
+		case app_menu_item_DupAnimate:
 			if (state.cur_animate_idx==-1) return(TRUE);
 			model_piece_duplicate_animate(state.cur_animate_idx);
 			main_wind_draw();
 			return(TRUE);
             
-		case kCommandResetTimeAnimate:
+		case app_menu_item_ResetTimeAnimate:
 			if (state.cur_animate_idx==-1) return(TRUE);
 			main_wind_play(play_mode_stop);
 
 			dialog_animation_reset_time_run(state.cur_animate_idx);
 			return(TRUE);
 			
-		case kCommandPlayAnimate:
+		case app_menu_item_PlayAnimate:
 			main_wind_play(play_mode_normal);
 			return(TRUE);
 			
-		case kCommandPlayBlendAnimate:
+		case app_menu_item_PlayBlendAnimate:
 			if (dialog_play_blend_animation_run()) {
 				main_wind_play(play_mode_blend);
 			}

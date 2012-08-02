@@ -48,8 +48,6 @@ extern editor_setup_type		setup;
 extern iface_type				iface;
 extern editor_state_type		state;
 
-extern int os_win32_menu_lookup(int id);
-
 /* =======================================================
 
       Unused About Dialog
@@ -68,7 +66,6 @@ void dialog_about_run(void)
 
 LRESULT CALLBACK editor_wnd_proc(HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam)
 {
-	int					cmd;
 	d3pnt				pnt;
 	POINT				wpt;
 	PAINTSTRUCT			ps;
@@ -119,10 +116,7 @@ LRESULT CALLBACK editor_wnd_proc(HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam)
 			break;
 
 		case WM_COMMAND:
-			cmd=os_win32_menu_lookup(LOWORD(wParam));
-			if (cmd==-1) break;
-
-			menu_event_run(cmd);
+			menu_event_run(LOWORD(wParam));
 			break;
 
 		case WM_CLOSE:
@@ -174,10 +168,7 @@ void win32_main_wind_open(void)
 
 		// menu
 
-	wnd_menu=LoadMenu(hinst,MAKEINTRESOURCE(IDR_MAIN_MENU));
-	SetMenu(wnd,wnd_menu);
-
-	wnd_accel=LoadAccelerators(hinst,MAKEINTRESOURCE(IDR_ACCELERATOR));
+	menu_create();
 	
 	undo_initialize();
 	menu_fix_enable();
@@ -234,8 +225,7 @@ void win32_main_wind_close(void)
 
 		// delete menu
 
-	DestroyAcceleratorTable(wnd_accel);
-	DestroyMenu(wnd_menu);
+	menu_dispose();
 
 		// delete window
 

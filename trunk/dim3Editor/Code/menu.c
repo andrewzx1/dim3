@@ -38,6 +38,156 @@ extern editor_state_type		state;
 
 extern list_palette_type		property_palette;
 
+os_menu_item_type	editor_menu[]={
+
+							// File menu
+
+						{"File","Save",app_menu_item_FileSave,os_menu_key_cmd,'S'},
+						{"File","",0,os_menu_key_none,0x0},
+						{"File","Preferences",app_menu_item_FilePreference,os_menu_key_none,0x0},
+						{"File","",0,os_menu_key_none,0x0},
+					#ifndef D3_OS_WINDOWS
+						{"File","Quit",app_menu_item_FileQuit,os_menu_key_cmd,'Q'},
+					#else
+						{"File","Exit",app_menu_item_FileQuit,os_menu_key_none,0x0},
+					#endif
+
+							// edit menu
+
+						{"Edit","Undo",app_menu_item_EditUndo,os_menu_key_cmd,'Z'},
+						{"Edit","",0,os_menu_key_none,0x0},
+						{"Edit","Delete",app_menu_item_EditDelete,os_menu_key_none,0x0},
+						{"Edit","Duplicate",app_menu_item_EditDuplicate,os_menu_key_cmd,'D'},
+						{"Edit","",0,os_menu_key_none,0x0},
+						{"Edit","Select More",app_menu_item_EditSelectMore,os_menu_key_cmd,'M'},
+
+							// view menu
+
+						{"View","Front",app_menu_item_ViewFront,os_menu_key_cmd,'1'},
+						{"View","Left",app_menu_item_ViewLeft,os_menu_key_cmd,'2'},
+						{"View","Right",app_menu_item_ViewRight,os_menu_key_cmd,'3'},
+						{"View","Back",app_menu_item_ViewBack,os_menu_key_cmd,'4'},
+						{"View","Top",app_menu_item_ViewTop,os_menu_key_cmd,'5'},
+						{"View","Bottom",app_menu_item_ViewBottom,os_menu_key_cmd,'6'},
+						{"View","",0,os_menu_key_none,0x0},
+						{"View","Perspective",app_menu_item_ViewPerspective,os_menu_key_cmd,'9'},
+						{"View","Ortho",app_menu_item_ViewOrtho,os_menu_key_cmd,'0'},
+						{"View","",0,os_menu_key_none,0x0},
+						{"View","Normal UV Layer",app_menu_item_ViewUVLayer1,os_menu_key_cmd_opt,'1'},
+						{"View","Light Map UV Layer",app_menu_item_ViewUVLayer2,os_menu_key_cmd_opt,'2'},
+						{"View","",0,os_menu_key_none,0x0},
+						{"View","Goto Selection",app_menu_item_ViewGotoSelect,os_menu_key_cmd,'G'},
+						{"View","Goto Map Center",app_menu_item_ViewGotoMapCenter,os_menu_key_cmd_shift,'G'},
+						{"View","",0,os_menu_key_none,0x0},
+						{"View","Clipping",app_menu_item_ViewClip,os_menu_key_cmd_opt,'3'},
+						{"View","",0,os_menu_key_none,0x0},
+						{"View","Liquids",app_menu_item_ViewShowHideLiquids,os_menu_key_cmd_shift,'1'},
+						{"View","Spots, Scenery",app_menu_item_ViewShowHideSpots,os_menu_key_cmd_shift,'2'},
+						{"View","Lights, Sounds, Particles",app_menu_item_ViewShowHideLights,os_menu_key_cmd_shift,'3'},
+						{"View","Nodes",app_menu_item_ViewShowHideNodes,os_menu_key_cmd_shift,'4'},
+						{"View","Movements",app_menu_item_ViewShowHideMovements,os_menu_key_cmd_shift,'5'},
+						{"View","",0,os_menu_key_none,0x0},
+						{"View","Split Panel Horizontal",app_menu_item_ViewSplitHorizontal,os_menu_key_none,0x0},
+						{"View","Split Panel Vertical",app_menu_item_ViewSplitVertical,os_menu_key_none,0x0},
+						{"View","Remove Panel",app_menu_item_ViewRemoveSplit,os_menu_key_none,0x0},
+
+							// map menu
+
+						{"Map","Raise Y",app_menu_item_MapRaiseY,os_menu_key_none,0x0},
+						{"Map","Lower Y",app_menu_item_MapLowerY,os_menu_key_none,0x0},
+						{"Map","Center",app_menu_item_MapCenter,os_menu_key_none,0x0},
+						{"Map","",0,os_menu_key_none,0x0},
+						{"Map","Reset UVs",app_menu_item_MapResetUV,os_menu_key_none,0x0},
+						{"Map","Recalc Normals",app_menu_item_MapResetNormals,os_menu_key_none,0x0},
+						{"Map","Sort Mesh Polygons",app_menu_item_MapSortMeshPolys,os_menu_key_none,0x0},
+						{"Map","",0,os_menu_key_none,0x0},
+						{"Map","Clear Light Maps",app_menu_item_ClearLightMaps,os_menu_key_none,0x0},
+						{"Map","Build Light Maps...",app_menu_item_BuildLightMaps,os_menu_key_none,0x0},
+						{"Map","",0,os_menu_key_none,0x0},
+						{"Map","Build Liquid Reflection Maps...",app_menu_item_BuildLiquidReflectionMaps,os_menu_key_none,0x0},
+						{"Map","",0,os_menu_key_none,0x0},
+						{"Map","Auto Generate Map...",app_menu_item_AutoGenerate,os_menu_key_none,0x0},
+						{"Map","",0,os_menu_key_none,0x0},
+						{"Map","Run...",app_menu_item_Run,os_menu_key_cmd,'R'},
+
+							// mesh menu
+
+						{"Mesh","Combine",app_menu_item_MeshCombine,os_menu_key_cmd,'P'},
+						{"Mesh","Split",app_menu_item_MeshSplit,os_menu_key_cmd_shift,'P'},
+						{"Mesh","Tesselate",app_menu_item_MeshTesselate,os_menu_key_none,0x0},
+						{"Mesh","",0,os_menu_key_none,0x0},
+						{"Mesh","Resize...",app_menu_item_MeshResize,os_menu_key_none,0x0},
+						{"Mesh","Reposition...",app_menu_item_MeshReposition,os_menu_key_none,0x0},
+						{"Mesh","Force Bounds to Grid",app_menu_item_MeshForceGrid,os_menu_key_none,0x0},
+						{"Mesh","Resize Current Texture...",app_menu_item_MeshResizeTexture,os_menu_key_none,0x0},
+						{"Mesh","",0,os_menu_key_none,0x0},
+						{"Mesh","Flip X",app_menu_item_MeshFlipX,os_menu_key_cmd,'H'},
+						{"Mesh","Flip Y",app_menu_item_MeshFlipY,os_menu_key_cmd,'U'},
+						{"Mesh","Flip Z",app_menu_item_MeshFlipZ,os_menu_key_cmd,'V'},
+						{"Mesh","",0,os_menu_key_none,0x0},
+						{"Mesh","Rotate X",app_menu_item_MeshRotateX,os_menu_key_none,0x0},
+						{"Mesh","Rotate Y",app_menu_item_MeshRotateY,os_menu_key_cmd_opt,'R'},
+						{"Mesh","Rotate Z",app_menu_item_MeshRotateZ,os_menu_key_none,0x0},
+						{"Mesh","Free Rotate...",app_menu_item_MeshFreeRotate,os_menu_key_cmd_shift,'R'},
+						{"Mesh","",0,os_menu_key_none,0x0},
+						{"Mesh","Raise Y",app_menu_item_MeshRaiseY,os_menu_key_cmd_shift,'Y'},
+						{"Mesh","Lower Y",app_menu_item_MeshLowerY,os_menu_key_cmd,'Y'},
+						{"Mesh","",0,os_menu_key_none,0x0},
+						{"Mesh","Select All Polygons",app_menu_item_MeshSelectAllPoly,os_menu_key_none,0x0},
+						{"Mesh","",0,os_menu_key_none,0x0},
+						{"Mesh","Snap Mesh To Grid",app_menu_item_MeshSnapToGrid,os_menu_key_none,0x0},
+						{"Mesh","Snap Mesh To Closest Vertex",app_menu_item_MeshSnapClosestVertex,os_menu_key_none,0x0},
+						{"Mesh","",0,os_menu_key_none,0x0},
+						{"Mesh","Reset Mesh UVs",app_menu_item_MeshResetUV,os_menu_key_none,0x0},
+						{"Mesh","Whole Mesh UVs",app_menu_item_MeshWholeUV,os_menu_key_none,0x0},
+						{"Mesh","Single Stamp Mesh UVs",app_menu_item_MeshSingleUV,os_menu_key_none,0x0},
+						{"Mesh","",0,os_menu_key_none,0x0},
+						{"Mesh","Recalc Normals",app_menu_item_MeshCreateNormals,os_menu_key_none,0x0},
+						{"Mesh","Invert Normals",app_menu_item_MeshInvertNormals,os_menu_key_cmd_opt,'I'},
+						{"Mesh","Set Normals Out",app_menu_item_MeshSetNormalsOut,os_menu_key_none,0x0},
+						{"Mesh","Set Normals In",app_menu_item_MeshSetNormalsIn,os_menu_key_none,0x0},
+
+							// polygon menu
+
+						{"Polygon","Punch Middle Hole",app_menu_item_PolygonHole,os_menu_key_none,0x0},
+						{"Polygon","Tesselate",app_menu_item_PolyTesselate,os_menu_key_none,0x0},
+						{"Polygon","",0,os_menu_key_none,0x0},
+						{"Polygon","Snap Polygon To Grid",app_menu_item_PolygonSnapToGrid,os_menu_key_none,0x0},
+						{"Polygon","",0,os_menu_key_none,0x0},
+						{"Polygon","Reset Polygon UVs",app_menu_item_PolygonRotateUV,os_menu_key_cmd,'T'},
+						{"Polygon","Flip Us",app_menu_item_PolygonFlipU,os_menu_key_none,0x0},
+						{"Polygon","Flip Vs",app_menu_item_PolygonFlipV,os_menu_key_none,0x0},
+						{"Polygon","",0,os_menu_key_none,0x0},
+						{"Polygon","Recalc Normals",app_menu_item_PolygonRecalcNormal,os_menu_key_cmd_shift,'N'},
+						{"Polygon","Invert Normals",app_menu_item_PolygonInvertNormal,os_menu_key_cmd,'I'},
+						{"Polygon","",0,os_menu_key_none,0x0},
+						{"Polygon","Reset Polygon UVs",app_menu_item_PolygonResetUV,os_menu_key_none,0x0},
+						{"Polygon","Whole Polygon UVs",app_menu_item_PolygonWholeUV,os_menu_key_none,0x0},
+						{"Polygon","Single Stamp Polygon UVs",app_menu_item_PolygonSingleUV,os_menu_key_none,0x0},
+
+							// vertex menu
+
+						{"Vertex","Snap All Vertexes To Grid",app_menu_item_VertexSnapToGrid,os_menu_key_none,0x0},
+
+						{"","",-1,os_menu_key_none,0x0},
+				};
+
+/* =======================================================
+
+      Create Menu
+      
+======================================================= */
+
+void menu_create(void)
+{
+	os_menu_create(editor_menu);
+}
+
+void menu_dispose(void)
+{
+	os_menu_dispose();
+}
+
 /* =======================================================
 
       Mainline Menu Enable/Disable
@@ -148,24 +298,24 @@ bool menu_event_run(int cmd)
 		
 			// about
 
-        case kCommandAbout:
+        case app_menu_item_About:
             dialog_about_run();
             return(TRUE);
             
 			// file menu
 			
-		case kCommandFileSave:
+		case app_menu_item_FileSave:
 			file_save_map();
 			return(TRUE);
 
-        case kCommandFilePreference:
+        case app_menu_item_FilePreference:
 			state.in_preference=!state.in_preference;
 			property_palette_reset();
 			list_palette_set_level(&property_palette,0);
 			main_wind_draw();
             return(TRUE);
 
-		case kCommandFileQuit:
+		case app_menu_item_FileQuit:
 			if (file_close_map()) {
 				os_application_quit();
 			}
@@ -173,102 +323,102 @@ bool menu_event_run(int cmd)
 			
 			// edit menu
 			
-		case kCommandEditUndo:
+		case app_menu_item_EditUndo:
 			undo_pull();
 			return(TRUE);
 			
-		case kCommandEditDelete:
+		case app_menu_item_EditDelete:
 			piece_delete();
 			return(TRUE);
 			
-		case kCommandEditDuplicate:
+		case app_menu_item_EditDuplicate:
 			piece_duplicate();
 			return(TRUE);
 			
-		case kCommandEditSelectMore:
+		case app_menu_item_EditSelectMore:
 			piece_select_more();
 			return(TRUE);
 			
 			// view menu
 			
-		case kCommandViewFront:
+		case app_menu_item_ViewFront:
 			view_face_front();
 			main_wind_draw();
 			break;
 			
-		case kCommandViewLeft:
+		case app_menu_item_ViewLeft:
 			view_face_left();
 			main_wind_draw();
 			break;
 			
-		case kCommandViewRight:
+		case app_menu_item_ViewRight:
 			view_face_right();
 			main_wind_draw();
 			break;
 			
-		case kCommandViewBack:
+		case app_menu_item_ViewBack:
 			view_face_back();
 			main_wind_draw();
 			break;
 			
-		case kCommandViewTop:
+		case app_menu_item_ViewTop:
 			view_face_top();
 			main_wind_draw();
 			break;
 			
-		case kCommandViewBottom:
+		case app_menu_item_ViewBottom:
 			view_face_bottom();
 			main_wind_draw();
 			break;
 
-		case kCommandViewPerspective:
+		case app_menu_item_ViewPerspective:
 			view_perspective_ortho(FALSE);
 			menu_update_view();
 			main_wind_draw();
 			return(TRUE);
 			
-		case kCommandViewOrtho:
+		case app_menu_item_ViewOrtho:
 			view_perspective_ortho(TRUE);
 			menu_update_view();
 			main_wind_draw();
 			return(TRUE);
 			
-		case kCommandViewUVLayer1:
+		case app_menu_item_ViewUVLayer1:
 			view_set_uv_layer(uv_layer_normal);
 			menu_update_view();
 			main_wind_draw();
 			return(TRUE);
 			
-		case kCommandViewUVLayer2:
+		case app_menu_item_ViewUVLayer2:
 			view_set_uv_layer(uv_layer_light_map);
 			menu_update_view();
 			main_wind_draw();
 			return(TRUE);
 			
-		case kCommandViewGotoSelect:
+		case app_menu_item_ViewGotoSelect:
 			view_goto_select();
 			main_wind_draw();
 			return(TRUE);
 			
-		case kCommandViewGotoMapCenter:
+		case app_menu_item_ViewGotoMapCenter:
 			view_goto_map_center();
 			main_wind_draw();
 			return(TRUE);
 			
-		case kCommandViewClip:
+		case app_menu_item_ViewClip:
 			view_flip_clip();
 			menu_update_view();
 			main_wind_draw();
 			return(TRUE);
 			
-		case kCommandViewShowHideLiquids:
+		case app_menu_item_ViewShowHideLiquids:
 			select_remove_type(liquid_piece);
 			state.show_liquid=!state.show_liquid;
 			menu_update_view();
 			main_wind_draw();
 			break;
 
-		case kCommandViewShowHideSpots:
+		case app_menu_item_ViewShowHideSpots:
 			select_remove_type(spot_piece);
 			select_remove_type(scenery_piece);
 			state.show_object=!state.show_object;
@@ -276,7 +426,7 @@ bool menu_event_run(int cmd)
 			main_wind_draw();
 			break;
 			
-		case kCommandViewShowHideLights:
+		case app_menu_item_ViewShowHideLights:
 			select_remove_type(light_piece);
 			select_remove_type(sound_piece);
 			select_remove_type(particle_piece);
@@ -285,32 +435,32 @@ bool menu_event_run(int cmd)
 			main_wind_draw();
 			break;
 			
-		case kCommandViewShowHideNodes:
+		case app_menu_item_ViewShowHideNodes:
 			select_remove_type(node_piece);
 			state.show_node=!state.show_node;
 			menu_update_view();
 			main_wind_draw();
 			break;
 			
-		case kCommandViewShowHideMovements:
+		case app_menu_item_ViewShowHideMovements:
 			state.show_movements=!state.show_movements;
 			menu_update_view();
 			main_wind_draw();
 			break;
 
-		case kCommandViewSplitHorizontal:
+		case app_menu_item_ViewSplitHorizontal:
 			view_split_horizontal();
 			menu_update_view();
 			main_wind_draw();
 			break;
 			
-		case kCommandViewSplitVertical:
+		case app_menu_item_ViewSplitVertical:
 			view_split_vertical();
 			menu_update_view();
 			main_wind_draw();
 			break;
 			
-		case kCommandViewRemoveSplit:
+		case app_menu_item_ViewRemoveSplit:
 			view_split_remove();
 			menu_update_view();
 			main_wind_draw();
@@ -318,48 +468,48 @@ bool menu_event_run(int cmd)
 			
 			// map menu
 
-		case kCommandMapRaiseY:
+		case app_menu_item_MapRaiseY:
 			map_mesh_move_all(0,-1440,0);
 			main_wind_draw();
 			return(TRUE);
 			
-		case kCommandMapLowerY:
+		case app_menu_item_MapLowerY:
 			map_mesh_move_all(0,1440,0);
 			main_wind_draw();
 			return(TRUE);
 			
-		case kCommandMapCenter:
+		case app_menu_item_MapCenter:
 			map_center(&map);
 			main_wind_draw();
 			return(TRUE);
 			
-		case kCommandMapResetUV:
+		case app_menu_item_MapResetUV:
 			map_mesh_reset_uv_all();
 			main_wind_draw();
 			return(TRUE);
 
-		case kCommandMapResetNormals:
+		case app_menu_item_MapResetNormals:
 			os_set_wait_cursor();
 			map_recalc_normals(&map,FALSE);
 			os_set_arrow_cursor();
 			main_wind_draw();
 			return(TRUE);
 
-		case kCommandMapSortMeshPolys:
+		case app_menu_item_MapSortMeshPolys:
 			os_set_wait_cursor();
 			map_mesh_sort_polys(&map);
 			os_set_arrow_cursor();
 			main_wind_draw();
 			return(TRUE);
 			
-		case kCommandClearLightMaps:
+		case app_menu_item_ClearLightMaps:
 			light_maps_clear();
 			view_set_uv_layer(uv_layer_normal);
 			menu_update_view();
 			main_wind_draw();
 			return(TRUE);
 			
-		case kCommandBuildLightMaps:
+		case app_menu_item_BuildLightMaps:
 			if (light_maps_create()) {
 				view_set_uv_layer(uv_layer_light_map);
 				menu_update_view();
@@ -367,196 +517,196 @@ bool menu_event_run(int cmd)
 			}
 			return(TRUE);
 
-		case kCommandBuildLiquidReflectionMaps:
+		case app_menu_item_BuildLiquidReflectionMaps:
 			liquid_reflection_maps_create();
 			return(TRUE);
 
-		case kCommandAutoGenerate:
+		case app_menu_item_AutoGenerate:
 			auto_generate_map();
 			return(TRUE);
 
-		case kCommandRun:
+		case app_menu_item_Run:
 			launch_engine();
 			return(TRUE);
 			            
 			// mesh menu
 
-		case kCommandMeshCombine:
+		case app_menu_item_MeshCombine:
 			piece_combine_mesh();
 			main_wind_draw();
 			return(TRUE);
 			
-		case kCommandMeshSplit:
+		case app_menu_item_MeshSplit:
 			piece_split_mesh();
 			main_wind_draw();
 			return(TRUE);
 			
-		case kCommandMeshTesselate:
+		case app_menu_item_MeshTesselate:
 			piece_tesselate(TRUE);
 			return(TRUE);
 			
-		case kCommandMeshResize:
+		case app_menu_item_MeshResize:
 			piece_resize();
 			return(TRUE);
 			
-		case kCommandMeshReposition:
+		case app_menu_item_MeshReposition:
 			piece_reposition();
 			return(TRUE);
 
-		case kCommandMeshForceGrid:
+		case app_menu_item_MeshForceGrid:
 			piece_force_grid();
 			return(TRUE);
 
-		case kCommandMeshResizeTexture:
+		case app_menu_item_MeshResizeTexture:
 			piece_resize_texture();
 			return(TRUE);
 			
-		case kCommandMeshFlipX:
+		case app_menu_item_MeshFlipX:
 			piece_flip(TRUE,FALSE,TRUE);
 			return(TRUE);
 			
-		case kCommandMeshFlipY:
+		case app_menu_item_MeshFlipY:
 			piece_flip(FALSE,TRUE,FALSE);
 			return(TRUE);
 			
-		case kCommandMeshFlipZ:
+		case app_menu_item_MeshFlipZ:
 			piece_flip(FALSE,FALSE,TRUE);
 			return(TRUE);
 			
-		case kCommandMeshRotateX:
+		case app_menu_item_MeshRotateX:
 			piece_rotate(90.0f,0.0f,0.0f);
 			return(TRUE);
 			
-		case kCommandMeshRotateY:
+		case app_menu_item_MeshRotateY:
 			piece_rotate(0.0f,90.0f,0.0f);
 			return(TRUE);
 			
-		case kCommandMeshRotateZ:
+		case app_menu_item_MeshRotateZ:
 			piece_rotate(0.0f,0.0f,90.0f);
 			return(TRUE);
 
-		case kCommandMeshFreeRotate:
+		case app_menu_item_MeshFreeRotate:
 			piece_free_rotate();
 			return(TRUE);
 
-		case kCommandMeshRaiseY:
+		case app_menu_item_MeshRaiseY:
 			piece_move(0,-100,0);
 			main_wind_draw();
 			return(TRUE);
             
-		case kCommandMeshLowerY:
+		case app_menu_item_MeshLowerY:
 			piece_move(0,100,0);
             main_wind_draw();
  			return(TRUE);
 
-		case kCommandMeshSelectAllPoly:
+		case app_menu_item_MeshSelectAllPoly:
 			piece_mesh_select_all_poly();
 			main_wind_draw();
 			return(TRUE);
 			
-		case kCommandMeshSnapToGrid:
+		case app_menu_item_MeshSnapToGrid:
 			piece_mesh_snap_to_grid();
 			main_wind_draw();
 			return(TRUE);
 			
-		case kCommandMeshSnapClosestVertex:
+		case app_menu_item_MeshSnapClosestVertex:
 			piece_mesh_snap_closest_vertex();
 			main_wind_draw();
 			return(TRUE);
 			
-		case kCommandMeshResetUV:
+		case app_menu_item_MeshResetUV:
 			piece_reset_uvs(FALSE);
 			main_wind_draw();
 			return(TRUE);
 			
-		case kCommandMeshWholeUV:
+		case app_menu_item_MeshWholeUV:
 			piece_whole_uvs(FALSE);
 			main_wind_draw();
 			return(TRUE);
 			
-		case kCommandMeshSingleUV:
+		case app_menu_item_MeshSingleUV:
 			piece_single_uvs(FALSE);
 			main_wind_draw();
 			return(TRUE);
 			
-		case kCommandMeshCreateNormals:
+		case app_menu_item_MeshCreateNormals:
 			piece_mesh_recalc_normals(FALSE);
 			main_wind_draw();
 			return(TRUE);
 			
-		case kCommandMeshInvertNormals:
+		case app_menu_item_MeshInvertNormals:
 			piece_mesh_invert_normals(FALSE);
 			main_wind_draw();
 			return(TRUE);
 
-		case kCommandMeshSetNormalsOut:
+		case app_menu_item_MeshSetNormalsOut:
 			piece_mesh_set_normals_in_out(TRUE);
 			main_wind_draw();
 			return(TRUE);
 
-		case kCommandMeshSetNormalsIn:
+		case app_menu_item_MeshSetNormalsIn:
 			piece_mesh_set_normals_in_out(FALSE);
 			main_wind_draw();
 			return(TRUE);
 			
 			// polygon menu
 			
-		case kCommandPolygonHole:
+		case app_menu_item_PolygonHole:
 			piece_poly_hole();
 			return(TRUE);
 			
-		case kCommandPolyTesselate:
+		case app_menu_item_PolyTesselate:
 			piece_tesselate(FALSE);
 			return(TRUE);
 			
-		case kCommandPolygonSnapToGrid:
+		case app_menu_item_PolygonSnapToGrid:
 			piece_mesh_poly_snap_to_grid();
 			main_wind_draw();
 			return(TRUE);
 			
-		case kCommandPolygonRotateUV:
+		case app_menu_item_PolygonRotateUV:
 			piece_rotate_uvs();
 			main_wind_draw();
 			return(TRUE);
 			
-		case kCommandPolygonFlipU:
+		case app_menu_item_PolygonFlipU:
 			piece_flip_uvs(TRUE,FALSE);
 			main_wind_draw();
 			return(TRUE);
 			
-		case kCommandPolygonFlipV:
+		case app_menu_item_PolygonFlipV:
 			piece_flip_uvs(FALSE,TRUE);
 			main_wind_draw();
 			return(TRUE);
 			
-		case kCommandPolygonRecalcNormal:
+		case app_menu_item_PolygonRecalcNormal:
 			piece_mesh_recalc_normals(TRUE);
 			main_wind_draw();
 			return(TRUE);
 			
-		case kCommandPolygonInvertNormal:
+		case app_menu_item_PolygonInvertNormal:
 			piece_mesh_invert_normals(TRUE);
 			main_wind_draw();
 			return(TRUE);
 
-		case kCommandPolygonResetUV:
+		case app_menu_item_PolygonResetUV:
 			piece_reset_uvs(TRUE);
 			main_wind_draw();
 			return(TRUE);
 			
-		case kCommandPolygonWholeUV:
+		case app_menu_item_PolygonWholeUV:
 			piece_whole_uvs(TRUE);
 			main_wind_draw();
 			return(TRUE);
 			
-		case kCommandPolygonSingleUV:
+		case app_menu_item_PolygonSingleUV:
 			piece_single_uvs(TRUE);
 			main_wind_draw();
 			return(TRUE);
 			
 			// vertex menu
 			
-		case kCommandVertexSnapToGrid:
+		case app_menu_item_VertexSnapToGrid:
 			piece_mesh_vertexes_snap_to_grid();
 			main_wind_draw();
 			return(TRUE);
