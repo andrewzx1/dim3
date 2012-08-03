@@ -53,6 +53,8 @@ extern void main_wind_resize(void);
 // menus
 //
 
+extern void menu_create(void);
+extern void menu_dispose(void);
 extern void menu_update(void);
 extern bool menu_quit_save(void);
 extern bool menu_event_run(int cmd);

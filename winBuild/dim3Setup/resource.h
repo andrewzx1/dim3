@@ -1,13 +1,5 @@
 #define IDC_STATIC							-1
 
-// menus
-
-#define IDR_MAIN_MENU						10
-#define IDR_ACCELERATOR						11
-
-#define ID_FILE_SAVE						100
-#define ID_FILE_EXIT						101
-
 // dialogs
 
 #define IDD_FILE_OPEN						1000

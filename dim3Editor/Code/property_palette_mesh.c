@@ -69,19 +69,23 @@ and can be sold or given away.
 #define kMeshPropertyBaseOn						57
 #define kMeshPropertyBaseTeam					58
 
-#define kMeshPolyPropertyClimbable				60
-#define kMeshPolyPropertyNeverCull				61
-#define kMeshPolyPropertyObscuring				62
+#define kMeshPropertyBoundMin					60
+#define kMeshPropertyBoundMax					61
+#define kMeshPropertyBoundSize					62
 
-#define kMeshPolyPropertyOff					70
-#define kMeshPolyPropertySize					71
-#define kMeshPolyPropertyShift					72
+#define kMeshPolyPropertyClimbable				70
+#define kMeshPolyPropertyNeverCull				71
+#define kMeshPolyPropertyObscuring				72
 
-#define kMeshPolyPropertyTangent				73
-#define kMeshPolyPropertyBinormal				74
-#define kMeshPolyPropertyNormal					75
+#define kMeshPolyPropertyOff					80
+#define kMeshPolyPropertySize					81
+#define kMeshPolyPropertyShift					82
 
-#define kMeshPolyPropertyCamera					80
+#define kMeshPolyPropertyTangent				90
+#define kMeshPolyPropertyBinormal				91
+#define kMeshPolyPropertyNormal					92
+
+#define kMeshPolyPropertyCamera					93
 
 extern map_type					map;
 extern editor_state_type		state;
@@ -93,7 +97,8 @@ char							mesh_property_hide_list[][name_str_len]={"Never","Single Player","Mul
 								mesh_property_team_list[][name_str_len]={"None","Red","Blue","Common",""};
 
 int								pal_mesh_index,pal_poly_index;
-d3pnt							pal_mesh_pnt,pal_mesh_size;
+d3pnt							pal_mesh_min,pal_mesh_max,pal_mesh_size,
+								pal_mesh_prev_min,pal_mesh_prev_max,pal_mesh_prev_size;
 d3vct							pal_mesh_binormal;
 d3uv							pal_mesh_uv_offset,pal_mesh_uv_size,
 								pal_mesh_prev_uv_offset,pal_mesh_prev_uv_size;
@@ -115,8 +120,16 @@ void property_palette_fill_mesh(int mesh_idx,int poly_idx)
 
 	mesh=&map.mesh.meshes[mesh_idx];
 
-	sprintf(str,"%d",mesh_idx);
-	list_palette_set_title(&property_palette,"Mesh",str,NULL,NULL,NULL,NULL);
+	if (poly_idx==-1) {
+		sprintf(str,"%d",mesh_idx);
+		list_palette_set_title(&property_palette,"Mesh",str,NULL,NULL,NULL,NULL);
+	}
+	else {
+		sprintf(str,"%d.%d",mesh_idx,poly_idx);
+		list_palette_set_title(&property_palette,"Mesh Poly",str,NULL,NULL,NULL,NULL);
+	}
+
+	pal_mesh_index=mesh_idx;
 
 		// settings
 		
@@ -168,21 +181,22 @@ void property_palette_fill_mesh(int mesh_idx,int poly_idx)
 	list_palette_add_header(&property_palette,0,"Mesh Import");
 	list_palette_add_string(&property_palette,kMeshPropertyImportOBJName,"OBJ Name",mesh->import.obj_name,name_str_len,FALSE);
 	list_palette_add_string(&property_palette,kMeshPropertyImportGroupName,"Group Name",mesh->import.group_name,name_str_len,FALSE);
-	
-		// info
 
-	map_mesh_calculate_extent(&map,mesh_idx,&pal_mesh_pnt,&pal_mesh_size);
-	pal_mesh_size.x-=pal_mesh_pnt.x;
-	pal_mesh_size.y-=pal_mesh_pnt.y;
-	pal_mesh_size.z-=pal_mesh_pnt.z;
-	
-	pal_mesh_index=mesh_idx;
-		
-	list_palette_add_header(&property_palette,0,"Mesh Info");
-	list_palette_add_int(&property_palette,-1,"Mesh Index",&pal_mesh_index,TRUE);
-	list_palette_add_int(&property_palette,-1,"Poly Count",&mesh->npoly,TRUE);
-	list_palette_add_point(&property_palette,-1,"Position",&pal_mesh_pnt,TRUE);
-	list_palette_add_point(&property_palette,-1,"Size",&pal_mesh_size,TRUE);
+		// mesh sizes
+
+	memmove(&pal_mesh_prev_min,&pal_mesh_min,sizeof(d3pnt));		// need to remember previous as list redraw will reset before we get change
+	memmove(&pal_mesh_prev_max,&pal_mesh_max,sizeof(d3pnt));
+	memmove(&pal_mesh_prev_size,&pal_mesh_size,sizeof(d3pnt));
+
+	map_mesh_calculate_extent(&map,mesh_idx,&pal_mesh_min,&pal_mesh_max);
+	pal_mesh_size.x=pal_mesh_max.x-pal_mesh_min.x;
+	pal_mesh_size.y=pal_mesh_max.y-pal_mesh_min.y;
+	pal_mesh_size.z=pal_mesh_max.z-pal_mesh_min.z;
+
+	list_palette_add_header(&property_palette,0,"Mesh Bounds");
+	list_palette_add_point(&property_palette,kMeshPropertyBoundMin,"Min",&pal_mesh_min,FALSE);
+	list_palette_add_point(&property_palette,kMeshPropertyBoundMax,"Max",&pal_mesh_max,FALSE);
+	list_palette_add_point(&property_palette,kMeshPropertyBoundSize,"Size",&pal_mesh_size,FALSE);
 
 		// polygon settings
 
@@ -215,10 +229,6 @@ void property_palette_fill_mesh(int mesh_idx,int poly_idx)
 		list_palette_add_picker_list_string(&property_palette,kMeshPolyPropertyCamera,"Node",(char*)map.nodes,map.nnode,sizeof(node_type),(int)offsetof(node_type,name),TRUE,poly->camera,FALSE);
 		
 		pal_poly_index=poly_idx;
-		
-		list_palette_add_header(&property_palette,0,"Poly Info");
-		list_palette_add_int(&property_palette,-1,"Index",&pal_poly_index,TRUE);
-		list_palette_add_int(&property_palette,-1,"Vertexes",&poly->ptsz,TRUE);
 	}
 }
 
@@ -235,6 +245,28 @@ void property_palette_click_mesh(int mesh_idx,int poly_idx,bool double_click)
 	editor_view_type		*view;
 
 	if (!double_click) return;
+
+		// mesh bound changes
+
+	switch (property_palette.item_pane.click.id) {
+
+		case kMeshPropertyBoundMin:
+		case kMeshPropertyBoundMax:
+			undo_push();
+			map_mesh_resize(&map,mesh_idx,&pal_mesh_prev_min,&pal_mesh_prev_max);
+			view_vbo_mesh_rebuild(mesh_idx);
+			break;
+
+		case kMeshPropertyBoundSize:
+			undo_push();
+			pal_mesh_prev_max.x=pal_mesh_prev_min.x+pal_mesh_prev_size.x;
+			pal_mesh_prev_max.y=pal_mesh_prev_min.y+pal_mesh_prev_size.y;
+			pal_mesh_prev_max.z=pal_mesh_prev_min.z+pal_mesh_prev_size.z;
+			map_mesh_resize(&map,mesh_idx,&pal_mesh_prev_min,&pal_mesh_prev_max);
+			view_vbo_mesh_rebuild(mesh_idx);
+			break;
+
+	}
 
 		// polygon settings
 
