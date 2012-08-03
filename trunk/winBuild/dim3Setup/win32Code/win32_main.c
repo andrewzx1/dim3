@@ -64,7 +64,6 @@ void dialog_about_run(void)
 
 LRESULT CALLBACK setup_wnd_proc(HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam)
 {
-	int					cmd;
 	d3pnt				pnt;
 	POINT				wpt;
 	PAINTSTRUCT			ps;
@@ -285,14 +284,15 @@ int APIENTRY WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstance,LPSTR lpCmdLine
 
 	if (!main_app_initialize()) return(0);
 
+	win32_main_wind_open();
+
 		// main loop
 
-	win32_main_wind_open();
 	setup_pump();
-	win32_main_wind_close();
 
 		// shutdown
 
+	win32_main_wind_close();
 	main_app_shutdown();
 
 	return(0);

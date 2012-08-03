@@ -547,10 +547,6 @@
 					RelativePath=".\win32Code\win32_main.c"
 					>
 				</File>
-				<File
-					RelativePath=".\win32Code\win32_menu_patch.c"
-					>
-				</File>
 			</Filter>
 		</Filter>
 		<Filter

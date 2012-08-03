@@ -220,7 +220,7 @@ void property_chord_set_values(int value_type,void *value,char *str_x,char *str_
 	d3ang			*ang;
 	d3vct			*vct;
 	d3fpnt			*fpnt;
-	
+
 	switch (value_type) {
 	
 		case list_chord_value_point:

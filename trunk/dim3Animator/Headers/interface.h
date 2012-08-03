@@ -60,6 +60,8 @@ extern bool setup_xml_write(void);
 // menus
 //
 
+extern void menu_create(void);
+extern void menu_dispose(void);
 extern void menu_update(void);
 extern bool menu_event_run(int cmd);
 
@@ -292,7 +294,6 @@ extern void model_pick_list_add_poly(int idx,int ptsz,d3pnt *v_pnts);
 // dialogs
 //
 
-extern void dialog_about_run(void);
 extern bool dialog_file_new_run(char *title,char *file_name);
 extern bool dialog_file_open_run(char *dialog_name,char *search_path,char *extension,char *required_file_name,char *file_name);
 extern int dialog_import_finish_run(void);

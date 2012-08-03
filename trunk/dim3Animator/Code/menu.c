@@ -56,10 +56,110 @@ os_menu_item_type	animator_menu[]={
 
 						{"Edit","Undo",app_menu_item_EditUndo,os_menu_key_cmd,'Z'},
 						{"Edit","",0,os_menu_key_none,0x0},
-						{"Edit","Delete",app_menu_item_EditDelete,os_menu_key_none,0x0},
-						{"Edit","Duplicate",app_menu_item_EditDuplicate,os_menu_key_cmd,'D'},
-						{"Edit","",0,os_menu_key_none,0x0},
 						{"Edit","Select More",app_menu_item_EditSelectMore,os_menu_key_cmd,'M'},
+
+							// model menu
+
+						{"Model","Prepare Model",app_menu_item_PrepareModel,os_menu_key_cmd,'R'},
+						{"Model","Calculate Boxes",app_menu_item_CalcBoxes,os_menu_key_none,0x0},
+						{"Model","Calculate Normals",app_menu_item_CalcNormals,os_menu_key_none,0x0},
+						{"Model","",0,os_menu_key_none,0x0},
+						{"Model","Scale...",app_menu_item_ScaleAll,os_menu_key_none,0x0},
+						{"Model","",0,os_menu_key_none,0x0},
+						{"Model","Flip X",app_menu_item_FlipXAll,os_menu_key_none,0x0},
+						{"Model","Flip Y",app_menu_item_FlipYAll,os_menu_key_none,0x0},
+						{"Model","Flip Z",app_menu_item_FlipZAll,os_menu_key_none,0x0},
+						{"Model","",0,os_menu_key_none,0x0},
+						{"Model","Swap X/Z",app_menu_item_SwapXZAll,os_menu_key_none,0x0},
+						{"Model","Swap Y/Z",app_menu_item_SwapYZAll,os_menu_key_none,0x0},
+						{"Model","Center X/Z",app_menu_item_CenterXZAll,os_menu_key_none,0x0},
+						{"Model","Floor Y",app_menu_item_FloorYAll,os_menu_key_none,0x0},
+						{"Model","",0,os_menu_key_none,0x0},
+						{"Model","Add Hit Box",app_menu_item_AddHitBox,os_menu_key_none,0x0},
+
+							// view menu
+
+						{"View","Front",app_menu_item_Front,os_menu_key_cmd,'1'},
+						{"View","Left",app_menu_item_Left,os_menu_key_cmd,'2'},
+						{"View","Right",app_menu_item_Right,os_menu_key_cmd,'3'},
+						{"View","Back",app_menu_item_Back,os_menu_key_cmd,'4'},
+						{"View","Top",app_menu_item_Top,os_menu_key_cmd,'5'},
+						{"View","Bottom",app_menu_item_Bottom,os_menu_key_cmd,'6'},
+
+							// mesh menu
+
+						{"Mesh","Add Mesh",app_menu_item_NewMesh,os_menu_key_none,0x0},
+						{"Mesh","Duplicate Mesh",app_menu_item_DuplicateMesh,os_menu_key_none,0x0},
+						{"Mesh","",0,os_menu_key_none,0x0},
+						{"Mesh","Import OBJ...",app_menu_item_ImportOBJ,os_menu_key_none,0x0},
+						{"Mesh","Replace OBJ...",app_menu_item_ReplaceOBJ,os_menu_key_none,0x0},
+						{"Mesh","Add dim3 Mesh...",app_menu_item_InsertXML,os_menu_key_none,0x0},
+						{"Mesh","",0,os_menu_key_none,0x0},
+						{"Mesh","Scale...",app_menu_item_Scale,os_menu_key_cmd,'T'},
+						{"Mesh","",0,os_menu_key_none,0x0},
+						{"Mesh","Flip X",app_menu_item_FlipX,os_menu_key_none,0x0},
+						{"Mesh","Flip Y",app_menu_item_FlipY,os_menu_key_none,0x0},
+						{"Mesh","Flip Z",app_menu_item_FlipZ,os_menu_key_none,0x0},
+						{"Mesh","",0,os_menu_key_none,0x0},
+						{"Mesh","Flip Texture Us",app_menu_item_FlipU,os_menu_key_none,0x0},
+						{"Mesh","Flip Texture Vs",app_menu_item_FlipV,os_menu_key_none,0x0},
+						{"Mesh","",0,os_menu_key_none,0x0},
+						{"Mesh","Swap X/Z",app_menu_item_SwapXZ,os_menu_key_none,0x0},
+						{"Mesh","Swap Y/Z",app_menu_item_SwapYZ,os_menu_key_none,0x0},
+						{"Mesh","Center X/Z",app_menu_item_CenterXZ,os_menu_key_none,0x0},
+						{"Mesh","Floor Y",app_menu_item_FloorY,os_menu_key_none,0x0},
+						{"Mesh","",0,os_menu_key_none,0x0},
+						{"Mesh","Tessellate",app_menu_item_MeshTessellate,os_menu_key_none,0x0},
+
+							// vertex menu
+
+						{"Vertex","Select All",app_menu_item_VertexSelectAll,os_menu_key_cmd,'A'},
+						{"Vertex","Select Not Attached",app_menu_item_VertexSelectNotAttached,os_menu_key_cmd_shift,'A'},
+						{"Vertex","",0,os_menu_key_none,0x0},
+						{"Vertex","Invert Normals",app_menu_item_VertexInvertNormals,os_menu_key_cmd,'I'},
+						{"Vertex","Set Normals...",app_menu_item_VertexSetNormals,os_menu_key_cmd_opt,'I'},
+						{"Vertex","Set Normals Out",app_menu_item_VertexSetNormalsOut,os_menu_key_none,0x0},
+						{"Vertex","Set Normals In",app_menu_item_VertexSetNormalsIn,os_menu_key_none,0x0},
+						{"Vertex","",0,os_menu_key_none,0x0},
+						{"Vertex","Clear Bone Attachments",app_menu_item_VertexClearBones,os_menu_key_none,0x0},
+						{"Vertex","Auto Set Bone Attachments",app_menu_item_VertexAutoBones,os_menu_key_none,0x0},
+						{"Vertex","",0,os_menu_key_none,0x0},
+						{"Vertex","Hide Selected",app_menu_item_VertexHideSelected,os_menu_key_none,0x0},
+						{"Vertex","Hide Non-Selected",app_menu_item_VertexHideNonSelected,os_menu_key_none,0x0},
+						{"Vertex","Show All",app_menu_item_VertexShowAll,os_menu_key_none,0x0},
+						{"Vertex","",0,os_menu_key_none,0x0},
+						{"Vertex","Collapse Selected Vertexes",app_menu_item_VertexCollapseSelected,os_menu_key_none,0x0},
+						{"Vertex","Collapse Similar Vertexes",app_menu_item_VertexCollapseSimilar,os_menu_key_none,0x0},
+						{"Vertex","",0,os_menu_key_none,0x0},
+						{"Vertex","Delete Vertexes",app_menu_item_VertexDelete,os_menu_key_none,0x0},
+						{"Vertex","Delete Polygons",app_menu_item_VertexPolygonDelete,os_menu_key_none,0x0},
+						{"Vertex","",0,os_menu_key_none,0x0},
+						{"Vertex","Make Quad",app_menu_item_VertexMakeQuad,os_menu_key_none,0x0},
+						{"Vertex","Tessellate Polygon",app_menu_item_VertexTessellatePoly,os_menu_key_none,0x0},
+
+							// bone menu
+
+						{"Bone","Add Bone",app_menu_item_NewBone,os_menu_key_cmd,'B'},
+						{"Bone","Set Bone...",app_menu_item_SetBone,os_menu_key_none,0x0},
+						{"Bone","",0,os_menu_key_none,0x0},
+						{"Bone","Goto Parent Bone",app_menu_item_GoToParentBone,os_menu_key_cmd_opt,'B'},
+
+							// pose menu
+
+						{"Pose","New Pose",app_menu_item_NewPose,os_menu_key_cmd,'E'},
+						{"Pose","Duplicate Pose",app_menu_item_DupPose,os_menu_key_cmd,'D'},
+						{"Pose","",0,os_menu_key_none,0x0},
+						{"Pose","Clear Pose",app_menu_item_ClearPose,os_menu_key_none,0x0},
+
+							// animation menu
+
+						{"Animation","New Animation",app_menu_item_NewAnimate,os_menu_key_cmd,'G'},
+						{"Animation","Duplicate Animation",app_menu_item_DupAnimate,os_menu_key_none,0x0},
+						{"Animation","",0,os_menu_key_none,0x0},
+						{"Animation","Scale Animation Time...",app_menu_item_ResetTimeAnimate,os_menu_key_none,0x0},
+						{"Animation","",0,os_menu_key_none,0x0},
+						{"Animation","Play Animation",app_menu_item_PlayAnimate,os_menu_key_cmd,'P'},
+						{"Animation","Play Blended Animation...",app_menu_item_PlayBlendAnimate,os_menu_key_cmd_shift,'P'},
 
 						{"","",-1,os_menu_key_none,0x0},
 				};
@@ -140,12 +240,6 @@ bool menu_event_run(int cmd)
 	float			fx,fy,fz,bone_factor;
 	
 	switch (cmd) {
-	
-			// apple menu
-   
-        case app_menu_item_About:
-			dialog_about_run();
-            return(TRUE);
 		
 			// file menu
 

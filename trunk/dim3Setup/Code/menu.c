@@ -38,10 +38,10 @@ os_menu_item_type	setup_menu[]={
 
 							// File menu
 
-						{"File","Save",app_menu_item_FileSave,os_menu_key_cmd,'S'},
+						{"File","Save",app_menu_item_Save,os_menu_key_cmd,'S'},
 					#ifdef D3_OS_WINDOWS
 						{"File","",0,os_menu_key_none,0x0},
-						{"File","Exit",app_menu_item_FileQuit,os_menu_key_none,0x0},
+						{"File","Exit",app_menu_item_Quit,os_menu_key_none,0x0},
 					#endif
 
 						{"","",-1,os_menu_key_none,0x0},

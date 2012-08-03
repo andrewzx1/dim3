@@ -85,18 +85,16 @@ and can be sold or given away.
 // Menus
 //
 
-#define app_menu_apple					128
-#define app_menu_file					129
-#define app_menu_edit					130
-#define app_menu_model					131
-#define app_menu_view					132
-#define app_menu_mesh					133
-#define app_menu_vertex					134
-#define app_menu_bone					135
-#define app_menu_pose					136
-#define app_menu_animate				137
-
-#define app_menu_item_About						5000
+#define app_menu_apple							128
+#define app_menu_file							129
+#define app_menu_edit							130
+#define app_menu_model							131
+#define app_menu_view							132
+#define app_menu_mesh							133
+#define app_menu_vertex							134
+#define app_menu_bone							135
+#define app_menu_pose							136
+#define app_menu_animate						137
 
 #define app_menu_item_FileSave					5100
 #define app_menu_item_FilePreference			5101

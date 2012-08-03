@@ -153,6 +153,47 @@ void os_swap_gl_buffer(void)
 
 /* =======================================================
 
+      Cursors
+      
+======================================================= */
+
+void os_set_arrow_cursor(void)
+{
+	SetCursor(cur_arrow);
+}
+
+void os_set_wait_cursor(void)
+{
+	SetCursor(cur_wait);
+}
+
+void os_set_hand_cursor(void)
+{
+	SetCursor(cur_hand);
+}
+
+void os_set_drag_cursor(void)
+{
+	SetCursor(cur_drag);
+}
+
+void os_set_resize_cursor(void)
+{
+	SetCursor(cur_resize);
+}
+
+void os_set_add_cursor(void)
+{
+	SetCursor(cur_add);
+}
+
+void os_set_subtract_cursor(void)
+{
+	SetCursor(cur_subtract);
+}
+
+/* =======================================================
+
       Menus
       
 ======================================================= */
@@ -229,6 +270,8 @@ void os_menu_create(os_menu_item_type *os_menus)
 		menu++;
 	}
 
+	if (sub_menu!=NULL) AppendMenu(wnd_menu,(MF_STRING|MF_POPUP),(UINT)sub_menu,last_menu_name);
+
 		// set the menu
 
 	SetMenu(wnd,wnd_menu);
@@ -277,53 +320,6 @@ void os_menu_dispose(void)
 	DestroyAcceleratorTable(wnd_accel);
 	DestroyMenu(wnd_menu);
 }
-
-/* =======================================================
-
-      Cursors
-      
-======================================================= */
-
-void os_set_arrow_cursor(void)
-{
-	SetCursor(cur_arrow);
-}
-
-void os_set_wait_cursor(void)
-{
-	SetCursor(cur_wait);
-}
-
-void os_set_hand_cursor(void)
-{
-	SetCursor(cur_hand);
-}
-
-void os_set_drag_cursor(void)
-{
-	SetCursor(cur_drag);
-}
-
-void os_set_resize_cursor(void)
-{
-	SetCursor(cur_resize);
-}
-
-void os_set_add_cursor(void)
-{
-	SetCursor(cur_add);
-}
-
-void os_set_subtract_cursor(void)
-{
-	SetCursor(cur_subtract);
-}
-
-/* =======================================================
-
-      Menus
-      
-======================================================= */
 
 void os_menu_enable_item(int menu_idx,int item_idx,bool enable)
 {

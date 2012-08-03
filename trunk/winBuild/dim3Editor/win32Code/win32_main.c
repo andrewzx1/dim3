@@ -288,13 +288,16 @@ int APIENTRY WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstance,LPSTR lpCmdLine
 
 	if (!main_app_initialize()) return(0);
 
+	win32_main_wind_open();
+	
 		// main loop
 
-	win32_main_wind_open();
 	editor_pump();
-	win32_main_wind_close();
 
 		// shutdown
+
+	file_close_map();
+	win32_main_wind_close();
 
 	main_app_shutdown();
 

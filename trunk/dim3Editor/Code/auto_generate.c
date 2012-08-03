@@ -993,8 +993,10 @@ bool ag_generate_run(char *path,char *err_str)
 		// and redraw
 
 	view_vbo_map_initialize();
-	view_goto_map_center_all();
+
+	map_recalc_normals(&map,FALSE);
 	map_mesh_reset_uv_all();
+	view_goto_map_center_all();
 
 	main_wind_draw();
 

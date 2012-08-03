@@ -124,8 +124,9 @@ void ag_room_story_extra_walls(ag_room_type *room)
 	ty=by-high;
 
 		// build next story walls
+		// put it on same mesh as room itself
 	
-	mesh_idx=map_mesh_add(&map);
+	mesh_idx=room->mesh_idx;
 
 	for (n=0;n!=shape->nvertex;n++) {
 		k=n+1;

@@ -42,12 +42,12 @@ and can be sold or given away.
 
 #ifndef D3_SETUP
 	#define list_palette_border_sz							10
-	#define list_palette_tree_sz							250
-	#define list_value_clip_size							20
+	#define list_palette_tree_sz							260
+	#define list_value_clip_size							25
 #else
 	#define list_palette_border_sz							0
 	#define list_palette_tree_sz							400
-	#define list_value_clip_size							30
+	#define list_value_clip_size							35
 #endif
 
 #define list_palette_scroll_wid								15
