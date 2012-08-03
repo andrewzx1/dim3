@@ -56,9 +56,6 @@ extern void os_select_window(void);
 extern void os_set_title_window(char *title);
 extern void os_swap_gl_buffer(void);
 
-extern void os_menu_create(os_menu_item_type *os_menus);
-extern void os_menu_dispose(void);
-
 extern void os_set_arrow_cursor(void);
 extern void os_set_wait_cursor(void);
 extern void os_set_hand_cursor(void);
@@ -67,6 +64,8 @@ extern void os_set_resize_cursor(void);
 extern void os_set_add_cursor(void);
 extern void os_set_subtract_cursor(void);
 
+extern void os_menu_create(os_menu_item_type *os_menus);
+extern void os_menu_dispose(void);
 extern void os_menu_enable_item(int menu_idx,int item_idx,bool enable);
 extern void os_menu_check_item(int menu_idx,int item_idx,bool check);
 

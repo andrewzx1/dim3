@@ -82,10 +82,6 @@ bool main_app_initialize(void)
 
 void main_app_shutdown(void)
 {
-		// close any open map
-		
-	file_close_map();
-	
 		// close interface and
 		// end glue
 		
