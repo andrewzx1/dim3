@@ -351,10 +351,6 @@ void menu_start(void)
 	CreateNibReference(cf_str,&nib);
 	CFRelease(cf_str);
 	
-	cf_str=CFStringCreateWithCString(kCFAllocatorDefault,"MenuBar",kCFStringEncodingMacRoman);
-	SetMenuBarFromNib(nib,cf_str);
-	CFRelease(cf_str);
-	
 	DisposeNibReference(nib);
 }
 
@@ -366,20 +362,24 @@ void menu_start(void)
 
 int main(int argc,char *argv[])
 {
-	menu_start();
-
 		// initialize
 		
 	if (!main_app_initialize()) return(0);
 	
-		// main loop
-		
+	menu_start();
+	menu_create();
+	
 	main_wind_open();
 	main_wind_draw();
+	
+		// main loop
+		
 	main_loop();
-	main_wind_close();
 	
 		// shutdown
+	
+	main_wind_close();
+	menu_dispose();
 		
 	main_app_shutdown();
     

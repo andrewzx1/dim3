@@ -25,6 +25,8 @@ and can be sold or given away.
  
 *********************************************************************/
 
+#include "glue.h"
+
 extern WindowRef				wind;
 extern AGLContext				ctx;
 
@@ -148,6 +150,96 @@ void os_set_subtract_cursor(void)
       
 ======================================================= */
 
+void os_menu_create(os_menu_item_type *os_menus)
+{
+
+	int						last_idx,menu_id;
+	char					last_menu_name[32];
+	os_menu_item_type		*menu;
+	MenuRef					sub_menu;
+	CFStringRef				cf_str;
+		
+		// clear old menus
+		
+	ClearMenuBar();
+
+		// create the menu
+
+	menu=os_menus;
+	
+	last_idx=0;
+	menu_id=app_menu_file;
+	last_menu_name[0]=0x0;
+
+	while (TRUE) {
+
+		if (menu->menu_name[0]==0x0) break;
+
+			// switching to a new menu
+
+		if (strcmp(menu->menu_name,last_menu_name)!=0) {
+			if (last_menu_name[0]!=0x0) InsertMenu(sub_menu,0);
+			
+			CreateNewMenu(menu_id,0,&sub_menu);
+			menu_id++;
+			
+			cf_str=CFStringCreateWithCString(kCFAllocatorDefault,menu->menu_name,kCFStringEncodingMacRoman);
+			SetMenuTitleWithCFString(sub_menu,cf_str);
+			CFRelease(cf_str);
+
+			last_idx=0;
+			strcpy(last_menu_name,menu->menu_name);
+		}
+
+			// add item
+
+		if (menu->item_name[0]!=0x0) {
+		
+			cf_str=CFStringCreateWithCString(kCFAllocatorDefault,menu->item_name,kCFStringEncodingMacRoman);
+			InsertMenuItemTextWithCFString(sub_menu,cf_str,last_idx,0,menu->id);
+			CFRelease(cf_str);
+
+				// add in cmd/opt/shift keys
+
+			switch (menu->key_type) {
+			
+				case os_menu_key_cmd:
+					SetMenuItemCommandKey(sub_menu,(last_idx+1),FALSE,menu->key);
+					SetMenuItemModifiers(sub_menu,(last_idx+1),kMenuNoModifiers);
+					break;
+
+				case os_menu_key_cmd_opt:
+					SetMenuItemCommandKey(sub_menu,(last_idx+1),FALSE,menu->key);
+					SetMenuItemModifiers(sub_menu,(last_idx+1),kMenuOptionModifier);
+					break;
+
+				case os_menu_key_cmd_shift:
+					SetMenuItemCommandKey(sub_menu,(last_idx+1),FALSE,menu->key);
+					SetMenuItemModifiers(sub_menu,(last_idx+1),kMenuShiftModifier);
+					break;
+			}
+
+		}
+
+		else {
+			InsertMenuItemTextWithCFString(sub_menu,NULL,last_idx,kMenuItemAttrSeparator,0);
+		}
+		
+		last_idx++;
+
+			// next menu item
+
+		menu++;
+	}
+	
+	if (last_menu_name[0]!=0x0) InsertMenu(sub_menu,0);
+}
+
+void os_menu_dispose(void)
+{
+	ClearMenuBar();
+}
+
 void os_menu_enable_item(int menu_idx,int item_idx,bool enable)
 {
 	if (enable) {
@@ -252,7 +344,7 @@ bool os_track_mouse_location(d3pnt *pnt,d3rect *offset_box)
       
 ======================================================= */
 
-int os_dialog_alert(char *title,char *msg)
+void os_dialog_alert(char *title,char *msg)
 {
 	CFStringRef			cf_title_str,cf_msg_str;
 	CFOptionFlags		resp;
@@ -266,8 +358,6 @@ int os_dialog_alert(char *title,char *msg)
 	
 	CFRelease(cf_title_str);
 	CFRelease(cf_msg_str);
-	
-	return(resp);
 }
 
 int os_dialog_confirm(char *title,char *msg,bool include_cancel)

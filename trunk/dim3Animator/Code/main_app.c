@@ -78,10 +78,6 @@ bool main_app_initialize(void)
 
 void main_app_shutdown(void)
 {
-		// close any open model
-		
-	file_close_model();
-	
 		// close interface and
 		// end glue
 		
