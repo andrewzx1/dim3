@@ -393,10 +393,10 @@ extern void view_vbo_map_free(void);
 // view draw piece
 //
 
+extern void view_cull_setup_frustum_clipping_planes(void);
+extern bool view_cull_boundbox_in_frustum(d3pnt *min,d3pnt *max);
 extern bool view_clip_poly(editor_view_type *view,map_mesh_poly_type *poly);
 extern bool view_clip_liquid(editor_view_type *view,map_liquid_type *liq);
-extern bool view_hidden_mesh(editor_view_type *view,int mesh_idx);
-extern bool view_hidden_poly(editor_view_type *view,map_mesh_type *mesh,map_mesh_poly_type *poly);
 extern void view_draw_select_mesh_get_grow_handles(int mesh_idx,d3pnt *pts);
 extern void view_draw_select_liquid_get_grow_handles(int liquid_idx,d3pnt *pts);
 extern void view_draw_view(editor_view_type *view);

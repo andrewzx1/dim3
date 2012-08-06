@@ -47,7 +47,7 @@ os_menu_item_type	animator_menu[]={
 						{"File","Save",app_menu_item_FileSave,os_menu_key_cmd,'S'},
 						{"File","",0,os_menu_key_none,0x0},
 						{"File","Preferences",app_menu_item_FilePreference,os_menu_key_none,0x0},
-					#ifndef D3_OS_WINDOWS
+					#ifdef D3_OS_WINDOWS
 						{"File","",0,os_menu_key_none,0x0},
 						{"File","Exit",app_menu_item_FileQuit,os_menu_key_none,0x0},
 					#endif

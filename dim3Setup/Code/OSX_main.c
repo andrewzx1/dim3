@@ -377,6 +377,8 @@ int main(int argc,char *argv[])
 	main_loop();
 	
 		// shutdown
+		
+	menu_quit_save();
 	
 	main_wind_close();
 	menu_dispose();

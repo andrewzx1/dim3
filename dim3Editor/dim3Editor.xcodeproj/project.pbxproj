@@ -125,6 +125,7 @@
 		26459B5C13DBC5A200D7DD73 /* mac_os_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 26459B5B13DBC5A200D7DD73 /* mac_os_defs.h */; };
 		26459B6513DBDA8800D7DD73 /* Back.png in Resources */ = {isa = PBXBuildFile; fileRef = 26459B6413DBDA8800D7DD73 /* Back.png */; };
 		26459B6613DBDA9D00D7DD73 /* Back.png in Copy (Lists Icons) */ = {isa = PBXBuildFile; fileRef = 26459B6413DBDA8800D7DD73 /* Back.png */; };
+		264735A315CF04360031A1B4 /* view_clip.c in Sources */ = {isa = PBXBuildFile; fileRef = 264735A215CF04360031A1B4 /* view_clip.c */; };
 		2647AD820E4F48D000BA3338 /* dialog_height_import.c in Sources */ = {isa = PBXBuildFile; fileRef = 2647AD810E4F48D000BA3338 /* dialog_height_import.c */; };
 		264BC91B13661D900004A4AB /* liquid_reflection_maps.c in Sources */ = {isa = PBXBuildFile; fileRef = 264BC91A13661D900004A4AB /* liquid_reflection_maps.c */; };
 		264D965E12921024005039CD /* OSX_main.c in Sources */ = {isa = PBXBuildFile; fileRef = 264D965D12921024005039CD /* OSX_main.c */; };
@@ -493,6 +494,7 @@
 		26452F1A127F9BA800043C34 /* view_models.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = view_models.c; path = Code/view_models.c; sourceTree = "<group>"; };
 		26459B5B13DBC5A200D7DD73 /* mac_os_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mac_os_defs.h; path = ../dim3Common/Headers/mac_os_defs.h; sourceTree = "<group>"; };
 		26459B6413DBDA8800D7DD73 /* Back.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Back.png; sourceTree = "<group>"; };
+		264735A215CF04360031A1B4 /* view_clip.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = view_clip.c; path = Code/view_clip.c; sourceTree = "<group>"; };
 		2647AD810E4F48D000BA3338 /* dialog_height_import.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_height_import.c; path = Code/dialog_height_import.c; sourceTree = "<group>"; };
 		264BC91A13661D900004A4AB /* liquid_reflection_maps.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = liquid_reflection_maps.c; path = Code/liquid_reflection_maps.c; sourceTree = "<group>"; };
 		264D965D12921024005039CD /* OSX_main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = OSX_main.c; path = Code/OSX_main.c; sourceTree = "<group>"; };
@@ -1033,6 +1035,7 @@
 			children = (
 				26452F10127F9B3100043C34 /* view.c */,
 				26452F0F127F9B3100043C34 /* view_movement.c */,
+				264735A215CF04360031A1B4 /* view_clip.c */,
 				26452F18127F9BA800043C34 /* view_draw_piece.c */,
 				26452F19127F9BA800043C34 /* view_draw_select.c */,
 				26452F16127F9BA800043C34 /* view_click_piece.c */,
@@ -1384,6 +1387,7 @@
 				263D10D1156760A700A03C7D /* auto_generate_story.c in Sources */,
 				263D10D2156760A700A03C7D /* auto_generate_utility.c in Sources */,
 				263D10D3156760A700A03C7D /* auto_generate.c in Sources */,
+				264735A315CF04360031A1B4 /* view_clip.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
