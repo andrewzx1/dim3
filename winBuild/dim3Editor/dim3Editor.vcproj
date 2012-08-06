@@ -578,6 +578,10 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\dim3Editor\Code\view_clip.c"
+						>
+					</File>
+					<File
 						RelativePath="..\..\dim3Editor\Code\view_draw_piece.c"
 						>
 					</File>
