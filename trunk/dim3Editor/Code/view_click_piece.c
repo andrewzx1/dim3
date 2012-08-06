@@ -749,7 +749,7 @@ void view_click_piece_map_pick_start(editor_view_type *view)
 	float				vertexes[8*3];
 	float				*pv;
 	d3pnt				*pt;
-	d3pnt				v_pnts[8];
+	d3pnt				v_pnts[8],min,max;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
 	map_liquid_type		*liq;
@@ -803,12 +803,15 @@ void view_click_piece_map_pick_start(editor_view_type *view)
 	
 	for (n=0;n!=map.mesh.nmesh;n++) {
 	
-			// hidden mesh
-		
-		if (view_hidden_mesh(view,n)) {
+			// clip meshes to view
+			
+		map_mesh_calculate_extent(&map,n,&min,&max);
+		if (!view_cull_boundbox_in_frustum(&min,&max)) {
 			mesh++;
 			continue;
 		}
+		
+			// run through polys
 
 		poly=mesh->polys;
 	
@@ -821,9 +824,10 @@ void view_click_piece_map_pick_start(editor_view_type *view)
 				continue;
 			}
 			
-				// hidden
+				// clip poly to view
 				
-			if (view_hidden_poly(view,mesh,poly)) {
+			map_mesh_poly_calculate_extent(&map,n,k,&min,&max);
+			if (!view_cull_boundbox_in_frustum(&min,&max)) {
 				poly++;
 				continue;
 			}
@@ -965,6 +969,13 @@ void view_click_piece(editor_view_type *view,d3pnt *pt,bool double_click)
 {
 	int				type,main_idx,sub_idx,org_node_idx;
 	d3rect			box;
+	
+       // 3D view
+        
+	view_set_viewport(view,TRUE,TRUE);
+	view_set_3D_projection(view,map.editor_setup.view_near_dist,map.editor_setup.view_far_dist,view_near_offset);
+	
+	view_cull_setup_frustum_clipping_planes();
 
 		// convert point to view
 

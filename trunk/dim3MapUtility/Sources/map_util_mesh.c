@@ -650,7 +650,7 @@ bool map_mesh_delete_unused_vertexes(map_type *map,int mesh_idx)
 
 /* =======================================================
 
-      Get Mesh Center
+      Get Mesh/Poly Extent/Center
       
 ======================================================= */
 
@@ -715,6 +715,34 @@ void map_mesh_calculate_center(map_type *map,int mesh_idx,d3pnt *mpt)
 	mpt->x=mx/nvertex;
 	mpt->y=my/nvertex;
 	mpt->z=mz/nvertex;
+}
+
+void map_mesh_poly_calculate_extent(map_type *map,int mesh_idx,int poly_idx,d3pnt *min,d3pnt *max)
+{
+	int					n,nvertex;
+	d3pnt				*pt;
+	map_mesh_type		*mesh;
+	map_mesh_poly_type	*poly;
+
+	mesh=&map->mesh.meshes[mesh_idx];
+	poly=&mesh->polys[poly_idx];
+	
+	pt=&mesh->vertexes[poly->v[0]];
+	
+	min->x=max->x=pt->x;
+	min->y=max->y=pt->y;
+	min->z=max->z=pt->z;
+
+	for (n=1;n!=poly->ptsz;n++) {
+		pt=&mesh->vertexes[poly->v[n]];
+	
+		if (pt->x<min->x) min->x=pt->x;
+		if (pt->x>max->x) max->x=pt->x;
+		if (pt->y<min->y) min->y=pt->y;
+		if (pt->y>max->y) max->y=pt->y;
+		if (pt->z<min->z) min->z=pt->z;
+		if (pt->z>max->z) max->z=pt->z;
+	}
 }
 
 void map_mesh_poly_calculate_center(map_type *map,int mesh_idx,int poly_idx,d3pnt *mpt)

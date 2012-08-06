@@ -279,114 +279,6 @@ bool view_clip_point(editor_view_type *view,d3pnt *pnt)
 	return(dist<(setup.clip_distance*view_snap_clip_size_factor));
 }
 
-bool view_hidden_mesh(editor_view_type *view,int mesh_idx)
-{
-	int			n,wid,high;
-	bool		above_z,behind_z,lft,rgt,top,bot;
-	d3pnt		min,max,pnt[8];
-	d3rect		box;
-	
-	map_mesh_calculate_extent(&map,mesh_idx,&min,&max);
-	
-	pnt[0].x=pnt[1].x=pnt[4].x=pnt[5].x=min.x;
-	pnt[2].x=pnt[3].x=pnt[6].x=pnt[7].x=max.x;
-	
-	pnt[1].z=pnt[2].z=pnt[5].z=pnt[6].z=min.z;
-	pnt[0].z=pnt[3].z=pnt[4].z=pnt[7].z=max.z;
-	
-	pnt[0].y=pnt[1].y=pnt[2].y=pnt[3].y=min.y;
-	pnt[4].y=pnt[5].y=pnt[6].y=pnt[7].y=max.y;
-	
-		// check if points are behind z
-		
-	above_z=FALSE;
-	behind_z=FALSE;
-	
-	for (n=0;n!=8;n++) {
-		if (view_project_point_in_z(&pnt[n])) {
-			above_z=TRUE;
-		}
-		else {
-			behind_z=TRUE;
-		}
-	}
-	
-	if (!above_z) return(TRUE);
-	
-		// if it's split on the z, just keep
-		
-	if ((above_z) && (behind_z)) return(FALSE);
-	
-		// are points grouped completely
-		// off one side of the screen?
-
-	view_get_pixel_box(view,&box);
-	
-	wid=box.rx-box.lx;
-	high=box.by-box.ty;
-
-	lft=rgt=top=bot=TRUE;
-
-	for (n=0;n!=8;n++) {
-		view_project_point(view,&pnt[n]);
-		lft=lft&&(pnt[n].x<box.lx);
-		rgt=rgt&&(pnt[n].x>=box.rx);
-		top=top&&(pnt[n].y<box.ty);
-		bot=bot&&(pnt[n].y>=box.by);
-	}
-
-	return(lft||rgt||top||bot);
-}
-
-bool view_hidden_poly(editor_view_type *view,map_mesh_type *mesh,map_mesh_poly_type *poly)
-{
-	int			n,wid,high;
-	bool		above_z,behind_z,lft,rgt,top,bot;
-	d3pnt		pnt;
-	d3rect		box;
-	
-		// check if points are behind z
-		
-	above_z=FALSE;
-	behind_z=FALSE;
-	
-	for (n=0;n!=poly->ptsz;n++) {
-		if (view_project_point_in_z(&mesh->vertexes[poly->v[n]])) {
-			above_z=TRUE;
-		}
-		else {
-			behind_z=TRUE;
-		}
-	}
-	
-	if (!above_z) return(TRUE);
-	
-		// if it's split on the z, just keep
-		
-	if ((above_z) && (behind_z)) return(FALSE);
-	
-		// are points grouped completely
-		// off one side of the screen?
-
-	view_get_pixel_box(view,&box);
-	
-	wid=box.rx-box.lx;
-	high=box.by-box.ty;
-
-	lft=rgt=top=bot=TRUE;
-
-	for (n=0;n!=poly->ptsz;n++) {
-		memmove(&pnt,&mesh->vertexes[poly->v[n]],sizeof(d3pnt));
-		view_project_point(view,&pnt);
-		lft=lft&&(pnt.x<box.lx);
-		rgt=rgt&&(pnt.x>=box.rx);
-		top=top&&(pnt.y<box.ty);
-		bot=bot&&(pnt.y>=box.by);
-	}
-
-	return(lft||rgt||top||bot);
-}
-
 /* =======================================================
 
       View Mesh Draw List
@@ -396,12 +288,9 @@ bool view_hidden_poly(editor_view_type *view,map_mesh_type *mesh,map_mesh_poly_t
 void view_draw_create_mesh_sort_list(editor_view_type *view)
 {
 	int					n,k,sz,idx,
-						dist,obscure_dist;
+						dist;
+	d3pnt				min,max;
 	map_mesh_type		*mesh;
-
-		// get the obscure distance
-		
-	obscure_dist=map.editor_setup.view_far_dist-view_near_offset;
 
 		// sort it
 
@@ -409,17 +298,15 @@ void view_draw_create_mesh_sort_list(editor_view_type *view)
 
 	for (n=0;n!=map.mesh.nmesh;n++) {
 
-			// ignore hidden meshes
-
-		if (view_hidden_mesh(view,n)) continue;
-
-			// get distance and ignore
-			// meshes past view z
+			// clip meshes to view
+			
+		map_mesh_calculate_extent(&map,n,&min,&max);
+		if (!view_cull_boundbox_in_frustum(&min,&max)) continue;
+			
+			// get sorting distance
 
 		mesh=&map.mesh.meshes[n];
 		dist=map_mesh_calculate_distance(mesh,&view->pnt);
-		
-		if (dist>obscure_dist) continue;
 
 			// add to list, near ones first
 
@@ -1200,6 +1087,8 @@ void view_draw_view(editor_view_type *view)
         
 	view_set_viewport(view,TRUE,TRUE);
 	view_set_3D_projection(view,map.editor_setup.view_near_dist,map.editor_setup.view_far_dist,view_near_offset);
+	
+	view_cull_setup_frustum_clipping_planes();
 
 		// setup item drawing
 
