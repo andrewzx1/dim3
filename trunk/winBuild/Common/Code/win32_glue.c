@@ -48,6 +48,9 @@ extern HACCEL			wnd_accel;
 HCURSOR					cur_arrow,cur_wait,cur_hand,cur_drag,cur_resize,
 						cur_add,cur_subtract;
 COLORREF				custom_colors[16];
+HWND					os_dialog_wind;
+HFONT					os_dialog_font;
+os_dialog_callback_ptr	os_dialog_callback;
 
 /* =======================================================
 
@@ -599,3 +602,149 @@ bool os_launch_process(char *path,bool text_editor)
 
 	return(err>32);
 }
+
+/* =======================================================
+
+      Dialogs
+      
+======================================================= */
+
+LRESULT CALLBACK os_dialog_proc(HWND diag,UINT msg,WPARAM wparam,LPARAM lparam)
+{
+	switch (msg) {
+
+		case WM_COMMAND:
+			if (HIWORD(wparam)==BN_CLICKED) (*os_dialog_callback)(os_dialog_msg_type_button,(int)LOWORD(wparam));
+			break;
+
+		default:
+			return(DefWindowProc(diag,msg,wparam,lparam));
+	}
+
+	return(0);
+}
+
+void os_dialog_create(char *title,int wid,int high,os_dialog_ctrl_type *ctrls,void *callback)
+{
+	int					x,y,m_wid,m_high,font_high;
+	RECT				box;
+	os_dialog_ctrl_type	*ctrl;
+	HWND				ctrl_wnd;
+	WNDCLASSEX			wcx;
+
+		// setup callback
+
+	os_dialog_callback=callback;
+
+		// get x,y of dialog
+
+	m_wid=GetSystemMetrics(SM_CXSCREEN);
+	m_high=GetSystemMetrics(SM_CYSCREEN);
+
+	x=(m_wid/2)-(wid/2);
+	y=(m_high/2)-(high/2);
+
+		// enlarge size for framing
+		// elements
+
+	box.left=x;
+	box.top=y;
+	box.right=box.left+wid;
+	box.bottom=box.top+high;
+
+	AdjustWindowRectEx(&box,WS_CAPTION,FALSE,WS_EX_DLGMODALFRAME);
+
+	x=box.left;
+	y=box.top;
+	wid=box.right-x;
+	high=box.bottom-y;
+
+		// create window
+
+    wcx.cbSize=sizeof(wcx);
+    wcx.style=CS_DBLCLKS;
+    wcx.lpfnWndProc=os_dialog_proc;
+    wcx.cbClsExtra=0;
+    wcx.cbWndExtra=0;
+    wcx.hInstance=hinst;
+    wcx.hIcon=NULL;
+    wcx.hCursor=LoadCursor(NULL,IDC_ARROW);
+    wcx.hbrBackground=(HBRUSH)CreateSolidBrush(RGB(240,240,240));
+    wcx.lpszMenuName=NULL;
+    wcx.lpszClassName="dim3DialogClass";
+    wcx.hIconSm=NULL;
+
+    RegisterClassEx(&wcx);
+
+    os_dialog_wind=CreateWindowEx(WS_EX_DLGMODALFRAME,"dim3DialogClass",title,WS_POPUP|WS_CAPTION,x,y,wid,high,wnd,NULL,hinst,NULL);
+
+		// disable main window
+
+	EnableWindow(wnd,FALSE);
+
+		// window font
+
+	font_high=-MulDiv(8,GetDeviceCaps(GetDC(os_dialog_wind),LOGPIXELSY),72);
+	os_dialog_font=CreateFont(font_high,0,0,0,400,0,0,0,0x1,0,0,0,0,"MS Shell Dlg");
+
+		// add in the controls
+
+	ctrl=ctrls;
+
+	while (TRUE) {
+		if (ctrl->type==-1) break;
+
+		switch (ctrl->type) {
+
+			case os_dialog_ctrl_type_button:
+				ctrl_wnd=CreateWindowEx(0,"BUTTON",ctrl->str,BS_PUSHBUTTON|BS_TEXT|WS_CHILD|WS_VISIBLE,ctrl->x,ctrl->y,ctrl->wid,ctrl->high,os_dialog_wind,(HMENU)ctrl->id,hinst,NULL);
+				break;
+
+			case os_dialog_ctrl_type_default_button:
+				ctrl_wnd=CreateWindowEx(0,"BUTTON",ctrl->str,BS_DEFPUSHBUTTON|BS_TEXT|WS_CHILD|WS_VISIBLE,ctrl->x,ctrl->y,ctrl->wid,ctrl->high,os_dialog_wind,(HMENU)ctrl->id,hinst,NULL);
+				break;
+
+			case os_dialog_ctrl_type_text_edit:
+				ctrl_wnd=CreateWindowEx(WS_EX_CLIENTEDGE,"EDIT",ctrl->str,ES_LEFT|ES_AUTOHSCROLL|WS_CHILD|WS_VISIBLE,ctrl->x,ctrl->y,ctrl->wid,ctrl->high,os_dialog_wind,(HMENU)ctrl->id,hinst,NULL);
+				break;
+
+	
+		}
+
+			// set font
+
+		SendMessage(ctrl_wnd,WM_SETFONT,(WPARAM)os_dialog_font,0);
+
+			// flags
+
+		if (ctrl->focus) SetFocus(ctrl_wnd);
+		if (ctrl->select_all) SendMessage(ctrl_wnd,EM_SETSEL,0,-1);
+
+		ctrl++;
+	}
+
+		// show window
+
+	ShowWindow(os_dialog_wind,SW_SHOWNORMAL);
+}
+
+void os_dialog_close(void)
+{
+	EnableWindow(wnd,TRUE);
+
+	DestroyWindow(os_dialog_wind);
+	UnregisterClass("dim3DialogClass",GetModuleHandle(NULL));
+
+	DeleteObject(os_dialog_font);
+}
+
+void os_dialog_get_text(int id,char *value,int value_len)
+{
+	char			str[256];
+
+	SendDlgItemMessage(os_dialog_wind,id,WM_GETTEXT,256,(LPARAM)str);
+
+	strncpy(value,str,value_len);
+	value[value_len-1]=0x0;
+}
+
