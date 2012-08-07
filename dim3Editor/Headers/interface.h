@@ -475,7 +475,6 @@ extern void view_model_cube_vertexes(char *name,d3pnt *pnt,d3ang *ang,float resi
 // dialogs
 //
 
-extern void dialog_about_run(void);
 extern bool dialog_file_new_run(char *title,char *file_name);
 extern bool dialog_file_open_run(char *title,char *search_path,char *extension,char *required_file_name,char *file_name);
 extern bool dialog_resize_run(float *fct_x,float *fct_y,float *fct_z);

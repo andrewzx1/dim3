@@ -719,7 +719,7 @@ void map_mesh_calculate_center(map_type *map,int mesh_idx,d3pnt *mpt)
 
 void map_mesh_poly_calculate_extent(map_type *map,int mesh_idx,int poly_idx,d3pnt *min,d3pnt *max)
 {
-	int					n,nvertex;
+	int					n;
 	d3pnt				*pt;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;

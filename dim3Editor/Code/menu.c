@@ -293,12 +293,6 @@ void menu_update_view(void)
 bool menu_event_run(int cmd)
 {
 	switch (cmd) {
-		
-			// about
-
-        case app_menu_item_About:
-            dialog_about_run();
-            return(TRUE);
             
 			// file menu
 			

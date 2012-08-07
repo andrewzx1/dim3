@@ -26,7 +26,7 @@ and can be sold or given away.
 *********************************************************************/
 
 //
-// structures
+// menu definitions
 //
 
 #define os_menu_key_none		0
@@ -39,6 +39,27 @@ typedef struct {
 					int			id,key_type;
 					char		key;
 				} os_menu_item_type;
+
+//
+// dialog definitions
+//
+
+#define os_dialog_msg_type_init				0
+#define os_dialog_msg_type_button			1
+
+#define os_dialog_ctrl_type_button			0
+#define os_dialog_ctrl_type_default_button	1
+#define os_dialog_ctrl_type_text			2
+#define os_dialog_ctrl_type_text_edit		3
+
+typedef struct {
+					int			type,id;
+					char		str[64];
+					int			x,y,wid,high;
+					bool		focus,select_all;
+				} os_dialog_ctrl_type;
+
+typedef void (*os_dialog_callback_ptr)(int msg_type,int id);
 
 //
 // functions
@@ -88,3 +109,6 @@ extern void os_pick_color(d3col *col);
 
 extern bool os_launch_process(char *path,bool text_editor);
 
+extern void os_dialog_create(char *title,int wid,int high,os_dialog_ctrl_type *ctrls,void *callback);
+extern void os_dialog_close(void);
+extern void os_dialog_get_text(int id,char *value,int value_len);
