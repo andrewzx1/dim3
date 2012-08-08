@@ -43,6 +43,8 @@ HGLRC							wnd_gl_ctx;
 
 bool							quit;
 
+extern HWND						os_dialog_wind;
+
 extern file_path_setup_type		file_path_setup;
 extern editor_setup_type		setup;
 extern iface_type				iface;

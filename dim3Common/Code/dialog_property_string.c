@@ -36,10 +36,8 @@ and can be sold or given away.
 #endif
 
 #include "glue.h"
-#include "resource.h"
 #include "interface.h"
 #include "ui_common.h"
-#include "win32_dialog.h"
 
 int								dialog_property_string_value_type,
 								dialog_property_string_value_len,
@@ -48,7 +46,7 @@ int								dialog_property_string_value_type,
 void							*dialog_property_string_value;
 
 // controls
-/*
+
 #define diag_prop_string_str	0
 #define diag_prop_string_ok		1
 
@@ -57,29 +55,37 @@ os_dialog_ctrl_type		diag_property_string_ctrls[]={
 							{os_dialog_ctrl_type_default_button,diag_prop_string_ok,"OK",365,40,80,25,FALSE,FALSE},
 							{-1,-1,"",0,0,0,0,FALSE,FALSE}
 						};
-*/
+
 /* =======================================================
 
       Run Property String
       
 ======================================================= */
-/*
+
 void dialog_property_string_proc(int msg_type,int id)
 {
 	char			str[256];
 
-	if (msg_type==os_dialog_msg_type_button) {
-		if (id==diag_prop_string_ok) {
-			os_dialog_get_text(diag_prop_string_str,str,256);
-			property_string_set_values(dialog_property_string_value_type,dialog_property_string_value,dialog_property_string_value_len,dialog_property_string_i_min,dialog_property_string_i_max,str);
-			os_dialog_close();
-		}
+	switch (msg_type) {
+
+		case os_dialog_msg_type_init:
+			property_string_get_values(dialog_property_string_value_type,dialog_property_string_value,str);
+			os_dialog_set_text(diag_prop_string_str,str);
+			break;
+
+		case os_dialog_msg_type_button:
+			if (id==diag_prop_string_ok) {
+				os_dialog_get_text(diag_prop_string_str,str,256);
+				property_string_set_values(dialog_property_string_value_type,dialog_property_string_value,dialog_property_string_value_len,dialog_property_string_i_min,dialog_property_string_i_max,str);
+				os_dialog_close();
+			}
+			break;
 	}
 }
 
 void dialog_property_string_run(int value_type,void *value,int value_len,int i_min,int i_max)
 {
-	char			desc[256];
+	char			title[256];
 
 		// set values
 
@@ -89,10 +95,9 @@ void dialog_property_string_run(int value_type,void *value,int value_len,int i_m
 	dialog_property_string_i_min=i_min;
 	dialog_property_string_i_max=i_max;
 
-	property_string_get_values(value_type,value,i_min,i_max,diag_property_string_ctrls[0].str,desc);
+	property_string_get_title(value_type,i_min,i_max,title);
 
 		// run dialog
 
-	os_dialog_create(desc,450,70,diag_property_string_ctrls,dialog_property_string_proc);
+	os_dialog_run(title,450,70,diag_property_string_ctrls,dialog_property_string_proc);
 }
-*/

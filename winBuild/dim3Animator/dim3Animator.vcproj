@@ -475,6 +475,18 @@
 						>
 					</File>
 				</Filter>
+				<Filter
+					Name="Dialogs"
+					>
+					<File
+						RelativePath="..\..\dim3Common\Code\dialog_property_chord.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Common\Code\dialog_property_string.c"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="AnimatorWin32"
@@ -513,14 +525,6 @@
 				</File>
 				<File
 					RelativePath=".\win32Code\win32_dialog_pick_scale.c"
-					>
-				</File>
-				<File
-					RelativePath="..\Common\Code\win32_dialog_property_chord.c"
-					>
-				</File>
-				<File
-					RelativePath="..\Common\Code\win32_dialog_property_string.c"
 					>
 				</File>
 				<File

@@ -52,52 +52,84 @@ char							property_file_list[file_paths_max_directory_file][file_str_len];
       
 ======================================================= */
 
-void property_string_get_values(int value_type,void *value,int i_min,int i_max,char *str,char *desc)
+void property_string_get_values(int value_type,void *value,char *str)
 {
 	str[0]=0x0;
-	desc[0]=0x0;
 	
 	switch (value_type) {
 	
 		case list_string_value_string:
 			strcpy(str,(char*)value);
-			strcpy(desc,"Enter a string.");
 			break;
 			
 		case list_string_value_int:
 			sprintf(str,"%d",*((int*)value));
-			strcpy(desc,"Enter a integer.");
 			break;
 			
 		case list_string_value_positive_int:
 			sprintf(str,"%d",*((int*)value));
-			strcpy(desc,"Enter a positive integer.");
 			break;
 			
 		case list_string_value_range_int:
 			sprintf(str,"%d",*((int*)value));
-			sprintf(desc,"Enter a integer between %d and %d.",i_min,i_max);
 			break;
 			
 		case list_string_value_float:
 			sprintf(str,"%.2f",*((float*)value));
-			strcpy(desc,"Enter a float.");
 			break;
 
 		case list_string_value_positive_float:
 			sprintf(str,"%.2f",*((float*)value));
-			strcpy(desc,"Enter a positive float.");
 			break;
 
 		case list_string_value_0_to_1_float:
 			sprintf(str,"%.2f",*((float*)value));
-			strcpy(desc,"Enter a float between 0.0 and 1.0.");
 			break;
 
 		case list_string_value_tag:
 			memmove(str,((int*)value),4);
 			str[4]=0x0;
-			strcpy(desc,"Enter a 4 character tag.");
+			break;
+			
+	}
+}
+
+void property_string_get_title(int value_type,int i_min,int i_max,char *title)
+{
+	title[0]=0x0;
+	
+	switch (value_type) {
+	
+		case list_string_value_string:
+			strcpy(title,"Enter a string.");
+			break;
+			
+		case list_string_value_int:
+			strcpy(title,"Enter a integer.");
+			break;
+			
+		case list_string_value_positive_int:
+			strcpy(title,"Enter a positive integer.");
+			break;
+			
+		case list_string_value_range_int:
+			sprintf(title,"Enter a integer between %d and %d.",i_min,i_max);
+			break;
+			
+		case list_string_value_float:
+			strcpy(title,"Enter a float.");
+			break;
+
+		case list_string_value_positive_float:
+			strcpy(title,"Enter a positive float.");
+			break;
+
+		case list_string_value_0_to_1_float:
+			strcpy(title,"Enter a float between 0.0 and 1.0.");
+			break;
+
+		case list_string_value_tag:
+			strcpy(title,"Enter a 4 character tag.");
 			break;
 			
 	}
@@ -163,7 +195,7 @@ void property_string_set_values(int value_type,void *value,int value_len,int i_m
       
 ======================================================= */
 
-bool property_chord_get_values(int value_type,void *value,char *str_x,char *str_y,char *str_z,char *desc)
+bool property_chord_get_values(int value_type,void *value,char *str_x,char *str_y,char *str_z)
 {
 	d3pnt			*pnt;
 	d3ang			*ang;
@@ -173,7 +205,6 @@ bool property_chord_get_values(int value_type,void *value,char *str_x,char *str_
 	str_x[0]=0x0;
 	str_y[0]=0x0;
 	str_z[0]=0x0;
-	desc[0]=0x0;
 	
 	switch (value_type) {
 	
@@ -182,7 +213,6 @@ bool property_chord_get_values(int value_type,void *value,char *str_x,char *str_
 			sprintf(str_x,"%d",pnt->x);
 			sprintf(str_y,"%d",pnt->y);
 			sprintf(str_z,"%d",pnt->z);
-			strcpy(desc,"Enter a three value (x,y,z) int point.");
 			return(TRUE);
 
 		case list_chord_value_angle:
@@ -190,7 +220,6 @@ bool property_chord_get_values(int value_type,void *value,char *str_x,char *str_
 			sprintf(str_x,"%.2f",ang->x);
 			sprintf(str_y,"%.2f",ang->y);
 			sprintf(str_z,"%.2f",ang->z);
-			strcpy(desc,"Enter a three value (x,y,z) float angle.");
 			return(TRUE);
 
 		case list_chord_value_vector:
@@ -198,7 +227,6 @@ bool property_chord_get_values(int value_type,void *value,char *str_x,char *str_
 			sprintf(str_x,"%.2f",vct->x);
 			sprintf(str_y,"%.2f",vct->y);
 			sprintf(str_z,"%.2f",vct->z);
-			strcpy(desc,"Enter a three value (x,y,z) float vector.");
 			return(TRUE);
 
 		case list_chord_value_uv:
@@ -206,12 +234,36 @@ bool property_chord_get_values(int value_type,void *value,char *str_x,char *str_
 			sprintf(str_x,"%.2f",fpnt->x);
 			sprintf(str_y,"%.2f",fpnt->y);
 			str_z[0]=0x0;
-			strcpy(desc,"Enter a two value (u,v) float uv.");
 			return(FALSE);
 			
 	}
 
 	return(TRUE);
+}
+
+void property_chord_get_title(int value_type,char *title)
+{
+	title[0]=0x0;
+	
+	switch (value_type) {
+	
+		case list_chord_value_point:
+			strcpy(title,"Enter a three value (x,y,z) int point.");
+			break;
+
+		case list_chord_value_angle:
+			strcpy(title,"Enter a three value (x,y,z) float angle.");
+			break;
+
+		case list_chord_value_vector:
+			strcpy(title,"Enter a three value (x,y,z) float vector.");
+			break;
+
+		case list_chord_value_uv:
+			strcpy(title,"Enter a two value (u,v) float uv.");
+			break;
+			
+	}
 }
 
 void property_chord_set_values(int value_type,void *value,char *str_x,char *str_y,char *str_z)

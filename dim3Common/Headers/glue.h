@@ -109,6 +109,8 @@ extern void os_pick_color(d3col *col);
 
 extern bool os_launch_process(char *path,bool text_editor);
 
-extern void os_dialog_create(char *title,int wid,int high,os_dialog_ctrl_type *ctrls,void *callback);
+extern void os_dialog_run(char *title,int wid,int high,os_dialog_ctrl_type *ctrls,void *callback);
 extern void os_dialog_close(void);
+extern void os_dialog_set_text(int id,char *value);
 extern void os_dialog_get_text(int id,char *value,int value_len);
+extern void os_dialog_enable(int id,bool enable);

@@ -27,6 +27,7 @@ and can be sold or given away.
 
 #include "dim3Animator.h"
 
+#include "glue.h"
 #include "resource.h"
 #include "interface.h"
 #include "ui_common.h"
@@ -36,6 +37,23 @@ extern HINSTANCE				hinst;
 extern HWND						wnd;
 
 d3vct							dialog_set_normal_vct;
+
+// controls
+
+#define diag_prop_set_normal_x		0
+#define diag_prop_set_normal_y		1
+#define diag_prop_set_normal_z		2
+#define diag_prop_set_normal_ok		3
+#define diag_prop_set_normal_cancel	4
+
+os_dialog_ctrl_type		diag_property_set_normal_ctrls[]={
+							{os_dialog_ctrl_type_text_edit,diag_prop_set_normal_x,"",5,10,145,20,TRUE,TRUE},
+							{os_dialog_ctrl_type_text_edit,diag_prop_set_normal_y,"",155,10,145,20,FALSE,FALSE},
+							{os_dialog_ctrl_type_text_edit,diag_prop_set_normal_z,"",305,10,145,20,FALSE,FALSE},
+							{os_dialog_ctrl_type_default_button,diag_prop_chord_ok,"OK",370,40,80,25,FALSE,FALSE},
+							{os_dialog_ctrl_type_default_button,diag_prop_chord_cancel,"Cancel",280,40,80,25,FALSE,FALSE},
+							{-1,-1,"",0,0,0,0,FALSE,FALSE}
+						};
 
 /* =======================================================
 
@@ -92,7 +110,9 @@ bool dialog_set_normal_run(d3vct *vct)
 {
 	memmove(&dialog_set_normal_vct,vct,sizeof(d3vct));
 
-	if (DialogBox(hinst,MAKEINTRESOURCE(IDD_SET_NORMAL),wnd,dialog_set_normal_proc)!=0) return(FALSE);
+		// run dialog
+
+//	os_dialog_create(desc,455,200,diag_property_set_normal_ctrls,dialog_property_set_normal_proc);
 
 	memmove(vct,&dialog_set_normal_vct,sizeof(d3vct));
 

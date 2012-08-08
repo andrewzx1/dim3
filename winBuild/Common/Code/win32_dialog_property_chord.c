@@ -51,7 +51,7 @@ void							*dialog_property_chord_value;
       Property Chord Event Handlers
       
 ======================================================= */
-
+/*
 LRESULT CALLBACK dialog_property_chord_proc(HWND diag,UINT msg,WPARAM wparam,LPARAM lparam)
 {
 	bool			three_value;
@@ -95,13 +95,13 @@ LRESULT CALLBACK dialog_property_chord_proc(HWND diag,UINT msg,WPARAM wparam,LPA
 
 	return(FALSE);
 }
-
+*/
 /* =======================================================
 
       Run Property Chord
       
 ======================================================= */
-
+/*
 void dialog_property_chord_run(int value_type,void *value)
 {
 	dialog_property_chord_value_type=value_type;
@@ -109,3 +109,4 @@ void dialog_property_chord_run(int value_type,void *value)
 
 	DialogBox(hinst,MAKEINTRESOURCE(IDD_PROPERTY_CHORD),wnd,dialog_property_chord_proc);
 }
+*/

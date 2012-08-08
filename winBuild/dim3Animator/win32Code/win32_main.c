@@ -44,6 +44,8 @@ UINT_PTR						wnd_timer;
 
 bool							quit;
 
+extern HWND						os_dialog_wind;
+
 extern file_path_setup_type		file_path_setup;
 extern iface_type				iface;
 extern animator_state_type		state;
@@ -255,6 +257,11 @@ void animator_pump(void)
 
 	while (!quit) {
 		if (GetMessage(&msg,NULL,0,0)>0) {
+
+			if (os_dialog_wind!=NULL) {
+				if (IsDialogMessage(os_dialog_wind,&msg)) continue;
+			}
+
 			if (!TranslateAccelerator(wnd,wnd_accel,&msg)) {
 				TranslateMessage(&msg);
 				DispatchMessage(&msg);

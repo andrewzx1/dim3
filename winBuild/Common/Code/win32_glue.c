@@ -48,6 +48,7 @@ extern HACCEL			wnd_accel;
 HCURSOR					cur_arrow,cur_wait,cur_hand,cur_drag,cur_resize,
 						cur_add,cur_subtract;
 COLORREF				custom_colors[16];
+bool					os_dialog_quit;
 HWND					os_dialog_wind;
 HFONT					os_dialog_font;
 os_dialog_callback_ptr	os_dialog_callback;
@@ -613,22 +614,28 @@ LRESULT CALLBACK os_dialog_proc(HWND diag,UINT msg,WPARAM wparam,LPARAM lparam)
 {
 	switch (msg) {
 
+		case WM_INITDIALOG:
+			(*os_dialog_callback)(os_dialog_msg_type_init,0);
+			return(FALSE);		// we set the focus
+
 		case WM_COMMAND:
-			if (HIWORD(wparam)==BN_CLICKED) (*os_dialog_callback)(os_dialog_msg_type_button,(int)LOWORD(wparam));
+			if (HIWORD(wparam)==BN_CLICKED) {
+				(*os_dialog_callback)(os_dialog_msg_type_button,(int)LOWORD(wparam));
+				return(TRUE);
+			}
 			break;
 
-		default:
-			return(DefWindowProc(diag,msg,wparam,lparam));
 	}
 
-	return(0);
+	return(DefDlgProc(diag,msg,wparam,lparam));
 }
 
-void os_dialog_create(char *title,int wid,int high,os_dialog_ctrl_type *ctrls,void *callback)
+void os_dialog_run(char *title,int wid,int high,os_dialog_ctrl_type *ctrls,void *callback)
 {
 	int					x,y,m_wid,m_high,font_high;
 	RECT				box;
 	os_dialog_ctrl_type	*ctrl;
+	MSG					msg;
 	HWND				ctrl_wnd;
 	WNDCLASSEX			wcx;
 
@@ -665,7 +672,7 @@ void os_dialog_create(char *title,int wid,int high,os_dialog_ctrl_type *ctrls,vo
     wcx.style=CS_DBLCLKS;
     wcx.lpfnWndProc=os_dialog_proc;
     wcx.cbClsExtra=0;
-    wcx.cbWndExtra=0;
+    wcx.cbWndExtra=DLGWINDOWEXTRA;
     wcx.hInstance=hinst;
     wcx.hIcon=NULL;
     wcx.hCursor=LoadCursor(NULL,IDC_ARROW);
@@ -676,7 +683,7 @@ void os_dialog_create(char *title,int wid,int high,os_dialog_ctrl_type *ctrls,vo
 
     RegisterClassEx(&wcx);
 
-    os_dialog_wind=CreateWindowEx(WS_EX_DLGMODALFRAME,"dim3DialogClass",title,WS_POPUP|WS_CAPTION,x,y,wid,high,wnd,NULL,hinst,NULL);
+    os_dialog_wind=CreateWindowEx(WS_EX_DLGMODALFRAME|WS_EX_NOPARENTNOTIFY,"dim3DialogClass",title,WS_POPUP|WS_CAPTION,x,y,wid,high,wnd,NULL,hinst,NULL);
 
 		// disable main window
 
@@ -723,19 +730,46 @@ void os_dialog_create(char *title,int wid,int high,os_dialog_ctrl_type *ctrls,vo
 		ctrl++;
 	}
 
+		// init dialog message
+
+	SendMessage(os_dialog_wind,WM_INITDIALOG,0,0);
+
 		// show window
 
 	ShowWindow(os_dialog_wind,SW_SHOWNORMAL);
-}
 
-void os_dialog_close(void)
-{
+		// run dialog
+
+	os_dialog_quit=FALSE;
+
+	while (!os_dialog_quit) {
+		if (GetMessage(&msg,NULL,0,0)>0) {
+			if (!IsDialogMessage(os_dialog_wind,&msg)) {
+				TranslateMessage(&msg);
+				DispatchMessage(&msg);
+			}
+		}
+	}
+
+		// return window states and close
+		// dialog
+
 	EnableWindow(wnd,TRUE);
 
 	DestroyWindow(os_dialog_wind);
 	UnregisterClass("dim3DialogClass",GetModuleHandle(NULL));
 
 	DeleteObject(os_dialog_font);
+}
+
+void os_dialog_close(void)
+{
+	os_dialog_quit=TRUE;
+}
+
+void os_dialog_set_text(int id,char *value)
+{
+	SendDlgItemMessage(os_dialog_wind,id,WM_SETTEXT,0,(LPARAM)value);
 }
 
 void os_dialog_get_text(int id,char *value,int value_len)
@@ -746,5 +780,10 @@ void os_dialog_get_text(int id,char *value,int value_len)
 
 	strncpy(value,str,value_len);
 	value[value_len-1]=0x0;
+}
+
+void os_dialog_enable(int id,bool enable)
+{
+	EnableWindow(GetDlgItem(os_dialog_wind,id),enable);
 }
 
