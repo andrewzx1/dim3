@@ -31,6 +31,7 @@ extern WindowRef				wind;
 extern AGLContext				ctx;
 
 char							os_load_file_ext[32];
+WindowRef						os_diag_wind;
 
 /* =======================================================
 
@@ -523,4 +524,58 @@ bool os_launch_process(char *path,bool text_editor)
 
 	return(TRUE);
 }
+
+/* =======================================================
+
+      Dialogs
+      
+======================================================= */
+
+void os_dialog_create(char *title,int wid,int high,os_dialog_ctrl_type *ctrls,void *callback)
+{
+	unsigned char		p_str[256];
+	HIRect				wbox;
+	Rect				box;
+	
+		// create the window
+		
+	HIWindowGetAvailablePositioningBounds(CGMainDisplayID(),kHICoordSpaceScreenPixel,&wbox);
+	
+	box.left=(wbox.origin.x+(wbox.size.width/2))-(wid/2);
+	box.top=(wbox.origin.y+(wbox.size.height/2))-(high/2);
+	box.right=box.left+wid;
+	box.bottom=box.top+high;
+
+	CreateNewWindow(kMovableModalWindowClass,kWindowCloseBoxAttribute|kWindowStandardHandlerAttribute,&box,&os_diag_wind);
+	
+	CopyCStringToPascal(title,p_str);
+	SetWTitle(os_diag_wind,p_str);
+	
+		// add controls
+
+	
+		// show window
+		
+	ShowWindow(wind);
+}
+
+void os_dialog_close(void)
+{
+	DisposeWindow(os_diag_wind);
+}
+
+void os_dialog_get_text(int id,char *value,int value_len)
+{
+	ControlRef		ctrl;
+	ControlID		ctrl_id;
+	
+	ctrl_id.signature='ctrl';
+	ctrl_id.id=id;
+	GetControlByID(wind,&ctrl_id,&ctrl);
+	
+	memset(value,0x0,value_len);
+	GetControlData(ctrl,kControlNoPart,kControlEditTextTextTag,value_len,value,NULL);
+	value[value_len-1]=0x0;
+}
+
 
