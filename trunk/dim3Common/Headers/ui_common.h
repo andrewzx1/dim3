@@ -165,10 +165,12 @@ typedef struct		{
 // property utilities
 //
 
-extern void property_string_get_values(int value_type,void *value,int i_min,int i_max,char *str,char *desc);
+extern void property_string_get_values(int value_type,void *value,char *str);
+extern void property_string_get_title(int value_type,int i_min,int i_max,char *title);
 extern void property_string_set_values(int value_type,void *value,int value_len,int i_min,int i_max,char *str);
 
-extern bool property_chord_get_values(int value_type,void *value,char *str_x,char *str_y,char *str_z,char *desc);
+extern bool property_chord_get_values(int value_type,void *value,char *str_x,char *str_y,char *str_z);
+extern void property_chord_get_title(int value_type,char *title);
 extern void property_chord_set_values(int value_type,void *value,char *str_x,char *str_y,char *str_z);
 
 extern int property_pick_get_list_count(char *list_ptr,int list_item_sz,int list_name_offset);

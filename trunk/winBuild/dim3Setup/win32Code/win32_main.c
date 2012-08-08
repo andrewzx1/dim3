@@ -43,6 +43,8 @@ HGLRC							wnd_gl_ctx;
 
 bool							quit;
 
+extern HWND						os_dialog_wind;
+
 extern iface_type				iface;
 extern file_path_setup_type		file_path_setup;
 
@@ -262,6 +264,11 @@ void setup_pump(void)
 
 	while (!quit) {
 		if (GetMessage(&msg,NULL,0,0)>0) {
+
+			if (os_dialog_wind!=NULL) {
+				if (IsDialogMessage(os_dialog_wind,&msg)) continue;
+			}
+
 			if (!TranslateAccelerator(wnd,wnd_accel,&msg)) {
 				TranslateMessage(&msg);
 				DispatchMessage(&msg);
