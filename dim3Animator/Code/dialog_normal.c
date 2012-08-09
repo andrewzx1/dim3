@@ -1,8 +1,8 @@
 /****************************** File *********************************
 
-Module: dim3 Animator
+Module: dim3 Common
 Author: Brian Barnes
- Usage: Normal Dialog
+ Usage: Dialog Set Normal
 
 ***************************** License ********************************
 
@@ -21,103 +21,84 @@ Any non-engine product (games, etc) created with this code is free
 from any and all payment and/or royalties to the author of dim3,
 and can be sold or given away.
 
-(c) 2000-2011 Klink! Software www.klinksoftware.com
+(c) 2000-2012 Klink! Software www.klinksoftware.com
  
 *********************************************************************/
 
+#ifdef D3_PCH
+	#include "dim3Animator.h"
+#endif
+
 #include "glue.h"
 #include "interface.h"
-#include "osx_dialog.h"
+#include "ui_common.h"
 
-#define kXValue						FOUR_CHAR_CODE('xxxx')
-#define kZValue						FOUR_CHAR_CODE('zzzz')
-#define kYValue						FOUR_CHAR_CODE('yyyy')
+bool							dialog_set_normal_ok;
+d3vct							*dialog_set_normal_vct;
 
-bool					dialog_set_normal_cancel;
-WindowRef				dialog_set_normal_wind;
+// controls
+
+#define diag_prop_set_normal_x		5000
+#define diag_prop_set_normal_y		5001
+#define diag_prop_set_normal_z		5002
+#define diag_prop_set_normal_ok		5003
+#define diag_prop_set_normal_cancel	5004
+
+os_dialog_ctrl_type		diag_property_set_normal_ctrls[]={
+							{os_dialog_ctrl_type_text_right,0,"X:",5,13,35,20},
+							{os_dialog_ctrl_type_text_right,0,"Y:",5,38,35,20},
+							{os_dialog_ctrl_type_text_right,0,"Z:",5,63,35,20},
+							{os_dialog_ctrl_type_text_edit,diag_prop_set_normal_x,"",45,10,100,20},
+							{os_dialog_ctrl_type_text_edit,diag_prop_set_normal_y,"",45,35,100,20},
+							{os_dialog_ctrl_type_text_edit,diag_prop_set_normal_z,"",45,60,100,20},
+							{os_dialog_ctrl_type_default_button,diag_prop_set_normal_ok,"OK",270,85,80,25},
+							{os_dialog_ctrl_type_default_button,diag_prop_set_normal_cancel,"Cancel",180,85,80,25},
+							{-1,-1,"",0,0,0,0}
+						};
 
 /* =======================================================
 
-      Nudge/Rotate Event Handlers
+      Run Set Normal
       
 ======================================================= */
 
-static pascal OSStatus set_normal_event_proc(EventHandlerCallRef handler,EventRef event,void *data)
+void dialog_property_set_normal_proc(int msg_type,int id)
 {
-	HICommand		cmd;
-	
-	switch (GetEventKind(event)) {
-	
-		case kEventProcessCommand:
-			GetEventParameter(event,kEventParamDirectObject,typeHICommand,NULL,sizeof(HICommand),NULL,&cmd);
-			
-			switch (cmd.commandID) {
-			
-				case kHICommandOK:
-					QuitAppModalLoopForWindow(dialog_set_normal_wind);
-					return(noErr);
-					
-				case kHICommandCancel:
-					dialog_set_normal_cancel=TRUE;
-					QuitAppModalLoopForWindow(dialog_set_normal_wind);
-					return(noErr);
+	switch (msg_type) {
+
+		case os_dialog_msg_type_init:
+			os_dialog_set_float(diag_prop_set_normal_x,dialog_set_normal_vct->x);
+			os_dialog_set_float(diag_prop_set_normal_y,dialog_set_normal_vct->y);
+			os_dialog_set_float(diag_prop_set_normal_z,dialog_set_normal_vct->z);
+			os_dialog_set_focus(diag_prop_set_normal_x,TRUE);
+			break;
+
+		case os_dialog_msg_type_button:
+
+			if (id==diag_prop_set_normal_cancel) {
+				dialog_set_normal_ok=FALSE;
+				os_dialog_close();
+				return;
 			}
 
-			return(eventNotHandledErr);
-	
+			if (id==diag_prop_set_normal_ok) {
+				dialog_set_normal_vct->x=os_dialog_get_float(diag_prop_set_normal_x);
+				dialog_set_normal_vct->y=os_dialog_get_float(diag_prop_set_normal_y);
+				dialog_set_normal_vct->z=os_dialog_get_float(diag_prop_set_normal_z);
+
+				dialog_set_normal_ok=TRUE;
+				os_dialog_close();
+				return;
+			}
+
+			break;
 	}
-	
-	return(eventNotHandledErr);
 }
 
-/* =======================================================
-
-      Run Nudge/Rotate Dialog
-      
-======================================================= */
-
-bool dialog_set_normal_run(d3vct *normal)
+bool dialog_set_normal_run(d3vct *vct)
 {
-	EventHandlerUPP					event_upp;
-	EventTypeSpec					event_list[]={{kEventClassCommand,kEventProcessCommand}};
-	
-		// open the dialog
-		
-	dialog_open(&dialog_set_normal_wind,"NormalPick");
-	
-		// setup the controls
-		
-	dialog_set_float(dialog_set_normal_wind,kXValue,0,normal->x);
-	dialog_set_float(dialog_set_normal_wind,kYValue,0,normal->y);
-	dialog_set_float(dialog_set_normal_wind,kZValue,0,normal->z);
-	
-	dialog_set_focus(dialog_set_normal_wind,kXValue,0);
-	
-		// show window
-	
-	ShowWindow(dialog_set_normal_wind);
-	
-		// install event handler
-		
-	event_upp=NewEventHandlerUPP(set_normal_event_proc);
-	InstallWindowEventHandler(dialog_set_normal_wind,event_upp,GetEventTypeCount(event_list),event_list,NULL,NULL);
-	
-		// modal window
-		
-	dialog_set_normal_cancel=FALSE;
-	
-	RunAppModalLoopForWindow(dialog_set_normal_wind);
-	
-	if (!dialog_set_normal_cancel) {
-		normal->x=dialog_get_int(dialog_set_normal_wind,kXValue,0);
-		normal->y=dialog_get_int(dialog_set_normal_wind,kYValue,0);
-		normal->z=dialog_get_int(dialog_set_normal_wind,kZValue,0);
-	}
-	
-		// close window
+	dialog_set_normal_vct=vct;
+	os_dialog_run("Set Normal",455,300,diag_property_set_normal_ctrls,dialog_property_set_normal_proc);
 
-	DisposeWindow(dialog_set_normal_wind);
-	
-	return(!dialog_set_normal_cancel);
+	return(dialog_set_normal_ok);
 }
-

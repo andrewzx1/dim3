@@ -49,14 +49,14 @@ typedef struct {
 
 #define os_dialog_ctrl_type_button			0
 #define os_dialog_ctrl_type_default_button	1
-#define os_dialog_ctrl_type_text			2
-#define os_dialog_ctrl_type_text_edit		3
+#define os_dialog_ctrl_type_text_left		2
+#define os_dialog_ctrl_type_text_right		3
+#define os_dialog_ctrl_type_text_edit		4
 
 typedef struct {
 					int			type,id;
 					char		str[64];
 					int			x,y,wid,high;
-					bool		focus,select_all;
 				} os_dialog_ctrl_type;
 
 typedef void (*os_dialog_callback_ptr)(int msg_type,int id);
@@ -113,4 +113,7 @@ extern void os_dialog_run(char *title,int wid,int high,os_dialog_ctrl_type *ctrl
 extern void os_dialog_close(void);
 extern void os_dialog_set_text(int id,char *value);
 extern void os_dialog_get_text(int id,char *value,int value_len);
+extern void os_dialog_set_float(int id,float f);
+extern float os_dialog_get_float(int id);
+extern void os_dialog_set_focus(int id,bool select_all);
 extern void os_dialog_enable(int id,bool enable);
