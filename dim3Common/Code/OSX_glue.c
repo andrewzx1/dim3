@@ -31,7 +31,7 @@ extern WindowRef				wind;
 extern AGLContext				ctx;
 
 char							os_load_file_ext[32];
-WindowRef						os_diag_wind;
+WindowRef						os_dialog_wind;
 
 /* =======================================================
 
@@ -531,11 +531,13 @@ bool os_launch_process(char *path,bool text_editor)
       
 ======================================================= */
 
-void os_dialog_create(char *title,int wid,int high,os_dialog_ctrl_type *ctrls,void *callback)
+void os_dialog_run(char *title,int wid,int high,os_dialog_ctrl_type *ctrls,void *callback)
 {
 	unsigned char		p_str[256];
 	HIRect				wbox;
 	Rect				box;
+	
+	fprintf(stdout,"HERE 1\n");
 	
 		// create the window
 		
@@ -546,22 +548,47 @@ void os_dialog_create(char *title,int wid,int high,os_dialog_ctrl_type *ctrls,vo
 	box.right=box.left+wid;
 	box.bottom=box.top+high;
 
-	CreateNewWindow(kMovableModalWindowClass,kWindowCloseBoxAttribute|kWindowStandardHandlerAttribute,&box,&os_diag_wind);
+	CreateNewWindow(kMovableModalWindowClass,kWindowStandardHandlerAttribute,&box,&os_dialog_wind);
 	
 	CopyCStringToPascal(title,p_str);
-	SetWTitle(os_diag_wind,p_str);
+	SetWTitle(os_dialog_wind,p_str);
 	
 		// add controls
 
 	
 		// show window
 		
-	ShowWindow(wind);
+	ShowWindow(os_dialog_wind);
+	
+		// run event
+		
+	RunAppModalLoopForWindow(os_dialog_wind);
+	
+		// dispose window
+		
+	DisposeWindow(os_dialog_wind);
 }
 
 void os_dialog_close(void)
 {
-	DisposeWindow(os_diag_wind);
+	QuitAppModalLoopForWindow(os_dialog_wind);
+}
+
+void os_dialog_set_text(int id,char *value)
+{
+	ControlRef		ctrl;
+	ControlID		ctrl_id;
+	
+	ctrl_id.signature='ctrl';
+	ctrl_id.id=id;
+	GetControlByID(wind,&ctrl_id,&ctrl);
+	
+	if (value!=NULL) {
+		SetControlData(ctrl,kControlNoPart,kControlEditTextTextTag,strlen(value),value);
+	}
+	else {
+		SetControlData(ctrl,kControlNoPart,kControlEditTextTextTag,0,NULL);
+	}
 }
 
 void os_dialog_get_text(int id,char *value,int value_len)
@@ -578,4 +605,20 @@ void os_dialog_get_text(int id,char *value,int value_len)
 	value[value_len-1]=0x0;
 }
 
+void os_dialog_enable(int id,bool enable)
+{
+	ControlRef		ctrl;
+	ControlID		ctrl_id;
+	
+	ctrl_id.signature='ctrl';
+	ctrl_id.id=id;
+	GetControlByID(wind,&ctrl_id,&ctrl);
+	
+	if (enable) {
+		EnableControl(ctrl);
+	}
+	else {
+		DisableControl(ctrl);
+	}
+}
 

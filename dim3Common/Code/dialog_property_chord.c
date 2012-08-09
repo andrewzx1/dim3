@@ -25,6 +25,7 @@ and can be sold or given away.
  
 *********************************************************************/
 
+#ifdef D3_PCH
 #ifdef D3_EDITOR
 	#include "dim3editor.h"
 #endif
@@ -33,6 +34,7 @@ and can be sold or given away.
 #endif
 #ifdef D3_SETUP
 	#include "dim3Setup.h"
+#endif
 #endif
 
 #include "glue.h"
