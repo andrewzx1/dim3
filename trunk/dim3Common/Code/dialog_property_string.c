@@ -2,7 +2,7 @@
 
 Module: dim3 Common
 Author: Brian Barnes
- Usage: Property String Routines
+ Usage: Dialog Property String
 
 ***************************** License ********************************
 
@@ -49,13 +49,13 @@ void							*dialog_property_string_value;
 
 // controls
 
-#define diag_prop_string_str	0
-#define diag_prop_string_ok		1
+#define diag_prop_string_str	5000
+#define diag_prop_string_ok		5001
 
 os_dialog_ctrl_type		diag_property_string_ctrls[]={
-							{os_dialog_ctrl_type_text_edit,diag_prop_string_str,"",5,10,440,20,TRUE,TRUE},
-							{os_dialog_ctrl_type_default_button,diag_prop_string_ok,"OK",365,40,80,25,FALSE,FALSE},
-							{-1,-1,"",0,0,0,0,FALSE,FALSE}
+							{os_dialog_ctrl_type_text_edit,diag_prop_string_str,"",5,10,440,20},
+							{os_dialog_ctrl_type_default_button,diag_prop_string_ok,"OK",365,40,80,25},
+							{-1,-1,"",0,0,0,0}
 						};
 
 /* =======================================================
@@ -73,6 +73,7 @@ void dialog_property_string_proc(int msg_type,int id)
 		case os_dialog_msg_type_init:
 			property_string_get_values(dialog_property_string_value_type,dialog_property_string_value,str);
 			os_dialog_set_text(diag_prop_string_str,str);
+			os_dialog_set_focus(diag_prop_string_str,TRUE);
 			break;
 
 		case os_dialog_msg_type_button:

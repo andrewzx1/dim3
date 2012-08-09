@@ -25,80 +25,36 @@ and can be sold or given away.
  
 *********************************************************************/
 
-#include "dim3Animator.h"
+#ifdef D3_PCH
+	#include "dim3Animator.h"
+#endif
 
 #include "glue.h"
-#include "resource.h"
 #include "interface.h"
 #include "ui_common.h"
-#include "win32_dialog.h"
 
-extern HINSTANCE				hinst;
-extern HWND						wnd;
-
-d3vct							dialog_set_normal_vct;
+bool							dialog_set_normal_ok;
+d3vct							*dialog_set_normal_vct;
 
 // controls
 
-#define diag_prop_set_normal_x		0
-#define diag_prop_set_normal_y		1
-#define diag_prop_set_normal_z		2
-#define diag_prop_set_normal_ok		3
-#define diag_prop_set_normal_cancel	4
+#define diag_prop_set_normal_x		5000
+#define diag_prop_set_normal_y		5001
+#define diag_prop_set_normal_z		5002
+#define diag_prop_set_normal_ok		5003
+#define diag_prop_set_normal_cancel	5004
 
 os_dialog_ctrl_type		diag_property_set_normal_ctrls[]={
-							{os_dialog_ctrl_type_text_edit,diag_prop_set_normal_x,"",5,10,145,20,TRUE,TRUE},
-							{os_dialog_ctrl_type_text_edit,diag_prop_set_normal_y,"",155,10,145,20,FALSE,FALSE},
-							{os_dialog_ctrl_type_text_edit,diag_prop_set_normal_z,"",305,10,145,20,FALSE,FALSE},
-							{os_dialog_ctrl_type_default_button,diag_prop_chord_ok,"OK",370,40,80,25,FALSE,FALSE},
-							{os_dialog_ctrl_type_default_button,diag_prop_chord_cancel,"Cancel",280,40,80,25,FALSE,FALSE},
-							{-1,-1,"",0,0,0,0,FALSE,FALSE}
+							{os_dialog_ctrl_type_text_right,0,"X:",5,10,35,20},
+							{os_dialog_ctrl_type_text_right,0,"Y:",5,35,35,20},
+							{os_dialog_ctrl_type_text_right,0,"Z:",5,60,35,20},
+							{os_dialog_ctrl_type_text_edit,diag_prop_set_normal_x,"",45,10,100,20},
+							{os_dialog_ctrl_type_text_edit,diag_prop_set_normal_y,"",45,35,100,20},
+							{os_dialog_ctrl_type_text_edit,diag_prop_set_normal_z,"",45,60,100,20},
+							{os_dialog_ctrl_type_default_button,diag_prop_set_normal_ok,"OK",270,85,80,25},
+							{os_dialog_ctrl_type_default_button,diag_prop_set_normal_cancel,"Cancel",180,85,80,25},
+							{-1,-1,"",0,0,0,0}
 						};
-
-/* =======================================================
-
-      Set Normal Event Handlers
-      
-======================================================= */
-
-LRESULT CALLBACK dialog_set_normal_proc(HWND diag,UINT msg,WPARAM wparam,LPARAM lparam)
-{
-	switch (msg) {
-
-		case WM_INITDIALOG:
-			win32_dialog_set_float(diag,IDC_SET_NORMAL_X,dialog_set_normal_vct.x);
-			win32_dialog_set_float(diag,IDC_SET_NORMAL_Y,dialog_set_normal_vct.y);
-			win32_dialog_set_float(diag,IDC_SET_NORMAL_Z,dialog_set_normal_vct.z);
-
-			win32_dialog_set_focus(diag,IDC_SET_NORMAL_X);
-			return(FALSE);		// return false when keyboard focus has been set
-
-		case WM_COMMAND:
-
-			switch (LOWORD(wparam)) {
-
-				case ID_SET_NORMAL_OK:
-
-					dialog_set_normal_vct.x=win32_dialog_get_float(diag,IDC_SET_NORMAL_X);
-					dialog_set_normal_vct.y=win32_dialog_get_float(diag,IDC_SET_NORMAL_Y);
-					dialog_set_normal_vct.z=win32_dialog_get_float(diag,IDC_SET_NORMAL_Z);
-					vector_normalize(&dialog_set_normal_vct);
-
-					EndDialog(diag,0);
-					return(TRUE);
-
-				case ID_SET_NORMAL_CANCEL:
-					EndDialog(diag,-1);
-					return(TRUE);
-
-			}
-
-			break;
-
-	}
-
-	return(FALSE);
-}
 
 /* =======================================================
 
@@ -106,15 +62,43 @@ LRESULT CALLBACK dialog_set_normal_proc(HWND diag,UINT msg,WPARAM wparam,LPARAM 
       
 ======================================================= */
 
+void dialog_property_set_normal_proc(int msg_type,int id)
+{
+	switch (msg_type) {
+
+		case os_dialog_msg_type_init:
+			os_dialog_set_float(diag_prop_set_normal_x,dialog_set_normal_vct->x);
+			os_dialog_set_float(diag_prop_set_normal_y,dialog_set_normal_vct->y);
+			os_dialog_set_float(diag_prop_set_normal_z,dialog_set_normal_vct->z);
+			os_dialog_set_focus(diag_prop_set_normal_x,TRUE);
+			break;
+
+		case os_dialog_msg_type_button:
+
+			if (id==diag_prop_set_normal_cancel) {
+				dialog_set_normal_ok=FALSE;
+				os_dialog_close();
+				return;
+			}
+
+			if (id==diag_prop_set_normal_ok) {
+				dialog_set_normal_vct->x=os_dialog_get_float(diag_prop_set_normal_x);
+				dialog_set_normal_vct->y=os_dialog_get_float(diag_prop_set_normal_y);
+				dialog_set_normal_vct->z=os_dialog_get_float(diag_prop_set_normal_z);
+
+				dialog_set_normal_ok=TRUE;
+				os_dialog_close();
+				return;
+			}
+
+			break;
+	}
+}
+
 bool dialog_set_normal_run(d3vct *vct)
 {
-	memmove(&dialog_set_normal_vct,vct,sizeof(d3vct));
+	dialog_set_normal_vct=vct;
+	os_dialog_run("Set Normal",455,300,diag_property_set_normal_ctrls,dialog_property_set_normal_proc);
 
-		// run dialog
-
-//	os_dialog_create(desc,455,200,diag_property_set_normal_ctrls,dialog_property_set_normal_proc);
-
-	memmove(vct,&dialog_set_normal_vct,sizeof(d3vct));
-
-	return(TRUE);
+	return(dialog_set_normal_ok);
 }

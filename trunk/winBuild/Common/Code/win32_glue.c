@@ -711,21 +711,23 @@ void os_dialog_run(char *title,int wid,int high,os_dialog_ctrl_type *ctrls,void 
 				ctrl_wnd=CreateWindowEx(0,"BUTTON",ctrl->str,BS_DEFPUSHBUTTON|BS_TEXT|WS_CHILD|WS_VISIBLE,ctrl->x,ctrl->y,ctrl->wid,ctrl->high,os_dialog_wind,(HMENU)ctrl->id,hinst,NULL);
 				break;
 
+			case os_dialog_ctrl_type_text_left:
+				ctrl_wnd=CreateWindowEx(0,"STATIC",ctrl->str,WS_CHILD|WS_VISIBLE,ctrl->x,ctrl->y,ctrl->wid,ctrl->high,os_dialog_wind,(HMENU)ctrl->id,hinst,NULL);
+				break;
+
+			case os_dialog_ctrl_type_text_right:
+				ctrl_wnd=CreateWindowEx(WS_EX_RIGHT,"STATIC",ctrl->str,WS_CHILD|WS_VISIBLE,ctrl->x,ctrl->y,ctrl->wid,ctrl->high,os_dialog_wind,(HMENU)ctrl->id,hinst,NULL);
+				break;
+
 			case os_dialog_ctrl_type_text_edit:
 				ctrl_wnd=CreateWindowEx(WS_EX_CLIENTEDGE,"EDIT",ctrl->str,ES_LEFT|ES_AUTOHSCROLL|WS_CHILD|WS_VISIBLE,ctrl->x,ctrl->y,ctrl->wid,ctrl->high,os_dialog_wind,(HMENU)ctrl->id,hinst,NULL);
 				break;
-
 	
 		}
 
 			// set font
 
 		SendMessage(ctrl_wnd,WM_SETFONT,(WPARAM)os_dialog_font,0);
-
-			// flags
-
-		if (ctrl->focus) SetFocus(ctrl_wnd);
-		if (ctrl->select_all) SendMessage(ctrl_wnd,EM_SETSEL,0,-1);
 
 		ctrl++;
 	}
@@ -780,6 +782,28 @@ void os_dialog_get_text(int id,char *value,int value_len)
 
 	strncpy(value,str,value_len);
 	value[value_len-1]=0x0;
+}
+
+void os_dialog_set_focus(int id,bool select_all)
+{
+	SetFocus(GetDlgItem(os_dialog_wind,id));
+	if (select_all) SendMessage(GetDlgItem(os_dialog_wind,id),EM_SETSEL,0,-1);
+}
+
+extern void os_dialog_set_float(int id,float f)
+{
+	char			str[256];
+
+	sprintf(str,"%.2f",str);
+	os_dialog_set_text(id,str);
+}
+
+float os_dialog_get_float(int id)
+{
+	char			str[256];
+
+	os_dialog_get_text(id,str,256);
+	return((float)atof(str));
 }
 
 void os_dialog_enable(int id,bool enable)

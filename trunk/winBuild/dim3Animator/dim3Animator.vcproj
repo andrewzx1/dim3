@@ -272,6 +272,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\dim3Common\Headers\glue.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\dim3Animator\Headers\interface.h"
 					>
 				</File>
@@ -479,6 +483,10 @@
 					Name="Dialogs"
 					>
 					<File
+						RelativePath="..\..\dim3Animator\Code\dialog_normal.c"
+						>
+					</File>
+					<File
 						RelativePath="..\..\dim3Common\Code\dialog_property_chord.c"
 						>
 					</File>
@@ -529,10 +537,6 @@
 				</File>
 				<File
 					RelativePath=".\win32Code\win32_dialog_scale_animation.c"
-					>
-				</File>
-				<File
-					RelativePath=".\win32Code\win32_dialog_set_normal.c"
 					>
 				</File>
 				<File
