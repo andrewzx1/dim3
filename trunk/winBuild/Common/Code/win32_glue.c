@@ -612,6 +612,8 @@ bool os_launch_process(char *path,bool text_editor)
 
 LRESULT CALLBACK os_dialog_proc(HWND diag,UINT msg,WPARAM wparam,LPARAM lparam)
 {
+	LPNMHDR			hdr;
+
 	switch (msg) {
 
 		case WM_INITDIALOG:
@@ -621,6 +623,18 @@ LRESULT CALLBACK os_dialog_proc(HWND diag,UINT msg,WPARAM wparam,LPARAM lparam)
 		case WM_COMMAND:
 			if (HIWORD(wparam)==BN_CLICKED) {
 				(*os_dialog_callback)(os_dialog_msg_type_button,(int)LOWORD(wparam));
+				return(TRUE);
+			}
+			break;
+
+		case WM_NOTIFY:
+			hdr=(LPNMHDR)lparam;
+			if (hdr->code==TVN_SELCHANGED) {
+				(*os_dialog_callback)(os_dialog_msg_type_sel_change,hdr->idFrom);
+				return(TRUE);
+			}
+			if (hdr->code==NM_DBLCLK) {
+				(*os_dialog_callback)(os_dialog_msg_type_double_click,hdr->idFrom);
 				return(TRUE);
 			}
 			break;
@@ -722,6 +736,10 @@ void os_dialog_run(char *title,int wid,int high,os_dialog_ctrl_type *ctrls,void 
 			case os_dialog_ctrl_type_text_edit:
 				ctrl_wnd=CreateWindowEx(WS_EX_CLIENTEDGE,"EDIT",ctrl->str,ES_LEFT|ES_AUTOHSCROLL|WS_CHILD|WS_VISIBLE,ctrl->x,ctrl->y,ctrl->wid,ctrl->high,os_dialog_wind,(HMENU)ctrl->id,hinst,NULL);
 				break;
+
+			case os_dialog_ctrl_type_files:
+				ctrl_wnd=CreateWindowEx(WS_EX_CLIENTEDGE,WC_TREEVIEW,ctrl->str,TVS_HASBUTTONS|TVS_HASLINES|WS_CHILD|WS_VISIBLE,ctrl->x,ctrl->y,ctrl->wid,ctrl->high,os_dialog_wind,(HMENU)ctrl->id,hinst,NULL);
+				break;
 	
 		}
 
@@ -784,12 +802,6 @@ void os_dialog_get_text(int id,char *value,int value_len)
 	value[value_len-1]=0x0;
 }
 
-void os_dialog_set_focus(int id,bool select_all)
-{
-	SetFocus(GetDlgItem(os_dialog_wind,id));
-	if (select_all) SendMessage(GetDlgItem(os_dialog_wind,id),EM_SETSEL,0,-1);
-}
-
 extern void os_dialog_set_float(int id,float f)
 {
 	char			str[256];
@@ -804,6 +816,61 @@ float os_dialog_get_float(int id)
 
 	os_dialog_get_text(id,str,256);
 	return((float)atof(str));
+}
+
+HTREEITEM os_dialog_add_tree_recursive(int id,file_path_directory_type *fpd,HTREEITEM parent_item,int parent_idx)
+{
+	int					n;
+	TV_INSERTSTRUCT		tv_item;
+	HTREEITEM			item,first_item;
+
+	first_item=NULL;
+
+	for (n=0;n!=fpd->nfile;n++) {
+		if (fpd->files[n].parent_idx==parent_idx) {
+			tv_item.hParent=parent_item;
+			tv_item.hInsertAfter=TVI_LAST;
+			tv_item.item.mask=TVIF_TEXT|TVIF_PARAM;
+			tv_item.item.pszText=fpd->files[n].file_name;
+			tv_item.item.lParam=(fpd->files[n].is_dir?0xFFFF0000:0x0)|(n&0xFFFF);
+			item=(HTREEITEM)SendMessage(GetDlgItem(os_dialog_wind,id),TVM_INSERTITEM,0,(LPARAM)&tv_item);
+
+			if (first_item==NULL) first_item=item;
+			os_dialog_add_tree_recursive(id,fpd,item,n);
+		}
+	}
+
+	return(first_item);
+}
+
+void os_dialog_tree_add(int id,file_path_directory_type *fpd)
+{
+	HTREEITEM			first_item;
+
+	first_item=os_dialog_add_tree_recursive(id,fpd,NULL,-1);
+	if (first_item!=NULL) SendMessage(GetDlgItem(os_dialog_wind,id),TVM_EXPAND,TVE_EXPAND,(LPARAM)first_item);
+}
+
+int os_dialog_tree_get_value(int id)
+{
+	HTREEITEM			item;
+	TV_ITEM				info;
+
+	item=(HTREEITEM)SendMessage(GetDlgItem(os_dialog_wind,id),TVM_GETNEXTITEM,TVGN_CARET,(LPARAM)0);
+	if (item==NULL) return(-1);
+
+	info.mask=TVIF_PARAM;
+	info.hItem=item;
+
+	SendMessage(GetDlgItem(os_dialog_wind,id),TVM_GETITEM,0,(LPARAM)&info);
+
+	return(info.lParam);
+}
+
+void os_dialog_set_focus(int id,bool select_all)
+{
+	SetFocus(GetDlgItem(os_dialog_wind,id));
+	if (select_all) SendMessage(GetDlgItem(os_dialog_wind,id),EM_SETSEL,0,-1);
 }
 
 void os_dialog_enable(int id,bool enable)

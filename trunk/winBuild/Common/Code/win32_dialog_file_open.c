@@ -2,7 +2,7 @@
 
 Module: dim3 Common
 Author: Brian Barnes
- Usage: File Open Routines
+ Usage: Dialog File Open
 
 ***************************** License ********************************
 
@@ -25,34 +25,47 @@ and can be sold or given away.
  
 *********************************************************************/
 
-#ifdef D3_EDITOR
-	#include "dim3editor.h"
-#endif
-#ifdef D3_ANIMATOR
-	#include "dim3Animator.h"
-#endif
-#ifdef D3_SETUP
-	#include "dim3Setup.h"
+#ifdef D3_PCH
+	#ifdef D3_EDITOR
+		#include "dim3editor.h"
+	#endif
+	#ifdef D3_ANIMATOR
+		#include "dim3Animator.h"
+	#endif
+	#ifdef D3_SETUP
+		#include "dim3Setup.h"
+	#endif
 #endif
 
-#include "resource.h"
-#include "win32_dialog.h"
+#include "glue.h"
+#include "interface.h"
+#include "ui_common.h"
 
-extern HINSTANCE				hinst;
-extern HWND						wnd;
-
-int								dialog_file_open_file_index;
-char							dialog_file_open_title[256];
-file_path_directory_type		*fpd;
+int								dialog_open_file_index;
+bool							dialog_open_ok;
+file_path_directory_type		*dialog_open_fpd;
 
 extern file_path_setup_type		file_path_setup;
+
+// controls
+
+#define diag_prop_open_files	5000
+#define diag_prop_open_cancel	5001
+#define diag_prop_open_ok		5002
+
+os_dialog_ctrl_type		diag_property_open_ctrls[]={
+							{os_dialog_ctrl_type_files,diag_prop_open_files,"",5,5,440,410},
+							{os_dialog_ctrl_type_button,diag_prop_open_cancel,"Cancel",275,420,80,25},
+							{os_dialog_ctrl_type_default_button,diag_prop_open_ok,"OK",365,420,80,25},
+							{-1,-1,"",0,0,0,0}
+						};
 
 /* =======================================================
 
       File List Event Handlers
       
 ======================================================= */
-
+/*
 HTREEITEM dialog_file_open_fill_list(HWND diag,HTREEITEM parent_item,int parent_idx)
 {
 	int					n;
@@ -171,38 +184,86 @@ LRESULT CALLBACK dialog_file_open_proc(HWND diag,UINT msg,WPARAM wparam,LPARAM l
 
 	return(FALSE);
 }
-
+*/
 /* =======================================================
 
       Run File Open
       
 ======================================================= */
 
+void dialog_property_open_proc(int msg_type,int id)
+{
+	int					idx;
+
+	switch (msg_type) {
+
+		case os_dialog_msg_type_init:
+			os_dialog_tree_add(diag_prop_open_files,dialog_open_fpd);
+			os_dialog_enable(diag_prop_open_ok,FALSE);
+			break;
+
+		case os_dialog_msg_type_button:
+
+			if (id==diag_prop_open_cancel) {
+				dialog_open_ok=FALSE;
+				os_dialog_close();
+				return;
+			}
+
+			if (id==diag_prop_open_ok) {
+				dialog_open_file_index=os_dialog_tree_get_value(diag_prop_open_files)&0xFFFF;
+
+				dialog_open_ok=TRUE;
+				os_dialog_close();
+				return;
+			}
+
+			break;
+
+		case os_dialog_msg_type_sel_change:
+			idx=os_dialog_tree_get_value(diag_prop_open_files);
+
+			if ((idx&0xFFFF0000)!=0) {
+				os_dialog_enable(diag_prop_open_ok,FALSE);
+			}
+			else {
+				os_dialog_enable(diag_prop_open_ok,TRUE);
+			}
+			break;
+
+		case os_dialog_msg_type_double_click:
+			idx=os_dialog_tree_get_value(diag_prop_open_files)&0xFFFF;
+			if ((idx&0xFFFF0000)!=0) break;
+
+			dialog_open_file_index=idx&0xFFFF;
+			dialog_open_ok=TRUE;
+			os_dialog_close();
+			break;
+
+	}
+}
+
 bool dialog_file_open_run(char *title,char *search_path,char *extension,char *required_file_name,char *file_name)
 {
-	bool			ok;
-
 		// scan for files
 		
 	if (extension!=NULL) {
-		fpd=file_paths_read_directory_data(&file_path_setup,search_path,extension);
+		dialog_open_fpd=file_paths_read_directory_data(&file_path_setup,search_path,extension);
 	}
 	else {
-		fpd=file_paths_read_directory_data_dir(&file_path_setup,search_path,required_file_name);
+		dialog_open_fpd=file_paths_read_directory_data_dir(&file_path_setup,search_path,required_file_name);
 	}
 
 		// run dialog
 
-	strcpy(dialog_file_open_title,title);
+	os_dialog_run(title,450,450,diag_property_open_ctrls,dialog_property_open_proc);
 
-	ok=(DialogBox(hinst,MAKEINTRESOURCE(IDD_FILE_OPEN),wnd,dialog_file_open_proc)==0);
+		// get the file
 
-		// get the file and close
+	if ((dialog_open_ok) && (dialog_open_file_index!=-1)) file_paths_get_complete_path_from_index(dialog_open_fpd,dialog_open_file_index,file_name);
 
-	if ((ok) && (dialog_file_open_file_index!=-1)) file_paths_get_complete_path_from_index(fpd,dialog_file_open_file_index,file_name);
+	file_paths_close_directory(dialog_open_fpd);
 
-	file_paths_close_directory(fpd);
-	
-	return(ok);
+	return(dialog_open_ok);
 }
 
