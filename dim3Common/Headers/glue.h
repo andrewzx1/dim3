@@ -46,12 +46,15 @@ typedef struct {
 
 #define os_dialog_msg_type_init				0
 #define os_dialog_msg_type_button			1
+#define os_dialog_msg_type_sel_change		2
+#define os_dialog_msg_type_double_click		3
 
 #define os_dialog_ctrl_type_button			0
 #define os_dialog_ctrl_type_default_button	1
 #define os_dialog_ctrl_type_text_left		2
 #define os_dialog_ctrl_type_text_right		3
 #define os_dialog_ctrl_type_text_edit		4
+#define os_dialog_ctrl_type_files			5
 
 typedef struct {
 					int			type,id;
@@ -115,5 +118,7 @@ extern void os_dialog_set_text(int id,char *value);
 extern void os_dialog_get_text(int id,char *value,int value_len);
 extern void os_dialog_set_float(int id,float f);
 extern float os_dialog_get_float(int id);
+extern void os_dialog_tree_add(int id,file_path_directory_type *fpd);
+extern int os_dialog_tree_get_value(int id);
 extern void os_dialog_set_focus(int id,bool select_all);
 extern void os_dialog_enable(int id,bool enable);

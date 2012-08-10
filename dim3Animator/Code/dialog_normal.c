@@ -41,8 +41,8 @@ d3vct							*dialog_set_normal_vct;
 #define diag_prop_set_normal_x		5000
 #define diag_prop_set_normal_y		5001
 #define diag_prop_set_normal_z		5002
-#define diag_prop_set_normal_ok		5003
-#define diag_prop_set_normal_cancel	5004
+#define diag_prop_set_normal_cancel	5003
+#define diag_prop_set_normal_ok		5004
 
 os_dialog_ctrl_type		diag_property_set_normal_ctrls[]={
 							{os_dialog_ctrl_type_text_right,0,"X:",5,13,35,20},
@@ -51,8 +51,8 @@ os_dialog_ctrl_type		diag_property_set_normal_ctrls[]={
 							{os_dialog_ctrl_type_text_edit,diag_prop_set_normal_x,"",45,10,100,20},
 							{os_dialog_ctrl_type_text_edit,diag_prop_set_normal_y,"",45,35,100,20},
 							{os_dialog_ctrl_type_text_edit,diag_prop_set_normal_z,"",45,60,100,20},
+							{os_dialog_ctrl_type_button,diag_prop_set_normal_cancel,"Cancel",180,85,80,25},
 							{os_dialog_ctrl_type_default_button,diag_prop_set_normal_ok,"OK",270,85,80,25},
-							{os_dialog_ctrl_type_default_button,diag_prop_set_normal_cancel,"Cancel",180,85,80,25},
 							{-1,-1,"",0,0,0,0}
 						};
 
