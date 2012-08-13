@@ -191,7 +191,7 @@ LRESULT CALLBACK dialog_file_open_proc(HWND diag,UINT msg,WPARAM wparam,LPARAM l
       
 ======================================================= */
 
-void dialog_property_open_proc(int msg_type,int id)
+bool dialog_property_open_proc(int msg_type,int id)
 {
 	int					idx;
 
@@ -200,14 +200,14 @@ void dialog_property_open_proc(int msg_type,int id)
 		case os_dialog_msg_type_init:
 			os_dialog_tree_add(diag_prop_open_files,dialog_open_fpd);
 			os_dialog_enable(diag_prop_open_ok,FALSE);
-			break;
+			return(TRUE);
 
 		case os_dialog_msg_type_button:
 
 			if (id==diag_prop_open_cancel) {
 				dialog_open_ok=FALSE;
 				os_dialog_close();
-				return;
+				return(TRUE);
 			}
 
 			if (id==diag_prop_open_ok) {
@@ -215,12 +215,13 @@ void dialog_property_open_proc(int msg_type,int id)
 
 				dialog_open_ok=TRUE;
 				os_dialog_close();
-				return;
+				return(TRUE);
 			}
 
 			break;
 
 		case os_dialog_msg_type_sel_change:
+			MessageBox(NULL,"1","2",MB_OK);
 			idx=os_dialog_tree_get_value(diag_prop_open_files);
 
 			if ((idx&0xFFFF0000)!=0) {
@@ -229,7 +230,7 @@ void dialog_property_open_proc(int msg_type,int id)
 			else {
 				os_dialog_enable(diag_prop_open_ok,TRUE);
 			}
-			break;
+			return(TRUE);
 
 		case os_dialog_msg_type_double_click:
 			idx=os_dialog_tree_get_value(diag_prop_open_files)&0xFFFF;
@@ -238,9 +239,11 @@ void dialog_property_open_proc(int msg_type,int id)
 			dialog_open_file_index=idx&0xFFFF;
 			dialog_open_ok=TRUE;
 			os_dialog_close();
-			break;
+			return(TRUE);
 
 	}
+
+	return(FALSE);
 }
 
 bool dialog_file_open_run(char *title,char *search_path,char *extension,char *required_file_name,char *file_name)

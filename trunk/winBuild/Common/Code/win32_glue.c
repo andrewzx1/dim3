@@ -48,9 +48,10 @@ extern HACCEL			wnd_accel;
 HCURSOR					cur_arrow,cur_wait,cur_hand,cur_drag,cur_resize,
 						cur_add,cur_subtract;
 COLORREF				custom_colors[16];
-bool					os_dialog_quit;
+bool					os_dialog_focus_flag;
 HWND					os_dialog_wind;
 HFONT					os_dialog_font;
+os_dialog_ctrl_type		*os_dialog_ctrls;
 os_dialog_callback_ptr	os_dialog_callback;
 
 /* =======================================================
@@ -612,179 +613,260 @@ bool os_launch_process(char *path,bool text_editor)
 
 LRESULT CALLBACK os_dialog_proc(HWND diag,UINT msg,WPARAM wparam,LPARAM lparam)
 {
-	LPNMHDR			hdr;
+	os_dialog_ctrl_type	*ctrl;
+	LPNMHDR				hdr;
 
 	switch (msg) {
 
 		case WM_INITDIALOG:
+
+				// remember handle so dialogend works
+
+			os_dialog_wind=diag;
+
+				// set the fonts
+
+			SendMessage(os_dialog_wind,WM_SETFONT,(LPARAM)os_dialog_font,0);
+
+			ctrl=os_dialog_ctrls;
+
+			while (ctrl->id!=-1) {
+				SendDlgItemMessage(os_dialog_wind,ctrl->id,WM_SETFONT,(LPARAM)os_dialog_font,0);
+				ctrl++;
+			}
+
+				// send init message back
+				// we need to check if focus was set
+
+			os_dialog_focus_flag=FALSE;
 			(*os_dialog_callback)(os_dialog_msg_type_init,0);
-			return(FALSE);		// we set the focus
+
+			return(!os_dialog_focus_flag);
 
 		case WM_COMMAND:
-			if (HIWORD(wparam)==BN_CLICKED) {
-				(*os_dialog_callback)(os_dialog_msg_type_button,(int)LOWORD(wparam));
-				return(TRUE);
-			}
-			break;
+			return((*os_dialog_callback)(os_dialog_msg_type_button,(int)LOWORD(wparam)));
 
 		case WM_NOTIFY:
 			hdr=(LPNMHDR)lparam;
-			if (hdr->code==TVN_SELCHANGED) {
-				(*os_dialog_callback)(os_dialog_msg_type_sel_change,hdr->idFrom);
-				return(TRUE);
-			}
-			if (hdr->code==NM_DBLCLK) {
-				(*os_dialog_callback)(os_dialog_msg_type_double_click,hdr->idFrom);
-				return(TRUE);
-			}
+			if (hdr->code==TVN_SELCHANGED) return((*os_dialog_callback)(os_dialog_msg_type_sel_change,hdr->idFrom));
+			if (hdr->code==NM_DBLCLK) return((*os_dialog_callback)(os_dialog_msg_type_double_click,hdr->idFrom));
 			break;
 
 	}
 
-	return(DefDlgProc(diag,msg,wparam,lparam));
+	return(FALSE);
+}
+
+int os_dialog_unit_convert_x(int x)
+{
+	LONG		sz;
+
+	sz=GetDialogBaseUnits();
+	return(MulDiv(x,4,LOWORD(sz)));
+}
+
+int os_dialog_unit_convert_y(int y)
+{
+	LONG		sz;
+
+	sz=GetDialogBaseUnits();
+	return(MulDiv(y,8,HIWORD(sz)));
+}
+
+int os_dialog_count_controls(os_dialog_ctrl_type *ctrls)
+{
+	int					count;
+	os_dialog_ctrl_type	*ctrl;
+
+	count=0;
+	ctrl=ctrls;
+
+	while (ctrl->id!=-1) {
+		count++;
+		ctrl++;
+	}
+
+	return(count);
 }
 
 void os_dialog_run(char *title,int wid,int high,os_dialog_ctrl_type *ctrls,void *callback)
 {
-	int					x,y,m_wid,m_high,font_high;
-	RECT				box;
+	int					font_high,style,ex_style,atom,sz;
+	unsigned char		*ptr,*diag_template;
+	char				atom_name[32];
+	unsigned long		ulong;
+	bool				first_ctrl;
+	WORD				*w_ptr;
 	os_dialog_ctrl_type	*ctrl;
-	MSG					msg;
-	HWND				ctrl_wnd;
-	WNDCLASSEX			wcx;
+	DLGTEMPLATE			*dlg;
+	DLGITEMTEMPLATE		*item;
 
 		// setup callback
 
 	os_dialog_callback=callback;
 
-		// get x,y of dialog
+		// build the dialog template
+		// in memory
 
-	m_wid=GetSystemMetrics(SM_CXSCREEN);
-	m_high=GetSystemMetrics(SM_CYSCREEN);
+	diag_template=malloc(10240);
+	memset(diag_template,0x0,10240);
 
-	x=(m_wid/2)-(wid/2);
-	y=(m_high/2)-(high/2);
+	ptr=diag_template;
 
-		// enlarge size for framing
-		// elements
+		// dialog
 
-	box.left=x;
-	box.top=y;
-	box.right=box.left+wid;
-	box.bottom=box.top+high;
+	dlg=(DLGTEMPLATE*)ptr;
 
-	AdjustWindowRectEx(&box,WS_CAPTION,FALSE,WS_EX_DLGMODALFRAME);
+	dlg->style=DS_MODALFRAME|DS_FIXEDSYS|DS_CENTER|WS_POPUP|WS_CAPTION;
+	dlg->dwExtendedStyle=0;
+	dlg->cdit=os_dialog_count_controls(ctrls);
+	dlg->x=0;
+	dlg->y=0;
+	dlg->cx=os_dialog_unit_convert_x(wid);
+	dlg->cy=os_dialog_unit_convert_x(high);
 
-	x=box.left;
-	y=box.top;
-	wid=box.right-x;
-	high=box.bottom-y;
+	ptr+=sizeof(DLGTEMPLATE);
 
-		// create window
+	w_ptr=(WORD*)ptr;
+	*w_ptr=0x0;
+	ptr+=2;
 
-    wcx.cbSize=sizeof(wcx);
-    wcx.style=CS_DBLCLKS;
-    wcx.lpfnWndProc=os_dialog_proc;
-    wcx.cbClsExtra=0;
-    wcx.cbWndExtra=DLGWINDOWEXTRA;
-    wcx.hInstance=hinst;
-    wcx.hIcon=NULL;
-    wcx.hCursor=LoadCursor(NULL,IDC_ARROW);
-    wcx.hbrBackground=(HBRUSH)CreateSolidBrush(RGB(240,240,240));
-    wcx.lpszMenuName=NULL;
-    wcx.lpszClassName="dim3DialogClass";
-    wcx.hIconSm=NULL;
+	w_ptr=(WORD*)ptr;
+	*w_ptr=0x0;
+	ptr+=2;
 
-    RegisterClassEx(&wcx);
+	sz=MultiByteToWideChar(CP_ACP,0,title,-1,(LPWSTR)ptr,64);		// title
+	ptr+=((sz+1)*sizeof(wchar_t));
 
-    os_dialog_wind=CreateWindowEx(WS_EX_DLGMODALFRAME|WS_EX_NOPARENTNOTIFY,"dim3DialogClass",title,WS_POPUP|WS_CAPTION,x,y,wid,high,wnd,NULL,hinst,NULL);
+		// remember controls
+		// so we can set font later
 
-		// disable main window
+	os_dialog_ctrls=ctrls;
 
-	EnableWindow(wnd,FALSE);
+		// controls
 
-		// window font
-
-	font_high=-MulDiv(8,GetDeviceCaps(GetDC(os_dialog_wind),LOGPIXELSY),72);
-	os_dialog_font=CreateFont(font_high,0,0,0,400,0,0,0,0x1,0,0,0,0,"MS Shell Dlg");
-
-		// add in the controls
-
+	first_ctrl=TRUE;
 	ctrl=ctrls;
 
-	while (TRUE) {
-		if (ctrl->type==-1) break;
+	while (ctrl->id!=-1) {
+		atom_name[0]=0x0;
+		ex_style=0;
 
 		switch (ctrl->type) {
 
 			case os_dialog_ctrl_type_button:
-				ctrl_wnd=CreateWindowEx(0,"BUTTON",ctrl->str,BS_PUSHBUTTON|BS_TEXT|WS_CHILD|WS_VISIBLE,ctrl->x,ctrl->y,ctrl->wid,ctrl->high,os_dialog_wind,(HMENU)ctrl->id,hinst,NULL);
+				style=BS_PUSHBUTTON|WS_CHILD|WS_VISIBLE;
+				atom=0x80;
 				break;
 
 			case os_dialog_ctrl_type_default_button:
-				ctrl_wnd=CreateWindowEx(0,"BUTTON",ctrl->str,BS_DEFPUSHBUTTON|BS_TEXT|WS_CHILD|WS_VISIBLE,ctrl->x,ctrl->y,ctrl->wid,ctrl->high,os_dialog_wind,(HMENU)ctrl->id,hinst,NULL);
+				style=BS_DEFPUSHBUTTON|WS_CHILD|WS_VISIBLE;
+				atom=0x80;
 				break;
 
 			case os_dialog_ctrl_type_text_left:
-				ctrl_wnd=CreateWindowEx(0,"STATIC",ctrl->str,WS_CHILD|WS_VISIBLE,ctrl->x,ctrl->y,ctrl->wid,ctrl->high,os_dialog_wind,(HMENU)ctrl->id,hinst,NULL);
+				style=SS_LEFT|WS_CHILD|WS_VISIBLE;
+				atom=0x82;
 				break;
 
 			case os_dialog_ctrl_type_text_right:
-				ctrl_wnd=CreateWindowEx(WS_EX_RIGHT,"STATIC",ctrl->str,WS_CHILD|WS_VISIBLE,ctrl->x,ctrl->y,ctrl->wid,ctrl->high,os_dialog_wind,(HMENU)ctrl->id,hinst,NULL);
+				style=SS_RIGHT|WS_CHILD|WS_VISIBLE;
+				atom=0x82;
 				break;
 
 			case os_dialog_ctrl_type_text_edit:
-				ctrl_wnd=CreateWindowEx(WS_EX_CLIENTEDGE,"EDIT",ctrl->str,ES_LEFT|ES_AUTOHSCROLL|WS_CHILD|WS_VISIBLE,ctrl->x,ctrl->y,ctrl->wid,ctrl->high,os_dialog_wind,(HMENU)ctrl->id,hinst,NULL);
+				style=WS_CHILD|WS_VISIBLE|ES_LEFT|ES_AUTOHSCROLL;
+				ex_style=WS_EX_CLIENTEDGE;
+				atom=0x81;
 				break;
 
 			case os_dialog_ctrl_type_files:
-				ctrl_wnd=CreateWindowEx(WS_EX_CLIENTEDGE,WC_TREEVIEW,ctrl->str,TVS_HASBUTTONS|TVS_HASLINES|WS_CHILD|WS_VISIBLE,ctrl->x,ctrl->y,ctrl->wid,ctrl->high,os_dialog_wind,(HMENU)ctrl->id,hinst,NULL);
+				style=WS_CHILD|WS_VISIBLE|TVS_HASBUTTONS|TVS_HASLINES;
+				ex_style=WS_EX_CLIENTEDGE;
+				atom=0x0;
+				strcpy(atom_name,"SysTreeView32");
 				break;
-	
+
 		}
 
-			// set font
+			// make sure first control starts
+			// a tab group
 
-		SendMessage(ctrl_wnd,WM_SETFONT,(WPARAM)os_dialog_font,0);
+		if (first_ctrl) {
+			style|=WS_GROUP;
+			first_ctrl=FALSE;
+		}
+
+			// must be on DWORD boundry
+
+		while (TRUE) {
+			ulong=(unsigned long)ptr;
+			if ((ulong&0x3)==0x0) break;
+			ptr++;
+		}
+
+		item=(DLGITEMTEMPLATE*)ptr;
+
+		item->style=style;
+		item->dwExtendedStyle=ex_style;
+		item->x=os_dialog_unit_convert_x(ctrl->x);
+		item->y=os_dialog_unit_convert_y(ctrl->y);
+		item->cx=os_dialog_unit_convert_x(ctrl->wid);
+		item->cy=os_dialog_unit_convert_y(ctrl->high);
+		item->id=ctrl->id;
+		
+		ptr+=sizeof(DLGITEMTEMPLATE);
+
+		if (atom_name[0]==0x0) {
+			w_ptr=(WORD*)ptr;
+			*w_ptr=0xFFFF;
+			ptr+=2;
+
+			w_ptr=(WORD*)ptr;
+			*w_ptr=atom;
+			ptr+=2;
+		}
+		else {
+			sz=MultiByteToWideChar(CP_ACP,0,atom_name,-1,(LPWSTR)ptr,64);
+			ptr+=((sz+1)*sizeof(wchar_t));
+		}
+
+		if (ctrl->str[0]==0x0) {
+			w_ptr=(WORD*)ptr;
+			*w_ptr=0xFFFF;
+			ptr+=2;
+		}
+		else {
+			sz=MultiByteToWideChar(CP_ACP,0,ctrl->str,-1,(LPWSTR)ptr,64);
+			ptr+=((sz+1)*sizeof(wchar_t));
+		}
+
+		w_ptr=(WORD*)ptr;
+		*w_ptr=0x0;
+		ptr+=2;
 
 		ctrl++;
 	}
 
-		// init dialog message
+		// window font
 
-	SendMessage(os_dialog_wind,WM_INITDIALOG,0,0);
-
-		// show window
-
-	ShowWindow(os_dialog_wind,SW_SHOWNORMAL);
+	font_high=-MulDiv(8,GetDeviceCaps(GetDC(wnd),LOGPIXELSY),72);
+	os_dialog_font=CreateFont(font_high,0,0,0,400,0,0,0,0x1,0,0,0,0,"MS Shell Dlg");
 
 		// run dialog
 
-	os_dialog_quit=FALSE;
+	DialogBoxIndirect(hinst,(DLGTEMPLATE*)diag_template,wnd,os_dialog_proc);
 
-	while (!os_dialog_quit) {
-		if (GetMessage(&msg,NULL,0,0)>0) {
-			if (!IsDialogMessage(os_dialog_wind,&msg)) {
-				TranslateMessage(&msg);
-				DispatchMessage(&msg);
-			}
-		}
-	}
-
-		// return window states and close
-		// dialog
-
-	EnableWindow(wnd,TRUE);
-
-	DestroyWindow(os_dialog_wind);
-	UnregisterClass("dim3DialogClass",GetModuleHandle(NULL));
+		// clean up
 
 	DeleteObject(os_dialog_font);
+
+	free(diag_template);
 }
 
 void os_dialog_close(void)
 {
-	os_dialog_quit=TRUE;
+	EndDialog(os_dialog_wind,0);
 }
 
 void os_dialog_set_text(int id,char *value)
@@ -869,6 +951,8 @@ int os_dialog_tree_get_value(int id)
 
 void os_dialog_set_focus(int id,bool select_all)
 {
+	os_dialog_focus_flag=TRUE;
+
 	SetFocus(GetDlgItem(os_dialog_wind,id));
 	if (select_all) SendMessage(GetDlgItem(os_dialog_wind,id),EM_SETSEL,0,-1);
 }
