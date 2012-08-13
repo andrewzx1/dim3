@@ -65,7 +65,7 @@ os_dialog_ctrl_type		diag_property_chord_ctrls[]={
       
 ======================================================= */
 
-void dialog_property_chord_proc(int msg_type,int id)
+bool dialog_property_chord_proc(int msg_type,int id)
 {
 	char		str_x[256],str_y[256],str_z[256];
 	bool		three_value;
@@ -79,7 +79,7 @@ void dialog_property_chord_proc(int msg_type,int id)
 			os_dialog_set_text(diag_prop_chord_str_z,str_z);
 			os_dialog_enable(diag_prop_chord_str_z,three_value);
 			os_dialog_set_focus(diag_prop_chord_str_x,TRUE);
-			break;
+			return(TRUE);
 
 		case os_dialog_msg_type_button:
 			if (id==diag_prop_chord_ok) {
@@ -89,9 +89,12 @@ void dialog_property_chord_proc(int msg_type,int id)
 				property_chord_set_values(dialog_property_chord_value_type,dialog_property_chord_value,str_x,str_y,str_z);
 
 				os_dialog_close();
+				return(TRUE);
 			}
 			break;
 	}
+
+	return(FALSE);
 }
 
 void dialog_property_chord_run(int value_type,void *value)

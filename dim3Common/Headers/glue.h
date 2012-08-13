@@ -62,7 +62,7 @@ typedef struct {
 					int			x,y,wid,high;
 				} os_dialog_ctrl_type;
 
-typedef void (*os_dialog_callback_ptr)(int msg_type,int id);
+typedef bool (*os_dialog_callback_ptr)(int msg_type,int id);
 
 //
 // functions

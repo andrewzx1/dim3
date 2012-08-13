@@ -64,7 +64,7 @@ os_dialog_ctrl_type		diag_property_string_ctrls[]={
       
 ======================================================= */
 
-void dialog_property_string_proc(int msg_type,int id)
+bool dialog_property_string_proc(int msg_type,int id)
 {
 	char			str[256];
 
@@ -74,16 +74,19 @@ void dialog_property_string_proc(int msg_type,int id)
 			property_string_get_values(dialog_property_string_value_type,dialog_property_string_value,str);
 			os_dialog_set_text(diag_prop_string_str,str);
 			os_dialog_set_focus(diag_prop_string_str,TRUE);
-			break;
+			return(TRUE);
 
 		case os_dialog_msg_type_button:
 			if (id==diag_prop_string_ok) {
 				os_dialog_get_text(diag_prop_string_str,str,256);
 				property_string_set_values(dialog_property_string_value_type,dialog_property_string_value,dialog_property_string_value_len,dialog_property_string_i_min,dialog_property_string_i_max,str);
 				os_dialog_close();
+				return(TRUE);
 			}
 			break;
 	}
+
+	return(FALSE);
 }
 
 void dialog_property_string_run(int value_type,void *value,int value_len,int i_min,int i_max)
