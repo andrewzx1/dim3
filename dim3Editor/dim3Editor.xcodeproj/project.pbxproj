@@ -1018,12 +1018,12 @@
 		F503BCC9011B901401000001 /* Main */ = {
 			isa = PBXGroup;
 			children = (
+				26E155EE12601C9D003158E5 /* OSX_glue.c */,
 				264D965D12921024005039CD /* OSX_main.c */,
 				0123D86600C0AFD57F000001 /* menu.c */,
 				0123D85F00C0AFD57F000001 /* dos.c */,
 				F5239B9D0AFD9C5200241092 /* undo.c */,
 				F571C8760B34DA6300F979B7 /* xml_setup.c */,
-				26E155EE12601C9D003158E5 /* OSX_glue.c */,
 			);
 			name = Main;
 			sourceTree = "<group>";
@@ -1405,6 +1405,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = i386;
+				CLANG_ENABLE_OBJC_ARC = NO;
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";

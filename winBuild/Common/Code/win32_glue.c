@@ -806,7 +806,7 @@ extern void os_dialog_set_float(int id,float f)
 {
 	char			str[256];
 
-	sprintf(str,"%.2f",str);
+	sprintf(str,"%.2f",f);
 	os_dialog_set_text(id,str);
 }
 

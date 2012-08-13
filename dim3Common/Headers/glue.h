@@ -122,3 +122,4 @@ extern void os_dialog_tree_add(int id,file_path_directory_type *fpd);
 extern int os_dialog_tree_get_value(int id);
 extern void os_dialog_set_focus(int id,bool select_all);
 extern void os_dialog_enable(int id,bool enable);
+
