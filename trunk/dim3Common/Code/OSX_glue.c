@@ -31,7 +31,16 @@ extern WindowRef				wind;
 extern AGLContext				ctx;
 
 char							os_load_file_ext[32];
+EventHandlerRef					os_dialog_wind_event;
+EventHandlerUPP					os_dialog_wind_upp;
+ControlRef						os_dialog_ctrls[32];
 WindowRef						os_dialog_wind;
+
+int								os_dialog_ctrl_count;
+DataBrowserItemDataUPP			os_dialog_files_item_upp;
+DataBrowserItemNotificationUPP	os_dialog_files_notify_upp;
+file_path_directory_type		*os_dialog_fpd;
+os_dialog_callback_ptr			os_dialog_callback;
 
 /* =======================================================
 
@@ -531,13 +540,41 @@ bool os_launch_process(char *path,bool text_editor)
       
 ======================================================= */
 
+OSStatus os_dialog_wind_event_callback(EventHandlerCallRef eventhandler,EventRef event,void *userdata)
+{
+	HICommand			cmd;
+	
+	switch (GetEventClass(event)) {
+	
+		case kEventClassCommand:
+		
+			switch (GetEventKind(event)) {
+			
+                case kEventCommandProcess:
+					GetEventParameter(event,kEventParamDirectObject,typeHICommand,NULL,sizeof(HICommand),NULL,&cmd);
+					(*os_dialog_callback)(os_dialog_msg_type_button,(int)cmd.commandID);
+                    return(noErr);
+
+			}
+	}
+	
+	return(eventNotHandledErr);
+}
+
 void os_dialog_run(char *title,int wid,int high,os_dialog_ctrl_type *ctrls,void *callback)
 {
+	int					idx;
 	unsigned char		p_str[256];
+	os_dialog_ctrl_type	*ctrl;
 	HIRect				wbox;
 	Rect				box;
+	CFStringRef			cf_str;
+	ControlFontStyleRec	font_rec;
+	EventTypeSpec		diag_events[]={{kEventClassCommand,kEventCommandProcess}};
 	
-	fprintf(stdout,"HERE 1\n");
+		// setup callback
+
+	os_dialog_callback=callback;
 	
 		// create the window
 		
@@ -553,16 +590,90 @@ void os_dialog_run(char *title,int wid,int high,os_dialog_ctrl_type *ctrls,void 
 	CopyCStringToPascal(title,p_str);
 	SetWTitle(os_dialog_wind,p_str);
 	
+		// remember if we've added
+		// a file browser
+		
+	os_dialog_files_item_upp=NULL;
+	os_dialog_files_notify_upp=NULL;
+	
 		// add controls
+		
+	idx=0;
+	
+	while (TRUE) {
+		ctrl=&ctrls[idx];
+		if (ctrl->type==-1) break;
+		
+		box.left=ctrl->x;
+		box.top=ctrl->y;
+		box.right=ctrl->x+ctrl->wid;
+		box.bottom=ctrl->y+ctrl->high;
+		
+		cf_str=CFStringCreateWithCString(kCFAllocatorDefault,ctrl->str,kCFStringEncodingMacRoman);
 
+		switch (ctrl->type) {
+
+			case os_dialog_ctrl_type_button:
+				CreatePushButtonControl(os_dialog_wind,&box,cf_str,&os_dialog_ctrls[idx]);
+				break;
+				
+			case os_dialog_ctrl_type_default_button:
+				CreatePushButtonControl(os_dialog_wind,&box,cf_str,&os_dialog_ctrls[idx]);
+				SetWindowDefaultButton(os_dialog_wind,os_dialog_ctrls[idx]);
+				break;
+				
+			case os_dialog_ctrl_type_text_left:
+				CreateStaticTextControl(os_dialog_wind,&box,cf_str,NULL,&os_dialog_ctrls[idx]);
+				break;
+			
+			case os_dialog_ctrl_type_text_right:
+				font_rec.flags=kControlUseJustMask;
+				font_rec.just=-1;
+				CreateStaticTextControl(os_dialog_wind,&box,cf_str,&font_rec,&os_dialog_ctrls[idx]);
+				break;
+				
+			case os_dialog_ctrl_type_text_edit:
+				CreateEditUnicodeTextControl(os_dialog_wind,&box,cf_str,FALSE,NULL,&os_dialog_ctrls[idx]);
+				break;
+				
+			case os_dialog_ctrl_type_files:
+				CreateDataBrowserControl(os_dialog_wind,&box,kDataBrowserListView,&os_dialog_ctrls[idx]);
+				break;
+	
+		}
+		
+		SetControlCommandID(os_dialog_ctrls[idx],ctrl->id);
+		
+		CFRelease(cf_str);
+	
+		idx++;
+	}
+	
+	os_dialog_ctrl_count=idx;
+	
+		// init dialog
+		
+	(*os_dialog_callback)(os_dialog_msg_type_init,0);
 	
 		// show window
 		
 	ShowWindow(os_dialog_wind);
 	
-		// run event
+		// run events
+		
+	os_dialog_wind_upp=NewEventHandlerUPP(os_dialog_wind_event_callback);
+	InstallEventHandler(GetWindowEventTarget(os_dialog_wind),os_dialog_wind_upp,GetEventTypeCount(diag_events),diag_events,NULL,&os_dialog_wind_event);
 		
 	RunAppModalLoopForWindow(os_dialog_wind);
+	
+	RemoveEventHandler(os_dialog_wind_event);
+	DisposeEventHandlerUPP(os_dialog_wind_upp);
+	
+		// if there was a file list,
+		// then dispose that
+		
+	if (os_dialog_files_item_upp!=NULL)  DisposeDataBrowserItemDataUPP(os_dialog_files_item_upp);
+	if (os_dialog_files_notify_upp!=NULL) DisposeDataBrowserItemNotificationUPP(os_dialog_files_notify_upp);
 	
 		// dispose window
 		
@@ -574,51 +685,113 @@ void os_dialog_close(void)
 	QuitAppModalLoopForWindow(os_dialog_wind);
 }
 
+ControlRef os_dialog_get_control_ref_from_id(int id)
+{
+	int				n;
+	UInt32			ctrl_id;
+	
+	for (n=0;n!=os_dialog_ctrl_count;n++) {
+		GetControlCommandID(os_dialog_ctrls[n],&ctrl_id);
+		if (((int)ctrl_id)==id) return(os_dialog_ctrls[n]);
+	}
+	
+	return(os_dialog_ctrls[0]);
+}
+
 void os_dialog_set_text(int id,char *value)
 {
-	ControlRef		ctrl;
-	ControlID		ctrl_id;
-	
-	ctrl_id.signature='ctrl';
-	ctrl_id.id=id;
-	GetControlByID(wind,&ctrl_id,&ctrl);
-	
 	if (value!=NULL) {
-		SetControlData(ctrl,kControlNoPart,kControlEditTextTextTag,strlen(value),value);
+		SetControlData(os_dialog_get_control_ref_from_id(id),kControlNoPart,kControlEditTextTextTag,strlen(value),value);
 	}
 	else {
-		SetControlData(ctrl,kControlNoPart,kControlEditTextTextTag,0,NULL);
+		SetControlData(os_dialog_get_control_ref_from_id(id),kControlNoPart,kControlEditTextTextTag,0,NULL);
 	}
 }
 
 void os_dialog_get_text(int id,char *value,int value_len)
 {
-	ControlRef		ctrl;
-	ControlID		ctrl_id;
-	
-	ctrl_id.signature='ctrl';
-	ctrl_id.id=id;
-	GetControlByID(wind,&ctrl_id,&ctrl);
-	
 	memset(value,0x0,value_len);
-	GetControlData(ctrl,kControlNoPart,kControlEditTextTextTag,value_len,value,NULL);
+	GetControlData(os_dialog_get_control_ref_from_id(id),kControlNoPart,kControlEditTextTextTag,value_len,value,NULL);
 	value[value_len-1]=0x0;
+}
+
+extern void os_dialog_set_float(int id,float f)
+{
+	char			str[256];
+
+	sprintf(str,"%.2f",f);
+	os_dialog_set_text(id,str);
+}
+
+float os_dialog_get_float(int id)
+{
+	char			str[256];
+
+	os_dialog_get_text(id,str,256);
+	return((float)atof(str));
+}
+
+void os_dialog_tree_add(int id,file_path_directory_type *fpd)
+{
+/*
+	ControlRef						ctrl;
+	DataBrowserItemID				items[file_paths_max_directory_file];
+	DataBrowserItemDataUPP			list_item_upp;
+	DataBrowserItemNotificationUPP	list_notify_upp;
+	DataBrowserCallbacks			dbcall;
+	
+		// remember list
+		
+	os_dialog_fpd=fpd;
+
+		// setup the list
+		
+	ctrl=os_dialog_get_control_ref_from_id(id);
+	
+	dbcall.version=kDataBrowserLatestCallbacks;
+	InitDataBrowserCallbacks(&dbcall);
+	
+	os_dialog_files_item_upp=NewDataBrowserItemDataUPP(&file_open_list_item_proc);
+	dbcall.u.v1.itemDataCallback=os_dialog_files_item_upp;
+
+	os_dialog_files_notify_upp=NewDataBrowserItemNotificationUPP(&file_open_list_notify_proc);
+	dbcall.u.v1.itemNotificationCallback=os_dialog_files_notify_upp;
+	
+	SetDataBrowserCallbacks(ctrl,&dbcall);
+	
+	SetDataBrowserListViewDisclosureColumn(ctrl,kFileOpenListNameColumn,FALSE);
+
+	count=file_open_list_build_items_for_parent(-1,items);
+	AddDataBrowserItems(ctrl,kDataBrowserNoItem,count,items,kDataBrowserItemNoProperty);
+	
+		// always start with top level items open
+		
+	for (n=0;n!=count;n++) {
+		OpenDataBrowserContainer(ctrl,items[n]);
+	}
+*/
+
+}
+
+int os_dialog_tree_get_value(int id)
+{
+	return(-1);		// supergumba -- fix this later
+}
+
+void os_dialog_set_focus(int id,bool select_all)
+{
+	SetKeyboardFocus(os_dialog_wind,os_dialog_get_control_ref_from_id(id),kControlFocusNextPart);
 }
 
 void os_dialog_enable(int id,bool enable)
 {
-	ControlRef		ctrl;
-	ControlID		ctrl_id;
-	
-	ctrl_id.signature='ctrl';
-	ctrl_id.id=id;
-	GetControlByID(wind,&ctrl_id,&ctrl);
-	
 	if (enable) {
-		EnableControl(ctrl);
+		EnableControl(os_dialog_get_control_ref_from_id(id));
 	}
 	else {
-		DisableControl(ctrl);
+		DisableControl(os_dialog_get_control_ref_from_id(id));
 	}
 }
+
+
 
