@@ -47,7 +47,7 @@ extern file_path_setup_type			file_path_setup;
       File Open Event Handlers
       
 ======================================================= */
-
+/*
 static pascal OSStatus file_open_event_proc(EventHandlerCallRef handler,EventRef event,void *data)
 {
 	HICommand		cmd;
@@ -75,13 +75,13 @@ static pascal OSStatus file_open_event_proc(EventHandlerCallRef handler,EventRef
 	
 	return(eventNotHandledErr);
 }
-
+*/
 /* =======================================================
 
       File List Event Handlers
       
 ======================================================= */
-
+/*
 int file_open_list_build_items_for_parent(int parent_idx,DataBrowserItemID *items)
 {
 	int					n,count;
@@ -159,13 +159,14 @@ static pascal void file_open_list_notify_proc(ControlRef ctrl,DataBrowserItemID 
 
 	dialog_enable(dialog_file_open_wind,kFileOpenButton,0,enable);
 }
-
+*/
 /* =======================================================
 
       Run File Open
       
 ======================================================= */
 
+/*
 bool dialog_file_open_run(char *title,char *search_path,char *extension,char *required_file_name,char *file_name)
 {
 	int								n,count;
@@ -255,4 +256,4 @@ bool dialog_file_open_run(char *title,char *search_path,char *extension,char *re
 		
 	return(!dialog_file_cancel);
 }
-
+*/

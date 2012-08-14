@@ -36,7 +36,7 @@ EventHandlerUPP					os_dialog_wind_upp;
 ControlRef						os_dialog_ctrls[32];
 WindowRef						os_dialog_wind;
 
-int								os_dialog_ctrl_count;
+int								os_dialog_ctrl_count,dialog_file_open_index;
 DataBrowserItemDataUPP			os_dialog_files_item_upp;
 DataBrowserItemNotificationUPP	os_dialog_files_notify_upp;
 file_path_directory_type		*os_dialog_fpd;
@@ -570,6 +570,7 @@ void os_dialog_run(char *title,int wid,int high,os_dialog_ctrl_type *ctrls,void 
 	Rect				box;
 	CFStringRef			cf_str;
 	ControlFontStyleRec	font_rec;
+	DataBrowserListViewColumnDesc	db_col;
 	EventTypeSpec		diag_events[]={{kEventClassCommand,kEventCommandProcess}};
 	
 		// setup callback
@@ -638,6 +639,23 @@ void os_dialog_run(char *title,int wid,int high,os_dialog_ctrl_type *ctrls,void 
 				
 			case os_dialog_ctrl_type_files:
 				CreateDataBrowserControl(os_dialog_wind,&box,kDataBrowserListView,&os_dialog_ctrls[idx]);
+				SetDataBrowserSelectionFlags(os_dialog_ctrls[idx],kDataBrowserSelectOnlyOne);
+				
+				db_col.headerBtnDesc.version=kDataBrowserListViewLatestHeaderDesc;
+				db_col.headerBtnDesc.minimumWidth=ctrl->wid-20;
+				db_col.headerBtnDesc.maximumWidth=ctrl->wid-20;
+				db_col.headerBtnDesc.titleOffset=0;
+				db_col.headerBtnDesc.titleString=CFSTR("Files");
+				db_col.headerBtnDesc.initialOrder=kDataBrowserOrderIncreasing;
+				db_col.headerBtnDesc.btnFontStyle.flags=0;
+				db_col.headerBtnDesc.btnContentInfo.contentType=kControlNoContent;
+				
+				db_col.propertyDesc.propertyID=FOUR_CHAR_CODE('list');
+				db_col.propertyDesc.propertyType=kDataBrowserTextType;
+				db_col.propertyDesc.propertyFlags=kDataBrowserListViewSelectionColumn;
+				
+				
+				AddDataBrowserListViewColumn(os_dialog_ctrls[idx],&db_col,0);
 				break;
 	
 		}
@@ -731,14 +749,86 @@ float os_dialog_get_float(int id)
 	return((float)atof(str));
 }
 
+// file stuff
+
+int file_open_list_build_items_for_parent(int parent_idx,DataBrowserItemID *items)
+{
+	int					n,count;
+	
+	count=0;
+	
+	for (n=0;n!=os_dialog_fpd->nfile;n++) {
+		if (os_dialog_fpd->files[n].parent_idx==parent_idx) {
+			items[count++]=n+1;
+		}
+	}
+
+	return(count);
+}
+
+static pascal OSStatus os_dialog_files_item_proc(ControlRef ctrl,DataBrowserItemID itemID,DataBrowserPropertyID property,DataBrowserItemDataRef itemData,Boolean changeValue)
+{
+	int				idx;
+	CFStringRef		cfstr;
+	
+	switch (property) {
+
+		case FOUR_CHAR_CODE('list'):
+			idx=itemID-1;
+			cfstr=CFStringCreateWithCString(kCFAllocatorDefault,os_dialog_fpd->files[idx].file_name,kCFStringEncodingMacRoman);
+			SetDataBrowserItemDataText(itemData,cfstr);
+			CFRelease(cfstr);
+			return(noErr);
+			
+		case kDataBrowserItemIsContainerProperty:
+			idx=itemID-1;
+			SetDataBrowserItemDataBooleanValue(itemData,os_dialog_fpd->files[idx].is_dir);
+			return(noErr);
+						
+	}
+
+	return(errDataBrowserPropertyNotSupported);
+}
+
+static pascal void os_dialog_files_notify_proc(ControlRef ctrl,DataBrowserItemID itemID,DataBrowserItemNotification message)
+{
+	int					idx;
+	UInt32				count;
+	DataBrowserItemID	items[file_paths_max_directory_file];
+	
+	switch (message) {
+	
+		case kDataBrowserItemDoubleClicked:
+			dialog_file_open_index=itemID-1;
+			if (!os_dialog_fpd->files[dialog_file_open_index].is_dir) (*os_dialog_callback)(os_dialog_msg_type_double_click,dialog_file_open_index);
+			break;
+
+		case kDataBrowserItemSelected:
+			dialog_file_open_index=itemID-1;
+			(*os_dialog_callback)(os_dialog_msg_type_sel_change,dialog_file_open_index);
+			break;
+			
+		case kDataBrowserItemDeselected:
+			if (dialog_file_open_index==(itemID-1)) {
+				dialog_file_open_index=-1;
+				(*os_dialog_callback)(os_dialog_msg_type_sel_change,dialog_file_open_index);
+			}
+			break;
+			
+		case kDataBrowserContainerOpened:
+			idx=itemID-1;
+			count=file_open_list_build_items_for_parent(idx,items);
+			AddDataBrowserItems(ctrl,itemID,count,items,kDataBrowserItemNoProperty);
+			break;
+	}
+}
+
 void os_dialog_tree_add(int id,file_path_directory_type *fpd)
 {
-/*
-	ControlRef						ctrl;
-	DataBrowserItemID				items[file_paths_max_directory_file];
-	DataBrowserItemDataUPP			list_item_upp;
-	DataBrowserItemNotificationUPP	list_notify_upp;
-	DataBrowserCallbacks			dbcall;
+	int							n,count;
+	ControlRef					ctrl;
+	DataBrowserItemID			items[file_paths_max_directory_file];
+	DataBrowserCallbacks		dbcall;
 	
 		// remember list
 		
@@ -751,15 +841,15 @@ void os_dialog_tree_add(int id,file_path_directory_type *fpd)
 	dbcall.version=kDataBrowserLatestCallbacks;
 	InitDataBrowserCallbacks(&dbcall);
 	
-	os_dialog_files_item_upp=NewDataBrowserItemDataUPP(&file_open_list_item_proc);
+	os_dialog_files_item_upp=NewDataBrowserItemDataUPP(&os_dialog_files_item_proc);
 	dbcall.u.v1.itemDataCallback=os_dialog_files_item_upp;
 
-	os_dialog_files_notify_upp=NewDataBrowserItemNotificationUPP(&file_open_list_notify_proc);
+	os_dialog_files_notify_upp=NewDataBrowserItemNotificationUPP(&os_dialog_files_notify_proc);
 	dbcall.u.v1.itemNotificationCallback=os_dialog_files_notify_upp;
 	
 	SetDataBrowserCallbacks(ctrl,&dbcall);
 	
-	SetDataBrowserListViewDisclosureColumn(ctrl,kFileOpenListNameColumn,FALSE);
+	SetDataBrowserListViewDisclosureColumn(ctrl,FOUR_CHAR_CODE('list'),FALSE);
 
 	count=file_open_list_build_items_for_parent(-1,items);
 	AddDataBrowserItems(ctrl,kDataBrowserNoItem,count,items,kDataBrowserItemNoProperty);
@@ -769,13 +859,13 @@ void os_dialog_tree_add(int id,file_path_directory_type *fpd)
 	for (n=0;n!=count;n++) {
 		OpenDataBrowserContainer(ctrl,items[n]);
 	}
-*/
-
+	
+	dialog_file_open_index=-1;
 }
 
 int os_dialog_tree_get_value(int id)
 {
-	return(-1);		// supergumba -- fix this later
+	return(dialog_file_open_index);
 }
 
 void os_dialog_set_focus(int id,bool select_all)

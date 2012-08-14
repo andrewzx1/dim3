@@ -53,7 +53,7 @@ void							*dialog_property_string_value;
 #define diag_prop_string_ok		5001
 
 os_dialog_ctrl_type		diag_property_string_ctrls[]={
-							{os_dialog_ctrl_type_text_edit,diag_prop_string_str,"",5,10,440,20},
+							{os_dialog_ctrl_type_text_edit,diag_prop_string_str,"",10,10,430,20},
 							{os_dialog_ctrl_type_default_button,diag_prop_string_ok,"OK",365,40,80,25},
 							{-1,-1,"",0,0,0,0}
 						};

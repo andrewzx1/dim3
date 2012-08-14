@@ -52,9 +52,9 @@ void							*dialog_property_chord_value;
 #define diag_prop_chord_ok		5003
 
 os_dialog_ctrl_type		diag_property_chord_ctrls[]={
-							{os_dialog_ctrl_type_text_edit,diag_prop_chord_str_x,"",5,10,145,20},
-							{os_dialog_ctrl_type_text_edit,diag_prop_chord_str_y,"",155,10,145,20},
-							{os_dialog_ctrl_type_text_edit,diag_prop_chord_str_z,"",305,10,145,20},
+							{os_dialog_ctrl_type_text_edit,diag_prop_chord_str_x,"",10,10,135,20},
+							{os_dialog_ctrl_type_text_edit,diag_prop_chord_str_y,"",160,10,135,20},
+							{os_dialog_ctrl_type_text_edit,diag_prop_chord_str_z,"",310,10,135,20},
 							{os_dialog_ctrl_type_default_button,diag_prop_chord_ok,"OK",370,40,80,25},
 							{-1,-1,"",0,0,0,0}
 						};
