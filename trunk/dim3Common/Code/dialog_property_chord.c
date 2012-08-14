@@ -88,7 +88,7 @@ bool dialog_property_chord_proc(int msg_type,int id)
 				os_dialog_get_text(diag_prop_chord_str_z,str_z,256);
 				property_chord_set_values(dialog_property_chord_value_type,dialog_property_chord_value,str_x,str_y,str_z);
 
-				os_dialog_close();
+				os_dialog_close(TRUE);
 				return(TRUE);
 			}
 			break;

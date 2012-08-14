@@ -31,6 +31,7 @@ and can be sold or given away.
 	#include "dim3Animator.h"
 #endif
 
+#include "glue.h"
 #include "resource.h"
 #include "interface.h"
 #include "win32_dialog.h"
@@ -38,15 +39,45 @@ and can be sold or given away.
 extern HINSTANCE				hinst;
 extern HWND						wnd;
 
-char							dialog_file_new_file_name[256],
-								dialog_file_new_title[256];
+char							dialog_new_map_file_name[256];
+
+// controls
+
+/*
+IDD_FILE_NEW DIALOGEX 100, 100, 333, 98
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_CAPTION
+CAPTION "Create New"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    PUSHBUTTON      "Cancel",IDCANCEL,221,77,50,14
+    DEFPUSHBUTTON   "New",ID_FILE_NEW_NEW,276,77,50,14,WS_GROUP
+    LTEXT           "Enter a name for your new map.",IDC_STATIC,7,7,204,9
+    RTEXT           "Name:",IDC_STATIC,17,25,32,9
+    EDITTEXT        IDC_FILE_NEW_NAME,54,23,229,14,ES_AUTOHSCROLL
+    LTEXT           "When a map is created, the map data file is saved in the Data/Maps directory and a default course script is saved in the Data/Scripts/Courses directory.",
+                    IDC_STATIC,7,44,319,21
+END
+*/
+
+#define diag_prop_new_map_name		5000
+#define diag_prop_new_map_cancel	5001
+#define diag_prop_new_map_ok		5002
+
+os_dialog_ctrl_type		diag_property_new_map_ctrls[]={
+							{os_dialog_ctrl_type_text_left,diag_prop_new_map_name,"Enter a name for your new map.",10,10,430,20},
+							{os_dialog_ctrl_type_text_right,diag_prop_new_map_name,"Name:",10,10,80,20},
+							{os_dialog_ctrl_type_text_edit,diag_prop_new_map_name,"",90,10,340,20},
+							{os_dialog_ctrl_type_button,diag_prop_new_map_cancel,"Cancel",275,420,80,25},
+							{os_dialog_ctrl_type_default_button,diag_prop_new_map_ok,"OK",365,420,80,25},
+							{-1,-1,"",0,0,0,0}
+						};
 
 /* =======================================================
 
       File New Event Handlers
       
 ======================================================= */
-
+/*
 LRESULT CALLBACK dialog_file_new_proc(HWND diag,UINT msg,WPARAM wparam,LPARAM lparam)
 {
 	switch (msg) {
@@ -81,13 +112,13 @@ LRESULT CALLBACK dialog_file_new_proc(HWND diag,UINT msg,WPARAM wparam,LPARAM lp
 
 	return(FALSE);
 }
-
+*/
 /* =======================================================
 
       Run File New
       
 ======================================================= */
-
+/*
 bool dialog_file_new_run(char *title,char *file_name)
 {
 	strcpy(dialog_file_new_title,title);
@@ -97,4 +128,44 @@ bool dialog_file_new_run(char *title,char *file_name)
 
 	strcpy(file_name,dialog_file_new_file_name);
 	return(TRUE);
+}
+*/
+
+bool dialog_property_new_map_proc(int msg_type,int id)
+{
+	char			str[256];
+
+	switch (msg_type) {
+
+		case os_dialog_msg_type_init:
+		//	property_string_get_values(dialog_property_string_value_type,dialog_property_string_value,str);
+		//	os_dialog_set_text(diag_prop_string_str,str);
+		//	os_dialog_set_focus(diag_prop_string_str,TRUE);
+			return(TRUE);
+
+		case os_dialog_msg_type_button:
+			if (id==diag_prop_new_map_cancel) {
+				os_dialog_close(FALSE);
+				return(TRUE);
+			}
+			if (id==diag_prop_new_map_ok) {
+			//	os_dialog_get_text(diag_prop_string_str,str,256);
+			//	property_string_set_values(dialog_property_string_value_type,dialog_property_string_value,dialog_property_string_value_len,dialog_property_string_i_min,dialog_property_string_i_max,str);
+				os_dialog_close(TRUE);
+				return(TRUE);
+			}
+			break;
+	}
+
+	return(FALSE);
+}
+
+bool dialog_file_new_run(char *title,char *file_name)
+{
+	bool				ok;
+
+	strcpy(dialog_new_map_file_name,file_name);
+	ok=os_dialog_run(title,450,450,diag_property_new_map_ctrls,dialog_property_new_map_proc);
+
+	return(ok);
 }

@@ -37,12 +37,6 @@ and can be sold or given away.
 #include "ui_common.h"
 #include "interface.h"
 
-#define texture_edit_item_high					140
-#define texture_edit_scroll_wheel_move			25
-
-#define texture_edit_frame_click_return_idx		100
-#define texture_edit_frame_click_delete_idx		101
-
 int								texture_edit_scroll_pos,
 								texture_edit_frame_click_idx;
 
@@ -147,14 +141,14 @@ void texture_edit_draw_bitmap(d3rect *box,char *name,unsigned long gl_id)
 	text_draw_center(((box->lx+box->rx)>>1),(box->by+15),12.0f,NULL,name);
 }
 
-void texture_edit_draw_button(d3rect *box,char *title,float font_size,bool has_trig,int sel_idx)
+void texture_edit_draw_button(d3rect *box,int title_offset,char *title,float font_size,bool has_trig,int sel_idx)
 {
 	float			col_rg,vertexes[8],colors[16];
 	
 		// the button box
 
-	col_rg=0.6f;
-	if (texture_edit_frame_click_idx==sel_idx) col_rg=0.4f;
+	col_rg=0.7f;
+	if (texture_edit_frame_click_idx==sel_idx) col_rg=0.5f;
 
 	vertexes[0]=vertexes[6]=(float)box->lx;
 	vertexes[2]=vertexes[4]=(float)box->rx;
@@ -202,7 +196,7 @@ void texture_edit_draw_button(d3rect *box,char *title,float font_size,bool has_t
 
 		// the button text
 
-	text_draw((box->lx+5),(box->by-5),font_size,NULL,title);
+	text_draw((box->lx+title_offset),(box->by-5),font_size,NULL,title);
 }
 
 void texture_edit_draw(void)
@@ -339,14 +333,21 @@ void texture_edit_draw(void)
 		}
 		
 			// delete button
-			
-		if ((n>0) && (n==(frame_count-1))) {
+		
+		if (frame_count>0) {
 			tbox.lx=470;
-			tbox.rx=570;
+			tbox.rx=600;
 			tbox.ty=ty+100;
 			tbox.by=tbox.ty+25;
-	
-			texture_edit_draw_button(&tbox,"Delete Frame",15.0f,FALSE,texture_edit_frame_click_delete_idx);
+
+			if ((frame_count==1) && (n==0)) {
+				texture_edit_draw_button(&tbox,15,"Delete Texture",15.0f,FALSE,texture_edit_frame_click_delete_idx);
+			}
+			else {
+				if (n==(frame_count-1)) {
+					texture_edit_draw_button(&tbox,20,"Delete Frame",15.0f,FALSE,texture_edit_frame_click_delete_idx);
+				}
+			}
 		}
 	}
 
@@ -357,7 +358,7 @@ void texture_edit_draw(void)
 	tbox.ty=high-40;
 	tbox.by=tbox.ty+40;
 	
-	texture_edit_draw_button(&tbox,"Return",25.0f,TRUE,texture_edit_frame_click_return_idx);
+	texture_edit_draw_button(&tbox,5,"Return",25.0f,TRUE,texture_edit_frame_click_return_idx);
 }
 
 /* =======================================================
@@ -512,12 +513,12 @@ bool texture_edit_click(d3pnt *pnt,bool double_click)
 	if ((pnt->x>=tbox.lx) && (pnt->x<=tbox.rx) && (pnt->y>=tbox.ty) && (pnt->y<=tbox.by)) {
 		frame_idx=texture_edit_frame_click_return_idx;
 	}
-	
+
 		// clicking in delete
 		
-	if ((frame_idx==-1) && (frame_count>1)) {
+	if ((frame_idx==-1) && (frame_count>0)) {
 		tbox.lx=470;
-		tbox.rx=570;
+		tbox.rx=600;
 		tbox.ty=((texture_edit_item_high*(frame_count-1))+100)-texture_edit_scroll_pos;
 		tbox.by=tbox.ty+25;
 
@@ -570,7 +571,7 @@ bool texture_edit_click(d3pnt *pnt,bool double_click)
 		return(TRUE);
 	}
 	
-		// delete was clicked
+		// delete
 		
 	if (frame_idx==texture_edit_frame_click_delete_idx) {
 
