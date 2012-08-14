@@ -48,7 +48,7 @@ extern HACCEL			wnd_accel;
 HCURSOR					cur_arrow,cur_wait,cur_hand,cur_drag,cur_resize,
 						cur_add,cur_subtract;
 COLORREF				custom_colors[16];
-bool					os_dialog_focus_flag;
+bool					os_dialog_focus_flag,os_dialog_ok;
 HWND					os_dialog_wind;
 HFONT					os_dialog_font;
 os_dialog_ctrl_type		*os_dialog_ctrls;
@@ -689,7 +689,7 @@ int os_dialog_count_controls(os_dialog_ctrl_type *ctrls)
 	return(count);
 }
 
-void os_dialog_run(char *title,int wid,int high,os_dialog_ctrl_type *ctrls,void *callback)
+bool os_dialog_run(char *title,int wid,int high,os_dialog_ctrl_type *ctrls,void *callback)
 {
 	int					font_high,style,ex_style,atom,sz;
 	unsigned char		*ptr,*diag_template;
@@ -833,7 +833,7 @@ void os_dialog_run(char *title,int wid,int high,os_dialog_ctrl_type *ctrls,void 
 
 		if (ctrl->str[0]==0x0) {
 			w_ptr=(WORD*)ptr;
-			*w_ptr=0xFFFF;
+			*w_ptr=0x0;
 			ptr+=2;
 		}
 		else {
@@ -855,6 +855,8 @@ void os_dialog_run(char *title,int wid,int high,os_dialog_ctrl_type *ctrls,void 
 
 		// run dialog
 
+	os_dialog_ok=FALSE;
+
 	DialogBoxIndirect(hinst,(DLGTEMPLATE*)diag_template,wnd,os_dialog_proc);
 
 		// clean up
@@ -862,10 +864,13 @@ void os_dialog_run(char *title,int wid,int high,os_dialog_ctrl_type *ctrls,void 
 	DeleteObject(os_dialog_font);
 
 	free(diag_template);
+
+	return(os_dialog_ok);
 }
 
-void os_dialog_close(void)
+void os_dialog_close(bool ok)
 {
+	os_dialog_ok=ok;
 	EndDialog(os_dialog_wind,0);
 }
 

@@ -42,7 +42,6 @@ and can be sold or given away.
 #include "ui_common.h"
 
 int								dialog_open_file_index;
-bool							dialog_open_ok;
 file_path_directory_type		*dialog_open_fpd;
 
 extern file_path_setup_type		file_path_setup;
@@ -205,23 +204,19 @@ bool dialog_property_open_proc(int msg_type,int id)
 		case os_dialog_msg_type_button:
 
 			if (id==diag_prop_open_cancel) {
-				dialog_open_ok=FALSE;
-				os_dialog_close();
+				os_dialog_close(FALSE);
 				return(TRUE);
 			}
 
 			if (id==diag_prop_open_ok) {
 				dialog_open_file_index=os_dialog_tree_get_value(diag_prop_open_files)&0xFFFF;
-
-				dialog_open_ok=TRUE;
-				os_dialog_close();
+				os_dialog_close(TRUE);
 				return(TRUE);
 			}
 
 			break;
 
 		case os_dialog_msg_type_sel_change:
-			MessageBox(NULL,"1","2",MB_OK);
 			idx=os_dialog_tree_get_value(diag_prop_open_files);
 
 			if ((idx&0xFFFF0000)!=0) {
@@ -237,8 +232,7 @@ bool dialog_property_open_proc(int msg_type,int id)
 			if ((idx&0xFFFF0000)!=0) break;
 
 			dialog_open_file_index=idx&0xFFFF;
-			dialog_open_ok=TRUE;
-			os_dialog_close();
+			os_dialog_close(TRUE);
 			return(TRUE);
 
 	}
@@ -248,6 +242,8 @@ bool dialog_property_open_proc(int msg_type,int id)
 
 bool dialog_file_open_run(char *title,char *search_path,char *extension,char *required_file_name,char *file_name)
 {
+	bool			ok;
+
 		// scan for files
 		
 	if (extension!=NULL) {
@@ -259,14 +255,14 @@ bool dialog_file_open_run(char *title,char *search_path,char *extension,char *re
 
 		// run dialog
 
-	os_dialog_run(title,450,450,diag_property_open_ctrls,dialog_property_open_proc);
+	ok=os_dialog_run(title,450,450,diag_property_open_ctrls,dialog_property_open_proc);
 
 		// get the file
 
-	if ((dialog_open_ok) && (dialog_open_file_index!=-1)) file_paths_get_complete_path_from_index(dialog_open_fpd,dialog_open_file_index,file_name);
+	if ((ok) && (dialog_open_file_index!=-1)) file_paths_get_complete_path_from_index(dialog_open_fpd,dialog_open_file_index,file_name);
 
 	file_paths_close_directory(dialog_open_fpd);
 
-	return(dialog_open_ok);
+	return(ok);
 }
 
