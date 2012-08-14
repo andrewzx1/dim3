@@ -147,6 +147,7 @@
 		26A0009E12975A130006F64F /* property_palette_sound.c in Sources */ = {isa = PBXBuildFile; fileRef = 26A0009C12975A130006F64F /* property_palette_sound.c */; };
 		26A32EEA1453D09F0005AABD /* model_util_file_model.c in Sources */ = {isa = PBXBuildFile; fileRef = 26A32EE91453D09E0005AABD /* model_util_file_model.c */; };
 		26AFB4490D95E0E60004805A /* pieces_mesh.c in Sources */ = {isa = PBXBuildFile; fileRef = 26AFB4480D95E0E60004805A /* pieces_mesh.c */; };
+		26BEC1FD15DA0468008B2495 /* dialog_file_open.c in Sources */ = {isa = PBXBuildFile; fileRef = 26BEC1FC15DA0468008B2495 /* dialog_file_open.c */; };
 		26C5F02712612832000B0F9E /* Tool Grid.png in Copy (Tools Icons) */ = {isa = PBXBuildFile; fileRef = 26C5F00F12612826000B0F9E /* Tool Grid.png */; };
 		26C5F02812612832000B0F9E /* Tool Height Map.png in Copy (Tools Icons) */ = {isa = PBXBuildFile; fileRef = 26C5F01012612826000B0F9E /* Tool Height Map.png */; };
 		26C5F02912612832000B0F9E /* Tool Light.png in Copy (Tools Icons) */ = {isa = PBXBuildFile; fileRef = 26C5F01112612826000B0F9E /* Tool Light.png */; };
@@ -546,6 +547,7 @@
 		26A0009C12975A130006F64F /* property_palette_sound.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_sound.c; path = Code/property_palette_sound.c; sourceTree = "<group>"; };
 		26A32EE91453D09E0005AABD /* model_util_file_model.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = model_util_file_model.c; sourceTree = "<group>"; };
 		26AFB4480D95E0E60004805A /* pieces_mesh.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = pieces_mesh.c; path = Code/pieces_mesh.c; sourceTree = "<group>"; };
+		26BEC1FC15DA0468008B2495 /* dialog_file_open.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_file_open.c; path = ../dim3Common/Code/dialog_file_open.c; sourceTree = "<group>"; };
 		26C5F00F12612826000B0F9E /* Tool Grid.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Tool Grid.png"; sourceTree = "<group>"; };
 		26C5F01012612826000B0F9E /* Tool Height Map.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Tool Height Map.png"; sourceTree = "<group>"; };
 		26C5F01112612826000B0F9E /* Tool Light.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Tool Light.png"; sourceTree = "<group>"; };
@@ -1070,6 +1072,7 @@
 			children = (
 				261F66E615D3767B00A2ABA4 /* dialog_property_string.c */,
 				261F66E515D3767B00A2ABA4 /* dialog_property_chord.c */,
+				26BEC1FC15DA0468008B2495 /* dialog_file_open.c */,
 				26D15DBC1329EB0400F9EC7B /* OSX_dialog_utility_common.c */,
 				26D15DB71329EB0400F9EC7B /* OSX_dialog_file_new.c */,
 				26D15DB81329EB0400F9EC7B /* OSX_dialog_file_open.c */,
@@ -1384,6 +1387,7 @@
 				264735A315CF04360031A1B4 /* view_clip.c in Sources */,
 				261F66E715D3767B00A2ABA4 /* dialog_property_chord.c in Sources */,
 				261F66E815D3767B00A2ABA4 /* dialog_property_string.c in Sources */,
+				26BEC1FD15DA0468008B2495 /* dialog_file_open.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
