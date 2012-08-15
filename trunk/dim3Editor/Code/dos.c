@@ -101,8 +101,7 @@ bool file_new_map(void)
 
 		// get the map name
 		
-	strcpy(file_name,"NewMap");
-	if (!dialog_file_new_run("Create a New Map",file_name)) return(FALSE);
+	if (!dialog_new_map_run(file_name)) return(FALSE);
 	
 		// create the map
 		

@@ -40,7 +40,7 @@ and can be sold or given away.
 #include "glue.h"
 #include "interface.h"
 #include "ui_common.h"
-
+/*
 int								dialog_open_file_index;
 file_path_directory_type		*dialog_open_fpd;
 
@@ -58,7 +58,7 @@ os_dialog_ctrl_type		diag_property_open_ctrls[]={
 							{os_dialog_ctrl_type_default_button,diag_prop_open_ok,"OK",365,420,80,25},
 							{-1,-1,"",0,0,0,0}
 						};
-
+*/
 /* =======================================================
 
       File List Event Handlers
@@ -189,7 +189,7 @@ LRESULT CALLBACK dialog_file_open_proc(HWND diag,UINT msg,WPARAM wparam,LPARAM l
       Run File Open
       
 ======================================================= */
-
+/*
 bool dialog_property_open_proc(int msg_type,int id)
 {
 	int					idx;
@@ -266,3 +266,4 @@ bool dialog_file_open_run(char *title,char *search_path,char *extension,char *re
 	return(ok);
 }
 
+*/

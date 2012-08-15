@@ -662,6 +662,14 @@
 					Name="Dialogs"
 					>
 					<File
+						RelativePath="..\..\dim3Common\Code\dialog_file_open.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Common\Code\dialog_new_map.c"
+						>
+					</File>
+					<File
 						RelativePath="..\..\dim3Common\Code\dialog_property_chord.c"
 						>
 					</File>
