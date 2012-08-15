@@ -35,12 +35,12 @@ and can be sold or given away.
 #include "resource.h"
 #include "interface.h"
 #include "win32_dialog.h"
-
+/*
 extern HINSTANCE				hinst;
 extern HWND						wnd;
 
 char							dialog_new_map_file_name[256];
-
+*/
 // controls
 
 /*
@@ -58,7 +58,7 @@ BEGIN
                     IDC_STATIC,7,44,319,21
 END
 */
-
+/*
 #define diag_prop_new_map_name		5000
 #define diag_prop_new_map_cancel	5001
 #define diag_prop_new_map_ok		5002
@@ -71,7 +71,7 @@ os_dialog_ctrl_type		diag_property_new_map_ctrls[]={
 							{os_dialog_ctrl_type_default_button,diag_prop_new_map_ok,"OK",365,420,80,25},
 							{-1,-1,"",0,0,0,0}
 						};
-
+*/
 /* =======================================================
 
       File New Event Handlers
@@ -129,7 +129,7 @@ bool dialog_file_new_run(char *title,char *file_name)
 	strcpy(file_name,dialog_file_new_file_name);
 	return(TRUE);
 }
-*/
+
 
 bool dialog_property_new_map_proc(int msg_type,int id)
 {
@@ -169,3 +169,4 @@ bool dialog_file_new_run(char *title,char *file_name)
 
 	return(ok);
 }
+*/

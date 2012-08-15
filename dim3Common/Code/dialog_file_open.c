@@ -81,7 +81,7 @@ bool dialog_property_open_proc(int msg_type,int id)
 
 			if (id==diag_prop_open_cancel) {
 				dialog_open_ok=FALSE;
-				os_dialog_close();
+				os_dialog_close(FALSE);
 				return(TRUE);
 			}
 
@@ -89,7 +89,7 @@ bool dialog_property_open_proc(int msg_type,int id)
 				dialog_open_file_index=os_dialog_tree_get_value(diag_prop_open_files)&0xFFFF;
 
 				dialog_open_ok=TRUE;
-				os_dialog_close();
+				os_dialog_close(TRUE);
 				return(TRUE);
 			}
 
@@ -112,7 +112,7 @@ bool dialog_property_open_proc(int msg_type,int id)
 
 			dialog_open_file_index=idx&0xFFFF;
 			dialog_open_ok=TRUE;
-			os_dialog_close();
+			os_dialog_close(TRUE);
 			return(TRUE);
 
 	}

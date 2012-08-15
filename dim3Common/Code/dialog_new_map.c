@@ -25,19 +25,13 @@ and can be sold or given away.
  
 *********************************************************************/
 
-#ifdef D3_EDITOR
+#ifdef D3_PCH
 	#include "dim3editor.h"
-#else
-	#include "dim3Animator.h"
 #endif
 
 #include "glue.h"
-#include "resource.h"
 #include "interface.h"
-#include "win32_dialog.h"
-
-extern HINSTANCE				hinst;
-extern HWND						wnd;
+#include "ui_common.h"
 
 char							dialog_new_map_file_name[256];
 
@@ -74,73 +68,17 @@ os_dialog_ctrl_type		diag_property_new_map_ctrls[]={
 
 /* =======================================================
 
-      File New Event Handlers
+      Run New Map
       
 ======================================================= */
-/*
-LRESULT CALLBACK dialog_file_new_proc(HWND diag,UINT msg,WPARAM wparam,LPARAM lparam)
-{
-	switch (msg) {
-
-		case WM_INITDIALOG:
-			SetWindowText(diag,dialog_file_new_title);
-
-			win32_dialog_set_text(diag,IDC_FILE_NEW_NAME,dialog_file_new_file_name);
-			win32_dialog_set_focus(diag,IDC_FILE_NEW_NAME);
-			win32_dialog_select_all(diag,IDC_FILE_NEW_NAME);
-
-			return(FALSE);		// return false when keyboard focus has been set
-
-		case WM_COMMAND:
-
-			switch (LOWORD(wparam)) {
-
-				case ID_FILE_NEW_NEW:
-					win32_dialog_get_text(diag,IDC_FILE_NEW_NAME,dialog_file_new_file_name,256);
-					EndDialog(diag,0);
-					return(TRUE);
-
-				case IDCANCEL:
-					EndDialog(diag,1);
-					return(TRUE);
-
-			}
-
-			break;
-
-	}
-
-	return(FALSE);
-}
-*/
-/* =======================================================
-
-      Run File New
-      
-======================================================= */
-/*
-bool dialog_file_new_run(char *title,char *file_name)
-{
-	strcpy(dialog_file_new_title,title);
-	strcpy(dialog_file_new_file_name,file_name);
-
-	if (DialogBox(hinst,MAKEINTRESOURCE(IDD_FILE_NEW),wnd,dialog_file_new_proc)!=0) return(FALSE);
-
-	strcpy(file_name,dialog_file_new_file_name);
-	return(TRUE);
-}
-*/
 
 bool dialog_property_new_map_proc(int msg_type,int id)
 {
-	char			str[256];
-
 	switch (msg_type) {
 
 		case os_dialog_msg_type_init:
-		//	property_string_get_values(dialog_property_string_value_type,dialog_property_string_value,str);
-		//	os_dialog_set_text(diag_prop_string_str,str);
-		//	os_dialog_set_focus(diag_prop_string_str,TRUE);
+			os_dialog_set_text(diag_prop_new_map_name,"New Map");
+			os_dialog_set_focus(diag_prop_new_map_name,TRUE);
 			return(TRUE);
 
 		case os_dialog_msg_type_button:
@@ -149,8 +87,7 @@ bool dialog_property_new_map_proc(int msg_type,int id)
 				return(TRUE);
 			}
 			if (id==diag_prop_new_map_ok) {
-			//	os_dialog_get_text(diag_prop_string_str,str,256);
-			//	property_string_set_values(dialog_property_string_value_type,dialog_property_string_value,dialog_property_string_value_len,dialog_property_string_i_min,dialog_property_string_i_max,str);
+				os_dialog_get_text(diag_prop_new_map_name,dialog_new_map_file_name,256);
 				os_dialog_close(TRUE);
 				return(TRUE);
 			}
@@ -160,12 +97,13 @@ bool dialog_property_new_map_proc(int msg_type,int id)
 	return(FALSE);
 }
 
-bool dialog_file_new_run(char *title,char *file_name)
+bool dialog_new_map_run(char *file_name)
 {
 	bool				ok;
 
-	strcpy(dialog_new_map_file_name,file_name);
-	ok=os_dialog_run(title,450,450,diag_property_new_map_ctrls,dialog_property_new_map_proc);
+	ok=os_dialog_run("Create New Map",450,450,diag_property_new_map_ctrls,dialog_property_new_map_proc);
+
+	if (ok) strcpy(file_name,dialog_new_map_file_name);
 
 	return(ok);
 }
