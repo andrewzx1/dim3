@@ -73,7 +73,7 @@ static pascal OSStatus file_new_event_proc(EventHandlerCallRef handler,EventRef 
       Run File New
       
 ======================================================= */
-
+/*
 bool dialog_file_new_run(char *title,char *file_name)
 {
 	EventHandlerUPP					event_upp;
@@ -112,4 +112,4 @@ bool dialog_file_new_run(char *title,char *file_name)
 	
 	return(!dialog_file_new_cancel);
 }
-
+*/

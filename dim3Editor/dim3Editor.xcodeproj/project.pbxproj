@@ -172,6 +172,7 @@
 		26D6BC5E13E2112E0087FFD4 /* property_palette_camera.c in Sources */ = {isa = PBXBuildFile; fileRef = 26D6BC5C13E2112E0087FFD4 /* property_palette_camera.c */; };
 		26D6BC5F13E2112E0087FFD4 /* property_palette_sky_weather.c in Sources */ = {isa = PBXBuildFile; fileRef = 26D6BC5D13E2112E0087FFD4 /* property_palette_sky_weather.c */; };
 		26D839391502D40B004EF99F /* main_app.c in Sources */ = {isa = PBXBuildFile; fileRef = 26D839381502D40B004EF99F /* main_app.c */; };
+		26D9F3C115DB1F0000F5E5CB /* dialog_new_map.c in Sources */ = {isa = PBXBuildFile; fileRef = 26D9F3C015DB1F0000F5E5CB /* dialog_new_map.c */; };
 		26DB6D970DDFCE4100BDD008 /* dialog_resize.c in Sources */ = {isa = PBXBuildFile; fileRef = 26DB6D960DDFCE4100BDD008 /* dialog_resize.c */; };
 		26E155EF12601C9D003158E5 /* OSX_glue.c in Sources */ = {isa = PBXBuildFile; fileRef = 26E155EE12601C9D003158E5 /* OSX_glue.c */; };
 		26E30100144B6FDE00BB4BD5 /* dim3 Editor.xib in Resources */ = {isa = PBXBuildFile; fileRef = 26E300FF144B6FDE00BB4BD5 /* dim3 Editor.xib */; };
@@ -572,6 +573,7 @@
 		26D6BC5C13E2112E0087FFD4 /* property_palette_camera.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_camera.c; path = Code/property_palette_camera.c; sourceTree = "<group>"; };
 		26D6BC5D13E2112E0087FFD4 /* property_palette_sky_weather.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_sky_weather.c; path = Code/property_palette_sky_weather.c; sourceTree = "<group>"; };
 		26D839381502D40B004EF99F /* main_app.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = main_app.c; path = Code/main_app.c; sourceTree = "<group>"; };
+		26D9F3C015DB1F0000F5E5CB /* dialog_new_map.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_new_map.c; path = ../dim3Common/Code/dialog_new_map.c; sourceTree = "<group>"; };
 		26DB6D960DDFCE4100BDD008 /* dialog_resize.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_resize.c; path = Code/dialog_resize.c; sourceTree = "<group>"; };
 		26E155EE12601C9D003158E5 /* OSX_glue.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = OSX_glue.c; path = ../dim3Common/Code/OSX_glue.c; sourceTree = SOURCE_ROOT; };
 		26E300FF144B6FDE00BB4BD5 /* dim3 Editor.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = "dim3 Editor.xib"; path = "Resources/dim3 Editor.xib"; sourceTree = "<group>"; };
@@ -1070,9 +1072,10 @@
 		F5A98817094BF740005E55AE /* Dialogs */ = {
 			isa = PBXGroup;
 			children = (
+				26D9F3C015DB1F0000F5E5CB /* dialog_new_map.c */,
+				26BEC1FC15DA0468008B2495 /* dialog_file_open.c */,
 				261F66E615D3767B00A2ABA4 /* dialog_property_string.c */,
 				261F66E515D3767B00A2ABA4 /* dialog_property_chord.c */,
-				26BEC1FC15DA0468008B2495 /* dialog_file_open.c */,
 				26D15DBC1329EB0400F9EC7B /* OSX_dialog_utility_common.c */,
 				26D15DB71329EB0400F9EC7B /* OSX_dialog_file_new.c */,
 				26D15DB81329EB0400F9EC7B /* OSX_dialog_file_open.c */,
@@ -1388,6 +1391,7 @@
 				261F66E715D3767B00A2ABA4 /* dialog_property_chord.c in Sources */,
 				261F66E815D3767B00A2ABA4 /* dialog_property_string.c in Sources */,
 				26BEC1FD15DA0468008B2495 /* dialog_file_open.c in Sources */,
+				26D9F3C115DB1F0000F5E5CB /* dialog_new_map.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
