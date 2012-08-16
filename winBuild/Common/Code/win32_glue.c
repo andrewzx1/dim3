@@ -689,7 +689,204 @@ int os_dialog_count_controls(os_dialog_ctrl_type *ctrls)
 	return(count);
 }
 
+
+
+
+// supergumba -- testing
+
 bool os_dialog_run(char *title,int wid,int high,os_dialog_ctrl_type *ctrls,void *callback)
+{
+	int					font_high,style,ex_style,atom,sz;
+	unsigned char		*ptr,*diag_template;
+	char				atom_name[32];
+	unsigned long		ulong;
+	bool				first_ctrl;
+	WORD				*w_ptr;
+	DWORD				*d_ptr;
+	short				*s_ptr;
+	os_dialog_ctrl_type	*ctrl;
+
+		// setup callback
+
+	os_dialog_callback=callback;
+
+		// build the dialog template
+		// in memory
+
+	diag_template=malloc(10240);
+	memset(diag_template,0x0,10240);
+
+	ptr=diag_template;
+
+		// dialog
+
+	w_ptr=(WORD*)ptr;
+	*w_ptr++=1;
+	*w_ptr++=0xFFFF;
+
+	d_ptr=(DWORD*)w_ptr;
+	*d_ptr++=0;
+	*d_ptr++=0;
+	*d_ptr++=DS_MODALFRAME|DS_FIXEDSYS|DS_CENTER|WS_POPUP|WS_CAPTION;
+
+	w_ptr=(WORD*)d_ptr;
+	*w_ptr++=os_dialog_count_controls(ctrls);
+
+	s_ptr=(short*)w_ptr;
+	*s_ptr++=0;
+	*s_ptr++=0;
+	*s_ptr++=os_dialog_unit_convert_x(wid);
+	*s_ptr++=os_dialog_unit_convert_x(high);
+
+	w_ptr=(WORD*)s_ptr;
+	*w_ptr++=0;
+	*w_ptr++=0;
+
+	ptr=(unsigned char*)w_ptr;
+
+	sz=MultiByteToWideChar(CP_ACP,0,title,-1,(LPWSTR)ptr,64);
+	ptr+=((sz+1)*sizeof(wchar_t));
+
+		// remember controls
+		// so we can set font later
+
+	os_dialog_ctrls=ctrls;
+
+		// controls
+
+	first_ctrl=TRUE;
+	ctrl=ctrls;
+
+	while (ctrl->id!=-1) {
+		atom_name[0]=0x0;
+		ex_style=0;
+
+		switch (ctrl->type) {
+
+			case os_dialog_ctrl_type_button:
+				style=BS_PUSHBUTTON|WS_CHILD|WS_VISIBLE;
+				atom=0x80;
+				break;
+
+			case os_dialog_ctrl_type_default_button:
+				style=BS_DEFPUSHBUTTON|WS_CHILD|WS_VISIBLE;
+				atom=0x80;
+				break;
+
+			case os_dialog_ctrl_type_text_left:
+				style=SS_LEFT|WS_CHILD|WS_VISIBLE;
+				atom=0x82;
+				break;
+
+			case os_dialog_ctrl_type_text_right:
+				style=SS_RIGHT|WS_CHILD|WS_VISIBLE;
+				atom=0x82;
+				break;
+
+			case os_dialog_ctrl_type_text_edit:
+				style=WS_CHILD|WS_VISIBLE|ES_LEFT|ES_AUTOHSCROLL;
+				ex_style=WS_EX_CLIENTEDGE;
+				atom=0x81;
+				break;
+
+			case os_dialog_ctrl_type_files:
+				style=WS_CHILD|WS_VISIBLE|TVS_HASBUTTONS|TVS_HASLINES;
+				ex_style=WS_EX_CLIENTEDGE;
+				atom=0x0;
+				strcpy(atom_name,"SysTreeView32");
+				break;
+
+		}
+
+			// make sure first control starts
+			// a tab group
+
+		if (first_ctrl) {
+			style|=WS_GROUP;
+			first_ctrl=FALSE;
+		}
+
+			// must be on DWORD boundry
+
+		while (TRUE) {
+			ulong=(unsigned long)ptr;
+			if ((ulong&0x3)==0x0) break;
+			ptr++;
+		}
+
+		d_ptr=(DWORD*)ptr;
+		*d_ptr++=0;
+		*d_ptr++=ex_style;
+		*d_ptr++=style;
+
+		s_ptr=(short*)d_ptr;
+		*s_ptr++=os_dialog_unit_convert_x(ctrl->x);
+		*s_ptr++=os_dialog_unit_convert_y(ctrl->y);
+		*s_ptr++=os_dialog_unit_convert_x(ctrl->wid);
+		*s_ptr++=os_dialog_unit_convert_y(ctrl->high);
+
+		d_ptr=(DWORD*)s_ptr;
+		*d_ptr++=ctrl->id;
+
+		ptr=(unsigned char*)w_ptr;
+
+		if (atom_name[0]==0x0) {
+			w_ptr=(WORD*)ptr;
+			*w_ptr++=0xFFFF;
+			*w_ptr++=atom;
+
+			ptr=(unsigned char*)w_ptr;
+		}
+		else {
+			sz=MultiByteToWideChar(CP_ACP,0,atom_name,-1,(LPWSTR)ptr,64);
+			ptr+=((sz+1)*sizeof(wchar_t));
+		}
+
+		if (ctrl->str[0]==0x0) {
+			w_ptr=(WORD*)ptr;
+			*w_ptr++=0x0;
+
+			ptr=(unsigned char*)w_ptr;
+		}
+		else {
+			sz=MultiByteToWideChar(CP_ACP,0,ctrl->str,-1,(LPWSTR)ptr,64);
+			ptr+=((sz+1)*sizeof(wchar_t));
+		}
+
+		w_ptr=(WORD*)ptr;
+		*w_ptr++=0x0;
+		
+		ptr=(unsigned char*)w_ptr;
+
+		ctrl++;
+	}
+
+		// window font
+
+	font_high=-MulDiv(8,GetDeviceCaps(GetDC(wnd),LOGPIXELSY),72);
+	os_dialog_font=CreateFont(font_high,0,0,0,400,0,0,0,0x1,0,0,0,0,"MS Shell Dlg");
+
+		// run dialog
+
+	os_dialog_ok=FALSE;
+
+	DialogBoxIndirect(hinst,(DLGTEMPLATE*)diag_template,wnd,os_dialog_proc);
+
+		// clean up
+
+	DeleteObject(os_dialog_font);
+
+	free(diag_template);
+
+	return(os_dialog_ok);
+}
+
+
+
+
+
+
+bool os_dialog_run2(char *title,int wid,int high,os_dialog_ctrl_type *ctrls,void *callback)
 {
 	int					font_high,style,ex_style,atom,sz;
 	unsigned char		*ptr,*diag_template;
