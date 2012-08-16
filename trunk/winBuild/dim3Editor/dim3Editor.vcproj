@@ -703,14 +703,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\Common\Code\win32_dialog_file_new.c"
-					>
-				</File>
-				<File
-					RelativePath="..\Common\Code\win32_dialog_file_open.c"
-					>
-				</File>
-				<File
 					RelativePath=".\win32Code\win32_dialog_free_rotate.c"
 					>
 				</File>

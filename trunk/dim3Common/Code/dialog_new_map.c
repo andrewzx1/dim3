@@ -102,7 +102,6 @@ bool dialog_new_map_run(char *file_name)
 	bool				ok;
 
 	ok=os_dialog_run("Create New Map",450,450,diag_property_new_map_ctrls,dialog_property_new_map_proc);
-
 	if (ok) strcpy(file_name,dialog_new_map_file_name);
 
 	return(ok);
