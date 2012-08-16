@@ -37,6 +37,7 @@ ControlRef						os_dialog_ctrls[32];
 WindowRef						os_dialog_wind;
 
 int								os_dialog_ctrl_count,dialog_file_open_index;
+bool							os_dialog_ok;
 DataBrowserItemDataUPP			os_dialog_files_item_upp;
 DataBrowserItemNotificationUPP	os_dialog_files_notify_upp;
 file_path_directory_type		*os_dialog_fpd;
@@ -561,7 +562,7 @@ OSStatus os_dialog_wind_event_callback(EventHandlerCallRef eventhandler,EventRef
 	return(eventNotHandledErr);
 }
 
-void os_dialog_run(char *title,int wid,int high,os_dialog_ctrl_type *ctrls,void *callback)
+bool os_dialog_run(char *title,int wid,int high,os_dialog_ctrl_type *ctrls,void *callback)
 {
 	int					idx;
 	unsigned char		p_str[256];
@@ -696,10 +697,14 @@ void os_dialog_run(char *title,int wid,int high,os_dialog_ctrl_type *ctrls,void 
 		// dispose window
 		
 	DisposeWindow(os_dialog_wind);
+	
+	return(os_dialog_ok);
 }
 
-void os_dialog_close(void)
+void os_dialog_close(bool ok)
 {
+	os_dialog_ok=ok;
+	
 	QuitAppModalLoopForWindow(os_dialog_wind);
 }
 
