@@ -237,7 +237,8 @@ void prepare_model(void)
 bool menu_event_run(int cmd)
 {
 	int				major_bone_idx,minor_bone_idx,parent_idx;
-	float			fx,fy,fz,bone_factor;
+	float			bone_factor;
+	d3fpnt			scale;
 	
 	switch (cmd) {
 		
@@ -290,8 +291,8 @@ bool menu_event_run(int cmd)
 			return(TRUE);
            
 		case app_menu_item_ScaleAll:
-			if (!dialog_scale_run(&model,&fx,&fy,&fz)) return(TRUE);
-			model_scale_all(&model,fx,fy,fz);
+			if (!dialog_pick_scale_run(&model,&scale)) return(TRUE);
+			model_scale_all(&model,&scale);
             main_wind_draw();
 			return(TRUE);
 			
@@ -402,8 +403,8 @@ bool menu_event_run(int cmd)
 			return(TRUE);
 			
 		case app_menu_item_Scale:
-			if (!dialog_scale_run(&model,&fx,&fy,&fz)) return(TRUE);
-			model_scale(&model,state.cur_mesh_idx,fx,fy,fz);
+			if (!dialog_pick_scale_run(&model,&scale)) return(TRUE);
+			model_scale(&model,state.cur_mesh_idx,&scale);
             main_wind_draw();
 			return(TRUE);
 			

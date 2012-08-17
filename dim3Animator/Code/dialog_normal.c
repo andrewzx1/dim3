@@ -33,8 +33,7 @@ and can be sold or given away.
 #include "interface.h"
 #include "ui_common.h"
 
-bool							dialog_set_normal_ok;
-d3vct							*dialog_set_normal_vct;
+d3vct					*dialog_set_normal_vct;
 
 // controls
 
@@ -73,11 +72,10 @@ void dialog_property_set_normal_proc(int msg_type,int id)
 			os_dialog_set_focus(diag_prop_set_normal_x,TRUE);
 			break;
 
-		case os_dialog_msg_type_button:
+		case os_dialog_msg_type_command:
 
 			if (id==diag_prop_set_normal_cancel) {
-				dialog_set_normal_ok=FALSE;
-				os_dialog_close();
+				os_dialog_close(FALSE);
 				return;
 			}
 
@@ -86,8 +84,7 @@ void dialog_property_set_normal_proc(int msg_type,int id)
 				dialog_set_normal_vct->y=os_dialog_get_float(diag_prop_set_normal_y);
 				dialog_set_normal_vct->z=os_dialog_get_float(diag_prop_set_normal_z);
 
-				dialog_set_normal_ok=TRUE;
-				os_dialog_close();
+				os_dialog_close(TRUE);
 				return;
 			}
 
@@ -97,8 +94,10 @@ void dialog_property_set_normal_proc(int msg_type,int id)
 
 bool dialog_set_normal_run(d3vct *vct)
 {
-	dialog_set_normal_vct=vct;
-	os_dialog_run("Set Normal",455,300,diag_property_set_normal_ctrls,dialog_property_set_normal_proc);
+	bool			ok;
 
-	return(dialog_set_normal_ok);
+	dialog_set_normal_vct=vct;
+	ok=os_dialog_run("Set Normal",355,115,diag_property_set_normal_ctrls,dialog_property_set_normal_proc);
+
+	return(ok);
 }

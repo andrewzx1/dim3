@@ -35,53 +35,54 @@ and can be sold or given away.
       
 ======================================================= */
 
-void model_rescale_box(model_box_type *mbox,float x_fact,float z_fact,float y_fact)
+void model_rescale_box(model_box_type *mbox,d3fpnt *scale)
 {
-    mbox->size.x=(int)((float)mbox->size.x*x_fact);
-    mbox->size.z=(int)((float)mbox->size.z*z_fact);
-    mbox->size.y=(int)((float)mbox->size.y*y_fact);
-    mbox->offset.x=(int)((float)mbox->offset.x*x_fact);
-    mbox->offset.z=(int)((float)mbox->offset.z*z_fact);
-    mbox->offset.y=(int)((float)mbox->offset.y*y_fact);
+	mbox->size.x=(int)((float)mbox->size.x*scale->x);
+	mbox->size.y=(int)((float)mbox->size.y*scale->y);
+	mbox->size.z=(int)((float)mbox->size.z*scale->z);
+
+	mbox->offset.x=(int)((float)mbox->offset.x*scale->x);
+	mbox->offset.y=(int)((float)mbox->offset.y*scale->y);
+	mbox->offset.z=(int)((float)mbox->offset.z*scale->z);
 }
 
-void model_scale(model_type *model,int mesh_idx,float x_fact,float y_fact,float z_fact)
+void model_scale(model_type *model,int mesh_idx,d3fpnt *scale)
 {
-	int					i,nvertex;
+	int					n,nvertex;
 	model_vertex_type	*vertex;
 	
-	if ((x_fact<=0.0f) || (y_fact<=0.0f) || (z_fact<=0.0f)) return;
+	if ((scale->x<=0.0f) || (scale->y<=0.0f) || (scale->z<=0.0f)) return;
     
 	nvertex=model->meshes[mesh_idx].nvertex;
 	vertex=model->meshes[mesh_idx].vertexes;
 	
-	for (i=0;i!=nvertex;i++) {
-		vertex->pnt.x=(int)((float)vertex->pnt.x*x_fact);
-		vertex->pnt.z=(int)((float)vertex->pnt.z*z_fact);
-		vertex->pnt.y=(int)((float)vertex->pnt.y*y_fact);
+	for (n=0;n!=nvertex;n++) {
+		vertex->pnt.x=(int)((float)vertex->pnt.x*scale->x);
+		vertex->pnt.y=(int)((float)vertex->pnt.y*scale->y);
+		vertex->pnt.z=(int)((float)vertex->pnt.z*scale->z);
 		vertex++;
 	}
 	
 	model_calculate_parents(model);
 }
 
-void model_scale_all(model_type *model,float x_fact,float y_fact,float z_fact)
+void model_scale_all(model_type *model,d3fpnt *scale)
 {
-	int					i,nmesh,nbone;
+	int					n,nmesh,nbone;
 	model_bone_type		*bone;
 	
-	if ((x_fact<=0.0f) || (y_fact<=0.0f) || (z_fact<=0.0f)) return;
+	if ((scale->x<=0.0f) || (scale->y<=0.0f) || (scale->z<=0.0f)) return;
     
         // boxes
         
-	model_rescale_box(&model->view_box,x_fact,z_fact,y_fact);
+	model_rescale_box(&model->view_box,scale);
 	
 		// scale meshes
 		
 	nmesh=model->nmesh;
 	
-	for (i=0;i!=nmesh;i++) {
-		model_scale(model,i,x_fact,y_fact,z_fact);
+	for (n=0;n!=nmesh;n++) {
+		model_scale(model,n,scale);
 	}
 	
 		// scale bones
@@ -89,10 +90,10 @@ void model_scale_all(model_type *model,float x_fact,float y_fact,float z_fact)
 	nbone=model->nbone;
 	bone=model->bones;
 	
-	for (i=0;i!=nbone;i++) {
-		bone->pnt.x=(int)((float)bone->pnt.x*x_fact);
-		bone->pnt.z=(int)((float)bone->pnt.z*z_fact);
-		bone->pnt.y=(int)((float)bone->pnt.y*y_fact);
+	for (n=0;n!=nbone;n++) {
+		bone->pnt.x=(int)((float)bone->pnt.x*scale->x);
+		bone->pnt.y=(int)((float)bone->pnt.y*scale->y);
+		bone->pnt.z=(int)((float)bone->pnt.z*scale->z);
 		bone++;
 	}
 	

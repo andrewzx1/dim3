@@ -76,7 +76,7 @@ bool dialog_property_string_proc(int msg_type,int id)
 			os_dialog_set_focus(diag_prop_string_str,TRUE);
 			return(TRUE);
 
-		case os_dialog_msg_type_button:
+		case os_dialog_msg_type_command:
 			if (id==diag_prop_string_ok) {
 				os_dialog_get_text(diag_prop_string_str,str,256);
 				property_string_set_values(dialog_property_string_value_type,dialog_property_string_value,dialog_property_string_value_len,dialog_property_string_i_min,dialog_property_string_i_max,str);

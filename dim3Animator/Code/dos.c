@@ -152,7 +152,7 @@ bool file_new_model(void)
 		// get name
 	
 	strcpy(file_name,"NewModel");
-	if (!dialog_file_new_run("New Model",file_name)) {
+	if (!dialog_new_model_run(file_name)) {
 		file_reset_state();
 		return(FALSE);
 	}

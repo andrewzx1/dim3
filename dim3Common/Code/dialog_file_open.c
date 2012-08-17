@@ -77,7 +77,7 @@ bool dialog_property_open_proc(int msg_type,int id)
 			os_dialog_enable(diag_prop_open_ok,FALSE);
 			return(TRUE);
 
-		case os_dialog_msg_type_button:
+		case os_dialog_msg_type_command:
 
 			if (id==diag_prop_open_cancel) {
 				dialog_open_ok=FALSE;
@@ -95,7 +95,7 @@ bool dialog_property_open_proc(int msg_type,int id)
 
 			break;
 
-		case os_dialog_msg_type_sel_change:
+		case os_dialog_msg_type_tree_change:
 			idx=os_dialog_tree_get_value(diag_prop_open_files);
 
 			if ((idx&0xFFFF0000)!=0) {
@@ -106,7 +106,7 @@ bool dialog_property_open_proc(int msg_type,int id)
 			}
 			return(TRUE);
 
-		case os_dialog_msg_type_double_click:
+		case os_dialog_msg_type_tree_double_click:
 			idx=os_dialog_tree_get_value(diag_prop_open_files)&0xFFFF;
 			if ((idx&0xFFFF0000)!=0) break;
 

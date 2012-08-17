@@ -77,7 +77,6 @@ and can be sold or given away.
 #define list_string_value_float								4
 #define list_string_value_positive_float					5
 #define list_string_value_0_to_1_float						6
-#define list_string_value_tag								7
 
 #define list_chord_value_point								0
 #define list_chord_value_angle								1

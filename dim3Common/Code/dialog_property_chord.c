@@ -81,7 +81,7 @@ bool dialog_property_chord_proc(int msg_type,int id)
 			os_dialog_set_focus(diag_prop_chord_str_x,TRUE);
 			return(TRUE);
 
-		case os_dialog_msg_type_button:
+		case os_dialog_msg_type_command:
 			if (id==diag_prop_chord_ok) {
 				os_dialog_get_text(diag_prop_chord_str_x,str_x,256);
 				os_dialog_get_text(diag_prop_chord_str_y,str_y,256);

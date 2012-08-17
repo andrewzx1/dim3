@@ -86,11 +86,6 @@ void property_string_get_values(int value_type,void *value,char *str)
 			sprintf(str,"%.2f",*((float*)value));
 			break;
 
-		case list_string_value_tag:
-			memmove(str,((int*)value),4);
-			str[4]=0x0;
-			break;
-			
 	}
 }
 
@@ -101,35 +96,31 @@ void property_string_get_title(int value_type,int i_min,int i_max,char *title)
 	switch (value_type) {
 	
 		case list_string_value_string:
-			strcpy(title,"Enter a string.");
+			strcpy(title,"Enter a String");
 			break;
 			
 		case list_string_value_int:
-			strcpy(title,"Enter a integer.");
+			strcpy(title,"Enter a Integer");
 			break;
 			
 		case list_string_value_positive_int:
-			strcpy(title,"Enter a positive integer.");
+			strcpy(title,"Enter a Positive Integer");
 			break;
 			
 		case list_string_value_range_int:
-			sprintf(title,"Enter a integer between %d and %d.",i_min,i_max);
+			sprintf(title,"Enter a Integer Between %d and %d",i_min,i_max);
 			break;
 			
 		case list_string_value_float:
-			strcpy(title,"Enter a float.");
+			strcpy(title,"Enter a Float");
 			break;
 
 		case list_string_value_positive_float:
-			strcpy(title,"Enter a positive float.");
+			strcpy(title,"Enter a Positive Float");
 			break;
 
 		case list_string_value_0_to_1_float:
-			strcpy(title,"Enter a float between 0.0 and 1.0.");
-			break;
-
-		case list_string_value_tag:
-			strcpy(title,"Enter a 4 character tag.");
+			strcpy(title,"Enter a Float Between 0.0 and 1.0");
 			break;
 			
 	}
@@ -137,7 +128,6 @@ void property_string_get_title(int value_type,int i_min,int i_max,char *title)
 
 void property_string_set_values(int value_type,void *value,int value_len,int i_min,int i_max,char *str)
 {
-	int				len;
 	char			*v_str;
 	
 	switch (value_type) {
@@ -174,16 +164,6 @@ void property_string_set_values(int value_type,void *value,int value_len,int i_m
 			*((float*)value)=(float)atof(str);
 			if ((*((float*)value))<0.0f) *((float*)value)=0.0f;
 			if ((*((float*)value))>1.0f) *((float*)value)=1.0f;
-			break;
-
-		case list_string_value_tag:
-			len=strlen(str);
-	
-			while (len<4) {
-				str[len++]=' ';
-			}
-
-			memmove(((int*)value),str,4);
 			break;
 
 	}
