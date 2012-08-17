@@ -408,9 +408,9 @@ extern void model_recalc_boxes(model_type *model);
 
 extern void model_recalc_normals(model_type *model,bool only_tangent);
 
-extern void model_rescale_box(model_box_type *mbox,float x_fact,float z_fact,float y_fact);
-extern void model_scale(model_type *model,int mesh_idx,float x_fact,float y_fact,float z_fact);
-extern void model_scale_all(model_type *model,float x_fact,float y_fact,float z_fact);
+extern void model_rescale_box(model_box_type *mbox,d3fpnt *scale);
+extern void model_scale(model_type *model,int mesh_idx,d3fpnt *scale);
+extern void model_scale_all(model_type *model,d3fpnt *scale);
 extern void model_flip(model_type *model,int mesh_idx,bool flip_x,bool flip_y,bool flip_z);
 extern void model_flip_all(model_type *model,bool flip_x,bool flip_y,bool flip_z);
 extern void model_swap_xz(model_type *model,int mesh_idx);

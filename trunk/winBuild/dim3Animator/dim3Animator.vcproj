@@ -483,6 +483,14 @@
 					Name="Dialogs"
 					>
 					<File
+						RelativePath="..\..\dim3Common\Code\dialog_file_open.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Common\Code\dialog_new_model.c"
+						>
+					</File>
+					<File
 						RelativePath="..\..\dim3Animator\Code\dialog_normal.c"
 						>
 					</File>
@@ -492,6 +500,10 @@
 					</File>
 					<File
 						RelativePath="..\..\dim3Common\Code\dialog_property_string.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Animator\Code\dialog_scale.c"
 						>
 					</File>
 				</Filter>
@@ -520,19 +532,7 @@
 					>
 				</File>
 				<File
-					RelativePath="..\Common\Code\win32_dialog_file_new.c"
-					>
-				</File>
-				<File
-					RelativePath="..\Common\Code\win32_dialog_file_open.c"
-					>
-				</File>
-				<File
 					RelativePath=".\win32Code\win32_dialog_finish_import.c"
-					>
-				</File>
-				<File
-					RelativePath=".\win32Code\win32_dialog_pick_scale.c"
 					>
 				</File>
 				<File

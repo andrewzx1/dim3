@@ -1,8 +1,8 @@
 /****************************** File *********************************
 
-Module: dim3 Animator
+Module: dim3 Common
 Author: Brian Barnes
- Usage: Scale Dialog
+ Usage: Dialog Pick Scale
 
 ***************************** License ********************************
 
@@ -21,139 +21,122 @@ Any non-engine product (games, etc) created with this code is free
 from any and all payment and/or royalties to the author of dim3,
 and can be sold or given away.
 
-(c) 2000-2011 Klink! Software www.klinksoftware.com
+(c) 2000-2012 Klink! Software www.klinksoftware.com
  
 *********************************************************************/
 
+#ifdef D3_PCH
+	#include "dim3Animator.h"
+#endif
+
 #include "glue.h"
 #include "interface.h"
-#include "osx_dialog.h"
+#include "ui_common.h"
 
-#define kXValue						FOUR_CHAR_CODE('xxxx')
-#define kYValue						FOUR_CHAR_CODE('yyyy')
-#define kZValue						FOUR_CHAR_CODE('zzzz')
-#define kScaleBy					FOUR_CHAR_CODE('scby')
+d3fpnt					*dialog_pick_scale_scale;
 
-float					dialog_scale_x,dialog_scale_y,dialog_scale_z;
-bool					dialog_scale_cancel;
-WindowRef				dialog_scale_wind;
+// controls
+
+#define diag_prop_pick_scale_type	5000
+#define diag_prop_pick_scale_x		5001
+#define diag_prop_pick_scale_y		5002
+#define diag_prop_pick_scale_z		5003
+#define diag_prop_pick_scale_cancel	5004
+#define diag_prop_pick_scale_ok		5005
+
+os_dialog_ctrl_type		diag_property_pick_scale_ctrls[]={
+							{os_dialog_ctrl_type_text_right,0,"Scale Type:",5,13,65,20},
+							{os_dialog_ctrl_type_combo,diag_prop_pick_scale_type,"",75,10,240,20},
+							{os_dialog_ctrl_type_text_right,0,"X:",35,38,35,20},
+							{os_dialog_ctrl_type_text_right,0,"Y:",35,63,35,20},
+							{os_dialog_ctrl_type_text_right,0,"Z:",35,88,35,20},
+							{os_dialog_ctrl_type_text_edit,diag_prop_pick_scale_x,"",75,35,100,20},
+							{os_dialog_ctrl_type_text_edit,diag_prop_pick_scale_y,"",75,60,100,20},
+							{os_dialog_ctrl_type_text_edit,diag_prop_pick_scale_z,"",75,85,100,20},
+							{os_dialog_ctrl_type_button,diag_prop_pick_scale_cancel,"Cancel",180,110,80,25},
+							{os_dialog_ctrl_type_default_button,diag_prop_pick_scale_ok,"OK",270,110,80,25},
+							{-1,-1,"",0,0,0,0}
+						};
 
 /* =======================================================
 
-      Scale Event Handlers
+      Run Pick Scale
       
 ======================================================= */
 
-static pascal OSStatus scale_event_proc(EventHandlerCallRef handler,EventRef event,void *data)
+void dialog_property_pick_scale_proc(int msg_type,int id)
 {
-	HICommand		cmd;
-	
-	switch (GetEventKind(event)) {
-	
-		case kEventProcessCommand:
-			GetEventParameter(event,kEventParamDirectObject,typeHICommand,NULL,sizeof(HICommand),NULL,&cmd);
-			
-			switch (cmd.commandID) {
-			
-				case kScaleBy:
-					switch (dialog_get_combo(dialog_scale_wind,kScaleBy,0)) {
-						case 0:
-							dialog_set_float(dialog_scale_wind,kXValue,0,100.0f);
-							dialog_set_float(dialog_scale_wind,kYValue,0,100.0f);
-							dialog_set_float(dialog_scale_wind,kZValue,0,100.0f);
-							break;
-						case 1:
-							dialog_set_float(dialog_scale_wind,kXValue,0,dialog_scale_x);
-							dialog_set_float(dialog_scale_wind,kYValue,0,dialog_scale_y);
-							dialog_set_float(dialog_scale_wind,kZValue,0,dialog_scale_z);
-							break;
-					}
-					DrawControls(dialog_scale_wind);
-					return(noErr);
-			
-				case kHICommandOK:
-					QuitAppModalLoopForWindow(dialog_scale_wind);
-					return(noErr);
-					
-				case kHICommandCancel:
-					dialog_scale_cancel=TRUE;
-					QuitAppModalLoopForWindow(dialog_scale_wind);
-					return(noErr);
+	switch (msg_type) {
+
+		case os_dialog_msg_type_init:
+			os_dialog_combo_add(diag_prop_pick_scale_type,"Percentage (Ex: 200% = 2x, 50% = 1/2)");
+			os_dialog_combo_add(diag_prop_pick_scale_type,"To Specific Model Units");
+			os_dialog_combo_set_value(diag_prop_pick_scale_type,0);
+
+			os_dialog_set_float(diag_prop_pick_scale_x,100.0f);
+			os_dialog_set_float(diag_prop_pick_scale_y,100.0f);
+			os_dialog_set_float(diag_prop_pick_scale_z,100.0f);
+			os_dialog_set_focus(diag_prop_pick_scale_x,TRUE);
+			break;
+
+		case os_dialog_msg_type_command:
+
+			if (id==diag_prop_pick_scale_type) {
+
+				switch (os_dialog_combo_get_value(diag_prop_pick_scale_type)) {
+					case 0:
+						os_dialog_set_float(diag_prop_pick_scale_x,100.0f);
+						os_dialog_set_float(diag_prop_pick_scale_y,100.0f);
+						os_dialog_set_float(diag_prop_pick_scale_z,100.0f);
+						break;
+					case 1:
+						os_dialog_set_float(diag_prop_pick_scale_x,dialog_pick_scale_scale->x);
+						os_dialog_set_float(diag_prop_pick_scale_y,dialog_pick_scale_scale->y);
+						os_dialog_set_float(diag_prop_pick_scale_z,dialog_pick_scale_scale->z);
+						break;
+				}
+
+				return;
 			}
 
-			return(eventNotHandledErr);
-	
+			if (id==diag_prop_pick_scale_cancel) {
+				os_dialog_close(FALSE);
+				return;
+			}
+
+			if (id==diag_prop_pick_scale_ok) {
+
+				switch (os_dialog_combo_get_value(diag_prop_pick_scale_type)) {
+					case 0:
+						dialog_pick_scale_scale->x=os_dialog_get_float(diag_prop_pick_scale_x)/100.0f;
+						dialog_pick_scale_scale->y=os_dialog_get_float(diag_prop_pick_scale_y)/100.0f;
+						dialog_pick_scale_scale->z=os_dialog_get_float(diag_prop_pick_scale_z)/100.0f;
+						break;
+					case 1:
+						dialog_pick_scale_scale->x=os_dialog_get_float(diag_prop_pick_scale_x)/dialog_pick_scale_scale->x;
+						dialog_pick_scale_scale->y=os_dialog_get_float(diag_prop_pick_scale_y)/dialog_pick_scale_scale->y;
+						dialog_pick_scale_scale->z=os_dialog_get_float(diag_prop_pick_scale_z)/dialog_pick_scale_scale->z;
+						break;
+				}
+
+				os_dialog_close(TRUE);
+				return;
+			}
+
+			break;
 	}
-	
-	return(eventNotHandledErr);
 }
 
-/* =======================================================
-
-      Run Scale Dialog
-      
-======================================================= */
-
-bool dialog_scale_run(model_type *mdl,float *x,float *y,float *z)
+bool dialog_pick_scale_run(model_type *mdl,d3fpnt *scale)
 {
-	int								minx,maxx,minz,maxz,miny,maxy;
-	EventHandlerUPP					event_upp;
-	EventTypeSpec					event_list[]={{kEventClassCommand,kEventProcessCommand}};
-	
-		// find total size of model
-		
+	int			minx,maxx,minz,maxz,miny,maxy;
+
+	dialog_pick_scale_scale=scale;
+
 	model_get_vertex_extent_all(mdl,&minx,&maxx,&minz,&maxz,&miny,&maxy);
-	dialog_scale_x=(float)abs(maxx-minx);
-	dialog_scale_y=(float)abs(maxy-miny);
-	dialog_scale_z=(float)abs(maxz-minz);
+	dialog_pick_scale_scale->x=(float)abs(maxx-minx);
+	dialog_pick_scale_scale->y=(float)abs(maxy-miny);
+	dialog_pick_scale_scale->z=(float)abs(maxz-minz);
 
-		// open the dialog
-		
-	dialog_open(&dialog_scale_wind,"ScalePick");
-	
-		// setup the controls
-		
-	dialog_set_float(dialog_scale_wind,kXValue,0,100.0f);
-	dialog_set_float(dialog_scale_wind,kYValue,0,100.0f);
-	dialog_set_float(dialog_scale_wind,kZValue,0,100.0f);
-	
-	dialog_set_combo(dialog_scale_wind,kScaleBy,0,0);
-	
-		// show window
-	
-	ShowWindow(dialog_scale_wind);
-	
-		// install event handler
-		
-	event_upp=NewEventHandlerUPP(scale_event_proc);
-	InstallWindowEventHandler(dialog_scale_wind,event_upp,GetEventTypeCount(event_list),event_list,NULL,NULL);
-	
-		// modal window
-		
-	dialog_scale_cancel=FALSE;
-	
-	RunAppModalLoopForWindow(dialog_scale_wind);
-	
-	if (!dialog_scale_cancel) {
-	
-		switch (dialog_get_combo(dialog_scale_wind,kScaleBy,0)) {
-			case 0:
-				*x=dialog_get_float(dialog_scale_wind,kXValue,0)/100.0f;
-				*y=dialog_get_float(dialog_scale_wind,kYValue,0)/100.0f;
-				*z=dialog_get_float(dialog_scale_wind,kZValue,0)/100.0f;
-				break;
-			case 1:
-				*x=dialog_get_float(dialog_scale_wind,kXValue,0)/dialog_scale_x;
-				*y=dialog_get_float(dialog_scale_wind,kYValue,0)/dialog_scale_y;
-				*z=dialog_get_float(dialog_scale_wind,kZValue,0)/dialog_scale_z;
-				break;
-		}
-	}
-	
-		// close window
-
-	DisposeWindow(dialog_scale_wind);
-	
-	return(!dialog_scale_cancel);
+	return(os_dialog_run("Pick Scale",355,140,diag_property_pick_scale_ctrls,dialog_property_pick_scale_proc));
 }
-

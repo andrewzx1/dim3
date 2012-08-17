@@ -613,7 +613,6 @@ bool os_launch_process(char *path,bool text_editor)
 
 LRESULT CALLBACK os_dialog_proc(HWND diag,UINT msg,WPARAM wparam,LPARAM lparam)
 {
-	os_dialog_ctrl_type	*ctrl;
 	LPNMHDR				hdr;
 
 	switch (msg) {
@@ -624,17 +623,6 @@ LRESULT CALLBACK os_dialog_proc(HWND diag,UINT msg,WPARAM wparam,LPARAM lparam)
 
 			os_dialog_wind=diag;
 
-				// set the fonts
-
-			SendMessage(os_dialog_wind,WM_SETFONT,(LPARAM)os_dialog_font,0);
-
-			ctrl=os_dialog_ctrls;
-
-			while (ctrl->id!=-1) {
-				SendDlgItemMessage(os_dialog_wind,ctrl->id,WM_SETFONT,(LPARAM)os_dialog_font,0);
-				ctrl++;
-			}
-
 				// send init message back
 				// we need to check if focus was set
 
@@ -644,12 +632,12 @@ LRESULT CALLBACK os_dialog_proc(HWND diag,UINT msg,WPARAM wparam,LPARAM lparam)
 			return(!os_dialog_focus_flag);
 
 		case WM_COMMAND:
-			return((*os_dialog_callback)(os_dialog_msg_type_button,(int)LOWORD(wparam)));
+			return((*os_dialog_callback)(os_dialog_msg_type_command,(int)LOWORD(wparam)));
 
 		case WM_NOTIFY:
 			hdr=(LPNMHDR)lparam;
-			if (hdr->code==TVN_SELCHANGED) return((*os_dialog_callback)(os_dialog_msg_type_sel_change,hdr->idFrom));
-			if (hdr->code==NM_DBLCLK) return((*os_dialog_callback)(os_dialog_msg_type_double_click,hdr->idFrom));
+			if (hdr->code==TVN_SELCHANGED) return((*os_dialog_callback)(os_dialog_msg_type_tree_change,hdr->idFrom));
+			if (hdr->code==NM_DBLCLK) return((*os_dialog_callback)(os_dialog_msg_type_tree_double_click,hdr->idFrom));
 			break;
 
 	}
@@ -659,18 +647,12 @@ LRESULT CALLBACK os_dialog_proc(HWND diag,UINT msg,WPARAM wparam,LPARAM lparam)
 
 int os_dialog_unit_convert_x(int x)
 {
-	LONG		sz;
-
-	sz=GetDialogBaseUnits();
-	return(MulDiv(x,4,LOWORD(sz)));
+	return((int)(((float)x)*0.68f));
 }
 
 int os_dialog_unit_convert_y(int y)
 {
-	LONG		sz;
-
-	sz=GetDialogBaseUnits();
-	return(MulDiv(y,8,HIWORD(sz)));
+	return((int)(((float)y)*0.66f));
 }
 
 int os_dialog_count_controls(os_dialog_ctrl_type *ctrls)
@@ -689,18 +671,11 @@ int os_dialog_count_controls(os_dialog_ctrl_type *ctrls)
 	return(count);
 }
 
-
-
-
-// supergumba -- testing
-
 bool os_dialog_run(char *title,int wid,int high,os_dialog_ctrl_type *ctrls,void *callback)
 {
-	int					font_high,style,ex_style,atom,sz;
+	int					font_high,style,ex_style,atom,sz,pad;
 	unsigned char		*ptr,*diag_template;
 	char				atom_name[32];
-	unsigned long		ulong;
-	bool				first_ctrl;
 	WORD				*w_ptr;
 	DWORD				*d_ptr;
 	short				*s_ptr;
@@ -727,7 +702,7 @@ bool os_dialog_run(char *title,int wid,int high,os_dialog_ctrl_type *ctrls,void 
 	d_ptr=(DWORD*)w_ptr;
 	*d_ptr++=0;
 	*d_ptr++=0;
-	*d_ptr++=DS_MODALFRAME|DS_FIXEDSYS|DS_CENTER|WS_POPUP|WS_CAPTION;
+	*d_ptr++=DS_SETFONT|DS_MODALFRAME|DS_FIXEDSYS|DS_CENTER|WS_POPUP|WS_CAPTION;
 
 	w_ptr=(WORD*)d_ptr;
 	*w_ptr++=os_dialog_count_controls(ctrls);
@@ -736,7 +711,7 @@ bool os_dialog_run(char *title,int wid,int high,os_dialog_ctrl_type *ctrls,void 
 	*s_ptr++=0;
 	*s_ptr++=0;
 	*s_ptr++=os_dialog_unit_convert_x(wid);
-	*s_ptr++=os_dialog_unit_convert_x(high);
+	*s_ptr++=os_dialog_unit_convert_y(high);
 
 	w_ptr=(WORD*)s_ptr;
 	*w_ptr++=0;
@@ -744,8 +719,19 @@ bool os_dialog_run(char *title,int wid,int high,os_dialog_ctrl_type *ctrls,void 
 
 	ptr=(unsigned char*)w_ptr;
 
-	sz=MultiByteToWideChar(CP_ACP,0,title,-1,(LPWSTR)ptr,64);
-	ptr+=((sz+1)*sizeof(wchar_t));
+	sz=MultiByteToWideChar(CP_ACP,0,title,-1,(LPWSTR)ptr,256);
+	ptr+=(sz*sizeof(wchar_t));
+
+	w_ptr=(WORD*)ptr;
+	*w_ptr++=8;
+	*w_ptr++=400;
+
+	ptr=(unsigned char*)w_ptr;
+	*ptr++=0x0;
+	*ptr++=0x1;
+
+	sz=MultiByteToWideChar(CP_ACP,0,"MS Shell Dlg",-1,(LPWSTR)ptr,256);
+	ptr+=(sz*sizeof(wchar_t));
 
 		// remember controls
 		// so we can set font later
@@ -754,22 +740,23 @@ bool os_dialog_run(char *title,int wid,int high,os_dialog_ctrl_type *ctrls,void 
 
 		// controls
 
-	first_ctrl=TRUE;
 	ctrl=ctrls;
 
 	while (ctrl->id!=-1) {
+
 		atom_name[0]=0x0;
+		atom=0x82;
 		ex_style=0;
 
 		switch (ctrl->type) {
 
 			case os_dialog_ctrl_type_button:
-				style=BS_PUSHBUTTON|WS_CHILD|WS_VISIBLE;
+				style=BS_PUSHBUTTON|WS_CHILD|WS_VISIBLE|WS_TABSTOP;
 				atom=0x80;
 				break;
 
 			case os_dialog_ctrl_type_default_button:
-				style=BS_DEFPUSHBUTTON|WS_CHILD|WS_VISIBLE;
+				style=BS_DEFPUSHBUTTON|WS_CHILD|WS_VISIBLE|WS_TABSTOP;
 				atom=0x80;
 				break;
 
@@ -784,13 +771,19 @@ bool os_dialog_run(char *title,int wid,int high,os_dialog_ctrl_type *ctrls,void 
 				break;
 
 			case os_dialog_ctrl_type_text_edit:
-				style=WS_CHILD|WS_VISIBLE|ES_LEFT|ES_AUTOHSCROLL;
+				style=WS_CHILD|WS_VISIBLE|WS_TABSTOP|ES_LEFT|ES_AUTOHSCROLL;
 				ex_style=WS_EX_CLIENTEDGE;
 				atom=0x81;
 				break;
 
+			case os_dialog_ctrl_type_combo:
+				style=WS_CHILD|WS_VISIBLE|WS_VSCROLL|WS_TABSTOP|CBS_DROPDOWNLIST;
+				ex_style=WS_EX_CLIENTEDGE;
+				atom=0x85;
+				break;
+
 			case os_dialog_ctrl_type_files:
-				style=WS_CHILD|WS_VISIBLE|TVS_HASBUTTONS|TVS_HASLINES;
+				style=WS_CHILD|WS_VISIBLE|WS_TABSTOP|TVS_HASBUTTONS|TVS_HASLINES;
 				ex_style=WS_EX_CLIENTEDGE;
 				atom=0x0;
 				strcpy(atom_name,"SysTreeView32");
@@ -798,21 +791,10 @@ bool os_dialog_run(char *title,int wid,int high,os_dialog_ctrl_type *ctrls,void 
 
 		}
 
-			// make sure first control starts
-			// a tab group
-
-		if (first_ctrl) {
-			style|=WS_GROUP;
-			first_ctrl=FALSE;
-		}
-
 			// must be on DWORD boundry
 
-		while (TRUE) {
-			ulong=(unsigned long)ptr;
-			if ((ulong&0x3)==0x0) break;
-			ptr++;
-		}
+		pad=(((int)(ptr-diag_template))%sizeof(DWORD));
+		if (pad!=0) ptr+=(sizeof(DWORD)-pad);
 
 		d_ptr=(DWORD*)ptr;
 		*d_ptr++=0;
@@ -828,7 +810,7 @@ bool os_dialog_run(char *title,int wid,int high,os_dialog_ctrl_type *ctrls,void 
 		d_ptr=(DWORD*)s_ptr;
 		*d_ptr++=ctrl->id;
 
-		ptr=(unsigned char*)w_ptr;
+		ptr=(unsigned char*)d_ptr;
 
 		if (atom_name[0]==0x0) {
 			w_ptr=(WORD*)ptr;
@@ -838,8 +820,8 @@ bool os_dialog_run(char *title,int wid,int high,os_dialog_ctrl_type *ctrls,void 
 			ptr=(unsigned char*)w_ptr;
 		}
 		else {
-			sz=MultiByteToWideChar(CP_ACP,0,atom_name,-1,(LPWSTR)ptr,64);
-			ptr+=((sz+1)*sizeof(wchar_t));
+			sz=MultiByteToWideChar(CP_ACP,0,atom_name,-1,(LPWSTR)ptr,256);
+			ptr+=(sz*sizeof(wchar_t));
 		}
 
 		if (ctrl->str[0]==0x0) {
@@ -849,198 +831,14 @@ bool os_dialog_run(char *title,int wid,int high,os_dialog_ctrl_type *ctrls,void 
 			ptr=(unsigned char*)w_ptr;
 		}
 		else {
-			sz=MultiByteToWideChar(CP_ACP,0,ctrl->str,-1,(LPWSTR)ptr,64);
-			ptr+=((sz+1)*sizeof(wchar_t));
+			sz=MultiByteToWideChar(CP_ACP,0,ctrl->str,-1,(LPWSTR)ptr,256);
+			ptr+=(sz*sizeof(wchar_t));
 		}
 
 		w_ptr=(WORD*)ptr;
 		*w_ptr++=0x0;
 		
 		ptr=(unsigned char*)w_ptr;
-
-		ctrl++;
-	}
-
-		// window font
-
-	font_high=-MulDiv(8,GetDeviceCaps(GetDC(wnd),LOGPIXELSY),72);
-	os_dialog_font=CreateFont(font_high,0,0,0,400,0,0,0,0x1,0,0,0,0,"MS Shell Dlg");
-
-		// run dialog
-
-	os_dialog_ok=FALSE;
-
-	DialogBoxIndirect(hinst,(DLGTEMPLATE*)diag_template,wnd,os_dialog_proc);
-
-		// clean up
-
-	DeleteObject(os_dialog_font);
-
-	free(diag_template);
-
-	return(os_dialog_ok);
-}
-
-
-
-
-
-
-bool os_dialog_run2(char *title,int wid,int high,os_dialog_ctrl_type *ctrls,void *callback)
-{
-	int					font_high,style,ex_style,atom,sz;
-	unsigned char		*ptr,*diag_template;
-	char				atom_name[32];
-	unsigned long		ulong;
-	bool				first_ctrl;
-	WORD				*w_ptr;
-	os_dialog_ctrl_type	*ctrl;
-	DLGTEMPLATE			*dlg;
-	DLGITEMTEMPLATE		*item;
-
-		// setup callback
-
-	os_dialog_callback=callback;
-
-		// build the dialog template
-		// in memory
-
-	diag_template=malloc(10240);
-	memset(diag_template,0x0,10240);
-
-	ptr=diag_template;
-
-		// dialog
-
-	dlg=(DLGTEMPLATE*)ptr;
-
-	dlg->style=DS_MODALFRAME|DS_FIXEDSYS|DS_CENTER|WS_POPUP|WS_CAPTION;
-	dlg->dwExtendedStyle=0;
-	dlg->cdit=os_dialog_count_controls(ctrls);
-	dlg->x=0;
-	dlg->y=0;
-	dlg->cx=os_dialog_unit_convert_x(wid);
-	dlg->cy=os_dialog_unit_convert_x(high);
-
-	ptr+=sizeof(DLGTEMPLATE);
-
-	w_ptr=(WORD*)ptr;
-	*w_ptr=0x0;
-	ptr+=2;
-
-	w_ptr=(WORD*)ptr;
-	*w_ptr=0x0;
-	ptr+=2;
-
-	sz=MultiByteToWideChar(CP_ACP,0,title,-1,(LPWSTR)ptr,64);		// title
-	ptr+=((sz+1)*sizeof(wchar_t));
-
-		// remember controls
-		// so we can set font later
-
-	os_dialog_ctrls=ctrls;
-
-		// controls
-
-	first_ctrl=TRUE;
-	ctrl=ctrls;
-
-	while (ctrl->id!=-1) {
-		atom_name[0]=0x0;
-		ex_style=0;
-
-		switch (ctrl->type) {
-
-			case os_dialog_ctrl_type_button:
-				style=BS_PUSHBUTTON|WS_CHILD|WS_VISIBLE;
-				atom=0x80;
-				break;
-
-			case os_dialog_ctrl_type_default_button:
-				style=BS_DEFPUSHBUTTON|WS_CHILD|WS_VISIBLE;
-				atom=0x80;
-				break;
-
-			case os_dialog_ctrl_type_text_left:
-				style=SS_LEFT|WS_CHILD|WS_VISIBLE;
-				atom=0x82;
-				break;
-
-			case os_dialog_ctrl_type_text_right:
-				style=SS_RIGHT|WS_CHILD|WS_VISIBLE;
-				atom=0x82;
-				break;
-
-			case os_dialog_ctrl_type_text_edit:
-				style=WS_CHILD|WS_VISIBLE|ES_LEFT|ES_AUTOHSCROLL;
-				ex_style=WS_EX_CLIENTEDGE;
-				atom=0x81;
-				break;
-
-			case os_dialog_ctrl_type_files:
-				style=WS_CHILD|WS_VISIBLE|TVS_HASBUTTONS|TVS_HASLINES;
-				ex_style=WS_EX_CLIENTEDGE;
-				atom=0x0;
-				strcpy(atom_name,"SysTreeView32");
-				break;
-
-		}
-
-			// make sure first control starts
-			// a tab group
-
-		if (first_ctrl) {
-			style|=WS_GROUP;
-			first_ctrl=FALSE;
-		}
-
-			// must be on DWORD boundry
-
-		while (TRUE) {
-			ulong=(unsigned long)ptr;
-			if ((ulong&0x3)==0x0) break;
-			ptr++;
-		}
-
-		item=(DLGITEMTEMPLATE*)ptr;
-
-		item->style=style;
-		item->dwExtendedStyle=ex_style;
-		item->x=os_dialog_unit_convert_x(ctrl->x);
-		item->y=os_dialog_unit_convert_y(ctrl->y);
-		item->cx=os_dialog_unit_convert_x(ctrl->wid);
-		item->cy=os_dialog_unit_convert_y(ctrl->high);
-		item->id=ctrl->id;
-		
-		ptr+=sizeof(DLGITEMTEMPLATE);
-
-		if (atom_name[0]==0x0) {
-			w_ptr=(WORD*)ptr;
-			*w_ptr=0xFFFF;
-			ptr+=2;
-
-			w_ptr=(WORD*)ptr;
-			*w_ptr=atom;
-			ptr+=2;
-		}
-		else {
-			sz=MultiByteToWideChar(CP_ACP,0,atom_name,-1,(LPWSTR)ptr,64);
-			ptr+=((sz+1)*sizeof(wchar_t));
-		}
-
-		if (ctrl->str[0]==0x0) {
-			w_ptr=(WORD*)ptr;
-			*w_ptr=0x0;
-			ptr+=2;
-		}
-		else {
-			sz=MultiByteToWideChar(CP_ACP,0,ctrl->str,-1,(LPWSTR)ptr,64);
-			ptr+=((sz+1)*sizeof(wchar_t));
-		}
-
-		w_ptr=(WORD*)ptr;
-		*w_ptr=0x0;
-		ptr+=2;
 
 		ctrl++;
 	}
@@ -1102,7 +900,22 @@ float os_dialog_get_float(int id)
 	return((float)atof(str));
 }
 
-HTREEITEM os_dialog_add_tree_recursive(int id,file_path_directory_type *fpd,HTREEITEM parent_item,int parent_idx)
+void os_dialog_combo_add(int id,char *str)
+{
+	SendDlgItemMessage(os_dialog_wind,id,CB_ADDSTRING,0,(LPARAM)str);
+}
+
+void os_dialog_combo_set_value(int id,int value)
+{
+	SendDlgItemMessage(os_dialog_wind,id,CB_SETCURSEL,value,0);
+}
+
+int os_dialog_combo_get_value(int id)
+{
+	return(SendDlgItemMessage(os_dialog_wind,id,CB_GETCURSEL,0,0));
+}
+
+HTREEITEM os_dialog_tree_add_recursive(int id,file_path_directory_type *fpd,HTREEITEM parent_item,int parent_idx)
 {
 	int					n;
 	TV_INSERTSTRUCT		tv_item;
@@ -1120,7 +933,7 @@ HTREEITEM os_dialog_add_tree_recursive(int id,file_path_directory_type *fpd,HTRE
 			item=(HTREEITEM)SendMessage(GetDlgItem(os_dialog_wind,id),TVM_INSERTITEM,0,(LPARAM)&tv_item);
 
 			if (first_item==NULL) first_item=item;
-			os_dialog_add_tree_recursive(id,fpd,item,n);
+			os_dialog_tree_add_recursive(id,fpd,item,n);
 		}
 	}
 
@@ -1131,7 +944,7 @@ void os_dialog_tree_add(int id,file_path_directory_type *fpd)
 {
 	HTREEITEM			first_item;
 
-	first_item=os_dialog_add_tree_recursive(id,fpd,NULL,-1);
+	first_item=os_dialog_tree_add_recursive(id,fpd,NULL,-1);
 	if (first_item!=NULL) SendMessage(GetDlgItem(os_dialog_wind,id),TVM_EXPAND,TVE_EXPAND,(LPARAM)first_item);
 }
 

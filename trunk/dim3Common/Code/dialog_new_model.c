@@ -2,7 +2,7 @@
 
 Module: dim3 Common
 Author: Brian Barnes
- Usage: File New Routines
+ Usage: New Model Dialog
 
 ***************************** License ********************************
 
@@ -26,53 +26,53 @@ and can be sold or given away.
 *********************************************************************/
 
 #ifdef D3_PCH
-	#include "dim3editor.h"
+	#include "dim3animator.h"
 #endif
 
 #include "glue.h"
 #include "interface.h"
 #include "ui_common.h"
 
-char							dialog_new_map_file_name[256];
+char							dialog_new_model_file_name[256];
 
 // controls
 
-#define diag_prop_new_map_name		5000
-#define diag_prop_new_map_cancel	5001
-#define diag_prop_new_map_ok		5002
+#define diag_prop_new_model_name	5000
+#define diag_prop_new_model_cancel	5001
+#define diag_prop_new_model_ok		5002
 
-os_dialog_ctrl_type		diag_property_new_map_ctrls[]={
-							{os_dialog_ctrl_type_text_left,0,"Enter a name for your new map.",10,10,430,20},
+os_dialog_ctrl_type		diag_property_new_model_ctrls[]={
+							{os_dialog_ctrl_type_text_left,0,"Enter a name for your new model.",10,10,430,20},
 							{os_dialog_ctrl_type_text_right,0,"Name:",10,35,80,20},
-							{os_dialog_ctrl_type_text_edit,diag_prop_new_map_name,"",90,32,340,20},
-							{os_dialog_ctrl_type_text_left,0,"When a map is created, the map data file is saved in the Data/Maps directory.",10,60,430,20},
-							{os_dialog_ctrl_type_button,diag_prop_new_map_cancel,"Cancel",275,90,80,25},
-							{os_dialog_ctrl_type_default_button,diag_prop_new_map_ok,"OK",365,90,80,25},
+							{os_dialog_ctrl_type_text_edit,diag_prop_new_model_name,"",90,32,340,20},
+							{os_dialog_ctrl_type_text_left,0,"When a model is created, the model directory is saved in the Data/Models directory.",10,60,430,20},
+							{os_dialog_ctrl_type_button,diag_prop_new_model_cancel,"Cancel",275,90,80,25},
+							{os_dialog_ctrl_type_default_button,diag_prop_new_model_ok,"OK",365,90,80,25},
 							{-1,-1,"",0,0,0,0}
 						};
 
 /* =======================================================
 
-      Run New Map
+      Run New Model
       
 ======================================================= */
 
-bool dialog_property_new_map_proc(int msg_type,int id)
+bool dialog_property_new_model_proc(int msg_type,int id)
 {
 	switch (msg_type) {
 
 		case os_dialog_msg_type_init:
-			os_dialog_set_text(diag_prop_new_map_name,"New Map");
-			os_dialog_set_focus(diag_prop_new_map_name,TRUE);
+			os_dialog_set_text(diag_prop_new_model_name,"New Model");
+			os_dialog_set_focus(diag_prop_new_model_name,TRUE);
 			return(TRUE);
 
 		case os_dialog_msg_type_command:
-			if (id==diag_prop_new_map_cancel) {
+			if (id==diag_prop_new_model_cancel) {
 				os_dialog_close(FALSE);
 				return(TRUE);
 			}
-			if (id==diag_prop_new_map_ok) {
-				os_dialog_get_text(diag_prop_new_map_name,dialog_new_map_file_name,256);
+			if (id==diag_prop_new_model_ok) {
+				os_dialog_get_text(diag_prop_new_model_name,dialog_new_model_file_name,256);
 				os_dialog_close(TRUE);
 				return(TRUE);
 			}
@@ -82,12 +82,12 @@ bool dialog_property_new_map_proc(int msg_type,int id)
 	return(FALSE);
 }
 
-bool dialog_new_map_run(char *file_name)
+bool dialog_new_model_run(char *file_name)
 {
 	bool				ok;
 
-	ok=os_dialog_run("Create New Map",450,120,diag_property_new_map_ctrls,dialog_property_new_map_proc);
-	if (ok) strcpy(file_name,dialog_new_map_file_name);
+	ok=os_dialog_run("Create New Model",450,120,diag_property_new_model_ctrls,dialog_property_new_model_proc);
+	if (ok) strcpy(file_name,dialog_new_model_file_name);
 
 	return(ok);
 }

@@ -29,10 +29,10 @@ and can be sold or given away.
 // menu definitions
 //
 
-#define os_menu_key_none		0
-#define os_menu_key_cmd			1
-#define os_menu_key_cmd_opt		2
-#define os_menu_key_cmd_shift	3
+#define os_menu_key_none						0
+#define os_menu_key_cmd							1
+#define os_menu_key_cmd_opt						2
+#define os_menu_key_cmd_shift					3
 
 typedef struct {
 					char		menu_name[32],item_name[32];
@@ -44,21 +44,22 @@ typedef struct {
 // dialog definitions
 //
 
-#define os_dialog_msg_type_init				0
-#define os_dialog_msg_type_button			1
-#define os_dialog_msg_type_sel_change		2
-#define os_dialog_msg_type_double_click		3
+#define os_dialog_msg_type_init					0
+#define os_dialog_msg_type_command				1
+#define os_dialog_msg_type_tree_change			2
+#define os_dialog_msg_type_tree_double_click	3
 
-#define os_dialog_ctrl_type_button			0
-#define os_dialog_ctrl_type_default_button	1
-#define os_dialog_ctrl_type_text_left		2
-#define os_dialog_ctrl_type_text_right		3
-#define os_dialog_ctrl_type_text_edit		4
-#define os_dialog_ctrl_type_files			5
+#define os_dialog_ctrl_type_button				0
+#define os_dialog_ctrl_type_default_button		1
+#define os_dialog_ctrl_type_text_left			2
+#define os_dialog_ctrl_type_text_right			3
+#define os_dialog_ctrl_type_text_edit			4
+#define os_dialog_ctrl_type_combo				5
+#define os_dialog_ctrl_type_files				6
 
 typedef struct {
 					int			type,id;
-					char		str[64];
+					char		str[256];
 					int			x,y,wid,high;
 				} os_dialog_ctrl_type;
 
@@ -118,6 +119,9 @@ extern void os_dialog_set_text(int id,char *value);
 extern void os_dialog_get_text(int id,char *value,int value_len);
 extern void os_dialog_set_float(int id,float f);
 extern float os_dialog_get_float(int id);
+extern void os_dialog_combo_add(int id,char *str);
+extern void os_dialog_combo_set_value(int id,int value);
+extern int os_dialog_combo_get_value(int id);
 extern void os_dialog_tree_add(int id,file_path_directory_type *fpd);
 extern int os_dialog_tree_get_value(int id);
 extern void os_dialog_set_focus(int id,bool select_all);

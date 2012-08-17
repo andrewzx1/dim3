@@ -294,11 +294,11 @@ extern void model_pick_list_add_poly(int idx,int ptsz,d3pnt *v_pnts);
 // dialogs
 //
 
-extern bool dialog_file_new_run(char *title,char *file_name);
+extern bool dialog_new_model_run(char *file_name);
 extern bool dialog_file_open_run(char *dialog_name,char *search_path,char *extension,char *required_file_name,char *file_name);
 extern int dialog_import_finish_run(void);
 extern bool dialog_set_vertex_bone_run(int *major_bone_idx,int *minor_bone_idx,float *factor);
 extern bool dialog_animation_reset_time_run(int animate_idx);
 extern bool dialog_play_blend_animation_run(void);
-extern bool dialog_scale_run(model_type *mdl,float *x,float *y,float *z);
+extern bool dialog_pick_scale_run(model_type *mdl,d3fpnt *scale);
 extern bool dialog_set_normal_run(d3vct *normal);
