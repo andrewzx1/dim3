@@ -33,7 +33,7 @@ and can be sold or given away.
 		#include "dim3Animator.h"
 	#endif
 	#ifdef D3_SETUP
-		#include "dim3Setup.h"
+		#include "dim3editor.h"
 	#endif
 #endif
 

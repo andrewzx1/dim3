@@ -32,7 +32,7 @@ and can be sold or given away.
 	#include "dim3Animator.h"
 #endif
 #ifdef D3_SETUP
-	#include "dim3Setup.h"
+	#include "dim3editor.h"
 #endif
 
 #include "glue.h"
@@ -782,6 +782,13 @@ bool os_dialog_run(char *title,int wid,int high,os_dialog_ctrl_type *ctrls,void 
 				atom=0x85;
 				break;
 
+			case os_dialog_ctrl_type_text_checkbox:
+				style=WS_CHILD|WS_VISIBLE|WS_TABSTOP|BS_AUTOCHECKBOX;
+				ex_style=0;
+				atom=0x0;
+				strcpy(atom_name,"Button");
+				break;
+
 			case os_dialog_ctrl_type_files:
 				style=WS_CHILD|WS_VISIBLE|WS_TABSTOP|TVS_HASBUTTONS|TVS_HASLINES;
 				ex_style=WS_EX_CLIENTEDGE;
@@ -884,6 +891,22 @@ void os_dialog_get_text(int id,char *value,int value_len)
 	value[value_len-1]=0x0;
 }
 
+void os_dialog_set_int(int id,int i)
+{
+	char			str[256];
+
+	sprintf(str,"%d",i);
+	os_dialog_set_text(id,str);
+}
+
+int os_dialog_get_int(int id)
+{
+	char			str[256];
+
+	os_dialog_get_text(id,str,256);
+	return(atoi(str));
+}
+
 extern void os_dialog_set_float(int id,float f)
 {
 	char			str[256];
@@ -898,6 +921,16 @@ float os_dialog_get_float(int id)
 
 	os_dialog_get_text(id,str,256);
 	return((float)atof(str));
+}
+
+void os_dialog_set_bool(int id,boolean value)
+{
+	SendDlgItemMessage(os_dialog_wind,id,BM_SETCHECK,(value?BST_CHECKED:BST_UNCHECKED),0);
+}
+
+boolean os_dialog_get_bool(int id)
+{
+	return(SendDlgItemMessage(os_dialog_wind,id,BM_GETCHECK,0,0)==BST_CHECKED);
 }
 
 void os_dialog_combo_add(int id,char *str)

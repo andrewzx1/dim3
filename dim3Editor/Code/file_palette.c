@@ -36,7 +36,7 @@ and can be sold or given away.
 #define kPropertyMapAdd			0
 #define kPropertyMap			100
 
-extern editor_state_type		state;
+extern app_state_type			state;
 extern file_path_setup_type		file_path_setup;
 extern list_palette_type		property_palette;
 
@@ -98,7 +98,7 @@ void file_palette_fill(void)
 		if (fpd->files[n].is_dir) continue;
 
 		sel=FALSE;
-		if (state.map_open) sel=(strcmp(state.map_file_name,fpd->files[n].file_name)==0);
+		if (state.map.map_open) sel=(strcmp(state.map.map_file_name,fpd->files[n].file_name)==0);
 
 		list_palette_add_item(&file_palette,kPropertyMap,n,fpd->files[n].file_name,sel,FALSE);
 	}

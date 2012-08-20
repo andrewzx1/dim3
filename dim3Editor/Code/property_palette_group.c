@@ -38,8 +38,7 @@ and can be sold or given away.
 #define kGroupPropertyClear					10
 
 extern map_type					map;
-extern editor_state_type		state;
-extern editor_setup_type		setup;
+extern app_state_type			state;
 
 extern list_palette_type		property_palette;
 
@@ -105,7 +104,7 @@ void property_palette_click_group(bool double_click)
 		// group clear
 
 	if (property_palette.item_pane.click.id==kGroupPropertyClear) {
-		group_clear(state.cur_group_idx,FALSE);
+		group_clear(state.map.cur_group_idx,FALSE);
 		return;
 	}
 }

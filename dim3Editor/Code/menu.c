@@ -34,7 +34,7 @@ and can be sold or given away.
 #include "ui_common.h"
 
 extern map_type					map;
-extern editor_state_type		state;
+extern app_state_type			state;
 
 extern list_palette_type		property_palette;
 
@@ -114,10 +114,8 @@ os_menu_item_type	editor_menu[]={
 						{"Mesh","Split",app_menu_item_MeshSplit,os_menu_key_cmd_shift,'P'},
 						{"Mesh","Tesselate",app_menu_item_MeshTesselate,os_menu_key_none,0x0},
 						{"Mesh","",0,os_menu_key_none,0x0},
-						{"Mesh","Resize...",app_menu_item_MeshResize,os_menu_key_none,0x0},
-						{"Mesh","Reposition...",app_menu_item_MeshReposition,os_menu_key_none,0x0},
+						{"Mesh","Scale...",app_menu_item_MeshResize,os_menu_key_none,0x0},
 						{"Mesh","Force Bounds to Grid",app_menu_item_MeshForceGrid,os_menu_key_none,0x0},
-						{"Mesh","Resize Current Texture...",app_menu_item_MeshResizeTexture,os_menu_key_none,0x0},
 						{"Mesh","",0,os_menu_key_none,0x0},
 						{"Mesh","Flip X",app_menu_item_MeshFlipX,os_menu_key_cmd,'H'},
 						{"Mesh","Flip Y",app_menu_item_MeshFlipY,os_menu_key_cmd,'U'},
@@ -133,9 +131,6 @@ os_menu_item_type	editor_menu[]={
 						{"Mesh","",0,os_menu_key_none,0x0},
 						{"Mesh","Select All Polygons",app_menu_item_MeshSelectAllPoly,os_menu_key_none,0x0},
 						{"Mesh","",0,os_menu_key_none,0x0},
-						{"Mesh","Snap Mesh To Grid",app_menu_item_MeshSnapToGrid,os_menu_key_none,0x0},
-						{"Mesh","Snap Mesh To Closest Vertex",app_menu_item_MeshSnapClosestVertex,os_menu_key_none,0x0},
-						{"Mesh","",0,os_menu_key_none,0x0},
 						{"Mesh","Reset Mesh UVs",app_menu_item_MeshResetUV,os_menu_key_none,0x0},
 						{"Mesh","Whole Mesh UVs",app_menu_item_MeshWholeUV,os_menu_key_none,0x0},
 						{"Mesh","Single Stamp Mesh UVs",app_menu_item_MeshSingleUV,os_menu_key_none,0x0},
@@ -150,8 +145,6 @@ os_menu_item_type	editor_menu[]={
 						{"Polygon","Punch Middle Hole",app_menu_item_PolygonHole,os_menu_key_none,0x0},
 						{"Polygon","Tesselate",app_menu_item_PolyTesselate,os_menu_key_none,0x0},
 						{"Polygon","",0,os_menu_key_none,0x0},
-						{"Polygon","Snap Polygon To Grid",app_menu_item_PolygonSnapToGrid,os_menu_key_none,0x0},
-						{"Polygon","",0,os_menu_key_none,0x0},
 						{"Polygon","Reset Polygon UVs",app_menu_item_PolygonRotateUV,os_menu_key_cmd,'T'},
 						{"Polygon","Flip Us",app_menu_item_PolygonFlipU,os_menu_key_none,0x0},
 						{"Polygon","Flip Vs",app_menu_item_PolygonFlipV,os_menu_key_none,0x0},
@@ -162,10 +155,6 @@ os_menu_item_type	editor_menu[]={
 						{"Polygon","Reset Polygon UVs",app_menu_item_PolygonResetUV,os_menu_key_none,0x0},
 						{"Polygon","Whole Polygon UVs",app_menu_item_PolygonWholeUV,os_menu_key_none,0x0},
 						{"Polygon","Single Stamp Polygon UVs",app_menu_item_PolygonSingleUV,os_menu_key_none,0x0},
-
-							// vertex menu
-
-						{"Vertex","Snap All Vertexes To Grid",app_menu_item_VertexSnapToGrid,os_menu_key_none,0x0},
 
 						{"","",-1,os_menu_key_none,0x0},
 				};
@@ -194,7 +183,7 @@ void menu_dispose(void)
 
 void menu_fix_enable(void)
 {
-	if (!state.map_open) {
+	if (!state.map.map_open) {
 		os_menu_enable_item(app_menu_file,1,FALSE);
 	
 		os_menu_enable_item(app_menu_edit,0,FALSE);
@@ -202,7 +191,6 @@ void menu_fix_enable(void)
 		os_menu_enable_item(app_menu_map,0,FALSE);
 		os_menu_enable_item(app_menu_mesh,0,FALSE);
 		os_menu_enable_item(app_menu_polygon,0,FALSE);
-		os_menu_enable_item(app_menu_vertex,0,FALSE);
 	}
 	else {
 	
@@ -220,23 +208,16 @@ void menu_fix_enable(void)
         
 		if (select_has_type(mesh_piece)) {
 			os_menu_enable_item(app_menu_mesh,0,TRUE);
-			if (state.drag_mode==drag_mode_polygon) {
+			if (state.map.drag_mode==drag_mode_polygon) {
 				os_menu_enable_item(app_menu_polygon,0,TRUE);
 			}
 			else {
 				os_menu_enable_item(app_menu_polygon,0,FALSE);
 			}
-			if (state.drag_mode==drag_mode_vertex) {
-				os_menu_enable_item(app_menu_vertex,0,TRUE);
-			}
-			else {
-				os_menu_enable_item(app_menu_vertex,0,FALSE);
-			}
 		}
 		else {
 			os_menu_enable_item(app_menu_mesh,0,FALSE);
 			os_menu_enable_item(app_menu_polygon,0,FALSE);
-			os_menu_enable_item(app_menu_vertex,0,FALSE);
 		}
 	}
 }
@@ -261,11 +242,11 @@ void menu_update_view(void)
 
 	os_menu_check_item(app_menu_view,16,(view->clip));
 
-	os_menu_check_item(app_menu_view,19,state.show_liquid);
-	os_menu_check_item(app_menu_view,20,state.show_object);
-	os_menu_check_item(app_menu_view,21,state.show_lightsoundparticle);
-	os_menu_check_item(app_menu_view,22,state.show_node);
-	os_menu_check_item(app_menu_view,23,state.show_movements);
+	os_menu_check_item(app_menu_view,19,state.map.show_liquid);
+	os_menu_check_item(app_menu_view,20,state.map.show_object);
+	os_menu_check_item(app_menu_view,21,state.map.show_lightsoundparticle);
+	os_menu_check_item(app_menu_view,22,state.map.show_node);
+	os_menu_check_item(app_menu_view,23,state.map.show_movements);
 	
 	if (map.editor_views.count<max_editor_view) {
 		os_menu_enable_item(app_menu_view,25,TRUE);
@@ -292,6 +273,8 @@ void menu_update_view(void)
 
 bool menu_event_run(int cmd)
 {
+	d3ang			rot_ang;
+
 	switch (cmd) {
             
 			// file menu
@@ -301,7 +284,7 @@ bool menu_event_run(int cmd)
 			return(TRUE);
 
         case app_menu_item_FilePreference:
-			state.in_preference=!state.in_preference;
+			state.map.in_preference=!state.map.in_preference;
 			property_palette_reset();
 			list_palette_set_level(&property_palette,0);
 			main_wind_draw();
@@ -405,7 +388,7 @@ bool menu_event_run(int cmd)
 			
 		case app_menu_item_ViewShowHideLiquids:
 			select_remove_type(liquid_piece);
-			state.show_liquid=!state.show_liquid;
+			state.map.show_liquid=!state.map.show_liquid;
 			menu_update_view();
 			main_wind_draw();
 			break;
@@ -413,7 +396,7 @@ bool menu_event_run(int cmd)
 		case app_menu_item_ViewShowHideSpots:
 			select_remove_type(spot_piece);
 			select_remove_type(scenery_piece);
-			state.show_object=!state.show_object;
+			state.map.show_object=!state.map.show_object;
 			menu_update_view();
 			main_wind_draw();
 			break;
@@ -422,20 +405,20 @@ bool menu_event_run(int cmd)
 			select_remove_type(light_piece);
 			select_remove_type(sound_piece);
 			select_remove_type(particle_piece);
-			state.show_lightsoundparticle=!state.show_lightsoundparticle;
+			state.map.show_lightsoundparticle=!state.map.show_lightsoundparticle;
 			menu_update_view();
 			main_wind_draw();
 			break;
 			
 		case app_menu_item_ViewShowHideNodes:
 			select_remove_type(node_piece);
-			state.show_node=!state.show_node;
+			state.map.show_node=!state.map.show_node;
 			menu_update_view();
 			main_wind_draw();
 			break;
 			
 		case app_menu_item_ViewShowHideMovements:
-			state.show_movements=!state.show_movements;
+			state.map.show_movements=!state.map.show_movements;
 			menu_update_view();
 			main_wind_draw();
 			break;
@@ -540,19 +523,11 @@ bool menu_event_run(int cmd)
 		case app_menu_item_MeshResize:
 			piece_resize();
 			return(TRUE);
-			
-		case app_menu_item_MeshReposition:
-			piece_reposition();
-			return(TRUE);
 
 		case app_menu_item_MeshForceGrid:
 			piece_force_grid();
 			return(TRUE);
 
-		case app_menu_item_MeshResizeTexture:
-			piece_resize_texture();
-			return(TRUE);
-			
 		case app_menu_item_MeshFlipX:
 			piece_flip(TRUE,FALSE,TRUE);
 			return(TRUE);
@@ -566,15 +541,21 @@ bool menu_event_run(int cmd)
 			return(TRUE);
 			
 		case app_menu_item_MeshRotateX:
-			piece_rotate(90.0f,0.0f,0.0f);
+			rot_ang.x=90.0f;
+			rot_ang.y=rot_ang.z=0.0f;
+			piece_rotate(&rot_ang);
 			return(TRUE);
 			
 		case app_menu_item_MeshRotateY:
-			piece_rotate(0.0f,90.0f,0.0f);
+			rot_ang.y=90.0f;
+			rot_ang.x=rot_ang.z=0.0f;
+			piece_rotate(&rot_ang);
 			return(TRUE);
 			
 		case app_menu_item_MeshRotateZ:
-			piece_rotate(0.0f,0.0f,90.0f);
+			rot_ang.z=90.0f;
+			rot_ang.x=rot_ang.y=0.0f;
+			piece_rotate(&rot_ang);
 			return(TRUE);
 
 		case app_menu_item_MeshFreeRotate:
@@ -593,16 +574,6 @@ bool menu_event_run(int cmd)
 
 		case app_menu_item_MeshSelectAllPoly:
 			piece_mesh_select_all_poly();
-			main_wind_draw();
-			return(TRUE);
-			
-		case app_menu_item_MeshSnapToGrid:
-			piece_mesh_snap_to_grid();
-			main_wind_draw();
-			return(TRUE);
-			
-		case app_menu_item_MeshSnapClosestVertex:
-			piece_mesh_snap_closest_vertex();
 			main_wind_draw();
 			return(TRUE);
 			
@@ -651,11 +622,6 @@ bool menu_event_run(int cmd)
 			piece_tesselate(FALSE);
 			return(TRUE);
 			
-		case app_menu_item_PolygonSnapToGrid:
-			piece_mesh_poly_snap_to_grid();
-			main_wind_draw();
-			return(TRUE);
-			
 		case app_menu_item_PolygonRotateUV:
 			piece_rotate_uvs();
 			main_wind_draw();
@@ -693,13 +659,6 @@ bool menu_event_run(int cmd)
 			
 		case app_menu_item_PolygonSingleUV:
 			piece_single_uvs(TRUE);
-			main_wind_draw();
-			return(TRUE);
-			
-			// vertex menu
-			
-		case app_menu_item_VertexSnapToGrid:
-			piece_mesh_vertexes_snap_to_grid();
 			main_wind_draw();
 			return(TRUE);
 

@@ -33,7 +33,7 @@ and can be sold or given away.
 #include "interface.h" 
 
 extern map_type					map;
-extern editor_state_type		state;
+extern app_state_type			state;
 
 /* =======================================================
 
@@ -260,7 +260,7 @@ bool view_click_drag_mesh_handle(editor_view_type *view,d3pnt *pt)
 	
 		// hilite the drag handle
 		
-	state.drag_handle_idx=handle_idx;
+	state.map.drag_handle_idx=handle_idx;
 	main_wind_draw();
 	
 		// backup all the vertexes
@@ -334,7 +334,7 @@ bool view_click_drag_mesh_handle(editor_view_type *view,d3pnt *pt)
 			view_click_drag_mesh_handle_skew(mesh_idx,old_dpt,handle_idx,&mpt);
 		}
 		
-		if ((state.auto_texture) && (!mesh->flag.lock_uv)) map_mesh_reset_uv(&map,mesh_idx);
+		if ((state.map.auto_texture) && (!mesh->flag.lock_uv)) map_mesh_reset_uv(&map,mesh_idx);
 
         main_wind_draw();
 	}
@@ -351,7 +351,7 @@ bool view_click_drag_mesh_handle(editor_view_type *view,d3pnt *pt)
 	
 		// turn off hilite
 		
-	state.drag_handle_idx=-1;
+	state.map.drag_handle_idx=-1;
 	
 	main_wind_draw();
 	
@@ -500,7 +500,7 @@ bool view_click_drag_mesh(editor_view_type *view,d3pnt *pt)
 				old_dpt_ptr++;
 			}
 			
-			if ((state.auto_texture) && (!mesh->flag.lock_uv)) map_mesh_reset_uv(&map,mesh_idx);
+			if ((state.map.auto_texture) && (!mesh->flag.lock_uv)) map_mesh_reset_uv(&map,mesh_idx);
 
 			view_force_grid(mesh_idx,TRUE);
 			view_vbo_mesh_rebuild(mesh_idx);
@@ -645,7 +645,7 @@ bool view_click_drag_mesh_poly(editor_view_type *view,d3pnt *pt)
 			dpt->z=old_dpt[n].z+mpt.z;
 		}
 
-		if ((state.auto_texture) && (!mesh->flag.lock_uv)) map_mesh_reset_poly_uv(&map,mesh_idx,poly_idx);
+		if ((state.map.auto_texture) && (!mesh->flag.lock_uv)) map_mesh_reset_poly_uv(&map,mesh_idx,poly_idx);
 
 		view_vbo_mesh_rebuild(mesh_idx);
 
@@ -710,7 +710,7 @@ bool view_click_drag_vertex(editor_view_type *view,d3pnt *pt)
 	
 		// turn on hilite
 		
-	state.drag_handle_idx=vertex_idx;
+	state.map.drag_handle_idx=vertex_idx;
 	main_wind_draw();
 	
 		// get the scale
@@ -772,7 +772,7 @@ bool view_click_drag_vertex(editor_view_type *view,d3pnt *pt)
 		view_click_grid(dpt);
 		view_click_snap(mesh_idx,-1,dpt);
 	
-		if ((state.auto_texture) && (!mesh->flag.lock_uv)) map_mesh_reset_uv(&map,mesh_idx);
+		if ((state.map.auto_texture) && (!mesh->flag.lock_uv)) map_mesh_reset_uv(&map,mesh_idx);
 
 		view_vbo_mesh_rebuild(mesh_idx);
 
@@ -783,7 +783,7 @@ bool view_click_drag_vertex(editor_view_type *view,d3pnt *pt)
 	
 		// turn off hilite
 		
-	state.drag_handle_idx=-1;
+	state.map.drag_handle_idx=-1;
 	
 	main_wind_draw();
 	
@@ -916,7 +916,7 @@ bool view_click_drag_liquid_vertex(editor_view_type *view,d3pnt *pt)
 
 		// hilite the drag handle
 		
-	state.drag_handle_idx=handle_idx;
+	state.map.drag_handle_idx=handle_idx;
 	main_wind_draw();
 
 		// get the scale
@@ -1058,7 +1058,7 @@ bool view_click_drag_liquid_vertex(editor_view_type *view,d3pnt *pt)
 		
 		if (liq->depth<100) liq->depth=100;
 		
-		if ((state.auto_texture) && (!liq->flag.lock_uv)) map_liquid_reset_uv(&map,liquid_idx);
+		if ((state.map.auto_texture) && (!liq->flag.lock_uv)) map_liquid_reset_uv(&map,liquid_idx);
 
         main_wind_draw();
 	}
@@ -1079,7 +1079,7 @@ bool view_click_drag_liquid_vertex(editor_view_type *view,d3pnt *pt)
 
 		// remove hilite
 
-	state.drag_handle_idx=-1;
+	state.map.drag_handle_idx=-1;
 	
 	main_wind_draw();
 	
@@ -1179,7 +1179,7 @@ bool view_click_drag_liquid(editor_view_type *view,d3pnt *pt)
 		liq->bot=old_bot+mpt.z;
 		liq->y=old_y+mpt.y;
 
-		if ((state.auto_texture) && (!liq->flag.lock_uv)) map_liquid_reset_uv(&map,main_idx);
+		if ((state.map.auto_texture) && (!liq->flag.lock_uv)) map_liquid_reset_uv(&map,main_idx);
 
         main_wind_draw();
 	}
@@ -1330,8 +1330,8 @@ bool view_click_box_select(editor_view_type *view,d3pnt *pt)
 
 		// setup the start point
 
-	state.select_box_on=TRUE;
-	memmove(&state.select_box_start_pnt,pt,sizeof(d3pnt));
+	state.map.select_box_on=TRUE;
+	memmove(&state.map.select_box_start_pnt,pt,sizeof(d3pnt));
 
 		// if shift, then backup current selection
 
@@ -1361,11 +1361,11 @@ bool view_click_box_select(editor_view_type *view,d3pnt *pt)
 		
 			// setup the end point
 
-		memmove(&state.select_box_end_pnt,pt,sizeof(d3pnt));
+		memmove(&state.map.select_box_end_pnt,pt,sizeof(d3pnt));
 
 			// select any items
 			
-		item_count=view_pick_list_multiple_pick(view,&state.select_box_start_pnt,&state.select_box_end_pnt,pick_list);
+		item_count=view_pick_list_multiple_pick(view,&state.map.select_box_start_pnt,&state.map.select_box_end_pnt,pick_list);
 		
 		if (!shift) {
 			select_clear();
@@ -1375,7 +1375,7 @@ bool view_click_box_select(editor_view_type *view,d3pnt *pt)
 		}
 		
 		for (n=0;n!=item_count;n++) {
-			if (state.drag_mode==drag_mode_mesh) {
+			if (state.map.drag_mode==drag_mode_mesh) {
 				select_add(pick_list[n].type,pick_list[n].main_idx,-1);
 			}
 			else {
@@ -1396,7 +1396,7 @@ bool view_click_box_select(editor_view_type *view,d3pnt *pt)
 
 		// clear the select box
 
-	state.select_box_on=FALSE;
+	state.map.select_box_on=FALSE;
 	
 	main_wind_draw();
 	

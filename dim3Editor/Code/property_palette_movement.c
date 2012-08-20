@@ -49,8 +49,7 @@ and can be sold or given away.
 #define kMovementPropertyMoveDelete			2000
 
 extern map_type					map;
-extern editor_state_type		state;
-extern editor_setup_type		setup;
+extern app_state_type			state;
 
 extern list_palette_type		property_palette;
 
@@ -92,7 +91,7 @@ void property_palette_fill_movement(int movement_idx)
 
 	for (n=0;n!=movement->nmove;n++) {
 		sprintf(str,"(%d,%d,%d)(%d,%d,%d)@%d",move->mov.x,move->mov.y,move->mov.z,(int)move->rot.x,(int)move->rot.y,(int)move->rot.z,move->msec);
-		list_palette_add_string_selectable_button(&property_palette,(kMovementPropertyMove+n),list_button_minus,(kMovementPropertyMoveDelete+n),str,(state.cur_movement_move_idx==n),FALSE);
+		list_palette_add_string_selectable_button(&property_palette,(kMovementPropertyMove+n),list_button_minus,(kMovementPropertyMoveDelete+n),str,(state.map.cur_movement_move_idx==n),FALSE);
 		move++;
 	}
 }
@@ -109,12 +108,12 @@ void property_palette_click_movement(bool double_click)
 	movement_type		*movement;
 
 	id=property_palette.item_pane.click.id;
-	movement=&map.movement.movements[state.cur_movement_idx];
+	movement=&map.movement.movements[state.map.cur_movement_idx];
 
 		// click move
 
 	if ((id>=kMovementPropertyMove) && (id<kMovementPropertyMoveDelete)) {
-		state.cur_movement_move_idx=id-kMovementPropertyMove;
+		state.map.cur_movement_move_idx=id-kMovementPropertyMove;
 		if (double_click) list_palette_set_level(&property_palette,2);
 		return;
 	}
@@ -122,7 +121,7 @@ void property_palette_click_movement(bool double_click)
 		// add move
 
 	if (id==kMovementPropertyMoveAdd) {
-		state.cur_movement_move_idx=map_movement_move_add(&map,state.cur_movement_idx);
+		state.map.cur_movement_move_idx=map_movement_move_add(&map,state.map.cur_movement_idx);
 		list_palette_set_level(&property_palette,2);
 		return;
 	}
@@ -130,8 +129,8 @@ void property_palette_click_movement(bool double_click)
 		// delete move
 
 	if (id>=kMovementPropertyMoveDelete) {
-		state.cur_movement_move_idx=-1;
-		map_movement_move_delete(&map,state.cur_movement_idx,(id-kMovementPropertyMoveDelete));
+		state.map.cur_movement_move_idx=-1;
+		map_movement_move_delete(&map,state.map.cur_movement_idx,(id-kMovementPropertyMoveDelete));
 		return;
 	}
 }

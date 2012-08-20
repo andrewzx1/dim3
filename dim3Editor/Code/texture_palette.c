@@ -34,8 +34,8 @@ and can be sold or given away.
 #include "ui_common.h"
 
 extern map_type				map;
-extern editor_state_type	state;
-extern editor_setup_type	setup;
+extern app_state_type		state;
+extern app_pref_type		pref;
 
 extern int					txt_palette_cur_page;
 extern list_palette_type	file_palette,property_palette;
@@ -48,7 +48,7 @@ extern list_palette_type	file_palette,property_palette;
 
 int texture_palette_per_page_count(void)
 {
-	return(setup.big_texture?16:32);
+	return(pref.map.big_texture?16:32);
 }
 
 int texture_palette_page_list_count(void)
@@ -97,7 +97,7 @@ void texture_palette_box(d3rect *box)
 
 bool texture_palette_get_disabled_state(void)
 {
-	return(!state.map_open);
+	return(!state.map.map_open);
 }
 
 /* =======================================================
@@ -159,7 +159,7 @@ void texture_palette_put_selected_texture(int txt_idx)
 		
 			// only set polygon
 			
-		if (state.drag_mode==drag_mode_polygon) {
+		if (state.map.drag_mode==drag_mode_polygon) {
 			if (view_get_uv_layer()==uv_layer_normal) {
 				mesh->polys[poly_idx].txt_idx=txt_idx;
 			}
@@ -201,7 +201,7 @@ void texture_palette_reset(void)
 		// get to proper texture page
 		
 	sel=texture_palette_get_selected_texture();
-	if (sel!=-1) txt_palette_cur_page=sel/(setup.big_texture?16:32);
+	if (sel!=-1) txt_palette_cur_page=sel/(pref.map.big_texture?16:32);
 }
 
 

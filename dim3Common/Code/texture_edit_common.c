@@ -40,14 +40,13 @@ and can be sold or given away.
 int								texture_edit_scroll_pos,
 								texture_edit_frame_click_idx;
 
+extern app_state_type			state;
 extern list_palette_type		file_palette,property_palette;
 
 #ifdef D3_EDITOR
 	extern map_type				map;
-	extern editor_state_type	state;
 #else
 	extern model_type			model;
-	extern animator_state_type	state;
 #endif
 
 extern file_path_setup_type		file_path_setup;
@@ -62,12 +61,21 @@ void texture_edit_switch(int texture_idx)
 {
 		// clicking again leaves
 
-	if ((state.texture_edit_idx!=-1) && (state.texture_edit_idx==texture_idx)) {
-		state.texture_edit_idx=-1;
+#ifdef D3_EDITOR
+	if ((state.map.texture_edit_idx!=-1) && (state.map.texture_edit_idx==texture_idx)) {
+		state.map.texture_edit_idx=-1;
 	}
 	else {
-		state.texture_edit_idx=texture_idx;
+		state.map.texture_edit_idx=texture_idx;
 	}
+#else
+	if ((state.model.texture_edit_idx!=-1) && (state.model.texture_edit_idx==texture_idx)) {
+		state.model.texture_edit_idx=-1;
+	}
+	else {
+		state.model.texture_edit_idx=texture_idx;
+	}
+#endif
 
 	property_palette_reset();
 	list_palette_set_level(&property_palette,0);
@@ -210,11 +218,11 @@ void texture_edit_draw(void)
 		// get texture and frame count
 		
 	#ifdef D3_EDITOR
-		texture=&map.textures[state.texture_edit_idx];
-		frame_count=map_count_texture_frames(&map,state.texture_edit_idx);
+		texture=&map.textures[state.map.texture_edit_idx];
+		frame_count=map_count_texture_frames(&map,state.map.texture_edit_idx);
 	#else
-		texture=&model.textures[state.texture_edit_idx];
-		frame_count=model_count_texture_frames(&model,state.texture_edit_idx);
+		texture=&model.textures[state.model.texture_edit_idx];
+		frame_count=model_count_texture_frames(&model,state.model.texture_edit_idx);
 	#endif
 
 		// setup drawing
@@ -484,11 +492,11 @@ bool texture_edit_click(d3pnt *pnt,bool double_click)
 		// regular clicks
 
 	#ifdef D3_EDITOR
-		texture=&map.textures[state.texture_edit_idx];
-		frame_count=map_count_texture_frames(&map,state.texture_edit_idx);
+		texture=&map.textures[state.map.texture_edit_idx];
+		frame_count=map_count_texture_frames(&map,state.map.texture_edit_idx);
 	#else
-		texture=&model.textures[state.texture_edit_idx];
-		frame_count=model_count_texture_frames(&model,state.texture_edit_idx);
+		texture=&model.textures[state.model.texture_edit_idx];
+		frame_count=model_count_texture_frames(&model,state.model.texture_edit_idx);
 	#endif
 
 	texture_edit_get_box(&box);
@@ -577,9 +585,9 @@ bool texture_edit_click(d3pnt *pnt,bool double_click)
 
 		os_set_wait_cursor();
 		#ifdef D3_EDITOR
-			map_delete_texture_frame(&map,state.texture_edit_idx);
+			map_delete_texture_frame(&map,state.map.texture_edit_idx);
 		#else
-			model_delete_texture_frame(&model,state.texture_edit_idx);
+			model_delete_texture_frame(&model,state.model.texture_edit_idx);
 		#endif
 		os_set_arrow_cursor();
 		

@@ -33,7 +33,7 @@ and can be sold or given away.
 #include "interface.h"
 
 extern map_type					map;
-extern editor_setup_type		setup;
+extern app_pref_type			pref;
 extern file_path_setup_type		file_path_setup;
 
 /* =======================================================
@@ -83,7 +83,7 @@ void launch_engine(void)
 	
 		// run engine
 		
-	file_paths_base(&file_path_setup,path,setup.engine_name,D3_APP_EXTENSION);
+	file_paths_base(&file_path_setup,path,pref.map.engine_name,D3_APP_EXTENSION);
 	if (!os_launch_process(path,FALSE)) {
 		os_dialog_alert("Launch Engine","Could not find Engine, check engine name in preferences.");
     }

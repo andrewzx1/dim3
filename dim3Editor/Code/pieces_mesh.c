@@ -34,7 +34,7 @@ and can be sold or given away.
 #include "ui_common.h"
 
 extern map_type					map;
-extern editor_state_type		state;
+extern app_state_type			state;
 
 extern file_path_setup_type		file_path_setup;
 
@@ -456,29 +456,32 @@ void piece_add_height_map_mesh(void)
 
 void piece_add_grid_mesh(void)
 {
-	int				mesh_idx,xdiv,ydiv,zdiv,
+	int				mesh_idx,
 					x,y,z,sz,txt_idx,
 					px[4],py[4],pz[4];
 	float			gx[4],gy[4];
-	d3pnt			pnt;
+	bool			sides[6];
+	d3pnt			pnt,divs;
 	
 	if (!piece_create_texture_ok()) return;
 
 		// get mesh divisions
 		
-	if (!dialog_create_grid_mesh_run(&xdiv,&ydiv,&zdiv)) return;
+	if (!dialog_grid_run(&divs,sides)) return;
 	
-		// texture and size
+		// texture, position, and size
 		
 	txt_idx=texture_palette_get_selected_texture();
 	if (txt_idx==-1) txt_idx=0;
 	
-	sz=720;
+	sz=500;		// medium grid
 
 	piece_create_get_spot(&pnt);
-	pnt.x-=((xdiv*sz)/2);
-	pnt.y-=((ydiv*sz)/2);
-	pnt.z-=((zdiv*sz)/2);
+	pnt.x-=((divs.x*sz)/2);
+	pnt.y-=((divs.y*sz)/2);
+	pnt.z-=((divs.z*sz)/2);
+
+	view_click_grid(&pnt);
 
 		// create mesh
 		
@@ -494,65 +497,73 @@ void piece_add_grid_mesh(void)
 	
 	os_set_wait_cursor();
 
-	progress_start("Create Grid",(xdiv+zdiv+zdiv));
+	progress_start("Create Grid",(divs.x+divs.y+divs.z));
 	
-		// add top and bottom polys
-		
-	for (z=0;z!=zdiv;z++) {
-		for (x=0;x!=xdiv;x++) {
-			px[0]=px[3]=(x*sz)+pnt.x;
-			px[1]=px[2]=((x+1)*sz)+pnt.x;
-			pz[0]=pz[1]=(z*sz)+pnt.z;
-			pz[2]=pz[3]=((z+1)*sz)+pnt.z;
+		// x sides
 
-			py[0]=py[1]=py[2]=py[3]=pnt.y;
-			map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,txt_idx);
-			
-			if (ydiv!=0) {
-				py[0]=py[1]=py[2]=py[3]=(ydiv*sz)+pnt.y;
-				map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,txt_idx);
-			}
-		}
-		
-		view_vbo_mesh_rebuild(mesh_idx);
-		progress_next();
-	}
-	
-		// sides
-		
-	for (x=0;x!=xdiv;x++) {
-		for (y=0;y!=ydiv;y++) {
-			px[0]=px[3]=(x*sz)+pnt.x;
-			px[1]=px[2]=((x+1)*sz)+pnt.x;
-			py[0]=py[1]=(y*sz)+pnt.y;
-			py[2]=py[3]=((y+1)*sz)+pnt.y;
-			
-			pz[0]=pz[1]=pz[2]=pz[3]=pnt.z;
-			map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,txt_idx);
-			
-			if (zdiv!=0) {
-				pz[0]=pz[1]=pz[2]=pz[3]=(zdiv*sz)+pnt.z;
-				map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,txt_idx);
-			}
-
-		}
-
-		view_vbo_mesh_rebuild(mesh_idx);
-		progress_next();
-	}
-	
-	for (z=0;z!=zdiv;z++) {
-		for (y=0;y!=ydiv;y++) {
+	for (z=0;z!=divs.z;z++) {
+		for (y=0;y!=divs.y;y++) {
 			pz[0]=pz[1]=(z*sz)+pnt.z;
 			pz[2]=pz[3]=((z+1)*sz)+pnt.z;
 			py[0]=py[3]=(y*sz)+pnt.y;
 			py[1]=py[2]=((y+1)*sz)+pnt.y;
 			
-			px[0]=px[1]=px[2]=px[3]=pnt.x;
-			map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,txt_idx);
+			if (sides[0]) {
+				px[0]=px[1]=px[2]=px[3]=pnt.x;
+				map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,txt_idx);
+			}
+
+			if ((divs.x!=0) && (sides[1])) {
+				px[0]=px[1]=px[2]=px[3]=(divs.x*sz)+pnt.x;
+				map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,txt_idx);
+			}
+
+		}
+
+		view_vbo_mesh_rebuild(mesh_idx);
+		progress_next();
+	}
+	
+		// y sides
+		
+	for (z=0;z!=divs.z;z++) {
+		for (x=0;x!=divs.x;x++) {
+			px[0]=px[3]=(x*sz)+pnt.x;
+			px[1]=px[2]=((x+1)*sz)+pnt.x;
+			pz[0]=pz[1]=(z*sz)+pnt.z;
+			pz[2]=pz[3]=((z+1)*sz)+pnt.z;
+
+			if (sides[2]) {
+				py[0]=py[1]=py[2]=py[3]=pnt.y;
+				map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,txt_idx);
+			}
+
+			if ((divs.y!=0) && (sides[3])) {
+				py[0]=py[1]=py[2]=py[3]=(divs.y*sz)+pnt.y;
+				map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,txt_idx);
+			}
+		}
+		
+		view_vbo_mesh_rebuild(mesh_idx);
+		progress_next();
+	}
+	
+		// z sides
+
+	for (x=0;x!=divs.x;x++) {
+		for (y=0;y!=divs.y;y++) {
+			px[0]=px[3]=(x*sz)+pnt.x;
+			px[1]=px[2]=((x+1)*sz)+pnt.x;
+			py[0]=py[1]=(y*sz)+pnt.y;
+			py[2]=py[3]=((y+1)*sz)+pnt.y;
 			
-			if (xdiv!=0) {
-				px[0]=px[1]=px[2]=px[3]=(xdiv*sz)+pnt.x;
+			if (sides[4]) {
+				pz[0]=pz[1]=pz[2]=pz[3]=pnt.z;
+				map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,txt_idx);
+			}
+
+			if ((divs.z!=0) && (sides[5])) {
+				pz[0]=pz[1]=pz[2]=pz[3]=(divs.z*sz)+pnt.z;
 				map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,txt_idx);
 			}
 
@@ -813,7 +824,7 @@ void piece_split_mesh(void)
 	
 		// auto-switch to mesh drag mode
 		
-	state.drag_mode=drag_mode_mesh;
+	state.map.drag_mode=drag_mode_mesh;
 
 	main_wind_draw();
 }

@@ -228,6 +228,16 @@ void prepare_model(void)
     model_recalc_boxes(&model);
 }
 
+void setup_model_scale(d3fpnt *scale)
+{
+	int				minx,maxx,minz,maxz,miny,maxy;
+
+	model_get_vertex_extent_all(&model,&minx,&maxx,&minz,&maxz,&miny,&maxy);
+	scale->x=(float)abs(maxx-minx);
+	scale->y=(float)abs(maxy-miny);
+	scale->z=(float)abs(maxz-minz);
+}
+
 /* =======================================================
 
       Menu Events
@@ -291,7 +301,8 @@ bool menu_event_run(int cmd)
 			return(TRUE);
            
 		case app_menu_item_ScaleAll:
-			if (!dialog_pick_scale_run(&model,&scale)) return(TRUE);
+			setup_model_scale(&scale);
+			if (!dialog_scale_run(&model,&scale)) return(TRUE);
 			model_scale_all(&model,&scale);
             main_wind_draw();
 			return(TRUE);
@@ -403,7 +414,8 @@ bool menu_event_run(int cmd)
 			return(TRUE);
 			
 		case app_menu_item_Scale:
-			if (!dialog_pick_scale_run(&model,&scale)) return(TRUE);
+			setup_model_scale(&scale);
+			if (!dialog_scale_run(&model,&scale)) return(TRUE);
 			model_scale(&model,state.cur_mesh_idx,&scale);
             main_wind_draw();
 			return(TRUE);

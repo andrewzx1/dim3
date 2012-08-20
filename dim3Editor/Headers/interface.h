@@ -254,21 +254,12 @@ extern void piece_delete(void);
 extern void piece_select_more(void);
 extern void piece_tesselate(bool mesh);
 extern void piece_resize(void);
-extern void piece_reposition(void);
 extern void piece_force_grid(void);
-extern void piece_resize_texture(void);
 extern void piece_flip(bool flip_x,bool flip_y,bool flip_z);
-extern void piece_rotate(float rot_x,float rot_y,float rot_z);
+extern void piece_rotate(d3ang *ang);
 extern void piece_free_rotate(void);
 extern void piece_move(int move_x,int move_y,int move_z);
 extern void piece_mesh_select_all_poly(void);
-extern void mesh_snap_to_grid(int mesh_idx);
-extern void mesh_poly_snap_to_grid(int mesh_idx,int poly_idx);
-extern void mesh_vertexes_snap_to_grid(int mesh_idx);
-extern void piece_mesh_snap_to_grid(void);
-extern void piece_mesh_snap_closest_vertex(void);
-extern void piece_mesh_poly_snap_to_grid(void);
-extern void piece_mesh_vertexes_snap_to_grid(void);
 extern void piece_rotate_uvs(void);
 extern void piece_flip_uvs(bool flip_u,bool flip_v);
 extern void piece_reset_uvs(bool poly_only);
@@ -477,11 +468,10 @@ extern void view_model_cube_vertexes(char *name,d3pnt *pnt,d3ang *ang,float resi
 
 extern bool dialog_new_map_run(char *file_name);
 extern bool dialog_file_open_run(char *title,char *search_path,char *extension,char *required_file_name,char *file_name);
-extern bool dialog_resize_run(float *fct_x,float *fct_y,float *fct_z);
+extern bool dialog_scale_run(d3fpnt *scale);
 extern bool dialog_reposition_run(d3pnt *min,d3pnt *max);
-extern bool dialog_resize_texture_run(float *fct_u,float *fct_v);
-extern bool dialog_free_rotate_run(float *rot_x,float *rot_y,float *rot_z);
-extern bool dialog_create_grid_mesh_run(int *xdiv,int *ydiv,int *zdiv);
-extern int dialog_obj_import_run(int *scale_axis,int *scale_unit,bool *force_grid);
+extern bool dialog_free_rotate_run(d3ang *ang);
+extern bool dialog_grid_run(d3pnt *divs,bool *sides);
+extern bool dialog_obj_import_run(int *import_mode,int *scale_axis,int *scale_unit,bool *force_grid);
 extern bool dialog_height_import_run(int *div_cnt,int *size,int *high);
 

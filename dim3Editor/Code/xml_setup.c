@@ -31,7 +31,7 @@ and can be sold or given away.
 
 extern file_path_setup_type		file_path_setup;
 
-editor_setup_type				setup;
+app_pref_type					pref;
 
 /* =======================================================
 
@@ -41,46 +41,46 @@ editor_setup_type				setup;
 
 void setup_xml_default(void)
 {
-	strcpy(setup.engine_name,"dim3 Engine");
+	strcpy(pref.map.engine_name,"dim3 Engine");
 	
-	setup.free_look=TRUE;
-	setup.auto_texture=TRUE;
-	setup.big_texture=FALSE;
-	setup.show_tangent_binormal=FALSE;
+	pref.map.free_look=TRUE;
+	pref.map.auto_texture=TRUE;
+	pref.map.big_texture=FALSE;
+	pref.map.show_tangent_binormal=FALSE;
 
-	setup.duplicate_offset=5;
-	setup.snap_size=5;
-	setup.clip_distance=200;
+	pref.map.duplicate_offset=5;
+	pref.map.snap_size=5;
+	pref.map.clip_distance=200;
 	
-	setup.flip_horz_movement=FALSE;
-	setup.flip_vert_movement=FALSE;
-	setup.flip_horz_turn=FALSE;
-	setup.flip_vert_turn=FALSE;
-	setup.flip_forward_movement=FALSE;
+	pref.map.flip_horz_movement=FALSE;
+	pref.map.flip_vert_movement=FALSE;
+	pref.map.flip_horz_turn=FALSE;
+	pref.map.flip_vert_turn=FALSE;
+	pref.map.flip_forward_movement=FALSE;
 	
-	setup.col.mesh_line.r=0.5f;
-	setup.col.mesh_line.g=0.5f;
-	setup.col.mesh_line.b=1.0f;
+	pref.map.col.mesh_line.r=0.5f;
+	pref.map.col.mesh_line.g=0.5f;
+	pref.map.col.mesh_line.b=1.0f;
 	
-	setup.col.mesh_sel.r=1.0f;
-	setup.col.mesh_sel.g=1.0f;
-	setup.col.mesh_sel.b=0.0f;
+	pref.map.col.mesh_sel.r=1.0f;
+	pref.map.col.mesh_sel.g=1.0f;
+	pref.map.col.mesh_sel.b=0.0f;
 	
-	setup.col.poly_sel.r=1.0f;
-	setup.col.poly_sel.g=0.0f;
-	setup.col.poly_sel.b=0.0f;
+	pref.map.col.poly_sel.r=1.0f;
+	pref.map.col.poly_sel.g=0.0f;
+	pref.map.col.poly_sel.b=0.0f;
 	
-	setup.col.poly_cull.r=0.9f;
-	setup.col.poly_cull.g=0.9f;
-	setup.col.poly_cull.b=0.9f;
+	pref.map.col.poly_cull.r=0.9f;
+	pref.map.col.poly_cull.g=0.9f;
+	pref.map.col.poly_cull.b=0.9f;
 	
-	setup.col.background.r=0.75f;
-	setup.col.background.g=0.75f;
-	setup.col.background.b=0.75f;
+	pref.map.col.background.r=0.75f;
+	pref.map.col.background.g=0.75f;
+	pref.map.col.background.b=0.75f;
 	
-	setup.import_normal_factor.x=1.0f;
-	setup.import_normal_factor.y=1.0f;
-	setup.import_normal_factor.z=1.0f;
+	pref.map.import_normal_factor.x=1.0f;
+	pref.map.import_normal_factor.y=1.0f;
+	pref.map.import_normal_factor.z=1.0f;
 }
 
 /* =======================================================
@@ -113,27 +113,27 @@ bool setup_xml_read(void)
 	
 		// keys
 
- 	xml_key_read_boolean(setup_tag,"Free_Look",&setup.free_look);
- 	xml_key_read_boolean(setup_tag,"Auto_Texture",&setup.auto_texture);
- 	xml_key_read_boolean(setup_tag,"Big_Texture",&setup.big_texture);
- 	xml_key_read_boolean(setup_tag,"Show_Tangent_Binormal",&setup.show_tangent_binormal);
- 	xml_key_read_boolean(setup_tag,"Flip_Horz_Movement",&setup.flip_horz_movement);
- 	xml_key_read_boolean(setup_tag,"Flip_Vert_Movement",&setup.flip_vert_movement);
- 	xml_key_read_boolean(setup_tag,"Flip_Horz_Turn",&setup.flip_horz_turn);
- 	xml_key_read_boolean(setup_tag,"Flip_Vert_Turn",&setup.flip_vert_turn);
- 	xml_key_read_boolean(setup_tag,"Flip_Forward_Movement",&setup.flip_forward_movement);
-	xml_key_read_int(setup_tag,"Duplicate_Offset",&setup.duplicate_offset);
-	xml_key_read_int(setup_tag,"Snap_Size",&setup.snap_size);
-	xml_key_read_int(setup_tag,"Clip_Distance",&setup.clip_distance);
-	xml_key_read_text(setup_tag,"Engine_Name",setup.engine_name,256);
-	xml_key_read_color(setup_tag,"Color_Mesh_Line",&setup.col.mesh_line);
-	xml_key_read_color(setup_tag,"Color_Mesh_Sel",&setup.col.mesh_sel);
-	xml_key_read_color(setup_tag,"Color_Poly_Sel",&setup.col.poly_sel);
-	xml_key_read_color(setup_tag,"Color_Poly_Cull",&setup.col.poly_cull);
-	xml_key_read_color(setup_tag,"Color_Background",&setup.col.background);
-    xml_key_read_float(setup_tag,"Import_Normal_Factor_X",&setup.import_normal_factor.x);
-	xml_key_read_float(setup_tag,"Import_Normal_Factor_Y",&setup.import_normal_factor.y);
-    xml_key_read_float(setup_tag,"Import_Normal_Factor_Z",&setup.import_normal_factor.z);
+ 	xml_key_read_boolean(setup_tag,"Free_Look",&pref.map.free_look);
+ 	xml_key_read_boolean(setup_tag,"Auto_Texture",&pref.map.auto_texture);
+ 	xml_key_read_boolean(setup_tag,"Big_Texture",&pref.map.big_texture);
+ 	xml_key_read_boolean(setup_tag,"Show_Tangent_Binormal",&pref.map.show_tangent_binormal);
+ 	xml_key_read_boolean(setup_tag,"Flip_Horz_Movement",&pref.map.flip_horz_movement);
+ 	xml_key_read_boolean(setup_tag,"Flip_Vert_Movement",&pref.map.flip_vert_movement);
+ 	xml_key_read_boolean(setup_tag,"Flip_Horz_Turn",&pref.map.flip_horz_turn);
+ 	xml_key_read_boolean(setup_tag,"Flip_Vert_Turn",&pref.map.flip_vert_turn);
+ 	xml_key_read_boolean(setup_tag,"Flip_Forward_Movement",&pref.map.flip_forward_movement);
+	xml_key_read_int(setup_tag,"Duplicate_Offset",&pref.map.duplicate_offset);
+	xml_key_read_int(setup_tag,"Snap_Size",&pref.map.snap_size);
+	xml_key_read_int(setup_tag,"Clip_Distance",&pref.map.clip_distance);
+	xml_key_read_text(setup_tag,"Engine_Name",pref.map.engine_name,256);
+	xml_key_read_color(setup_tag,"Color_Mesh_Line",&pref.map.col.mesh_line);
+	xml_key_read_color(setup_tag,"Color_Mesh_Sel",&pref.map.col.mesh_sel);
+	xml_key_read_color(setup_tag,"Color_Poly_Sel",&pref.map.col.poly_sel);
+	xml_key_read_color(setup_tag,"Color_Poly_Cull",&pref.map.col.poly_cull);
+	xml_key_read_color(setup_tag,"Color_Background",&pref.map.col.background);
+    xml_key_read_float(setup_tag,"Import_Normal_Factor_X",&pref.map.import_normal_factor.x);
+	xml_key_read_float(setup_tag,"Import_Normal_Factor_Y",&pref.map.import_normal_factor.y);
+    xml_key_read_float(setup_tag,"Import_Normal_Factor_Z",&pref.map.import_normal_factor.z);
  
 	xml_close_file();
 	
@@ -160,27 +160,27 @@ bool setup_xml_write(void)
 	
 		// keys
 		
- 	xml_key_write_boolean("Free_Look",setup.free_look);
- 	xml_key_write_boolean("Auto_Texture",setup.auto_texture);
- 	xml_key_write_boolean("Big_Texture",setup.big_texture);
-  	xml_key_write_boolean("Show_Tangent_Binormal",setup.show_tangent_binormal);
-	xml_key_write_boolean("Flip_Horz_Movement",setup.flip_horz_movement);
- 	xml_key_write_boolean("Flip_Vert_Movement",setup.flip_vert_movement);
- 	xml_key_write_boolean("Flip_Horz_Turn",setup.flip_horz_turn);
- 	xml_key_write_boolean("Flip_Vert_Turn",setup.flip_vert_turn);
- 	xml_key_write_boolean("Flip_Forward_Movement",setup.flip_forward_movement);
-	xml_key_write_int("Duplicate_Offset",setup.duplicate_offset);
-	xml_key_write_int("Snap_Size",setup.snap_size);
-	xml_key_write_int("Clip_Distance",setup.clip_distance);
-	xml_key_write_text("Engine_Name",setup.engine_name);
-	xml_key_write_color("Color_Mesh_Line",&setup.col.mesh_line);
-	xml_key_write_color("Color_Mesh_Sel",&setup.col.mesh_sel);
-	xml_key_write_color("Color_Poly_Sel",&setup.col.poly_sel);
-	xml_key_write_color("Color_Poly_Cull",&setup.col.poly_cull);
-	xml_key_write_color("Color_Background",&setup.col.background);
-    xml_key_write_float("Import_Normal_Factor_X",setup.import_normal_factor.x);
-    xml_key_write_float("Import_Normal_Factor_Y",setup.import_normal_factor.y);
-    xml_key_write_float("Import_Normal_Factor_Z",setup.import_normal_factor.z);
+ 	xml_key_write_boolean("Free_Look",pref.map.free_look);
+ 	xml_key_write_boolean("Auto_Texture",pref.map.auto_texture);
+ 	xml_key_write_boolean("Big_Texture",pref.map.big_texture);
+  	xml_key_write_boolean("Show_Tangent_Binormal",pref.map.show_tangent_binormal);
+	xml_key_write_boolean("Flip_Horz_Movement",pref.map.flip_horz_movement);
+ 	xml_key_write_boolean("Flip_Vert_Movement",pref.map.flip_vert_movement);
+ 	xml_key_write_boolean("Flip_Horz_Turn",pref.map.flip_horz_turn);
+ 	xml_key_write_boolean("Flip_Vert_Turn",pref.map.flip_vert_turn);
+ 	xml_key_write_boolean("Flip_Forward_Movement",pref.map.flip_forward_movement);
+	xml_key_write_int("Duplicate_Offset",pref.map.duplicate_offset);
+	xml_key_write_int("Snap_Size",pref.map.snap_size);
+	xml_key_write_int("Clip_Distance",pref.map.clip_distance);
+	xml_key_write_text("Engine_Name",pref.map.engine_name);
+	xml_key_write_color("Color_Mesh_Line",&pref.map.col.mesh_line);
+	xml_key_write_color("Color_Mesh_Sel",&pref.map.col.mesh_sel);
+	xml_key_write_color("Color_Poly_Sel",&pref.map.col.poly_sel);
+	xml_key_write_color("Color_Poly_Cull",&pref.map.col.poly_cull);
+	xml_key_write_color("Color_Background",&pref.map.col.background);
+    xml_key_write_float("Import_Normal_Factor_X",pref.map.import_normal_factor.x);
+    xml_key_write_float("Import_Normal_Factor_Y",pref.map.import_normal_factor.y);
+    xml_key_write_float("Import_Normal_Factor_Z",pref.map.import_normal_factor.z);
 
         // save the setup
 		// always save to user specific data

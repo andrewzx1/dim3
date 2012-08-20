@@ -34,8 +34,7 @@ and can be sold or given away.
 #include "interface.h"
 
 extern map_type					map;
-extern editor_state_type		state;
-extern editor_setup_type		setup;
+extern app_state_type			state;
 extern iface_type				iface;
 extern file_path_setup_type		file_path_setup;
 
@@ -82,7 +81,7 @@ void property_palette_fill_level_1(void)
 
 		// special check for non-selection property lists
 	
-	switch (state.cur_no_sel_piece_type) {
+	switch (state.map.cur_no_sel_piece_type) {
 
 		case map_setting_piece:
 			property_palette_fill_map();
@@ -101,15 +100,15 @@ void property_palette_fill_level_1(void)
 			return;
 
 		case group_piece:
-			property_palette_fill_group(state.cur_group_idx);
+			property_palette_fill_group(state.map.cur_group_idx);
 			return;
 	
 		case movement_piece:
-			property_palette_fill_movement(state.cur_movement_idx);
+			property_palette_fill_movement(state.map.cur_movement_idx);
 			return;
 
 		case cinema_piece:
-			property_palette_fill_cinema(state.cur_cinema_idx);
+			property_palette_fill_cinema(state.map.cur_cinema_idx);
 			return;
 	}
 
@@ -125,7 +124,7 @@ void property_palette_fill_level_1(void)
 	switch (sel_type) {
 
 		case mesh_piece:
-			if (state.drag_mode!=drag_mode_polygon) sub_idx=-1;
+			if (state.map.drag_mode!=drag_mode_polygon) sub_idx=-1;
 			property_palette_fill_mesh(main_idx,sub_idx);
 			break;
 
@@ -164,14 +163,14 @@ void property_palette_fill_level_2(void)
 {
 		// selection properties
 
-	switch (state.cur_no_sel_piece_type) {
+	switch (state.map.cur_no_sel_piece_type) {
 
 		case movement_piece:
-			property_palette_fill_movement_move(state.cur_movement_idx,state.cur_movement_move_idx);
+			property_palette_fill_movement_move(state.map.cur_movement_idx,state.map.cur_movement_move_idx);
 			break;
 
 		case cinema_piece:
-			property_palette_fill_cinema_action(state.cur_cinema_idx,state.cur_cinema_action_idx);
+			property_palette_fill_cinema_action(state.map.cur_cinema_idx,state.map.cur_cinema_action_idx);
 			break;
 	}
 }
@@ -190,7 +189,7 @@ void property_palette_draw(void)
 
 		// if no map, do preferences
 
-	if (!state.map_open) {
+	if (!state.map.map_open) {
 		property_palette_fill_editor_preference();
 		list_palette_draw(&property_palette);
 		return;
@@ -199,8 +198,8 @@ void property_palette_draw(void)
 		// if texture window is up,
 		// put in texture properties
 
-	if (state.texture_edit_idx!=-1) {
-		property_palette_fill_texture(state.texture_edit_idx);
+	if (state.map.texture_edit_idx!=-1) {
+		property_palette_fill_texture(state.map.texture_edit_idx);
 		list_palette_draw(&property_palette);
 		return;
 	}
@@ -208,7 +207,7 @@ void property_palette_draw(void)
 		// if preference window is up,
 		// put in preferences
 
-	if (state.in_preference) {
+	if (state.map.in_preference) {
 		property_palette_fill_editor_preference();
 		list_palette_draw(&property_palette);
 		return;
@@ -243,16 +242,16 @@ void property_palette_reset(void)
 	
 		// clear out non-selection indexes
 
-	state.cur_group_idx=-1;
-	state.cur_movement_idx=-1;
-	state.cur_movement_move_idx=-1;
-	state.cur_cinema_idx=-1;
-	state.cur_cinema_action_idx=-1;
+	state.map.cur_group_idx=-1;
+	state.map.cur_movement_idx=-1;
+	state.map.cur_movement_move_idx=-1;
+	state.map.cur_cinema_idx=-1;
+	state.map.cur_cinema_action_idx=-1;
 
 		// if no select, change nothing
 
 	if (select_count()==0) {
-		state.cur_no_sel_piece_type=-1;
+		state.map.cur_no_sel_piece_type=-1;
 		list_palette_set_level(&property_palette,0);
 		property_palette_scroll_into_view(map_setting_piece,0);
 		return;
@@ -261,7 +260,7 @@ void property_palette_reset(void)
 		// set the type
 
 	select_get(0,&sel_type,&main_idx,&sub_idx);
-	state.cur_no_sel_piece_type=sel_type;
+	state.map.cur_no_sel_piece_type=sel_type;
 	
 	list_palette_set_level(&property_palette,1);
 	
@@ -304,7 +303,7 @@ bool property_palette_delete(void)
 
 		// anything to delete?
 
-	switch (state.cur_no_sel_piece_type) {
+	switch (state.map.cur_no_sel_piece_type) {
 
 			// delete group
 			
@@ -315,7 +314,7 @@ bool property_palette_delete(void)
 			del_ok=TRUE;
 			
 			for (n=0;n!=map.movement.nmovement;n++) {
-				if ((map.movement.movements[n].group_idx==state.cur_group_idx) || (map.movement.movements[n].reverse_group_idx==state.cur_group_idx)) {
+				if ((map.movement.movements[n].group_idx==state.map.cur_group_idx) || (map.movement.movements[n].reverse_group_idx==state.map.cur_group_idx)) {
 					del_ok=FALSE;
 					break;
 				}
@@ -329,7 +328,7 @@ bool property_palette_delete(void)
 				// delete group
 				
 			if (os_dialog_confirm("Delete Group","Is it okay to delete this group?",FALSE)!=0) return(FALSE);
-			map_group_delete(&map,state.cur_group_idx);
+			map_group_delete(&map,state.map.cur_group_idx);
 			property_palette_reset();
 			return(TRUE);
 
@@ -344,7 +343,7 @@ bool property_palette_delete(void)
 			for (n=0;n!=map.cinema.ncinema;n++) {
 				for (k=0;k!=map.cinema.cinemas[n].naction;k++) {
 					if (map.cinema.cinemas[n].actions[k].actor_type==cinema_actor_movement) {
-						if (strcasecmp(map.cinema.cinemas[n].actions[k].actor_name,map.movement.movements[state.cur_movement_idx].name)==0) {
+						if (strcasecmp(map.cinema.cinemas[n].actions[k].actor_name,map.movement.movements[state.map.cur_movement_idx].name)==0) {
 							del_ok=FALSE;
 							break;
 						}
@@ -360,7 +359,7 @@ bool property_palette_delete(void)
 				// delete movement
 				
 			if (os_dialog_confirm("Delete Movement","Is it okay to delete this movement?",FALSE)!=0) return(FALSE);
-			map_movement_delete(&map,state.cur_movement_idx);
+			map_movement_delete(&map,state.map.cur_movement_idx);
 			property_palette_reset();
 			return(TRUE);
 
@@ -368,7 +367,7 @@ bool property_palette_delete(void)
 			
 		case cinema_piece:
 			if (os_dialog_confirm("Delete Cinema","Is it okay to delete this cinema?",FALSE)!=0) return(FALSE);
-			map_cinema_delete(&map,state.cur_cinema_idx);
+			map_cinema_delete(&map,state.map.cur_cinema_idx);
 			property_palette_reset();
 			return(TRUE);
 
@@ -395,7 +394,7 @@ void property_palette_click_level_1(bool double_click)
 		// special check for non-selection property lists
 		// and check state changes
 
-	switch (state.cur_no_sel_piece_type) {
+	switch (state.map.cur_no_sel_piece_type) {
 
 		case group_piece:
 			property_palette_click_group(double_click);
@@ -420,7 +419,7 @@ void property_palette_click_level_1(bool double_click)
 
 	if (main_idx==-1) {
 
-		switch (state.cur_no_sel_piece_type) {
+		switch (state.map.cur_no_sel_piece_type) {
 			
 			case map_setting_piece:
 				property_palette_click_map(double_click);
@@ -448,7 +447,7 @@ void property_palette_click_level_1(bool double_click)
 	switch (sel_type) {
 
 		case mesh_piece:
-			if (state.drag_mode!=drag_mode_polygon) sub_idx=-1;
+			if (state.map.drag_mode!=drag_mode_polygon) sub_idx=-1;
 			property_palette_click_mesh(main_idx,sub_idx,double_click);
 			break;
 
@@ -487,14 +486,14 @@ void property_palette_click_level_2(bool double_click)
 {
 		// selection properties
 
-	switch (state.cur_no_sel_piece_type) {
+	switch (state.map.cur_no_sel_piece_type) {
 
 		case movement_piece:
-			property_palette_click_movement_move(state.cur_movement_idx,state.cur_movement_move_idx,double_click);
+			property_palette_click_movement_move(state.map.cur_movement_idx,state.map.cur_movement_move_idx,double_click);
 			return;
 
 		case cinema_piece:
-			property_palette_click_cinema_action(state.cur_cinema_idx,state.cur_cinema_action_idx,double_click);
+			property_palette_click_cinema_action(state.map.cur_cinema_idx,state.map.cur_cinema_action_idx,double_click);
 			break;
 	}
 }
@@ -522,19 +521,19 @@ void property_palette_click(d3pnt *pnt,bool double_click)
 
 		// can't do anything if no map
 
-	if (!state.map_open) return;
+	if (!state.map.map_open) return;
 		
 		// if texture window is up, texture properties
 
-	if (state.texture_edit_idx!=-1) {
-		property_palette_click_texture(state.texture_edit_idx,property_palette.item_pane.click.id,double_click);
+	if (state.map.texture_edit_idx!=-1) {
+		property_palette_click_texture(state.map.texture_edit_idx,property_palette.item_pane.click.id,double_click);
 		main_wind_draw();
 		return;
 	}
 
 		// if preference window is up, preference properties
 
-	if (state.in_preference) {
+	if (state.map.in_preference) {
 		property_palette_click_editor_preference(property_palette.item_pane.click.id,double_click);
 		main_wind_draw();
 		return;

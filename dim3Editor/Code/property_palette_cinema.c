@@ -48,8 +48,7 @@ and can be sold or given away.
 #define kCinemaPropertyActionDelete			2000
 
 extern map_type					map;
-extern editor_state_type		state;
-extern editor_setup_type		setup;
+extern app_state_type			state;
 
 extern list_palette_type		property_palette;
 
@@ -112,7 +111,7 @@ void property_palette_fill_cinema(int cinema_idx)
 		
 		strcat(str,str2);
 
-		list_palette_add_string_selectable_button(&property_palette,(kCinemaPropertyAction+n),list_button_minus,(kCinemaPropertyActionDelete+n),str,(state.cur_cinema_action_idx==n),FALSE);
+		list_palette_add_string_selectable_button(&property_palette,(kCinemaPropertyAction+n),list_button_minus,(kCinemaPropertyActionDelete+n),str,(state.map.cur_cinema_action_idx==n),FALSE);
 	
 		action++;
 	}
@@ -165,8 +164,8 @@ void cinemas_action_sort(int cinema_idx)
 		// find the new index
 		
 	for (n=0;n!=cinema->naction;n++) {
-		if (sort_list[n]==state.cur_cinema_action_idx) {
-			state.cur_cinema_action_idx=n;
+		if (sort_list[n]==state.map.cur_cinema_action_idx) {
+			state.map.cur_cinema_action_idx=n;
 			break;
 		}
 	}
@@ -215,12 +214,12 @@ void property_palette_click_cinema(bool double_click)
 	map_cinema_type		*cinema;
 
 	id=property_palette.item_pane.click.id;
-	cinema=&map.cinema.cinemas[state.cur_cinema_idx];
+	cinema=&map.cinema.cinemas[state.map.cur_cinema_idx];
 
 		// click action
 
 	if ((id>=kCinemaPropertyAction) && (id<kCinemaPropertyActionDelete)) {
-		state.cur_cinema_action_idx=id-kCinemaPropertyAction;
+		state.map.cur_cinema_action_idx=id-kCinemaPropertyAction;
 		if (double_click) list_palette_set_level(&property_palette,2);
 		return;
 	}
@@ -228,24 +227,24 @@ void property_palette_click_cinema(bool double_click)
 		// add action
 
 	if (id==kCinemaPropertyActionAdd) {
-		state.cur_cinema_action_idx=map_cinema_add_action(&map,state.cur_cinema_idx);
+		state.map.cur_cinema_action_idx=map_cinema_add_action(&map,state.map.cur_cinema_idx);
 		list_palette_set_level(&property_palette,2);
-		dialog_property_string_run(list_string_value_positive_int,(void*)&cinema->actions[state.cur_cinema_action_idx].start_msec,0,0,0);
+		dialog_property_string_run(list_string_value_positive_int,(void*)&cinema->actions[state.map.cur_cinema_action_idx].start_msec,0,0,0);
 		return;
 	}
 
 		// delete action
 
 	if (id>=kCinemaPropertyActionDelete) {
-		state.cur_cinema_action_idx=-1;
-		map_cinema_delete_action(&map,state.cur_cinema_idx,(id-kCinemaPropertyActionDelete));
+		state.map.cur_cinema_action_idx=-1;
+		map_cinema_delete_action(&map,state.map.cur_cinema_idx,(id-kCinemaPropertyActionDelete));
 		return;
 	}
 
 		// sort action
 
 	if (id==kCinemaPropertySort) {
-		cinemas_action_sort(state.cur_cinema_idx);
+		cinemas_action_sort(state.map.cur_cinema_idx);
 		return;
 	}
 
@@ -253,17 +252,17 @@ void property_palette_click_cinema(bool double_click)
 
 	if (id==kCinemaPropertyShift) {
 		
-		if (state.cur_cinema_action_idx==-1) {
+		if (state.map.cur_cinema_action_idx==-1) {
 			action_idx=0;
 		}
 		else {
-			action_idx=state.cur_cinema_action_idx;
+			action_idx=state.map.cur_cinema_action_idx;
 		}
 
 		shift=0;
 		dialog_property_string_run(list_string_value_int,(void*)&shift,0,0,0);
 		
-		cinemas_action_shift(state.cur_cinema_idx,action_idx,shift);
+		cinemas_action_shift(state.map.cur_cinema_idx,action_idx,shift);
 		return;
 	}
 }

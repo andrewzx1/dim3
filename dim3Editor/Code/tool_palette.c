@@ -34,8 +34,8 @@ and can be sold or given away.
 #include "ui_common.h"
 
 extern map_type					map;
-extern editor_state_type		state;
-extern editor_setup_type		setup;
+extern app_state_type			state;
+extern app_pref_type			pref;
 extern file_path_setup_type		file_path_setup;
 
 /* =======================================================
@@ -87,65 +87,65 @@ bool tool_get_highlight_state(int tool_idx)
 			// vertex mode
 
 		case 0:
-			return(state.vertex_mode==vertex_mode_none);
+			return(state.map.vertex_mode==vertex_mode_none);
 		case 1:
-			return(state.vertex_mode==vertex_mode_lock);
+			return(state.map.vertex_mode==vertex_mode_lock);
 		case 2:
-			return(state.vertex_mode==vertex_mode_snap);
+			return(state.map.vertex_mode==vertex_mode_snap);
 
 			// free look and select
 
 		case 3:
-			return(state.free_look);
+			return(state.map.free_look);
 		case 4:
-			return(state.select_add);
+			return(state.map.select_add);
 
 			// drag mode
 
 		case 5:
-			return(state.drag_mode==drag_mode_mesh);
+			return(state.map.drag_mode==drag_mode_mesh);
 		case 6:
-			return(state.drag_mode==drag_mode_polygon);
+			return(state.map.drag_mode==drag_mode_polygon);
 		case 7:
-			return(state.drag_mode==drag_mode_vertex);
+			return(state.map.drag_mode==drag_mode_vertex);
 			
 			// grids
 			
 		case 11:
-			return(state.grid_mode==grid_mode_none);
+			return(state.map.grid_mode==grid_mode_none);
 		case 12:
-			return(state.grid_mode==grid_mode_small);
+			return(state.map.grid_mode==grid_mode_small);
 		case 13:
-			return(state.grid_mode==grid_mode_large);
+			return(state.map.grid_mode==grid_mode_large);
 
 			// auto texture
 
 		case 14:
-			return(state.auto_texture);
+			return(state.map.auto_texture);
 
 			// handle mode
 
 		case 15:
-			return(state.handle_mode==handle_mode_rotate);
+			return(state.map.handle_mode==handle_mode_rotate);
 		case 16:
-			return(state.handle_mode==handle_mode_move);
+			return(state.map.handle_mode==handle_mode_move);
 
 			// node mode
 
 		case 17:
-			return(state.node_mode==node_mode_select);
+			return(state.map.node_mode==node_mode_select);
 		case 18:
-			return(state.node_mode==node_mode_duplicate);
+			return(state.map.node_mode==node_mode_duplicate);
 		case 19:
-			return(state.node_mode==node_mode_link);
+			return(state.map.node_mode==node_mode_link);
 		case 20:
-			return(state.node_mode==node_mode_remove_link);
+			return(state.map.node_mode==node_mode_remove_link);
 			
 			// normals and culling
 
 		case 21:
 			view=view_get_current_view();
-			return(state.show_normals);
+			return(state.map.show_normals);
 		case 22:
 			view=view_get_current_view();
 			return(view->cull);
@@ -156,7 +156,7 @@ bool tool_get_highlight_state(int tool_idx)
 
 bool tool_get_disabled_state(int tool_idx)
 {
-	return(!state.map_open);
+	return(!state.map.map_open);
 }
 
 /* =======================================================
@@ -171,12 +171,12 @@ void tool_click(int tool_idx)
 
 		// nothing to do if map closed
 
-	if (!state.map_open) return;
+	if (!state.map.map_open) return;
 
 		// if in texture view, any tool click
 		// leaves it
 
-	if (state.texture_edit_idx!=-1) texture_edit_switch(-1);
+	if (state.map.texture_edit_idx!=-1) texture_edit_switch(-1);
 
 		// run the click
 
@@ -185,39 +185,39 @@ void tool_click(int tool_idx)
 			// vertex mode
 			
 		case 0:
-			state.vertex_mode=vertex_mode_none;
+			state.map.vertex_mode=vertex_mode_none;
 			break;
 			
 		case 1:
-			state.vertex_mode=vertex_mode_lock;
+			state.map.vertex_mode=vertex_mode_lock;
 			break;
 			
 		case 2:
-			state.vertex_mode=vertex_mode_snap;
+			state.map.vertex_mode=vertex_mode_snap;
 			break;
 			
 			// free look and selection toggle
 			
 		case 3:
-			state.free_look=!state.free_look;
+			state.map.free_look=!state.map.free_look;
 			break;
 
 		case 4:
-			state.select_add=!state.select_add;
+			state.map.select_add=!state.map.select_add;
 			break;
 			
 			// drag mode buttons
 			
 		case 5:
-			state.drag_mode=drag_mode_mesh;
+			state.map.drag_mode=drag_mode_mesh;
 			break;
 			
 		case 6:
-			state.drag_mode=drag_mode_polygon;
+			state.map.drag_mode=drag_mode_polygon;
 			break;
 			
 		case 7:
-			state.drag_mode=drag_mode_vertex;
+			state.map.drag_mode=drag_mode_vertex;
 			break;
 			
 			// mesh polygons
@@ -238,63 +238,63 @@ void tool_click(int tool_idx)
 			// grids
 			
 		case 11:
-			state.grid_mode=grid_mode_none;
+			state.map.grid_mode=grid_mode_none;
 			break;
 
 		case 12:
-			state.grid_mode=grid_mode_small;
+			state.map.grid_mode=grid_mode_small;
 			break;
 
 		case 13:
-			state.grid_mode=grid_mode_large;
+			state.map.grid_mode=grid_mode_large;
 			break;
 			
 			// auto-texture
 			
 		case 14:
-			state.auto_texture=!state.auto_texture;
+			state.map.auto_texture=!state.map.auto_texture;
 			break;
 			
 			// handle modes
 			
 		case 15:
-			state.handle_mode=handle_mode_rotate;
+			state.map.handle_mode=handle_mode_rotate;
 			break;
 			
 		case 16:
-			state.handle_mode=handle_mode_move;
+			state.map.handle_mode=handle_mode_move;
 			break;
 			
 			// node editing
 			
 		case 17:
-			state.show_node=TRUE;
+			state.map.show_node=TRUE;
 			menu_update_view();
-			state.node_mode=node_mode_select;
+			state.map.node_mode=node_mode_select;
 			break;
 			
 		case 18:
-			state.show_node=TRUE;
+			state.map.show_node=TRUE;
 			menu_update_view();
-			state.node_mode=node_mode_duplicate;
+			state.map.node_mode=node_mode_duplicate;
 			break;
 			
 		case 19:
-			state.show_node=TRUE;
+			state.map.show_node=TRUE;
 			menu_update_view();
-			state.node_mode=node_mode_link;
+			state.map.node_mode=node_mode_link;
 			break;
 			
 		case 20:
-			state.show_node=TRUE;
+			state.map.show_node=TRUE;
 			menu_update_view();
-			state.node_mode=node_mode_remove_link;
+			state.map.node_mode=node_mode_remove_link;
 			break;
 			
 			// normals
 			
 		case 21:
-			state.show_normals=!state.show_normals;
+			state.map.show_normals=!state.map.show_normals;
 			break;
 			
 		case 22:
@@ -378,53 +378,53 @@ void tool_click(int tool_idx)
 
 void tool_default(void)
 {
-	state.free_look=setup.free_look;
-	state.select_add=FALSE;
+	state.map.free_look=pref.map.free_look;
+	state.map.select_add=FALSE;
 	
-    state.vertex_mode=vertex_mode_none;
-	state.drag_mode=drag_mode_mesh;
-	state.grid_mode=grid_mode_small;
-	state.node_mode=node_mode_select;
-	state.handle_mode=handle_mode_rotate;
+    state.map.vertex_mode=vertex_mode_none;
+	state.map.drag_mode=drag_mode_mesh;
+	state.map.grid_mode=grid_mode_small;
+	state.map.node_mode=node_mode_select;
+	state.map.handle_mode=handle_mode_rotate;
 	
-	state.auto_texture=setup.auto_texture;
+	state.map.auto_texture=pref.map.auto_texture;
 	
-	state.show_liquid=TRUE;
-	state.show_object=TRUE;
-	state.show_lightsoundparticle=TRUE;
-	state.show_node=FALSE;
+	state.map.show_liquid=TRUE;
+	state.map.show_object=TRUE;
+	state.map.show_lightsoundparticle=TRUE;
+	state.map.show_node=FALSE;
 	
-	state.show_normals=FALSE;
+	state.map.show_normals=FALSE;
 }
 
 void tool_switch_vertex_mode(void)
 {
-	state.vertex_mode++;
-	if (state.vertex_mode>vertex_mode_snap) state.vertex_mode=vertex_mode_none;
+	state.map.vertex_mode++;
+	if (state.map.vertex_mode>vertex_mode_snap) state.map.vertex_mode=vertex_mode_none;
 	
 	main_wind_draw();
 }
 
 void tool_switch_drag_mode(void)
 {
-	state.drag_mode++;
-	if (state.drag_mode>drag_mode_vertex) state.drag_mode=drag_mode_mesh;
+	state.map.drag_mode++;
+	if (state.map.drag_mode>drag_mode_vertex) state.map.drag_mode=drag_mode_mesh;
 
 	main_wind_draw();
 }
 
 void tool_switch_grid_mode(void)
 {
-	state.grid_mode++;
-	if (state.grid_mode>grid_mode_large) state.grid_mode=grid_mode_none;
+	state.map.grid_mode++;
+	if (state.map.grid_mode>grid_mode_large) state.map.grid_mode=grid_mode_none;
 	
 	main_wind_draw();
 }
 
 void tool_switch_node_mode(void)
 {
-	state.node_mode++;
-	if (state.node_mode>node_mode_remove_link) state.node_mode=node_mode_select;
+	state.map.node_mode++;
+	if (state.map.node_mode>node_mode_remove_link) state.map.node_mode=node_mode_select;
 	
 	main_wind_draw();
 }

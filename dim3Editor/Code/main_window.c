@@ -34,10 +34,9 @@ and can be sold or given away.
 #include "interface.h"
 
 map_type						map;
-editor_setup_type				setup;
 file_path_setup_type			file_path_setup;
 iface_type						iface;
-editor_state_type				state;
+app_state_type					state;
 
 extern list_palette_type		file_palette,property_palette;
 
@@ -64,15 +63,15 @@ void main_wind_initialize(void)
    
         // misc setup
         
-	state.vertex_mode=vertex_mode_none;
-	state.drag_mode=drag_mode_mesh;
-	state.grid_mode=grid_mode_small;
-	state.handle_mode=handle_mode_rotate;
+	state.map.vertex_mode=vertex_mode_none;
+	state.map.drag_mode=drag_mode_mesh;
+	state.map.grid_mode=grid_mode_small;
+	state.map.handle_mode=handle_mode_rotate;
 	
-	state.free_look=TRUE;
-	state.select_add=FALSE;
+	state.map.free_look=TRUE;
+	state.map.select_add=FALSE;
 	
-	state.drag_handle_idx=-1;
+	state.map.drag_handle_idx=-1;
 	
 		// update view
 	
@@ -157,8 +156,8 @@ void main_wind_draw_no_swap(void)
 
 		// draw window
 
-	if (state.map_open) {
-		if (state.texture_edit_idx==-1) {
+	if (state.map.map_open) {
+		if (state.map.texture_edit_idx==-1) {
 			view_draw();
 		}
 		else {
@@ -229,9 +228,9 @@ void main_wind_click(d3pnt *pnt,bool double_click)
 
 		// view clicks
 
-	if (!state.map_open) return;
+	if (!state.map.map_open) return;
 
-	if (state.texture_edit_idx==-1) {
+	if (state.map.texture_edit_idx==-1) {
 		view_click(pnt,double_click);
 	}
 	else {
@@ -269,7 +268,7 @@ void main_wind_scroll_wheel(d3pnt *pnt,int delta)
 
 		// scroll wheel in view
 
-	if (state.texture_edit_idx==-1) {
+	if (state.map.texture_edit_idx==-1) {
 		view_scroll_wheel(pnt,delta);
 	}
 	else {
@@ -285,7 +284,7 @@ void main_wind_scroll_wheel(d3pnt *pnt,int delta)
 
 void main_wind_mouse_move(d3pnt *pnt)
 {
-	if (!state.map_open) return;
+	if (!state.map.map_open) return;
 
 	tool_palette_mouse_move(pnt);
 }
@@ -302,7 +301,7 @@ bool main_wind_cursor(void)
 	
 	os_get_cursor(&pnt);
 
-	if (state.texture_edit_idx==-1) return(view_cursor(&pnt));
+	if (state.map.texture_edit_idx==-1) return(view_cursor(&pnt));
 	return(texture_edit_cursor());
 }
 

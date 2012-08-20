@@ -127,16 +127,8 @@ void dialog_property_pick_scale_proc(int msg_type,int id)
 	}
 }
 
-bool dialog_pick_scale_run(model_type *mdl,d3fpnt *scale)
+bool dialog_scale_run(model_type *mdl,d3fpnt *scale)
 {
-	int			minx,maxx,minz,maxz,miny,maxy;
-
 	dialog_pick_scale_scale=scale;
-
-	model_get_vertex_extent_all(mdl,&minx,&maxx,&minz,&maxz,&miny,&maxy);
-	dialog_pick_scale_scale->x=(float)abs(maxx-minx);
-	dialog_pick_scale_scale->y=(float)abs(maxy-miny);
-	dialog_pick_scale_scale->z=(float)abs(maxz-minz);
-
 	return(os_dialog_run("Pick Scale",355,140,diag_property_pick_scale_ctrls,dialog_property_pick_scale_proc));
 }

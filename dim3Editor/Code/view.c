@@ -41,8 +41,8 @@ extern list_palette_type		file_palette,property_palette;
 
 extern file_path_setup_type		file_path_setup;
 extern map_type					map;
-extern editor_setup_type		setup;
-extern editor_state_type		state;
+extern app_state_type			state;
+extern app_pref_type			pref;
 
 double							view_mod_matrix[16],view_proj_matrix[16];
 GLint							view_vport[4];
@@ -93,8 +93,8 @@ bool view_initialize(void)
 
 		// some defaults
 		
-	state.view_select_idx=0;
-	state.select_box_on=FALSE;
+	state.map.view_select_idx=0;
+	state.map.select_box_on=FALSE;
 
 	return(TRUE);
 }
@@ -128,8 +128,8 @@ void view_setup_default_views(void)
 	
 	map.editor_views.count=1;
 	
-	state.view_select_idx=0;
-	state.select_box_on=FALSE;
+	state.map.view_select_idx=0;
+	state.map.select_box_on=FALSE;
 	
 	view=&map.editor_views.views[0];
 	
@@ -198,7 +198,7 @@ void view_split_horizontal(void)
 
 	if (map.editor_views.count>=max_editor_view) return;
 	
-	old_view=&map.editor_views.views[state.view_select_idx];
+	old_view=&map.editor_views.views[state.map.view_select_idx];
 	
 	view=&map.editor_views.views[map.editor_views.count];
 	
@@ -218,7 +218,7 @@ void view_split_horizontal(void)
 
 		// select new view
 	
-	state.view_select_idx=map.editor_views.count;
+	state.map.view_select_idx=map.editor_views.count;
 	map.editor_views.count++;
 }
 
@@ -229,7 +229,7 @@ void view_split_vertical(void)
 
 	if (map.editor_views.count>=max_editor_view) return;
 	
-	old_view=&map.editor_views.views[state.view_select_idx];
+	old_view=&map.editor_views.views[state.map.view_select_idx];
 	
 	view=&map.editor_views.views[map.editor_views.count];
 	
@@ -249,7 +249,7 @@ void view_split_vertical(void)
 
 		// select new view
 	
-	state.view_select_idx=map.editor_views.count;
+	state.map.view_select_idx=map.editor_views.count;
 	map.editor_views.count++;
 }
 
@@ -262,7 +262,7 @@ void view_split_remove(void)
 
 	if (map.editor_views.count==1) return;
 	
-	del_view=&map.editor_views.views[state.view_select_idx];
+	del_view=&map.editor_views.views[state.map.view_select_idx];
 
 		// get the view box, and slowly
 		// remove parts of it to move the other
@@ -275,7 +275,7 @@ void view_split_remove(void)
 		moved=FALSE;
 
 		for (n=0;n!=map.editor_views.count;n++) {
-			if (n==state.view_select_idx) continue;
+			if (n==state.map.view_select_idx) continue;
 
 			view=&map.editor_views.views[n];
 
@@ -351,14 +351,14 @@ void view_split_remove(void)
 
 		// remove old view
 
-	move_count=(map.editor_views.count-state.view_select_idx)-1;
-	if (move_count>=1) memmove(&map.editor_views.views[state.view_select_idx],&map.editor_views.views[state.view_select_idx+1],(sizeof(editor_view_type)*move_count));
+	move_count=(map.editor_views.count-state.map.view_select_idx)-1;
+	if (move_count>=1) memmove(&map.editor_views.views[state.map.view_select_idx],&map.editor_views.views[state.map.view_select_idx+1],(sizeof(editor_view_type)*move_count));
 
 	map.editor_views.count--;
 
 		// new selection
 
-	state.view_select_idx=0;
+	state.map.view_select_idx=0;
 }
 
 /* =======================================================
@@ -410,11 +410,11 @@ void view_center_all(bool reset_ang)
 	
 		// reset all the views
 	
-	old_sel_idx=state.view_select_idx;
+	old_sel_idx=state.map.view_select_idx;
 
 	for (n=0;n!=map.editor_views.count;n++) {
 	
-		state.view_select_idx=n;
+		state.map.view_select_idx=n;
 	
 			// view angles
 			
@@ -431,7 +431,7 @@ void view_center_all(bool reset_ang)
 		view_set_position(&pnt);
 	}
 	
-	state.view_select_idx=old_sel_idx;
+	state.map.view_select_idx=old_sel_idx;
 }
 
 /* =======================================================
@@ -568,7 +568,7 @@ void view_set_viewport_box(d3rect *box,bool erase,bool use_background)
 	glVertexPointer(2,GL_FLOAT,0,vertexes);
 		
 	if (use_background) {
-		glColor4f(setup.col.background.r,setup.col.background.g,setup.col.background.b,1.0f);
+		glColor4f(pref.map.col.background.r,pref.map.col.background.g,pref.map.col.background.b,1.0f);
 	}
 	else {
 		glColor4f(1.0f,1.0f,1.0f,1.0f);
@@ -645,7 +645,7 @@ void view_set_3D_projection(editor_view_type *view,int near_z,int far_z,int near
 
 editor_view_type* view_get_current_view(void)
 {
-	return(&map.editor_views.views[state.view_select_idx]);
+	return(&map.editor_views.views[state.map.view_select_idx]);
 }
 
 bool view_point_in_view(editor_view_type *view,d3pnt *pnt)
@@ -716,8 +716,8 @@ void view_key(char ch)
 		// tab switches view
 		
 	if (ch==D3_KEY_TAB) {
-		state.view_select_idx++;
-		if (state.view_select_idx>=map.editor_views.count) state.view_select_idx=0;
+		state.map.view_select_idx++;
+		if (state.map.view_select_idx>=map.editor_views.count) state.map.view_select_idx=0;
 		main_wind_draw();
 		return;
 	}
@@ -753,37 +753,37 @@ void view_key(char ch)
 
 void view_get_position(d3pnt *pnt)
 {
-	memmove(pnt,&map.editor_views.views[state.view_select_idx].pnt,sizeof(d3pnt));
+	memmove(pnt,&map.editor_views.views[state.map.view_select_idx].pnt,sizeof(d3pnt));
 }
 
 void view_set_position(d3pnt *pnt)
 {
-	memmove(&map.editor_views.views[state.view_select_idx].pnt,pnt,sizeof(d3pnt));
+	memmove(&map.editor_views.views[state.map.view_select_idx].pnt,pnt,sizeof(d3pnt));
 }
 
 void view_set_position_y_shift(d3pnt *pnt,int y_shift)
 {
-	memmove(&map.editor_views.views[state.view_select_idx].pnt,pnt,sizeof(d3pnt));
-	map.editor_views.views[state.view_select_idx].pnt.y+=y_shift;
+	memmove(&map.editor_views.views[state.map.view_select_idx].pnt,pnt,sizeof(d3pnt));
+	map.editor_views.views[state.map.view_select_idx].pnt.y+=y_shift;
 }
 
 void view_move_position(d3pnt *pnt)
 {
-	map.editor_views.views[state.view_select_idx].pnt.x+=pnt->x;
-	map.editor_views.views[state.view_select_idx].pnt.y+=pnt->y;
-	map.editor_views.views[state.view_select_idx].pnt.z+=pnt->z;
+	map.editor_views.views[state.map.view_select_idx].pnt.x+=pnt->x;
+	map.editor_views.views[state.map.view_select_idx].pnt.y+=pnt->y;
+	map.editor_views.views[state.map.view_select_idx].pnt.z+=pnt->z;
 }
 
 void view_get_angle(d3ang *ang)
 {
-	memmove(ang,&map.editor_views.views[state.view_select_idx].ang,sizeof(d3ang));
+	memmove(ang,&map.editor_views.views[state.map.view_select_idx].ang,sizeof(d3ang));
 }
 
 void view_set_angle(d3ang *ang)
 {
 	d3ang			*vang;
 	
-	vang=&map.editor_views.views[state.view_select_idx].ang;
+	vang=&map.editor_views.views[state.map.view_select_idx].ang;
 
 	memmove(vang,ang,sizeof(d3ang));
 	
@@ -795,7 +795,7 @@ void view_turn_angle(d3ang *ang)
 {
 	d3ang			*vang;
 	
-	vang=&map.editor_views.views[state.view_select_idx].ang;
+	vang=&map.editor_views.views[state.map.view_select_idx].ang;
 	
 	vang->x=angle_add(vang->x,ang->x);
 	vang->y=angle_add(vang->y,ang->y);
@@ -813,37 +813,37 @@ void view_turn_angle(d3ang *ang)
 
 void view_perspective_ortho(bool on)
 {
-	map.editor_views.views[state.view_select_idx].ortho=on;
+	map.editor_views.views[state.map.view_select_idx].ortho=on;
 }
 
 void view_cull(bool on)
 {
-	map.editor_views.views[state.view_select_idx].cull=on;
+	map.editor_views.views[state.map.view_select_idx].cull=on;
 }
 
 void view_clip(bool on)
 {
-	map.editor_views.views[state.view_select_idx].clip=on;
+	map.editor_views.views[state.map.view_select_idx].clip=on;
 }
 
 void view_flip_clip(void)
 {
-	map.editor_views.views[state.view_select_idx].clip=!map.editor_views.views[state.view_select_idx].clip;
+	map.editor_views.views[state.map.view_select_idx].clip=!map.editor_views.views[state.map.view_select_idx].clip;
 }
 
 int view_get_uv_layer(void)
 {
-	return(map.editor_views.views[state.view_select_idx].uv_layer);
+	return(map.editor_views.views[state.map.view_select_idx].uv_layer);
 }
 
 void view_set_uv_layer(int uv_layer)
 {
-	map.editor_views.views[state.view_select_idx].uv_layer=uv_layer;
+	map.editor_views.views[state.map.view_select_idx].uv_layer=uv_layer;
 }
 
 void view_no_rot(bool on)
 {
-	map.editor_views.views[state.view_select_idx].no_rot=on;
+	map.editor_views.views[state.map.view_select_idx].no_rot=on;
 }
 
 /* =======================================================
@@ -861,8 +861,8 @@ void view_goto_select(void)
 	
 	if (select_count()==0) return;
 
-	ang.x=view_get_lookat_x_angle(&map.editor_views.views[state.view_select_idx]);
-	ang.y=map.editor_views.views[state.view_select_idx].ang.y;
+	ang.x=view_get_lookat_x_angle(&map.editor_views.views[state.map.view_select_idx]);
+	ang.y=map.editor_views.views[state.map.view_select_idx].ang.y;
 	
 	select_get_center(&pnt);
 	
@@ -917,14 +917,14 @@ void view_goto_map_center_all(void)
 {
 	int			n,old_idx;
 
-	old_idx=state.view_select_idx;
+	old_idx=state.map.view_select_idx;
 
 	for (n=0;n!=map.editor_views.count;n++) {
-		state.view_select_idx=n;
+		state.map.view_select_idx=n;
 		view_goto_map_center();
 	}
 
-	state.view_select_idx=old_idx;
+	state.map.view_select_idx=old_idx;
 }
 
 /* =======================================================
@@ -1023,11 +1023,11 @@ void view_select_view(d3pnt *pnt)
 	
 		// find selection
 		
-	old_idx=state.view_select_idx;
+	old_idx=state.map.view_select_idx;
 	
 	for (n=0;n!=map.editor_views.count;n++) {
 		if (view_point_in_view(&map.editor_views.views[n],pnt)) {
-			state.view_select_idx=n;
+			state.map.view_select_idx=n;
 			break;
 		}
 	}
@@ -1035,7 +1035,7 @@ void view_select_view(d3pnt *pnt)
 		// if select changed, we need to update
 		// interface
 		
-	if (state.view_select_idx!=old_idx) {
+	if (state.map.view_select_idx!=old_idx) {
 		menu_update_view();
 	}
 }
@@ -1066,11 +1066,11 @@ void view_scroll_wheel(d3pnt *pnt,int delta)
 	move_pnt.x=move_pnt.y=move_pnt.z=0;
 
 	mv=delta*move_scroll_wheel_scale;
-	if (setup.flip_forward_movement) mv=-mv;
+	if (pref.map.flip_forward_movement) mv=-mv;
 
 		// free look
 
-	if ((select_count()!=1) || (state.free_look)) {
+	if ((select_count()!=1) || (state.map.free_look)) {
 		view_mouse_get_forward_axis(view,&move_pnt,-mv);
 	}
 	
@@ -1181,9 +1181,9 @@ void view_draw(void)
 	
 		// draw the selection
 		
-	if ((state.view_select_idx>=0) && (state.view_select_idx<map.editor_views.count)) {
+	if ((state.map.view_select_idx>=0) && (state.map.view_select_idx<map.editor_views.count)) {
 	
-		view=&map.editor_views.views[state.view_select_idx];
+		view=&map.editor_views.views[state.map.view_select_idx];
 		view_set_viewport(view,FALSE,FALSE);
 		view_get_pixel_box(view,&box);
 		

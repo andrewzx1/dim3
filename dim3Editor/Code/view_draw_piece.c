@@ -33,8 +33,8 @@ and can be sold or given away.
 #include "interface.h"
 
 extern map_type				map;
-extern editor_setup_type	setup;
-extern editor_state_type	state;
+extern app_state_type		state;
+extern app_pref_type		pref;
 extern bitmap_type			spot_bitmap,scenery_bitmap,node_bitmap,node_defined_bitmap,
 							light_bitmap,sound_bitmap,particle_bitmap;
 
@@ -234,7 +234,7 @@ bool view_clip_poly(editor_view_type *view,map_mesh_poly_type *poly)
 	
 		// get distance
 		
-	return(dist<(setup.clip_distance*view_snap_clip_size_factor));
+	return(dist<(pref.map.clip_distance*view_snap_clip_size_factor));
 }
 
 bool view_clip_liquid(editor_view_type *view,map_liquid_type *liq)
@@ -256,7 +256,7 @@ bool view_clip_liquid(editor_view_type *view,map_liquid_type *liq)
 	
 		// get distance
 		
-	return(dist<(setup.clip_distance*view_snap_clip_size_factor));
+	return(dist<(pref.map.clip_distance*view_snap_clip_size_factor));
 }
 
 bool view_clip_point(editor_view_type *view,d3pnt *pnt)
@@ -276,7 +276,7 @@ bool view_clip_point(editor_view_type *view,d3pnt *pnt)
 	
 		// get distance
 		
-	return(dist<(setup.clip_distance*view_snap_clip_size_factor));
+	return(dist<(pref.map.clip_distance*view_snap_clip_size_factor));
 }
 
 /* =======================================================
@@ -488,7 +488,7 @@ void view_draw_meshes_line(editor_view_type *view,bool opaque)
 
 	glDepthMask(GL_FALSE);
 	
-	glColor4f(setup.col.mesh_line.r,setup.col.mesh_line.g,setup.col.mesh_line.b,1.0f);
+	glColor4f(pref.map.col.mesh_line.r,pref.map.col.mesh_line.g,pref.map.col.mesh_line.b,1.0f);
 
 		// draw portal mesh lines
 
@@ -546,7 +546,7 @@ void view_draw_liquids(editor_view_type *view,bool opaque)
 	map_liquid_type		*liquid;
 	map_liquid_uv_type	*uv;
 	
-	if (!state.show_liquid) return;
+	if (!state.map.show_liquid) return;
 	
 		// no depth buffer for transparent segments
 		
@@ -684,7 +684,7 @@ void view_draw_liquids(editor_view_type *view,bool opaque)
 		
 			// depth lines
 	
-		glColor4f(setup.col.mesh_line.r,setup.col.mesh_line.g,setup.col.mesh_line.b,1.0f);
+		glColor4f(pref.map.col.mesh_line.r,pref.map.col.mesh_line.g,pref.map.col.mesh_line.b,1.0f);
 
 		pv=vertexes;
 		
@@ -759,7 +759,7 @@ void view_draw_meshes_normals(editor_view_type *view)
 		
 			poly=&mesh->polys[k];
 			
-			if (setup.show_tangent_binormal) {
+			if (pref.map.show_tangent_binormal) {
 			
 					// draw the tangent
 
@@ -847,7 +847,7 @@ void view_draw_movements(editor_view_type *view)
 	movement_type		*movement;
 	movement_move_type	*move;
 	
-	if (!state.show_movements) return;
+	if (!state.map.show_movements) return;
 
 	glDisable(GL_TEXTURE_2D);
 	glEnable(GL_BLEND);
@@ -945,7 +945,7 @@ void view_draw_nodes(editor_view_type *view)
 	node_type	*node,*lnode;
 	matrix_type	mat;
 
-	if (!state.show_node) return;
+	if (!state.map.show_node) return;
 	
 		// angles
 		
@@ -1028,7 +1028,7 @@ void view_draw_spots_scenery(editor_view_type *view)
 	spot_type			*spot;
 	map_scenery_type	*scenery;
 	
-    if (!state.show_object) return;
+    if (!state.map.show_object) return;
     
 	for (n=0;n!=map.nspot;n++) {
 		spot=&map.spots[n];
@@ -1055,7 +1055,7 @@ void view_draw_lights_sounds_particles(editor_view_type *view)
 {
 	int				n;
 	
-	if (!state.show_lightsoundparticle) return;
+	if (!state.map.show_lightsoundparticle) return;
 	
 	for (n=0;n!=map.nlight;n++) {
 		if (view_clip_point(view,&map.lights[n].pnt)) continue;
@@ -1131,7 +1131,7 @@ void view_draw_view(editor_view_type *view)
         // draw normals
 		// push view forward to better z-buffer lines
       
-	if (state.show_normals) {
+	if (state.map.show_normals) {
 		view_set_3D_projection(view,map.editor_setup.view_near_dist,map.editor_setup.view_far_dist,view_near_offset);
 		view_draw_meshes_normals(view);
 	}

@@ -55,7 +55,8 @@ typedef struct {
 #define os_dialog_ctrl_type_text_right			3
 #define os_dialog_ctrl_type_text_edit			4
 #define os_dialog_ctrl_type_combo				5
-#define os_dialog_ctrl_type_files				6
+#define os_dialog_ctrl_type_text_checkbox		6
+#define os_dialog_ctrl_type_files				7
 
 typedef struct {
 					int			type,id;
@@ -117,8 +118,12 @@ extern bool os_dialog_run(char *title,int wid,int high,os_dialog_ctrl_type *ctrl
 extern void os_dialog_close(bool ok);
 extern void os_dialog_set_text(int id,char *value);
 extern void os_dialog_get_text(int id,char *value,int value_len);
+extern void os_dialog_set_int(int id,int i);
+extern int os_dialog_get_int(int id);
 extern void os_dialog_set_float(int id,float f);
 extern float os_dialog_get_float(int id);
+extern void os_dialog_set_bool(int id,boolean value);
+extern bool os_dialog_get_bool(int id);
 extern void os_dialog_combo_add(int id,char *str);
 extern void os_dialog_combo_set_value(int id,int value);
 extern int os_dialog_combo_get_value(int id);

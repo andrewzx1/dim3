@@ -44,8 +44,7 @@ and can be sold or given away.
 #define kPropertyAddCinema			108
 
 extern map_type					map;
-extern editor_state_type		state;
-extern editor_setup_type		setup;
+extern app_state_type			state;
 
 extern list_palette_type		property_palette;
 
@@ -226,23 +225,23 @@ void property_palette_click_main(bool double_click)
 
 		// no selection states
 	
-	state.cur_no_sel_piece_type=property_palette.item_pane.click.id;
+	state.map.cur_no_sel_piece_type=property_palette.item_pane.click.id;
 
-	state.cur_group_idx=-1;
-	state.cur_movement_idx=-1;
-	state.cur_movement_move_idx=-1;
-	state.cur_cinema_idx=-1;
-	state.cur_cinema_action_idx=-1;
+	state.map.cur_group_idx=-1;
+	state.map.cur_movement_idx=-1;
+	state.map.cur_movement_move_idx=-1;
+	state.map.cur_cinema_idx=-1;
+	state.map.cur_cinema_action_idx=-1;
 
 		// turn off preferences
 
-	state.in_preference=FALSE;
+	state.map.in_preference=FALSE;
 
 		// special check for non-selection
 		// type double-clicks
 
 	if (double_click) {
-		switch (state.cur_no_sel_piece_type) {
+		switch (state.map.cur_no_sel_piece_type) {
 
 			case map_setting_piece:
 			case map_camera_piece:
@@ -259,23 +258,23 @@ void property_palette_click_main(bool double_click)
 
 	select_clear();
 
-	switch (state.cur_no_sel_piece_type) {
+	switch (state.map.cur_no_sel_piece_type) {
 
 		case group_piece:
-			state.cur_group_idx=property_palette.item_pane.click.idx;
-			select_add_group(state.cur_group_idx);
+			state.map.cur_group_idx=property_palette.item_pane.click.idx;
+			select_add_group(state.map.cur_group_idx);
 			break;
 
 		case movement_piece:
-			state.cur_movement_idx=property_palette.item_pane.click.idx;
-			state.cur_movement_move_idx=-1;
-			select_add_movement(state.cur_movement_idx);
+			state.map.cur_movement_idx=property_palette.item_pane.click.idx;
+			state.map.cur_movement_move_idx=-1;
+			select_add_movement(state.map.cur_movement_idx);
 			break;
 
 		case cinema_piece:
-			state.cur_cinema_idx=property_palette.item_pane.click.idx;
-			state.cur_cinema_action_idx=-1;
-			select_add_cinema(state.cur_cinema_idx);
+			state.map.cur_cinema_idx=property_palette.item_pane.click.idx;
+			state.map.cur_cinema_action_idx=-1;
+			select_add_cinema(state.map.cur_cinema_idx);
 			break;
 
 		default:
@@ -288,21 +287,21 @@ void property_palette_click_main(bool double_click)
 
 		// turn on any hidden items
 
-	switch (state.cur_no_sel_piece_type) {
+	switch (state.map.cur_no_sel_piece_type) {
 
 		case spot_piece:
 		case scenery_piece:
-			state.show_object=TRUE;
+			state.map.show_object=TRUE;
 			break;
 
 		case light_piece:
 		case sound_piece:
 		case particle_piece:
-			state.show_lightsoundparticle=TRUE;
+			state.map.show_lightsoundparticle=TRUE;
 			break;
 
 		case node_piece:
-			state.show_node=TRUE;
+			state.map.show_node=TRUE;
 			break;
 	}
 	

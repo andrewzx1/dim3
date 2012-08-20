@@ -33,8 +33,8 @@ and can be sold or given away.
 #include "interface.h"
 
 extern map_type					map;
-extern editor_setup_type		setup;
-extern editor_state_type		state;
+extern app_state_type			state;
+extern app_pref_type			pref;
 
 /* =======================================================
 
@@ -97,7 +97,7 @@ void view_draw_select_mesh(int mesh_idx)
 		
 	glEnable(GL_DEPTH_TEST);
 
-	glColor4f(setup.col.mesh_sel.r,setup.col.mesh_sel.g,setup.col.mesh_sel.b,1.0f);
+	glColor4f(pref.map.col.mesh_sel.r,pref.map.col.mesh_sel.g,pref.map.col.mesh_sel.b,1.0f);
 
 	glBindBuffer(GL_ARRAY_BUFFER,mesh->vbo.vertex);
 	glVertexPointer(3,GL_FLOAT,((3+2+2)*sizeof(float)),(GLvoid*)0);
@@ -113,7 +113,7 @@ void view_draw_select_mesh(int mesh_idx)
 	
 		// is mesh only, draw resize handles
 		
-	if (state.drag_mode==drag_mode_mesh) {
+	if (state.map.drag_mode==drag_mode_mesh) {
 		
 		view_draw_select_mesh_get_grow_handles(mesh_idx,pts);
 
@@ -126,11 +126,11 @@ void view_draw_select_mesh(int mesh_idx)
 		pv=vertexes;
 
 		for (n=0;n!=8;n++) {
-			if (state.drag_handle_idx==n) {
-				glColor4f(setup.col.poly_sel.r,setup.col.poly_sel.g,setup.col.poly_sel.b,1.0f);
+			if (state.map.drag_handle_idx==n) {
+				glColor4f(pref.map.col.poly_sel.r,pref.map.col.poly_sel.g,pref.map.col.poly_sel.b,1.0f);
 			}
 			else {
-				glColor4f(setup.col.mesh_sel.r,setup.col.mesh_sel.g,setup.col.mesh_sel.b,1.0f);
+				glColor4f(pref.map.col.mesh_sel.r,pref.map.col.mesh_sel.g,pref.map.col.mesh_sel.b,1.0f);
 			}
 			
 			*pv++=(float)pts[n].x;
@@ -148,11 +148,11 @@ void view_draw_select_mesh(int mesh_idx)
 		pv=vertexes;
 		
 		for (n=8;n!=20;n++) {
-			if (state.drag_handle_idx==n) {
-				glColor4f(setup.col.poly_sel.r,setup.col.poly_sel.g,setup.col.poly_sel.b,1.0f);
+			if (state.map.drag_handle_idx==n) {
+				glColor4f(pref.map.col.poly_sel.r,pref.map.col.poly_sel.g,pref.map.col.poly_sel.b,1.0f);
 			}
 			else {
-				glColor4f(setup.col.mesh_sel.r,setup.col.mesh_sel.g,setup.col.mesh_sel.b,1.0f);
+				glColor4f(pref.map.col.mesh_sel.r,pref.map.col.mesh_sel.g,pref.map.col.mesh_sel.b,1.0f);
 			}
 
 			*pv++=(float)pts[n].x;
@@ -183,11 +183,11 @@ void view_draw_select_mesh_vertex(int mesh_idx)
 	
 	for (n=0;n!=mesh->nvertex;n++) {
 	
-		if (state.drag_handle_idx==n) {
-			glColor4f(setup.col.poly_sel.r,setup.col.poly_sel.g,setup.col.poly_sel.b,1.0f);
+		if (state.map.drag_handle_idx==n) {
+			glColor4f(pref.map.col.poly_sel.r,pref.map.col.poly_sel.g,pref.map.col.poly_sel.b,1.0f);
 		}
 		else {
-			glColor4f(setup.col.mesh_sel.r,setup.col.mesh_sel.g,setup.col.mesh_sel.b,1.0f);
+			glColor4f(pref.map.col.mesh_sel.r,pref.map.col.mesh_sel.g,pref.map.col.mesh_sel.b,1.0f);
 		}
 		
 		vertexes[0]=(float)pt->x;
@@ -228,7 +228,7 @@ void view_draw_select_mesh_poly(int mesh_idx,int poly_idx)
 	
 	glVertexPointer(3,GL_FLOAT,0,vertexes);
 	
-	glColor4f(setup.col.poly_sel.r,setup.col.poly_sel.g,setup.col.poly_sel.b,1.0f);
+	glColor4f(pref.map.col.poly_sel.r,pref.map.col.poly_sel.g,pref.map.col.poly_sel.b,1.0f);
 	glDrawArrays(GL_LINE_LOOP,0,poly->ptsz);
 	
 	glLineWidth(1.0f);
@@ -266,7 +266,7 @@ void view_draw_select_liquid(int liquid_idx)
 	
 	glEnable(GL_DEPTH_TEST);
 
-	glColor4f(setup.col.mesh_sel.r,setup.col.mesh_sel.g,setup.col.mesh_sel.b,1.0f);
+	glColor4f(pref.map.col.mesh_sel.r,pref.map.col.mesh_sel.g,pref.map.col.mesh_sel.b,1.0f);
 	
 		// outline
 		
@@ -297,11 +297,11 @@ void view_draw_select_liquid(int liquid_idx)
 	pv=vertexes;
 
 	for (n=0;n!=8;n++) {
-		if (state.drag_handle_idx==n) {
-			glColor4f(setup.col.poly_sel.r,setup.col.poly_sel.g,setup.col.poly_sel.b,1.0f);
+		if (state.map.drag_handle_idx==n) {
+			glColor4f(pref.map.col.poly_sel.r,pref.map.col.poly_sel.g,pref.map.col.poly_sel.b,1.0f);
 		}
 		else {
-			glColor4f(setup.col.mesh_sel.r,setup.col.mesh_sel.g,setup.col.mesh_sel.b,1.0f);
+			glColor4f(pref.map.col.mesh_sel.r,pref.map.col.mesh_sel.g,pref.map.col.mesh_sel.b,1.0f);
 		}
 		
 		*pv++=(float)pts[n].x;
@@ -449,16 +449,16 @@ void view_draw_select_box(editor_view_type *view)
 
 		// selection in this view?
 
-	if ((!state.select_box_on) || (view!=view_get_current_view())) return;
+	if ((!state.map.select_box_on) || (view!=view_get_current_view())) return;
 
 		// need the box to position
 
 	view_get_pixel_box(view,&box);
 
-	lx=state.select_box_start_pnt.x+box.lx;
-	rx=state.select_box_end_pnt.x+box.lx;
-	ty=state.select_box_start_pnt.y+box.ty;
-	by=state.select_box_end_pnt.y+box.ty;
+	lx=state.map.select_box_start_pnt.x+box.lx;
+	rx=state.map.select_box_end_pnt.x+box.lx;
+	ty=state.map.select_box_start_pnt.y+box.ty;
+	by=state.map.select_box_end_pnt.y+box.ty;
 
 		// draw the selection
 
@@ -576,7 +576,7 @@ void view_draw_select(editor_view_type *view)
 		// draw afterwards so mesh highlighting doesn't
 		// effect selection
 		
-	if (state.drag_mode==drag_mode_polygon) {
+	if (state.map.drag_mode==drag_mode_polygon) {
 	
 		for (n=(sel_count-1);n>=0;n--) {
 		
@@ -590,7 +590,7 @@ void view_draw_select(editor_view_type *view)
 	
 		// draw selected mesh vertexes
 		
-	if (state.drag_mode==drag_mode_vertex) {
+	if (state.map.drag_mode==drag_mode_vertex) {
 
 		memset(draw_mesh_once,0x0,max_mesh);
 			
