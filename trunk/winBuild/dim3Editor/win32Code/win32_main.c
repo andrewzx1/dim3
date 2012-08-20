@@ -31,8 +31,6 @@ and can be sold or given away.
 #include "interface.h"
 #include "ui_common.h"
 
-#include "resource.h"
-
 HINSTANCE						hinst;
 ATOM							wnd_rg_class;
 HWND							wnd;
@@ -46,9 +44,7 @@ bool							quit;
 extern HWND						os_dialog_wind;
 
 extern file_path_setup_type		file_path_setup;
-extern editor_setup_type		setup;
 extern iface_type				iface;
-extern editor_state_type		state;
 
 /* =======================================================
 

@@ -33,8 +33,6 @@ and can be sold or given away.
 #include "interface.h"
 
 extern map_type				map;
-extern editor_setup_type	setup;
-extern editor_state_type	state;
 
 extern double				view_mod_matrix[16],view_proj_matrix[16];
 

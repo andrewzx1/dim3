@@ -95,6 +95,6 @@ void dialog_property_free_rot_proc(int msg_type,int id)
 bool dialog_free_rotate_run(d3ang *ang)
 {
 	dialog_free_rot_ang=ang;
-	return(os_dialog_run("Free Rotate",355,110,diag_property_free_rot_ctrls,dialog_property_free_rot_proc));
+	return(os_dialog_run("Free Rotate",355,115,diag_property_free_rot_ctrls,dialog_property_free_rot_proc));
 }
 

@@ -49,8 +49,6 @@ and can be sold or given away.
 #define kLightPropertyHalo						17
 
 extern map_type					map;
-extern editor_state_type		state;
-extern editor_setup_type		setup;
 extern iface_type				iface;
 
 extern list_palette_type		property_palette;

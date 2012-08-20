@@ -35,8 +35,7 @@ and can be sold or given away.
 
 extern map_type					map;
 extern file_path_setup_type		file_path_setup;
-extern editor_setup_type		setup;
-extern editor_state_type		state;
+extern app_state_type			state;
 
 extern list_palette_type		file_palette,property_palette;
 
@@ -51,8 +50,8 @@ void file_reset_state(void)
 		// if there is an open map,
 		// change the palette opens
 
-	if (state.map_open) {
-		os_set_title_window(state.map_file_name);
+	if (state.map.map_open) {
+		os_set_title_window(state.map.map_file_name);
 
 		file_palette.open=FALSE;
 		property_palette.open=TRUE;
@@ -67,8 +66,8 @@ void file_reset_state(void)
 	select_clear();
 	undo_clear();
 	
- 	state.texture_edit_idx=-1;
-	state.in_preference=FALSE;
+ 	state.map.texture_edit_idx=-1;
+	state.map.in_preference=FALSE;
 
 		// reset the UI
 
@@ -114,8 +113,8 @@ bool file_new_map(void)
 		
 		// set flags as opened
 
- 	state.map_open=TRUE;
-	strcpy(state.map_file_name,file_name);
+ 	state.map.map_open=TRUE;
+	strcpy(state.map.map_file_name,file_name);
 
 		// save the map so it
 		// appears in the list
@@ -169,7 +168,7 @@ bool file_open_map(char *file_name)
     os_set_arrow_cursor();
 	
 	if (!ok) {
-		state.map_open=FALSE;
+		state.map.map_open=FALSE;
 		file_reset_state();
 		return(FALSE);
 	}
@@ -189,8 +188,8 @@ bool file_open_map(char *file_name)
 	
 		// set flags as opened
 		
-	state.map_open=TRUE;
-	strcpy(state.map_file_name,file_name);
+	state.map.map_open=TRUE;
+	strcpy(state.map.map_file_name,file_name);
 
 		// reset the state
 
@@ -241,7 +240,7 @@ bool file_close_map(void)
 		// if no map open, just return
 		// that close is OK
 
-	if (!state.map_open) return(TRUE);
+	if (!state.map.map_open) return(TRUE);
 
 		// confirm save
 	
@@ -265,7 +264,7 @@ bool file_close_map(void)
 
 		// reset state
 	
-	state.map_open=FALSE;
+	state.map.map_open=FALSE;
 	file_reset_state();
 	
 	os_set_arrow_cursor();

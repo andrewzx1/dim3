@@ -34,8 +34,8 @@ and can be sold or given away.
 #include "ui_common.h"
 
 extern map_type					map;
-extern editor_state_type		state;
-extern editor_setup_type		setup;
+extern app_state_type			state;
+extern app_pref_type			pref;
 
 extern file_path_setup_type		file_path_setup;
 
@@ -379,11 +379,11 @@ void import_obj_load_data(obj_import_state_type *import_state)
 		
 		if (strcmp(txt,"vn")==0) {
 			textdecode_get_piece(n,1,txt);
-			*normal++=(((float)strtod(txt,NULL))*setup.import_normal_factor.x);
+			*normal++=(((float)strtod(txt,NULL))*pref.map.import_normal_factor.x);
 			textdecode_get_piece(n,2,txt);
-			*normal++=(((float)strtod(txt,NULL))*setup.import_normal_factor.y);
+			*normal++=(((float)strtod(txt,NULL))*pref.map.import_normal_factor.y);
 			textdecode_get_piece(n,3,txt);
-			*normal++=(((float)strtod(txt,NULL))*setup.import_normal_factor.z);
+			*normal++=(((float)strtod(txt,NULL))*pref.map.import_normal_factor.z);
 
 			normal_pos++;
 			continue;
@@ -974,19 +974,17 @@ bool import_obj(char *path,char *err_str)
 		// run the import dialog
 
 	replace_ok=piece_add_obj_is_replace_ok(&replace_min,&replace_max);
-	import_mode=dialog_obj_import_run(&scale_axis,&scale_unit,&force_grid);
-	
-	if ((import_mode==import_mode_replace) && (!replace_ok)) import_mode=-1;
-	
-	if (import_mode==-1) {
+	if (!dialog_obj_import_run(&import_mode,&scale_axis,&scale_unit,&force_grid)) {
 		textdecode_close();
 		import_obj_state_shutdown(&import_state);
 		return(TRUE);
-    }
+	}
+	
+	if ((import_mode==import_mode_replace) && (!replace_ok)) import_mode=-1;
 	
 		// always switch to drag mode 
 		
-	state.drag_mode=drag_mode_mesh;
+	state.map.drag_mode=drag_mode_mesh;
 	
 		// import new
 		

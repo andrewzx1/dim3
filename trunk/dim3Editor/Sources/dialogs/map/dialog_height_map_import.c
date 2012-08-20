@@ -42,18 +42,18 @@ int						*dialog_height_import_div_cnt,
 #define diag_prop_height_import_divisions	5000
 #define diag_prop_height_import_size		5001
 #define diag_prop_height_import_height		5002
-#define diag_prop_scale_cancel				5003
-#define diag_prop_scale_ok					5004
+#define diag_prop_height_import_cancel		5003
+#define diag_prop_height_import_ok			5004
 
-os_dialog_ctrl_type		diag_property_scale_ctrls[]={
-							{os_dialog_ctrl_type_text_right,0,"Divisions:",35,38,95,20},
-							{os_dialog_ctrl_type_text_right,0,"Size:",35,63,95,20},
-							{os_dialog_ctrl_type_text_right,0,"Height:",35,88,95,20},
-							{os_dialog_ctrl_type_text_edit,diag_prop_height_import_divisions,"",135,35,100,20},
-							{os_dialog_ctrl_type_text_edit,diag_prop_height_import_size,"",135,60,100,20},
-							{os_dialog_ctrl_type_text_edit,diag_prop_height_import_height,"",135,85,100,20},
-							{os_dialog_ctrl_type_button,diag_prop_scale_cancel,"Cancel",180,110,80,25},
-							{os_dialog_ctrl_type_default_button,diag_prop_scale_ok,"Import",270,110,80,25},
+os_dialog_ctrl_type		diag_property_height_import_ctrls[]={
+							{os_dialog_ctrl_type_text_right,0,"Divisions:",35,13,75,20},
+							{os_dialog_ctrl_type_text_right,0,"Size:",35,43,75,20},
+							{os_dialog_ctrl_type_text_right,0,"Height:",35,73,75,20},
+							{os_dialog_ctrl_type_text_edit,diag_prop_height_import_divisions,"",115,10,100,20},
+							{os_dialog_ctrl_type_text_edit,diag_prop_height_import_size,"",115,40,100,20},
+							{os_dialog_ctrl_type_text_edit,diag_prop_height_import_height,"",115,70,100,20},
+							{os_dialog_ctrl_type_button,diag_prop_height_import_cancel,"Cancel",180,100,80,25},
+							{os_dialog_ctrl_type_default_button,diag_prop_height_import_ok,"Import",270,100,80,25},
 							{-1,-1,"",0,0,0,0}
 						};
 
@@ -76,12 +76,12 @@ void dialog_property_height_import_proc(int msg_type,int id)
 
 		case os_dialog_msg_type_command:
 
-			if (id==diag_prop_grid_cancel) {
+			if (id==diag_prop_height_import_cancel) {
 				os_dialog_close(FALSE);
 				return;
 			}
 
-			if (id==diag_prop_grid_ok) {
+			if (id==diag_prop_height_import_ok) {
 				*dialog_height_import_div_cnt=os_dialog_get_int(diag_prop_height_import_divisions);
 				*dialog_height_import_size=os_dialog_get_int(diag_prop_height_import_size);
 				*dialog_height_import_high=os_dialog_get_int(diag_prop_height_import_height);
@@ -99,6 +99,6 @@ bool dialog_height_import_run(int *div_cnt,int *size,int *high)
 	dialog_height_import_size=size;
 	dialog_height_import_high=high;
 
-	return(os_dialog_run("Height Map Import",355,115,diag_property_height_import_ctrls,dialog_property_height_import_proc));
+	return(os_dialog_run("Height Map Import",355,130,diag_property_height_import_ctrls,dialog_property_height_import_proc));
 }
 

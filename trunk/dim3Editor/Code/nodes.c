@@ -33,7 +33,7 @@ and can be sold or given away.
 #include "interface.h"
 
 extern map_type					map;
-extern editor_state_type		state;
+extern app_state_type			state;
 
 typedef struct					{
 									int					win_link_idx,win_dist,
@@ -106,7 +106,7 @@ bool node_link_click(int node_idx)
 	
 		// remove link mode
 		
-	if (state.node_mode==node_mode_remove_link) {
+	if (state.map.node_mode==node_mode_remove_link) {
 			
 		for (n=0;n!=max_node_link;n++) {
 		
@@ -132,7 +132,7 @@ bool node_link_click(int node_idx)
 	
 		// add link mode
 		
-	if (state.node_mode==node_mode_link) {
+	if (state.map.node_mode==node_mode_link) {
 		
 		k1=node_link_get_free_link(org_node_idx);
 		k2=node_link_get_free_link(node_idx);

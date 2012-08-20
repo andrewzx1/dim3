@@ -55,8 +55,7 @@ and can be sold or given away.
 #define kPrefPropertyImportNormalFactor		19
 
 extern map_type					map;
-extern editor_state_type		state;
-extern editor_setup_type		setup;
+extern app_pref_type			pref;
 
 extern list_palette_type		property_palette;
 
@@ -71,35 +70,35 @@ void property_palette_fill_editor_preference(void)
 	list_palette_set_title(&property_palette,"Editor Preferences",NULL,NULL,NULL,NULL,NULL);
 
 	list_palette_add_header(&property_palette,0,"Editor Engine Launch");
-	list_palette_add_string(&property_palette,kPrefPropertyEngineName,"Engine Name",setup.engine_name,name_str_len,FALSE);
+	list_palette_add_string(&property_palette,kPrefPropertyEngineName,"Engine Name",pref.map.engine_name,name_str_len,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Editor Settings");
-	list_palette_add_checkbox(&property_palette,kPrefPropertyFreeLook,"Free Look",&setup.free_look,FALSE);
-	list_palette_add_checkbox(&property_palette,kPrefPropertyAutoTexture,"Auto Texture",&setup.auto_texture,FALSE);
-	list_palette_add_checkbox(&property_palette,kPrefPropertyBigTexture,"Large Texture Palette",&setup.big_texture,FALSE);
-	list_palette_add_checkbox(&property_palette,kPrefPropertyShowTangentBinormal,"Show Tangent-Binormal",&setup.show_tangent_binormal,FALSE);
+	list_palette_add_checkbox(&property_palette,kPrefPropertyFreeLook,"Free Look",&pref.map.free_look,FALSE);
+	list_palette_add_checkbox(&property_palette,kPrefPropertyAutoTexture,"Auto Texture",&pref.map.auto_texture,FALSE);
+	list_palette_add_checkbox(&property_palette,kPrefPropertyBigTexture,"Large Texture Palette",&pref.map.big_texture,FALSE);
+	list_palette_add_checkbox(&property_palette,kPrefPropertyShowTangentBinormal,"Show Tangent-Binormal",&pref.map.show_tangent_binormal,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Editor Options");
-	list_palette_add_int(&property_palette,kPrefPropertyDuplicateOffset,"Duplicate Offset",&setup.duplicate_offset,FALSE);
-	list_palette_add_int(&property_palette,kPrefPropertySnapSize,"Snap Size",&setup.snap_size,FALSE);
-	list_palette_add_int(&property_palette,kPrefPropertyClipDistance,"Clip Distance",&setup.clip_distance,FALSE);
+	list_palette_add_int(&property_palette,kPrefPropertyDuplicateOffset,"Duplicate Offset",&pref.map.duplicate_offset,FALSE);
+	list_palette_add_int(&property_palette,kPrefPropertySnapSize,"Snap Size",&pref.map.snap_size,FALSE);
+	list_palette_add_int(&property_palette,kPrefPropertyClipDistance,"Clip Distance",&pref.map.clip_distance,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Editor Movement");
-	list_palette_add_checkbox(&property_palette,kPrefPropertyFlipHorzMovement,"Flip Horizontal Movement",&setup.flip_horz_movement,FALSE);
-	list_palette_add_checkbox(&property_palette,kPrefPropertyFlipVertMovement,"Flip Vertical Movement",&setup.flip_vert_movement,FALSE);
-	list_palette_add_checkbox(&property_palette,kPrefPropertyFlipHorzTurn,"Flip Horizontal Turn",&setup.flip_horz_turn,FALSE);
-	list_palette_add_checkbox(&property_palette,kPrefPropertyFlipVertTurn,"Flip Vertical Turn",&setup.flip_vert_turn,FALSE);
-	list_palette_add_checkbox(&property_palette,kPrefPropertyFlipForwardMovement,"Flip Forward Movement",&setup.flip_forward_movement,FALSE);
+	list_palette_add_checkbox(&property_palette,kPrefPropertyFlipHorzMovement,"Flip Horizontal Movement",&pref.map.flip_horz_movement,FALSE);
+	list_palette_add_checkbox(&property_palette,kPrefPropertyFlipVertMovement,"Flip Vertical Movement",&pref.map.flip_vert_movement,FALSE);
+	list_palette_add_checkbox(&property_palette,kPrefPropertyFlipHorzTurn,"Flip Horizontal Turn",&pref.map.flip_horz_turn,FALSE);
+	list_palette_add_checkbox(&property_palette,kPrefPropertyFlipVertTurn,"Flip Vertical Turn",&pref.map.flip_vert_turn,FALSE);
+	list_palette_add_checkbox(&property_palette,kPrefPropertyFlipForwardMovement,"Flip Forward Movement",&pref.map.flip_forward_movement,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Editor Colors");
-	list_palette_add_pick_color(&property_palette,kPrefPropertyBackgroundColor,"Background",&setup.col.background,FALSE);
-	list_palette_add_pick_color(&property_palette,kPrefPropertyLineColor,"Mesh Line",&setup.col.mesh_line,FALSE);
-	list_palette_add_pick_color(&property_palette,kPrefPropertyMeshSelColor,"Mesh Select",&setup.col.mesh_sel,FALSE);
-	list_palette_add_pick_color(&property_palette,kPrefPropertyPolySelColor,"Polygon Select",&setup.col.poly_sel,FALSE);
-	list_palette_add_pick_color(&property_palette,kPrefPropertyPolyCullColor,"Culled Polygons",&setup.col.poly_cull,FALSE);
+	list_palette_add_pick_color(&property_palette,kPrefPropertyBackgroundColor,"Background",&pref.map.col.background,FALSE);
+	list_palette_add_pick_color(&property_palette,kPrefPropertyLineColor,"Mesh Line",&pref.map.col.mesh_line,FALSE);
+	list_palette_add_pick_color(&property_palette,kPrefPropertyMeshSelColor,"Mesh Select",&pref.map.col.mesh_sel,FALSE);
+	list_palette_add_pick_color(&property_palette,kPrefPropertyPolySelColor,"Polygon Select",&pref.map.col.poly_sel,FALSE);
+	list_palette_add_pick_color(&property_palette,kPrefPropertyPolyCullColor,"Culled Polygons",&pref.map.col.poly_cull,FALSE);
 	
 	list_palette_add_header(&property_palette,0,"Editor OBJ Import");
-	list_palette_add_vector(&property_palette,kPrefPropertyImportNormalFactor,"Normal Factor",&setup.import_normal_factor,FALSE);
+	list_palette_add_vector(&property_palette,kPrefPropertyImportNormalFactor,"Normal Factor",&pref.map.import_normal_factor,FALSE);
 }
 
 /* =======================================================

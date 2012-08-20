@@ -295,7 +295,7 @@ typedef struct		{
 #define import_mode_replace_all					2
 
 //
-// menus
+// map menus
 //
 
 #define app_menu_apple							128
@@ -305,7 +305,6 @@ typedef struct		{
 #define app_menu_map							132
 #define app_menu_mesh							133
 #define app_menu_polygon						134
-#define app_menu_vertex							135
 
 #define app_menu_item_About						5000
 
@@ -356,9 +355,7 @@ typedef struct		{
 #define app_menu_item_MeshSplit					5501
 #define app_menu_item_MeshTesselate				5502
 #define app_menu_item_MeshResize				5503
-#define app_menu_item_MeshReposition			5504
 #define app_menu_item_MeshForceGrid				5506
-#define app_menu_item_MeshResizeTexture			5507
 #define app_menu_item_MeshFlipX					5508
 #define app_menu_item_MeshFlipY					5509
 #define app_menu_item_MeshFlipZ					5510
@@ -369,8 +366,6 @@ typedef struct		{
 #define app_menu_item_MeshRaiseY				5515
 #define app_menu_item_MeshLowerY				5516
 #define app_menu_item_MeshSelectAllPoly			5517
-#define app_menu_item_MeshSnapToGrid			5518
-#define app_menu_item_MeshSnapClosestVertex		5519
 #define app_menu_item_MeshResetUV				5520
 #define app_menu_item_MeshWholeUV				5521
 #define app_menu_item_MeshSingleUV				5522
@@ -381,7 +376,6 @@ typedef struct		{
 
 #define app_menu_item_PolygonHole				5600
 #define app_menu_item_PolyTesselate				5601
-#define app_menu_item_PolygonSnapToGrid			5602
 #define app_menu_item_PolygonRotateUV			5603
 #define app_menu_item_PolygonFlipU				5604
 #define app_menu_item_PolygonFlipV				5605
@@ -391,7 +385,17 @@ typedef struct		{
 #define app_menu_item_PolygonWholeUV			5609
 #define app_menu_item_PolygonSingleUV			5610
 
-#define app_menu_item_VertexSnapToGrid			5700
+//
+// project menus
+//
+
+#define app_menu_apple							128
+#define app_menu_file							129
+
+#define app_menu_item_About						5000
+
+#define app_menu_item_Save						5100
+#define app_menu_item_Quit						5101
 
 //
 // undos
@@ -410,28 +414,6 @@ typedef struct		{
 												light,sound,particle,
 												selection;
 					} undo_type;
-
-//
-// setups
-//
-
-typedef struct		{
-						d3col					mesh_line,mesh_sel,poly_sel,poly_cull,
-												background;
-					} editor_setup_col_type;
-
-typedef struct		{
-						int						duplicate_offset,snap_size,
-												clip_distance;
-						bool					free_look,auto_texture,big_texture,
-												show_tangent_binormal,
-												flip_horz_movement,flip_vert_movement,
-												flip_horz_turn,flip_vert_turn,
-												flip_forward_movement;
-						char					engine_name[256];
-						d3vct					import_normal_factor;
-						editor_setup_col_type	col;
-					} editor_setup_type;
 
 //
 // selections
@@ -463,9 +445,108 @@ typedef struct		{
 						int						idx,dist;
 					} view_mesh_sort_list_type;
 
+					
 //
-// editor state struct
+// Item types
 //
+
+#define item_interface							0
+#define item_interface_project					1
+#define item_interface_color					2
+#define item_interface_device					3
+#define item_interface_logo						4
+#define item_interface_title_page				5
+#define item_interface_singleplayer				6
+#define item_interface_multiplayer				7
+#define item_interface_setup					8
+#define item_interface_progress					9
+#define item_interface_hud						10
+#define item_interface_virtual_control			11
+#define item_interface_radar					12
+#define item_interface_label					13
+#define item_interface_menu						14
+#define item_interface_chooser					15
+#define item_interface_sound					16
+#define item_interface_particle					17
+#define item_interface_ring						18
+#define item_interface_halo						19
+#define item_interface_mark						20
+#define item_interface_crosshair				21
+#define item_interface_action					22
+#define item_interface_shader					23
+#define item_interface_preload_models			24
+
+//
+// intro button types
+//
+
+#define item_intro_button_game_new				0
+#define item_intro_button_game_load				1
+#define item_intro_button_game_setup			2
+#define item_intro_button_multiplayer_host		3
+#define item_intro_button_multiplayer_join		4
+#define item_intro_button_credit				5
+#define item_intro_button_quit					6
+
+#define item_intro_button_simple_save_start		10
+#define item_intro_button_simple_save_erase		20
+
+//
+// setup state
+//
+
+
+
+
+
+
+//
+// preference structures
+//
+
+typedef struct		{
+						d3col					mesh_line,mesh_sel,poly_sel,poly_cull,
+												background;
+					} map_pref_col_type;
+
+typedef struct		{
+						int						duplicate_offset,snap_size,
+												clip_distance;
+						bool					free_look,auto_texture,big_texture,
+												show_tangent_binormal,
+												flip_horz_movement,flip_vert_movement,
+												flip_horz_turn,flip_vert_turn,
+												flip_forward_movement;
+						char					engine_name[256];
+						d3vct					import_normal_factor;
+						map_pref_col_type		col;
+					} map_pref_type;
+
+typedef struct		{
+						int						temp;
+					} model_pref_type;
+
+typedef struct		{
+						map_pref_type			map;
+						model_pref_type			model;
+					} app_pref_type;
+
+//
+// state structures
+//
+
+typedef struct		{
+						int						cur_item,cur_device,
+												cur_intro_button_idx,cur_intro_model_idx,
+												cur_hud_bitmap_idx,cur_hud_text_idx,cur_hud_bar_idx,
+												cur_virtual_control_stick_idx,cur_virtual_control_button_idx,
+												cur_radar_icon_idx,cur_singleplayer_option_idx,cur_multiplayer_character_idx,
+												cur_menu_idx,cur_menu_item_idx,cur_chooser_idx,cur_chooser_piece_idx,
+												cur_multiplayer_game_idx,cur_multiplayer_option_idx,
+												cur_sound_idx,cur_particle_idx,cur_group_particle_idx,cur_ring_idx,
+												cur_halo_idx,cur_mark_idx,cur_crosshair_idx,
+												cur_action_idx,cur_shader_idx;
+					} project_state_type;
 
 typedef struct		{
 						int						vertex_mode,drag_mode,grid_mode,node_mode,
@@ -481,5 +562,14 @@ typedef struct		{
 												in_preference;
 						char					map_file_name[file_str_len];
 						d3pnt					select_box_start_pnt,select_box_end_pnt;
-					} editor_state_type;
-					
+					} map_state_type;
+
+typedef struct		{
+						int						temp;
+					} model_state_type;
+
+typedef struct		{
+						project_state_type		proj;
+						map_state_type			map;
+						model_state_type		model;
+					} app_state_type;

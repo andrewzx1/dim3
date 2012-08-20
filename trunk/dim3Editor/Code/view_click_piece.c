@@ -34,8 +34,8 @@ and can be sold or given away.
 #include "ui_common.h"
 
 extern map_type					map;
-extern editor_setup_type		setup;
-extern editor_state_type		state;
+extern app_state_type			state;
+extern app_pref_type			pref;
 
 extern list_palette_type		property_palette;
 
@@ -47,7 +47,7 @@ extern list_palette_type		property_palette;
 
 int view_get_grid(void)
 {
-	switch (state.grid_mode) {
+	switch (state.map.grid_mode) {
 		case grid_mode_small:
 			return(500);
 		case grid_mode_large:
@@ -145,11 +145,11 @@ bool view_click_snap(int mesh_idx,int liquid_idx,d3pnt *pt)
 	map_mesh_type	*mesh;
 	map_liquid_type	*liq;
 	
-	if (state.vertex_mode!=vertex_mode_snap) return(FALSE);
+	if (state.map.vertex_mode!=vertex_mode_snap) return(FALSE);
 	
 		// snap size
 		
-	snap_sz=(setup.snap_size*view_snap_clip_size_factor);
+	snap_sz=(pref.map.snap_size*view_snap_clip_size_factor);
 	
 		// any mesh vertexes to snap to?
 		
@@ -274,7 +274,7 @@ bool view_click_snap_poly(int mesh_idx,int poly_idx,d3pnt *pt)
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
 
-	if (state.vertex_mode!=vertex_mode_snap) return(FALSE);
+	if (state.map.vertex_mode!=vertex_mode_snap) return(FALSE);
 	
 	cur_dist=-1;
 	
@@ -286,7 +286,7 @@ bool view_click_snap_poly(int mesh_idx,int poly_idx,d3pnt *pt)
 		
 		if (view_click_snap(mesh_idx,-1,&hpt)) {
 			d=distance_get(pt->x,pt->y,pt->z,hpt.x,hpt.y,hpt.z);
-			if (d>(setup.snap_size*view_snap_clip_size_factor)) continue;
+			if (d>(pref.map.snap_size*view_snap_clip_size_factor)) continue;
 			
 			if ((d<cur_dist) || (cur_dist<0)) {
 				cur_dist=d;
@@ -319,7 +319,7 @@ bool view_click_snap_mesh_vertexes(int mesh_idx,d3pnt *pnt)
 		
 		if (view_click_snap(mesh_idx,-1,&hpnt)) {
 			d=distance_get(pnt->x,pnt->y,pnt->z,hpnt.x,hpnt.y,hpnt.z);
-			if (d>(setup.snap_size*view_snap_clip_size_factor)) continue;
+			if (d>(pref.map.snap_size*view_snap_clip_size_factor)) continue;
 			
 			if ((d<cur_dist) || (cur_dist<0)) {
 				cur_dist=d;
@@ -395,7 +395,7 @@ void view_click_snap_mesh(d3pnt *old_dpnt,d3pnt *mpnt)
 	d3pnt			spnt,mv_pnt,cur_mv_pnt;
 	map_mesh_type	*mesh;
 
-	if (state.vertex_mode!=vertex_mode_snap) return;
+	if (state.map.vertex_mode!=vertex_mode_snap) return;
 
 		// check all vertexes in all meshes
 		// in the selection for snaps.  Anything that
@@ -722,7 +722,7 @@ bool view_click_rot_handles(editor_view_type *view,d3pnt *click_pt)
 
 			// handle movement
 			
-		if (state.handle_mode==handle_mode_rotate) {
+		if (state.map.handle_mode==handle_mode_rotate) {
 			view_click_rot_handle_rotate_run(type,main_idx,ang,&org_ang,&mesh_pnt,(float)mv,which_axis);
 		}
 		else {
@@ -774,20 +774,20 @@ void view_click_piece_map_pick_start(editor_view_type *view)
 		mesh++;
 	}
 	
-	if (state.show_liquid) count+=map.liquid.nliquid;
+	if (state.map.show_liquid) count+=map.liquid.nliquid;
 	
-	if (state.show_object) {
+	if (state.map.show_object) {
 		count+=map.nspot;
 		count+=map.nscenery;
 	}
 	
-	if (state.show_lightsoundparticle) {
+	if (state.map.show_lightsoundparticle) {
 		count+=map.nlight;
 		count+=map.nsound;
 		count+=map.nparticle;
 	}
 	
-	if (state.show_node) count+=map.nnode;
+	if (state.map.show_node) count+=map.nnode;
 
 		// start the pick list
 
@@ -856,7 +856,7 @@ void view_click_piece_map_pick_start(editor_view_type *view)
 
 		// liquids
 		
-	if (state.show_liquid) {
+	if (state.map.show_liquid) {
 
 		liq=map.liquid.liquids;
 		
@@ -897,7 +897,7 @@ void view_click_piece_map_pick_start(editor_view_type *view)
 
 		// objects and scenery
 
-	if (state.show_object) {
+	if (state.map.show_object) {
 
 		spot=map.spots;
 
@@ -919,7 +919,7 @@ void view_click_piece_map_pick_start(editor_view_type *view)
 
 		// lights, sounds, and particles
 
-	if (state.show_lightsoundparticle) {
+	if (state.map.show_lightsoundparticle) {
 	
 		map_light=map.lights;
 
@@ -948,7 +948,7 @@ void view_click_piece_map_pick_start(editor_view_type *view)
 
 		// nodes
 
-	if (state.show_node) {
+	if (state.map.show_node) {
 		node=map.nodes;
 
 		for (n=0;n!=map.nnode;n++) {
@@ -994,7 +994,7 @@ void view_click_piece(editor_view_type *view,d3pnt *pt,bool double_click)
 	
 		// mesh vertex drags
 		
-	switch (state.drag_mode) {
+	switch (state.map.drag_mode) {
 	
 		case drag_mode_vertex:
 			if (view_click_drag_vertex(view,pt)) return;
@@ -1014,7 +1014,7 @@ void view_click_piece(editor_view_type *view,d3pnt *pt,bool double_click)
 		// special normal flip if in normal hide 
 		// mode and polygon selection
 		
-	if ((type==mesh_piece) && (view->cull) && (state.show_normals) && (state.drag_mode==drag_mode_polygon)) {
+	if ((type==mesh_piece) && (view->cull) && (state.map.show_normals) && (state.map.drag_mode==drag_mode_polygon)) {
 		piece_mesh_poly_invert_normals(&map.mesh.meshes[main_idx].polys[sub_idx]);
 	}
 	
@@ -1023,7 +1023,7 @@ void view_click_piece(editor_view_type *view,d3pnt *pt,bool double_click)
 		
 	if (type==node_piece) {
 	
-		switch (state.node_mode) {
+		switch (state.map.node_mode) {
 		
 			case node_mode_duplicate:
 				org_node_idx=main_idx;
@@ -1046,11 +1046,11 @@ void view_click_piece(editor_view_type *view,d3pnt *pt,bool double_click)
 		
 	if (type==-1) {
 		if (!view_click_box_select(view,pt)) {
-			if (!state.select_add) select_clear();
+			if (!state.map.select_add) select_clear();
 		}
 	}
 	else {
-		if ((!state.select_add) && (!os_key_shift_down())) {
+		if ((!state.map.select_add) && (!os_key_shift_down())) {
 			if (!select_check(type,main_idx,sub_idx)) {			// keep selection if selecting an already selected piece
 				select_clear();	
 				select_add(type,main_idx,sub_idx);
@@ -1063,7 +1063,7 @@ void view_click_piece(editor_view_type *view,d3pnt *pt,bool double_click)
 	
 		// redraw and reset palettes and menus
 
-	state.in_preference=FALSE;
+	state.map.in_preference=FALSE;
 		
 	menu_fix_enable();
 	
@@ -1088,7 +1088,7 @@ void view_click_piece(editor_view_type *view,d3pnt *pt,bool double_click)
 			// if we are duplicate dragging, reselect
 			// old node so it's easy to click again
 			
-		if ((type==node_piece) && (state.node_mode==node_mode_duplicate)) {
+		if ((type==node_piece) && (state.map.node_mode==node_mode_duplicate)) {
 			select_clear();
 			select_add(node_piece,org_node_idx,-1);
 			main_wind_draw();
@@ -1103,7 +1103,7 @@ void view_click_piece(editor_view_type *view,d3pnt *pt,bool double_click)
 	
 		// mesh or poly drags
 
-	switch (state.drag_mode) {
+	switch (state.map.drag_mode) {
 	
 		case drag_mode_mesh:
 			if (!os_key_control_down()) {

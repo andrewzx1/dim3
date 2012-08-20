@@ -33,8 +33,6 @@ and can be sold or given away.
 #include "interface.h"
 
 extern map_type				map;
-extern editor_setup_type	setup;
-extern editor_state_type	state;
 
 int							pick_count,pick_col[3];
 unsigned char				*pick_pixels;

@@ -35,7 +35,7 @@ and can be sold or given away.
 
 extern file_path_setup_type		file_path_setup;
 extern map_type					map;
-extern editor_state_type		state;
+extern app_state_type			state;
 extern iface_type				iface;
 
 extern list_palette_type		property_palette;
@@ -110,7 +110,7 @@ void piece_create_spot(void)
     
 		// select spot
 		
-    state.show_object=TRUE;
+    state.map.show_object=TRUE;
 	
 	select_clear();
 	select_add(spot_piece,index,-1);
@@ -172,7 +172,7 @@ void piece_create_scenery(void)
 
 		// select spot
 		
-    state.show_object=TRUE;
+    state.map.show_object=TRUE;
 	
 	select_clear();
 	select_add(scenery_piece,index,-1);
@@ -231,7 +231,7 @@ void piece_create_light(void)
 	
 		// select light
 		
-	state.show_lightsoundparticle=TRUE;
+	state.map.show_lightsoundparticle=TRUE;
 	
 	select_clear();
 	select_add(light_piece,index,-1);
@@ -277,7 +277,7 @@ void piece_create_sound(void)
 	
 		// select sound
 		
-    state.show_lightsoundparticle=TRUE;
+    state.map.show_lightsoundparticle=TRUE;
 	
 	select_clear();
 	select_add(sound_piece,index,-1);
@@ -327,7 +327,7 @@ void piece_create_particle(void)
 	
 		// select particle
 		
-    state.show_lightsoundparticle=TRUE;
+    state.map.show_lightsoundparticle=TRUE;
 	
 	select_clear();
 	select_add(particle_piece,index,-1);
@@ -381,7 +381,7 @@ void piece_create_node(void)
 
 		// select node
 		
-	state.show_node=TRUE;
+	state.map.show_node=TRUE;
 	
 	select_clear();
 	select_add(node_piece,index,-1);
@@ -465,7 +465,7 @@ void piece_create_liquid(void)
 
 		// select the liquid
 		
-	state.show_liquid=TRUE;
+	state.map.show_liquid=TRUE;
 	select_clear();
 	select_add(liquid_piece,index,-1);
 
@@ -490,12 +490,12 @@ void piece_create_cinema(void)
 		return;
 	}
 
-	state.cur_no_sel_piece_type=cinema_piece;
-	state.cur_group_idx=-1;
-	state.cur_movement_idx=-1;
-	state.cur_movement_move_idx=-1;
-	state.cur_cinema_idx=cinema_idx;
-	state.cur_cinema_action_idx=-1;
+	state.map.cur_no_sel_piece_type=cinema_piece;
+	state.map.cur_group_idx=-1;
+	state.map.cur_movement_idx=-1;
+	state.map.cur_movement_move_idx=-1;
+	state.map.cur_cinema_idx=cinema_idx;
+	state.map.cur_cinema_action_idx=-1;
 
 	property_palette_scroll_into_view(cinema_piece,cinema_idx);
 
@@ -514,12 +514,12 @@ void piece_create_group(void)
 		return;
 	}
 
-	state.cur_no_sel_piece_type=group_piece;
-	state.cur_group_idx=group_idx;
-	state.cur_movement_idx=-1;
-	state.cur_movement_move_idx=-1;
-	state.cur_cinema_idx=-1;
-	state.cur_cinema_action_idx=-1;
+	state.map.cur_no_sel_piece_type=group_piece;
+	state.map.cur_group_idx=group_idx;
+	state.map.cur_movement_idx=-1;
+	state.map.cur_movement_move_idx=-1;
+	state.map.cur_cinema_idx=-1;
+	state.map.cur_cinema_action_idx=-1;
 
 	property_palette_scroll_into_view(group_piece,group_idx);
 
@@ -538,18 +538,18 @@ void piece_create_movement(void)
 		return;
 	}
 
-	state.cur_no_sel_piece_type=movement_piece;
-	state.cur_group_idx=-1;
-	state.cur_movement_idx=movement_idx;
-	state.cur_movement_move_idx=-1;
-	state.cur_cinema_idx=-1;
-	state.cur_cinema_action_idx=-1;
+	state.map.cur_no_sel_piece_type=movement_piece;
+	state.map.cur_group_idx=-1;
+	state.map.cur_movement_idx=movement_idx;
+	state.map.cur_movement_move_idx=-1;
+	state.map.cur_cinema_idx=-1;
+	state.map.cur_cinema_action_idx=-1;
 
 	property_palette_scroll_into_view(movement_piece,movement_idx);
 
 	dialog_property_string_run(list_string_value_string,(void*)map.movement.movements[movement_idx].name,name_str_len,0,0);
 	
-	state.show_movements=TRUE;
+	state.map.show_movements=TRUE;
 	
 	main_wind_draw();
 }

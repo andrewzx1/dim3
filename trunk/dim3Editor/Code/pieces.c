@@ -33,8 +33,8 @@ and can be sold or given away.
 #include "interface.h"
 
 extern map_type				map;
-extern editor_setup_type	setup;
-extern editor_state_type	state;
+extern app_state_type		state;
+extern app_pref_type		pref;
 
 /* =======================================================
 
@@ -49,7 +49,7 @@ void piece_duplicate_offset(d3pnt *pnt)
 	view=view_get_current_view();
 	
 	if (fabsf(view->ang.x)<15.0f) {
-		pnt->x=setup.duplicate_offset*view_snap_clip_size_factor;
+		pnt->x=pref.map.duplicate_offset*view_snap_clip_size_factor;
 		pnt->z=0;
 		pnt->y=0;
 		rotate_2D_point_center(&pnt->x,&pnt->z,view->ang.y);
@@ -57,9 +57,9 @@ void piece_duplicate_offset(d3pnt *pnt)
 		return;
 	}
 	
-	pnt->x=setup.duplicate_offset*view_snap_clip_size_factor;
+	pnt->x=pref.map.duplicate_offset*view_snap_clip_size_factor;
 	pnt->y=0;
-	pnt->z=setup.duplicate_offset*view_snap_clip_size_factor;
+	pnt->z=pref.map.duplicate_offset*view_snap_clip_size_factor;
 }
 
 void piece_duplicate(void)
@@ -251,12 +251,12 @@ void piece_delete(void)
 		switch (type) {
 			
 			case mesh_piece:
-				if (state.drag_mode==drag_mode_polygon) {
+				if (state.map.drag_mode==drag_mode_polygon) {
 					map_mesh_delete_poly(&map,main_idx,sub_idx);
 					select_delete_move_index(mesh_piece,main_idx,sub_idx);
 					break;
 				}
-				if (state.drag_mode==drag_mode_mesh) {
+				if (state.map.drag_mode==drag_mode_mesh) {
 					if (mesh_mask[main_idx]==0x0) map_mesh_delete(&map,main_idx);
 					mesh_mask[main_idx]=0x1;
 					break;
@@ -446,24 +446,36 @@ void piece_tesselate(bool mesh)
 void piece_resize(void)
 {
 	int				n,sel_count,type,mesh_idx,poly_idx;
-	float			fct_x,fct_y,fct_z;
 	d3pnt			min,max,mpt;
+	d3fpnt			scale;
+
+		// setup scale
 	
-		// get the resize factor
+	mesh_idx=-1;
 		
-    if (!dialog_resize_run(&fct_x,&fct_y,&fct_z)) return;
+	sel_count=select_count();
+
+	for (n=0;n!=sel_count;n++) {
+		select_get(n,&type,&mesh_idx,&poly_idx);
+		if (type==mesh_piece) break;
+	}
+
+	if (mesh_idx==-1) return;
+
+	map_mesh_calculate_extent(&map,mesh_idx,&min,&max);
+	scale.x=(float)abs(max.x-min.x);
+	scale.y=(float)abs(max.y-min.y);
+	scale.z=(float)abs(max.z-min.z);
 	
-	fct_x=fct_x/100.0f;
-	fct_y=fct_y/100.0f;
-	fct_z=fct_z/100.0f;
+		// run dialog
+		
+    if (!dialog_scale_run(&scale)) return;
 	
-	if ((fct_x<=0.0f) || (fct_y<=0.0f) || (fct_z<=0.0f)) return;
+	if ((scale.x<=0.0f) || (scale.y<=0.0f) || (scale.z<=0.0f)) return;
 	
 		// resize meshes
 		
 	undo_push();
-		
-	sel_count=select_count();
 	
 	for (n=0;n!=sel_count;n++) {
 		select_get(n,&type,&mesh_idx,&poly_idx);
@@ -475,13 +487,13 @@ void piece_resize(void)
 			map_mesh_calculate_extent(&map,mesh_idx,&min,&max);
 			map_mesh_calculate_center(&map,mesh_idx,&mpt);
 						
-			min.x=(int)((float)(min.x-mpt.x)*fct_x)+mpt.x;
-			min.y=(int)((float)(min.y-mpt.y)*fct_y)+mpt.y;
-			min.z=(int)((float)(min.z-mpt.z)*fct_z)+mpt.z;
+			min.x=(int)((float)(min.x-mpt.x)*scale.x)+mpt.x;
+			min.y=(int)((float)(min.y-mpt.y)*scale.y)+mpt.y;
+			min.z=(int)((float)(min.z-mpt.z)*scale.z)+mpt.z;
 			
-			max.x=(int)((float)(max.x-mpt.x)*fct_x)+mpt.x;
-			max.y=(int)((float)(max.y-mpt.y)*fct_y)+mpt.y;
-			max.z=(int)((float)(max.z-mpt.z)*fct_z)+mpt.z;
+			max.x=(int)((float)(max.x-mpt.x)*scale.x)+mpt.x;
+			max.y=(int)((float)(max.y-mpt.y)*scale.y)+mpt.y;
+			max.z=(int)((float)(max.z-mpt.z)*scale.z)+mpt.z;
 
 			map_mesh_resize(&map,mesh_idx,&min,&max);
 			view_vbo_mesh_rebuild(mesh_idx);
@@ -491,33 +503,6 @@ void piece_resize(void)
 			view_click_fix_cascade_size(mesh_idx);
 		}
 	}
-	
-	main_wind_draw();
-}
-
-void piece_reposition(void)
-{
-	int				type,mesh_idx,poly_idx;
-	map_mesh_type	*mesh;
-	
-	if (select_count()==0) return;
-	
-	select_get(0,&type,&mesh_idx,&poly_idx);
-	if (type!=mesh_piece) return;
-	
-	mesh=&map.mesh.meshes[mesh_idx];
-	map_prepare_mesh_box(mesh);
-	
-		// get the reposition
-		
-    if (!dialog_reposition_run(&mesh->box.min,&mesh->box.max)) return;
-	
-		// reposition
-		
-	undo_push();
-	
-	map_mesh_resize(&map,mesh_idx,&mesh->box.min,&mesh->box.max);
-	view_vbo_mesh_rebuild(mesh_idx);
 	
 	main_wind_draw();
 }
@@ -535,63 +520,6 @@ void piece_force_grid(void)
 		if (type==mesh_piece) {
 			view_force_grid(mesh_idx,FALSE);
 			view_vbo_mesh_rebuild(mesh_idx);
-		}
-	}
-	
-	main_wind_draw();
-}
-
-/* =======================================================
-
-      Piece Resize Texture
-      
-======================================================= */
-
-void piece_resize_texture(void)
-{
-	int					n,k,t,sel_count,txt_idx,
-						type,mesh_idx,poly_idx;
-	float				fct_u,fct_v;
-	map_mesh_type		*mesh;
-	map_mesh_poly_type	*poly;
-	
-		// get the resize factor
-		
-    if (!dialog_resize_texture_run(&fct_u,&fct_v)) return;
-	
-	fct_u=fct_u/100.0f;
-	fct_v=fct_v/100.0f;
-	
-	if ((fct_u<=0.0f) || (fct_v<=0.0f)) return;
-
-		// get selected texture
-
-	txt_idx=texture_palette_get_selected_texture();
-	if (txt_idx==-1) return;
-	
-		// resize mesh textures
-		
-	undo_push();
-		
-	sel_count=select_count();
-	
-	for (n=0;n!=sel_count;n++) {
-		select_get(n,&type,&mesh_idx,&poly_idx);
-		if (type!=mesh_piece) continue;
-
-			// run through polys and alter
-			// polygons hooked up to current texture
-
-		mesh=&map.mesh.meshes[mesh_idx];
-
-		for (k=0;k!=mesh->npoly;k++) {
-			poly=&mesh->polys[k];
-			if (poly->txt_idx!=txt_idx) continue;
-
-			for (t=0;t!=poly->ptsz;t++) {
-				poly->main_uv.uvs[t].x*=fct_u;
-				poly->main_uv.uvs[t].y*=fct_v;
-			}
 		}
 	}
 	
@@ -623,26 +551,21 @@ void piece_flip(bool flip_x,bool flip_y,bool flip_z)
 	main_wind_draw();
 }
 
-void piece_rotate(float rot_x,float rot_y,float rot_z)
+void piece_rotate(d3ang *ang)
 {
 	int				n,sel_count,type,mesh_idx,poly_idx;
 	d3pnt			center_pnt;
-	d3ang			rot;
 	
 	undo_push();
 	
 	sel_count=select_count();
-	
-	rot.x=rot_x;
-	rot.y=rot_y;
-	rot.z=rot_z;
 	
 	for (n=0;n!=sel_count;n++) {
 		select_get(n,&type,&mesh_idx,&poly_idx);
 		if (type!=mesh_piece) continue;
 		
 		map_mesh_calculate_center(&map,mesh_idx,&center_pnt);
-		map_mesh_rotate(&map,mesh_idx,&center_pnt,&rot);
+		map_mesh_rotate(&map,mesh_idx,&center_pnt,ang);
 		view_vbo_mesh_rebuild(mesh_idx);
 	}
 	
@@ -651,13 +574,9 @@ void piece_rotate(float rot_x,float rot_y,float rot_z)
 
 void piece_free_rotate(void)
 {
-	float			rot_x,rot_y,rot_z;
+	d3ang			ang;
 	
-	if (!dialog_free_rotate_run(&rot_x,&rot_y,&rot_z)) return;
-	
-	undo_push();
-	
-	piece_rotate(rot_x,rot_y,rot_z);
+	if (dialog_free_rotate_run(&ang)) piece_rotate(&ang);
 }
 
 void piece_move(int move_x,int move_y,int move_z)
@@ -709,222 +628,6 @@ void piece_mesh_select_all_poly(void)
 		for (k=0;k!=mesh->npoly;k++) {
 			if (!select_check(mesh_piece,mesh_idx,k)) select_add(mesh_piece,mesh_idx,k);
 		}
-	}
-}
-
-/* =======================================================
-
-      Snap Mesh to Grid
-      
-======================================================= */
-
-void mesh_snap_to_grid(int mesh_idx)
-{
-	int						n,nvertex,x,y,z;
-	d3pnt					mpt,mpt2;
-	d3pnt					*pt;
-	map_mesh_type			*mesh;
-
-	mesh=&map.mesh.meshes[mesh_idx];
-
-	map_mesh_calculate_center(&map,mesh_idx,&mpt);
-	memmove(&mpt2,&mpt,sizeof(d3pnt));
-	view_click_grid(&mpt2);
-	
-	x=mpt2.x-mpt.x;
-	y=mpt2.y-mpt.y;
-	z=mpt2.z-mpt.z;
-	
-	nvertex=mesh->nvertex;
-	pt=mesh->vertexes;
-
-	for (n=0;n!=nvertex;n++) {
-		pt->x+=x;
-		pt->y+=y;
-		pt->z+=z;
-		pt++;
-	}
-}
-
-void mesh_poly_snap_to_grid(int mesh_idx,int poly_idx)
-{
-	int						n;
-	d3pnt					*pt;
-	map_mesh_type			*mesh;
-	map_mesh_poly_type		*poly;
-
-	mesh=&map.mesh.meshes[mesh_idx];
-	poly=&mesh->polys[poly_idx];
-	
-	for (n=0;n!=poly->ptsz;n++) {
-		pt=&mesh->vertexes[poly->v[n]];
-		view_click_grid(pt);
-	}
-}
-
-void mesh_vertexes_snap_to_grid(int mesh_idx)
-{
-	int						n,nvertex;
-	d3pnt					*pt;
-	map_mesh_type			*mesh;
-
-	mesh=&map.mesh.meshes[mesh_idx];
-
-	nvertex=mesh->nvertex;
-	pt=mesh->vertexes;
-
-	for (n=0;n!=nvertex;n++) {
-		view_click_grid(pt);
-		pt++;
-	}
-}
-
-void piece_mesh_snap_to_grid(void)
-{
-	int			n,sel_count,type,mesh_idx,poly_idx;
-
-	sel_count=select_count();
-	
-	for (n=0;n!=sel_count;n++) {
-		select_get(n,&type,&mesh_idx,&poly_idx);
-		if (type!=mesh_piece) continue;
-		
-		mesh_snap_to_grid(mesh_idx);
-	}
-}
-
-void piece_mesh_snap_closest_vertex(void)
-{
-	int					n,k,sel_count,type,mesh_idx,poly_idx,
-						mesh_1_idx,poly_1_idx,
-						mesh_2_idx,poly_2_idx,
-						d,dist,x,y,z;
-	d3pnt				*pt_1,*pt_2;
-	map_mesh_type		*mesh_1,*mesh_2;
-	map_mesh_poly_type	*poly_1,*poly_2;
-
-		// find two portals to snap together
-		
-	mesh_1_idx=mesh_2_idx=-1;
-	
-	sel_count=select_count();
-	
-	for (n=0;n!=sel_count;n++) {
-		select_get(n,&type,&mesh_idx,&poly_idx);
-		if (type!=mesh_piece) continue;
-		
-		if (mesh_1_idx==-1) {
-			mesh_1_idx=mesh_idx;
-			poly_1_idx=poly_idx;
-		}
-		else {
-			mesh_2_idx=mesh_idx;
-			poly_2_idx=poly_idx;
-			break;
-		}
-	}
-	
-		// two meshes?
-		
-	if (mesh_2_idx==-1) return;
-	
-		// find closest vertexes
-	
-	x=y=z=0;	
-	dist=-1;
-	
-	mesh_1=&map.mesh.meshes[mesh_1_idx];
-	mesh_2=&map.mesh.meshes[mesh_2_idx];
-	
-		// find out of all vertexes
-		
-	if (poly_1_idx==-1) {
-	
-		pt_1=mesh_1->vertexes;
-	
-		for (n=0;n!=mesh_1->nvertex;n++) {
-
-			pt_2=mesh_2->vertexes;
-		
-			for (k=0;k!=mesh_2->nvertex;k++) {
-				d=distance_get(pt_1->x,pt_1->y,pt_1->z,pt_2->x,pt_2->y,pt_2->z);
-				if ((d<dist) || (dist==-1)) {
-					x=pt_2->x-pt_1->x;
-					y=pt_2->y-pt_1->y;
-					z=pt_2->z-pt_1->z;
-					dist=d;
-				}
-				pt_2++;
-			}
-			
-			pt_1++;
-		}
-		
-	}
-	
-		// find out of poly vertexes only
-		
-	else {
-	
-		poly_1=&mesh_1->polys[poly_1_idx];
-		poly_2=&mesh_2->polys[poly_2_idx];
-	
-		for (n=0;n!=poly_1->ptsz;n++) {
-
-			pt_1=&mesh_1->vertexes[poly_1->v[n]];
-		
-			for (k=0;k!=poly_2->ptsz;k++) {
-				pt_2=&mesh_2->vertexes[poly_2->v[k]];
-				
-				d=distance_get(pt_1->x,pt_1->y,pt_1->z,pt_2->x,pt_2->y,pt_2->z);
-				if ((d<dist) || (dist==-1)) {
-					x=pt_2->x-pt_1->x;
-					y=pt_2->y-pt_1->y;
-					z=pt_2->z-pt_1->z;
-					dist=d;
-				}
-			}
-		}
-	
-	}
-	
-		// move together
-		
-	pt_1=mesh_1->vertexes;
-	
-	for (n=0;n!=mesh_1->nvertex;n++) {
-		pt_1->x+=x;
-		pt_1->y+=y;
-		pt_1->z+=z;
-		pt_1++;
-	}
-}
-
-void piece_mesh_poly_snap_to_grid(void)
-{
-	int			n,sel_count,type,mesh_idx,poly_idx;
-
-	sel_count=select_count();
-	
-	for (n=0;n!=sel_count;n++) {
-		select_get(n,&type,&mesh_idx,&poly_idx);
-		if (type!=mesh_piece) continue;
-		
-		mesh_poly_snap_to_grid(mesh_idx,poly_idx);
-	}
-}
-
-void piece_mesh_vertexes_snap_to_grid(void)
-{
-	int			n,sel_count,type,mesh_idx,poly_idx;
-
-	sel_count=select_count();
-	
-	for (n=0;n!=sel_count;n++) {
-		select_get(n,&type,&mesh_idx,&poly_idx);
-		if (type!=mesh_piece) continue;
-		
-		mesh_vertexes_snap_to_grid(mesh_idx);
 	}
 }
 
@@ -1242,13 +945,13 @@ void piece_key(char ch)
 				if (map.mesh.meshes[main_idx].flag.lock_move) break;
 				map_mesh_move(&map,main_idx,&move_pnt);
 				view_force_grid(main_idx,TRUE);
-				if ((state.auto_texture) && (!map.mesh.meshes[main_idx].flag.lock_uv)) map_mesh_reset_uv(&map,main_idx);
+				if ((state.map.auto_texture) && (!map.mesh.meshes[main_idx].flag.lock_uv)) map_mesh_reset_uv(&map,main_idx);
 				view_vbo_mesh_rebuild(main_idx);
 				break;
 				
 			case liquid_piece:
 				map_liquid_move(&map,main_idx,&move_pnt);
-				if ((state.auto_texture) && (!map.liquid.liquids[main_idx].flag.lock_uv)) map_liquid_reset_uv(&map,main_idx);
+				if ((state.map.auto_texture) && (!map.liquid.liquids[main_idx].flag.lock_uv)) map_liquid_reset_uv(&map,main_idx);
 				break;
 				
 			case node_piece:

@@ -45,8 +45,6 @@ and can be sold or given away.
 #define kCinemaActionPropertyReverseMove			9
 
 extern map_type					map;
-extern editor_state_type		state;
-extern editor_setup_type		setup;
 extern file_path_setup_type		file_path_setup;
 extern iface_type				iface;
 

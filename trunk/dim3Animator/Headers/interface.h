@@ -300,5 +300,5 @@ extern int dialog_import_finish_run(void);
 extern bool dialog_set_vertex_bone_run(int *major_bone_idx,int *minor_bone_idx,float *factor);
 extern bool dialog_animation_reset_time_run(int animate_idx);
 extern bool dialog_play_blend_animation_run(void);
-extern bool dialog_pick_scale_run(model_type *mdl,d3fpnt *scale);
+extern bool dialog_scale_run(model_type *mdl,d3fpnt *scale);
 extern bool dialog_set_normal_run(d3vct *normal);
