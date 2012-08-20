@@ -553,7 +553,7 @@ OSStatus os_dialog_wind_event_callback(EventHandlerCallRef eventhandler,EventRef
 			
                 case kEventCommandProcess:
 					GetEventParameter(event,kEventParamDirectObject,typeHICommand,NULL,sizeof(HICommand),NULL,&cmd);
-					(*os_dialog_callback)(os_dialog_msg_type_button,(int)cmd.commandID);
+					(*os_dialog_callback)(os_dialog_msg_type_command,(int)cmd.commandID);
                     return(noErr);
 
 			}
@@ -564,15 +564,16 @@ OSStatus os_dialog_wind_event_callback(EventHandlerCallRef eventhandler,EventRef
 
 bool os_dialog_run(char *title,int wid,int high,os_dialog_ctrl_type *ctrls,void *callback)
 {
-	int					idx;
-	unsigned char		p_str[256];
-	os_dialog_ctrl_type	*ctrl;
-	HIRect				wbox;
-	Rect				box;
-	CFStringRef			cf_str;
-	ControlFontStyleRec	font_rec;
+	int								idx;
+	unsigned char					p_str[256];
+	os_dialog_ctrl_type				*ctrl;
+	HIRect							wbox;
+	Rect							box;
+	MenuRef							ctrl_menu;
+	CFStringRef						cf_str;
+	ControlFontStyleRec				font_rec;
 	DataBrowserListViewColumnDesc	db_col;
-	EventTypeSpec		diag_events[]={{kEventClassCommand,kEventCommandProcess}};
+	EventTypeSpec					diag_events[]={{kEventClassCommand,kEventCommandProcess}};
 	
 		// setup callback
 
@@ -608,8 +609,8 @@ bool os_dialog_run(char *title,int wid,int high,os_dialog_ctrl_type *ctrls,void 
 		
 		box.left=ctrl->x;
 		box.top=ctrl->y;
-		box.right=ctrl->x+ctrl->wid;
-		box.bottom=ctrl->y+ctrl->high;
+		box.right=box.left+ctrl->wid;
+		box.bottom=box.top+ctrl->high;
 		
 		cf_str=CFStringCreateWithCString(kCFAllocatorDefault,ctrl->str,kCFStringEncodingMacRoman);
 
@@ -635,8 +636,17 @@ bool os_dialog_run(char *title,int wid,int high,os_dialog_ctrl_type *ctrls,void 
 				break;
 				
 			case os_dialog_ctrl_type_text_edit:
+				box.bottom=box.top+16;
 				CreateEditUnicodeTextControl(os_dialog_wind,&box,cf_str,FALSE,NULL,&os_dialog_ctrls[idx]);
 				break;
+				
+			case os_dialog_ctrl_type_combo:
+				box.bottom=box.top+20;
+				CreateNewMenu(ctrl->id,0,&ctrl_menu);
+				AddResource((char**)ctrl_menu,'MENU',ctrl->id,"\pMenu");
+				CreatePopupButtonControl(os_dialog_wind,&box,CFSTR(""),ctrl->id,FALSE,0,teFlushDefault,0,&os_dialog_ctrls[idx]);
+				SetControlPopupMenuHandle(os_dialog_ctrls[idx],ctrl_menu);
+ 				break;
 				
 			case os_dialog_ctrl_type_files:
 				CreateDataBrowserControl(os_dialog_wind,&box,kDataBrowserListView,&os_dialog_ctrls[idx]);
@@ -654,7 +664,6 @@ bool os_dialog_run(char *title,int wid,int high,os_dialog_ctrl_type *ctrls,void 
 				db_col.propertyDesc.propertyID=FOUR_CHAR_CODE('list');
 				db_col.propertyDesc.propertyType=kDataBrowserTextType;
 				db_col.propertyDesc.propertyFlags=kDataBrowserListViewSelectionColumn;
-				
 				
 				AddDataBrowserListViewColumn(os_dialog_ctrls[idx],&db_col,0);
 				break;
@@ -708,6 +717,12 @@ void os_dialog_close(bool ok)
 	QuitAppModalLoopForWindow(os_dialog_wind);
 }
 
+/* =======================================================
+
+      Dialog Edit Controls
+      
+======================================================= */
+
 ControlRef os_dialog_get_control_ref_from_id(int id)
 {
 	int				n;
@@ -754,7 +769,49 @@ float os_dialog_get_float(int id)
 	return((float)atof(str));
 }
 
-// file stuff
+/* =======================================================
+
+      Dialog Combo Controls
+      
+======================================================= */
+
+void os_dialog_combo_add(int id,char *str)
+{
+	ControlRef		ctrl;
+	MenuRef			menu;
+	CFStringRef		cf_str;
+	
+	ctrl=os_dialog_get_control_ref_from_id(id);
+	menu=GetControlPopupMenuHandle(ctrl);
+	
+	cf_str=CFStringCreateWithCString(kCFAllocatorDefault,str,kCFStringEncodingMacRoman);
+	AppendMenuItemTextWithCFString(menu,cf_str,0,0,NULL);
+	CFRelease(cf_str);
+	
+	SetControl32BitMaximum(ctrl,CountMenuItems(menu));
+}
+
+void os_dialog_combo_set_value(int id,int value)
+{
+	ControlRef		ctrl;
+	
+	ctrl=os_dialog_get_control_ref_from_id(id);
+	SetControl32BitValue(ctrl,(value+1));
+}
+
+int os_dialog_combo_get_value(int id)
+{
+	ControlRef		ctrl;
+	
+	ctrl=os_dialog_get_control_ref_from_id(id);	
+	return(GetControl32BitValue(ctrl)-1);
+}
+
+/* =======================================================
+
+      Dialog File Controls
+      
+======================================================= */
 
 int file_open_list_build_items_for_parent(int parent_idx,DataBrowserItemID *items)
 {
@@ -805,18 +862,18 @@ static pascal void os_dialog_files_notify_proc(ControlRef ctrl,DataBrowserItemID
 	
 		case kDataBrowserItemDoubleClicked:
 			dialog_file_open_index=itemID-1;
-			if (!os_dialog_fpd->files[dialog_file_open_index].is_dir) (*os_dialog_callback)(os_dialog_msg_type_double_click,dialog_file_open_index);
+			if (!os_dialog_fpd->files[dialog_file_open_index].is_dir) (*os_dialog_callback)(os_dialog_msg_type_tree_double_click,dialog_file_open_index);
 			break;
 
 		case kDataBrowserItemSelected:
 			dialog_file_open_index=itemID-1;
-			(*os_dialog_callback)(os_dialog_msg_type_sel_change,dialog_file_open_index);
+			(*os_dialog_callback)(os_dialog_msg_type_tree_change,dialog_file_open_index);
 			break;
 			
 		case kDataBrowserItemDeselected:
 			if (dialog_file_open_index==(itemID-1)) {
 				dialog_file_open_index=-1;
-				(*os_dialog_callback)(os_dialog_msg_type_sel_change,dialog_file_open_index);
+				(*os_dialog_callback)(os_dialog_msg_type_tree_change,dialog_file_open_index);
 			}
 			break;
 			
@@ -872,6 +929,12 @@ int os_dialog_tree_get_value(int id)
 {
 	return(dialog_file_open_index);
 }
+
+/* =======================================================
+
+      Dialog Misc
+      
+======================================================= */
 
 void os_dialog_set_focus(int id,bool select_all)
 {
