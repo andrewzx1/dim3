@@ -36,7 +36,6 @@ AGLContext						ctx;
 
 extern iface_type				iface;
 extern file_path_setup_type		file_path_setup;
-extern editor_state_type		state;
 
 /* =======================================================
 

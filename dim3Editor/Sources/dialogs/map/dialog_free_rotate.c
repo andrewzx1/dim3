@@ -44,14 +44,14 @@ d3ang							*dialog_free_rot_ang;
 #define diag_prop_free_rot_ok		5004
 
 os_dialog_ctrl_type		diag_property_free_rot_ctrls[]={
-							{os_dialog_ctrl_type_text_right,0,"X:",15,8,35,20},
-							{os_dialog_ctrl_type_text_right,0,"Y:",15,33,35,20},
-							{os_dialog_ctrl_type_text_right,0,"Z:",15,58,35,20},
-							{os_dialog_ctrl_type_text_edit,diag_prop_free_rot_x,"",55,5,100,20},
-							{os_dialog_ctrl_type_text_edit,diag_prop_free_rot_y,"",55,30,100,20},
-							{os_dialog_ctrl_type_text_edit,diag_prop_free_rot_z,"",55,55,100,20},
-							{os_dialog_ctrl_type_button,diag_prop_free_rot_cancel,"Cancel",180,85,80,25},
-							{os_dialog_ctrl_type_default_button,diag_prop_free_rot_ok,"OK",270,85,80,25},
+							{os_dialog_ctrl_type_text_right,0,"X:",15,10,30,20},
+							{os_dialog_ctrl_type_text_right,0,"Y:",15,40,30,20},
+							{os_dialog_ctrl_type_text_right,0,"Z:",15,70,30,20},
+							{os_dialog_ctrl_type_text_edit,diag_prop_free_rot_x,"",55,10,100,20},
+							{os_dialog_ctrl_type_text_edit,diag_prop_free_rot_y,"",55,40,100,20},
+							{os_dialog_ctrl_type_text_edit,diag_prop_free_rot_z,"",55,70,100,20},
+							{os_dialog_ctrl_type_button,diag_prop_free_rot_cancel,"Cancel",180,100,80,25},
+							{os_dialog_ctrl_type_default_button,diag_prop_free_rot_ok,"OK",270,100,80,25},
 							{-1,-1,"",0,0,0,0}
 						};
 
@@ -95,6 +95,6 @@ void dialog_property_free_rot_proc(int msg_type,int id)
 bool dialog_free_rotate_run(d3ang *ang)
 {
 	dialog_free_rot_ang=ang;
-	return(os_dialog_run("Free Rotate",355,115,diag_property_free_rot_ctrls,dialog_property_free_rot_proc));
+	return(os_dialog_run("Free Rotate",355,130,diag_property_free_rot_ctrls,dialog_property_free_rot_proc));
 }
 

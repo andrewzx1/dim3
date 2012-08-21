@@ -43,11 +43,11 @@ char							dialog_new_map_file_name[256];
 
 os_dialog_ctrl_type		diag_property_new_map_ctrls[]={
 							{os_dialog_ctrl_type_text_left,0,"Enter a name for your new map.",10,10,430,20},
-							{os_dialog_ctrl_type_text_right,0,"Name:",10,35,80,20},
-							{os_dialog_ctrl_type_text_edit,diag_prop_new_map_name,"",90,32,340,20},
-							{os_dialog_ctrl_type_text_left,0,"When a map is created, the map data file is saved in the Data/Maps directory.",10,60,430,20},
-							{os_dialog_ctrl_type_button,diag_prop_new_map_cancel,"Cancel",275,90,80,25},
-							{os_dialog_ctrl_type_default_button,diag_prop_new_map_ok,"OK",365,90,80,25},
+							{os_dialog_ctrl_type_text_right,0,"Name:",10,40,70,20},
+							{os_dialog_ctrl_type_text_edit,diag_prop_new_map_name,"",90,40,340,20},
+							{os_dialog_ctrl_type_text_left,0,"New maps are saved in the Data/Maps directory.",10,70,430,20},
+							{os_dialog_ctrl_type_button,diag_prop_new_map_cancel,"Cancel",275,100,80,25},
+							{os_dialog_ctrl_type_default_button,diag_prop_new_map_ok,"OK",365,100,80,25},
 							{-1,-1,"",0,0,0,0}
 						};
 
@@ -86,7 +86,7 @@ bool dialog_new_map_run(char *file_name)
 {
 	bool				ok;
 
-	ok=os_dialog_run("Create New Map",450,120,diag_property_new_map_ctrls,dialog_property_new_map_proc);
+	ok=os_dialog_run("Create New Map",450,130,diag_property_new_map_ctrls,dialog_property_new_map_proc);
 	if (ok) strcpy(file_name,dialog_new_map_file_name);
 
 	return(ok);

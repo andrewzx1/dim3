@@ -51,20 +51,20 @@ bool							*dialog_grid_sides;
 #define diag_prop_grid_ok			5010
 
 os_dialog_ctrl_type		diag_property_grid_ctrls[]={
-							{os_dialog_ctrl_type_text_right,0,"X:",15,8,35,20},
-							{os_dialog_ctrl_type_text_right,0,"Y:",15,33,35,20},
-							{os_dialog_ctrl_type_text_right,0,"Z:",15,58,35,20},
-							{os_dialog_ctrl_type_text_edit,diag_prop_grid_x,"",55,5,100,20},
-							{os_dialog_ctrl_type_text_edit,diag_prop_grid_y,"",55,30,100,20},
-							{os_dialog_ctrl_type_text_edit,diag_prop_grid_z,"",55,55,100,20},
-							{os_dialog_ctrl_type_text_checkbox,diag_prop_side_neg_x,"Neg X",170,5,50,20},
-							{os_dialog_ctrl_type_text_checkbox,diag_prop_side_pos_x,"Pos X",220,5,50,20},
-							{os_dialog_ctrl_type_text_checkbox,diag_prop_side_neg_y,"Neg Y",170,30,50,20},
-							{os_dialog_ctrl_type_text_checkbox,diag_prop_side_pos_y,"Pos Y",220,30,50,20},
-							{os_dialog_ctrl_type_text_checkbox,diag_prop_side_neg_z,"Neg Z",170,55,50,20},
-							{os_dialog_ctrl_type_text_checkbox,diag_prop_side_pos_z,"Pos Z",220,55,50,20},
-							{os_dialog_ctrl_type_button,diag_prop_grid_cancel,"Cancel",180,85,80,25},
-							{os_dialog_ctrl_type_default_button,diag_prop_grid_ok,"Create",270,85,80,25},
+							{os_dialog_ctrl_type_text_right,0,"X:",10,10,35,20},
+							{os_dialog_ctrl_type_text_right,0,"Y:",10,40,35,20},
+							{os_dialog_ctrl_type_text_right,0,"Z:",10,70,35,20},
+							{os_dialog_ctrl_type_text_edit,diag_prop_grid_x,"",55,10,100,20},
+							{os_dialog_ctrl_type_text_edit,diag_prop_grid_y,"",55,40,100,20},
+							{os_dialog_ctrl_type_text_edit,diag_prop_grid_z,"",55,70,100,20},
+							{os_dialog_ctrl_type_checkbox,diag_prop_side_neg_x,"Neg X",170,10,80,20},
+							{os_dialog_ctrl_type_checkbox,diag_prop_side_pos_x,"Pos X",240,10,80,20},
+							{os_dialog_ctrl_type_checkbox,diag_prop_side_neg_y,"Neg Y",170,40,80,20},
+							{os_dialog_ctrl_type_checkbox,diag_prop_side_pos_y,"Pos Y",240,40,80,20},
+							{os_dialog_ctrl_type_checkbox,diag_prop_side_neg_z,"Neg Z",170,70,80,20},
+							{os_dialog_ctrl_type_checkbox,diag_prop_side_pos_z,"Pos Z",240,70,80,20},
+							{os_dialog_ctrl_type_button,diag_prop_grid_cancel,"Cancel",180,100,80,25},
+							{os_dialog_ctrl_type_default_button,diag_prop_grid_ok,"Create",270,100,80,25},
 							{-1,-1,"",0,0,0,0}
 						};
 
@@ -125,6 +125,6 @@ bool dialog_grid_run(d3pnt *divs,bool *sides)
 	dialog_grid_divs=divs;
 	dialog_grid_sides=sides;
 
-	return(os_dialog_run("Create Grid",355,115,diag_property_grid_ctrls,dialog_property_grid_proc));
+	return(os_dialog_run("Create Grid",355,130,diag_property_grid_ctrls,dialog_property_grid_proc));
 }
 
