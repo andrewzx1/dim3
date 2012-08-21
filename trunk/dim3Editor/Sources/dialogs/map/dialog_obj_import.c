@@ -48,17 +48,17 @@ bool							*dialog_obj_import_force_grid;
 #define diag_prop_obj_import_ok				5005
 
 os_dialog_ctrl_type		diag_property_obj_import_ctrls[]={
-							{os_dialog_ctrl_type_text_right,0,"Import Type:",35,13,75,20},
-							{os_dialog_ctrl_type_text_right,0,"Scale Axis:",35,43,75,20},
-							{os_dialog_ctrl_type_text_right,0,"Scale Units:",35,73,75,20},
-							{os_dialog_ctrl_type_text_left,0,"(new import only)",230,43,125,20},
-							{os_dialog_ctrl_type_text_left,0,"(new import only)",230,73,125,20},
-							{os_dialog_ctrl_type_combo,diag_prop_obj_import_mode,"",115,10,300,20},
-							{os_dialog_ctrl_type_combo,diag_prop_obj_import_axis,"",115,40,40,20},
-							{os_dialog_ctrl_type_text_edit,diag_prop_obj_import_unit,"",115,70,100,20},
-							{os_dialog_ctrl_type_text_checkbox,diag_prop_obj_import_force_grid,"Force to Current Grid",115,100,200,20},
-							{os_dialog_ctrl_type_button,diag_prop_obj_import_cancel,"Cancel",250,130,80,25},
-							{os_dialog_ctrl_type_default_button,diag_prop_obj_import_ok,"Import",340,130,80,25},
+							{os_dialog_ctrl_type_text_right,0,"Import Type:",30,10,85,20},
+							{os_dialog_ctrl_type_text_right,0,"Scale Axis:",30,40,85,20},
+							{os_dialog_ctrl_type_text_right,0,"Scale Units:",30,70,85,20},
+							{os_dialog_ctrl_type_text_left,0,"(new import only)",240,40,125,20},
+							{os_dialog_ctrl_type_text_left,0,"(new import only)",240,70,125,20},
+							{os_dialog_ctrl_type_combo,diag_prop_obj_import_mode,"",120,10,350,20},
+							{os_dialog_ctrl_type_combo,diag_prop_obj_import_axis,"",120,40,60,20},
+							{os_dialog_ctrl_type_text_edit,diag_prop_obj_import_unit,"",125,70,100,20},
+							{os_dialog_ctrl_type_checkbox,diag_prop_obj_import_force_grid,"Force to Current Grid",125,100,200,20},
+							{os_dialog_ctrl_type_button,diag_prop_obj_import_cancel,"Cancel",310,130,80,25},
+							{os_dialog_ctrl_type_default_button,diag_prop_obj_import_ok,"Import",400,130,80,25},
 							{-1,-1,"",0,0,0,0}
 						};
 
@@ -116,6 +116,6 @@ bool dialog_obj_import_run(int *import_mode,int *scale_axis,int *scale_unit,bool
 	dialog_obj_import_unit=scale_unit;
 	dialog_obj_import_force_grid=force_grid;
 
-	return(os_dialog_run("OBJ Import",425,160,diag_property_obj_import_ctrls,dialog_property_obj_import_proc));
+	return(os_dialog_run("OBJ Import",485,160,diag_property_obj_import_ctrls,dialog_property_obj_import_proc));
 }
 

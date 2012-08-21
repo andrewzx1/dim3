@@ -46,9 +46,9 @@ int						*dialog_height_import_div_cnt,
 #define diag_prop_height_import_ok			5004
 
 os_dialog_ctrl_type		diag_property_height_import_ctrls[]={
-							{os_dialog_ctrl_type_text_right,0,"Divisions:",35,13,75,20},
-							{os_dialog_ctrl_type_text_right,0,"Size:",35,43,75,20},
-							{os_dialog_ctrl_type_text_right,0,"Height:",35,73,75,20},
+							{os_dialog_ctrl_type_text_right,0,"Divisions:",30,10,75,20},
+							{os_dialog_ctrl_type_text_right,0,"Size:",30,40,75,20},
+							{os_dialog_ctrl_type_text_right,0,"Height:",30,75,70,20},
 							{os_dialog_ctrl_type_text_edit,diag_prop_height_import_divisions,"",115,10,100,20},
 							{os_dialog_ctrl_type_text_edit,diag_prop_height_import_size,"",115,40,100,20},
 							{os_dialog_ctrl_type_text_edit,diag_prop_height_import_height,"",115,70,100,20},

@@ -45,16 +45,16 @@ d3fpnt					*dialog_scale_scale;
 #define diag_prop_scale_ok			5005
 
 os_dialog_ctrl_type		diag_property_scale_ctrls[]={
-							{os_dialog_ctrl_type_text_right,0,"Scale Type:",5,13,65,20},
-							{os_dialog_ctrl_type_combo,diag_prop_scale_type,"",75,10,240,20},
-							{os_dialog_ctrl_type_text_right,0,"X:",35,38,35,20},
-							{os_dialog_ctrl_type_text_right,0,"Y:",35,63,35,20},
-							{os_dialog_ctrl_type_text_right,0,"Z:",35,88,35,20},
-							{os_dialog_ctrl_type_text_edit,diag_prop_scale_x,"",75,35,100,20},
-							{os_dialog_ctrl_type_text_edit,diag_prop_scale_y,"",75,60,100,20},
-							{os_dialog_ctrl_type_text_edit,diag_prop_scale_z,"",75,85,100,20},
-							{os_dialog_ctrl_type_button,diag_prop_scale_cancel,"Cancel",180,110,80,25},
-							{os_dialog_ctrl_type_default_button,diag_prop_scale_ok,"OK",270,110,80,25},
+							{os_dialog_ctrl_type_text_right,0,"Scale Type:",10,10,75,20},
+							{os_dialog_ctrl_type_combo,diag_prop_scale_type,"",90,10,310,20},
+							{os_dialog_ctrl_type_text_right,0,"X:",50,40,35,20},
+							{os_dialog_ctrl_type_text_right,0,"Y:",50,70,35,20},
+							{os_dialog_ctrl_type_text_right,0,"Z:",50,100,35,20},
+							{os_dialog_ctrl_type_text_edit,diag_prop_scale_x,"",95,40,100,20},
+							{os_dialog_ctrl_type_text_edit,diag_prop_scale_y,"",95,70,100,20},
+							{os_dialog_ctrl_type_text_edit,diag_prop_scale_z,"",95,100,100,20},
+							{os_dialog_ctrl_type_button,diag_prop_scale_cancel,"Cancel",250,130,80,25},
+							{os_dialog_ctrl_type_default_button,diag_prop_scale_ok,"OK",340,130,80,25},
 							{-1,-1,"",0,0,0,0}
 						};
 
@@ -130,5 +130,5 @@ void dialog_property_scale_proc(int msg_type,int id)
 bool dialog_scale_run(d3fpnt *scale)
 {
 	dialog_scale_scale=scale;
-	return(os_dialog_run("Scale",355,140,diag_property_scale_ctrls,dialog_property_scale_proc));
+	return(os_dialog_run("Scale",425,160,diag_property_scale_ctrls,dialog_property_scale_proc));
 }

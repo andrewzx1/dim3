@@ -626,10 +626,12 @@ bool os_dialog_run(char *title,int wid,int high,os_dialog_ctrl_type *ctrls,void 
 				break;
 				
 			case os_dialog_ctrl_type_text_left:
+				box.bottom=box.top+16;
 				CreateStaticTextControl(os_dialog_wind,&box,cf_str,NULL,&os_dialog_ctrls[idx]);
 				break;
 			
 			case os_dialog_ctrl_type_text_right:
+				box.bottom=box.top+16;
 				font_rec.flags=kControlUseJustMask;
 				font_rec.just=-1;
 				CreateStaticTextControl(os_dialog_wind,&box,cf_str,&font_rec,&os_dialog_ctrls[idx]);
@@ -647,6 +649,11 @@ bool os_dialog_run(char *title,int wid,int high,os_dialog_ctrl_type *ctrls,void 
 				CreatePopupButtonControl(os_dialog_wind,&box,CFSTR(""),ctrl->id,FALSE,0,teFlushDefault,0,&os_dialog_ctrls[idx]);
 				SetControlPopupMenuHandle(os_dialog_ctrls[idx],ctrl_menu);
  				break;
+				
+			case os_dialog_ctrl_type_checkbox:
+				box.bottom=box.top+16;
+				CreateCheckBoxControl(os_dialog_wind,&box,cf_str,0,TRUE,&os_dialog_ctrls[idx]);
+				break;
 				
 			case os_dialog_ctrl_type_files:
 				CreateDataBrowserControl(os_dialog_wind,&box,kDataBrowserListView,&os_dialog_ctrls[idx]);
@@ -753,7 +760,23 @@ void os_dialog_get_text(int id,char *value,int value_len)
 	value[value_len-1]=0x0;
 }
 
-extern void os_dialog_set_float(int id,float f)
+void os_dialog_set_int(int id,int i)
+{
+	char			str[256];
+
+	sprintf(str,"%d",i);
+	os_dialog_set_text(id,str);
+}
+
+int os_dialog_get_int(int id)
+{
+	char			str[256];
+
+	os_dialog_get_text(id,str,256);
+	return(atoi(str));
+}
+
+void os_dialog_set_float(int id,float f)
 {
 	char			str[256];
 
@@ -769,6 +792,16 @@ float os_dialog_get_float(int id)
 	return((float)atof(str));
 }
 
+void os_dialog_set_bool(int id,bool value)
+{
+	SetControl32BitValue(os_dialog_get_control_ref_from_id(id),(value?1:0));
+}
+
+bool os_dialog_get_bool(int id)
+{
+	return(GetControl32BitValue(os_dialog_get_control_ref_from_id(id))!=0);
+}
+
 /* =======================================================
 
       Dialog Combo Controls
@@ -777,6 +810,7 @@ float os_dialog_get_float(int id)
 
 void os_dialog_combo_add(int id,char *str)
 {
+	int				cnt;
 	ControlRef		ctrl;
 	MenuRef			menu;
 	CFStringRef		cf_str;
@@ -784,11 +818,13 @@ void os_dialog_combo_add(int id,char *str)
 	ctrl=os_dialog_get_control_ref_from_id(id);
 	menu=GetControlPopupMenuHandle(ctrl);
 	
+	cnt=CountMenuItems(menu);
+	
 	cf_str=CFStringCreateWithCString(kCFAllocatorDefault,str,kCFStringEncodingMacRoman);
-	AppendMenuItemTextWithCFString(menu,cf_str,0,0,NULL);
+	AppendMenuItemTextWithCFString(menu,cf_str,0,(6000+cnt),NULL);
 	CFRelease(cf_str);
 	
-	SetControl32BitMaximum(ctrl,CountMenuItems(menu));
+	SetControl32BitMaximum(ctrl,(cnt+1));
 }
 
 void os_dialog_combo_set_value(int id,int value)
