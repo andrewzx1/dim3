@@ -34,7 +34,7 @@ and can be sold or given away.
 
 extern model_type				model;
 extern file_path_setup_type		file_path_setup;
-extern animator_state_type		state;
+extern app_state_type			state;
 
 /* =======================================================
 
@@ -84,63 +84,63 @@ bool tool_get_highlight_state(int tool_idx)
 			// left side
 
 		case 0:
-			return(state.texture);
+			return(state.model.texture);
 
 		case 1:
-			return(state.mesh);
+			return(state.model.mesh);
 
 		case 2:
-			return(state.bone);
+			return(state.model.bone);
 
 		case 3:
-			return(state.hit_box);
+			return(state.model.hit_box);
 
 		case 4:
-			return(state.select_mode==select_mode_mesh);
+			return(state.model.select_mode==select_mode_mesh);
 
 		case 5:
-			return(state.select_mode==select_mode_polygon);
+			return(state.model.select_mode==select_mode_polygon);
 
 		case 6:
-			return(state.select_mode==select_mode_vertex);
+			return(state.model.select_mode==select_mode_vertex);
 
 		case 7:
-			return(state.view_box);
+			return(state.model.view_box);
 
 		case 8:
-			return(state.normal);
+			return(state.model.normal);
 
 		case 9:
-			return(state.bone_names);
+			return(state.model.bone_names);
 
 		case 10:
-			return(state.sel_vertex_with_bone);
+			return(state.model.sel_vertex_with_bone);
 
 		case 11:
-			return(state.drag_bone_mode==drag_bone_mode_rotate);
+			return(state.model.drag_bone_mode==drag_bone_mode_rotate);
 
 		case 12:
-			return(state.drag_bone_mode==drag_bone_mode_stretch);
+			return(state.model.drag_bone_mode==drag_bone_mode_stretch);
 
 			// right side
 
 		case 14:
-			return(state.play_mode==play_mode_stop);
+			return(state.model.play_mode==play_mode_stop);
 
 		case 15:
-			return(state.play_mode==play_mode_normal);
+			return(state.model.play_mode==play_mode_normal);
 
 		case 16:
-			return(state.play_mode==play_mode_blend);
+			return(state.model.play_mode==play_mode_blend);
 
 		case 17:
-			return(state.play_mode==play_mode_slow);
+			return(state.model.play_mode==play_mode_slow);
 			
 		case 18:
-			return(state.play_mode==play_mode_prev);
+			return(state.model.play_mode==play_mode_prev);
 			
 		case 19:
-			return(state.play_mode==play_mode_next);
+			return(state.model.play_mode==play_mode_next);
 			
 	}
 
@@ -149,7 +149,7 @@ bool tool_get_highlight_state(int tool_idx)
 
 bool tool_get_disabled_state(int tool_idx)
 {
-	return(!state.model_open);
+	return(!state.model.model_open);
 }
 
 /* =======================================================
@@ -165,58 +165,58 @@ void tool_click(int tool_idx)
 			// left side
 
 		case 0:
-			state.texture=!state.texture;
+			state.model.texture=!state.model.texture;
 			break;
 			
 		case 1:
-			state.mesh=!state.mesh;
+			state.model.mesh=!state.model.mesh;
 			break;
 			
 		case 2:
-			state.bone=!state.bone;
+			state.model.bone=!state.model.bone;
 			break;
 			
 		case 3:
-			state.hit_box=!state.hit_box;
+			state.model.hit_box=!state.model.hit_box;
 			break;
 			
 		case 4:
-			vertex_mask_clear_sel(state.cur_mesh_idx);
-			state.select_mode=select_mode_mesh;
+			vertex_mask_clear_sel(state.model.cur_mesh_idx);
+			state.model.select_mode=select_mode_mesh;
 			break;
 
 		case 5:
-			vertex_mask_clear_sel(state.cur_mesh_idx);
-			state.select_mode=select_mode_polygon;
+			vertex_mask_clear_sel(state.model.cur_mesh_idx);
+			state.model.select_mode=select_mode_polygon;
 			break;
 			
 		case 6:
-			vertex_mask_clear_sel(state.cur_mesh_idx);
-			state.select_mode=select_mode_vertex;
+			vertex_mask_clear_sel(state.model.cur_mesh_idx);
+			state.model.select_mode=select_mode_vertex;
 			break;
 			
 		case 7:
-			state.view_box=!state.view_box;
+			state.model.view_box=!state.model.view_box;
 			break;
 			
 		case 8:
-			state.normal=!state.normal;
+			state.model.normal=!state.model.normal;
 			break;
 			
 		case 9:
-			state.bone_names=!state.bone_names;
+			state.model.bone_names=!state.model.bone_names;
 			break;
 			
 		case 10:
-			state.sel_vertex_with_bone=!state.sel_vertex_with_bone;
+			state.model.sel_vertex_with_bone=!state.model.sel_vertex_with_bone;
 			break;
 		
 		case 11:
-			state.drag_bone_mode=drag_bone_mode_rotate;
+			state.model.drag_bone_mode=drag_bone_mode_rotate;
 			break;
 			
 		case 12:
-			state.drag_bone_mode=drag_bone_mode_stretch;
+			state.model.drag_bone_mode=drag_bone_mode_stretch;
 			break;
 			
 			// right side

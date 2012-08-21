@@ -35,9 +35,9 @@ and can be sold or given away.
 
 extern model_type				model;
 extern model_draw_setup			draw_setup;
-extern animator_state_type		state;
+extern app_state_type			state;
 
-extern list_palette_type		file_palette,property_palette;
+extern list_palette_type		file_palette,model_palette;
 
 double							tran_mod_matrix[16],tran_proj_matrix[16],tran_vport[4];
 d3rect							tran_wbox;
@@ -55,7 +55,7 @@ void model_wind_get_box(d3rect *box)
 	os_get_window_box(&wbox);
 	
 	box->lx=list_palette_width(&file_palette);
-	box->rx=wbox.rx-list_palette_width(&property_palette);
+	box->rx=wbox.rx-list_palette_width(&model_palette);
 	box->ty=tool_palette_pixel_size();
 	box->by=(wbox.by-wbox.ty)-texture_palette_pixel_size();
 }
@@ -93,15 +93,15 @@ void draw_model_gl_setup(int z_offset)
 
 	yoff=model.view_box.size.y/2;
 
-	sz=500+((4000-state.magnify_z)*5);
+	sz=500+((4000-state.model.magnify_z)*5);
 	
-	glTranslatef(-((GLfloat)state.shift.x),-((GLfloat)(state.shift.y-yoff)),(GLfloat)sz);
+	glTranslatef(-((GLfloat)state.model.shift.x),-((GLfloat)(state.model.shift.y-yoff)),(GLfloat)sz);
 	
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	
-	glRotatef(-state.ang.x,1.0f,0.0f,0.0f);
-	glRotatef(angle_add(state.ang.y,180.0f),0.0f,1.0f,0.0f);
+	glRotatef(-state.model.ang.x,1.0f,0.0f,0.0f);
+	glRotatef(angle_add(state.model.ang.y,180.0f),0.0f,1.0f,0.0f);
 
 		// drawing setup
 		
@@ -186,7 +186,7 @@ void draw_model_setup_bones_vertexes(int mesh_idx)
 		// meshes
 
 	for (n=0;n!=model.nmesh;n++) {
-		if ((n==mesh_idx) || (state.show_mesh[n])) {
+		if ((n==mesh_idx) || (state.model.show_mesh[n])) {
 			model_create_draw_vertexes(&model,n,&draw_setup);
 			model_create_draw_normals(&model,n,&draw_setup);
 		}
@@ -212,12 +212,12 @@ void draw_model_info(void)
 	x=mbox.lx+5;
 	y=mbox.ty+20;
 
-	sprintf(str,"Mesh: %s",model.meshes[state.cur_mesh_idx].name);
+	sprintf(str,"Mesh: %s",model.meshes[state.model.cur_mesh_idx].name);
 	text_draw(x,y,15,NULL,str);
 	y+=15;
 
-	if (state.cur_animate_idx!=-1) {
-		sprintf(str,"Animation: %s",model.animates[state.cur_animate_idx].name);
+	if (state.model.cur_animate_idx!=-1) {
+		sprintf(str,"Animation: %s",model.animates[state.model.cur_animate_idx].name);
 	}
 	else {
 		strcpy(str,"Animation: (none)");
@@ -226,8 +226,8 @@ void draw_model_info(void)
 	text_draw(x,y,15,NULL,str);
 	y+=15;
 
-	pose_idx=state.cur_pose_idx;
-	if ((state.play_mode!=play_mode_stop) && (state.cur_animate_idx!=-1)) pose_idx=model.animates[state.cur_animate_idx].pose_moves[state.blend[0].pose_move_idx].pose_idx;
+	pose_idx=state.model.cur_pose_idx;
+	if ((state.model.play_mode!=play_mode_stop) && (state.model.cur_animate_idx!=-1)) pose_idx=model.animates[state.model.cur_animate_idx].pose_moves[state.model.blend[0].pose_move_idx].pose_idx;
 	
 	if (pose_idx!=-1) {
 		sprintf(str,"Pose: %s",model.poses[pose_idx].name);
@@ -245,14 +245,14 @@ void draw_model_info(void)
 
 	str[0]=0x0;
 
-	switch (state.select_mode) {
+	switch (state.model.select_mode) {
 
 		case select_mode_vertex:
-			sprintf(str,"Selected Vertexes: %d",vertex_mask_count_sel(state.cur_mesh_idx));
+			sprintf(str,"Selected Vertexes: %d",vertex_mask_count_sel(state.model.cur_mesh_idx));
 			break;
 
 		case select_mode_polygon:
-			sprintf(str,"Selected Polys: %d",poly_mask_count_sel(state.cur_mesh_idx));
+			sprintf(str,"Selected Polys: %d",poly_mask_count_sel(state.model.cur_mesh_idx));
 			break;
 
 	}
@@ -278,10 +278,10 @@ void draw_model_mesh_list(void)
 
 			// hilite showing meshes
 
-		if ((n==state.cur_mesh_idx) || (state.show_mesh[n])) {
+		if ((n==state.model.cur_mesh_idx) || (state.model.show_mesh[n])) {
 			wid=text_width(15,model.meshes[n].name);
 
-			if (n==state.cur_mesh_idx) {
+			if (n==state.model.cur_mesh_idx) {
 				glColor4f(1.0f,1.0f,0.0f,1.0f);
 			}
 			else {
@@ -316,7 +316,7 @@ void draw_model_wind(int mesh_idx)
 	float				vertexes[8];
 	d3rect				mbox;
 
-	if (!state.model_open) return;
+	if (!state.model.model_open) return;
 
 		// setup transformation to fit model in middle of screen
 		
@@ -336,31 +336,31 @@ void draw_model_wind(int mesh_idx)
 	
 		// draw the mesh(es) in the current view
 	
-	if (state.texture) {
+	if (state.model.texture) {
 		for (n=0;n!=model.nmesh;n++) {
-			if ((n==mesh_idx) || (state.show_mesh[n])) draw_model(n);
+			if ((n==mesh_idx) || (state.model.show_mesh[n])) draw_model(n);
 		}
 	}
 	
-	if (state.mesh) {
+	if (state.model.mesh) {
 		draw_model_gl_setup(1);
 		for (n=0;n!=model.nmesh;n++) {
-			if ((n==mesh_idx) || (state.show_mesh[n])) draw_model_mesh(n);
+			if ((n==mesh_idx) || (state.model.show_mesh[n])) draw_model_mesh(n);
 		}
 		draw_model_gl_setup(0);
 	}
 	
-	if (state.bone) {
-		draw_model_bones(state.cur_bone_idx);
-		if (state.bone_names) {
-			draw_model_bone_names(state.cur_bone_idx);
+	if (state.model.bone) {
+		draw_model_bones(state.model.cur_bone_idx);
+		if (state.model.bone_names) {
+			draw_model_bone_names(state.model.cur_bone_idx);
 			draw_model_gl_setup(0);			// names goes into 2D
 		}
 	}
 
 		// normals
 		
-	if (state.normal) {
+	if (state.model.normal) {
 		draw_model_gl_setup(2);
 		draw_model_normals(mesh_idx);
 		draw_model_gl_setup(0);
@@ -368,10 +368,10 @@ void draw_model_wind(int mesh_idx)
 
 		// selection
 
-	if ((state.texture) || (state.mesh)) {
+	if ((state.model.texture) || (state.model.mesh)) {
 		draw_model_gl_setup(2);
 
-		switch(state.select_mode) {
+		switch(state.model.select_mode) {
 			case select_mode_polygon:
 				draw_model_selected_poly(mesh_idx);
 				break;
@@ -385,8 +385,8 @@ void draw_model_wind(int mesh_idx)
 	
 		// boxes
 		
-	if (state.hit_box) draw_model_box_hit_boxes();
-	if (state.view_box) draw_model_box_view();
+	if (state.model.hit_box) draw_model_box_hit_boxes();
+	if (state.model.view_box) draw_model_box_view();
 	
 		// free memory
 		
@@ -405,11 +405,11 @@ void draw_model_wind(int mesh_idx)
 	
 		// draw the drag selection
 		
-	if (state.drag_sel_on) {
-		vertexes[0]=vertexes[6]=(float)(state.drag_sel_box.lx+mbox.lx);
-		vertexes[2]=vertexes[4]=(float)(state.drag_sel_box.rx+mbox.lx);
-		vertexes[1]=vertexes[3]=(float)(state.drag_sel_box.ty+mbox.ty);
-		vertexes[5]=vertexes[7]=(float)(state.drag_sel_box.by+mbox.ty);
+	if (state.model.drag_sel_on) {
+		vertexes[0]=vertexes[6]=(float)(state.model.drag_sel_box.lx+mbox.lx);
+		vertexes[2]=vertexes[4]=(float)(state.model.drag_sel_box.rx+mbox.lx);
+		vertexes[1]=vertexes[3]=(float)(state.model.drag_sel_box.ty+mbox.ty);
+		vertexes[5]=vertexes[7]=(float)(state.model.drag_sel_box.by+mbox.ty);
 
 		glVertexPointer(2,GL_FLOAT,0,vertexes);
 

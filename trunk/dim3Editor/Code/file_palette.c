@@ -38,7 +38,6 @@ and can be sold or given away.
 
 extern app_state_type			state;
 extern file_path_setup_type		file_path_setup;
-extern list_palette_type		property_palette;
 
 list_palette_type				file_palette;
 

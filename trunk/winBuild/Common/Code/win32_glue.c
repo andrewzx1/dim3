@@ -673,7 +673,8 @@ int os_dialog_count_controls(os_dialog_ctrl_type *ctrls)
 
 bool os_dialog_run(char *title,int wid,int high,os_dialog_ctrl_type *ctrls,void *callback)
 {
-	int					font_high,style,ex_style,atom,sz,pad;
+	int					font_high,style,ex_style,atom,sz,pad,
+						x,y,c_wid,c_high;
 	unsigned char		*ptr,*diag_template;
 	char				atom_name[32];
 	WORD				*w_ptr;
@@ -748,6 +749,11 @@ bool os_dialog_run(char *title,int wid,int high,os_dialog_ctrl_type *ctrls,void 
 		atom=0x82;
 		ex_style=0;
 
+		x=ctrl->x;
+		y=ctrl->y;
+		c_wid=ctrl->wid;
+		c_high=ctrl->high;
+
 		switch (ctrl->type) {
 
 			case os_dialog_ctrl_type_button:
@@ -763,11 +769,13 @@ bool os_dialog_run(char *title,int wid,int high,os_dialog_ctrl_type *ctrls,void 
 			case os_dialog_ctrl_type_text_left:
 				style=SS_LEFT|WS_CHILD|WS_VISIBLE;
 				atom=0x82;
+				y+=3;
 				break;
 
 			case os_dialog_ctrl_type_text_right:
 				style=SS_RIGHT|WS_CHILD|WS_VISIBLE;
 				atom=0x82;
+				y+=3;
 				break;
 
 			case os_dialog_ctrl_type_text_edit:
@@ -782,7 +790,7 @@ bool os_dialog_run(char *title,int wid,int high,os_dialog_ctrl_type *ctrls,void 
 				atom=0x85;
 				break;
 
-			case os_dialog_ctrl_type_text_checkbox:
+			case os_dialog_ctrl_type_checkbox:
 				style=WS_CHILD|WS_VISIBLE|WS_TABSTOP|BS_AUTOCHECKBOX;
 				ex_style=0;
 				atom=0x0;
@@ -809,10 +817,10 @@ bool os_dialog_run(char *title,int wid,int high,os_dialog_ctrl_type *ctrls,void 
 		*d_ptr++=style;
 
 		s_ptr=(short*)d_ptr;
-		*s_ptr++=os_dialog_unit_convert_x(ctrl->x);
-		*s_ptr++=os_dialog_unit_convert_y(ctrl->y);
-		*s_ptr++=os_dialog_unit_convert_x(ctrl->wid);
-		*s_ptr++=os_dialog_unit_convert_y(ctrl->high);
+		*s_ptr++=os_dialog_unit_convert_x(x);
+		*s_ptr++=os_dialog_unit_convert_y(y);
+		*s_ptr++=os_dialog_unit_convert_x(c_wid);
+		*s_ptr++=os_dialog_unit_convert_y(c_high);
 
 		d_ptr=(DWORD*)s_ptr;
 		*d_ptr++=ctrl->id;
@@ -931,6 +939,11 @@ void os_dialog_set_bool(int id,boolean value)
 boolean os_dialog_get_bool(int id)
 {
 	return(SendDlgItemMessage(os_dialog_wind,id,BM_GETCHECK,0,0)==BST_CHECKED);
+}
+
+void os_dialog_combo_clear(int id)
+{
+	SendDlgItemMessage(os_dialog_wind,id,CB_RESETCONTENT,0,0);
 }
 
 void os_dialog_combo_add(int id,char *str)

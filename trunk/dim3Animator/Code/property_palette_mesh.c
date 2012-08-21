@@ -42,10 +42,9 @@ and can be sold or given away.
 #define kMeshPropertyMovement				6
 
 extern model_type				model;
-extern animator_state_type		state;
 extern file_path_setup_type		file_path_setup;
 
-extern list_palette_type		property_palette;
+extern list_palette_type		model_palette;
 
 int								sel_vertex_idx,sel_poly_idx;
 
@@ -55,7 +54,7 @@ int								sel_vertex_idx,sel_poly_idx;
       
 ======================================================= */
 
-void property_palette_fill_mesh(int mesh_idx)
+void model_palette_fill_mesh(int mesh_idx)
 {
 	model_mesh_type		*mesh;
 	model_vertex_type	*vertex;
@@ -63,41 +62,41 @@ void property_palette_fill_mesh(int mesh_idx)
 	
 	mesh=&model.meshes[mesh_idx];
 
-	list_palette_set_title(&property_palette,"Mesh",mesh->name,NULL,NULL,NULL,NULL);
+	list_palette_set_title(&model_palette,"Mesh",mesh->name,NULL,NULL,NULL,NULL);
 
-	list_palette_add_header(&property_palette,0,"Mesh Options");
-	list_palette_add_string(&property_palette,kMeshPropertyName,"Name",mesh->name,name_str_len,FALSE);
+	list_palette_add_header(&model_palette,0,"Mesh Options");
+	list_palette_add_string(&model_palette,kMeshPropertyName,"Name",mesh->name,name_str_len,FALSE);
 
-	list_palette_add_header(&property_palette,0,"Mesh Settings");
-	list_palette_add_checkbox(&property_palette,kMeshPropertyDiffuse,"Diffuse Lighting",&mesh->diffuse,FALSE);
-	list_palette_add_checkbox(&property_palette,kMeshPropertyNoLighting,"Highlighted",&mesh->no_lighting,FALSE);
-	list_palette_add_checkbox(&property_palette,kMeshPropertyAdditive,"Alpha is Additive",&mesh->blend_add,FALSE);
-	list_palette_add_checkbox(&property_palette,kMeshPropertyCull,"Never Cull",&mesh->never_cull,FALSE);
-	list_palette_add_checkbox(&property_palette,kMeshPropertyLocked,"Locked",&mesh->locked,FALSE);
+	list_palette_add_header(&model_palette,0,"Mesh Settings");
+	list_palette_add_checkbox(&model_palette,kMeshPropertyDiffuse,"Diffuse Lighting",&mesh->diffuse,FALSE);
+	list_palette_add_checkbox(&model_palette,kMeshPropertyNoLighting,"Highlighted",&mesh->no_lighting,FALSE);
+	list_palette_add_checkbox(&model_palette,kMeshPropertyAdditive,"Alpha is Additive",&mesh->blend_add,FALSE);
+	list_palette_add_checkbox(&model_palette,kMeshPropertyCull,"Never Cull",&mesh->never_cull,FALSE);
+	list_palette_add_checkbox(&model_palette,kMeshPropertyLocked,"Locked",&mesh->locked,FALSE);
 
-	list_palette_add_header(&property_palette,0,"Replace OBJ");
-	list_palette_add_point(&property_palette,kMeshPropertyMovement,"Movement",&mesh->import_move,FALSE);
+	list_palette_add_header(&model_palette,0,"Replace OBJ");
+	list_palette_add_point(&model_palette,kMeshPropertyMovement,"Movement",&mesh->import_move,FALSE);
 
-	list_palette_add_header(&property_palette,0,"Mesh Info");
-	list_palette_add_int(&property_palette,-1,"Vertexes",&mesh->nvertex,TRUE);
-	list_palette_add_int(&property_palette,-1,"Polygons",&mesh->npoly,TRUE);
+	list_palette_add_header(&model_palette,0,"Mesh Info");
+	list_palette_add_int(&model_palette,-1,"Vertexes",&mesh->nvertex,TRUE);
+	list_palette_add_int(&model_palette,-1,"Polygons",&mesh->npoly,TRUE);
 	
 	sel_vertex_idx=vertex_mask_get_first_sel(mesh_idx);
 	if (sel_vertex_idx!=-1) {
 		vertex=&mesh->vertexes[sel_vertex_idx];
-		list_palette_add_header(&property_palette,0,"Selected Vertex Info");
-		list_palette_add_int(&property_palette,-1,"Index",&sel_vertex_idx,TRUE);
-		list_palette_add_point(&property_palette,-1,"Position",&vertex->pnt,TRUE);
-		list_palette_add_vector(&property_palette,-1,"Normal",&vertex->tangent_space.normal,TRUE);
-		list_palette_add_vector(&property_palette,-1,"Tangent",&vertex->tangent_space.tangent,TRUE);
+		list_palette_add_header(&model_palette,0,"Selected Vertex Info");
+		list_palette_add_int(&model_palette,-1,"Index",&sel_vertex_idx,TRUE);
+		list_palette_add_point(&model_palette,-1,"Position",&vertex->pnt,TRUE);
+		list_palette_add_vector(&model_palette,-1,"Normal",&vertex->tangent_space.normal,TRUE);
+		list_palette_add_vector(&model_palette,-1,"Tangent",&vertex->tangent_space.tangent,TRUE);
 	}
 	
 	sel_poly_idx=poly_mask_get_first_sel(mesh_idx);
 	if (sel_poly_idx!=-1) {
 		poly=&mesh->polys[sel_poly_idx];
-		list_palette_add_header(&property_palette,0,"Selected Poly Info");
-		list_palette_add_int(&property_palette,-1,"Index",&sel_poly_idx,TRUE);
-		list_palette_add_int(&property_palette,-1,"Points",&poly->ptsz,TRUE);
+		list_palette_add_header(&model_palette,0,"Selected Poly Info");
+		list_palette_add_int(&model_palette,-1,"Index",&sel_poly_idx,TRUE);
+		list_palette_add_int(&model_palette,-1,"Points",&poly->ptsz,TRUE);
 	}
 
 }
@@ -108,7 +107,7 @@ void property_palette_fill_mesh(int mesh_idx)
       
 ======================================================= */
 
-void property_palette_click_mesh(int mesh_idx,bool double_click)
+void model_palette_click_mesh(int mesh_idx,bool double_click)
 {
 	int						n;
 	d3pnt					move_pnt;
@@ -122,7 +121,7 @@ void property_palette_click_mesh(int mesh_idx,bool double_click)
 
 		// regular clicks
 
-	switch (property_palette.item_pane.click.id) {
+	switch (model_palette.item_pane.click.id) {
 
 		case kMeshPropertyMovement:
 		

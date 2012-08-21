@@ -33,7 +33,7 @@ and can be sold or given away.
 
 extern model_type			model;
 extern model_draw_setup		draw_setup;
-extern animator_state_type	state;
+extern app_state_type		state;
 
 /* =======================================================
 

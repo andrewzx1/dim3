@@ -295,6 +295,18 @@ typedef struct		{
 #define import_mode_replace_all					2
 
 //
+// project menus
+//
+
+#define app_menu_apple							128
+#define app_menu_file							129
+
+#define app_menu_item_About						5000
+
+#define app_menu_item_Save						5100
+#define app_menu_item_Quit						5101
+
+//
 // map menus
 //
 
@@ -386,18 +398,6 @@ typedef struct		{
 #define app_menu_item_PolygonSingleUV			5610
 
 //
-// project menus
-//
-
-#define app_menu_apple							128
-#define app_menu_file							129
-
-#define app_menu_item_About						5000
-
-#define app_menu_item_Save						5100
-#define app_menu_item_Quit						5101
-
-//
 // undos
 //
 
@@ -444,7 +444,6 @@ typedef struct		{
 typedef struct		{
 						int						idx,dist;
 					} view_mesh_sort_list_type;
-
 					
 //
 // Item types
@@ -492,15 +491,6 @@ typedef struct		{
 #define item_intro_button_simple_save_erase		20
 
 //
-// setup state
-//
-
-
-
-
-
-
-//
 // preference structures
 //
 
@@ -523,7 +513,13 @@ typedef struct		{
 					} map_pref_type;
 
 typedef struct		{
-						int						temp;
+						d3col					mesh_line,mesh_sel,
+												background;
+					} model_pref_col_type;
+
+typedef struct		{
+						bool					show_tangent_binormal;
+						model_pref_col_type		col;
 					} model_pref_type;
 
 typedef struct		{
@@ -565,7 +561,25 @@ typedef struct		{
 					} map_state_type;
 
 typedef struct		{
-						int						temp;
+						int						tick,animate_idx,pose_move_idx;
+					} model_state_blend_type;
+					
+typedef struct		{
+						int						cur_item,cur_mesh_idx,cur_bone_idx,
+												cur_pose_idx,cur_animate_idx,cur_hit_box_idx,
+												cur_animate_pose_move_idx,cur_pose_bone_move_idx,
+												cur_animate_pose_move_particle_idx,
+												cur_animate_pose_move_ring_idx,
+												texture_edit_idx,drag_bone_mode,select_mode,
+												play_mode,magnify_z;
+						bool					model_open,texture,mesh,bone,hit_box,
+												normal,view_box,bone_names,sel_vertex_with_bone,
+												drag_sel_on,in_preference,show_mesh[max_model_mesh];
+						char					model_file_name[256];
+						d3pnt					shift;
+						d3ang					ang;
+						d3rect					drag_sel_box;
+						model_state_blend_type	blend[max_model_blend_animation];
 					} model_state_type;
 
 typedef struct		{
@@ -573,3 +587,4 @@ typedef struct		{
 						map_state_type			map;
 						model_state_type		model;
 					} app_state_type;
+

@@ -38,7 +38,7 @@ extern map_type					map;
 extern app_state_type			state;
 extern iface_type				iface;
 
-extern list_palette_type		property_palette;
+extern list_palette_type		map_palette;
 
 /* =======================================================
 
@@ -115,13 +115,13 @@ void piece_create_spot(void)
 	select_clear();
 	select_add(spot_piece,index,-1);
 
-	property_palette_reset();
+	map_palette_reset();
 	menu_update_view();
 
 		// set to property level
 		// and pick script
 
-	list_palette_set_level(&property_palette,1);
+	list_palette_set_level(&map_palette,1);
 	property_pick_file("Pick a Script","Scripts/Objects","js",NULL,spot->script);
 	
 	main_wind_draw();
@@ -177,13 +177,13 @@ void piece_create_scenery(void)
 	select_clear();
 	select_add(scenery_piece,index,-1);
 
-	property_palette_reset();
+	map_palette_reset();
 	menu_update_view();
 
 		// switch to property list
 		// and get model
 
-	list_palette_set_level(&property_palette,1);
+	list_palette_set_level(&map_palette,1);
 	property_pick_file("Pick a Model","Models",NULL,"Mesh.xml;Model.xml",scenery->model_name);
 	
 	main_wind_draw();
@@ -236,7 +236,7 @@ void piece_create_light(void)
 	select_clear();
 	select_add(light_piece,index,-1);
 
-	property_palette_reset();
+	map_palette_reset();
 	menu_update_view();
 	
 	main_wind_draw();
@@ -282,14 +282,14 @@ void piece_create_sound(void)
 	select_clear();
 	select_add(sound_piece,index,-1);
 
-	property_palette_reset();
+	map_palette_reset();
 	menu_update_view();
 	
 	main_wind_draw();
 	
 		// pick sound
 
-	list_palette_start_picking_mode(&property_palette,"Pick a Sound",(char*)iface.sound_list.sounds,iface.sound_list.nsound,sizeof(iface_sound_type),(int)offsetof(iface_sound_type,name),FALSE,FALSE,NULL,snd->name);
+	list_palette_start_picking_mode(&map_palette,"Pick a Sound",(char*)iface.sound_list.sounds,iface.sound_list.nsound,sizeof(iface_sound_type),(int)offsetof(iface_sound_type,name),FALSE,FALSE,NULL,snd->name);
 }
 
 /* =======================================================
@@ -332,14 +332,14 @@ void piece_create_particle(void)
 	select_clear();
 	select_add(particle_piece,index,-1);
 
-	property_palette_reset();
+	map_palette_reset();
 	menu_update_view();
 	
 	main_wind_draw();
 	
 		// pick particle
 
-	list_palette_start_picking_mode(&property_palette,"Pick a Particle",(char*)iface.particle_list.particles,iface.particle_list.nparticle,sizeof(iface_particle_type),(int)offsetof(iface_particle_type,name),FALSE,FALSE,NULL,prt->name);
+	list_palette_start_picking_mode(&map_palette,"Pick a Particle",(char*)iface.particle_list.particles,iface.particle_list.nparticle,sizeof(iface_particle_type),(int)offsetof(iface_particle_type,name),FALSE,FALSE,NULL,prt->name);
 }
 
 /* =======================================================
@@ -386,7 +386,7 @@ void piece_create_node(void)
 	select_clear();
 	select_add(node_piece,index,-1);
 
-	property_palette_reset();
+	map_palette_reset();
 	menu_update_view();
 	
 	main_wind_draw();
@@ -497,7 +497,7 @@ void piece_create_cinema(void)
 	state.map.cur_cinema_idx=cinema_idx;
 	state.map.cur_cinema_action_idx=-1;
 
-	property_palette_scroll_into_view(cinema_piece,cinema_idx);
+	map_palette_scroll_into_view(cinema_piece,cinema_idx);
 
 	dialog_property_string_run(list_string_value_string,(void*)map.cinema.cinemas[cinema_idx].name,name_str_len,0,0);
 	
@@ -521,7 +521,7 @@ void piece_create_group(void)
 	state.map.cur_cinema_idx=-1;
 	state.map.cur_cinema_action_idx=-1;
 
-	property_palette_scroll_into_view(group_piece,group_idx);
+	map_palette_scroll_into_view(group_piece,group_idx);
 
 	dialog_property_string_run(list_string_value_string,(void*)map.group.groups[group_idx].name,name_str_len,0,0);
 	
@@ -545,7 +545,7 @@ void piece_create_movement(void)
 	state.map.cur_cinema_idx=-1;
 	state.map.cur_cinema_action_idx=-1;
 
-	property_palette_scroll_into_view(movement_piece,movement_idx);
+	map_palette_scroll_into_view(movement_piece,movement_idx);
 
 	dialog_property_string_run(list_string_value_string,(void*)map.movement.movements[movement_idx].name,name_str_len,0,0);
 	

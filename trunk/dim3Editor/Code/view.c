@@ -37,7 +37,7 @@ extern int						top_view_x,top_view_z,
 								view_mesh_sort_count;
 extern view_mesh_sort_list_type	*view_mesh_sort_list;
 
-extern list_palette_type		file_palette,property_palette;
+extern list_palette_type		file_palette,map_palette;
 
 extern file_path_setup_type		file_path_setup;
 extern map_type					map;
@@ -170,7 +170,7 @@ void view_get_pixel_box(editor_view_type *view,d3rect *box)
 	os_get_window_box(&wbox);
 	
 	wbox.lx+=list_palette_width(&file_palette);
-	wbox.rx-=list_palette_width(&property_palette);
+	wbox.rx-=list_palette_width(&map_palette);
 	wbox.ty+=tool_palette_pixel_size();
 	wbox.by-=texture_palette_pixel_size();
 	
@@ -734,7 +734,7 @@ void view_key(char ch)
 		// on selected item tree
 
 	if ((ch==D3_KEY_BACKSPACE) || (ch==D3_KEY_DELETE)) {
-		if (property_palette_delete()) {
+		if (map_palette_delete()) {
 			main_wind_draw();
 			return;
 		}

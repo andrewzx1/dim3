@@ -34,8 +34,8 @@ and can be sold or given away.
 
 extern model_type				model;
 extern model_draw_setup			draw_setup;
-extern animator_setup_type		setup;
-extern animator_state_type		state;
+extern app_state_type			state;
+extern app_pref_type			pref;
 
 /* =======================================================
 
@@ -64,7 +64,7 @@ void draw_model_selected_vertexes(int mesh_idx)
 		}
 		
 		if (mesh->vertexes[n].major_bone_idx!=-1) {
-			if ((mesh->vertexes[n].major_bone_idx==state.cur_bone_idx) && (state.cur_bone_idx!=-1)) {
+			if ((mesh->vertexes[n].major_bone_idx==state.model.cur_bone_idx) && (state.model.cur_bone_idx!=-1)) {
 				glColor4f(1.0f,0.2f,1.0f,1.0f);
 			}
 			else {
@@ -103,7 +103,7 @@ void draw_model_selected_poly(int mesh_idx)
 
 		// selection
 	
-	glColor4f(setup.col.mesh_sel.r,setup.col.mesh_sel.g,setup.col.mesh_sel.b,1.0f);
+	glColor4f(pref.model.col.mesh_sel.r,pref.model.col.mesh_sel.g,pref.model.col.mesh_sel.b,1.0f);
 	glLineWidth(draw_poly_select_line_size);
 
 	for (n=0;n!=npoly;n++) {
@@ -209,7 +209,7 @@ void draw_model_normals(int mesh_idx)
 		normal.y=*pn++;
 		normal.z=*pn++;
 
-		if (setup.show_tangent_binormal) {
+		if (pref.model.show_tangent_binormal) {
 
 				// tangent
 

@@ -37,9 +37,9 @@ extern int						txt_palette_cur_page;
 extern bool						list_palette_open;
 
 extern model_type				model;
-extern animator_state_type		state;
+extern app_state_type			state;
 
-extern list_palette_type		file_palette,property_palette;
+extern list_palette_type		file_palette,model_palette;
 
 /* =======================================================
 
@@ -70,7 +70,7 @@ int texture_palette_pixel_size(void)
 	os_get_window_box(&wbox);
 	
 	lx=wbox.lx+list_palette_width(&file_palette);
-	rx=wbox.rx-list_palette_width(&property_palette);
+	rx=wbox.rx-list_palette_width(&model_palette);
 
 	return((rx-(lx+texture_palette_page_list_width()))/texture_palette_per_page_count());
 }
@@ -85,7 +85,7 @@ void texture_palette_box(d3rect *box)
 	os_get_window_box(&wbox);
 	
 	box->lx=wbox.lx+list_palette_width(&file_palette);
-	box->rx=wbox.rx-list_palette_width(&property_palette);
+	box->rx=wbox.rx-list_palette_width(&model_palette);
 	box->ty=wbox.by-pixel_sz;
 	box->by=(box->ty+pixel_sz)+1;
 }
@@ -98,7 +98,7 @@ void texture_palette_box(d3rect *box)
 
 bool texture_palette_get_disabled_state(void)
 {
-	return(!state.model_open);
+	return(!state.model.model_open);
 }
 
 /* =======================================================
@@ -114,6 +114,6 @@ int texture_palette_get_selected_texture(void)
 
 void texture_palette_put_selected_texture(int txt_idx)
 {
-	vertex_mask_set_sel_texture(state.cur_mesh_idx,txt_idx);
+	vertex_mask_set_sel_texture(state.model.cur_mesh_idx,txt_idx);
 }
 

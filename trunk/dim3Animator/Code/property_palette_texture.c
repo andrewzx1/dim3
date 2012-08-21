@@ -49,11 +49,10 @@ and can be sold or given away.
 #define kTexturePropertyFrameWaitEnd		(20+(max_texture_frame-1))
 
 extern model_type				model;
-extern animator_state_type		state;
 extern file_path_setup_type		file_path_setup;
 extern iface_type				iface;
 
-extern list_palette_type		property_palette;
+extern list_palette_type		model_palette;
 
 /* =======================================================
 
@@ -61,37 +60,37 @@ extern list_palette_type		property_palette;
       
 ======================================================= */
 
-void property_palette_fill_texture(int texture_idx)
+void model_palette_fill_texture(int texture_idx)
 {
 	int					n;
 	texture_type		*texture;
 
 	texture=&model.textures[texture_idx];
 
-	list_palette_set_title(&property_palette,"Texture",texture->frames[0].name,NULL,NULL,NULL,NULL);
+	list_palette_set_title(&model_palette,"Texture",texture->frames[0].name,NULL,NULL,NULL,NULL);
 
-	list_palette_add_header(&property_palette,0,"Texture Settings");
-	list_palette_add_checkbox(&property_palette,kTexturePropertyAnimate,"Animated",&texture->animate.on,FALSE);
-	list_palette_add_checkbox(&property_palette,kTexturePropertyAlphaAdditive,"Alpha Additive",&texture->additive,FALSE);
-	list_palette_add_checkbox(&property_palette,kTexturePropertyPixelated,"Pixelated",&texture->pixelated,FALSE);
-	list_palette_add_checkbox(&property_palette,kTexturePropertyCompress,"Compressed",&texture->compress,FALSE);
-	list_palette_add_checkbox(&property_palette,-1,"Flip Normals",&texture->flip_normal,FALSE);
+	list_palette_add_header(&model_palette,0,"Texture Settings");
+	list_palette_add_checkbox(&model_palette,kTexturePropertyAnimate,"Animated",&texture->animate.on,FALSE);
+	list_palette_add_checkbox(&model_palette,kTexturePropertyAlphaAdditive,"Alpha Additive",&texture->additive,FALSE);
+	list_palette_add_checkbox(&model_palette,kTexturePropertyPixelated,"Pixelated",&texture->pixelated,FALSE);
+	list_palette_add_checkbox(&model_palette,kTexturePropertyCompress,"Compressed",&texture->compress,FALSE);
+	list_palette_add_checkbox(&model_palette,-1,"Flip Normals",&texture->flip_normal,FALSE);
 
-	list_palette_add_header(&property_palette,0,"Texture Options");
-	list_palette_add_picker_list_string(&property_palette,kTexturePropertyShader,"Shader Override",(char*)iface.shader_list.shaders,iface.shader_list.nshader,sizeof(iface_shader_type),(int)offsetof(iface_shader_type,name),TRUE,texture->shader_name,FALSE);
-	list_palette_add_int(&property_palette,kTexturePropertyGlowRate,"Glow Rate",&texture->glow.rate,FALSE);
-	list_palette_add_float(&property_palette,kTexturePropertyGlowMin,"Glow Min",&texture->glow.min,FALSE);
-	list_palette_add_float(&property_palette,kTexturePropertyGlowMax,"Glow Max",&texture->glow.max,FALSE);
-	list_palette_add_float(&property_palette,kTexturePropertyShineFactor,"Shine Factor",&texture->shine_factor,FALSE);
-	list_palette_add_string(&property_palette,kTexturePropertyMaterialName,"Material Name",texture->material_name,name_str_len,FALSE);
+	list_palette_add_header(&model_palette,0,"Texture Options");
+	list_palette_add_picker_list_string(&model_palette,kTexturePropertyShader,"Shader Override",(char*)iface.shader_list.shaders,iface.shader_list.nshader,sizeof(iface_shader_type),(int)offsetof(iface_shader_type,name),TRUE,texture->shader_name,FALSE);
+	list_palette_add_int(&model_palette,kTexturePropertyGlowRate,"Glow Rate",&texture->glow.rate,FALSE);
+	list_palette_add_float(&model_palette,kTexturePropertyGlowMin,"Glow Min",&texture->glow.min,FALSE);
+	list_palette_add_float(&model_palette,kTexturePropertyGlowMax,"Glow Max",&texture->glow.max,FALSE);
+	list_palette_add_float(&model_palette,kTexturePropertyShineFactor,"Shine Factor",&texture->shine_factor,FALSE);
+	list_palette_add_string(&model_palette,kTexturePropertyMaterialName,"Material Name",texture->material_name,name_str_len,FALSE);
 
-	list_palette_add_header(&property_palette,0,"Texture Frame Waits");
+	list_palette_add_header(&model_palette,0,"Texture Frame Waits");
 	for (n=0;n!=max_texture_frame;n++) {
 		if (texture->frames[n].name[0]!=0x0) {
-			list_palette_add_int(&property_palette,(kTexturePropertyFrameWaitStart+n),texture->frames[n].name,&texture->animate.wait[n],FALSE);
+			list_palette_add_int(&model_palette,(kTexturePropertyFrameWaitStart+n),texture->frames[n].name,&texture->animate.wait[n],FALSE);
 		}
 		else {
-			list_palette_add_int(&property_palette,(kTexturePropertyFrameWaitStart+n),"(empty)",&texture->animate.wait[n],FALSE);
+			list_palette_add_int(&model_palette,(kTexturePropertyFrameWaitStart+n),"(empty)",&texture->animate.wait[n],FALSE);
 		}
 	}
 }
@@ -102,7 +101,7 @@ void property_palette_fill_texture(int texture_idx)
       
 ======================================================= */
 
-void property_palette_click_texture(int texture_idx,int id,bool double_click)
+void model_palette_click_texture(int texture_idx,int id,bool double_click)
 {
 }
 

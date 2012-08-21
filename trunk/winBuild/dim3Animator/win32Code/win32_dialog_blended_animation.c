@@ -25,56 +25,77 @@ and can be sold or given away.
  
 *********************************************************************/
 
-#include "dim3Animator.h"
+#ifdef D3_PCH
+	#include "dim3Animator.h"
+#endif
 
-#include "resource.h"
+#include "glue.h"
 #include "interface.h"
 #include "ui_common.h"
-#include "win32_dialog.h"
 
-extern model_type				model;
-extern animator_state_type		state;
+extern model_type			model;
+extern app_state_type		state;
 
-extern HINSTANCE				hinst;
-extern HWND						wnd;
+// controls
+
+#define diag_prop_blend_animation_1			5000
+#define diag_prop_blend_animation_2			5001
+#define diag_prop_blend_animation_3			5002
+#define diag_prop_blend_animation_4			5003
+#define diag_prop_blend_animation_cancel	5004
+#define diag_prop_blend_animation_ok		5005
+
+os_dialog_ctrl_type		diag_property_blend_animation_ctrls[]={
+							{os_dialog_ctrl_type_text_right,0,"Animation 1:",10,10,75,20},
+							{os_dialog_ctrl_type_combo,diag_prop_blend_animation_1,"",90,10,310,20},
+							{os_dialog_ctrl_type_text_right,0,"Animation 2:",10,40,75,20},
+							{os_dialog_ctrl_type_combo,diag_prop_blend_animation_2,"",90,40,310,20},
+							{os_dialog_ctrl_type_text_right,0,"Animation 3:",10,70,75,20},
+							{os_dialog_ctrl_type_combo,diag_prop_blend_animation_3,"",90,70,310,20},
+							{os_dialog_ctrl_type_text_right,0,"Animation 4:",10,100,75,20},
+							{os_dialog_ctrl_type_combo,diag_prop_blend_animation_4,"",90,100,310,20},
+							{os_dialog_ctrl_type_button,diag_prop_blend_animation_cancel,"Cancel",250,130,80,25},
+							{os_dialog_ctrl_type_default_button,diag_prop_blend_animation_ok,"Play",340,130,80,25},
+							{-1,-1,"",0,0,0,0}
+						};
 
 /* =======================================================
 
-      Set and Get Bone Combo
+      Set and Get Animation Combo
       
 ======================================================= */
 
-void win32_dialog_set_animate_combo(HWND diag,int id,int sel_idx,bool use_none)
+void dialog_blend_animate_set_combo(int id,int sel_idx,bool use_none)
 {
 	int				n;
 	
-	win32_dialog_combo_clear(diag,id);
+	os_dialog_combo_clear(id);
 
-	if (use_none) win32_dialog_combo_add(diag,id,"None");
+	if (use_none) os_dialog_combo_add(id,"None");
 	
 	for (n=0;n!=model.nanimate;n++) {
-		win32_dialog_combo_add(diag,id,model.animates[n].name);
+		os_dialog_combo_add(id,model.animates[n].name);
 	}
 
 	if (!use_none) {
 		if (sel_idx<0) sel_idx=0;
-		win32_dialog_combo_set_value(diag,id,sel_idx);
+		os_dialog_combo_set_value(id,sel_idx);
 	}
 	else {
 		if (sel_idx==-1) {
-			win32_dialog_combo_set_value(diag,id,0);
+			os_dialog_combo_set_value(id,0);
 		}
 		else {
-			win32_dialog_combo_set_value(diag,id,(sel_idx+1));
+			os_dialog_combo_set_value(id,(sel_idx+1));
 		}
 	}
 }
 
-int win32_dialog_get_animate_combo(HWND diag,int id,bool use_none)
+int dialog_blend_animate_get_combo(int id,bool use_none)
 {
 	int				sel_idx;
 	
-	sel_idx=win32_dialog_combo_get_value(diag,id);
+	sel_idx=os_dialog_combo_get_value(id);
 	if (!use_none) return(sel_idx);
 
 	if (sel_idx==0) return(-1);
@@ -84,54 +105,42 @@ int win32_dialog_get_animate_combo(HWND diag,int id,bool use_none)
 
 /* =======================================================
 
-      Play Blended Animation Event Handlers
+      Run Blended Animation
       
 ======================================================= */
 
-LRESULT CALLBACK dialog_blend_animation_proc(HWND diag,UINT msg,WPARAM wparam,LPARAM lparam)
+void dialog_property_blend_animation_proc(int msg_type,int id)
 {
-	switch (msg) {
+	switch (msg_type) {
 
-		case WM_INITDIALOG:
-			win32_dialog_set_animate_combo(diag,IDC_BLEND_ANIMATION_1,state.blend[0].animate_idx,FALSE);
-			win32_dialog_set_animate_combo(diag,IDC_BLEND_ANIMATION_2,state.blend[1].animate_idx,TRUE);
-			win32_dialog_set_animate_combo(diag,IDC_BLEND_ANIMATION_3,state.blend[2].animate_idx,TRUE);
-			win32_dialog_set_animate_combo(diag,IDC_BLEND_ANIMATION_4,state.blend[3].animate_idx,TRUE);
-			return(FALSE);		// return false when keyboard focus has been set
+		case os_dialog_msg_type_init:
+			dialog_blend_animate_set_combo(diag_prop_blend_animation_1,state.model.blend[0].animate_idx,FALSE);
+			dialog_blend_animate_set_combo(diag_prop_blend_animation_2,state.model.blend[1].animate_idx,TRUE);
+			dialog_blend_animate_set_combo(diag_prop_blend_animation_3,state.model.blend[2].animate_idx,TRUE);
+			dialog_blend_animate_set_combo(diag_prop_blend_animation_4,state.model.blend[3].animate_idx,TRUE);
+			break;
 
-		case WM_COMMAND:
+		case os_dialog_msg_type_command:
 
-			switch (LOWORD(wparam)) {
+			if (id==diag_prop_blend_animation_cancel) {
+				os_dialog_close(FALSE);
+				return;
+			}
 
-				case ID_BLEND_ANIMATION_OK:
-					state.blend[0].animate_idx=win32_dialog_get_animate_combo(diag,IDC_BLEND_ANIMATION_1,FALSE);
-					state.blend[1].animate_idx=win32_dialog_get_animate_combo(diag,IDC_BLEND_ANIMATION_2,TRUE);
-					state.blend[2].animate_idx=win32_dialog_get_animate_combo(diag,IDC_BLEND_ANIMATION_3,TRUE);
-					state.blend[3].animate_idx=win32_dialog_get_animate_combo(diag,IDC_BLEND_ANIMATION_4,TRUE);
-
-					EndDialog(diag,0);
-					return(TRUE);
-
-				case ID_BLEND_ANIMATION_CANCEL:
-					EndDialog(diag,-1);
-					return(TRUE);
-
+			if (id==diag_prop_blend_animation_ok) {
+				state.model.blend[0].animate_idx=dialog_blend_animate_get_combo(diag_prop_blend_animation_1,FALSE);
+				state.model.blend[1].animate_idx=dialog_blend_animate_get_combo(diag_prop_blend_animation_2,TRUE);
+				state.model.blend[2].animate_idx=dialog_blend_animate_get_combo(diag_prop_blend_animation_3,TRUE);
+				state.model.blend[3].animate_idx=dialog_blend_animate_get_combo(diag_prop_blend_animation_4,TRUE);
+				os_dialog_close(TRUE);
+				return;
 			}
 
 			break;
-
 	}
-
-	return(FALSE);
 }
-
-/* =======================================================
-
-      Run Play Blended Animation
-      
-======================================================= */
 
 bool dialog_play_blend_animation_run(void)
 {
-	return(DialogBox(hinst,MAKEINTRESOURCE(IDD_BLEND_ANIMATION),wnd,dialog_blend_animation_proc)==0);
+	return(os_dialog_run("Play Blended Animations",425,160,diag_property_blend_animation_ctrls,dialog_property_blend_animation_proc));
 }

@@ -41,12 +41,14 @@ int								texture_edit_scroll_pos,
 								texture_edit_frame_click_idx;
 
 extern app_state_type			state;
-extern list_palette_type		file_palette,property_palette;
+extern list_palette_type		file_palette;
 
 #ifdef D3_EDITOR
 	extern map_type				map;
+	extern list_palette_type	map_palette;
 #else
 	extern model_type			model;
+	extern list_palette_type	model_palette;
 #endif
 
 extern file_path_setup_type		file_path_setup;
@@ -68,6 +70,8 @@ void texture_edit_switch(int texture_idx)
 	else {
 		state.map.texture_edit_idx=texture_idx;
 	}
+	map_palette_reset();
+	list_palette_set_level(&map_palette,0);
 #else
 	if ((state.model.texture_edit_idx!=-1) && (state.model.texture_edit_idx==texture_idx)) {
 		state.model.texture_edit_idx=-1;
@@ -75,10 +79,9 @@ void texture_edit_switch(int texture_idx)
 	else {
 		state.model.texture_edit_idx=texture_idx;
 	}
+	model_palette_reset();
+	list_palette_set_level(&model_palette,0);
 #endif
-
-	property_palette_reset();
-	list_palette_set_level(&property_palette,0);
 	
 	texture_edit_frame_click_idx=-1;
 
@@ -96,7 +99,11 @@ void texture_edit_get_box(d3rect *box)
 	os_get_window_box(box);
 	
 	box->lx+=list_palette_width(&file_palette);
-	box->rx-=(list_palette_width(&property_palette)+1);
+#ifdef D3_EDITOR
+	box->rx-=(list_palette_width(&map_palette)+1);
+#else
+	box->rx-=(list_palette_width(&model_palette)+1);
+#endif
 	box->ty+=tool_palette_pixel_size();
 	box->by-=texture_palette_pixel_size();
 }

@@ -34,7 +34,7 @@ and can be sold or given away.
 #include "ui_common.h"
 
 extern model_type				model;
-extern animator_state_type		state;
+extern app_state_type			state;
 
 /* =======================================================
 
@@ -152,7 +152,7 @@ bool import_obj(char *path,bool replace,bool *found_normals,char *err_str)
     model_poly_type			*poly;
 	model_poly_type			temp_poly;
 	
-	mesh=&model.meshes[state.cur_mesh_idx];
+	mesh=&model.meshes[state.model.cur_mesh_idx];
 	
 		// load the file
 		
@@ -317,8 +317,8 @@ bool import_obj(char *path,bool replace,bool *found_normals,char *err_str)
 		
 	progress_next_title("Obj Import: Building New Model");
 		
-	model_mesh_set_vertex_count(&model,state.cur_mesh_idx,nvertex);
-	model_mesh_set_poly_count(&model,state.cur_mesh_idx,npoly);
+	model_mesh_set_vertex_count(&model,state.model.cur_mesh_idx,nvertex);
+	model_mesh_set_poly_count(&model,state.model.cur_mesh_idx,npoly);
 	uv_ptr=(d3uv*)malloc(nuv*sizeof(d3uv));
 	
 	if (nnormal==0) {
@@ -552,10 +552,10 @@ bool import_obj(char *path,bool replace,bool *found_normals,char *err_str)
 	
 		// finish up
 		
-	vertex_delete_unused_vertexes(state.cur_mesh_idx);
+	vertex_delete_unused_vertexes(state.model.cur_mesh_idx);
 
-	model_center_xz(&model,state.cur_mesh_idx);
-	model_floor(&model,state.cur_mesh_idx);
+	model_center_xz(&model,state.model.cur_mesh_idx);
+	model_floor(&model,state.model.cur_mesh_idx);
 	model_recalc_boxes(&model);
     model_recalc_normals(&model,(*found_normals));
 

@@ -38,10 +38,10 @@ and can be sold or given away.
 #define kPosePropertyBoneMove						100
 
 extern model_type				model;
-extern animator_state_type		state;
+extern app_state_type			state;
 extern file_path_setup_type		file_path_setup;
 
-extern list_palette_type		property_palette;
+extern list_palette_type		model_palette;
 
 /* =======================================================
 
@@ -49,26 +49,26 @@ extern list_palette_type		property_palette;
       
 ======================================================= */
 
-void property_palette_fill_pose(int pose_idx)
+void model_palette_fill_pose(int pose_idx)
 {
 	int						n;
 	model_pose_type			*pose;
 
 	pose=&model.poses[pose_idx];
 
-	list_palette_set_title(&property_palette,"Pose",pose->name,NULL,NULL,NULL,NULL);
+	list_palette_set_title(&model_palette,"Pose",pose->name,NULL,NULL,NULL,NULL);
 
-	list_palette_add_header(&property_palette,0,"Pose Options");
-	list_palette_add_string(&property_palette,kPosePropertyName,"Name",pose->name,name_str_len,FALSE);
+	list_palette_add_header(&model_palette,0,"Pose Options");
+	list_palette_add_string(&model_palette,kPosePropertyName,"Name",pose->name,name_str_len,FALSE);
 
-	list_palette_add_header_count(&property_palette,0,"Pose Bone Moves",model.nbone);
-	list_palette_sort_mark_start(&property_palette);
+	list_palette_add_header_count(&model_palette,0,"Pose Bone Moves",model.nbone);
+	list_palette_sort_mark_start(&model_palette);
 
 	for (n=0;n!=model.nbone;n++) {
-		list_palette_add_string_selectable(&property_palette,(kPosePropertyBoneMove+n),model.bones[n].name,NULL,-1,((state.cur_pose_idx==pose_idx)&&(state.cur_pose_bone_move_idx==n)),FALSE);
+		list_palette_add_string_selectable(&model_palette,(kPosePropertyBoneMove+n),model.bones[n].name,NULL,-1,((state.model.cur_pose_idx==pose_idx)&&(state.model.cur_pose_bone_move_idx==n)),FALSE);
 	}
 
-	list_palette_sort(&property_palette);
+	list_palette_sort(&model_palette);
 }
 
 /* =======================================================
@@ -77,13 +77,13 @@ void property_palette_fill_pose(int pose_idx)
       
 ======================================================= */
 
-void property_palette_click_pose(int pose_idx,bool double_click)
+void model_palette_click_pose(int pose_idx,bool double_click)
 {
 		// bone moves
 
-	if (property_palette.item_pane.click.id>=kPosePropertyBoneMove) {
-		state.cur_pose_bone_move_idx=property_palette.item_pane.click.id-kPosePropertyBoneMove;
-		if (double_click) list_palette_set_level(&property_palette,2);
+	if (model_palette.item_pane.click.id>=kPosePropertyBoneMove) {
+		state.model.cur_pose_bone_move_idx=model_palette.item_pane.click.id-kPosePropertyBoneMove;
+		if (double_click) list_palette_set_level(&model_palette,2);
 		return;
 	}
 }

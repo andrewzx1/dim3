@@ -49,10 +49,9 @@ and can be sold or given away.
 #define kPoseBoneMovePropertyConstraintOffset	31
 
 extern model_type				model;
-extern animator_state_type		state;
 extern file_path_setup_type		file_path_setup;
 
-extern list_palette_type		property_palette;
+extern list_palette_type		model_palette;
 
 char							property_circular_bone_list[max_model_bone][name_str_len];
 
@@ -62,7 +61,7 @@ char							property_circular_bone_list[max_model_bone][name_str_len];
       
 ======================================================= */
 
-void property_palette_fill_bone_create_circular_list(int bone_idx,int circular_check_bone_idx)
+void model_palette_fill_bone_create_circular_list(int bone_idx,int circular_check_bone_idx)
 {
 	int				n,idx;
 
@@ -88,46 +87,46 @@ void property_palette_fill_bone_create_circular_list(int bone_idx,int circular_c
       
 ======================================================= */
 
-void property_palette_fill_bone(int bone_idx,int pose_idx)
+void model_palette_fill_bone(int bone_idx,int pose_idx)
 {
 	model_bone_type			*bone;
 	model_bone_move_type	*bone_move;
 
 	bone=&model.bones[bone_idx];
 
-	list_palette_set_title(&property_palette,"Bone",bone->name,NULL,NULL,NULL,NULL);
+	list_palette_set_title(&model_palette,"Bone",bone->name,NULL,NULL,NULL,NULL);
 
 		// bone
 
-	list_palette_add_header(&property_palette,0,"Bone Options");
-	list_palette_add_string(&property_palette,kBonePropertyName,"Name",bone->name,name_str_len,FALSE);
-	list_palette_add_point(&property_palette,kBonePropertyPosition,"Position",&bone->pnt,FALSE);
+	list_palette_add_header(&model_palette,0,"Bone Options");
+	list_palette_add_string(&model_palette,kBonePropertyName,"Name",bone->name,name_str_len,FALSE);
+	list_palette_add_point(&model_palette,kBonePropertyPosition,"Position",&bone->pnt,FALSE);
 
-	property_palette_fill_bone_create_circular_list(bone->parent_idx,bone_idx);
-	list_palette_add_picker_list_int(&property_palette,kBonePropertyParent,"Parent Bone",(char*)property_circular_bone_list,model.nbone,name_str_len,0,TRUE,&bone->parent_idx,FALSE);
+	model_palette_fill_bone_create_circular_list(bone->parent_idx,bone_idx);
+	list_palette_add_picker_list_int(&model_palette,kBonePropertyParent,"Parent Bone",(char*)property_circular_bone_list,model.nbone,name_str_len,0,TRUE,&bone->parent_idx,FALSE);
 
 		// handles
 	
-	list_palette_add_header(&property_palette,0,"Natural Settings");
-	list_palette_add_angle(&property_palette,kBonePropertyNaturalRot,"Natural Rotation",&bone->natural_rot,FALSE);
-	list_palette_add_point(&property_palette,kBonePropertyNaturalOffset,"Natural Offset",&bone->natural_offset,FALSE);
+	list_palette_add_header(&model_palette,0,"Natural Settings");
+	list_palette_add_angle(&model_palette,kBonePropertyNaturalRot,"Natural Rotation",&bone->natural_rot,FALSE);
+	list_palette_add_point(&model_palette,kBonePropertyNaturalOffset,"Natural Offset",&bone->natural_offset,FALSE);
 
 		// current pose
 
 	if (pose_idx!=-1) {
 		bone_move=&model.poses[pose_idx].bone_moves[bone_idx];
 
-		list_palette_add_header(&property_palette,0,"Current Pose Move Position");
-		list_palette_add_vector(&property_palette,kPoseBoneMovePropertyRot,"Rot",&bone_move->rot,FALSE);
-		list_palette_add_vector(&property_palette,kPoseBoneMovePropertyMove,"Move",&bone_move->mov,FALSE);
+		list_palette_add_header(&model_palette,0,"Current Pose Move Position");
+		list_palette_add_vector(&model_palette,kPoseBoneMovePropertyRot,"Rot",&bone_move->rot,FALSE);
+		list_palette_add_vector(&model_palette,kPoseBoneMovePropertyMove,"Move",&bone_move->mov,FALSE);
 	
-		list_palette_add_header(&property_palette,0,"Current Pose Move Options");
-		list_palette_add_float(&property_palette,kPoseBoneMovePropertyAcceleration,"Acceleration",&bone_move->acceleration,FALSE);
-		list_palette_add_checkbox(&property_palette,kPoseBoneMovePropertySkipBlended,"Skip Blending",&bone_move->skip_blended,FALSE);
+		list_palette_add_header(&model_palette,0,"Current Pose Move Options");
+		list_palette_add_float(&model_palette,kPoseBoneMovePropertyAcceleration,"Acceleration",&bone_move->acceleration,FALSE);
+		list_palette_add_checkbox(&model_palette,kPoseBoneMovePropertySkipBlended,"Skip Blending",&bone_move->skip_blended,FALSE);
 
-		list_palette_add_header(&property_palette,0,"Current Pose Move Constraint");
-		list_palette_add_picker_list_int(&property_palette,kPoseBoneMovePropertyConstraintBone,"Constraint Bone",(char*)model.bones,model.nbone,sizeof(model_bone_type),(int)offsetof(model_bone_type,name),TRUE,&bone_move->constraint.bone_idx,FALSE);
-		list_palette_add_point(&property_palette,kPoseBoneMovePropertyConstraintOffset,"Constaint Offset",&bone_move->constraint.offset,FALSE);
+		list_palette_add_header(&model_palette,0,"Current Pose Move Constraint");
+		list_palette_add_picker_list_int(&model_palette,kPoseBoneMovePropertyConstraintBone,"Constraint Bone",(char*)model.bones,model.nbone,sizeof(model_bone_type),(int)offsetof(model_bone_type,name),TRUE,&bone_move->constraint.bone_idx,FALSE);
+		list_palette_add_point(&model_palette,kPoseBoneMovePropertyConstraintOffset,"Constaint Offset",&bone_move->constraint.offset,FALSE);
 	}
 }
 
@@ -137,7 +136,7 @@ void property_palette_fill_bone(int bone_idx,int pose_idx)
       
 ======================================================= */
 
-void property_palette_click_bone(int bone_idx,int pose_idx,bool double_click)
+void model_palette_click_bone(int bone_idx,int pose_idx,bool double_click)
 {
 }
 

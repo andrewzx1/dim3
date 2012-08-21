@@ -55,7 +55,7 @@ os_dialog_ctrl_type		diag_property_obj_import_ctrls[]={
 							{os_dialog_ctrl_type_text_left,0,"(new import only)",240,70,125,20},
 							{os_dialog_ctrl_type_combo,diag_prop_obj_import_mode,"",120,10,350,20},
 							{os_dialog_ctrl_type_combo,diag_prop_obj_import_axis,"",120,40,60,20},
-							{os_dialog_ctrl_type_text_edit,diag_prop_obj_import_unit,"",125,70,100,20},
+							{os_dialog_ctrl_type_text_edit,diag_prop_obj_import_unit,"",120,70,100,20},
 							{os_dialog_ctrl_type_checkbox,diag_prop_obj_import_force_grid,"Force to Current Grid",125,100,200,20},
 							{os_dialog_ctrl_type_button,diag_prop_obj_import_cancel,"Cancel",310,130,80,25},
 							{os_dialog_ctrl_type_default_button,diag_prop_obj_import_ok,"Import",400,130,80,25},

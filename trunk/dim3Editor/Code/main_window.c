@@ -34,11 +34,12 @@ and can be sold or given away.
 #include "interface.h"
 
 map_type						map;
+model_type						model;
 file_path_setup_type			file_path_setup;
 iface_type						iface;
 app_state_type					state;
 
-extern list_palette_type		file_palette,property_palette;
+extern list_palette_type		file_palette,map_palette;
 
 /* =======================================================
 
@@ -55,7 +56,7 @@ void main_wind_initialize(void)
 	tool_palette_initialize("Editor");
 	list_palette_initialize("Editor");
 	file_palette_initialize();
-	property_palette_initialize();
+	map_palette_initialize();
 
 	tool_tip_initialize();
 
@@ -82,7 +83,7 @@ void main_wind_shutdown(void)
 {
 	view_shutdown();
 	
-	property_palette_shutdown();
+	map_palette_shutdown();
 	file_palette_shutdown();
 	list_palette_shutdown();
 	
@@ -169,7 +170,7 @@ void main_wind_draw_no_swap(void)
 	texture_palette_draw(map.textures);
 	
 	file_palette_draw();
-	property_palette_draw();
+	map_palette_draw();
 
 	tool_tip_draw();
 }
@@ -219,10 +220,10 @@ void main_wind_click(d3pnt *pnt,bool double_click)
 
 		// property palette
 		
-	list_palette_total_box(&property_palette,&tbox);
+	list_palette_total_box(&map_palette,&tbox);
 
 	if ((pnt->x>=tbox.lx) && (pnt->x<=tbox.rx) && (pnt->y>=tbox.ty) && (pnt->y<tbox.by)) {
-		property_palette_click(pnt,double_click);
+		map_palette_click(pnt,double_click);
 		return;
 	}
 
@@ -259,10 +260,10 @@ void main_wind_scroll_wheel(d3pnt *pnt,int delta)
 
 		// scroll wheel in item, property, or alt property palette
 
-	list_palette_total_box(&property_palette,&tbox);
+	list_palette_total_box(&map_palette,&tbox);
 
 	if ((pnt->x>=tbox.lx) && (pnt->x<=tbox.rx) && (pnt->y>=tbox.ty) && (pnt->y<tbox.by)) {
-		property_palette_scroll_wheel(pnt,delta);
+		map_palette_scroll_wheel(pnt,delta);
 		return;
 	}
 

@@ -35,8 +35,8 @@ and can be sold or given away.
 
 extern model_type				model;
 extern model_draw_setup			draw_setup;
-extern animator_setup_type		setup;
-extern animator_state_type		state;
+extern app_state_type			state;
+extern app_pref_type			pref;
 
 /* =======================================================
 
@@ -56,7 +56,7 @@ void draw_model_mesh(int mesh_idx)
 		
 	mesh=&model.meshes[mesh_idx];
 	
-	glColor4f(setup.col.mesh_line.r,setup.col.mesh_line.g,setup.col.mesh_line.b,1.0f);
+	glColor4f(pref.model.col.mesh_line.r,pref.model.col.mesh_line.g,pref.model.col.mesh_line.b,1.0f);
     
 	npoly=mesh->npoly;
 	poly=mesh->polys;
@@ -295,7 +295,7 @@ void draw_model_bones(int sel_bone_idx)
 		
 				// draw drag handles
 				
-			if (state.cur_pose_idx!=-1) {
+			if (state.model.cur_pose_idx!=-1) {
 				draw_model_bones_get_handle_rot(n,&rot);
 					
 				vct.x=bone_drag_handle_offset;

@@ -33,28 +33,28 @@ and can be sold or given away.
 #include "interface.h"
 #include "ui_common.h"
 
-d3fpnt					*dialog_pick_scale_scale;
+d3fpnt					*dialog_scale_scale;
 
 // controls
 
-#define diag_prop_pick_scale_type	5000
-#define diag_prop_pick_scale_x		5001
-#define diag_prop_pick_scale_y		5002
-#define diag_prop_pick_scale_z		5003
-#define diag_prop_pick_scale_cancel	5004
-#define diag_prop_pick_scale_ok		5005
+#define diag_prop_scale_type		5000
+#define diag_prop_scale_x			5001
+#define diag_prop_scale_y			5002
+#define diag_prop_scale_z			5003
+#define diag_prop_scale_cancel		5004
+#define diag_prop_scale_ok			5005
 
-os_dialog_ctrl_type		diag_property_pick_scale_ctrls[]={
-							{os_dialog_ctrl_type_text_right,0,"Scale Type:",5,13,65,20},
-							{os_dialog_ctrl_type_combo,diag_prop_pick_scale_type,"",75,10,240,20},
-							{os_dialog_ctrl_type_text_right,0,"X:",35,38,35,20},
-							{os_dialog_ctrl_type_text_right,0,"Y:",35,63,35,20},
-							{os_dialog_ctrl_type_text_right,0,"Z:",35,88,35,20},
-							{os_dialog_ctrl_type_text_edit,diag_prop_pick_scale_x,"",75,35,100,20},
-							{os_dialog_ctrl_type_text_edit,diag_prop_pick_scale_y,"",75,60,100,20},
-							{os_dialog_ctrl_type_text_edit,diag_prop_pick_scale_z,"",75,85,100,20},
-							{os_dialog_ctrl_type_button,diag_prop_pick_scale_cancel,"Cancel",180,110,80,25},
-							{os_dialog_ctrl_type_default_button,diag_prop_pick_scale_ok,"OK",270,110,80,25},
+os_dialog_ctrl_type		diag_property_scale_ctrls[]={
+							{os_dialog_ctrl_type_text_right,0,"Scale Type:",10,10,75,20},
+							{os_dialog_ctrl_type_combo,diag_prop_scale_type,"",90,10,310,20},
+							{os_dialog_ctrl_type_text_right,0,"X:",50,40,35,20},
+							{os_dialog_ctrl_type_text_right,0,"Y:",50,70,35,20},
+							{os_dialog_ctrl_type_text_right,0,"Z:",50,100,35,20},
+							{os_dialog_ctrl_type_text_edit,diag_prop_scale_x,"",90,40,100,20},
+							{os_dialog_ctrl_type_text_edit,diag_prop_scale_y,"",90,70,100,20},
+							{os_dialog_ctrl_type_text_edit,diag_prop_scale_z,"",90,100,100,20},
+							{os_dialog_ctrl_type_button,diag_prop_scale_cancel,"Cancel",250,130,80,25},
+							{os_dialog_ctrl_type_default_button,diag_prop_scale_ok,"OK",340,130,80,25},
 							{-1,-1,"",0,0,0,0}
 						};
 
@@ -64,58 +64,58 @@ os_dialog_ctrl_type		diag_property_pick_scale_ctrls[]={
       
 ======================================================= */
 
-void dialog_property_pick_scale_proc(int msg_type,int id)
+void dialog_property_scale_proc(int msg_type,int id)
 {
 	switch (msg_type) {
 
 		case os_dialog_msg_type_init:
-			os_dialog_combo_add(diag_prop_pick_scale_type,"Percentage (Ex: 200% = 2x, 50% = 1/2)");
-			os_dialog_combo_add(diag_prop_pick_scale_type,"To Specific Model Units");
-			os_dialog_combo_set_value(diag_prop_pick_scale_type,0);
+			os_dialog_combo_add(diag_prop_scale_type,"Percentage (Ex: 200% = 2x, 50% = 1/2)");
+			os_dialog_combo_add(diag_prop_scale_type,"Units");
+			os_dialog_combo_set_value(diag_prop_scale_type,0);
 
-			os_dialog_set_float(diag_prop_pick_scale_x,100.0f);
-			os_dialog_set_float(diag_prop_pick_scale_y,100.0f);
-			os_dialog_set_float(diag_prop_pick_scale_z,100.0f);
-			os_dialog_set_focus(diag_prop_pick_scale_x,TRUE);
+			os_dialog_set_float(diag_prop_scale_x,100.0f);
+			os_dialog_set_float(diag_prop_scale_y,100.0f);
+			os_dialog_set_float(diag_prop_scale_z,100.0f);
+			os_dialog_set_focus(diag_prop_scale_x,TRUE);
 			break;
 
 		case os_dialog_msg_type_command:
 
-			if (id==diag_prop_pick_scale_type) {
+			if (id==diag_prop_scale_type) {
 
-				switch (os_dialog_combo_get_value(diag_prop_pick_scale_type)) {
+				switch (os_dialog_combo_get_value(diag_prop_scale_type)) {
 					case 0:
-						os_dialog_set_float(diag_prop_pick_scale_x,100.0f);
-						os_dialog_set_float(diag_prop_pick_scale_y,100.0f);
-						os_dialog_set_float(diag_prop_pick_scale_z,100.0f);
+						os_dialog_set_float(diag_prop_scale_x,100.0f);
+						os_dialog_set_float(diag_prop_scale_y,100.0f);
+						os_dialog_set_float(diag_prop_scale_z,100.0f);
 						break;
 					case 1:
-						os_dialog_set_float(diag_prop_pick_scale_x,dialog_pick_scale_scale->x);
-						os_dialog_set_float(diag_prop_pick_scale_y,dialog_pick_scale_scale->y);
-						os_dialog_set_float(diag_prop_pick_scale_z,dialog_pick_scale_scale->z);
+						os_dialog_set_float(diag_prop_scale_x,dialog_scale_scale->x);
+						os_dialog_set_float(diag_prop_scale_y,dialog_scale_scale->y);
+						os_dialog_set_float(diag_prop_scale_z,dialog_scale_scale->z);
 						break;
 				}
 
 				return;
 			}
 
-			if (id==diag_prop_pick_scale_cancel) {
+			if (id==diag_prop_scale_cancel) {
 				os_dialog_close(FALSE);
 				return;
 			}
 
-			if (id==diag_prop_pick_scale_ok) {
+			if (id==diag_prop_scale_ok) {
 
-				switch (os_dialog_combo_get_value(diag_prop_pick_scale_type)) {
+				switch (os_dialog_combo_get_value(diag_prop_scale_type)) {
 					case 0:
-						dialog_pick_scale_scale->x=os_dialog_get_float(diag_prop_pick_scale_x)/100.0f;
-						dialog_pick_scale_scale->y=os_dialog_get_float(diag_prop_pick_scale_y)/100.0f;
-						dialog_pick_scale_scale->z=os_dialog_get_float(diag_prop_pick_scale_z)/100.0f;
+						dialog_scale_scale->x=os_dialog_get_float(diag_prop_scale_x)/100.0f;
+						dialog_scale_scale->y=os_dialog_get_float(diag_prop_scale_y)/100.0f;
+						dialog_scale_scale->z=os_dialog_get_float(diag_prop_scale_z)/100.0f;
 						break;
 					case 1:
-						dialog_pick_scale_scale->x=os_dialog_get_float(diag_prop_pick_scale_x)/dialog_pick_scale_scale->x;
-						dialog_pick_scale_scale->y=os_dialog_get_float(diag_prop_pick_scale_y)/dialog_pick_scale_scale->y;
-						dialog_pick_scale_scale->z=os_dialog_get_float(diag_prop_pick_scale_z)/dialog_pick_scale_scale->z;
+						dialog_scale_scale->x=os_dialog_get_float(diag_prop_scale_x)/dialog_scale_scale->x;
+						dialog_scale_scale->y=os_dialog_get_float(diag_prop_scale_y)/dialog_scale_scale->y;
+						dialog_scale_scale->z=os_dialog_get_float(diag_prop_scale_z)/dialog_scale_scale->z;
 						break;
 				}
 
@@ -127,8 +127,8 @@ void dialog_property_pick_scale_proc(int msg_type,int id)
 	}
 }
 
-bool dialog_scale_run(model_type *mdl,d3fpnt *scale)
+bool dialog_scale_run(d3fpnt *scale)
 {
-	dialog_pick_scale_scale=scale;
-	return(os_dialog_run("Pick Scale",355,140,diag_property_pick_scale_ctrls,dialog_property_pick_scale_proc));
+	dialog_scale_scale=scale;
+	return(os_dialog_run("Scale",425,160,diag_property_scale_ctrls,dialog_property_scale_proc));
 }

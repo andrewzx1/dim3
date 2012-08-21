@@ -40,10 +40,10 @@ and can be sold or given away.
 #define kModelPropertyHitBoxAdd				104
 
 extern model_type				model;
-extern animator_state_type		state;
+extern app_state_type			state;
 extern file_path_setup_type		file_path_setup;
 
-extern list_palette_type		property_palette;
+extern list_palette_type		model_palette;
 
 /* =======================================================
 
@@ -51,71 +51,71 @@ extern list_palette_type		property_palette;
       
 ======================================================= */
 
-void property_palette_fill_main(void)
+void model_palette_fill_main(void)
 {
 	int			n;
 
-	list_palette_set_title(&property_palette,"Model",NULL,NULL,NULL,NULL,NULL);
+	list_palette_set_title(&model_palette,"Model",NULL,NULL,NULL,NULL,NULL);
 
 		// map
 
-	list_palette_add_header(&property_palette,item_model,"Model");
-	list_palette_add_item(&property_palette,item_model,0,"Settings",(state.cur_item==item_model),FALSE);
+	list_palette_add_header(&model_palette,item_model,"Model");
+	list_palette_add_item(&model_palette,item_model,0,"Settings",(state.model.cur_item==item_model),FALSE);
 
 		// meshes
 
-	list_palette_add_header_button(&property_palette,kModelPropertyMeshAdd,"Meshes",list_button_plus);
+	list_palette_add_header_button(&model_palette,kModelPropertyMeshAdd,"Meshes",list_button_plus);
 
 	for (n=0;n!=model.nmesh;n++) {
-		list_palette_add_item(&property_palette,item_mesh,n,model.meshes[n].name,((state.cur_item==item_mesh)&&(state.cur_mesh_idx==n)),FALSE);
+		list_palette_add_item(&model_palette,item_mesh,n,model.meshes[n].name,((state.model.cur_item==item_mesh)&&(state.model.cur_mesh_idx==n)),FALSE);
 	}
 
 		// animations
 
-	list_palette_add_header_button(&property_palette,kModelPropertyAnimateAdd,"Animations",list_button_plus);
-	list_palette_sort_mark_start(&property_palette);
+	list_palette_add_header_button(&model_palette,kModelPropertyAnimateAdd,"Animations",list_button_plus);
+	list_palette_sort_mark_start(&model_palette);
 
 	for (n=0;n!=model.nanimate;n++) {
-		list_palette_add_item(&property_palette,item_animate,n,model.animates[n].name,((state.cur_item==item_animate)&&(state.cur_animate_idx==n)),FALSE);
+		list_palette_add_item(&model_palette,item_animate,n,model.animates[n].name,((state.model.cur_item==item_animate)&&(state.model.cur_animate_idx==n)),FALSE);
 	}
 
-	list_palette_sort(&property_palette);
+	list_palette_sort(&model_palette);
 
 		// poses
 
-	list_palette_add_header_button(&property_palette,kModelPropertyPoseAdd,"Poses",list_button_plus);
-	list_palette_add_item(&property_palette,item_neutral_pose,0,"[Neutral]",((state.cur_item==item_neutral_pose)&&(state.cur_pose_idx==-1)),FALSE);
+	list_palette_add_header_button(&model_palette,kModelPropertyPoseAdd,"Poses",list_button_plus);
+	list_palette_add_item(&model_palette,item_neutral_pose,0,"[Neutral]",((state.model.cur_item==item_neutral_pose)&&(state.model.cur_pose_idx==-1)),FALSE);
 
-	list_palette_sort_mark_start(&property_palette);
+	list_palette_sort_mark_start(&model_palette);
 
 	for (n=0;n!=model.npose;n++) {
-		list_palette_add_item(&property_palette,item_pose,n,model.poses[n].name,((state.cur_item==item_pose)&&(state.cur_pose_idx==n)),FALSE);
+		list_palette_add_item(&model_palette,item_pose,n,model.poses[n].name,((state.model.cur_item==item_pose)&&(state.model.cur_pose_idx==n)),FALSE);
 	}
 
-	list_palette_sort(&property_palette);
+	list_palette_sort(&model_palette);
 
 		// bones
 
-	list_palette_add_header_button(&property_palette,kModelPropertyBoneAdd,"Bones",list_button_plus);
+	list_palette_add_header_button(&model_palette,kModelPropertyBoneAdd,"Bones",list_button_plus);
 
-	list_palette_sort_mark_start(&property_palette);
+	list_palette_sort_mark_start(&model_palette);
 
 	for (n=0;n!=model.nbone;n++) {
-		list_palette_add_item(&property_palette,item_bone,n,model.bones[n].name,((state.cur_item==item_bone)&&(state.cur_bone_idx==n)),FALSE);
+		list_palette_add_item(&model_palette,item_bone,n,model.bones[n].name,((state.model.cur_item==item_bone)&&(state.model.cur_bone_idx==n)),FALSE);
 	}
 
-	list_palette_sort(&property_palette);
+	list_palette_sort(&model_palette);
 
 		// hit boxes
 
-	list_palette_add_header_button(&property_palette,kModelPropertyHitBoxAdd,"Hit Boxes",list_button_plus);
-	list_palette_sort_mark_start(&property_palette);
+	list_palette_add_header_button(&model_palette,kModelPropertyHitBoxAdd,"Hit Boxes",list_button_plus);
+	list_palette_sort_mark_start(&model_palette);
 
 	for (n=0;n!=model.nhit_box;n++) {
-		list_palette_add_item(&property_palette,item_hit_box,n,model.hit_boxes[n].name,((state.cur_item==item_hit_box)&&(state.cur_hit_box_idx==n)),FALSE);
+		list_palette_add_item(&model_palette,item_hit_box,n,model.hit_boxes[n].name,((state.model.cur_item==item_hit_box)&&(state.model.cur_hit_box_idx==n)),FALSE);
 	}
 
-	list_palette_sort(&property_palette);
+	list_palette_sort(&model_palette);
 }
 
 /* =======================================================
@@ -124,11 +124,11 @@ void property_palette_fill_main(void)
       
 ======================================================= */
 
-void property_palette_click_main(bool double_click)
+void model_palette_click_main(bool double_click)
 {
 		// adding
 
-	switch (property_palette.item_pane.click.id) {
+	switch (model_palette.item_pane.click.id) {
 
 		case kModelPropertyMeshAdd:
 			model_piece_add_mesh();
@@ -154,56 +154,56 @@ void property_palette_click_main(bool double_click)
 
 		// regular clicks
 
-	if (property_palette.item_pane.click.idx==-1) return;
+	if (model_palette.item_pane.click.idx==-1) return;
 
 		// handle click
 
-	switch (property_palette.item_pane.click.id) {
+	switch (model_palette.item_pane.click.id) {
 
 		case item_model:
-			state.cur_item=item_model;
+			state.model.cur_item=item_model;
 			break;
 
 		case item_mesh:
-			state.cur_item=item_mesh;
-			state.cur_mesh_idx=property_palette.item_pane.click.idx;
+			state.model.cur_item=item_mesh;
+			state.model.cur_mesh_idx=model_palette.item_pane.click.idx;
 			break;
 
 		case item_animate:
-			state.cur_item=item_animate;
-			state.cur_animate_idx=property_palette.item_pane.click.idx;
-			state.cur_animate_pose_move_idx=-1;
-			state.cur_animate_pose_move_particle_idx=-1;
-			state.cur_animate_pose_move_ring_idx=-1;
+			state.model.cur_item=item_animate;
+			state.model.cur_animate_idx=model_palette.item_pane.click.idx;
+			state.model.cur_animate_pose_move_idx=-1;
+			state.model.cur_animate_pose_move_particle_idx=-1;
+			state.model.cur_animate_pose_move_ring_idx=-1;
 			break;
 
 		case item_pose:
-			state.cur_item=item_pose;
-			state.cur_pose_idx=property_palette.item_pane.click.idx;
-			state.cur_pose_bone_move_idx=-1;
+			state.model.cur_item=item_pose;
+			state.model.cur_pose_idx=model_palette.item_pane.click.idx;
+			state.model.cur_pose_bone_move_idx=-1;
 			break;
 			
 		case item_neutral_pose:
-			state.cur_item=item_neutral_pose;
-			state.cur_pose_idx=-1;
-			state.cur_pose_bone_move_idx=-1;
+			state.model.cur_item=item_neutral_pose;
+			state.model.cur_pose_idx=-1;
+			state.model.cur_pose_bone_move_idx=-1;
 			break;
 
 		case item_bone:
-			state.cur_item=item_bone;
-			state.cur_bone_idx=property_palette.item_pane.click.idx;
+			state.model.cur_item=item_bone;
+			state.model.cur_bone_idx=model_palette.item_pane.click.idx;
 			break;
 
 		case item_hit_box:
-			state.cur_item=item_hit_box;
-			state.cur_hit_box_idx=property_palette.item_pane.click.idx;
+			state.model.cur_item=item_hit_box;
+			state.model.cur_hit_box_idx=model_palette.item_pane.click.idx;
 			break;
 	}
 
 		// netural pose has no properties
 
-	if (property_palette.item_pane.click.id==item_neutral_pose) {
-		list_palette_set_level(&property_palette,0);
+	if (model_palette.item_pane.click.id==item_neutral_pose) {
+		list_palette_set_level(&model_palette,0);
 		return;
 	}
 
@@ -211,8 +211,8 @@ void property_palette_click_main(bool double_click)
 		// if double-click
 
 	if (double_click) {
-		property_palette_reset();
-		list_palette_set_level(&property_palette,1);
+		model_palette_reset();
+		list_palette_set_level(&model_palette,1);
 	}
 }
 

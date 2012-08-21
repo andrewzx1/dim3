@@ -25,20 +25,39 @@ and can be sold or given away.
  
 *********************************************************************/
 
-#include "dim3Animator.h"
+#ifdef D3_PCH
+	#include "dim3Animator.h"
+#endif
 
-#include "resource.h"
+#include "glue.h"
 #include "interface.h"
 #include "ui_common.h"
-#include "win32_dialog.h"
 
-extern model_type				model;
+extern model_type			model;
 
-extern HINSTANCE				hinst;
-extern HWND						wnd;
+int							*dialog_major_bone_idx,*dialog_minor_bone_idx;
+float						*dialog_bone_factor;
 
-int								dialog_set_vertex_bone_major_bone_idx,dialog_set_vertex_bone_minor_bone_idx;
-float							dialog_set_vertex_bone_factor;
+// controls
+
+#define diag_prop_set_bone_major	5000
+#define diag_prop_set_bone_minor	5001
+#define diag_prop_set_bone_factor	5002
+#define diag_prop_set_bone_cancel	5003
+#define diag_prop_set_bone_ok		5004
+
+os_dialog_ctrl_type		diag_property_set_bone_ctrls[]={
+							{os_dialog_ctrl_type_text_right,0,"Major Bone:",10,10,75,20},
+							{os_dialog_ctrl_type_combo,diag_prop_set_bone_major,"",90,10,310,20},
+							{os_dialog_ctrl_type_text_right,0,"Minor Bone:",10,40,75,20},
+							{os_dialog_ctrl_type_combo,diag_prop_set_bone_minor,"",90,40,310,20},
+							{os_dialog_ctrl_type_text_right,0,"Bone Factor:",10,70,75,20},
+							{os_dialog_ctrl_type_text_edit,diag_prop_set_bone_factor,"",90,70,100,20},
+							{os_dialog_ctrl_type_text_left,0,"%",205,70,25,20},
+							{os_dialog_ctrl_type_button,diag_prop_set_bone_cancel,"Cancel",250,100,80,25},
+							{os_dialog_ctrl_type_default_button,diag_prop_set_bone_ok,"OK",340,100,80,25},
+							{-1,-1,"",0,0,0,0}
+						};
 
 /* =======================================================
 
@@ -46,31 +65,31 @@ float							dialog_set_vertex_bone_factor;
       
 ======================================================= */
 
-void win32_dialog_set_bone_combo(HWND diag,int id,int bone_idx)
+void dialog_set_vertex_bone_set_bone_combo(int id,int bone_idx)
 {
 	int				n;
 	
-	win32_dialog_combo_clear(diag,id);
+	os_dialog_combo_clear(id);
 
-	win32_dialog_combo_add(diag,id,"None");
+	os_dialog_combo_add(id,"None");
 	
 	for (n=0;n!=model.nbone;n++) {
-		win32_dialog_combo_add(diag,id,model.bones[n].name);
+		os_dialog_combo_add(id,model.bones[n].name);
 	}
 	
 	if (bone_idx==-1) {
-		win32_dialog_combo_set_value(diag,id,0);
+		os_dialog_combo_set_value(id,0);
 	}
 	else {
-		win32_dialog_combo_set_value(diag,id,(bone_idx+1));
+		os_dialog_combo_set_value(id,(bone_idx+1));
 	}
 }
 
-int win32_dialog_get_bone_combo(HWND diag,int id)
+int dialog_set_vertex_bone_get_bone_combo(int id)
 {
 	int				sel_idx;
 	
-	sel_idx=win32_dialog_combo_get_value(diag,id);
+	sel_idx=os_dialog_combo_get_value(id);
 	if (sel_idx==0) return(-1);
 	
 	return(sel_idx-1);
@@ -78,57 +97,46 @@ int win32_dialog_get_bone_combo(HWND diag,int id)
 
 /* =======================================================
 
-      Set Vertex Bone Event Handlers
+      Run Vertex Bone Set
       
 ======================================================= */
 
-LRESULT CALLBACK dialog_set_vertex_bone_proc(HWND diag,UINT msg,WPARAM wparam,LPARAM lparam)
+void dialog_property_set_bone_proc(int msg_type,int id)
 {
-	switch (msg) {
+	switch (msg_type) {
 
-		case WM_INITDIALOG:
-			win32_dialog_set_bone_combo(diag,IDC_SET_VERTEX_BONE_MAJOR_BONE,-1);
-			win32_dialog_set_bone_combo(diag,IDC_SET_VERTEX_BONE_MINOR_BONE,-1);
-			win32_dialog_set_int(diag,IDC_SET_VERTEX_BONE_FACTOR,100);
-			return(FALSE);		// return false when keyboard focus has been set
+		case os_dialog_msg_type_init:
+			dialog_set_vertex_bone_set_bone_combo(diag_prop_set_bone_major,-1);
+			dialog_set_vertex_bone_set_bone_combo(diag_prop_set_bone_minor,-1);
+			os_dialog_set_int(diag_prop_set_bone_factor,100);
+			os_dialog_set_focus(diag_prop_set_bone_factor,TRUE);
+			break;
 
-		case WM_COMMAND:
+		case os_dialog_msg_type_command:
 
-			switch (LOWORD(wparam)) {
+			if (id==diag_prop_set_bone_cancel) {
+				os_dialog_close(FALSE);
+				return;
+			}
 
-				case ID_SET_VERTEX_BONE_OK:
-					dialog_set_vertex_bone_major_bone_idx=win32_dialog_get_bone_combo(diag,IDC_SET_VERTEX_BONE_MAJOR_BONE);
-					dialog_set_vertex_bone_minor_bone_idx=win32_dialog_get_bone_combo(diag,IDC_SET_VERTEX_BONE_MINOR_BONE);
-					dialog_set_vertex_bone_factor=((float)win32_dialog_get_int(diag,IDC_SET_VERTEX_BONE_FACTOR))/100.0f;
-					EndDialog(diag,0);
-					return(TRUE);
+			if (id==diag_prop_set_bone_ok) {
+				*dialog_major_bone_idx=dialog_set_vertex_bone_get_bone_combo(diag_prop_set_bone_major);
+				*dialog_minor_bone_idx=dialog_set_vertex_bone_get_bone_combo(diag_prop_set_bone_minor);
+				*dialog_bone_factor=((float)os_dialog_get_int(diag_prop_set_bone_factor))/100.0f;
 
-				case ID_SET_VERTEX_BONE_CANCEL:
-					EndDialog(diag,-1);
-					return(TRUE);
-
+				os_dialog_close(TRUE);
+				return;
 			}
 
 			break;
-
 	}
-
-	return(FALSE);
 }
-
-/* =======================================================
-
-      Run Set Vertex Bone
-      
-======================================================= */
 
 bool dialog_set_vertex_bone_run(int *major_bone_idx,int *minor_bone_idx,float *factor)
 {
-	if (DialogBox(hinst,MAKEINTRESOURCE(IDD_SET_VERTEX_BONE),wnd,dialog_set_vertex_bone_proc)!=0) return(FALSE);
+	dialog_major_bone_idx=major_bone_idx;
+	dialog_minor_bone_idx=minor_bone_idx;
+	dialog_bone_factor=factor;
 
-	*major_bone_idx=dialog_set_vertex_bone_major_bone_idx;
-	*minor_bone_idx=dialog_set_vertex_bone_minor_bone_idx;
-	*factor=dialog_set_vertex_bone_factor;
-
-	return(TRUE);
+	return(os_dialog_run("Set Bone",425,130,diag_property_set_bone_ctrls,dialog_property_set_bone_proc));
 }

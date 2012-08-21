@@ -39,11 +39,10 @@ and can be sold or given away.
 #define kAnimationPoseMovePropertyRingSlop					3
 
 extern model_type				model;
-extern animator_state_type		state;
 extern file_path_setup_type		file_path_setup;
 extern iface_type				iface;
 
-extern list_palette_type		property_palette;
+extern list_palette_type		model_palette;
 
 /* =======================================================
 
@@ -51,7 +50,7 @@ extern list_palette_type		property_palette;
       
 ======================================================= */
 
-void property_palette_fill_animate_pose_move_ring(int animate_idx,int pose_move_idx,int ring_idx)
+void model_palette_fill_animate_pose_move_ring(int animate_idx,int pose_move_idx,int ring_idx)
 {
 	model_animate_type		*animate;
 	model_pose_move_type	*pose_move;
@@ -63,11 +62,11 @@ void property_palette_fill_animate_pose_move_ring(int animate_idx,int pose_move_
 	pose_move=&animate->pose_moves[pose_move_idx];
 	ring=&pose_move->ring.rings[ring_idx];
 
-	list_palette_set_title(&property_palette,"Animation",animate->name,"Pose Move",model.poses[pose_move->pose_idx].name,"Ring",ring->name);
-	list_palette_add_picker_list_string(&property_palette,kAnimationPoseMovePropertyRingName,"Name",(char*)iface.ring_list.rings,iface.ring_list.nring,sizeof(iface_ring_type),(int)offsetof(iface_ring_type,name),TRUE,ring->name,FALSE);
-	list_palette_add_picker_list_int(&property_palette,kAnimationPoseMovePropertyRingBone,"Bone",(char*)model.bones,model.nbone,sizeof(model_bone_type),(int)offsetof(model_bone_type,name),TRUE,&ring->bone_idx,FALSE);
-	list_palette_add_checkbox(&property_palette,kAnimationPoseMovePropertyRingAngle,"Follow Model Angle",&ring->angle,FALSE);
-	list_palette_add_point(&property_palette,kAnimationPoseMovePropertyRingSlop,"Position Slop",&ring->slop,FALSE);
+	list_palette_set_title(&model_palette,"Animation",animate->name,"Pose Move",model.poses[pose_move->pose_idx].name,"Ring",ring->name);
+	list_palette_add_picker_list_string(&model_palette,kAnimationPoseMovePropertyRingName,"Name",(char*)iface.ring_list.rings,iface.ring_list.nring,sizeof(iface_ring_type),(int)offsetof(iface_ring_type,name),TRUE,ring->name,FALSE);
+	list_palette_add_picker_list_int(&model_palette,kAnimationPoseMovePropertyRingBone,"Bone",(char*)model.bones,model.nbone,sizeof(model_bone_type),(int)offsetof(model_bone_type,name),TRUE,&ring->bone_idx,FALSE);
+	list_palette_add_checkbox(&model_palette,kAnimationPoseMovePropertyRingAngle,"Follow Model Angle",&ring->angle,FALSE);
+	list_palette_add_point(&model_palette,kAnimationPoseMovePropertyRingSlop,"Position Slop",&ring->slop,FALSE);
 }
 
 /* =======================================================
@@ -76,7 +75,7 @@ void property_palette_fill_animate_pose_move_ring(int animate_idx,int pose_move_
       
 ======================================================= */
 
-void property_palette_click_animate_pose_move_ring(int animate_idx,int pose_move_idx,int ring_idx,bool double_click)
+void model_palette_click_animate_pose_move_ring(int animate_idx,int pose_move_idx,int ring_idx,bool double_click)
 {
 }
 

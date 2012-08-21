@@ -454,90 +454,6 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\dim3Editor\Code\property_palette.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Editor\Code\property_palette_action.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Editor\Code\property_palette_camera.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Editor\Code\property_palette_cinema.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Editor\Code\property_palette_editor_preference.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Editor\Code\property_palette_group.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Editor\Code\property_palette_light.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Editor\Code\property_palette_light_media.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Editor\Code\property_palette_liquid.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Editor\Code\property_palette_main.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Editor\Code\property_palette_map.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Editor\Code\property_palette_mesh.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Editor\Code\property_palette_move.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Editor\Code\property_palette_movement.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Editor\Code\property_palette_node.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Editor\Code\property_palette_particle.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Editor\Code\property_palette_scenery.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Editor\Code\property_palette_sky_weather.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Editor\Code\property_palette_sound.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Editor\Code\property_palette_spot.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Editor\Code\property_palette_texture.c"
-						>
-					</File>
-					<File
 						RelativePath="..\..\dim3Common\Code\property_utility_common.c"
 						>
 					</File>
@@ -773,6 +689,98 @@
 							>
 						</File>
 					</Filter>
+					<Filter
+						Name="Map"
+						>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\palettes\map\map_palette.c"
+							>
+						</File>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\palettes\map\map_palette_action.c"
+							>
+						</File>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\palettes\map\map_palette_camera.c"
+							>
+						</File>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\palettes\map\map_palette_cinema.c"
+							>
+						</File>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\palettes\map\map_palette_editor_preference.c"
+							>
+						</File>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\palettes\map\map_palette_group.c"
+							>
+						</File>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\palettes\map\map_palette_light.c"
+							>
+						</File>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\palettes\map\map_palette_light_media.c"
+							>
+						</File>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\palettes\map\map_palette_liquid.c"
+							>
+						</File>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\palettes\map\map_palette_main.c"
+							>
+						</File>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\palettes\map\map_palette_map.c"
+							>
+						</File>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\palettes\map\map_palette_mesh.c"
+							>
+						</File>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\palettes\map\map_palette_move.c"
+							>
+						</File>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\palettes\map\map_palette_movement.c"
+							>
+						</File>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\palettes\map\map_palette_node.c"
+							>
+						</File>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\palettes\map\map_palette_particle.c"
+							>
+						</File>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\palettes\map\map_palette_scenery.c"
+							>
+						</File>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\palettes\map\map_palette_sky_weather.c"
+							>
+						</File>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\palettes\map\map_palette_sound.c"
+							>
+						</File>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\palettes\map\map_palette_spot.c"
+							>
+						</File>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\palettes\map\map_palette_texture.c"
+							>
+						</File>
+					</Filter>
+					<Filter
+						Name="Model"
+						>
+					</Filter>
 				</Filter>
 				<Filter
 					Name="View"
@@ -920,6 +928,18 @@
 					<Filter
 						Name="Model"
 						>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\dialogs\model\dialog_blended_animation.c"
+							>
+						</File>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\dialogs\model\dialog_normal.c"
+							>
+						</File>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\dialogs\model\dialog_set_vertex_bone.c"
+							>
+						</File>
 					</Filter>
 				</Filter>
 			</Filter>

@@ -210,7 +210,7 @@ void piece_duplicate(void)
 		
 	select_duplicate_copy();
 	
-	property_palette_reset();
+	map_palette_reset();
 	
 	main_wind_draw();
 }
@@ -326,7 +326,7 @@ void piece_delete(void)
 	
 	select_clear();
 	
-	property_palette_reset();
+	map_palette_reset();
     
 	main_wind_draw();
 }
@@ -892,7 +892,7 @@ void piece_key(char ch)
 		
 	if ((ch==D3_KEY_BACKSPACE) || (ch==D3_KEY_DELETE)) {
 		piece_delete();
-		property_palette_reset();
+		map_palette_reset();
 		main_wind_draw();
 		menu_fix_enable();
 		return;

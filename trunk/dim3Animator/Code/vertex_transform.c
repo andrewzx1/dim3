@@ -32,10 +32,10 @@ and can be sold or given away.
 #include "glue.h"
 #include "interface.h"
 
-d3vct								cur_set_normal={0.0f,-1.0f,0.0f};
+d3vct							cur_set_normal={0.0f,-1.0f,0.0f};
 
-extern model_type					model;
-extern animator_state_type			state;
+extern model_type				model;
+extern app_state_type			state;
 
 /* =======================================================
 
