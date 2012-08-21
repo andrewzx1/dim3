@@ -34,10 +34,10 @@ and can be sold or given away.
 #include "ui_common.h"
 
 extern model_type				model;
-extern animator_state_type		state;
+extern app_state_type			state;
 extern iface_type				iface;
 
-extern list_palette_type		property_palette;
+extern list_palette_type		model_palette;
 
 /* =======================================================
 
@@ -55,10 +55,10 @@ void model_piece_add_mesh(void)
 		return;
 	}
 
-	state.cur_item=item_mesh;
-	state.cur_mesh_idx=idx;
+	state.model.cur_item=item_mesh;
+	state.model.cur_mesh_idx=idx;
 
-	property_palette_scroll_into_view(item_mesh,idx);
+	model_palette_scroll_into_view(item_mesh,idx);
 
 	dialog_property_string_run(list_string_value_string,(void*)model.meshes[idx].name,name_str_len,0,0);
 }
@@ -73,10 +73,10 @@ void model_piece_duplicate_mesh(int mesh_idx)
 		return;
 	}
 			
-	state.cur_item=item_mesh;
-	state.cur_mesh_idx=idx;
+	state.model.cur_item=item_mesh;
+	state.model.cur_mesh_idx=idx;
 
-	property_palette_scroll_into_view(item_mesh,idx);
+	model_palette_scroll_into_view(item_mesh,idx);
 
 	dialog_property_string_run(list_string_value_string,(void*)model.meshes[idx].name,name_str_len,0,0);
 }
@@ -90,10 +90,10 @@ void model_piece_delete_mesh(int mesh_idx)
 
 	model_mesh_delete(&model,mesh_idx);
 
-	state.cur_item=item_model;
-	state.cur_mesh_idx=0;
+	state.model.cur_item=item_model;
+	state.model.cur_mesh_idx=0;
 
-	property_palette_scroll_into_view(item_model,0);
+	model_palette_scroll_into_view(item_model,0);
 }
 
 /* =======================================================
@@ -106,7 +106,7 @@ void model_piece_add_bone(void)
 {
 	int				x,y,z,idx;
 
-	vertex_find_center_sel_vertexes(state.cur_mesh_idx,&x,&y,&z);
+	vertex_find_center_sel_vertexes(state.model.cur_mesh_idx,&x,&y,&z);
 	
 	idx=model_bone_add(&model,x,y,z);
 	if (idx==-1) {
@@ -114,13 +114,13 @@ void model_piece_add_bone(void)
 		return;
 	}
 	
-	vertex_mask_set_sel_vertex_to_bone(state.cur_mesh_idx,idx,-1,1.0f);
+	vertex_mask_set_sel_vertex_to_bone(state.model.cur_mesh_idx,idx,-1,1.0f);
 
-	state.cur_item=item_bone;
-	state.cur_bone_idx=idx;
-	state.cur_pose_idx=-1;		// reset to neutral pose so user doesn't get confused by bone movement
+	state.model.cur_item=item_bone;
+	state.model.cur_bone_idx=idx;
+	state.model.cur_pose_idx=-1;		// reset to neutral pose so user doesn't get confused by bone movement
 
-	property_palette_scroll_into_view(item_bone,idx);
+	model_palette_scroll_into_view(item_bone,idx);
 	
 	dialog_property_string_run(list_string_value_string,(void*)model.bones[idx].name,name_str_len,0,0);
 }
@@ -129,12 +129,12 @@ void model_piece_delete_bone(int bone_idx)
 {
  	model_bone_delete(&model,bone_idx);
 
-	state.cur_item=item_model;
+	state.model.cur_item=item_model;
 
-	state.cur_bone_idx=-1;
-	state.cur_pose_bone_move_idx=-1;
+	state.model.cur_bone_idx=-1;
+	state.model.cur_pose_bone_move_idx=-1;
 
-	property_palette_scroll_into_view(item_model,0);
+	model_palette_scroll_into_view(item_model,0);
 }
 
 /* =======================================================
@@ -158,11 +158,11 @@ void model_piece_add_pose(void)
 		return;
 	}
 	
-	state.cur_item=item_pose;
-	state.cur_pose_idx=idx;
-	state.cur_pose_bone_move_idx=-1;
+	state.model.cur_item=item_pose;
+	state.model.cur_pose_idx=idx;
+	state.model.cur_pose_bone_move_idx=-1;
 
-	property_palette_scroll_into_view(item_pose,idx);
+	model_palette_scroll_into_view(item_pose,idx);
 	
 	dialog_property_string_run(list_string_value_string,(void*)model.poses[idx].name,name_str_len,0,0);
 }
@@ -171,17 +171,17 @@ void model_piece_duplicate_pose(int pose_idx)
 {
 	int				idx;
 
-	idx=model_pose_duplicate(&model,state.cur_pose_idx);
+	idx=model_pose_duplicate(&model,state.model.cur_pose_idx);
 	if (idx==-1) {
 		os_dialog_alert("Duplicate Pose","You've reached the pose limit for this model.");
 		return;
 	}
 	
-	state.cur_item=item_pose;
-	state.cur_pose_idx=idx;
-	state.cur_pose_bone_move_idx=-1;
+	state.model.cur_item=item_pose;
+	state.model.cur_pose_idx=idx;
+	state.model.cur_pose_bone_move_idx=-1;
 
-	property_palette_scroll_into_view(item_pose,idx);
+	model_palette_scroll_into_view(item_pose,idx);
 
 	dialog_property_string_run(list_string_value_string,(void*)model.poses[idx].name,name_str_len,0,0);
 }
@@ -195,17 +195,17 @@ void model_piece_delete_pose(int pose_idx)
 			
 	model_pose_delete(&model,pose_idx);
 
-	state.cur_item=item_model;
+	state.model.cur_item=item_model;
 
 	if (model.npose==0) {
-		state.cur_pose_idx=-1;
+		state.model.cur_pose_idx=-1;
 	}
 	else {
-		state.cur_pose_idx=0;
+		state.model.cur_pose_idx=0;
 	}
-	state.cur_pose_bone_move_idx=-1;
+	state.model.cur_pose_bone_move_idx=-1;
 
-	property_palette_scroll_into_view(item_model,0);
+	model_palette_scroll_into_view(item_model,0);
 }
 
 /* =======================================================
@@ -231,13 +231,13 @@ void model_piece_add_animate(void)
 		return;
 	}
 	
-	state.cur_item=item_animate;
-	state.cur_animate_idx=idx;
-	state.cur_animate_pose_move_idx=-1;
-	state.cur_animate_pose_move_particle_idx=-1;
-	state.cur_animate_pose_move_ring_idx=-1;
+	state.model.cur_item=item_animate;
+	state.model.cur_animate_idx=idx;
+	state.model.cur_animate_pose_move_idx=-1;
+	state.model.cur_animate_pose_move_particle_idx=-1;
+	state.model.cur_animate_pose_move_ring_idx=-1;
 
-	property_palette_scroll_into_view(item_animate,idx);
+	model_palette_scroll_into_view(item_animate,idx);
 	
 	dialog_property_string_run(list_string_value_string,(void*)model.animates[idx].name,name_str_len,0,0);
 }
@@ -248,19 +248,19 @@ void model_piece_duplicate_animate(int animate_idx)
 
 	main_wind_play(play_mode_stop);
 
-	idx=model_animate_duplicate(&model,state.cur_animate_idx);
+	idx=model_animate_duplicate(&model,state.model.cur_animate_idx);
 	if (idx==-1) {
 		os_dialog_alert("Duplicate Animation","You've reached the animation limit for this model.");
 		return;
 	}
 	
-	state.cur_item=item_animate;
-	state.cur_animate_idx=idx;
-	state.cur_animate_pose_move_idx=-1;
-	state.cur_animate_pose_move_particle_idx=-1;
-	state.cur_animate_pose_move_ring_idx=-1;
+	state.model.cur_item=item_animate;
+	state.model.cur_animate_idx=idx;
+	state.model.cur_animate_pose_move_idx=-1;
+	state.model.cur_animate_pose_move_particle_idx=-1;
+	state.model.cur_animate_pose_move_ring_idx=-1;
 
-	property_palette_scroll_into_view(item_animate,idx);
+	model_palette_scroll_into_view(item_animate,idx);
 
 	dialog_property_string_run(list_string_value_string,(void*)model.animates[idx].name,name_str_len,0,0);
 }
@@ -271,20 +271,20 @@ void model_piece_delete_animate(int animate_idx)
 
 	model_animate_delete(&model,animate_idx);
 
-	state.cur_item=item_model;
+	state.model.cur_item=item_model;
 
 	if (model.nanimate==0) {
-		state.cur_animate_idx=-1;
+		state.model.cur_animate_idx=-1;
 	}
 	else {
-		state.cur_animate_idx=0;
+		state.model.cur_animate_idx=0;
 	}
 
-	state.cur_animate_pose_move_idx=-1;
-	state.cur_animate_pose_move_particle_idx=-1;
-	state.cur_animate_pose_move_ring_idx=-1;
+	state.model.cur_animate_pose_move_idx=-1;
+	state.model.cur_animate_pose_move_particle_idx=-1;
+	state.model.cur_animate_pose_move_ring_idx=-1;
 
-	property_palette_scroll_into_view(item_model,0);
+	model_palette_scroll_into_view(item_model,0);
 }
 
 /* =======================================================
@@ -318,7 +318,7 @@ void model_piece_add_animation_pose_move_particle(int animate_idx,int animate_po
 	particle->motion=particle->rotate=particle->stick=FALSE;
 	particle->slop.x=particle->slop.y=particle->slop.z=0;
 
-	list_palette_start_picking_mode(&property_palette,"Pick a Particle",(char*)iface.particle_list.particles,iface.particle_list.nparticle,sizeof(iface_particle_type),(int)offsetof(iface_particle_type,name),FALSE,FALSE,NULL,particle->name);
+	list_palette_start_picking_mode(&model_palette,"Pick a Particle",(char*)iface.particle_list.particles,iface.particle_list.nparticle,sizeof(iface_particle_type),(int)offsetof(iface_particle_type,name),FALSE,FALSE,NULL,particle->name);
 }
 
 void model_piece_delete_animation_pose_move_particle(int animate_idx,int animate_pose_move_idx,int idx)
@@ -360,7 +360,7 @@ void model_piece_add_animation_pose_move_ring(int animate_idx,int animate_pose_m
 	ring->angle=FALSE;
 	ring->slop.x=ring->slop.y=ring->slop.z=0;
 
-	list_palette_start_picking_mode(&property_palette,"Pick a Ring",(char*)iface.ring_list.rings,iface.ring_list.nring,sizeof(iface_ring_type),(int)offsetof(iface_ring_type,name),FALSE,FALSE,NULL,ring->name);
+	list_palette_start_picking_mode(&model_palette,"Pick a Ring",(char*)iface.ring_list.rings,iface.ring_list.nring,sizeof(iface_ring_type),(int)offsetof(iface_ring_type,name),FALSE,FALSE,NULL,ring->name);
 }
 
 void model_piece_delete_animation_pose_move_ring(int animate_idx,int animate_pose_move_idx,int idx)
@@ -394,11 +394,11 @@ void model_piece_add_hit_box(void)
 		return;
 	}
 
-	state.hit_box=TRUE;
-	state.cur_item=item_hit_box;
-	state.cur_hit_box_idx=idx;
+	state.model.hit_box=TRUE;
+	state.model.cur_item=item_hit_box;
+	state.model.cur_hit_box_idx=idx;
 
-	property_palette_scroll_into_view(item_hit_box,idx);
+	model_palette_scroll_into_view(item_hit_box,idx);
 
 	dialog_property_string_run(list_string_value_string,(void*)model.hit_boxes[idx].name,name_str_len,0,0);
 }
@@ -407,8 +407,8 @@ void model_piece_delete_hit_box(int hit_box_idx)
 {
 	model_hit_box_delete(&model,hit_box_idx);
 
-	state.cur_item=item_model;
-	state.cur_hit_box_idx=-1;
+	state.model.cur_item=item_model;
+	state.model.cur_hit_box_idx=-1;
 
-	property_palette_scroll_into_view(item_model,0);
+	model_palette_scroll_into_view(item_model,0);
 }

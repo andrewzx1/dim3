@@ -36,9 +36,8 @@ and can be sold or given away.
 #define kPropertyModelAdd			0
 #define kPropertyModel				100
 
-extern animator_state_type		state;
+extern app_state_type			state;
 extern file_path_setup_type		file_path_setup;
-extern list_palette_type		property_palette;
 
 list_palette_type				file_palette;
 
@@ -98,7 +97,7 @@ void file_palette_fill(void)
 		if (fpd->files[n].is_dir) continue;
 
 		sel=FALSE;
-		if (state.model_open) sel=(strcmp(state.model_file_name,fpd->files[n].file_name)==0);
+		if (state.model.model_open) sel=(strcmp(state.model.model_file_name,fpd->files[n].file_name)==0);
 
 		list_palette_add_item(&file_palette,kPropertyModel,n,fpd->files[n].file_name,sel,FALSE);
 	}

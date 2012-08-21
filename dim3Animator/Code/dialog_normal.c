@@ -44,14 +44,14 @@ d3vct					*dialog_set_normal_vct;
 #define diag_prop_set_normal_ok		5004
 
 os_dialog_ctrl_type		diag_property_set_normal_ctrls[]={
-							{os_dialog_ctrl_type_text_right,0,"X:",5,13,35,20},
-							{os_dialog_ctrl_type_text_right,0,"Y:",5,38,35,20},
-							{os_dialog_ctrl_type_text_right,0,"Z:",5,63,35,20},
+							{os_dialog_ctrl_type_text_right,0,"X:",5,10,35,20},
+							{os_dialog_ctrl_type_text_right,0,"Y:",5,40,35,20},
+							{os_dialog_ctrl_type_text_right,0,"Z:",5,70,35,20},
 							{os_dialog_ctrl_type_text_edit,diag_prop_set_normal_x,"",45,10,100,20},
-							{os_dialog_ctrl_type_text_edit,diag_prop_set_normal_y,"",45,35,100,20},
-							{os_dialog_ctrl_type_text_edit,diag_prop_set_normal_z,"",45,60,100,20},
-							{os_dialog_ctrl_type_button,diag_prop_set_normal_cancel,"Cancel",180,85,80,25},
-							{os_dialog_ctrl_type_default_button,diag_prop_set_normal_ok,"OK",270,85,80,25},
+							{os_dialog_ctrl_type_text_edit,diag_prop_set_normal_y,"",45,40,100,20},
+							{os_dialog_ctrl_type_text_edit,diag_prop_set_normal_z,"",45,70,100,20},
+							{os_dialog_ctrl_type_button,diag_prop_set_normal_cancel,"Cancel",180,100,80,25},
+							{os_dialog_ctrl_type_default_button,diag_prop_set_normal_ok,"OK",270,100,80,25},
 							{-1,-1,"",0,0,0,0}
 						};
 
@@ -94,10 +94,6 @@ void dialog_property_set_normal_proc(int msg_type,int id)
 
 bool dialog_set_normal_run(d3vct *vct)
 {
-	bool			ok;
-
 	dialog_set_normal_vct=vct;
-	ok=os_dialog_run("Set Normal",355,115,diag_property_set_normal_ctrls,dialog_property_set_normal_proc);
-
-	return(ok);
+	return(os_dialog_run("Set Normal",355,130,diag_property_set_normal_ctrls,dialog_property_set_normal_proc));
 }

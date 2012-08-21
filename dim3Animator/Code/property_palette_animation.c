@@ -43,10 +43,10 @@ and can be sold or given away.
 #define kAnimationPropertyPoseMoveDelete		500
 
 extern model_type				model;
-extern animator_state_type		state;
+extern app_state_type			state;
 extern file_path_setup_type		file_path_setup;
 
-extern list_palette_type		property_palette;
+extern list_palette_type		model_palette;
 
 /* =======================================================
 
@@ -54,7 +54,7 @@ extern list_palette_type		property_palette;
       
 ======================================================= */
 
-void property_palette_fill_animation(int animate_idx)
+void model_palette_fill_animation(int animate_idx)
 {
 	int						n;
 	char					str[256];
@@ -62,16 +62,16 @@ void property_palette_fill_animation(int animate_idx)
 
 	animate=&model.animates[animate_idx];
 
-	list_palette_set_title(&property_palette,"Animation",animate->name,NULL,NULL,NULL,NULL);
+	list_palette_set_title(&model_palette,"Animation",animate->name,NULL,NULL,NULL,NULL);
 
-	list_palette_add_header(&property_palette,0,"Animation Options");
-	list_palette_add_string(&property_palette,kAnimationPropertyName,"Name",animate->name,name_str_len,FALSE);
+	list_palette_add_header(&model_palette,0,"Animation Options");
+	list_palette_add_string(&model_palette,kAnimationPropertyName,"Name",animate->name,name_str_len,FALSE);
 
-	list_palette_add_header(&property_palette,0,"Animation Settings");
-	list_palette_add_checkbox(&property_palette,kAnimationPropertyLoop,"Looping",&animate->loop,FALSE);
-	list_palette_add_checkbox(&property_palette,kAnimationPropertyNoSmooth,"No Smoothing",&animate->no_smooth,FALSE);
+	list_palette_add_header(&model_palette,0,"Animation Settings");
+	list_palette_add_checkbox(&model_palette,kAnimationPropertyLoop,"Looping",&animate->loop,FALSE);
+	list_palette_add_checkbox(&model_palette,kAnimationPropertyNoSmooth,"No Smoothing",&animate->no_smooth,FALSE);
 	
-	list_palette_add_header_button(&property_palette,kAnimationPropertyPoseAdd,"Animation Poses",list_button_plus);
+	list_palette_add_header_button(&model_palette,kAnimationPropertyPoseAdd,"Animation Poses",list_button_plus);
 
 	for (n=0;n!=animate->npose_move;n++) {
 		sprintf(str,"%s [%d]",model.poses[animate->pose_moves[n].pose_idx].name,animate->pose_moves[n].msec);
@@ -82,7 +82,7 @@ void property_palette_fill_animation(int animate_idx)
 			if (n==animate->loop_start) strcat(str," (loop start)");
 			if (n==animate->loop_end) strcat(str," (loop end)");
 		}
-		list_palette_add_string_selectable_button(&property_palette,(kAnimationPropertyPoseMove+n),list_button_minus,(kAnimationPropertyPoseMoveDelete+n),str,((state.cur_animate_idx==animate_idx) && (state.cur_animate_pose_move_idx==n)),FALSE);
+		list_palette_add_string_selectable_button(&model_palette,(kAnimationPropertyPoseMove+n),list_button_minus,(kAnimationPropertyPoseMoveDelete+n),str,((state.model.cur_animate_idx==animate_idx) && (state.model.cur_animate_pose_move_idx==n)),FALSE);
 	}
 }
 
@@ -92,28 +92,28 @@ void property_palette_fill_animation(int animate_idx)
       
 ======================================================= */
 
-void property_palette_click_animation(int animate_idx,bool double_click)
+void model_palette_click_animation(int animate_idx,bool double_click)
 {
 	int						id;
 	model_animate_type		*animate;
 
 	animate=&model.animates[animate_idx];
 
-	id=property_palette.item_pane.click.id;
+	id=model_palette.item_pane.click.id;
 	
 		// pose moves
 		
 	if ((id>=kAnimationPropertyPoseMove) && (id<kAnimationPropertyPoseMoveDelete)) {
-		state.cur_animate_pose_move_idx=id-kAnimationPropertyPoseMove;
-		state.cur_pose_idx=animate->pose_moves[state.cur_animate_pose_move_idx].pose_idx;
-		if (double_click) list_palette_set_level(&property_palette,2);
+		state.model.cur_animate_pose_move_idx=id-kAnimationPropertyPoseMove;
+		state.model.cur_pose_idx=animate->pose_moves[state.model.cur_animate_pose_move_idx].pose_idx;
+		if (double_click) list_palette_set_level(&model_palette,2);
 		return;
 	}
 	
 		// pose move delete
 		
 	if (id>=kAnimationPropertyPoseMoveDelete) {
-		state.cur_animate_pose_move_idx=-1;
+		state.model.cur_animate_pose_move_idx=-1;
 		model_animate_pose_delete(&model,animate_idx,(id-kAnimationPropertyPoseMoveDelete));
 		return;
 	}
@@ -121,9 +121,9 @@ void property_palette_click_animation(int animate_idx,bool double_click)
 		// pose move add
 		
 	if (id==kAnimationPropertyPoseAdd) {
-		state.cur_animate_pose_move_idx=model_animate_pose_insert(&model,animate_idx,state.cur_animate_pose_move_idx,0);
-		list_palette_set_level(&property_palette,2);
-		list_palette_start_picking_mode(&property_palette,"Pick a Pose",(char*)model.poses,model.npose,sizeof(model_pose_type),(int)offsetof(model_pose_type,name),FALSE,FALSE,&model.animates[animate_idx].pose_moves[state.cur_animate_pose_move_idx].pose_idx,NULL);
+		state.model.cur_animate_pose_move_idx=model_animate_pose_insert(&model,animate_idx,state.model.cur_animate_pose_move_idx,0);
+		list_palette_set_level(&model_palette,2);
+		list_palette_start_picking_mode(&model_palette,"Pick a Pose",(char*)model.poses,model.npose,sizeof(model_pose_type),(int)offsetof(model_pose_type,name),FALSE,FALSE,&model.animates[animate_idx].pose_moves[state.model.cur_animate_pose_move_idx].pose_idx,NULL);
 		return;
 	}
 }

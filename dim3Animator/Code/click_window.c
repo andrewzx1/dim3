@@ -35,9 +35,9 @@ and can be sold or given away.
 
 extern model_type				model;
 extern model_draw_setup			draw_setup;
-extern animator_state_type		state;
+extern app_state_type			state;
 
-extern list_palette_type		property_palette;
+extern list_palette_type		model_palette;
 
 // supergumba -- this code repeats draw setups and only uses the
 //               view picker for poly hits, fix all this
@@ -57,7 +57,7 @@ void model_drag_sel_vertex(float *pv,d3rect *box,bool chg_sel)
 
 		// find selection
 		
-	mesh=&model.meshes[state.cur_mesh_idx];
+	mesh=&model.meshes[state.model.cur_mesh_idx];
 		
 	nt=mesh->nvertex;
 
@@ -70,7 +70,7 @@ void model_drag_sel_vertex(float *pv,d3rect *box,bool chg_sel)
 		draw_model_2D_transform(&pnt,&tran_pnt);
 		
 		if ((tran_pnt.x>=box->lx) && (tran_pnt.x<=box->rx) && (tran_pnt.y>=box->ty) && (tran_pnt.y<=box->by)) {
-			if (!vertex_mask_check_hide(state.cur_mesh_idx,n)) vertex_mask_set_sel(state.cur_mesh_idx,n,chg_sel);
+			if (!vertex_mask_check_hide(state.model.cur_mesh_idx,n)) vertex_mask_set_sel(state.model.cur_mesh_idx,n,chg_sel);
 		}
 	}
 }
@@ -80,11 +80,11 @@ void select_model_wind_save_drag_sel_state(char *vertex_sel)
 	int					n,nt;
 	model_vertex_type	*vertex;
 
-	nt=model.meshes[state.cur_mesh_idx].nvertex;
-	vertex=model.meshes[state.cur_mesh_idx].vertexes;
+	nt=model.meshes[state.model.cur_mesh_idx].nvertex;
+	vertex=model.meshes[state.model.cur_mesh_idx].vertexes;
 
 	for (n=0;n!=nt;n++) {
-		vertex_sel[n]=(char)vertex_mask_check_sel(state.cur_mesh_idx,n);
+		vertex_sel[n]=(char)vertex_mask_check_sel(state.model.cur_mesh_idx,n);
 		vertex++;
 	}
 }
@@ -94,11 +94,11 @@ void select_model_wind_restore_drag_sel_state(char *vertex_sel)
 	int					n,nt;
 	model_vertex_type	*vertex;
 
-	nt=model.meshes[state.cur_mesh_idx].nvertex;
-	vertex=model.meshes[state.cur_mesh_idx].vertexes;
+	nt=model.meshes[state.model.cur_mesh_idx].nvertex;
+	vertex=model.meshes[state.model.cur_mesh_idx].vertexes;
 
 	for (n=0;n!=nt;n++) {
-		vertex_mask_set_sel(state.cur_mesh_idx,n,(vertex_sel[n]!=0));
+		vertex_mask_set_sel(state.model.cur_mesh_idx,n,(vertex_sel[n]!=0));
 		vertex++;
 	}
 }
@@ -108,15 +108,15 @@ void select_model_wind_select_poly_for_vertex_drag_sel(void)
 	int					n,k,nt;
 	model_poly_type		*poly;
 
-	poly_mask_clear_sel(state.cur_mesh_idx);
+	poly_mask_clear_sel(state.model.cur_mesh_idx);
 
-	nt=model.meshes[state.cur_mesh_idx].npoly;
-	poly=model.meshes[state.cur_mesh_idx].polys;
+	nt=model.meshes[state.model.cur_mesh_idx].npoly;
+	poly=model.meshes[state.model.cur_mesh_idx].polys;
 
 	for (n=0;n!=nt;n++) {
 		for (k=0;k!=poly->ptsz;k++) {
-			if (vertex_mask_check_sel(state.cur_mesh_idx,poly->v[k])) {
-				poly_mask_set_sel(state.cur_mesh_idx,n,TRUE);
+			if (vertex_mask_check_sel(state.model.cur_mesh_idx,poly->v[k])) {
+				poly_mask_set_sel(state.model.cur_mesh_idx,n,TRUE);
 				break;
 			}
 		}
@@ -133,7 +133,7 @@ void select_model_wind_vertex_drag_sel(d3pnt *start_pnt,float *pv)
 	
 		// turn on or off?
 		
-	org_vertex_sel=(char*)malloc(model.meshes[state.cur_mesh_idx].nvertex);
+	org_vertex_sel=(char*)malloc(model.meshes[state.model.cur_mesh_idx].nvertex);
 		
 	if (os_key_shift_down()) {
 		select_model_wind_save_drag_sel_state(org_vertex_sel);
@@ -147,7 +147,7 @@ void select_model_wind_vertex_drag_sel(d3pnt *start_pnt,float *pv)
 			chg_sel=FALSE;
 		}
 		else {
-			memset(org_vertex_sel,0x0,model.meshes[state.cur_mesh_idx].nvertex);
+			memset(org_vertex_sel,0x0,model.meshes[state.model.cur_mesh_idx].nvertex);
 			os_set_arrow_cursor();
 			chg_sel=TRUE;
 		}
@@ -157,7 +157,7 @@ void select_model_wind_vertex_drag_sel(d3pnt *start_pnt,float *pv)
 
 	last_pnt.x=last_pnt.y=-1;
 	
-	state.drag_sel_on=TRUE;
+	state.model.drag_sel_on=TRUE;
 	model_wind_get_box(&mbox);
 	
 	while (!os_track_mouse_location(&pnt,&mbox)) {
@@ -166,31 +166,31 @@ void select_model_wind_vertex_drag_sel(d3pnt *start_pnt,float *pv)
 		memmove(&last_pnt,&pnt,sizeof(d3pnt));
 		
 		if (start_pnt->x<last_pnt.x) {
-			state.drag_sel_box.lx=start_pnt->x;
-			state.drag_sel_box.rx=last_pnt.x;
+			state.model.drag_sel_box.lx=start_pnt->x;
+			state.model.drag_sel_box.rx=last_pnt.x;
 		}
 		else {
-			state.drag_sel_box.rx=start_pnt->x;
-			state.drag_sel_box.lx=last_pnt.x;
+			state.model.drag_sel_box.rx=start_pnt->x;
+			state.model.drag_sel_box.lx=last_pnt.x;
 		}
 		if (start_pnt->y<last_pnt.y) {
-			state.drag_sel_box.ty=start_pnt->y;
-			state.drag_sel_box.by=last_pnt.y;
+			state.model.drag_sel_box.ty=start_pnt->y;
+			state.model.drag_sel_box.by=last_pnt.y;
 		}
 		else {
-			state.drag_sel_box.by=start_pnt->y;
-			state.drag_sel_box.ty=last_pnt.y;
+			state.model.drag_sel_box.by=start_pnt->y;
+			state.model.drag_sel_box.ty=last_pnt.y;
 		}
 		
 		select_model_wind_restore_drag_sel_state(org_vertex_sel);
-		model_drag_sel_vertex(pv,&state.drag_sel_box,chg_sel);
+		model_drag_sel_vertex(pv,&state.model.drag_sel_box,chg_sel);
 
-		if (state.select_mode==select_mode_polygon) select_model_wind_select_poly_for_vertex_drag_sel();
+		if (state.model.select_mode==select_mode_polygon) select_model_wind_select_poly_for_vertex_drag_sel();
 		
 		main_wind_draw();
 	}
 	
-	state.drag_sel_on=FALSE;
+	state.model.drag_sel_on=FALSE;
 	
 	free(org_vertex_sel);
 }
@@ -210,7 +210,7 @@ bool select_model_wind_vertex(d3pnt *start_pnt,float *pv)
 
 		// clicked on a vertex?
 		
-	mesh=&model.meshes[state.cur_mesh_idx];
+	mesh=&model.meshes[state.model.cur_mesh_idx];
 		
 	idx=-1;
 	nt=mesh->nvertex;
@@ -231,8 +231,8 @@ bool select_model_wind_vertex(d3pnt *start_pnt,float *pv)
 
 	if (idx==-1) return(FALSE);
 
-	if (!os_key_shift_down()) vertex_mask_clear_sel(state.cur_mesh_idx);
-	vertex_mask_set_sel(state.cur_mesh_idx,idx,TRUE);
+	if (!os_key_shift_down()) vertex_mask_clear_sel(state.model.cur_mesh_idx);
+	vertex_mask_set_sel(state.model.cur_mesh_idx,idx,TRUE);
 
 	return(TRUE);
 }
@@ -248,7 +248,7 @@ bool select_model_wind_vertex_sel_poly(d3pnt *start_pnt,float *pv)
 
 		// clicked on a poly vertex?
 		
-	mesh=&model.meshes[state.cur_mesh_idx];
+	mesh=&model.meshes[state.model.cur_mesh_idx];
 		
 	idx=-1;
 	nt=mesh->npoly;
@@ -256,8 +256,8 @@ bool select_model_wind_vertex_sel_poly(d3pnt *start_pnt,float *pv)
 	for (n=0;n!=nt;n++) {
 
 		poly=&mesh->polys[n];
-		if (vertex_mask_check_hide_poly(state.cur_mesh_idx,poly)) continue;
-		if (!poly_mask_check_sel(state.cur_mesh_idx,n)) continue;
+		if (vertex_mask_check_hide_poly(state.model.cur_mesh_idx,poly)) continue;
+		if (!poly_mask_check_sel(state.model.cur_mesh_idx,n)) continue;
 
 		for (k=0;k!=poly->ptsz;k++) {
 			pv2=pv+(poly->v[k]*3);
@@ -279,8 +279,8 @@ bool select_model_wind_vertex_sel_poly(d3pnt *start_pnt,float *pv)
 
 	if (idx==-1) return(FALSE);
 
-	if (!os_key_shift_down()) vertex_mask_clear_sel(state.cur_mesh_idx);
-	vertex_mask_set_sel(state.cur_mesh_idx,idx,TRUE);
+	if (!os_key_shift_down()) vertex_mask_clear_sel(state.model.cur_mesh_idx);
+	vertex_mask_set_sel(state.model.cur_mesh_idx,idx,TRUE);
 
 	return(TRUE);
 }
@@ -301,7 +301,7 @@ bool select_model_wind_polygon(d3pnt *start_pnt,bool check_only)
 	
 		// clicking mesh
 	
-	mesh=&model.meshes[state.cur_mesh_idx];
+	mesh=&model.meshes[state.model.cur_mesh_idx];
 	
 		// draw and pick the polygons
 		
@@ -311,16 +311,16 @@ bool select_model_wind_polygon(d3pnt *start_pnt,bool check_only)
 		// draw the mesh
 		
 	model_draw_setup_initialize(&model,&draw_setup,TRUE);
-	draw_model_setup_bones_vertexes(state.cur_mesh_idx);
+	draw_model_setup_bones_vertexes(state.model.cur_mesh_idx);
 
 	poly=mesh->polys;
     
     for (n=0;n!=npoly;n++) {
 	
-		if (!vertex_mask_check_hide_poly(state.cur_mesh_idx,poly)) {
+		if (!vertex_mask_check_hide_poly(state.model.cur_mesh_idx,poly)) {
 			
 			for (k=0;k!=poly->ptsz;k++) {
-				pv=draw_setup.mesh_arrays[state.cur_mesh_idx].gl_vertex_array+(poly->v[k]*3);
+				pv=draw_setup.mesh_arrays[state.model.cur_mesh_idx].gl_vertex_array+(poly->v[k]*3);
 				v_pnts[k].x=(int)*pv++;
 				v_pnts[k].y=(int)*pv++;
 				v_pnts[k].z=(int)*pv;
@@ -359,12 +359,12 @@ bool select_model_wind_polygon(d3pnt *start_pnt,bool check_only)
 
 		// run the selection
 
-	if (!os_key_shift_down()) poly_mask_clear_sel(state.cur_mesh_idx);
-	poly_mask_set_sel(state.cur_mesh_idx,idx,TRUE);
+	if (!os_key_shift_down()) poly_mask_clear_sel(state.model.cur_mesh_idx);
+	poly_mask_set_sel(state.model.cur_mesh_idx,idx,TRUE);
 	
 		// select all the vertexes attached to polygon
 
-	vertex_mask_set_sel_poly_mask(state.cur_mesh_idx);
+	vertex_mask_set_sel_poly_mask(state.model.cur_mesh_idx);
 
 	return(TRUE);
 }
@@ -384,18 +384,18 @@ void select_model_get_drag_direction(d3pnt *pnt)
 	fy=(float)pnt->y;
 	fz=(float)pnt->z;
 
-	if (state.ang.x!=0) {
-		matrix_rotate_x(&mat,state.ang.x);
+	if (state.model.ang.x!=0) {
+		matrix_rotate_x(&mat,state.model.ang.x);
 		matrix_vertex_multiply(&mat,&fx,&fy,&fz);
 	}
 	
-	if (state.ang.y!=0) {
-		matrix_rotate_y(&mat,angle_add(state.ang.y,180.0f));
+	if (state.model.ang.y!=0) {
+		matrix_rotate_y(&mat,angle_add(state.model.ang.y,180.0f));
 		matrix_vertex_multiply(&mat,&fx,&fy,&fz);
 	}
 	
-	if (state.ang.z!=0) {
-		matrix_rotate_z(&mat,state.ang.z);
+	if (state.model.ang.z!=0) {
+		matrix_rotate_z(&mat,state.model.ang.z);
 		matrix_vertex_multiply(&mat,&fx,&fy,&fz);
 	}
 	
@@ -413,7 +413,7 @@ void select_model_wind_mesh(d3pnt *start_pnt)
 	model_bone_type		*bone,*old_bone,*old_bones;
 	model_mesh_type		*mesh;
 
-	mesh=&model.meshes[state.cur_mesh_idx];
+	mesh=&model.meshes[state.model.cur_mesh_idx];
 	if (mesh->locked) return;
 
 		// determine if we clicked on
@@ -430,7 +430,7 @@ void select_model_wind_mesh(d3pnt *start_pnt)
 
 	memmove(old_vertexes,mesh->vertexes,sz);
 
-	if (state.cur_mesh_idx==0) {
+	if (state.model.cur_mesh_idx==0) {
 		sz=model.nbone*sizeof(model_bone_type);
 
 		old_bones=(model_bone_type*)malloc(sz);
@@ -479,7 +479,7 @@ void select_model_wind_mesh(d3pnt *start_pnt)
 			// if this is mesh 0, then move the
 			// bones
 
-		if (state.cur_mesh_idx==0) {
+		if (state.model.cur_mesh_idx==0) {
 
 			bone=model.bones;
 			old_bone=old_bones;
@@ -502,13 +502,13 @@ void select_model_wind_mesh(d3pnt *start_pnt)
 
 			// redraw
 		
-		if (state.play_mode==play_mode_stop) main_wind_draw();
+		if (state.model.play_mode==play_mode_stop) main_wind_draw();
 	}
 	
-	if (state.play_mode==play_mode_stop) main_wind_draw();
+	if (state.model.play_mode==play_mode_stop) main_wind_draw();
 
 	free(old_vertexes);
-	if (state.cur_mesh_idx==0) free(old_bones);
+	if (state.model.cur_mesh_idx==0) free(old_bones);
 }
 
 /* =======================================================
@@ -532,16 +532,16 @@ void select_model_wind(d3pnt *start_pnt)
 		
 	model_draw_setup_initialize(&model,&draw_setup,TRUE);
 		
-	draw_model_setup_pose(state.cur_pose_idx);
+	draw_model_setup_pose(state.model.cur_pose_idx);
 	
 	model_create_draw_bones(&model,&draw_setup);
-	model_create_draw_vertexes(&model,state.cur_mesh_idx,&draw_setup);
+	model_create_draw_vertexes(&model,state.model.cur_mesh_idx,&draw_setup);
 	
-	sz=(model.meshes[state.cur_mesh_idx].nvertex*3)*sizeof(float);
+	sz=(model.meshes[state.model.cur_mesh_idx].nvertex*3)*sizeof(float);
 	pv=(float*)malloc(sz);
 	if (pv==NULL) return;
 	
-	memmove(pv,draw_setup.mesh_arrays[state.cur_mesh_idx].gl_vertex_array,sz);
+	memmove(pv,draw_setup.mesh_arrays[state.model.cur_mesh_idx].gl_vertex_array,sz);
 		
 	model_draw_setup_shutdown(&model,&draw_setup);
 	
@@ -552,7 +552,7 @@ void select_model_wind(d3pnt *start_pnt)
 
 		// run the correct click
 		
-	switch (state.select_mode) {
+	switch (state.model.select_mode) {
 
 		case select_mode_mesh:
 			select_model_wind_mesh(start_pnt);
@@ -601,13 +601,13 @@ void change_model_wind(d3pnt *start_pnt,bool shift_on,bool rotate_on,bool size_o
 
 	last_pnt.x=last_pnt.y=-1;
 	
-	old_shift.x=state.shift.x;
-	old_shift.y=state.shift.y;
+	old_shift.x=state.model.shift.x;
+	old_shift.y=state.model.shift.y;
 	
-	old_ang.x=state.ang.x;
-	old_ang.y=state.ang.y;
+	old_ang.x=state.model.ang.x;
+	old_ang.y=state.model.ang.y;
 	
-	old_magnify_z=state.magnify_z;
+	old_magnify_z=state.model.magnify_z;
 
 	model_wind_get_box(&mbox);
 	
@@ -617,22 +617,22 @@ void change_model_wind(d3pnt *start_pnt,bool shift_on,bool rotate_on,bool size_o
 		memmove(&last_pnt,&pnt,sizeof(d3pnt));
 			
 		if (shift_on) {
-			state.shift.x=old_shift.x+((last_pnt.x-start_pnt->x)*4);
-			state.shift.y=old_shift.y-((last_pnt.y-start_pnt->y)*4);
+			state.model.shift.x=old_shift.x+((last_pnt.x-start_pnt->x)*4);
+			state.model.shift.y=old_shift.y-((last_pnt.y-start_pnt->y)*4);
 		}
 		if (rotate_on) {
-			state.ang.x=old_ang.x-(float)((last_pnt.y-start_pnt->y)/5);
-			state.ang.y=old_ang.y+(float)((last_pnt.x-start_pnt->x)/5);
+			state.model.ang.x=old_ang.x-(float)((last_pnt.y-start_pnt->y)/5);
+			state.model.ang.y=old_ang.y+(float)((last_pnt.x-start_pnt->x)/5);
 		}
 		if (size_on) {
-			state.magnify_z=old_magnify_z+((last_pnt.y-start_pnt->y)*2);
+			state.model.magnify_z=old_magnify_z+((last_pnt.y-start_pnt->y)*2);
 		}
 		
-		if (state.play_mode==play_mode_stop) main_wind_draw();
+		if (state.model.play_mode==play_mode_stop) main_wind_draw();
 	
 	}
 	
-	if (state.play_mode==play_mode_stop) main_wind_draw();
+	if (state.model.play_mode==play_mode_stop) main_wind_draw();
 }
 
 /* =======================================================
@@ -669,7 +669,7 @@ bool drag_bone_model_wind(d3pnt *start_pnt)
 	
 		// setup the draw pose
 		
-	draw_model_setup_pose(state.cur_pose_idx);
+	draw_model_setup_pose(state.model.cur_pose_idx);
 	model_create_draw_bones(&model,&draw_setup);
 	
 		// setup transforms
@@ -681,10 +681,10 @@ bool drag_bone_model_wind(d3pnt *start_pnt)
 		
 	drag_handle=drag_handle_none;
 	
-	if ((state.cur_pose_idx==-1) || (state.cur_bone_idx!=-1)) {
+	if ((state.model.cur_pose_idx==-1) || (state.model.cur_bone_idx!=-1)) {
 	
-		bone=&model.bones[state.cur_bone_idx];
-		draw_bone=&draw_setup.bones[state.cur_bone_idx];
+		bone=&model.bones[state.model.cur_bone_idx];
+		draw_bone=&draw_setup.bones[state.model.cur_bone_idx];
 		
 		bone_pnt.x=draw_bone->fpnt.x+draw_setup.move.x;
 		bone_pnt.y=draw_bone->fpnt.y+draw_setup.move.y;
@@ -692,7 +692,7 @@ bool drag_bone_model_wind(d3pnt *start_pnt)
 		
 		bone_drag_handle_offset=draw_model_bones_drag_handle_offset();
 
-		draw_model_bones_get_handle_rot(state.cur_bone_idx,&rot);
+		draw_model_bones_get_handle_rot(state.model.cur_bone_idx,&rot);
 		
 			// x drag bone
 
@@ -752,13 +752,13 @@ bool drag_bone_model_wind(d3pnt *start_pnt)
 	
 			// select as current bone
 			
-		state.cur_item=item_bone;
-		state.cur_bone_idx=k;
-		property_palette_scroll_into_view(item_bone,state.cur_bone_idx);
+		state.model.cur_item=item_bone;
+		state.model.cur_bone_idx=k;
+		model_palette_scroll_into_view(item_bone,state.model.cur_bone_idx);
 
-		if (state.sel_vertex_with_bone) vertex_mask_set_sel_bone(state.cur_mesh_idx,state.cur_bone_idx);
+		if (state.model.sel_vertex_with_bone) vertex_mask_set_sel_bone(state.model.cur_mesh_idx,state.model.cur_bone_idx);
 
-		list_palette_set_level(&property_palette,1);
+		list_palette_set_level(&model_palette,1);
 
 		main_wind_draw();
 
@@ -767,25 +767,25 @@ bool drag_bone_model_wind(d3pnt *start_pnt)
 
 		// no drag if no pose
 
-	if (state.cur_pose_idx==-1) return(TRUE);
+	if (state.model.cur_pose_idx==-1) return(TRUE);
 	
 		// get drag angle
 		
 	switch (drag_handle) {
 	
 		case drag_handle_x:
-			ang=&model.poses[state.cur_pose_idx].bone_moves[state.cur_bone_idx].rot.x;
-			mov=&model.poses[state.cur_pose_idx].bone_moves[state.cur_bone_idx].mov.x;
+			ang=&model.poses[state.model.cur_pose_idx].bone_moves[state.model.cur_bone_idx].rot.x;
+			mov=&model.poses[state.model.cur_pose_idx].bone_moves[state.model.cur_bone_idx].mov.x;
 			break;
 		
 		case drag_handle_y:
-			ang=&model.poses[state.cur_pose_idx].bone_moves[state.cur_bone_idx].rot.y;
-			mov=&model.poses[state.cur_pose_idx].bone_moves[state.cur_bone_idx].mov.y;
+			ang=&model.poses[state.model.cur_pose_idx].bone_moves[state.model.cur_bone_idx].rot.y;
+			mov=&model.poses[state.model.cur_pose_idx].bone_moves[state.model.cur_bone_idx].mov.y;
 			break;
 			
 		case drag_handle_z:
-			ang=&model.poses[state.cur_pose_idx].bone_moves[state.cur_bone_idx].rot.z;
-			mov=&model.poses[state.cur_pose_idx].bone_moves[state.cur_bone_idx].mov.z;
+			ang=&model.poses[state.model.cur_pose_idx].bone_moves[state.model.cur_bone_idx].rot.z;
+			mov=&model.poses[state.model.cur_pose_idx].bone_moves[state.model.cur_bone_idx].mov.z;
 			break;
 		
 		default:
@@ -799,7 +799,7 @@ bool drag_bone_model_wind(d3pnt *start_pnt)
 	org_mov=*mov;
 	last_pnt.x=last_pnt.y=-1;
 	
-	undo_set_bone_move(state.cur_pose_idx,state.cur_bone_idx);
+	undo_set_bone_move(state.model.cur_pose_idx,state.model.cur_bone_idx);
 	
 	os_set_drag_cursor();
 	model_wind_get_box(&mbox);
@@ -813,7 +813,7 @@ bool drag_bone_model_wind(d3pnt *start_pnt)
 		if (x<-180) x=-180;
 		if (x>180) x=180;
 		
-		if (state.drag_bone_mode==drag_bone_mode_rotate) {
+		if (state.model.drag_bone_mode==drag_bone_mode_rotate) {
 			*ang=org_ang+(((float)x)/2.0f);
 		}
 		else {
@@ -854,7 +854,7 @@ bool drag_hit_box_handle_model_wind(d3pnt *start_pnt)
 	
 		// setup the draw pose
 		
-	draw_model_setup_pose(state.cur_pose_idx);
+	draw_model_setup_pose(state.model.cur_pose_idx);
 	model_create_draw_bones(&model,&draw_setup);
 	
 		// setup transforms
@@ -924,7 +924,7 @@ bool drag_hit_box_handle_model_wind(d3pnt *start_pnt)
 		ky=(pnt.y-start_pnt->y)*5;
 		kz=0;
 		
-		rotate_point_center(&kx,&ky,&kz,state.ang.x,state.ang.y,0.0f);
+		rotate_point_center(&kx,&ky,&kz,state.model.ang.x,state.model.ang.y,0.0f);
 
 		if ((pt_idx==0) || (pt_idx==1) || (pt_idx==4) || (pt_idx==5)) {
 			box->size.x=org_pnt.x-kx;
@@ -981,7 +981,7 @@ bool model_wind_click_mesh_show(d3pnt *pnt)
 
 		wid=text_width(15,model.meshes[n].name);
 		if ((pnt->x>=x) && (pnt->x<=(x+wid)) && (pnt->y>=(y-15)) && (pnt->y<=y)) {
-			state.show_mesh[n]=!state.show_mesh[n];
+			state.model.show_mesh[n]=!state.model.show_mesh[n];
 			main_wind_draw();
 			return(TRUE);
 		}
@@ -1025,11 +1025,11 @@ void model_wind_click(d3pnt *pnt)
 		return;
 	}
 	
-	if (state.bone) {
+	if (state.model.bone) {
 		if (drag_bone_model_wind(pnt)) return;
 	}
 	
-	if (state.hit_box) {
+	if (state.model.hit_box) {
 		drag_hit_box_handle_model_wind(pnt);
 		return;
 	}

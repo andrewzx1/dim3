@@ -118,46 +118,46 @@ extern void file_palette_click(d3pnt *pnt,bool double_click);
 // property palette
 //
 
-extern void property_palette_initialize(void);
-extern void property_palette_shutdown(void);
-extern void property_palette_draw(void);
-extern void property_palette_reset(void);
-extern void property_palette_scroll_into_view(int item_type,int item_idx);
-extern void property_palette_scroll_wheel(d3pnt *pnt,int move);
-extern bool property_palette_delete(void);
-extern void property_palette_click(d3pnt *pnt,bool double_click);
+extern void model_palette_initialize(void);
+extern void model_palette_shutdown(void);
+extern void model_palette_draw(void);
+extern void model_palette_reset(void);
+extern void model_palette_scroll_into_view(int item_type,int item_idx);
+extern void model_palette_scroll_wheel(d3pnt *pnt,int move);
+extern bool model_palette_delete(void);
+extern void model_palette_click(d3pnt *pnt,bool double_click);
 
-extern void property_palette_fill_texture(int texture_idx);
-extern void property_palette_fill_animator_preference(void);
-extern void property_palette_fill_main(void);
-extern void property_palette_fill_model(void);
-extern void property_palette_fill_mesh(int mesh_idx);
-extern void property_palette_fill_animation(int animate_idx);
-extern void property_palette_fill_pose(int pose_idx);
-extern void property_palette_fill_bone(int bone_idx,int pose_idx);
-extern void property_palette_fill_hit_box(int hit_box_idx);
+extern void model_palette_fill_texture(int texture_idx);
+extern void model_palette_fill_animator_preference(void);
+extern void model_palette_fill_main(void);
+extern void model_palette_fill_model(void);
+extern void model_palette_fill_mesh(int mesh_idx);
+extern void model_palette_fill_animation(int animate_idx);
+extern void model_palette_fill_pose(int pose_idx);
+extern void model_palette_fill_bone(int bone_idx,int pose_idx);
+extern void model_palette_fill_hit_box(int hit_box_idx);
 
-extern void property_palette_click_texture(int texture_idx,int id,bool double_click);
-extern void property_palette_click_animator_preference(int id,bool double_click);
-extern void property_palette_click_main(bool double_click);
-extern void property_palette_click_model(bool double_click);
-extern void property_palette_click_mesh(int mesh_idx,bool double_click);
-extern void property_palette_click_animation(int animation_idx,bool double_click);
-extern void property_palette_click_pose(int pose_idx,bool double_click);
-extern void property_palette_click_bone(int bone_idx,int pose_idx,bool double_click);
-extern void property_palette_click_hit_box(int hit_box_idx,bool double_click);
+extern void model_palette_click_texture(int texture_idx,int id,bool double_click);
+extern void model_palette_click_animator_preference(int id,bool double_click);
+extern void model_palette_click_main(bool double_click);
+extern void model_palette_click_model(bool double_click);
+extern void model_palette_click_mesh(int mesh_idx,bool double_click);
+extern void model_palette_click_animation(int animation_idx,bool double_click);
+extern void model_palette_click_pose(int pose_idx,bool double_click);
+extern void model_palette_click_bone(int bone_idx,int pose_idx,bool double_click);
+extern void model_palette_click_hit_box(int hit_box_idx,bool double_click);
 
-extern void property_palette_fill_animate_pose_move(int animate_idx,int pose_move_idx);
-extern void property_palette_fill_pose_bone_move(int pose_idx,int bone_move_idx);
+extern void model_palette_fill_animate_pose_move(int animate_idx,int pose_move_idx);
+extern void model_palette_fill_pose_bone_move(int pose_idx,int bone_move_idx);
 
-extern void property_palette_click_animate_pose_move(int animate_idx,int pose_move_idx,bool double_click);
-extern void property_palette_click_pose_bone_move(int pose_idx,int bone_move_idx,bool double_click);
+extern void model_palette_click_animate_pose_move(int animate_idx,int pose_move_idx,bool double_click);
+extern void model_palette_click_pose_bone_move(int pose_idx,int bone_move_idx,bool double_click);
 
-extern void property_palette_fill_animate_pose_move_particle(int animate_idx,int pose_move_idx,int particle_idx);
-extern void property_palette_fill_animate_pose_move_ring(int animate_idx,int pose_move_idx,int ring_idx);
+extern void model_palette_fill_animate_pose_move_particle(int animate_idx,int pose_move_idx,int particle_idx);
+extern void model_palette_fill_animate_pose_move_ring(int animate_idx,int pose_move_idx,int ring_idx);
 
-extern void property_palette_click_animate_pose_move_particle(int animate_idx,int pose_move_idx,int particle_idx,bool double_click);
-extern void property_palette_click_animate_pose_move_ring(int animate_idx,int pose_move_idx,int ring_idx,bool double_click);
+extern void model_palette_click_animate_pose_move_particle(int animate_idx,int pose_move_idx,int particle_idx,bool double_click);
+extern void model_palette_click_animate_pose_move_ring(int animate_idx,int pose_move_idx,int ring_idx,bool double_click);
 
 //
 // pieces
@@ -300,5 +300,5 @@ extern int dialog_import_finish_run(void);
 extern bool dialog_set_vertex_bone_run(int *major_bone_idx,int *minor_bone_idx,float *factor);
 extern bool dialog_animation_reset_time_run(int animate_idx);
 extern bool dialog_play_blend_animation_run(void);
-extern bool dialog_scale_run(model_type *mdl,d3fpnt *scale);
+extern bool dialog_scale_run(d3fpnt *scale);
 extern bool dialog_set_normal_run(d3vct *normal);

@@ -39,10 +39,9 @@ and can be sold or given away.
 #define kHitBoxPropertySize				3
 
 extern model_type				model;
-extern animator_state_type		state;
 extern file_path_setup_type		file_path_setup;
 
-extern list_palette_type		property_palette;
+extern list_palette_type		model_palette;
 
 /* =======================================================
 
@@ -50,19 +49,19 @@ extern list_palette_type		property_palette;
       
 ======================================================= */
 
-void property_palette_fill_hit_box(int hit_box_idx)
+void model_palette_fill_hit_box(int hit_box_idx)
 {
 	model_hit_box_type			*hit_box;
 	
 	hit_box=&model.hit_boxes[hit_box_idx];
 
-	list_palette_set_title(&property_palette,"Hit Box",hit_box->name,NULL,NULL,NULL,NULL);
+	list_palette_set_title(&model_palette,"Hit Box",hit_box->name,NULL,NULL,NULL,NULL);
 
-	list_palette_add_header(&property_palette,0,"Hit Box Options");
-	list_palette_add_string(&property_palette,kHitBoxPropertyName,"Name",hit_box->name,name_str_len,FALSE);
-	list_palette_add_picker_list_int(&property_palette,kHitBoxPropertyBone,"Bone",(char*)model.bones,model.nbone,sizeof(model_bone_type),(int)offsetof(model_bone_type,name),TRUE,&hit_box->bone_idx,FALSE);
-	list_palette_add_point(&property_palette,kHitBoxPropertyOffset,"Offset",&hit_box->box.offset,FALSE);
-	list_palette_add_point(&property_palette,kHitBoxPropertySize,"Size",&hit_box->box.size,FALSE);
+	list_palette_add_header(&model_palette,0,"Hit Box Options");
+	list_palette_add_string(&model_palette,kHitBoxPropertyName,"Name",hit_box->name,name_str_len,FALSE);
+	list_palette_add_picker_list_int(&model_palette,kHitBoxPropertyBone,"Bone",(char*)model.bones,model.nbone,sizeof(model_bone_type),(int)offsetof(model_bone_type,name),TRUE,&hit_box->bone_idx,FALSE);
+	list_palette_add_point(&model_palette,kHitBoxPropertyOffset,"Offset",&hit_box->box.offset,FALSE);
+	list_palette_add_point(&model_palette,kHitBoxPropertySize,"Size",&hit_box->box.size,FALSE);
 }
 
 /* =======================================================
@@ -71,7 +70,7 @@ void property_palette_fill_hit_box(int hit_box_idx)
       
 ======================================================= */
 
-void property_palette_click_hit_box(int hit_box_idx,bool double_click)
+void model_palette_click_hit_box(int hit_box_idx,bool double_click)
 {
 }
 

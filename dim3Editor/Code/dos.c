@@ -37,7 +37,7 @@ extern map_type					map;
 extern file_path_setup_type		file_path_setup;
 extern app_state_type			state;
 
-extern list_palette_type		file_palette,property_palette;
+extern list_palette_type		file_palette,map_palette;
 
 /* =======================================================
 
@@ -54,8 +54,8 @@ void file_reset_state(void)
 		os_set_title_window(state.map.map_file_name);
 
 		file_palette.open=FALSE;
-		property_palette.open=TRUE;
-		property_palette_reset();
+		map_palette.open=TRUE;
+		map_palette_reset();
 	}
 	else {
 		os_set_title_window("dim3 Editor");

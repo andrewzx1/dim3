@@ -267,14 +267,18 @@ and can be sold or given away.
 //
 
 typedef struct		{
-						d3col						mesh_line,mesh_sel,
-													background;
-					} animator_setup_col_type;
+						d3col					mesh_line,mesh_sel,
+												background;
+					} model_pref_col_type;
 
 typedef struct		{
-						bool						show_tangent_binormal;
-						animator_setup_col_type		col;
-					} animator_setup_type;
+						bool					show_tangent_binormal;
+						model_pref_col_type		col;
+					} model_pref_type;
+
+typedef struct		{
+						model_pref_type			model;
+					} app_pref_type;
 
 //
 // animator state
@@ -300,6 +304,9 @@ typedef struct		{
 						d3ang						ang;
 						d3rect						drag_sel_box;
 						play_blend_type				blend[max_model_blend_animation];
-					} animator_state_type;
+					} model_state_type;
 
+typedef struct		{
+						model_state_type			model;
+					} app_state_type;
 

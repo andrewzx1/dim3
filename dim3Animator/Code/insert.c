@@ -35,7 +35,7 @@ model_type						ins_model;
 
 extern model_type				model;
 extern file_path_setup_type		file_path_setup;
-extern animator_state_type		state;
+extern app_state_type			state;
 
 /* =======================================================
 
@@ -97,7 +97,7 @@ void insert_model(char *file_name)
 
 		// model mesh
 
-	mesh=&model.meshes[state.cur_mesh_idx];
+	mesh=&model.meshes[state.model.cur_mesh_idx];
 	ins_mesh=&ins_model.meshes[0];
 	
 		// bring in the vertexes
@@ -105,7 +105,7 @@ void insert_model(char *file_name)
 	v_off=mesh->nvertex;
 	nvertex=ins_mesh->nvertex;
 	
-	model_mesh_set_vertex_count(&model,state.cur_mesh_idx,(v_off+nvertex));
+	model_mesh_set_vertex_count(&model,state.model.cur_mesh_idx,(v_off+nvertex));
 	
 	vertex=&mesh->vertexes[v_off];
 	memmove(vertex,ins_mesh->vertexes,(nvertex*sizeof(model_vertex_type)));
@@ -121,7 +121,7 @@ void insert_model(char *file_name)
 	t_off=mesh->npoly;
 	npoly=ins_mesh->npoly;
 	
-	model_mesh_set_poly_count(&model,state.cur_mesh_idx,(t_off+npoly));
+	model_mesh_set_poly_count(&model,state.model.cur_mesh_idx,(t_off+npoly));
 	
 	poly=&mesh->polys[t_off];
 	memmove(poly,ins_mesh->polys,(npoly*sizeof(model_poly_type)));

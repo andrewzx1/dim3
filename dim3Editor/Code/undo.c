@@ -446,7 +446,7 @@ void undo_pull(void)
 	
 		// redraw windows
 		
-	property_palette_reset();
+	map_palette_reset();
 
 	main_wind_draw();
 }

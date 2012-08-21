@@ -116,6 +116,7 @@ extern bool os_launch_process(char *path,bool text_editor);
 
 extern bool os_dialog_run(char *title,int wid,int high,os_dialog_ctrl_type *ctrls,void *callback);
 extern void os_dialog_close(bool ok);
+
 extern void os_dialog_set_text(int id,char *value);
 extern void os_dialog_get_text(int id,char *value,int value_len);
 extern void os_dialog_set_int(int id,int i);
@@ -124,11 +125,15 @@ extern void os_dialog_set_float(int id,float f);
 extern float os_dialog_get_float(int id);
 extern void os_dialog_set_bool(int id,bool value);
 extern bool os_dialog_get_bool(int id);
+
+extern void os_dialog_combo_clear(int id);
 extern void os_dialog_combo_add(int id,char *str);
 extern void os_dialog_combo_set_value(int id,int value);
 extern int os_dialog_combo_get_value(int id);
+
 extern void os_dialog_tree_add(int id,file_path_directory_type *fpd);
 extern int os_dialog_tree_get_value(int id);
+
 extern void os_dialog_set_focus(int id,bool select_all);
 extern void os_dialog_enable(int id,bool enable);
 

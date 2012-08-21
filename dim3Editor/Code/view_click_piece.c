@@ -37,7 +37,7 @@ extern map_type					map;
 extern app_state_type			state;
 extern app_pref_type			pref;
 
-extern list_palette_type		property_palette;
+extern list_palette_type		map_palette;
 
 /* =======================================================
 
@@ -1068,9 +1068,9 @@ void view_click_piece(editor_view_type *view,d3pnt *pt,bool double_click)
 	menu_fix_enable();
 	
 	texture_palette_reset();
-	property_palette_reset();
+	map_palette_reset();
 
-	if (type!=-1) list_palette_set_level(&property_palette,1);
+	if (type!=-1) list_palette_set_level(&map_palette,1);
 
 	main_wind_draw();
 

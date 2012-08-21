@@ -44,7 +44,7 @@ char							dialog_new_map_file_name[256];
 os_dialog_ctrl_type		diag_property_new_map_ctrls[]={
 							{os_dialog_ctrl_type_text_left,0,"Enter a name for your new map.",10,10,430,20},
 							{os_dialog_ctrl_type_text_right,0,"Name:",10,40,70,20},
-							{os_dialog_ctrl_type_text_edit,diag_prop_new_map_name,"",90,40,340,20},
+							{os_dialog_ctrl_type_text_edit,diag_prop_new_map_name,"",85,40,340,20},
 							{os_dialog_ctrl_type_text_left,0,"New maps are saved in the Data/Maps directory.",10,70,430,20},
 							{os_dialog_ctrl_type_button,diag_prop_new_map_cancel,"Cancel",275,100,80,25},
 							{os_dialog_ctrl_type_default_button,diag_prop_new_map_ok,"OK",365,100,80,25},

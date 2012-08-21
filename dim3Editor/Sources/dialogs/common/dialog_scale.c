@@ -50,9 +50,9 @@ os_dialog_ctrl_type		diag_property_scale_ctrls[]={
 							{os_dialog_ctrl_type_text_right,0,"X:",50,40,35,20},
 							{os_dialog_ctrl_type_text_right,0,"Y:",50,70,35,20},
 							{os_dialog_ctrl_type_text_right,0,"Z:",50,100,35,20},
-							{os_dialog_ctrl_type_text_edit,diag_prop_scale_x,"",95,40,100,20},
-							{os_dialog_ctrl_type_text_edit,diag_prop_scale_y,"",95,70,100,20},
-							{os_dialog_ctrl_type_text_edit,diag_prop_scale_z,"",95,100,100,20},
+							{os_dialog_ctrl_type_text_edit,diag_prop_scale_x,"",90,40,100,20},
+							{os_dialog_ctrl_type_text_edit,diag_prop_scale_y,"",90,70,100,20},
+							{os_dialog_ctrl_type_text_edit,diag_prop_scale_z,"",90,100,100,20},
 							{os_dialog_ctrl_type_button,diag_prop_scale_cancel,"Cancel",250,130,80,25},
 							{os_dialog_ctrl_type_default_button,diag_prop_scale_ok,"OK",340,130,80,25},
 							{-1,-1,"",0,0,0,0}

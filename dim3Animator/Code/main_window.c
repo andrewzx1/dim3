@@ -37,10 +37,9 @@ model_type						model;
 model_draw_setup				draw_setup;
 file_path_setup_type			file_path_setup;
 iface_type						iface;
-animator_state_type				state;
+app_state_type					state;
 
-extern list_palette_type		file_palette,property_palette;
-extern animator_setup_type		setup;
+extern list_palette_type		file_palette,model_palette;
 
 /* =======================================================
 
@@ -57,7 +56,7 @@ void main_wind_initialize(void)
 	tool_palette_initialize("Animator");
 	list_palette_initialize("Animator");
 	file_palette_initialize();
-	property_palette_initialize();
+	model_palette_initialize();
 	
 	tool_tip_initialize();
 
@@ -77,7 +76,7 @@ void main_wind_shutdown(void)
 		// shutdown palettes
 		
 	file_palette_shutdown();
-	property_palette_shutdown();
+	model_palette_shutdown();
 	list_palette_shutdown();
 	
 	tool_palette_shutdown();
@@ -138,8 +137,8 @@ void main_wind_draw_play_calc_animation(int cur_tick,int animate_idx,int blend_i
 	last_pose=animate->npose_move-1;
 	if (animate->loop_end!=-1) last_pose=animate->loop_end;
 	
-	tick=state.blend[blend_idx].tick;
-	pose_move_1_idx=state.blend[blend_idx].pose_move_idx;
+	tick=state.model.blend[blend_idx].tick;
+	pose_move_1_idx=state.model.blend[blend_idx].pose_move_idx;
 	
 	msec=animate->pose_moves[pose_move_1_idx].msec;
 	nxt_tick=tick+msec;
@@ -154,8 +153,8 @@ void main_wind_draw_play_calc_animation(int cur_tick,int animate_idx,int blend_i
 		nxt_tick=tick+msec;
 	}
 	
-	state.blend[blend_idx].tick=tick;
-	state.blend[blend_idx].pose_move_idx=pose_move_1_idx;
+	state.model.blend[blend_idx].tick=tick;
+	state.model.blend[blend_idx].pose_move_idx=pose_move_1_idx;
 	
 	pose_move_2_idx=pose_move_1_idx+1;
 	if (pose_move_2_idx>last_pose) pose_move_2_idx=first_pose;
@@ -194,8 +193,8 @@ void main_wind_draw_play_calc_animation(int cur_tick,int animate_idx,int blend_i
 		// the selected poses
 
 	if (blend_idx==0) {
-		state.cur_animate_pose_move_idx=pose_move_1_idx;
-		state.cur_pose_idx=animate->pose_moves[pose_move_1_idx].pose_idx;
+		state.model.cur_animate_pose_move_idx=pose_move_1_idx;
+		state.model.cur_pose_idx=animate->pose_moves[pose_move_1_idx].pose_idx;
 	}
 }
 
@@ -206,7 +205,7 @@ void main_wind_draw_play(void)
 	
 		// if no current animation, just do no pose for animated textures
 		
-	if ((state.cur_animate_idx==-1) && (state.play_mode!=play_mode_blend)) {
+	if ((state.model.cur_animate_idx==-1) && (state.model.play_mode!=play_mode_blend)) {
 		main_wind_draw();
 		return;
 	}
@@ -219,19 +218,19 @@ void main_wind_draw_play(void)
 		// and divide by 4 if we are in slow play
 		
 	cur_tick=time_get();
-	if (state.play_mode==play_mode_slow) cur_tick=cur_tick>>2;
+	if (state.model.play_mode==play_mode_slow) cur_tick=cur_tick>>2;
 	
 		// calculate the animation
 
-	old_pose_move_idx=state.blend[0].pose_move_idx;
+	old_pose_move_idx=state.model.blend[0].pose_move_idx;
 
-	if (state.play_mode!=play_mode_blend) {
-		main_wind_draw_play_calc_animation(cur_tick,state.cur_animate_idx,0,TRUE);
+	if (state.model.play_mode!=play_mode_blend) {
+		main_wind_draw_play_calc_animation(cur_tick,state.model.cur_animate_idx,0,TRUE);
 	}
 	else {
 		for (n=0;n!=max_model_blend_animation;n++) {
-			if (state.blend[n].animate_idx!=-1) {
-				main_wind_draw_play_calc_animation(cur_tick,state.blend[n].animate_idx,n,(n==0));
+			if (state.model.blend[n].animate_idx!=-1) {
+				main_wind_draw_play_calc_animation(cur_tick,state.model.blend[n].animate_idx,n,(n==0));
 			}
 		}
 	}
@@ -239,15 +238,15 @@ void main_wind_draw_play(void)
 		// if prev/next animation type
 		// stop if pose has changed
 
-	if ((state.play_mode==play_mode_prev) || (state.play_mode==play_mode_next)) {
-		if (old_pose_move_idx!=state.blend[0].pose_move_idx) {
+	if ((state.model.play_mode==play_mode_prev) || (state.model.play_mode==play_mode_next)) {
+		if (old_pose_move_idx!=state.model.blend[0].pose_move_idx) {
 			main_wind_play(play_mode_stop);
 		}
 	}
 
 		// global draw setup
 	
-	draw_model_wind(state.cur_mesh_idx);
+	draw_model_wind(state.model.cur_mesh_idx);
 }
 
 void main_wind_draw_no_swap(void)
@@ -261,10 +260,10 @@ void main_wind_draw_no_swap(void)
 	
 		// model
 		
-	if (state.model_open) {
-		if (state.texture_edit_idx==-1) {
-			if (state.play_mode==play_mode_stop) {
-				draw_model_wind_pose(state.cur_mesh_idx,state.cur_pose_idx);
+	if (state.model.model_open) {
+		if (state.model.texture_edit_idx==-1) {
+			if (state.model.play_mode==play_mode_stop) {
+				draw_model_wind_pose(state.model.cur_mesh_idx,state.model.cur_pose_idx);
 			}
 			else {
 				main_wind_draw_play();
@@ -281,7 +280,7 @@ void main_wind_draw_no_swap(void)
 	texture_palette_draw(model.textures);
 	
 	file_palette_draw();
-	property_palette_draw();
+	model_palette_draw();
 		
 	tool_tip_draw();
 }
@@ -305,14 +304,14 @@ void main_wind_play(int play_mode)
 		// good animation?
 		
 	if (play_mode!=play_mode_stop) {
-		if (state.cur_animate_idx==-1) return;
-		if (model.animates[state.cur_animate_idx].npose_move==0) return;
+		if (state.model.cur_animate_idx==-1) return;
+		if (model.animates[state.model.cur_animate_idx].npose_move==0) return;
 	}
 	
 		// always turn off animation until setup is complete
 		// as animation is on a timer
 		
-	state.play_mode=play_mode_stop;
+	state.model.play_mode=play_mode_stop;
 
 		// if it's next or previous, we
 		// need to start on current selection
@@ -322,12 +321,12 @@ void main_wind_play(int play_mode)
 	switch (play_mode) {
 
 		case play_mode_prev:
-			pose_move_idx=state.cur_animate_pose_move_idx-1;
-			if (pose_move_idx<0) pose_move_idx=model.animates[state.cur_animate_idx].npose_move-1;
+			pose_move_idx=state.model.cur_animate_pose_move_idx-1;
+			if (pose_move_idx<0) pose_move_idx=model.animates[state.model.cur_animate_idx].npose_move-1;
 			break;
 
 		case play_mode_next:
-			pose_move_idx=state.cur_animate_pose_move_idx;
+			pose_move_idx=state.model.cur_animate_pose_move_idx;
 			break;
 	}
 	
@@ -337,15 +336,15 @@ void main_wind_play(int play_mode)
 	tick=time_get();
 
 	for (n=0;n!=max_model_blend_animation;n++) {
-		state.blend[n].pose_move_idx=pose_move_idx;
-		state.blend[n].tick=tick;
+		state.model.blend[n].pose_move_idx=pose_move_idx;
+		state.model.blend[n].tick=tick;
 	}
 	
 		// turn on/off animation
 		
-	state.play_mode=play_mode;
+	state.model.play_mode=play_mode;
 	
-	if (state.model_open) main_wind_draw();
+	if (state.model.model_open) main_wind_draw();
 }
 
 /* =======================================================
@@ -388,10 +387,10 @@ void main_wind_click(d3pnt *pnt,bool double_click)
 
 		// property palette
 
-	list_palette_total_box(&property_palette,&tbox);
+	list_palette_total_box(&model_palette,&tbox);
 
 	if ((pnt->x>=tbox.lx) && (pnt->x<=tbox.rx) && (pnt->y>=tbox.ty) && (pnt->y<tbox.by)) {
-		property_palette_click(pnt,double_click);
+		model_palette_click(pnt,double_click);
 		return;
 	}
 
@@ -399,19 +398,19 @@ void main_wind_click(d3pnt *pnt,bool double_click)
 		// turn off animation as it glitches
 		// up the win32 timers
 
-	if (!state.model_open) return;
+	if (!state.model.model_open) return;
 
-	old_play_mode=state.play_mode;
-	state.play_mode=play_mode_stop;
+	old_play_mode=state.model.play_mode;
+	state.model.play_mode=play_mode_stop;
 
-	if (state.texture_edit_idx==-1) {
+	if (state.model.texture_edit_idx==-1) {
 		model_wind_click(pnt);
 	}
 	else {
 		texture_edit_click(pnt,double_click);
 	}
 
-	state.play_mode=old_play_mode;
+	state.model.play_mode=old_play_mode;
 }
 
 /* =======================================================
@@ -435,17 +434,17 @@ void main_wind_scroll_wheel(d3pnt *pnt,int delta)
 	
 		// scroll wheel in property palette
 
-	list_palette_total_box(&property_palette,&tbox);
+	list_palette_total_box(&model_palette,&tbox);
 
 	if ((pnt->x>=tbox.lx) && (pnt->x<=tbox.rx) && (pnt->y>=tbox.ty) && (pnt->y<tbox.by)) {
-		property_palette_scroll_wheel(pnt,delta);
+		model_palette_scroll_wheel(pnt,delta);
 		return;
 	}
 
 		// scroll wheel in model
 
-	if (state.texture_edit_idx==-1) {
-		state.magnify_z+=(delta*20);
+	if (state.model.texture_edit_idx==-1) {
+		state.model.magnify_z+=(delta*20);
 		main_wind_draw();
 	}
 	else {
@@ -461,7 +460,7 @@ void main_wind_scroll_wheel(d3pnt *pnt,int delta)
 
 void main_wind_mouse_move(d3pnt *pnt)
 {
-	if (!state.model_open) return;
+	if (!state.model.model_open) return;
 
 	tool_palette_mouse_move(pnt);
 }
@@ -474,11 +473,11 @@ void main_wind_mouse_move(d3pnt *pnt)
 
 bool main_wind_cursor(void)
 {
-	if (!state.model_open) return(FALSE);
+	if (!state.model.model_open) return(FALSE);
 
 		// texture editing
 
-	if (state.texture_edit_idx==-1) return(texture_edit_cursor());
+	if (state.model.texture_edit_idx==-1) return(texture_edit_cursor());
 
 		// model cursors
 
@@ -515,12 +514,12 @@ bool main_wind_cursor(void)
 
 void main_wind_key(char ch)
 {
-	if (!state.model_open) return;
+	if (!state.model.model_open) return;
 	
 		// esc key deselects
 		
 	if (ch==0x1B) {
-		vertex_mask_clear_sel(state.cur_mesh_idx);
+		vertex_mask_clear_sel(state.model.cur_mesh_idx);
 		main_wind_draw();
 		return;
 	}
@@ -529,7 +528,7 @@ void main_wind_key(char ch)
 		// on selected item tree
 
 	if ((ch==D3_KEY_BACKSPACE) || (ch==D3_KEY_DELETE)) {
-		if (property_palette_delete()) {
+		if (model_palette_delete()) {
 			main_wind_draw();
 			return;
 		}

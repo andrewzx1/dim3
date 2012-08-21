@@ -36,9 +36,9 @@ and can be sold or given away.
 extern model_type				model;
 extern model_draw_setup			draw_setup;
 extern file_path_setup_type		file_path_setup;
-extern animator_state_type		state;
+extern app_state_type			state;
 
-extern list_palette_type		file_palette,property_palette;
+extern list_palette_type		file_palette,model_palette;
 
 /* =======================================================
 
@@ -53,12 +53,12 @@ void file_reset_state(void)
 		// if there is an open model,
 		// change the palette opens
 
-	if (state.model_open) {
-		os_set_title_window(state.model_file_name);
+	if (state.model.model_open) {
+		os_set_title_window(state.model.model_file_name);
 
 		file_palette.open=FALSE;
-		property_palette.open=TRUE;
-		property_palette_reset();
+		model_palette.open=TRUE;
+		model_palette_reset();
 	}
 	else {
 		os_set_title_window("dim3 Editor");
@@ -66,61 +66,61 @@ void file_reset_state(void)
 	
 		// setup state
 
-	state.texture=TRUE;
-	state.mesh=FALSE;
-	state.bone=FALSE;
-    state.hit_box=FALSE;
-	state.normal=FALSE;
-	state.view_box=FALSE;
-	state.bone_names=TRUE;
-	state.sel_vertex_with_bone=FALSE;
+	state.model.texture=TRUE;
+	state.model.mesh=FALSE;
+	state.model.bone=FALSE;
+    state.model.hit_box=FALSE;
+	state.model.normal=FALSE;
+	state.model.view_box=FALSE;
+	state.model.bone_names=TRUE;
+	state.model.sel_vertex_with_bone=FALSE;
 
-	state.ang.x=0;
-    state.ang.y=180;
+	state.model.ang.x=0;
+    state.model.ang.y=180;
 	
-	state.shift.x=0;
-	state.shift.y=0;
+	state.model.shift.x=0;
+	state.model.shift.y=0;
 	
-	state.select_mode=select_mode_vertex;
-	state.drag_bone_mode=drag_bone_mode_rotate;
+	state.model.select_mode=select_mode_vertex;
+	state.model.drag_bone_mode=drag_bone_mode_rotate;
 	
-	state.drag_sel_on=FALSE;
-	state.magnify_z=3000;
+	state.model.drag_sel_on=FALSE;
+	state.model.magnify_z=3000;
 
-	state.cur_item=item_model;
-	state.cur_mesh_idx=0;
-	state.cur_bone_idx=-1;
+	state.model.cur_item=item_model;
+	state.model.cur_mesh_idx=0;
+	state.model.cur_bone_idx=-1;
 
-	state.cur_pose_idx=-1;
+	state.model.cur_pose_idx=-1;
 	
-	state.cur_animate_idx=-1;
-	if (model.nanimate!=0) state.cur_animate_idx=0;
+	state.model.cur_animate_idx=-1;
+	if (model.nanimate!=0) state.model.cur_animate_idx=0;
 	
-	state.cur_animate_pose_move_idx=-1;
-	state.cur_animate_pose_move_particle_idx=-1;
-	state.cur_animate_pose_move_ring_idx=-1;
-	state.cur_pose_bone_move_idx=-1;
-	state.cur_hit_box_idx=-1;
+	state.model.cur_animate_pose_move_idx=-1;
+	state.model.cur_animate_pose_move_particle_idx=-1;
+	state.model.cur_animate_pose_move_ring_idx=-1;
+	state.model.cur_pose_bone_move_idx=-1;
+	state.model.cur_hit_box_idx=-1;
 
 		// clear selections and states
 
 	main_wind_play(play_mode_stop);
 	
-	state.texture_edit_idx=-1;
-	state.in_preference=FALSE;
+	state.model.texture_edit_idx=-1;
+	state.model.in_preference=FALSE;
 	
-	vertex_mask_clear_sel(state.cur_mesh_idx);
-	vertex_mask_clear_hide(state.cur_mesh_idx);
+	vertex_mask_clear_sel(state.model.cur_mesh_idx);
+	vertex_mask_clear_hide(state.model.cur_mesh_idx);
 
-	poly_mask_clear_sel(state.cur_mesh_idx);
-	poly_mask_clear_hide(state.cur_mesh_idx);
+	poly_mask_clear_sel(state.model.cur_mesh_idx);
+	poly_mask_clear_hide(state.model.cur_mesh_idx);
 
 	for (n=0;n!=max_model_blend_animation;n++) {
-		state.blend[n].animate_idx=-1;
+		state.model.blend[n].animate_idx=-1;
 	}
 
 	for (n=0;n!=max_model_mesh;n++) {
-		state.show_mesh[n]=FALSE;
+		state.model.show_mesh[n]=FALSE;
 	}
 
 	undo_clear();
@@ -196,8 +196,8 @@ bool file_new_model(void)
 	
 		// finish
 		
-	state.model_open=TRUE;
-	strcpy(state.model_file_name,file_name);
+	state.model.model_open=TRUE;
+	strcpy(state.model.model_file_name,file_name);
 	
 	file_reset_state();
 	
@@ -233,8 +233,8 @@ bool file_open_model(char *file_name)
 
 		// finish
 		
-	state.model_open=TRUE;
-	strcpy(state.model_file_name,file_name);
+	state.model.model_open=TRUE;
+	strcpy(state.model.model_file_name,file_name);
 	
 	file_reset_state();
 
@@ -275,7 +275,7 @@ bool file_close_model(void)
 		// if no model open, just
 		// return OK to close
 
-	if (!state.model_open) return(TRUE);
+	if (!state.model.model_open) return(TRUE);
 
 		// check for save
 
@@ -313,7 +313,7 @@ bool file_close_model(void)
 
 		// reset state
 
-	state.model_open=FALSE;
+	state.model.model_open=FALSE;
 	file_reset_state();
 
 	return(TRUE);
@@ -333,7 +333,7 @@ void file_import_mesh_obj(bool replace)
 	os_set_arrow_cursor();
 	if (!os_load_file("Select an OBJ to Import",path,"obj")) return;
 	
-	if (state.cur_mesh_idx==-1) state.cur_mesh_idx=0;
+	if (state.model.cur_mesh_idx==-1) state.model.cur_mesh_idx=0;
 	
 	if (!import_obj(path,replace,&found_normals,err_str)) {
 		os_dialog_alert("OBJ Import",err_str);
@@ -342,11 +342,11 @@ void file_import_mesh_obj(bool replace)
 
 		// finish setup
 		
-	vertex_mask_clear_sel(state.cur_mesh_idx);
-	vertex_mask_clear_hide(state.cur_mesh_idx);
+	vertex_mask_clear_sel(state.model.cur_mesh_idx);
+	vertex_mask_clear_hide(state.model.cur_mesh_idx);
 
-	poly_mask_clear_sel(state.cur_mesh_idx);
-	poly_mask_clear_hide(state.cur_mesh_idx);
+	poly_mask_clear_sel(state.model.cur_mesh_idx);
+	poly_mask_clear_hide(state.model.cur_mesh_idx);
 	
 	main_wind_draw();
 }
@@ -365,15 +365,15 @@ void file_insert_mesh_dim3_model(void)
 
     if (!dialog_file_open_run("Open a Model","Models",NULL,"Mesh.xml;Model.xml",file_name)) return;
 	
-	if (state.cur_mesh_idx==-1) state.cur_mesh_idx=0;
+	if (state.model.cur_mesh_idx==-1) state.model.cur_mesh_idx=0;
 	
 	os_set_wait_cursor();
 	
 	insert_model(file_name);
 	
     model_calculate_parents(&model);
-    model_center_xz(&model,state.cur_mesh_idx);
-    model_floor(&model,state.cur_mesh_idx);
+    model_center_xz(&model,state.model.cur_mesh_idx);
+    model_floor(&model,state.model.cur_mesh_idx);
     model_recalc_boxes(&model);
 	
 	os_set_arrow_cursor();

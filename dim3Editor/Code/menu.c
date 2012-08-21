@@ -36,7 +36,7 @@ and can be sold or given away.
 extern map_type					map;
 extern app_state_type			state;
 
-extern list_palette_type		property_palette;
+extern list_palette_type		map_palette;
 
 os_menu_item_type	editor_menu[]={
 
@@ -285,8 +285,8 @@ bool menu_event_run(int cmd)
 
         case app_menu_item_FilePreference:
 			state.map.in_preference=!state.map.in_preference;
-			property_palette_reset();
-			list_palette_set_level(&property_palette,0);
+			map_palette_reset();
+			list_palette_set_level(&map_palette,0);
 			main_wind_draw();
             return(TRUE);
 
