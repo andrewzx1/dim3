@@ -638,6 +638,8 @@ bool os_dialog_run(char *title,int wid,int high,os_dialog_ctrl_type *ctrls,void 
 				break;
 				
 			case os_dialog_ctrl_type_text_edit:
+				box.left+=5;
+				box.right+=5;
 				box.bottom=box.top+16;
 				CreateEditUnicodeTextControl(os_dialog_wind,&box,cf_str,FALSE,NULL,&os_dialog_ctrls[idx]);
 				break;
@@ -807,6 +809,18 @@ bool os_dialog_get_bool(int id)
       Dialog Combo Controls
       
 ======================================================= */
+
+void os_dialog_combo_clear(int id)
+{
+	ControlRef		ctrl;
+	MenuRef			menu;
+	
+	ctrl=os_dialog_get_control_ref_from_id(id);
+	menu=GetControlPopupMenuHandle(ctrl);
+	
+	DeleteMenuItems(menu,1,CountMenuItems(menu));
+	SetControl32BitMaximum(ctrl,0);
+}
 
 void os_dialog_combo_add(int id,char *str)
 {
