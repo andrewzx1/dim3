@@ -58,6 +58,10 @@ void ag_map_clear(void)
 {
 	int				n;
 
+		// clear all selections
+
+	select_clear();
+
 		// clear static memory
 
 	map.nspot=0;

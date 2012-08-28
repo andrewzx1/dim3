@@ -53,7 +53,7 @@ void ag_random_seed(void)
 	seed=TickCount();
 #endif
 
-//	seed=102;		// supergumba
+//	seed=102;		// supergumba -- for testing
 
 	srandom(seed);
 }
