@@ -933,7 +933,15 @@
 							>
 						</File>
 						<File
+							RelativePath="..\..\dim3Editor\Sources\dialogs\model\dialog_finish_import.c"
+							>
+						</File>
+						<File
 							RelativePath="..\..\dim3Editor\Sources\dialogs\model\dialog_normal.c"
+							>
+						</File>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\dialogs\model\dialog_scale_animation_time.c"
 							>
 						</File>
 						<File

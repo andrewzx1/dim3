@@ -622,7 +622,7 @@ bool menu_event_run(int cmd)
 			if (state.model.cur_animate_idx==-1) return(TRUE);
 			main_wind_play(play_mode_stop);
 
-			dialog_animation_reset_time_run(state.model.cur_animate_idx);
+			dialog_animation_scale_time_run(state.model.cur_animate_idx);
 			return(TRUE);
 			
 		case app_menu_item_PlayAnimate:

@@ -26,7 +26,7 @@ and can be sold or given away.
 *********************************************************************/
 
 #ifdef D3_PCH
-	#include "dim3Animator.h"
+	#include "dim3Editor.h"
 #endif
 
 #include "glue.h"

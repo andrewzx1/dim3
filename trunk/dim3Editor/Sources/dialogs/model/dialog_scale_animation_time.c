@@ -26,7 +26,7 @@ and can be sold or given away.
 *********************************************************************/
 
 #ifdef D3_PCH
-	#include "dim3Animator.h"
+	#include "dim3Editor.h"
 #endif
 
 #include "glue.h"
@@ -40,8 +40,8 @@ int						dialog_animate_idx;
 // controls
 
 #define diag_prop_animation_scale_time_msec		5000
-#define diag_prop_animation_scale_time_cancel	5001
-#define diag_prop_animation_scale_time_ok		5002
+#define diag_prop_animation_scale_time_cancel	5004
+#define diag_prop_animation_scale_time_ok		5005
 
 os_dialog_ctrl_type		diag_property_animation_scale_time_ctrls[]={
 							{os_dialog_ctrl_type_text_right,0,"Milliseconds:",10,10,75,20},
