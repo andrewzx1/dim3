@@ -266,11 +266,13 @@ extern void tool_tip_draw(void);
 
 #define tool_palette_seperator_size				4
 
-extern void tool_palette_initialize(char *app_name);
-extern void tool_palette_shutdown(void);
-extern void tool_palette_draw(void);
-extern void tool_palette_click(d3pnt *pnt);
-extern void tool_palette_mouse_move(d3pnt *pnt);
+extern void tool_palette_initialize(tool_palette_type *tool_palette,char *app_name,int count,tool_palette_tool_type *tools);
+extern void tool_palette_shutdown(tool_palette_type *tool_palette);
+extern void tool_palette_box(d3rect *box);
+extern void tool_palette_set_state(tool_palette_type *tool_palette,int idx,bool selected,bool disabled);
+extern void tool_palette_draw(tool_palette_type *tool_palette);
+extern int tool_palette_click(tool_palette_type *tool_palette,d3pnt *pnt);
+extern void tool_palette_mouse_move(tool_palette_type *tool_palette,d3pnt *pnt);
 
 //
 // text palette

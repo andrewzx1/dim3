@@ -244,7 +244,7 @@ void list_palette_total_box(list_palette_type *list,d3rect *box)
 	}
 
 #ifndef D3_SETUP
-	box->ty=wbox.ty+(tool_palette_pixel_size()+1);
+	box->ty=wbox.ty+(tool_button_size+1);
 #else
 	box->ty=wbox.ty;
 #endif
@@ -280,7 +280,7 @@ void list_palette_item_box(list_palette_type *list,d3rect *box)
 	}
 
 #ifndef D3_SETUP
-	box->ty=wbox.ty+(tool_palette_pixel_size()+1);
+	box->ty=wbox.ty+(tool_button_size+1);
 #else
 	box->ty=wbox.ty;
 #endif
@@ -303,7 +303,7 @@ void list_palette_picker_box(list_palette_type *list,d3rect *box)
 	}
 
 #ifndef D3_SETUP
-	box->ty=wbox.ty+(tool_palette_pixel_size()+1);
+	box->ty=wbox.ty+(tool_button_size+1);
 #else
 	box->ty=wbox.ty;
 #endif
@@ -338,7 +338,7 @@ void list_palette_border_box(list_palette_type *list,d3rect *box)
 	}
 
 #ifndef D3_SETUP
-	box->ty=wbox.ty+(tool_palette_pixel_size()+1);
+	box->ty=wbox.ty+(tool_button_size+1);
 #else
 	box->ty=wbox.ty;
 #endif

@@ -26,6 +26,14 @@ and can be sold or given away.
 *********************************************************************/
 
 //
+// app modes
+//
+
+#define app_mode_project						0
+#define app_mode_map							1
+#define app_mode_model							2
+
+//
 // view selection
 //
 
@@ -35,92 +43,72 @@ and can be sold or given away.
 // tools
 //
 
-#define tool_count								38
+#define tool_max_tools							64
 #define tool_button_size						32
 
-#define tool_file_names							{ \
-													"Tool Move Points", \
-													"Tool Move Points Together", \
-													"Tool Snap Points", \
-													"Tool Free Look", \
-													"Tool Toggle Mode", \
-													"Tool Edit Mesh", \
-													"Tool Edit Polygons", \
-													"Tool Edit Vertexes", \
-													"Tool Combine Meshes", \
-													"Tool Split Mesh", \
-													"Tool Tesselate Mesh", \
-													"Tool No Grid", \
-													"Tool Small Grid", \
-													"Tool Large Grid", \
-													"Tool Auto-Texture Mesh", \
-													"Tool Rotate Mode", \
-													"Tool Move Mode", \
-													"Tool Node Select", \
-													"Tool Node Duplicate", \
-													"Tool Node Link", \
-													"Tool Node Remove Link", \
-													"Tool Normals", \
-													"Tool Cull", \
-													"Tool Edit Map Script", \
-													"Tool Run Map", \
-													"", \
-													"Tool Spot", \
-													"Tool Light", \
-													"Tool Sound", \
-													"Tool Particle", \
-													"Tool Scenery", \
-													"Tool Node", \
-													"Tool Mesh", \
-													"Tool Mesh UV", \
-													"Tool Height Map", \
-													"Tool Grid", \
-													"Tool Polygon", \
-													"Tool Liquid", \
-											}
-											
-#define tool_separators						{"00010100100100110100010100000000000000"}
+typedef struct		{
+						char						file_name[64];
+						char						separator;
+						char						tool_tip[64];
+						bitmap_type					bitmap;
+					} tool_palette_tool_type;
 
-#define tool_tip_names							{ \
-													"Move Vertexes and Meshes Freely", \
-													"Move Equal Vertexes Together", \
-													"Snap Vertexes and Meshes", \
-													"Free Look Mode", \
-													"Multi-Select Mode", \
-													"Select Meshes", \
-													"Select Polygons", \
-													"Select Vertexes", \
-													"Combine Meshes", \
-													"Split Mesh", \
-													"Tesselate Mesh", \
-													"No Grid", \
-													"Small Grid", \
-													"Large Grid", \
-													"Auto-Texture Mesh", \
-													"Rotate Mode", \
-													"Move Mode", \
-													"Click Node To Select", \
-													"Click Node To Duplicate, Drag and Auto-Link", \
-													"Click Node To Add Link From Selected Node", \
-													"Click Node To Remove Link From Selected Node", \
-													"Show Normals", \
-													"Show Obscured (Green) and Culled (Gray) Polygons", \
-													"Edit Map Script", \
-													"Run Map In Engine", \
-													"", \
-													"Add Spot", \
-													"Add Light", \
-													"Add Sound", \
-													"Add Particle", \
-													"Add Scenery", \
-													"Add Node", \
-													"Add Imported Mesh", \
-													"Replace UVs on an Existing Mesh", \
-													"Add Imported Height Map", \
-													"Add Grid", \
-													"Add Polygon", \
-													"Add Liquid", \
-											}
+typedef struct		{
+						bool						disabled,selected;
+					} tool_palette_state_type;
+
+typedef struct		{
+						int							count,push_idx;
+						tool_palette_tool_type		tools[tool_max_tools];
+						tool_palette_state_type		state[tool_max_tools];
+					} tool_palette_type;
+
+//
+// map tool palette
+//
+
+#define map_tool_count					38
+
+#define map_tool_palette_def			{ \
+											{"Tool Move Points",0,"Move Vertexes and Meshes Freely"}, \
+											{"Tool Move Points Together",0,"Move Equal Vertexes Together"}, \
+											{"Tool Snap Points",0,"Snap Vertexes and Meshes"}, \
+											{"Tool Free Look",1,"Free Look Mode"}, \
+											{"Tool Toggle Mode",0,"Multi-Select Mode"}, \
+											{"Tool Edit Mesh",1,"Select Meshes"}, \
+											{"Tool Edit Polygons",0,"Select Polygons"}, \
+											{"Tool Edit Vertexes",0,"Select Vertexes"}, \
+											{"Tool Combine Meshes",1,"Combine Meshes"}, \
+											{"Tool Split Mesh",0,"Split Mesh"}, \
+											{"Tool Tesselate Mesh",0,"Tesselate Mesh"}, \
+											{"Tool No Grid",1,"No Grid"}, \
+											{"Tool Small Grid",0,"Small Grid"}, \
+											{"Tool Large Grid",0,"Large Grid"}, \
+											{"Tool Auto-Texture Mesh",1,"Auto-Texture Mesh"}, \
+											{"Tool Rotate Mode",1,"Rotate Mode"}, \
+											{"Tool Move Mode",0,"Move Mode"}, \
+											{"Tool Node Select",1,"Click Node To Select"}, \
+											{"Tool Node Duplicate",0,"Click Node To Duplicate, Drag and Auto-Link"}, \
+											{"Tool Node Link",0,"Click Node To Add Link From Selected Node"}, \
+											{"Tool Node Remove Link",0,"Click Node To Remove Link From Selected Node"}, \
+											{"Tool Normals",1,"Show Normals"}, \
+											{"Tool Cull",0,"Show Obscured (Green) and Culled (Gray) Polygons"}, \
+											{"Tool Edit Map Script",1,"Edit Map Script"}, \
+											{"Tool Run Map",0,"Run Map In Engine"}, \
+											{"",0,""}, \
+											{"Tool Spot",0,"Add Spot"}, \
+											{"Tool Light",0,"Add Light"}, \
+											{"Tool Sound",0,"Add Sound"}, \
+											{"Tool Particle",0,"Add Particle"}, \
+											{"Tool Scenery",0,"Add Scenery"}, \
+											{"Tool Node",0,"Add Node"}, \
+											{"Tool Mesh",0,"Add Imported Mesh"}, \
+											{"Tool Mesh UV",0,"Replace UVs on an Existing Mesh"}, \
+											{"Tool Height Map",0,"Add Imported Height Map"}, \
+											{"Tool Grid",0,"Add Grid"}, \
+											{"Tool Polygon",0,"Add Polygon"}, \
+											{"Tool Liquid",0,"Add Liquid"}, \
+										}
 
 //
 // vertex modes
@@ -583,6 +571,7 @@ typedef struct		{
 					} model_state_type;
 
 typedef struct		{
+						int						mode;
 						project_state_type		proj;
 						map_state_type			map;
 						model_state_type		model;

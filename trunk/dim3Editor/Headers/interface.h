@@ -75,16 +75,12 @@ extern void undo_push(void);
 extern void undo_pull(void);
 
 //
-// tool palette
+// map tool palette
 //
 
-extern int tool_palette_pixel_size(void);
-extern void tool_palette_box(d3rect *box);
-extern void tool_default(void);
-extern void tool_switch_vertex_mode(void);
-extern void tool_switch_drag_mode(void);
-extern void tool_switch_grid_mode(void);
-extern void tool_switch_node_mode(void);
+extern void map_tool_palette_set_state(void);
+extern void map_tool_palette_click(int idx);
+extern void map_tool_default(void);
 
 //
 // texture palette
@@ -108,63 +104,6 @@ extern void file_palette_shutdown(void);
 extern void file_palette_draw(void);
 extern void file_palette_scroll_wheel(d3pnt *pnt,int move);
 extern void file_palette_click(d3pnt *pnt,bool double_click);
-
-//
-// map property palettes
-//
-
-extern void map_palette_fill_texture(int texture_idx);
-extern void map_palette_fill_editor_preference(void);
-extern void map_palette_fill_main(void);
-extern void map_palette_fill_map(void);
-extern void map_palette_fill_camera(void);
-extern void map_palette_fill_light_media(void);
-extern void map_palette_fill_sky_weather(void);
-extern void map_palette_fill_cinema(int cinema_idx);
-extern void map_palette_fill_group(int group_idx);
-extern void map_palette_fill_movement(int movement_idx);
-extern void map_palette_fill_mesh(int mesh_idx,int poly_idx);
-extern void map_palette_fill_liquid(int liq_idx);
-extern void map_palette_fill_spot(int spot_idx);
-extern void map_palette_fill_light(int light_idx);
-extern void map_palette_fill_sound(int sound_idx);
-extern void map_palette_fill_particle(int particle_idx);
-extern void map_palette_fill_scenery(int scenery_idx);
-extern void map_palette_fill_node(int node_idx);
-
-extern void map_palette_click_texture(int texture_idx,int id,bool double_click);
-extern void map_palette_click_editor_preference(int id,bool double_click);
-extern void map_palette_click_main(bool double_click);
-extern void map_palette_click_map(bool double_click);
-extern void map_palette_click_camera(bool double_click);
-extern void map_palette_click_light_media(bool double_click);
-extern void map_palette_click_sky_weather(bool double_click);
-extern void map_palette_click_cinema(bool double_click);
-extern void map_palette_click_group(bool double_click);
-extern void map_palette_click_movement(bool double_click);
-extern void map_palette_click_mesh(int mesh_idx,int poly_idx,bool double_click);
-extern void map_palette_click_liquid(int liq_idx,bool double_click);
-extern void map_palette_click_spot(int spot_idx,bool double_click);
-extern void map_palette_click_light(int light_idx,bool double_click);
-extern void map_palette_click_sound(int sound_idx,bool double_click);
-extern void map_palette_click_particle(int particle_idx,bool double_click);
-extern void map_palette_click_scenery(int scenery_idx,bool double_click);
-extern void map_palette_click_node(int node_idx,bool double_click);
-
-extern void map_palette_initialize(void);
-extern void map_palette_shutdown(void);
-extern void map_palette_draw(void);
-extern void map_palette_reset(void);
-extern void map_palette_scroll_into_view(int item_id,int item_idx);
-extern void map_palette_scroll_wheel(d3pnt *pnt,int move);
-extern bool map_palette_delete(void);
-extern void map_palette_click(d3pnt *pnt,bool double_click);
-
-extern void map_palette_fill_cinema_action(int cinema_idx,int action_idx);
-extern void map_palette_fill_movement_move(int movement_idx,int move_idx);
-
-extern void map_palette_click_cinema_action(int cinema_idx,int action_idx,bool double_click);
-extern void map_palette_click_movement_move(int movement_idx,int move_idx,bool double_click);
 
 //
 // project property palettes
@@ -285,6 +224,108 @@ extern void project_palette_fill_group_particle(int particle_idx,int group_parti
 extern void project_palette_click_menu_item(int menu_idx,int menu_item_idx,bool double_click);
 extern void project_palette_click_chooser_piece(int chooser_idx,int chooser_item_idx,bool double_click);
 extern void project_palette_click_group_particle(int particle_idx,int group_particle_idx,bool double_click);
+
+//
+// map property palettes
+//
+
+extern void map_palette_fill_texture(int texture_idx);
+extern void map_palette_fill_editor_preference(void);
+extern void map_palette_fill_main(void);
+extern void map_palette_fill_map(void);
+extern void map_palette_fill_camera(void);
+extern void map_palette_fill_light_media(void);
+extern void map_palette_fill_sky_weather(void);
+extern void map_palette_fill_cinema(int cinema_idx);
+extern void map_palette_fill_group(int group_idx);
+extern void map_palette_fill_movement(int movement_idx);
+extern void map_palette_fill_mesh(int mesh_idx,int poly_idx);
+extern void map_palette_fill_liquid(int liq_idx);
+extern void map_palette_fill_spot(int spot_idx);
+extern void map_palette_fill_light(int light_idx);
+extern void map_palette_fill_sound(int sound_idx);
+extern void map_palette_fill_particle(int particle_idx);
+extern void map_palette_fill_scenery(int scenery_idx);
+extern void map_palette_fill_node(int node_idx);
+
+extern void map_palette_click_texture(int texture_idx,int id,bool double_click);
+extern void map_palette_click_editor_preference(int id,bool double_click);
+extern void map_palette_click_main(bool double_click);
+extern void map_palette_click_map(bool double_click);
+extern void map_palette_click_camera(bool double_click);
+extern void map_palette_click_light_media(bool double_click);
+extern void map_palette_click_sky_weather(bool double_click);
+extern void map_palette_click_cinema(bool double_click);
+extern void map_palette_click_group(bool double_click);
+extern void map_palette_click_movement(bool double_click);
+extern void map_palette_click_mesh(int mesh_idx,int poly_idx,bool double_click);
+extern void map_palette_click_liquid(int liq_idx,bool double_click);
+extern void map_palette_click_spot(int spot_idx,bool double_click);
+extern void map_palette_click_light(int light_idx,bool double_click);
+extern void map_palette_click_sound(int sound_idx,bool double_click);
+extern void map_palette_click_particle(int particle_idx,bool double_click);
+extern void map_palette_click_scenery(int scenery_idx,bool double_click);
+extern void map_palette_click_node(int node_idx,bool double_click);
+
+extern void map_palette_initialize(void);
+extern void map_palette_shutdown(void);
+extern void map_palette_draw(void);
+extern void map_palette_reset(void);
+extern void map_palette_scroll_into_view(int item_id,int item_idx);
+extern void map_palette_scroll_wheel(d3pnt *pnt,int move);
+extern bool map_palette_delete(void);
+extern void map_palette_click(d3pnt *pnt,bool double_click);
+
+extern void map_palette_fill_cinema_action(int cinema_idx,int action_idx);
+extern void map_palette_fill_movement_move(int movement_idx,int move_idx);
+
+extern void map_palette_click_cinema_action(int cinema_idx,int action_idx,bool double_click);
+extern void map_palette_click_movement_move(int movement_idx,int move_idx,bool double_click);
+
+//
+// property palette
+//
+
+extern void model_palette_initialize(void);
+extern void model_palette_shutdown(void);
+extern void model_palette_draw(void);
+extern void model_palette_reset(void);
+extern void model_palette_scroll_into_view(int item_type,int item_idx);
+extern void model_palette_scroll_wheel(d3pnt *pnt,int move);
+extern bool model_palette_delete(void);
+extern void model_palette_click(d3pnt *pnt,bool double_click);
+
+extern void model_palette_fill_texture(int texture_idx);
+extern void model_palette_fill_animator_preference(void);
+extern void model_palette_fill_main(void);
+extern void model_palette_fill_model(void);
+extern void model_palette_fill_mesh(int mesh_idx);
+extern void model_palette_fill_animation(int animate_idx);
+extern void model_palette_fill_pose(int pose_idx);
+extern void model_palette_fill_bone(int bone_idx,int pose_idx);
+extern void model_palette_fill_hit_box(int hit_box_idx);
+
+extern void model_palette_click_texture(int texture_idx,int id,bool double_click);
+extern void model_palette_click_animator_preference(int id,bool double_click);
+extern void model_palette_click_main(bool double_click);
+extern void model_palette_click_model(bool double_click);
+extern void model_palette_click_mesh(int mesh_idx,bool double_click);
+extern void model_palette_click_animation(int animation_idx,bool double_click);
+extern void model_palette_click_pose(int pose_idx,bool double_click);
+extern void model_palette_click_bone(int bone_idx,int pose_idx,bool double_click);
+extern void model_palette_click_hit_box(int hit_box_idx,bool double_click);
+
+extern void model_palette_fill_animate_pose_move(int animate_idx,int pose_move_idx);
+extern void model_palette_fill_pose_bone_move(int pose_idx,int bone_move_idx);
+
+extern void model_palette_click_animate_pose_move(int animate_idx,int pose_move_idx,bool double_click);
+extern void model_palette_click_pose_bone_move(int pose_idx,int bone_move_idx,bool double_click);
+
+extern void model_palette_fill_animate_pose_move_particle(int animate_idx,int pose_move_idx,int particle_idx);
+extern void model_palette_fill_animate_pose_move_ring(int animate_idx,int pose_move_idx,int ring_idx);
+
+extern void model_palette_click_animate_pose_move_particle(int animate_idx,int pose_move_idx,int particle_idx,bool double_click);
+extern void model_palette_click_animate_pose_move_ring(int animate_idx,int pose_move_idx,int ring_idx,bool double_click);
 
 //
 // dos

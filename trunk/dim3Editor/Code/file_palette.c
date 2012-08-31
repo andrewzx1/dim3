@@ -33,8 +33,13 @@ and can be sold or given away.
 #include "ui_common.h"
 #include "interface.h"
 
-#define kPropertyMapAdd			0
-#define kPropertyMap			100
+#define kPropertyProject		0
+
+#define kPropertyMap			10
+#define kPropertyMapAdd			11
+
+#define kPropertyModel			20
+#define kPropertyModelAdd		21
 
 extern app_state_type			state;
 extern file_path_setup_type		file_path_setup;
@@ -51,7 +56,7 @@ void file_palette_fill(void);		// forward reference
 
 void file_palette_initialize(void)
 {
-	list_palette_list_initialize(&file_palette,"Maps",TRUE,FALSE,FALSE);
+	list_palette_list_initialize(&file_palette,"Project",TRUE,FALSE,FALSE);
 
 	file_palette.item_pane.click.id=0;
 	file_palette.item_pane.click.idx=-1;
@@ -83,23 +88,47 @@ void file_palette_fill(void)
 
 	list_palette_delete_all_items(&file_palette);
 
-		// load the files
+		// project settings
 
-	fpd=file_paths_read_directory_data(&file_path_setup,"Maps","xml");
+	list_palette_add_header(&file_palette,0,"Project");
+	list_palette_add_item(&file_palette,kPropertyProject,0,"Setup",(state.mode==app_mode_project),FALSE);
 
-		// fill the list
+		// map list
 
 	list_palette_add_header_button(&file_palette,kPropertyMapAdd,"Maps",list_button_plus);
 
 	list_palette_sort_mark_start(&file_palette);
 
+	fpd=file_paths_read_directory_data(&file_path_setup,"Maps","xml");
+
 	for (n=0;n!=fpd->nfile;n++) {
 		if (fpd->files[n].is_dir) continue;
 
 		sel=FALSE;
-		if (state.map.map_open) sel=(strcmp(state.map.map_file_name,fpd->files[n].file_name)==0);
+		if ((state.map.map_open) && (state.mode==app_mode_map)) sel=(strcmp(state.map.map_file_name,fpd->files[n].file_name)==0);
 
 		list_palette_add_item(&file_palette,kPropertyMap,n,fpd->files[n].file_name,sel,FALSE);
+	}
+
+	list_palette_sort(&file_palette);
+
+	file_paths_close_directory(fpd);
+
+		// model list
+
+	list_palette_add_header_button(&file_palette,kPropertyModelAdd,"Models",list_button_plus);
+
+	list_palette_sort_mark_start(&file_palette);
+
+	fpd=file_paths_read_directory_data_dir(&file_path_setup,"Models","Mesh.xml;Model.xml");
+
+	for (n=0;n!=fpd->nfile;n++) {
+		if (fpd->files[n].is_dir) continue;
+
+		sel=FALSE;
+		if ((state.model.model_open) && (state.mode==app_mode_model)) sel=(strcmp(state.model.model_file_name,fpd->files[n].file_name)==0);
+
+		list_palette_add_item(&file_palette,kPropertyModel,n,fpd->files[n].file_name,sel,FALSE);
 	}
 
 	list_palette_sort(&file_palette);
@@ -151,24 +180,60 @@ void file_palette_click(d3pnt *pnt,bool double_click)
 		return;
 	}
 
-		// add
+		// setup
 
-	if (file_palette.item_pane.click.id==kPropertyMapAdd) {
-		file_new_map();
-		file_palette_fill();
+	if (file_palette.item_pane.click.id==kPropertyProject) {
+		state.mode=app_mode_project;
+		main_wind_draw();
 		return;
 	}
 
-		// open map
+		// add map
 
-	if (file_palette.item_pane.click.id!=kPropertyMap) return;
+	if (file_palette.item_pane.click.id==kPropertyMapAdd) {
+		state.mode=app_mode_map;
+		file_new_map();
+		file_palette_fill();
+		main_wind_draw();
+		return;
+	}
 
-	strncpy(file_name,file_palette.item_pane.click.item->name,file_str_len);
-	file_name[file_str_len-1]=0x0;
+		// pick map
 
-	file_open_map(file_name);
+	if (file_palette.item_pane.click.id==kPropertyMap) {
+		state.mode=app_mode_map;
 
-	file_palette_fill();
+		strncpy(file_name,file_palette.item_pane.click.item->name,file_str_len);
+		file_name[file_str_len-1]=0x0;
 
-	main_wind_draw();
+		file_open_map(file_name);
+		file_palette_fill();
+		main_wind_draw();
+	}
+
+		// add model
+
+	if (file_palette.item_pane.click.id==kPropertyModelAdd) {
+		state.mode=app_mode_model;
+//		file_new_model();			// supergumba -- model
+		file_palette_fill();
+		main_wind_draw();
+		return;
+	}
+
+		// open model
+	
+	if (file_palette.item_pane.click.id==kPropertyModel) {
+		state.mode=app_mode_model;
+
+	//	main_wind_play(play_mode_stop);		// supergumba -- model
+
+		strncpy(file_name,file_palette.item_pane.click.item->name,file_str_len);
+		file_name[file_str_len-1]=0x0;
+
+	//	file_open_model(file_name);			// supergumba -- model
+
+		file_palette_fill();
+		main_wind_draw();
+	}
 }

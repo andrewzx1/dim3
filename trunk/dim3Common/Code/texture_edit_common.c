@@ -104,7 +104,7 @@ void texture_edit_get_box(d3rect *box)
 #else
 	box->rx-=(list_palette_width(&model_palette)+1);
 #endif
-	box->ty+=tool_palette_pixel_size();
+	box->ty+=tool_button_size;
 	box->by-=texture_palette_pixel_size();
 }
 
