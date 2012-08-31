@@ -39,7 +39,11 @@ file_path_setup_type			file_path_setup;
 iface_type						iface;
 app_state_type					state;
 
-extern list_palette_type		file_palette,map_palette;
+tool_palette_tool_type			map_tool_palette_setup[map_tool_count]=map_tool_palette_def;
+tool_palette_type				map_tool_palette;
+
+extern list_palette_type		file_palette,
+								project_palette,map_palette,model_palette;
 
 /* =======================================================
 
@@ -52,17 +56,24 @@ void main_wind_initialize(void)
 		// initializations
 		
 	text_initialize();
-	
-	tool_palette_initialize("Editor");
+
+//	tool_palette_initialize();
+	tool_palette_initialize(&map_tool_palette,"Editor",map_tool_count,map_tool_palette_setup);
+//	tool_palette_initialize();
+
 	list_palette_initialize("Editor");
 	file_palette_initialize();
+	project_palette_initialize();
 	map_palette_initialize();
+//	model_palette_initialize();		// supergumba -- model
 
 	tool_tip_initialize();
 
 	view_initialize();
    
         // misc setup
+
+	state.mode=app_mode_project;
         
 	state.map.vertex_mode=vertex_mode_none;
 	state.map.drag_mode=drag_mode_mesh;
@@ -83,11 +94,16 @@ void main_wind_shutdown(void)
 {
 	view_shutdown();
 	
+	project_palette_shutdown();
 	map_palette_shutdown();
+//	model_palette_shutdown();		// supergumba -- model
+
 	file_palette_shutdown();
 	list_palette_shutdown();
 	
-	tool_palette_shutdown();
+//	tool_palette_shutdown(&project_tool_palette);		// supergumba -- model
+	tool_palette_shutdown(&map_tool_palette);
+//	tool_palette_shutdown(&model_tool_palette);		// supergumba -- model
 	
 	text_shutdown();
 }
@@ -143,6 +159,36 @@ void main_wind_clear_viewport(void)
 	glViewport(0,0,wid,high);
 }
 
+void main_wind_draw_project(void)
+{
+//	project_tool_palette_set_state();
+//	tool_palette_draw(&project_tool_palette);		// supergumba -- model
+	project_palette_draw();
+}
+
+void main_wind_draw_map(void)
+{
+	if (state.map.map_open) {
+		if (state.map.texture_edit_idx==-1) {
+			view_draw();
+		}
+		else {
+			texture_edit_draw();
+		}
+	}
+	
+	map_tool_palette_set_state();
+	tool_palette_draw(&map_tool_palette);
+
+	texture_palette_draw(map.textures);
+	
+	map_palette_draw();
+}
+
+void main_wind_draw_model(void)
+{
+}
+
 void main_wind_draw_no_swap(void)
 {
 		// clear draw buffer
@@ -157,21 +203,22 @@ void main_wind_draw_no_swap(void)
 
 		// draw window
 
-	if (state.map.map_open) {
-		if (state.map.texture_edit_idx==-1) {
-			view_draw();
-		}
-		else {
-			texture_edit_draw();
-		}
+	switch (state.mode) {
+		case app_mode_project:
+			main_wind_draw_project();
+			break;
+		case app_mode_map:
+			main_wind_draw_map();
+			break;
+		case app_mode_model:
+			main_wind_draw_model();
+			break;
 	}
-	
-	tool_palette_draw();
-	texture_palette_draw(map.textures);
-	
-	file_palette_draw();
-	map_palette_draw();
 
+		// all views have file palette
+		// and tool tips
+
+	file_palette_draw();
 	tool_tip_draw();
 }
 
@@ -187,8 +234,34 @@ void main_wind_draw(void)
       
 ======================================================= */
 
-void main_wind_click(d3pnt *pnt,bool double_click)
+void main_wind_click_project(d3pnt *pnt,bool double_click)
 {
+	d3rect				tbox;
+
+		// tool palette
+
+	tool_palette_box(&tbox);
+
+	if ((pnt->x>=tbox.lx) && (pnt->x<=tbox.rx) && (pnt->y>=tbox.ty) && (pnt->y<tbox.by)) {
+	//	project_tool_palette_set_state();
+	//	idx=tool_palette_click(&project_tool_palette,pnt);		// supergumba -- model
+	//	if (idx!=-1) project_tool_palette_click(idx);
+		return;
+	}
+
+		// property palette
+		
+	list_palette_total_box(&project_palette,&tbox);
+
+	if ((pnt->x>=tbox.lx) && (pnt->x<=tbox.rx) && (pnt->y>=tbox.ty) && (pnt->y<tbox.by)) {
+		project_palette_click(pnt,double_click);
+		return;
+	}
+}
+
+void main_wind_click_map(d3pnt *pnt,bool double_click)
+{
+	int					idx;
 	d3rect				tbox;
 	
 		// tool palette
@@ -196,7 +269,9 @@ void main_wind_click(d3pnt *pnt,bool double_click)
 	tool_palette_box(&tbox);
 
 	if ((pnt->x>=tbox.lx) && (pnt->x<=tbox.rx) && (pnt->y>=tbox.ty) && (pnt->y<tbox.by)) {
-		tool_palette_click(pnt);
+		map_tool_palette_set_state();
+		idx=tool_palette_click(&map_tool_palette,pnt);
+		if (idx!=-1) map_tool_palette_click(idx);
 		return;
 	}
 
@@ -206,15 +281,6 @@ void main_wind_click(d3pnt *pnt,bool double_click)
 
 	if ((pnt->x>=tbox.lx) && (pnt->x<=tbox.rx) && (pnt->y>=tbox.ty) && (pnt->y<tbox.by)) {
 		texture_palette_click(map.textures,pnt,double_click);
-		return;
-	}
-	
-		// file palettes
-	
-	list_palette_total_box(&file_palette,&tbox);
-
-	if ((pnt->x>=tbox.lx) && (pnt->x<=tbox.rx) && (pnt->y>=tbox.ty) && (pnt->y<tbox.by)) {
-		file_palette_click(pnt,double_click);
 		return;
 	}
 
@@ -236,6 +302,38 @@ void main_wind_click(d3pnt *pnt,bool double_click)
 	}
 	else {
 		texture_edit_click(pnt,double_click);
+	}
+}
+
+void main_wind_click_model(d3pnt *pnt,bool double_click)
+{
+}
+
+void main_wind_click(d3pnt *pnt,bool double_click)
+{
+	d3rect				tbox;
+
+		// file palettes
+	
+	list_palette_total_box(&file_palette,&tbox);
+
+	if ((pnt->x>=tbox.lx) && (pnt->x<=tbox.rx) && (pnt->y>=tbox.ty) && (pnt->y<tbox.by)) {
+		file_palette_click(pnt,double_click);
+		return;
+	}
+
+		// other clicks
+
+	switch (state.mode) {
+		case app_mode_project:
+			main_wind_click_project(pnt,double_click);
+			break;
+		case app_mode_map:
+			main_wind_click_map(pnt,double_click);
+			break;
+		case app_mode_model:
+			main_wind_click_model(pnt,double_click);
+			break;
 	}
 }
 
@@ -285,9 +383,20 @@ void main_wind_scroll_wheel(d3pnt *pnt,int delta)
 
 void main_wind_mouse_move(d3pnt *pnt)
 {
-	if (!state.map.map_open) return;
+	switch (state.mode) {
 
-	tool_palette_mouse_move(pnt);
+		case app_mode_project:
+		//	tool_palette_mouse_move(&project_tool_palette,pnt);	// supergumba -- model
+			break;
+
+		case app_mode_map:
+			tool_palette_mouse_move(&map_tool_palette,pnt);
+			break;
+
+		case app_mode_model:
+		//	tool_palette_mouse_move(&model_tool_palette,pnt);	// supergumba -- model
+			break;
+	}
 }
 
 /* =======================================================

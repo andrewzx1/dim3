@@ -466,10 +466,6 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\dim3Editor\Code\tool_palette.c"
-						>
-					</File>
-					<File
 						RelativePath="..\..\dim3Common\Code\tool_palette_common.c"
 						>
 					</File>
@@ -946,6 +942,26 @@
 						</File>
 						<File
 							RelativePath="..\..\dim3Editor\Sources\dialogs\model\dialog_set_vertex_bone.c"
+							>
+						</File>
+					</Filter>
+				</Filter>
+				<Filter
+					Name="Code"
+					>
+					<Filter
+						Name="Model"
+						>
+					</Filter>
+				</Filter>
+				<Filter
+					Name="Tools"
+					>
+					<Filter
+						Name="Map"
+						>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\tools\map\map_tool_palette.c"
 							>
 						</File>
 					</Filter>

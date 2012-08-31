@@ -171,7 +171,7 @@ void view_get_pixel_box(editor_view_type *view,d3rect *box)
 	
 	wbox.lx+=list_palette_width(&file_palette);
 	wbox.rx-=list_palette_width(&map_palette);
-	wbox.ty+=tool_palette_pixel_size();
+	wbox.ty+=tool_button_size;
 	wbox.by-=texture_palette_pixel_size();
 	
 	wid=(float)(wbox.rx-wbox.lx);

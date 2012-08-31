@@ -38,134 +38,70 @@ extern app_state_type			state;
 extern app_pref_type			pref;
 extern file_path_setup_type		file_path_setup;
 
-/* =======================================================
-
-      Tool Palette Settings
-      
-======================================================= */
-
-int tool_palette_pixel_size(void)
-{
-	int				pixel_sz;
-	d3rect			wbox;
-	
-	os_get_window_box(&wbox);
-
-	pixel_sz=(wbox.rx-wbox.lx)/tool_count;
-	if (pixel_sz>tool_button_size) pixel_sz=tool_button_size;
-	
-	return(pixel_sz);
-}
-
-void tool_palette_box(d3rect *box)
-{
-	int				pixel_sz;
-	d3rect			wbox;
-	
-	pixel_sz=tool_palette_pixel_size();
-	
-	os_get_window_box(&wbox);
-	
-	box->lx=wbox.lx;
-	box->rx=wbox.rx;
-	box->ty=wbox.ty;
-	box->by=box->ty+(pixel_sz+1);
-}
+extern tool_palette_type		map_tool_palette;
 
 /* =======================================================
 
-      Tool Palette State
+      Map Tool Palette State
       
 ======================================================= */
 
-bool tool_get_highlight_state(int tool_idx)
+void map_tool_palette_set_state(void)
 {
-	editor_view_type		*view;
+	bool				disabled;
+	editor_view_type	*view;
 
-	switch (tool_idx) {
+	view=view_get_current_view();
+	disabled=!state.map.map_open;
 
-			// vertex mode
+	tool_palette_set_state(&map_tool_palette,0,(state.map.vertex_mode==vertex_mode_none),disabled);
+	tool_palette_set_state(&map_tool_palette,1,(state.map.vertex_mode==vertex_mode_lock),disabled);
+	tool_palette_set_state(&map_tool_palette,2,(state.map.vertex_mode==vertex_mode_snap),disabled);
+	tool_palette_set_state(&map_tool_palette,3,(state.map.free_look),disabled);
+	tool_palette_set_state(&map_tool_palette,4,(state.map.select_add),disabled);
+	tool_palette_set_state(&map_tool_palette,5,(state.map.drag_mode==drag_mode_mesh),disabled);
+	tool_palette_set_state(&map_tool_palette,6,(state.map.drag_mode==drag_mode_polygon),disabled);
+	tool_palette_set_state(&map_tool_palette,7,(state.map.drag_mode==drag_mode_vertex),disabled);
+	tool_palette_set_state(&map_tool_palette,8,FALSE,disabled);
+	tool_palette_set_state(&map_tool_palette,9,FALSE,disabled);
+	tool_palette_set_state(&map_tool_palette,10,FALSE,disabled);
+	tool_palette_set_state(&map_tool_palette,11,(state.map.grid_mode==grid_mode_none),disabled);
+	tool_palette_set_state(&map_tool_palette,12,(state.map.grid_mode==grid_mode_small),disabled);
+	tool_palette_set_state(&map_tool_palette,13,(state.map.grid_mode==grid_mode_large),disabled);
+	tool_palette_set_state(&map_tool_palette,14,(state.map.auto_texture),disabled);
+	tool_palette_set_state(&map_tool_palette,15,(state.map.handle_mode==handle_mode_rotate),disabled);
+	tool_palette_set_state(&map_tool_palette,16,(state.map.handle_mode==handle_mode_move),disabled);
+	tool_palette_set_state(&map_tool_palette,17,(state.map.node_mode==node_mode_select),disabled);
+	tool_palette_set_state(&map_tool_palette,18,(state.map.node_mode==node_mode_duplicate),disabled);
+	tool_palette_set_state(&map_tool_palette,19,(state.map.node_mode==node_mode_link),disabled);
+	tool_palette_set_state(&map_tool_palette,20,(state.map.node_mode==node_mode_remove_link),disabled);
+	tool_palette_set_state(&map_tool_palette,21,(state.map.show_normals),disabled);
+	tool_palette_set_state(&map_tool_palette,22,(view->cull),disabled);
 
-		case 0:
-			return(state.map.vertex_mode==vertex_mode_none);
-		case 1:
-			return(state.map.vertex_mode==vertex_mode_lock);
-		case 2:
-			return(state.map.vertex_mode==vertex_mode_snap);
-
-			// free look and select
-
-		case 3:
-			return(state.map.free_look);
-		case 4:
-			return(state.map.select_add);
-
-			// drag mode
-
-		case 5:
-			return(state.map.drag_mode==drag_mode_mesh);
-		case 6:
-			return(state.map.drag_mode==drag_mode_polygon);
-		case 7:
-			return(state.map.drag_mode==drag_mode_vertex);
-			
-			// grids
-			
-		case 11:
-			return(state.map.grid_mode==grid_mode_none);
-		case 12:
-			return(state.map.grid_mode==grid_mode_small);
-		case 13:
-			return(state.map.grid_mode==grid_mode_large);
-
-			// auto texture
-
-		case 14:
-			return(state.map.auto_texture);
-
-			// handle mode
-
-		case 15:
-			return(state.map.handle_mode==handle_mode_rotate);
-		case 16:
-			return(state.map.handle_mode==handle_mode_move);
-
-			// node mode
-
-		case 17:
-			return(state.map.node_mode==node_mode_select);
-		case 18:
-			return(state.map.node_mode==node_mode_duplicate);
-		case 19:
-			return(state.map.node_mode==node_mode_link);
-		case 20:
-			return(state.map.node_mode==node_mode_remove_link);
-			
-			// normals and culling
-
-		case 21:
-			view=view_get_current_view();
-			return(state.map.show_normals);
-		case 22:
-			view=view_get_current_view();
-			return(view->cull);
-	}
-
-	return(FALSE);
-}
-
-bool tool_get_disabled_state(int tool_idx)
-{
-	return(!state.map.map_open);
+	tool_palette_set_state(&map_tool_palette,23,FALSE,disabled);
+	tool_palette_set_state(&map_tool_palette,24,FALSE,disabled);
+	tool_palette_set_state(&map_tool_palette,25,FALSE,disabled);
+	tool_palette_set_state(&map_tool_palette,26,FALSE,disabled);
+	tool_palette_set_state(&map_tool_palette,27,FALSE,disabled);
+	tool_palette_set_state(&map_tool_palette,28,FALSE,disabled);
+	tool_palette_set_state(&map_tool_palette,29,FALSE,disabled);
+	tool_palette_set_state(&map_tool_palette,30,FALSE,disabled);
+	tool_palette_set_state(&map_tool_palette,31,FALSE,disabled);
+	tool_palette_set_state(&map_tool_palette,32,FALSE,disabled);
+	tool_palette_set_state(&map_tool_palette,33,FALSE,disabled);
+	tool_palette_set_state(&map_tool_palette,34,FALSE,disabled);
+	tool_palette_set_state(&map_tool_palette,35,FALSE,disabled);
+	tool_palette_set_state(&map_tool_palette,36,FALSE,disabled);
+	tool_palette_set_state(&map_tool_palette,37,FALSE,disabled);
 }
 
 /* =======================================================
 
-      Tool Palette Button Clicks
+      Map Tool Palette Clicking
       
 ======================================================= */
 
-void tool_click(int tool_idx)
+void map_tool_palette_click(int tool_idx)
 {
 	editor_view_type		*view;
 
@@ -372,11 +308,11 @@ void tool_click(int tool_idx)
 
 /* =======================================================
 
-      Values and States
+      Map Tool Palette Default State
       
 ======================================================= */
 
-void tool_default(void)
+void map_tool_default(void)
 {
 	state.map.free_look=pref.map.free_look;
 	state.map.select_add=FALSE;
@@ -396,38 +332,3 @@ void tool_default(void)
 	
 	state.map.show_normals=FALSE;
 }
-
-void tool_switch_vertex_mode(void)
-{
-	state.map.vertex_mode++;
-	if (state.map.vertex_mode>vertex_mode_snap) state.map.vertex_mode=vertex_mode_none;
-	
-	main_wind_draw();
-}
-
-void tool_switch_drag_mode(void)
-{
-	state.map.drag_mode++;
-	if (state.map.drag_mode>drag_mode_vertex) state.map.drag_mode=drag_mode_mesh;
-
-	main_wind_draw();
-}
-
-void tool_switch_grid_mode(void)
-{
-	state.map.grid_mode++;
-	if (state.map.grid_mode>grid_mode_large) state.map.grid_mode=grid_mode_none;
-	
-	main_wind_draw();
-}
-
-void tool_switch_node_mode(void)
-{
-	state.map.node_mode++;
-	if (state.map.node_mode>node_mode_remove_link) state.map.node_mode=node_mode_select;
-	
-	main_wind_draw();
-}
-
-
-
