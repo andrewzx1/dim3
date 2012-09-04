@@ -48,7 +48,7 @@ and can be sold or given away.
 
 typedef struct		{
 						char						file_name[64];
-						char						separator;
+						bool						separator;
 						char						tool_tip[64];
 						bitmap_type					bitmap;
 					} tool_palette_tool_type;
@@ -70,44 +70,44 @@ typedef struct		{
 #define map_tool_count					38
 
 #define map_tool_palette_def			{ \
-											{"Tool Move Points",0,"Move Vertexes and Meshes Freely"}, \
-											{"Tool Move Points Together",0,"Move Equal Vertexes Together"}, \
-											{"Tool Snap Points",0,"Snap Vertexes and Meshes"}, \
-											{"Tool Free Look",1,"Free Look Mode"}, \
-											{"Tool Toggle Mode",0,"Multi-Select Mode"}, \
-											{"Tool Edit Mesh",1,"Select Meshes"}, \
-											{"Tool Edit Polygons",0,"Select Polygons"}, \
-											{"Tool Edit Vertexes",0,"Select Vertexes"}, \
-											{"Tool Combine Meshes",1,"Combine Meshes"}, \
-											{"Tool Split Mesh",0,"Split Mesh"}, \
-											{"Tool Tesselate Mesh",0,"Tesselate Mesh"}, \
-											{"Tool No Grid",1,"No Grid"}, \
-											{"Tool Small Grid",0,"Small Grid"}, \
-											{"Tool Large Grid",0,"Large Grid"}, \
-											{"Tool Auto-Texture Mesh",1,"Auto-Texture Mesh"}, \
-											{"Tool Rotate Mode",1,"Rotate Mode"}, \
-											{"Tool Move Mode",0,"Move Mode"}, \
-											{"Tool Node Select",1,"Click Node To Select"}, \
-											{"Tool Node Duplicate",0,"Click Node To Duplicate, Drag and Auto-Link"}, \
-											{"Tool Node Link",0,"Click Node To Add Link From Selected Node"}, \
-											{"Tool Node Remove Link",0,"Click Node To Remove Link From Selected Node"}, \
-											{"Tool Normals",1,"Show Normals"}, \
-											{"Tool Cull",0,"Show Obscured (Green) and Culled (Gray) Polygons"}, \
-											{"Tool Edit Map Script",1,"Edit Map Script"}, \
-											{"Tool Run Map",0,"Run Map In Engine"}, \
-											{"",0,""}, \
-											{"Tool Spot",0,"Add Spot"}, \
-											{"Tool Light",0,"Add Light"}, \
-											{"Tool Sound",0,"Add Sound"}, \
-											{"Tool Particle",0,"Add Particle"}, \
-											{"Tool Scenery",0,"Add Scenery"}, \
-											{"Tool Node",0,"Add Node"}, \
-											{"Tool Mesh",0,"Add Imported Mesh"}, \
-											{"Tool Mesh UV",0,"Replace UVs on an Existing Mesh"}, \
-											{"Tool Height Map",0,"Add Imported Height Map"}, \
-											{"Tool Grid",0,"Add Grid"}, \
-											{"Tool Polygon",0,"Add Polygon"}, \
-											{"Tool Liquid",0,"Add Liquid"}, \
+											{"Map/Tool Move Points",FALSE,"Move Vertexes and Meshes Freely"}, \
+											{"Map/Tool Move Points Together",FALSE,"Move Equal Vertexes Together"}, \
+											{"Map/Tool Snap Points",FALSE,"Snap Vertexes and Meshes"}, \
+											{"Map/Tool Free Look",TRUE,"Free Look Mode"}, \
+											{"Map/Tool Toggle Mode",FALSE,"Multi-Select Mode"}, \
+											{"Map/Tool Edit Mesh",TRUE,"Select Meshes"}, \
+											{"Map/Tool Edit Polygons",FALSE,"Select Polygons"}, \
+											{"Map/Tool Edit Vertexes",FALSE,"Select Vertexes"}, \
+											{"Map/Tool Combine Meshes",TRUE,"Combine Meshes"}, \
+											{"Map/Tool Split Mesh",FALSE,"Split Mesh"}, \
+											{"Map/Tool Tesselate Mesh",FALSE,"Tesselate Mesh"}, \
+											{"Map/Tool No Grid",TRUE,"No Grid"}, \
+											{"Map/Tool Small Grid",FALSE,"Small Grid"}, \
+											{"Map/Tool Large Grid",FALSE,"Large Grid"}, \
+											{"Map/Tool Auto-Texture Mesh",TRUE,"Auto-Texture Mesh"}, \
+											{"Map/Tool Rotate Mode",TRUE,"Rotate Mode"}, \
+											{"Map/Tool Move Mode",FALSE,"Move Mode"}, \
+											{"Map/Tool Node Select",TRUE,"Click Node To Select"}, \
+											{"Map/Tool Node Duplicate",FALSE,"Click Node To Duplicate, Drag and Auto-Link"}, \
+											{"Map/Tool Node Link",FALSE,"Click Node To Add Link From Selected Node"}, \
+											{"Map/Tool Node Remove Link",FALSE,"Click Node To Remove Link From Selected Node"}, \
+											{"Map/Tool Normals",TRUE,"Show Normals"}, \
+											{"Map/Tool Cull",FALSE,"Show Obscured (Green) and Culled (Gray) Polygons"}, \
+											{"Map/Tool Edit Map Script",TRUE,"Edit Map Script"}, \
+											{"Map/Tool Run Map",FALSE,"Run Map In Engine"}, \
+											{"",FALSE,""}, \
+											{"Map/Tool Spot",FALSE,"Add Spot"}, \
+											{"Map/Tool Light",FALSE,"Add Light"}, \
+											{"Map/Tool Sound",FALSE,"Add Sound"}, \
+											{"Map/Tool Particle",FALSE,"Add Particle"}, \
+											{"Map/Tool Scenery",FALSE,"Add Scenery"}, \
+											{"Map/Tool Node",FALSE,"Add Node"}, \
+											{"Map/Tool Mesh",FALSE,"Add Imported Mesh"}, \
+											{"Map/Tool Mesh UV",FALSE,"Replace UVs on an Existing Mesh"}, \
+											{"Map/Tool Height Map",FALSE,"Add Imported Height Map"}, \
+											{"Map/Tool Grid",FALSE,"Add Grid"}, \
+											{"Map/Tool Polygon",FALSE,"Add Polygon"}, \
+											{"Map/Tool Liquid",FALSE,"Add Liquid"}, \
 										}
 
 //
