@@ -466,10 +466,6 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\dim3Common\Code\tool_palette_common.c"
-						>
-					</File>
-					<File
 						RelativePath="..\..\dim3Common\Code\tool_tip_common.c"
 						>
 					</File>
@@ -957,14 +953,22 @@
 				<Filter
 					Name="Tools"
 					>
-					<Filter
-						Name="Map"
+					<File
+						RelativePath="..\..\dim3Editor\Sources\tools\map_tool_palette.c"
 						>
-						<File
-							RelativePath="..\..\dim3Editor\Sources\tools\map\map_tool_palette.c"
-							>
-						</File>
-					</Filter>
+					</File>
+					<File
+						RelativePath="..\..\dim3Editor\Sources\tools\model_tool_palette.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Editor\Sources\tools\project_tool_palette.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Editor\Sources\tools\tool_palette_common.c"
+						>
+					</File>
 				</Filter>
 			</Filter>
 			<Filter

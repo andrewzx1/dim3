@@ -39,11 +39,8 @@ file_path_setup_type			file_path_setup;
 iface_type						iface;
 app_state_type					state;
 
-tool_palette_tool_type			map_tool_palette_setup[map_tool_count]=map_tool_palette_def;
-tool_palette_type				map_tool_palette;
-
-extern list_palette_type		file_palette,
-								project_palette,map_palette,model_palette;
+extern tool_palette_type		project_tool_palette,map_tool_palette,model_tool_palette;
+extern list_palette_type		file_palette,project_palette,map_palette,model_palette;
 
 /* =======================================================
 
@@ -57,11 +54,11 @@ void main_wind_initialize(void)
 		
 	text_initialize();
 
-//	tool_palette_initialize();
-	tool_palette_initialize(&map_tool_palette,"Editor",map_tool_count,map_tool_palette_setup);
-//	tool_palette_initialize();
+	project_tool_palette_initialize();
+	map_tool_palette_initialize();
+	model_tool_palette_initialize();
 
-	list_palette_initialize("Editor");
+	list_palette_initialize();
 	file_palette_initialize();
 	project_palette_initialize();
 	map_palette_initialize();
@@ -73,8 +70,6 @@ void main_wind_initialize(void)
    
         // misc setup
 
-	state.mode=app_mode_project;
-        
 	state.map.vertex_mode=vertex_mode_none;
 	state.map.drag_mode=drag_mode_mesh;
 	state.map.grid_mode=grid_mode_small;
@@ -84,10 +79,6 @@ void main_wind_initialize(void)
 	state.map.select_add=FALSE;
 	
 	state.map.drag_handle_idx=-1;
-	
-		// update view
-	
-	menu_update_view();
 }
 
 void main_wind_shutdown(void)
@@ -101,11 +92,62 @@ void main_wind_shutdown(void)
 	file_palette_shutdown();
 	list_palette_shutdown();
 	
-//	tool_palette_shutdown(&project_tool_palette);		// supergumba -- model
-	tool_palette_shutdown(&map_tool_palette);
-//	tool_palette_shutdown(&model_tool_palette);		// supergumba -- model
+	project_tool_palette_shutdown();
+	map_tool_palette_shutdown();
+	model_tool_palette_shutdown();
 	
 	text_shutdown();
+}
+
+/* =======================================================
+
+      Menus
+      
+======================================================= */
+
+void main_wind_menu_create(void)
+{
+	switch (state.mode) {
+
+		case app_mode_map:
+			map_menu_create();
+			map_menu_update();
+			break;
+
+	}
+}
+
+void main_wind_menu_dispose(void)
+{
+	switch (state.mode) {
+
+		case app_mode_map:
+			map_menu_dispose();
+			break;
+
+	}
+}
+
+void main_wind_menu_update(void)
+{
+	switch (state.mode) {
+
+		case app_mode_map:
+			map_menu_update();
+			break;
+
+	}
+}
+
+void main_wind_menu_event_run(int cmd)
+{
+	switch (state.mode) {
+
+		case app_mode_map:
+			map_menu_event_run(cmd);
+			break;
+
+	}
 }
 
 /* =======================================================
@@ -161,8 +203,8 @@ void main_wind_clear_viewport(void)
 
 void main_wind_draw_project(void)
 {
-//	project_tool_palette_set_state();
-//	tool_palette_draw(&project_tool_palette);		// supergumba -- model
+	project_tool_palette_set_state();
+	tool_palette_draw(&project_tool_palette);
 	project_palette_draw();
 }
 
@@ -187,6 +229,8 @@ void main_wind_draw_map(void)
 
 void main_wind_draw_model(void)
 {
+	model_tool_palette_set_state();
+	tool_palette_draw(&model_tool_palette);
 }
 
 void main_wind_draw_no_swap(void)
@@ -236,6 +280,7 @@ void main_wind_draw(void)
 
 void main_wind_click_project(d3pnt *pnt,bool double_click)
 {
+	int					idx;
 	d3rect				tbox;
 
 		// tool palette
@@ -243,9 +288,9 @@ void main_wind_click_project(d3pnt *pnt,bool double_click)
 	tool_palette_box(&tbox);
 
 	if ((pnt->x>=tbox.lx) && (pnt->x<=tbox.rx) && (pnt->y>=tbox.ty) && (pnt->y<tbox.by)) {
-	//	project_tool_palette_set_state();
-	//	idx=tool_palette_click(&project_tool_palette,pnt);		// supergumba -- model
-	//	if (idx!=-1) project_tool_palette_click(idx);
+		project_tool_palette_set_state();
+		idx=tool_palette_click(&project_tool_palette,pnt);
+		if (idx!=-1) project_tool_palette_click(idx);
 		return;
 	}
 
@@ -307,6 +352,19 @@ void main_wind_click_map(d3pnt *pnt,bool double_click)
 
 void main_wind_click_model(d3pnt *pnt,bool double_click)
 {
+	int					idx;
+	d3rect				tbox;
+
+		// tool palette
+
+	tool_palette_box(&tbox);
+
+	if ((pnt->x>=tbox.lx) && (pnt->x<=tbox.rx) && (pnt->y>=tbox.ty) && (pnt->y<tbox.by)) {
+		model_tool_palette_set_state();
+		idx=tool_palette_click(&model_tool_palette,pnt);
+		if (idx!=-1) model_tool_palette_click(idx);
+		return;
+	}
 }
 
 void main_wind_click(d3pnt *pnt,bool double_click)
@@ -343,20 +401,25 @@ void main_wind_click(d3pnt *pnt,bool double_click)
       
 ======================================================= */
 
-void main_wind_scroll_wheel(d3pnt *pnt,int delta)
+void main_wind_scroll_wheel_project(d3pnt *pnt,int delta)
 {
 	d3rect				tbox;
-	
-		// scroll wheel in file palette
 
-	list_palette_total_box(&file_palette,&tbox);
+		// scroll wheel project palette
+
+	list_palette_total_box(&project_palette,&tbox);
 
 	if ((pnt->x>=tbox.lx) && (pnt->x<=tbox.rx) && (pnt->y>=tbox.ty) && (pnt->y<tbox.by)) {
-		file_palette_scroll_wheel(pnt,delta);
+		project_palette_scroll_wheel(pnt,delta);
 		return;
 	}
+}
 
-		// scroll wheel in item, property, or alt property palette
+void main_wind_scroll_wheel_map(d3pnt *pnt,int delta)
+{
+	d3rect				tbox;
+
+		// scroll wheel map palette
 
 	list_palette_total_box(&map_palette,&tbox);
 
@@ -375,6 +438,51 @@ void main_wind_scroll_wheel(d3pnt *pnt,int delta)
 	}
 }
 
+void main_wind_scroll_wheel_model(d3pnt *pnt,int delta)
+{
+	d3rect				tbox;
+
+		// scroll wheel model palette
+/*
+	list_palette_total_box(&model_palette,&tbox);
+
+	if ((pnt->x>=tbox.lx) && (pnt->x<=tbox.rx) && (pnt->y>=tbox.ty) && (pnt->y<tbox.by)) {
+		model_palette_scroll_wheel(pnt,delta);
+		return;
+	}
+*/
+	// supergumba -- model
+	// view scroll wheel here
+}
+
+void main_wind_scroll_wheel(d3pnt *pnt,int delta)
+{
+	d3rect				tbox;
+	
+		// scroll wheel in file palette
+
+	list_palette_total_box(&file_palette,&tbox);
+
+	if ((pnt->x>=tbox.lx) && (pnt->x<=tbox.rx) && (pnt->y>=tbox.ty) && (pnt->y<tbox.by)) {
+		file_palette_scroll_wheel(pnt,delta);
+		return;
+	}
+
+		// other movements
+
+	switch (state.mode) {
+		case app_mode_project:
+			main_wind_scroll_wheel_project(pnt,delta);
+			break;
+		case app_mode_map:
+			main_wind_scroll_wheel_map(pnt,delta);
+			break;
+		case app_mode_model:
+			main_wind_scroll_wheel_model(pnt,delta);
+			break;
+	}
+}
+
 /* =======================================================
 
       Mouse Movement
@@ -386,7 +494,7 @@ void main_wind_mouse_move(d3pnt *pnt)
 	switch (state.mode) {
 
 		case app_mode_project:
-		//	tool_palette_mouse_move(&project_tool_palette,pnt);	// supergumba -- model
+			tool_palette_mouse_move(&project_tool_palette,pnt);
 			break;
 
 		case app_mode_map:
@@ -394,7 +502,7 @@ void main_wind_mouse_move(d3pnt *pnt)
 			break;
 
 		case app_mode_model:
-		//	tool_palette_mouse_move(&model_tool_palette,pnt);	// supergumba -- model
+			tool_palette_mouse_move(&model_tool_palette,pnt);
 			break;
 	}
 }

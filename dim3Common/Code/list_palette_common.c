@@ -53,7 +53,7 @@ bitmap_type						list_bitmaps[5];
       
 ======================================================= */
 
-void list_palette_initialize(char *app_name)
+void list_palette_initialize(void)
 {
 	int				n;
 	char			sub_path[1024],path[1024];
@@ -61,7 +61,7 @@ void list_palette_initialize(char *app_name)
 
 		// load buttons
 
-	os_get_support_file_path(sub_path,app_name);
+	os_get_support_file_path(sub_path);
 	strcat(sub_path,"/Lists");
 		
 	for (n=0;n!=5;n++) {

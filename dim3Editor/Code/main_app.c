@@ -48,9 +48,11 @@ bool main_app_initialize(void)
 	os_glue_start();
 	os_set_arrow_cursor();
 	
-		// no map
-		
+		// initial states
+
+	state.mode=app_mode_project;
  	state.map.map_open=FALSE;
+	state.model.model_open=FALSE;
    
 		// setup file paths
 		
@@ -72,10 +74,9 @@ bool main_app_initialize(void)
 		
 	setup_xml_read();
 	
-		// setup undo and menu
+		// setup undo
 		
 	undo_initialize();
-	menu_fix_enable();
 	
 	return(TRUE);
 }

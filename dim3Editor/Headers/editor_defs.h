@@ -40,6 +40,109 @@ and can be sold or given away.
 #define view_selection_size						10
 
 //
+// menus
+//
+
+//
+// project menus
+//
+
+#define project_menu_apple						128
+#define project_menu_file						129
+
+#define project_menu_item_Save					5100
+#define project_menu_item_Quit					5101
+
+//
+// map menus
+//
+
+#define map_menu_apple							128
+#define map_menu_file							129
+#define map_menu_edit							130
+#define map_menu_view							131
+#define map_menu_map							132
+#define map_menu_mesh							133
+#define map_menu_polygon						134
+
+#define map_menu_item_FileSave					5100
+#define map_menu_item_FilePreference			5101
+#define map_menu_item_FileQuit					5102
+
+#define map_menu_item_EditUndo					5200
+#define map_menu_item_EditDelete				5201
+#define map_menu_item_EditDuplicate				5202
+#define map_menu_item_EditSelectMore			5203
+
+#define map_menu_item_ViewFront					5300
+#define map_menu_item_ViewLeft					5301
+#define map_menu_item_ViewRight					5302
+#define map_menu_item_ViewBack					5303
+#define map_menu_item_ViewTop					5304
+#define map_menu_item_ViewBottom				5305
+#define map_menu_item_ViewPerspective			5306
+#define map_menu_item_ViewOrtho					5307
+#define map_menu_item_ViewUVLayer1				5308
+#define map_menu_item_ViewUVLayer2				5309
+#define map_menu_item_ViewGotoSelect			5310
+#define map_menu_item_ViewGotoMapCenter			5311
+#define map_menu_item_ViewClip					5312
+#define map_menu_item_ViewShowHideLiquids		5313
+#define map_menu_item_ViewShowHideSpots			5314
+#define map_menu_item_ViewShowHideLights		5315
+#define map_menu_item_ViewShowHideNodes			5316
+#define map_menu_item_ViewShowHideMovements		5317
+#define map_menu_item_ViewSplitHorizontal		5318
+#define map_menu_item_ViewSplitVertical			5319
+#define map_menu_item_ViewRemoveSplit			5320
+
+#define map_menu_item_MapRaiseY					5400
+#define map_menu_item_MapLowerY					5401
+#define map_menu_item_MapCenter					5402
+#define map_menu_item_MapResetUV				5403
+#define map_menu_item_MapResetNormals			5404
+#define map_menu_item_MapSortMeshPolys			5405
+#define map_menu_item_ClearLightMaps			5406
+#define map_menu_item_BuildLightMaps			5407
+#define map_menu_item_BuildLiquidReflectionMaps	5408
+#define map_menu_item_AutoGenerate				5409
+#define map_menu_item_Run						5410
+
+#define map_menu_item_MeshCombine				5500
+#define map_menu_item_MeshSplit					5501
+#define map_menu_item_MeshTesselate				5502
+#define map_menu_item_MeshResize				5503
+#define map_menu_item_MeshForceGrid				5506
+#define map_menu_item_MeshFlipX					5508
+#define map_menu_item_MeshFlipY					5509
+#define map_menu_item_MeshFlipZ					5510
+#define map_menu_item_MeshRotateX				5511
+#define map_menu_item_MeshRotateY				5512
+#define map_menu_item_MeshRotateZ				5513
+#define map_menu_item_MeshFreeRotate			5514
+#define map_menu_item_MeshRaiseY				5515
+#define map_menu_item_MeshLowerY				5516
+#define map_menu_item_MeshSelectAllPoly			5517
+#define map_menu_item_MeshResetUV				5520
+#define map_menu_item_MeshWholeUV				5521
+#define map_menu_item_MeshSingleUV				5522
+#define map_menu_item_MeshCreateNormals			5523
+#define map_menu_item_MeshInvertNormals			5524
+#define map_menu_item_MeshSetNormalsOut			5525
+#define map_menu_item_MeshSetNormalsIn			5526
+
+#define map_menu_item_PolygonHole				5600
+#define map_menu_item_PolyTesselate				5601
+#define map_menu_item_PolygonRotateUV			5603
+#define map_menu_item_PolygonFlipU				5604
+#define map_menu_item_PolygonFlipV				5605
+#define map_menu_item_PolygonRecalcNormal		5606
+#define map_menu_item_PolygonInvertNormal		5607
+#define map_menu_item_PolygonResetUV			5608
+#define map_menu_item_PolygonWholeUV			5609
+#define map_menu_item_PolygonSingleUV			5610
+
+//
 // tools
 //
 
@@ -62,53 +165,6 @@ typedef struct		{
 						tool_palette_tool_type		tools[tool_max_tools];
 						tool_palette_state_type		state[tool_max_tools];
 					} tool_palette_type;
-
-//
-// map tool palette
-//
-
-#define map_tool_count					38
-
-#define map_tool_palette_def			{ \
-											{"Map/Tool Move Points",FALSE,"Move Vertexes and Meshes Freely"}, \
-											{"Map/Tool Move Points Together",FALSE,"Move Equal Vertexes Together"}, \
-											{"Map/Tool Snap Points",FALSE,"Snap Vertexes and Meshes"}, \
-											{"Map/Tool Free Look",TRUE,"Free Look Mode"}, \
-											{"Map/Tool Toggle Mode",FALSE,"Multi-Select Mode"}, \
-											{"Map/Tool Edit Mesh",TRUE,"Select Meshes"}, \
-											{"Map/Tool Edit Polygons",FALSE,"Select Polygons"}, \
-											{"Map/Tool Edit Vertexes",FALSE,"Select Vertexes"}, \
-											{"Map/Tool Combine Meshes",TRUE,"Combine Meshes"}, \
-											{"Map/Tool Split Mesh",FALSE,"Split Mesh"}, \
-											{"Map/Tool Tesselate Mesh",FALSE,"Tesselate Mesh"}, \
-											{"Map/Tool No Grid",TRUE,"No Grid"}, \
-											{"Map/Tool Small Grid",FALSE,"Small Grid"}, \
-											{"Map/Tool Large Grid",FALSE,"Large Grid"}, \
-											{"Map/Tool Auto-Texture Mesh",TRUE,"Auto-Texture Mesh"}, \
-											{"Map/Tool Rotate Mode",TRUE,"Rotate Mode"}, \
-											{"Map/Tool Move Mode",FALSE,"Move Mode"}, \
-											{"Map/Tool Node Select",TRUE,"Click Node To Select"}, \
-											{"Map/Tool Node Duplicate",FALSE,"Click Node To Duplicate, Drag and Auto-Link"}, \
-											{"Map/Tool Node Link",FALSE,"Click Node To Add Link From Selected Node"}, \
-											{"Map/Tool Node Remove Link",FALSE,"Click Node To Remove Link From Selected Node"}, \
-											{"Map/Tool Normals",TRUE,"Show Normals"}, \
-											{"Map/Tool Cull",FALSE,"Show Obscured (Green) and Culled (Gray) Polygons"}, \
-											{"Map/Tool Edit Map Script",TRUE,"Edit Map Script"}, \
-											{"Map/Tool Run Map",FALSE,"Run Map In Engine"}, \
-											{"",FALSE,""}, \
-											{"Map/Tool Spot",FALSE,"Add Spot"}, \
-											{"Map/Tool Light",FALSE,"Add Light"}, \
-											{"Map/Tool Sound",FALSE,"Add Sound"}, \
-											{"Map/Tool Particle",FALSE,"Add Particle"}, \
-											{"Map/Tool Scenery",FALSE,"Add Scenery"}, \
-											{"Map/Tool Node",FALSE,"Add Node"}, \
-											{"Map/Tool Mesh",FALSE,"Add Imported Mesh"}, \
-											{"Map/Tool Mesh UV",FALSE,"Replace UVs on an Existing Mesh"}, \
-											{"Map/Tool Height Map",FALSE,"Add Imported Height Map"}, \
-											{"Map/Tool Grid",FALSE,"Add Grid"}, \
-											{"Map/Tool Polygon",FALSE,"Add Polygon"}, \
-											{"Map/Tool Liquid",FALSE,"Add Liquid"}, \
-										}
 
 //
 // vertex modes
@@ -281,109 +337,6 @@ typedef struct		{
 #define import_mode_new							0
 #define import_mode_replace						1
 #define import_mode_replace_all					2
-
-//
-// project menus
-//
-
-#define app_menu_apple							128
-#define app_menu_file							129
-
-#define app_menu_item_About						5000
-
-#define app_menu_item_Save						5100
-#define app_menu_item_Quit						5101
-
-//
-// map menus
-//
-
-#define app_menu_apple							128
-#define app_menu_file							129
-#define app_menu_edit							130
-#define app_menu_view							131
-#define app_menu_map							132
-#define app_menu_mesh							133
-#define app_menu_polygon						134
-
-#define app_menu_item_About						5000
-
-#define app_menu_item_FileSave					5100
-#define app_menu_item_FilePreference			5101
-#define app_menu_item_FileQuit					5102
-
-#define app_menu_item_EditUndo					5200
-#define app_menu_item_EditDelete				5201
-#define app_menu_item_EditDuplicate				5202
-#define app_menu_item_EditSelectMore			5203
-
-#define app_menu_item_ViewFront					5300
-#define app_menu_item_ViewLeft					5301
-#define app_menu_item_ViewRight					5302
-#define app_menu_item_ViewBack					5303
-#define app_menu_item_ViewTop					5304
-#define app_menu_item_ViewBottom				5305
-#define app_menu_item_ViewPerspective			5306
-#define app_menu_item_ViewOrtho					5307
-#define app_menu_item_ViewUVLayer1				5308
-#define app_menu_item_ViewUVLayer2				5309
-#define app_menu_item_ViewGotoSelect			5310
-#define app_menu_item_ViewGotoMapCenter			5311
-#define app_menu_item_ViewClip					5312
-#define app_menu_item_ViewShowHideLiquids		5313
-#define app_menu_item_ViewShowHideSpots			5314
-#define app_menu_item_ViewShowHideLights		5315
-#define app_menu_item_ViewShowHideNodes			5316
-#define app_menu_item_ViewShowHideMovements		5317
-#define app_menu_item_ViewSplitHorizontal		5318
-#define app_menu_item_ViewSplitVertical			5319
-#define app_menu_item_ViewRemoveSplit			5320
-
-#define app_menu_item_MapRaiseY					5400
-#define app_menu_item_MapLowerY					5401
-#define app_menu_item_MapCenter					5402
-#define app_menu_item_MapResetUV				5403
-#define app_menu_item_MapResetNormals			5404
-#define app_menu_item_MapSortMeshPolys			5405
-#define app_menu_item_ClearLightMaps			5406
-#define app_menu_item_BuildLightMaps			5407
-#define app_menu_item_BuildLiquidReflectionMaps	5408
-#define app_menu_item_AutoGenerate				5409
-#define app_menu_item_Run						5410
-
-#define app_menu_item_MeshCombine				5500
-#define app_menu_item_MeshSplit					5501
-#define app_menu_item_MeshTesselate				5502
-#define app_menu_item_MeshResize				5503
-#define app_menu_item_MeshForceGrid				5506
-#define app_menu_item_MeshFlipX					5508
-#define app_menu_item_MeshFlipY					5509
-#define app_menu_item_MeshFlipZ					5510
-#define app_menu_item_MeshRotateX				5511
-#define app_menu_item_MeshRotateY				5512
-#define app_menu_item_MeshRotateZ				5513
-#define app_menu_item_MeshFreeRotate			5514
-#define app_menu_item_MeshRaiseY				5515
-#define app_menu_item_MeshLowerY				5516
-#define app_menu_item_MeshSelectAllPoly			5517
-#define app_menu_item_MeshResetUV				5520
-#define app_menu_item_MeshWholeUV				5521
-#define app_menu_item_MeshSingleUV				5522
-#define app_menu_item_MeshCreateNormals			5523
-#define app_menu_item_MeshInvertNormals			5524
-#define app_menu_item_MeshSetNormalsOut			5525
-#define app_menu_item_MeshSetNormalsIn			5526
-
-#define app_menu_item_PolygonHole				5600
-#define app_menu_item_PolyTesselate				5601
-#define app_menu_item_PolygonRotateUV			5603
-#define app_menu_item_PolygonFlipU				5604
-#define app_menu_item_PolygonFlipV				5605
-#define app_menu_item_PolygonRecalcNormal		5606
-#define app_menu_item_PolygonInvertNormal		5607
-#define app_menu_item_PolygonResetUV			5608
-#define app_menu_item_PolygonWholeUV			5609
-#define app_menu_item_PolygonSingleUV			5610
 
 //
 // undos

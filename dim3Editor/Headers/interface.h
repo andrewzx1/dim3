@@ -38,6 +38,10 @@ extern void main_app_shutdown(void);
 
 extern void main_wind_initialize(void);
 extern void main_wind_shutdown(void);
+extern void main_wind_menu_create(void);
+extern void main_wind_menu_dispose(void);
+extern void main_wind_menu_update(void);
+extern void main_wind_menu_event_run(int cmd);
 extern void main_wind_gl_setup(void);
 extern void main_wind_draw(void);
 extern void main_wind_draw_no_swap(void);
@@ -56,14 +60,13 @@ extern bool setup_xml_read(void);
 extern bool setup_xml_write(void);
 
 //
-// menu
+// menus
 //
 
-extern void menu_create(void);
-extern void menu_dispose(void);
-extern void menu_fix_enable(void);
-extern void menu_update_view(void);
-extern bool menu_event_run(int cmd);
+extern void map_menu_create(void);
+extern void map_menu_dispose(void);
+extern void map_menu_update(void);
+extern bool map_menu_event_run(int cmd);
 
 //
 // undo
@@ -75,12 +78,26 @@ extern void undo_push(void);
 extern void undo_pull(void);
 
 //
-// map tool palette
+// tool palettes
 //
 
+extern void project_tool_palette_initialize(void);
+extern void project_tool_palette_shutdown(void);
+extern void project_tool_palette_set_state(void);
+extern void project_tool_palette_click(int idx);
+extern void project_tool_default(void);
+
+extern void map_tool_palette_initialize(void);
+extern void map_tool_palette_shutdown(void);
 extern void map_tool_palette_set_state(void);
 extern void map_tool_palette_click(int idx);
 extern void map_tool_default(void);
+
+extern void model_tool_palette_initialize(void);
+extern void model_tool_palette_shutdown(void);
+extern void model_tool_palette_set_state(void);
+extern void model_tool_palette_click(int idx);
+extern void model_tool_default(void);
 
 //
 // texture palette
