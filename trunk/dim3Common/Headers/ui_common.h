@@ -208,7 +208,7 @@ extern void progress_next_title(char *title);
 // list palette
 //
 
-extern void list_palette_initialize(char *app_name);
+extern void list_palette_initialize(void);
 extern void list_palette_shutdown(void);
 extern void list_palette_list_initialize(list_palette_type *list,char *title,bool left,bool never_hide_picker,bool never_open);
 extern void list_palette_list_shutdown(list_palette_type *list);
@@ -266,7 +266,7 @@ extern void tool_tip_draw(void);
 
 #define tool_palette_seperator_size				4
 
-extern void tool_palette_initialize(tool_palette_type *tool_palette,char *app_name,int count,tool_palette_tool_type *tools);
+extern void tool_palette_initialize(tool_palette_type *tool_palette,int count,tool_palette_tool_type *tools);
 extern void tool_palette_shutdown(tool_palette_type *tool_palette);
 extern void tool_palette_box(d3rect *box);
 extern void tool_palette_set_state(tool_palette_type *tool_palette,int idx,bool selected,bool disabled);

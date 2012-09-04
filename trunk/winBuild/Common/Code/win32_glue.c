@@ -108,9 +108,9 @@ void os_glue_end(void)
       
 ======================================================= */
 		
-void os_get_support_file_path(char *path,char *app_name)
+void os_get_support_file_path(char *path)
 {
-	sprintf(path,"dim3 App Support\\%s",app_name);
+	strcpy(path,"dim3 App Support\\");
 }
 
 void os_create_directory(char *path)

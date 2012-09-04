@@ -104,7 +104,7 @@ LRESULT CALLBACK editor_wnd_proc(HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam)
 			break;
 
 		case WM_COMMAND:
-			menu_event_run(LOWORD(wParam));
+			main_wind_menu_event_run(LOWORD(wParam));
 			break;
 
 		case WM_CLOSE:
@@ -156,10 +156,7 @@ void win32_main_wind_open(void)
 
 		// menu
 
-	menu_create();
-	
-	undo_initialize();
-	menu_fix_enable();
+	main_wind_menu_create();
 
 		// show window
 
@@ -213,7 +210,7 @@ void win32_main_wind_close(void)
 
 		// delete menu
 
-	menu_dispose();
+	main_wind_menu_dispose();
 
 		// delete window
 

@@ -1065,7 +1065,7 @@ void view_click_piece(editor_view_type *view,d3pnt *pt,bool double_click)
 
 	state.map.in_preference=FALSE;
 		
-	menu_fix_enable();
+	main_wind_menu_update();
 	
 	texture_palette_reset();
 	map_palette_reset();

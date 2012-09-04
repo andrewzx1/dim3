@@ -32,8 +32,10 @@ and can be sold or given away.
 #include "glue.h"
 #include "interface.h"
 
+extern iface_type				iface;
 extern map_type					map;
 extern app_pref_type			pref;
+extern app_state_type			state;
 extern file_path_setup_type		file_path_setup;
 
 /* =======================================================
@@ -44,42 +46,63 @@ extern file_path_setup_type		file_path_setup;
 
 void launch_engine(void)
 {
-	char					path[1024];
+	char					err_str[256],path[1024];
 	unsigned char			uc_len;
 	d3pnt					pnt;
 	d3ang					ang;
 	FILE					*file;
 	
 		// ok to save?
-	
-	if (os_dialog_confirm("Save Changes and Launch Engine?","You need to save changes to this map before you can launch the engine.  Click Yes to save changes and launch the map in the engine.",FALSE)!=0) return;
 
-		// save the map
-		
-	file_save_map();
-	
-		// the link file
-		
-	file_paths_dim3_app_data(&file_path_setup,path,"dim3EditorLink","tmp");
+	if (os_dialog_confirm("Save Changes and Launch Engine?","You need to save changes to this project before you can launch the engine.  Click Yes to save changes and launch the map in the engine.",FALSE)!=0) return;
 
-	file=fopen(path,"w");
-	if (file==NULL) return;
-	
-		// map name
+		// save specific mode
+		// data
+
+	switch (state.mode) {
+
+		case app_mode_project:
+			iface_write(&iface,err_str);
+			break;
+
+		case app_mode_map:
+			if (state.map.map_open) file_save_map();
+			break;
+
+		case app_mode_model:
+		//	if (state.model.....) // supergumba -- model
+			break;
+
+	}
+
+		// if we are in the map
+		// state, launch to that map
+
+	if (state.mode==app_mode_map) {
 		
-	uc_len=(unsigned char)strlen(map.info.name);
-   	fwrite(&uc_len,1,1,file);
-   	fwrite(map.info.name,1,strlen(map.info.name),file);
-	
-		// map position
+			// the link file
+			
+		file_paths_dim3_app_data(&file_path_setup,path,"dim3EditorLink","tmp");
+
+		file=fopen(path,"w");
+		if (file==NULL) return;
 		
-	view_get_position(&pnt);
-	view_get_angle(&ang);
+			// map name
+			
+		uc_len=(unsigned char)strlen(map.info.name);
+   		fwrite(&uc_len,1,1,file);
+   		fwrite(map.info.name,1,strlen(map.info.name),file);
 		
-	fwrite(&pnt,1,sizeof(d3pnt),file);
-	fwrite(&ang,1,sizeof(d3ang),file);
-	
-	fclose(file);
+			// map position
+			
+		view_get_position(&pnt);
+		view_get_angle(&ang);
+			
+		fwrite(&pnt,1,sizeof(d3pnt),file);
+		fwrite(&ang,1,sizeof(d3ang),file);
+		
+		fclose(file);
+	}
 	
 		// run engine
 		

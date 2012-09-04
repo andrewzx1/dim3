@@ -62,7 +62,7 @@ bool view_initialize(void)
 
 		// interface textures
 		
-	os_get_support_file_path(sub_path,"Editor");
+	os_get_support_file_path(sub_path);
 	strcat(sub_path,"/Items");
 		
 	file_paths_app(&file_path_setup,path,sub_path,"spot","png");
@@ -1036,7 +1036,7 @@ void view_select_view(d3pnt *pnt)
 		// interface
 		
 	if (state.map.view_select_idx!=old_idx) {
-		menu_update_view();
+		main_wind_menu_update();
 	}
 }
 

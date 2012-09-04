@@ -72,8 +72,7 @@ void file_reset_state(void)
 		// reset the UI
 
 	map_tool_default();
-	menu_update_view();
-	menu_fix_enable();
+	main_wind_menu_update();
 	texture_palette_reset();
 	
 		// make sure window is

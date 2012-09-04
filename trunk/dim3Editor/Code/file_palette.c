@@ -184,6 +184,7 @@ void file_palette_click(d3pnt *pnt,bool double_click)
 
 	if (file_palette.item_pane.click.id==kPropertyProject) {
 		state.mode=app_mode_project;
+		file_palette_fill();
 		main_wind_draw();
 		return;
 	}
@@ -209,6 +210,8 @@ void file_palette_click(d3pnt *pnt,bool double_click)
 		file_open_map(file_name);
 		file_palette_fill();
 		main_wind_draw();
+
+		return;
 	}
 
 		// add model
@@ -235,5 +238,7 @@ void file_palette_click(d3pnt *pnt,bool double_click)
 
 		file_palette_fill();
 		main_wind_draw();
+
+		return;
 	}
 }

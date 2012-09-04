@@ -894,7 +894,7 @@ void piece_key(char ch)
 		piece_delete();
 		map_palette_reset();
 		main_wind_draw();
-		menu_fix_enable();
+		main_wind_menu_update();
 		return;
 	}
 	

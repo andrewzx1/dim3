@@ -2,7 +2,7 @@
 
 Module: dim3 Editor
 Author: Brian Barnes
- Usage: Tool Palette
+ Usage: Map Tool Palette
 
 ***************************** License ********************************
 
@@ -33,12 +33,72 @@ and can be sold or given away.
 #include "interface.h"
 #include "ui_common.h"
 
+#define map_tool_count			38
+
 extern map_type					map;
 extern app_state_type			state;
 extern app_pref_type			pref;
 extern file_path_setup_type		file_path_setup;
 
-extern tool_palette_type		map_tool_palette;
+tool_palette_type				map_tool_palette;
+
+tool_palette_tool_type			map_tool_palette_setup[map_tool_count]=
+									{
+										{"Map/Tool Move Points",FALSE,"Move Vertexes and Meshes Freely"},
+										{"Map/Tool Move Points Together",FALSE,"Move Equal Vertexes Together"},
+										{"Map/Tool Snap Points",FALSE,"Snap Vertexes and Meshes"},
+										{"Map/Tool Free Look",TRUE,"Free Look Mode"},
+										{"Map/Tool Toggle Mode",FALSE,"Multi-Select Mode"},
+										{"Map/Tool Edit Mesh",TRUE,"Select Meshes"},
+										{"Map/Tool Edit Polygons",FALSE,"Select Polygons"},
+										{"Map/Tool Edit Vertexes",FALSE,"Select Vertexes"},
+										{"Map/Tool Combine Meshes",TRUE,"Combine Meshes"},
+										{"Map/Tool Split Mesh",FALSE,"Split Mesh"},
+										{"Map/Tool Tesselate Mesh",FALSE,"Tesselate Mesh"},
+										{"Map/Tool No Grid",TRUE,"No Grid"},
+										{"Map/Tool Small Grid",FALSE,"Small Grid"},
+										{"Map/Tool Large Grid",FALSE,"Large Grid"},
+										{"Map/Tool Auto-Texture Mesh",TRUE,"Auto-Texture Mesh"},
+										{"Map/Tool Rotate Mode",TRUE,"Rotate Mode"},
+										{"Map/Tool Move Mode",FALSE,"Move Mode"},
+										{"Map/Tool Node Select",TRUE,"Click Node To Select"},
+										{"Map/Tool Node Duplicate",FALSE,"Click Node To Duplicate, Drag and Auto-Link"},
+										{"Map/Tool Node Link",FALSE,"Click Node To Add Link From Selected Node"},
+										{"Map/Tool Node Remove Link",FALSE,"Click Node To Remove Link From Selected Node"},
+										{"Map/Tool Normals",TRUE,"Show Normals"},
+										{"Map/Tool Cull",FALSE,"Show Obscured (Green) and Culled (Gray) Polygons"},
+										{"Map/Tool Edit Map Script",TRUE,"Edit Map Script"},
+										{"Map/Tool Run Map",FALSE,"Run Map In Engine"},
+										{"",FALSE,""},
+										{"Map/Tool Spot",FALSE,"Add Spot"},
+										{"Map/Tool Light",FALSE,"Add Light"},
+										{"Map/Tool Sound",FALSE,"Add Sound"},
+										{"Map/Tool Particle",FALSE,"Add Particle"},
+										{"Map/Tool Scenery",FALSE,"Add Scenery"},
+										{"Map/Tool Node",FALSE,"Add Node"},
+										{"Map/Tool Mesh",FALSE,"Add Imported Mesh"},
+										{"Map/Tool Mesh UV",FALSE,"Replace UVs on an Existing Mesh"},
+										{"Map/Tool Height Map",FALSE,"Add Imported Height Map"},
+										{"Map/Tool Grid",FALSE,"Add Grid"},
+										{"Map/Tool Polygon",FALSE,"Add Polygon"},
+										{"Map/Tool Liquid",FALSE,"Add Liquid"},
+									};
+
+/* =======================================================
+
+      Map Tool Palette Initialize/Shutdown
+      
+======================================================= */
+
+void map_tool_palette_initialize(void)
+{
+	tool_palette_initialize(&map_tool_palette,map_tool_count,map_tool_palette_setup);
+}
+
+void map_tool_palette_shutdown(void)
+{
+	tool_palette_shutdown(&map_tool_palette);
+}
 
 /* =======================================================
 
@@ -205,25 +265,25 @@ void map_tool_palette_click(int tool_idx)
 			
 		case 17:
 			state.map.show_node=TRUE;
-			menu_update_view();
+			main_wind_menu_update();
 			state.map.node_mode=node_mode_select;
 			break;
 			
 		case 18:
 			state.map.show_node=TRUE;
-			menu_update_view();
+			main_wind_menu_update();
 			state.map.node_mode=node_mode_duplicate;
 			break;
 			
 		case 19:
 			state.map.show_node=TRUE;
-			menu_update_view();
+			main_wind_menu_update();
 			state.map.node_mode=node_mode_link;
 			break;
 			
 		case 20:
 			state.map.show_node=TRUE;
-			menu_update_view();
+			main_wind_menu_update();
 			state.map.node_mode=node_mode_remove_link;
 			break;
 			
@@ -300,7 +360,7 @@ void map_tool_palette_click(int tool_idx)
 			
 	}
 	
-	menu_fix_enable();
+	main_wind_menu_update();
 	texture_palette_reset();
 	
 	main_wind_draw();
