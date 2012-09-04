@@ -79,7 +79,6 @@ void main_wind_event_resize(void)
 OSStatus main_wind_event_callback(EventHandlerCallRef eventhandler,EventRef event,void *userdata)
 {
 	unsigned long		modifiers,nclick;
-	unsigned short		btn;
 	long				delta;
 	char				ch;
 	Point				pt;
@@ -117,15 +116,6 @@ OSStatus main_wind_event_callback(EventHandlerCallRef eventhandler,EventRef even
 					
 					dpt.x=pt.h;
 					dpt.y=pt.v;
-					
-						// middle button vertex change mode
-						
-					GetEventParameter(event,kEventParamMouseButton,typeMouseButton,NULL,sizeof(unsigned short),NULL,&btn);
-					
-					if (btn==kEventMouseButtonTertiary) {
-						tool_switch_drag_mode();
-						return(noErr);
-					}
 					
 						// regular clicking
 					

@@ -94,8 +94,8 @@
 		260B43CB1411FA5D006ED023 /* pngconf.h in Headers */ = {isa = PBXBuildFile; fileRef = 260B43C71411FA5D006ED023 /* pngconf.h */; };
 		260B43CC1411FA5D006ED023 /* pnglibconf.h in Headers */ = {isa = PBXBuildFile; fileRef = 260B43C81411FA5D006ED023 /* pnglibconf.h */; };
 		261833CB14DDEB42004DD37A /* libPNG.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 261833CA14DDEB42004DD37A /* libPNG.a */; };
-		262BFC961533BB51006C1CF6 /* Tool Node Duplicate.png in Resources */ = {isa = PBXBuildFile; fileRef = 262BFC951533BB51006C1CF6 /* Tool Node Duplicate.png */; };
-		262BFC971533BB8A006C1CF6 /* Tool Node Duplicate.png in Copy (Tools Icons) */ = {isa = PBXBuildFile; fileRef = 262BFC951533BB51006C1CF6 /* Tool Node Duplicate.png */; };
+		26273B1015EDCCB100242BE7 /* dialog_finish_import.c in Sources */ = {isa = PBXBuildFile; fileRef = 26273B0E15EDCCB100242BE7 /* dialog_finish_import.c */; };
+		26273B1115EDCCB100242BE7 /* dialog_scale_animation_time.c in Sources */ = {isa = PBXBuildFile; fileRef = 26273B0F15EDCCB100242BE7 /* dialog_scale_animation_time.c */; };
 		262C38D212D0211200A94FEE /* ui_common.h in Headers */ = {isa = PBXBuildFile; fileRef = 262C38D112D0211200A94FEE /* ui_common.h */; };
 		262C397012D0268500A94FEE /* list_palette_common.c in Sources */ = {isa = PBXBuildFile; fileRef = 262C396F12D0268500A94FEE /* list_palette_common.c */; };
 		262DD2AC151E31CC0078FEA4 /* base_iface_score.c in Sources */ = {isa = PBXBuildFile; fileRef = 262DD2AB151E31CC0078FEA4 /* base_iface_score.c */; };
@@ -115,7 +115,6 @@
 		26452F1F127F9BA800043C34 /* view_draw_select.c in Sources */ = {isa = PBXBuildFile; fileRef = 26452F19127F9BA800043C34 /* view_draw_select.c */; };
 		26452F20127F9BA800043C34 /* view_models.c in Sources */ = {isa = PBXBuildFile; fileRef = 26452F1A127F9BA800043C34 /* view_models.c */; };
 		26459B5C13DBC5A200D7DD73 /* mac_os_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 26459B5B13DBC5A200D7DD73 /* mac_os_defs.h */; };
-		26459B6513DBDA8800D7DD73 /* Back.png in Resources */ = {isa = PBXBuildFile; fileRef = 26459B6413DBDA8800D7DD73 /* Back.png */; };
 		26459B6613DBDA9D00D7DD73 /* Back.png in Copy (Lists Icons) */ = {isa = PBXBuildFile; fileRef = 26459B6413DBDA8800D7DD73 /* Back.png */; };
 		264735A315CF04360031A1B4 /* view_clip.c in Sources */ = {isa = PBXBuildFile; fileRef = 264735A215CF04360031A1B4 /* view_clip.c */; };
 		264BC91B13661D900004A4AB /* liquid_reflection_maps.c in Sources */ = {isa = PBXBuildFile; fileRef = 264BC91A13661D900004A4AB /* liquid_reflection_maps.c */; };
@@ -132,26 +131,72 @@
 		266DDE6D12E6714A004DA282 /* Edit.png in Copy (Lists Icons) */ = {isa = PBXBuildFile; fileRef = 266DDE5312E670B3004DA282 /* Edit.png */; };
 		266DDE6E12E6714A004DA282 /* Minus.png in Copy (Lists Icons) */ = {isa = PBXBuildFile; fileRef = 266DDE5412E670B3004DA282 /* Minus.png */; };
 		266DDE6F12E6714A004DA282 /* Plus.png in Copy (Lists Icons) */ = {isa = PBXBuildFile; fileRef = 266DDE5512E670B3004DA282 /* Plus.png */; };
+		267F308515F5BF8A00056385 /* Tool Run Map.png in Copy Project Tools */ = {isa = PBXBuildFile; fileRef = 267F2FCF15F5BC7B00056385 /* Tool Run Map.png */; };
+		267F308615F5BF9900056385 /* Tool Auto-Texture Mesh.png in Copy Map Tools */ = {isa = PBXBuildFile; fileRef = 267F2FD215F5BE8400056385 /* Tool Auto-Texture Mesh.png */; };
+		267F308715F5BF9900056385 /* Tool Combine Meshes.png in Copy Map Tools */ = {isa = PBXBuildFile; fileRef = 267F2FD315F5BE8400056385 /* Tool Combine Meshes.png */; };
+		267F308815F5BF9900056385 /* Tool Cull.png in Copy Map Tools */ = {isa = PBXBuildFile; fileRef = 267F2FD415F5BE8400056385 /* Tool Cull.png */; };
+		267F308915F5BF9900056385 /* Tool Edit Map Script.png in Copy Map Tools */ = {isa = PBXBuildFile; fileRef = 267F2FD515F5BE8400056385 /* Tool Edit Map Script.png */; };
+		267F308A15F5BF9900056385 /* Tool Edit Mesh.png in Copy Map Tools */ = {isa = PBXBuildFile; fileRef = 267F2FD615F5BE8400056385 /* Tool Edit Mesh.png */; };
+		267F308B15F5BF9900056385 /* Tool Edit Polygons.png in Copy Map Tools */ = {isa = PBXBuildFile; fileRef = 267F2FD715F5BE8400056385 /* Tool Edit Polygons.png */; };
+		267F308C15F5BF9900056385 /* Tool Edit Vertexes.png in Copy Map Tools */ = {isa = PBXBuildFile; fileRef = 267F2FD815F5BE8400056385 /* Tool Edit Vertexes.png */; };
+		267F308D15F5BF9900056385 /* Tool Free Look.png in Copy Map Tools */ = {isa = PBXBuildFile; fileRef = 267F2FD915F5BE8400056385 /* Tool Free Look.png */; };
+		267F308E15F5BF9900056385 /* Tool Grid.png in Copy Map Tools */ = {isa = PBXBuildFile; fileRef = 267F2FDA15F5BE8400056385 /* Tool Grid.png */; };
+		267F308F15F5BF9900056385 /* Tool Height Map.png in Copy Map Tools */ = {isa = PBXBuildFile; fileRef = 267F2FDB15F5BE8400056385 /* Tool Height Map.png */; };
+		267F309015F5BF9900056385 /* Tool Large Grid.png in Copy Map Tools */ = {isa = PBXBuildFile; fileRef = 267F2FDC15F5BE8400056385 /* Tool Large Grid.png */; };
+		267F309115F5BF9900056385 /* Tool Light.png in Copy Map Tools */ = {isa = PBXBuildFile; fileRef = 267F2FDD15F5BE8400056385 /* Tool Light.png */; };
+		267F309215F5BF9900056385 /* Tool Liquid.png in Copy Map Tools */ = {isa = PBXBuildFile; fileRef = 267F2FDE15F5BE8400056385 /* Tool Liquid.png */; };
+		267F309315F5BF9900056385 /* Tool Mesh UV.png in Copy Map Tools */ = {isa = PBXBuildFile; fileRef = 267F2FDF15F5BE8400056385 /* Tool Mesh UV.png */; };
+		267F309415F5BF9900056385 /* Tool Mesh.png in Copy Map Tools */ = {isa = PBXBuildFile; fileRef = 267F2FE015F5BE8400056385 /* Tool Mesh.png */; };
+		267F309515F5BF9900056385 /* Tool Move Mode.png in Copy Map Tools */ = {isa = PBXBuildFile; fileRef = 267F2FE115F5BE8400056385 /* Tool Move Mode.png */; };
+		267F309615F5BF9900056385 /* Tool Move Points Together.png in Copy Map Tools */ = {isa = PBXBuildFile; fileRef = 267F2FE215F5BE8400056385 /* Tool Move Points Together.png */; };
+		267F309715F5BF9900056385 /* Tool Move Points.png in Copy Map Tools */ = {isa = PBXBuildFile; fileRef = 267F2FE315F5BE8400056385 /* Tool Move Points.png */; };
+		267F309815F5BF9900056385 /* Tool No Grid.png in Copy Map Tools */ = {isa = PBXBuildFile; fileRef = 267F2FE415F5BE8400056385 /* Tool No Grid.png */; };
+		267F309915F5BF9900056385 /* Tool Node Duplicate.png in Copy Map Tools */ = {isa = PBXBuildFile; fileRef = 267F2FE515F5BE8400056385 /* Tool Node Duplicate.png */; };
+		267F309A15F5BF9900056385 /* Tool Node Link.png in Copy Map Tools */ = {isa = PBXBuildFile; fileRef = 267F2FE615F5BE8400056385 /* Tool Node Link.png */; };
+		267F309B15F5BF9900056385 /* Tool Node Remove Link.png in Copy Map Tools */ = {isa = PBXBuildFile; fileRef = 267F2FE715F5BE8400056385 /* Tool Node Remove Link.png */; };
+		267F309C15F5BF9900056385 /* Tool Node Select.png in Copy Map Tools */ = {isa = PBXBuildFile; fileRef = 267F2FE815F5BE8400056385 /* Tool Node Select.png */; };
+		267F309D15F5BF9900056385 /* Tool Node.png in Copy Map Tools */ = {isa = PBXBuildFile; fileRef = 267F2FE915F5BE8400056385 /* Tool Node.png */; };
+		267F309E15F5BF9900056385 /* Tool Normals.png in Copy Map Tools */ = {isa = PBXBuildFile; fileRef = 267F2FEA15F5BE8400056385 /* Tool Normals.png */; };
+		267F309F15F5BF9900056385 /* Tool Particle.png in Copy Map Tools */ = {isa = PBXBuildFile; fileRef = 267F2FEB15F5BE8400056385 /* Tool Particle.png */; };
+		267F30A015F5BF9900056385 /* Tool Polygon.png in Copy Map Tools */ = {isa = PBXBuildFile; fileRef = 267F2FEC15F5BE8400056385 /* Tool Polygon.png */; };
+		267F30A115F5BF9900056385 /* Tool Rotate Mode.png in Copy Map Tools */ = {isa = PBXBuildFile; fileRef = 267F2FED15F5BE8400056385 /* Tool Rotate Mode.png */; };
+		267F30A215F5BF9900056385 /* Tool Run Map.png in Copy Map Tools */ = {isa = PBXBuildFile; fileRef = 267F2FEE15F5BE8400056385 /* Tool Run Map.png */; };
+		267F30A315F5BF9900056385 /* Tool Scenery.png in Copy Map Tools */ = {isa = PBXBuildFile; fileRef = 267F2FEF15F5BE8400056385 /* Tool Scenery.png */; };
+		267F30A415F5BF9900056385 /* Tool Small Grid.png in Copy Map Tools */ = {isa = PBXBuildFile; fileRef = 267F2FF015F5BE8400056385 /* Tool Small Grid.png */; };
+		267F30A515F5BF9900056385 /* Tool Snap Points.png in Copy Map Tools */ = {isa = PBXBuildFile; fileRef = 267F2FF115F5BE8400056385 /* Tool Snap Points.png */; };
+		267F30A615F5BF9900056385 /* Tool Sound.png in Copy Map Tools */ = {isa = PBXBuildFile; fileRef = 267F2FF215F5BE8400056385 /* Tool Sound.png */; };
+		267F30A715F5BF9900056385 /* Tool Split Mesh.png in Copy Map Tools */ = {isa = PBXBuildFile; fileRef = 267F2FF315F5BE8400056385 /* Tool Split Mesh.png */; };
+		267F30A815F5BF9900056385 /* Tool Spot.png in Copy Map Tools */ = {isa = PBXBuildFile; fileRef = 267F2FF415F5BE8400056385 /* Tool Spot.png */; };
+		267F30A915F5BF9900056385 /* Tool Tesselate Mesh.png in Copy Map Tools */ = {isa = PBXBuildFile; fileRef = 267F2FF515F5BE8400056385 /* Tool Tesselate Mesh.png */; };
+		267F30AA15F5BF9900056385 /* Tool Toggle Mode.png in Copy Map Tools */ = {isa = PBXBuildFile; fileRef = 267F2FF615F5BE8400056385 /* Tool Toggle Mode.png */; };
+		267F30AB15F5BFA900056385 /* Tool Bones.png in Copy Model Tools */ = {isa = PBXBuildFile; fileRef = 267F301C15F5BE9000056385 /* Tool Bones.png */; };
+		267F30AC15F5BFA900056385 /* Tool Boxes.png in Copy Model Tools */ = {isa = PBXBuildFile; fileRef = 267F301D15F5BE9000056385 /* Tool Boxes.png */; };
+		267F30AD15F5BFA900056385 /* Tool Edit Mesh.png in Copy Model Tools */ = {isa = PBXBuildFile; fileRef = 267F301E15F5BE9000056385 /* Tool Edit Mesh.png */; };
+		267F30AE15F5BFA900056385 /* Tool Edit Polygons.png in Copy Model Tools */ = {isa = PBXBuildFile; fileRef = 267F301F15F5BE9000056385 /* Tool Edit Polygons.png */; };
+		267F30AF15F5BFA900056385 /* Tool Edit Vertexes.png in Copy Model Tools */ = {isa = PBXBuildFile; fileRef = 267F302015F5BE9000056385 /* Tool Edit Vertexes.png */; };
+		267F30B015F5BFA900056385 /* Tool Hit Boxes.png in Copy Model Tools */ = {isa = PBXBuildFile; fileRef = 267F302115F5BE9000056385 /* Tool Hit Boxes.png */; };
+		267F30B115F5BFA900056385 /* Tool Mesh.png in Copy Model Tools */ = {isa = PBXBuildFile; fileRef = 267F302215F5BE9000056385 /* Tool Mesh.png */; };
+		267F30B215F5BFA900056385 /* Tool Move Mode.png in Copy Model Tools */ = {isa = PBXBuildFile; fileRef = 267F302315F5BE9000056385 /* Tool Move Mode.png */; };
+		267F30B315F5BFA900056385 /* Tool Normals.png in Copy Model Tools */ = {isa = PBXBuildFile; fileRef = 267F302415F5BE9000056385 /* Tool Normals.png */; };
+		267F30B415F5BFA900056385 /* Tool Play Blend.png in Copy Model Tools */ = {isa = PBXBuildFile; fileRef = 267F302515F5BE9000056385 /* Tool Play Blend.png */; };
+		267F30B515F5BFAA00056385 /* Tool Play Next.png in Copy Model Tools */ = {isa = PBXBuildFile; fileRef = 267F302615F5BE9000056385 /* Tool Play Next.png */; };
+		267F30B615F5BFAA00056385 /* Tool Play Previous.png in Copy Model Tools */ = {isa = PBXBuildFile; fileRef = 267F302715F5BE9000056385 /* Tool Play Previous.png */; };
+		267F30B715F5BFAA00056385 /* Tool Play Slow.png in Copy Model Tools */ = {isa = PBXBuildFile; fileRef = 267F302815F5BE9000056385 /* Tool Play Slow.png */; };
+		267F30B815F5BFAA00056385 /* Tool Play Stop.png in Copy Model Tools */ = {isa = PBXBuildFile; fileRef = 267F302915F5BE9000056385 /* Tool Play Stop.png */; };
+		267F30B915F5BFAA00056385 /* Tool Play.png in Copy Model Tools */ = {isa = PBXBuildFile; fileRef = 267F302A15F5BE9000056385 /* Tool Play.png */; };
+		267F30BA15F5BFAA00056385 /* Tool Rotate Mode.png in Copy Model Tools */ = {isa = PBXBuildFile; fileRef = 267F302B15F5BE9000056385 /* Tool Rotate Mode.png */; };
+		267F30BB15F5BFAA00056385 /* Tool Select Vertex With Bone.png in Copy Model Tools */ = {isa = PBXBuildFile; fileRef = 267F302C15F5BE9000056385 /* Tool Select Vertex With Bone.png */; };
+		267F30BC15F5BFAA00056385 /* Tool Show Bone Names.png in Copy Model Tools */ = {isa = PBXBuildFile; fileRef = 267F302D15F5BE9000056385 /* Tool Show Bone Names.png */; };
+		267F30BD15F5BFAA00056385 /* Tool Show First Mesh.png in Copy Model Tools */ = {isa = PBXBuildFile; fileRef = 267F302E15F5BE9000056385 /* Tool Show First Mesh.png */; };
+		267F30BE15F5BFAA00056385 /* Tool Textured.png in Copy Model Tools */ = {isa = PBXBuildFile; fileRef = 267F302F15F5BE9000056385 /* Tool Textured.png */; };
 		26808225122057F600EB7897 /* view_picker.c in Sources */ = {isa = PBXBuildFile; fileRef = 26808224122057F600EB7897 /* view_picker.c */; };
 		2681880310A3A28A000B2CD8 /* light_maps.c in Sources */ = {isa = PBXBuildFile; fileRef = 2681880210A3A28A000B2CD8 /* light_maps.c */; };
 		26899FA90F1EBF25007860EB /* editor_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 26899FA80F1EBF25007860EB /* editor_defs.h */; };
 		26937AE112D2D5C3001DEEB8 /* import_obj.c in Sources */ = {isa = PBXBuildFile; fileRef = 26937AE012D2D5C3001DEEB8 /* import_obj.c */; };
 		26A32EEA1453D09F0005AABD /* model_util_file_model.c in Sources */ = {isa = PBXBuildFile; fileRef = 26A32EE91453D09E0005AABD /* model_util_file_model.c */; };
 		26AFB4490D95E0E60004805A /* pieces_mesh.c in Sources */ = {isa = PBXBuildFile; fileRef = 26AFB4480D95E0E60004805A /* pieces_mesh.c */; };
-		26C5F02712612832000B0F9E /* Tool Grid.png in Copy (Tools Icons) */ = {isa = PBXBuildFile; fileRef = 26C5F00F12612826000B0F9E /* Tool Grid.png */; };
-		26C5F02812612832000B0F9E /* Tool Height Map.png in Copy (Tools Icons) */ = {isa = PBXBuildFile; fileRef = 26C5F01012612826000B0F9E /* Tool Height Map.png */; };
-		26C5F02912612832000B0F9E /* Tool Light.png in Copy (Tools Icons) */ = {isa = PBXBuildFile; fileRef = 26C5F01112612826000B0F9E /* Tool Light.png */; };
-		26C5F02A12612832000B0F9E /* Tool Liquid.png in Copy (Tools Icons) */ = {isa = PBXBuildFile; fileRef = 26C5F01212612826000B0F9E /* Tool Liquid.png */; };
-		26C5F02B12612832000B0F9E /* Tool Mesh UV.png in Copy (Tools Icons) */ = {isa = PBXBuildFile; fileRef = 26C5F01312612826000B0F9E /* Tool Mesh UV.png */; };
-		26C5F02C12612832000B0F9E /* Tool Mesh.png in Copy (Tools Icons) */ = {isa = PBXBuildFile; fileRef = 26C5F01412612826000B0F9E /* Tool Mesh.png */; };
-		26C5F02D12612832000B0F9E /* Tool Node.png in Copy (Tools Icons) */ = {isa = PBXBuildFile; fileRef = 26C5F01512612826000B0F9E /* Tool Node.png */; };
-		26C5F02E12612832000B0F9E /* Tool Particle.png in Copy (Tools Icons) */ = {isa = PBXBuildFile; fileRef = 26C5F01612612826000B0F9E /* Tool Particle.png */; };
-		26C5F02F12612832000B0F9E /* Tool Polygon.png in Copy (Tools Icons) */ = {isa = PBXBuildFile; fileRef = 26C5F01712612826000B0F9E /* Tool Polygon.png */; };
-		26C5F03012612832000B0F9E /* Tool Scenery.png in Copy (Tools Icons) */ = {isa = PBXBuildFile; fileRef = 26C5F01812612826000B0F9E /* Tool Scenery.png */; };
-		26C5F03112612832000B0F9E /* Tool Sound.png in Copy (Tools Icons) */ = {isa = PBXBuildFile; fileRef = 26C5F01912612826000B0F9E /* Tool Sound.png */; };
-		26C5F03212612832000B0F9E /* Tool Spot.png in Copy (Tools Icons) */ = {isa = PBXBuildFile; fileRef = 26C5F01A12612826000B0F9E /* Tool Spot.png */; };
+		26B7B4AE15F28313001150E4 /* map_tool_palette.c in Sources */ = {isa = PBXBuildFile; fileRef = 26B7B4AD15F28313001150E4 /* map_tool_palette.c */; };
 		26C5F0B0126130D0000B0F9E /* glue.h in Headers */ = {isa = PBXBuildFile; fileRef = 26C5F0AF126130D0000B0F9E /* glue.h */; };
-		26C5F0EB126135DC000B0F9E /* tool_palette.c in Sources */ = {isa = PBXBuildFile; fileRef = 26C5F0EA126135DC000B0F9E /* tool_palette.c */; };
 		26CAEC6B12D675A900310691 /* property_utility_common.c in Sources */ = {isa = PBXBuildFile; fileRef = 26CAEC6912D675A900310691 /* property_utility_common.c */; };
 		26CAEC6C12D675A900310691 /* texture_edit_common.c in Sources */ = {isa = PBXBuildFile; fileRef = 26CAEC6A12D675A900310691 /* texture_edit_common.c */; };
 		26CF62A5126BDE55002DCC2A /* tool_palette_common.c in Sources */ = {isa = PBXBuildFile; fileRef = 26CF62A4126BDE55002DCC2A /* tool_palette_common.c */; };
@@ -171,30 +216,6 @@
 		26F95EA8125AD1430016127D /* scenery.png in Copy (Items Icons) */ = {isa = PBXBuildFile; fileRef = 26636ADF125A8ED10090A321 /* scenery.png */; };
 		26F95EA9125AD1430016127D /* sound.png in Copy (Items Icons) */ = {isa = PBXBuildFile; fileRef = 26636AE0125A8ED10090A321 /* sound.png */; };
 		26F95EAA125AD1430016127D /* spot.png in Copy (Items Icons) */ = {isa = PBXBuildFile; fileRef = 26636AE1125A8ED10090A321 /* spot.png */; };
-		26F95ECC125AD24D0016127D /* Tool Auto-Texture Mesh.png in Copy (Tools Icons) */ = {isa = PBXBuildFile; fileRef = 26636B03125A8EE20090A321 /* Tool Auto-Texture Mesh.png */; };
-		26F95ECD125AD24D0016127D /* Tool Combine Meshes.png in Copy (Tools Icons) */ = {isa = PBXBuildFile; fileRef = 26636B04125A8EE20090A321 /* Tool Combine Meshes.png */; };
-		26F95ECE125AD24D0016127D /* Tool Cull.png in Copy (Tools Icons) */ = {isa = PBXBuildFile; fileRef = 26636B05125A8EE20090A321 /* Tool Cull.png */; };
-		26F95ECF125AD24D0016127D /* Tool Edit Map Script.png in Copy (Tools Icons) */ = {isa = PBXBuildFile; fileRef = 26636B06125A8EE20090A321 /* Tool Edit Map Script.png */; };
-		26F95ED0125AD24D0016127D /* Tool Edit Mesh.png in Copy (Tools Icons) */ = {isa = PBXBuildFile; fileRef = 26636B07125A8EE20090A321 /* Tool Edit Mesh.png */; };
-		26F95ED1125AD24D0016127D /* Tool Edit Polygons.png in Copy (Tools Icons) */ = {isa = PBXBuildFile; fileRef = 26636B08125A8EE20090A321 /* Tool Edit Polygons.png */; };
-		26F95ED2125AD24D0016127D /* Tool Edit Vertexes.png in Copy (Tools Icons) */ = {isa = PBXBuildFile; fileRef = 26636B09125A8EE20090A321 /* Tool Edit Vertexes.png */; };
-		26F95ED3125AD24D0016127D /* Tool Free Look.png in Copy (Tools Icons) */ = {isa = PBXBuildFile; fileRef = 26636B0A125A8EE20090A321 /* Tool Free Look.png */; };
-		26F95ED4125AD24D0016127D /* Tool Large Grid.png in Copy (Tools Icons) */ = {isa = PBXBuildFile; fileRef = 26636B0B125A8EE20090A321 /* Tool Large Grid.png */; };
-		26F95ED6125AD24D0016127D /* Tool Move Mode.png in Copy (Tools Icons) */ = {isa = PBXBuildFile; fileRef = 26636B0D125A8EE20090A321 /* Tool Move Mode.png */; };
-		26F95ED7125AD24D0016127D /* Tool Move Points Together.png in Copy (Tools Icons) */ = {isa = PBXBuildFile; fileRef = 26636B0E125A8EE20090A321 /* Tool Move Points Together.png */; };
-		26F95ED8125AD24D0016127D /* Tool Move Points.png in Copy (Tools Icons) */ = {isa = PBXBuildFile; fileRef = 26636B0F125A8EE20090A321 /* Tool Move Points.png */; };
-		26F95ED9125AD24D0016127D /* Tool No Grid.png in Copy (Tools Icons) */ = {isa = PBXBuildFile; fileRef = 26636B10125A8EE20090A321 /* Tool No Grid.png */; };
-		26F95EDA125AD24D0016127D /* Tool Node Link.png in Copy (Tools Icons) */ = {isa = PBXBuildFile; fileRef = 26636B11125A8EE20090A321 /* Tool Node Link.png */; };
-		26F95EDB125AD24D0016127D /* Tool Node Remove Link.png in Copy (Tools Icons) */ = {isa = PBXBuildFile; fileRef = 26636B12125A8EE20090A321 /* Tool Node Remove Link.png */; };
-		26F95EDC125AD24D0016127D /* Tool Node Select.png in Copy (Tools Icons) */ = {isa = PBXBuildFile; fileRef = 26636B13125A8EE20090A321 /* Tool Node Select.png */; };
-		26F95EDD125AD24D0016127D /* Tool Normals.png in Copy (Tools Icons) */ = {isa = PBXBuildFile; fileRef = 26636B14125A8EE20090A321 /* Tool Normals.png */; };
-		26F95EDE125AD24D0016127D /* Tool Rotate Mode.png in Copy (Tools Icons) */ = {isa = PBXBuildFile; fileRef = 26636B15125A8EE20090A321 /* Tool Rotate Mode.png */; };
-		26F95EDF125AD24D0016127D /* Tool Run Map.png in Copy (Tools Icons) */ = {isa = PBXBuildFile; fileRef = 26636B16125A8EE20090A321 /* Tool Run Map.png */; };
-		26F95EE0125AD24D0016127D /* Tool Small Grid.png in Copy (Tools Icons) */ = {isa = PBXBuildFile; fileRef = 26636B17125A8EE20090A321 /* Tool Small Grid.png */; };
-		26F95EE1125AD24D0016127D /* Tool Snap Points.png in Copy (Tools Icons) */ = {isa = PBXBuildFile; fileRef = 26636B18125A8EE20090A321 /* Tool Snap Points.png */; };
-		26F95EE2125AD24D0016127D /* Tool Split Mesh.png in Copy (Tools Icons) */ = {isa = PBXBuildFile; fileRef = 26636B19125A8EE20090A321 /* Tool Split Mesh.png */; };
-		26F95EE3125AD24D0016127D /* Tool Tesselate Mesh.png in Copy (Tools Icons) */ = {isa = PBXBuildFile; fileRef = 26636B1A125A8EE20090A321 /* Tool Tesselate Mesh.png */; };
-		26F95EE4125AD24D0016127D /* Tool Toggle Mode.png in Copy (Tools Icons) */ = {isa = PBXBuildFile; fileRef = 26636B1B125A8EE20090A321 /* Tool Toggle Mode.png */; };
 		26FD325C15E492E800B726EA /* dialog_blended_animation.c in Sources */ = {isa = PBXBuildFile; fileRef = 26FD325915E492E800B726EA /* dialog_blended_animation.c */; };
 		26FD325D15E492E800B726EA /* dialog_normal.c in Sources */ = {isa = PBXBuildFile; fileRef = 26FD325A15E492E800B726EA /* dialog_normal.c */; };
 		26FD325E15E492E800B726EA /* dialog_set_vertex_bone.c in Sources */ = {isa = PBXBuildFile; fileRef = 26FD325B15E492E800B726EA /* dialog_set_vertex_bone.c */; };
@@ -324,51 +345,92 @@
 			name = "Copy (Lists Icons)";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		26F95ECA125AD24D0016127D /* Copy (Tools Icons) */ = {
+		267F2FCA15F5BC1200056385 /* Copy Project Tools */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
-			dstPath = Tools;
+			dstPath = Tools/Project;
 			dstSubfolderSpec = 7;
 			files = (
-				26C5F02712612832000B0F9E /* Tool Grid.png in Copy (Tools Icons) */,
-				26C5F02812612832000B0F9E /* Tool Height Map.png in Copy (Tools Icons) */,
-				26C5F02912612832000B0F9E /* Tool Light.png in Copy (Tools Icons) */,
-				26C5F02A12612832000B0F9E /* Tool Liquid.png in Copy (Tools Icons) */,
-				26C5F02B12612832000B0F9E /* Tool Mesh UV.png in Copy (Tools Icons) */,
-				26C5F02C12612832000B0F9E /* Tool Mesh.png in Copy (Tools Icons) */,
-				26C5F02D12612832000B0F9E /* Tool Node.png in Copy (Tools Icons) */,
-				26C5F02E12612832000B0F9E /* Tool Particle.png in Copy (Tools Icons) */,
-				26C5F02F12612832000B0F9E /* Tool Polygon.png in Copy (Tools Icons) */,
-				26C5F03012612832000B0F9E /* Tool Scenery.png in Copy (Tools Icons) */,
-				26C5F03112612832000B0F9E /* Tool Sound.png in Copy (Tools Icons) */,
-				26C5F03212612832000B0F9E /* Tool Spot.png in Copy (Tools Icons) */,
-				26F95ECC125AD24D0016127D /* Tool Auto-Texture Mesh.png in Copy (Tools Icons) */,
-				26F95ECD125AD24D0016127D /* Tool Combine Meshes.png in Copy (Tools Icons) */,
-				26F95ECE125AD24D0016127D /* Tool Cull.png in Copy (Tools Icons) */,
-				26F95ECF125AD24D0016127D /* Tool Edit Map Script.png in Copy (Tools Icons) */,
-				26F95ED0125AD24D0016127D /* Tool Edit Mesh.png in Copy (Tools Icons) */,
-				26F95ED1125AD24D0016127D /* Tool Edit Polygons.png in Copy (Tools Icons) */,
-				26F95ED2125AD24D0016127D /* Tool Edit Vertexes.png in Copy (Tools Icons) */,
-				26F95ED3125AD24D0016127D /* Tool Free Look.png in Copy (Tools Icons) */,
-				26F95ED4125AD24D0016127D /* Tool Large Grid.png in Copy (Tools Icons) */,
-				26F95ED6125AD24D0016127D /* Tool Move Mode.png in Copy (Tools Icons) */,
-				262BFC971533BB8A006C1CF6 /* Tool Node Duplicate.png in Copy (Tools Icons) */,
-				26F95ED7125AD24D0016127D /* Tool Move Points Together.png in Copy (Tools Icons) */,
-				26F95ED8125AD24D0016127D /* Tool Move Points.png in Copy (Tools Icons) */,
-				26F95ED9125AD24D0016127D /* Tool No Grid.png in Copy (Tools Icons) */,
-				26F95EDA125AD24D0016127D /* Tool Node Link.png in Copy (Tools Icons) */,
-				26F95EDB125AD24D0016127D /* Tool Node Remove Link.png in Copy (Tools Icons) */,
-				26F95EDC125AD24D0016127D /* Tool Node Select.png in Copy (Tools Icons) */,
-				26F95EDD125AD24D0016127D /* Tool Normals.png in Copy (Tools Icons) */,
-				26F95EDE125AD24D0016127D /* Tool Rotate Mode.png in Copy (Tools Icons) */,
-				26F95EDF125AD24D0016127D /* Tool Run Map.png in Copy (Tools Icons) */,
-				26F95EE0125AD24D0016127D /* Tool Small Grid.png in Copy (Tools Icons) */,
-				26F95EE1125AD24D0016127D /* Tool Snap Points.png in Copy (Tools Icons) */,
-				26F95EE2125AD24D0016127D /* Tool Split Mesh.png in Copy (Tools Icons) */,
-				26F95EE3125AD24D0016127D /* Tool Tesselate Mesh.png in Copy (Tools Icons) */,
-				26F95EE4125AD24D0016127D /* Tool Toggle Mode.png in Copy (Tools Icons) */,
+				267F308515F5BF8A00056385 /* Tool Run Map.png in Copy Project Tools */,
 			);
-			name = "Copy (Tools Icons)";
+			name = "Copy Project Tools";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		267F304415F5BEC300056385 /* Copy Model Tools */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = Tools/Model;
+			dstSubfolderSpec = 7;
+			files = (
+				267F30AB15F5BFA900056385 /* Tool Bones.png in Copy Model Tools */,
+				267F30AC15F5BFA900056385 /* Tool Boxes.png in Copy Model Tools */,
+				267F30AD15F5BFA900056385 /* Tool Edit Mesh.png in Copy Model Tools */,
+				267F30AE15F5BFA900056385 /* Tool Edit Polygons.png in Copy Model Tools */,
+				267F30AF15F5BFA900056385 /* Tool Edit Vertexes.png in Copy Model Tools */,
+				267F30B015F5BFA900056385 /* Tool Hit Boxes.png in Copy Model Tools */,
+				267F30B115F5BFA900056385 /* Tool Mesh.png in Copy Model Tools */,
+				267F30B215F5BFA900056385 /* Tool Move Mode.png in Copy Model Tools */,
+				267F30B315F5BFA900056385 /* Tool Normals.png in Copy Model Tools */,
+				267F30B415F5BFA900056385 /* Tool Play Blend.png in Copy Model Tools */,
+				267F30B515F5BFAA00056385 /* Tool Play Next.png in Copy Model Tools */,
+				267F30B615F5BFAA00056385 /* Tool Play Previous.png in Copy Model Tools */,
+				267F30B715F5BFAA00056385 /* Tool Play Slow.png in Copy Model Tools */,
+				267F30B815F5BFAA00056385 /* Tool Play Stop.png in Copy Model Tools */,
+				267F30B915F5BFAA00056385 /* Tool Play.png in Copy Model Tools */,
+				267F30BA15F5BFAA00056385 /* Tool Rotate Mode.png in Copy Model Tools */,
+				267F30BB15F5BFAA00056385 /* Tool Select Vertex With Bone.png in Copy Model Tools */,
+				267F30BC15F5BFAA00056385 /* Tool Show Bone Names.png in Copy Model Tools */,
+				267F30BD15F5BFAA00056385 /* Tool Show First Mesh.png in Copy Model Tools */,
+				267F30BE15F5BFAA00056385 /* Tool Textured.png in Copy Model Tools */,
+			);
+			name = "Copy Model Tools";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		26F95ECA125AD24D0016127D /* Copy Map Tools */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = Tools/Map;
+			dstSubfolderSpec = 7;
+			files = (
+				267F308615F5BF9900056385 /* Tool Auto-Texture Mesh.png in Copy Map Tools */,
+				267F308715F5BF9900056385 /* Tool Combine Meshes.png in Copy Map Tools */,
+				267F308815F5BF9900056385 /* Tool Cull.png in Copy Map Tools */,
+				267F308915F5BF9900056385 /* Tool Edit Map Script.png in Copy Map Tools */,
+				267F308A15F5BF9900056385 /* Tool Edit Mesh.png in Copy Map Tools */,
+				267F308B15F5BF9900056385 /* Tool Edit Polygons.png in Copy Map Tools */,
+				267F308C15F5BF9900056385 /* Tool Edit Vertexes.png in Copy Map Tools */,
+				267F308D15F5BF9900056385 /* Tool Free Look.png in Copy Map Tools */,
+				267F308E15F5BF9900056385 /* Tool Grid.png in Copy Map Tools */,
+				267F308F15F5BF9900056385 /* Tool Height Map.png in Copy Map Tools */,
+				267F309015F5BF9900056385 /* Tool Large Grid.png in Copy Map Tools */,
+				267F309115F5BF9900056385 /* Tool Light.png in Copy Map Tools */,
+				267F309215F5BF9900056385 /* Tool Liquid.png in Copy Map Tools */,
+				267F309315F5BF9900056385 /* Tool Mesh UV.png in Copy Map Tools */,
+				267F309415F5BF9900056385 /* Tool Mesh.png in Copy Map Tools */,
+				267F309515F5BF9900056385 /* Tool Move Mode.png in Copy Map Tools */,
+				267F309615F5BF9900056385 /* Tool Move Points Together.png in Copy Map Tools */,
+				267F309715F5BF9900056385 /* Tool Move Points.png in Copy Map Tools */,
+				267F309815F5BF9900056385 /* Tool No Grid.png in Copy Map Tools */,
+				267F309915F5BF9900056385 /* Tool Node Duplicate.png in Copy Map Tools */,
+				267F309A15F5BF9900056385 /* Tool Node Link.png in Copy Map Tools */,
+				267F309B15F5BF9900056385 /* Tool Node Remove Link.png in Copy Map Tools */,
+				267F309C15F5BF9900056385 /* Tool Node Select.png in Copy Map Tools */,
+				267F309D15F5BF9900056385 /* Tool Node.png in Copy Map Tools */,
+				267F309E15F5BF9900056385 /* Tool Normals.png in Copy Map Tools */,
+				267F309F15F5BF9900056385 /* Tool Particle.png in Copy Map Tools */,
+				267F30A015F5BF9900056385 /* Tool Polygon.png in Copy Map Tools */,
+				267F30A115F5BF9900056385 /* Tool Rotate Mode.png in Copy Map Tools */,
+				267F30A215F5BF9900056385 /* Tool Run Map.png in Copy Map Tools */,
+				267F30A315F5BF9900056385 /* Tool Scenery.png in Copy Map Tools */,
+				267F30A415F5BF9900056385 /* Tool Small Grid.png in Copy Map Tools */,
+				267F30A515F5BF9900056385 /* Tool Snap Points.png in Copy Map Tools */,
+				267F30A615F5BF9900056385 /* Tool Sound.png in Copy Map Tools */,
+				267F30A715F5BF9900056385 /* Tool Split Mesh.png in Copy Map Tools */,
+				267F30A815F5BF9900056385 /* Tool Spot.png in Copy Map Tools */,
+				267F30A915F5BF9900056385 /* Tool Tesselate Mesh.png in Copy Map Tools */,
+				267F30AA15F5BF9900056385 /* Tool Toggle Mode.png in Copy Map Tools */,
+			);
+			name = "Copy Map Tools";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		F522DC530BBC726B00DFF256 /* Copy (Defaults) */ = {
@@ -515,7 +577,8 @@
 		260B43C71411FA5D006ED023 /* pngconf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pngconf.h; sourceTree = "<group>"; };
 		260B43C81411FA5D006ED023 /* pnglibconf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pnglibconf.h; sourceTree = "<group>"; };
 		261833CA14DDEB42004DD37A /* libPNG.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libPNG.a; sourceTree = "<group>"; };
-		262BFC951533BB51006C1CF6 /* Tool Node Duplicate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Tool Node Duplicate.png"; sourceTree = "<group>"; };
+		26273B0E15EDCCB100242BE7 /* dialog_finish_import.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = dialog_finish_import.c; sourceTree = "<group>"; };
+		26273B0F15EDCCB100242BE7 /* dialog_scale_animation_time.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = dialog_scale_animation_time.c; sourceTree = "<group>"; };
 		262C38D112D0211200A94FEE /* ui_common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ui_common.h; path = ../dim3Common/Headers/ui_common.h; sourceTree = SOURCE_ROOT; };
 		262C396F12D0268500A94FEE /* list_palette_common.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = list_palette_common.c; path = ../dim3Common/Code/list_palette_common.c; sourceTree = SOURCE_ROOT; };
 		262DD2AB151E31CC0078FEA4 /* base_iface_score.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = base_iface_score.c; sourceTree = "<group>"; };
@@ -555,53 +618,75 @@
 		26636ADF125A8ED10090A321 /* scenery.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = scenery.png; sourceTree = "<group>"; };
 		26636AE0125A8ED10090A321 /* sound.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sound.png; sourceTree = "<group>"; };
 		26636AE1125A8ED10090A321 /* spot.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = spot.png; sourceTree = "<group>"; };
-		26636B03125A8EE20090A321 /* Tool Auto-Texture Mesh.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Tool Auto-Texture Mesh.png"; sourceTree = "<group>"; };
-		26636B04125A8EE20090A321 /* Tool Combine Meshes.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Tool Combine Meshes.png"; sourceTree = "<group>"; };
-		26636B05125A8EE20090A321 /* Tool Cull.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Tool Cull.png"; sourceTree = "<group>"; };
-		26636B06125A8EE20090A321 /* Tool Edit Map Script.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Tool Edit Map Script.png"; sourceTree = "<group>"; };
-		26636B07125A8EE20090A321 /* Tool Edit Mesh.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Tool Edit Mesh.png"; sourceTree = "<group>"; };
-		26636B08125A8EE20090A321 /* Tool Edit Polygons.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Tool Edit Polygons.png"; sourceTree = "<group>"; };
-		26636B09125A8EE20090A321 /* Tool Edit Vertexes.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Tool Edit Vertexes.png"; sourceTree = "<group>"; };
-		26636B0A125A8EE20090A321 /* Tool Free Look.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Tool Free Look.png"; sourceTree = "<group>"; };
-		26636B0B125A8EE20090A321 /* Tool Large Grid.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Tool Large Grid.png"; sourceTree = "<group>"; };
-		26636B0D125A8EE20090A321 /* Tool Move Mode.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Tool Move Mode.png"; sourceTree = "<group>"; };
-		26636B0E125A8EE20090A321 /* Tool Move Points Together.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Tool Move Points Together.png"; sourceTree = "<group>"; };
-		26636B0F125A8EE20090A321 /* Tool Move Points.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Tool Move Points.png"; sourceTree = "<group>"; };
-		26636B10125A8EE20090A321 /* Tool No Grid.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Tool No Grid.png"; sourceTree = "<group>"; };
-		26636B11125A8EE20090A321 /* Tool Node Link.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Tool Node Link.png"; sourceTree = "<group>"; };
-		26636B12125A8EE20090A321 /* Tool Node Remove Link.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Tool Node Remove Link.png"; sourceTree = "<group>"; };
-		26636B13125A8EE20090A321 /* Tool Node Select.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Tool Node Select.png"; sourceTree = "<group>"; };
-		26636B14125A8EE20090A321 /* Tool Normals.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Tool Normals.png"; sourceTree = "<group>"; };
-		26636B15125A8EE20090A321 /* Tool Rotate Mode.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Tool Rotate Mode.png"; sourceTree = "<group>"; };
-		26636B16125A8EE20090A321 /* Tool Run Map.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Tool Run Map.png"; sourceTree = "<group>"; };
-		26636B17125A8EE20090A321 /* Tool Small Grid.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Tool Small Grid.png"; sourceTree = "<group>"; };
-		26636B18125A8EE20090A321 /* Tool Snap Points.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Tool Snap Points.png"; sourceTree = "<group>"; };
-		26636B19125A8EE20090A321 /* Tool Split Mesh.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Tool Split Mesh.png"; sourceTree = "<group>"; };
-		26636B1A125A8EE20090A321 /* Tool Tesselate Mesh.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Tool Tesselate Mesh.png"; sourceTree = "<group>"; };
-		26636B1B125A8EE20090A321 /* Tool Toggle Mode.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Tool Toggle Mode.png"; sourceTree = "<group>"; };
 		266DDE5312E670B3004DA282 /* Edit.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Edit.png; sourceTree = "<group>"; };
 		266DDE5412E670B3004DA282 /* Minus.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Minus.png; sourceTree = "<group>"; };
 		266DDE5512E670B3004DA282 /* Plus.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Plus.png; sourceTree = "<group>"; };
+		267F2FCF15F5BC7B00056385 /* Tool Run Map.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Tool Run Map.png"; path = "Resources/Tools/Project/Tool Run Map.png"; sourceTree = SOURCE_ROOT; };
+		267F2FD215F5BE8400056385 /* Tool Auto-Texture Mesh.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Tool Auto-Texture Mesh.png"; path = "Resources/Tools/Map/Tool Auto-Texture Mesh.png"; sourceTree = SOURCE_ROOT; };
+		267F2FD315F5BE8400056385 /* Tool Combine Meshes.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Tool Combine Meshes.png"; path = "Resources/Tools/Map/Tool Combine Meshes.png"; sourceTree = SOURCE_ROOT; };
+		267F2FD415F5BE8400056385 /* Tool Cull.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Tool Cull.png"; path = "Resources/Tools/Map/Tool Cull.png"; sourceTree = SOURCE_ROOT; };
+		267F2FD515F5BE8400056385 /* Tool Edit Map Script.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Tool Edit Map Script.png"; path = "Resources/Tools/Map/Tool Edit Map Script.png"; sourceTree = SOURCE_ROOT; };
+		267F2FD615F5BE8400056385 /* Tool Edit Mesh.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Tool Edit Mesh.png"; path = "Resources/Tools/Map/Tool Edit Mesh.png"; sourceTree = SOURCE_ROOT; };
+		267F2FD715F5BE8400056385 /* Tool Edit Polygons.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Tool Edit Polygons.png"; path = "Resources/Tools/Map/Tool Edit Polygons.png"; sourceTree = SOURCE_ROOT; };
+		267F2FD815F5BE8400056385 /* Tool Edit Vertexes.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Tool Edit Vertexes.png"; path = "Resources/Tools/Map/Tool Edit Vertexes.png"; sourceTree = SOURCE_ROOT; };
+		267F2FD915F5BE8400056385 /* Tool Free Look.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Tool Free Look.png"; path = "Resources/Tools/Map/Tool Free Look.png"; sourceTree = SOURCE_ROOT; };
+		267F2FDA15F5BE8400056385 /* Tool Grid.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Tool Grid.png"; path = "Resources/Tools/Map/Tool Grid.png"; sourceTree = SOURCE_ROOT; };
+		267F2FDB15F5BE8400056385 /* Tool Height Map.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Tool Height Map.png"; path = "Resources/Tools/Map/Tool Height Map.png"; sourceTree = SOURCE_ROOT; };
+		267F2FDC15F5BE8400056385 /* Tool Large Grid.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Tool Large Grid.png"; path = "Resources/Tools/Map/Tool Large Grid.png"; sourceTree = SOURCE_ROOT; };
+		267F2FDD15F5BE8400056385 /* Tool Light.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Tool Light.png"; path = "Resources/Tools/Map/Tool Light.png"; sourceTree = SOURCE_ROOT; };
+		267F2FDE15F5BE8400056385 /* Tool Liquid.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Tool Liquid.png"; path = "Resources/Tools/Map/Tool Liquid.png"; sourceTree = SOURCE_ROOT; };
+		267F2FDF15F5BE8400056385 /* Tool Mesh UV.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Tool Mesh UV.png"; path = "Resources/Tools/Map/Tool Mesh UV.png"; sourceTree = SOURCE_ROOT; };
+		267F2FE015F5BE8400056385 /* Tool Mesh.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Tool Mesh.png"; path = "Resources/Tools/Map/Tool Mesh.png"; sourceTree = SOURCE_ROOT; };
+		267F2FE115F5BE8400056385 /* Tool Move Mode.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Tool Move Mode.png"; path = "Resources/Tools/Map/Tool Move Mode.png"; sourceTree = SOURCE_ROOT; };
+		267F2FE215F5BE8400056385 /* Tool Move Points Together.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Tool Move Points Together.png"; path = "Resources/Tools/Map/Tool Move Points Together.png"; sourceTree = SOURCE_ROOT; };
+		267F2FE315F5BE8400056385 /* Tool Move Points.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Tool Move Points.png"; path = "Resources/Tools/Map/Tool Move Points.png"; sourceTree = SOURCE_ROOT; };
+		267F2FE415F5BE8400056385 /* Tool No Grid.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Tool No Grid.png"; path = "Resources/Tools/Map/Tool No Grid.png"; sourceTree = SOURCE_ROOT; };
+		267F2FE515F5BE8400056385 /* Tool Node Duplicate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Tool Node Duplicate.png"; path = "Resources/Tools/Map/Tool Node Duplicate.png"; sourceTree = SOURCE_ROOT; };
+		267F2FE615F5BE8400056385 /* Tool Node Link.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Tool Node Link.png"; path = "Resources/Tools/Map/Tool Node Link.png"; sourceTree = SOURCE_ROOT; };
+		267F2FE715F5BE8400056385 /* Tool Node Remove Link.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Tool Node Remove Link.png"; path = "Resources/Tools/Map/Tool Node Remove Link.png"; sourceTree = SOURCE_ROOT; };
+		267F2FE815F5BE8400056385 /* Tool Node Select.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Tool Node Select.png"; path = "Resources/Tools/Map/Tool Node Select.png"; sourceTree = SOURCE_ROOT; };
+		267F2FE915F5BE8400056385 /* Tool Node.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Tool Node.png"; path = "Resources/Tools/Map/Tool Node.png"; sourceTree = SOURCE_ROOT; };
+		267F2FEA15F5BE8400056385 /* Tool Normals.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Tool Normals.png"; path = "Resources/Tools/Map/Tool Normals.png"; sourceTree = SOURCE_ROOT; };
+		267F2FEB15F5BE8400056385 /* Tool Particle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Tool Particle.png"; path = "Resources/Tools/Map/Tool Particle.png"; sourceTree = SOURCE_ROOT; };
+		267F2FEC15F5BE8400056385 /* Tool Polygon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Tool Polygon.png"; path = "Resources/Tools/Map/Tool Polygon.png"; sourceTree = SOURCE_ROOT; };
+		267F2FED15F5BE8400056385 /* Tool Rotate Mode.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Tool Rotate Mode.png"; path = "Resources/Tools/Map/Tool Rotate Mode.png"; sourceTree = SOURCE_ROOT; };
+		267F2FEE15F5BE8400056385 /* Tool Run Map.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Tool Run Map.png"; path = "Resources/Tools/Map/Tool Run Map.png"; sourceTree = SOURCE_ROOT; };
+		267F2FEF15F5BE8400056385 /* Tool Scenery.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Tool Scenery.png"; path = "Resources/Tools/Map/Tool Scenery.png"; sourceTree = SOURCE_ROOT; };
+		267F2FF015F5BE8400056385 /* Tool Small Grid.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Tool Small Grid.png"; path = "Resources/Tools/Map/Tool Small Grid.png"; sourceTree = SOURCE_ROOT; };
+		267F2FF115F5BE8400056385 /* Tool Snap Points.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Tool Snap Points.png"; path = "Resources/Tools/Map/Tool Snap Points.png"; sourceTree = SOURCE_ROOT; };
+		267F2FF215F5BE8400056385 /* Tool Sound.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Tool Sound.png"; path = "Resources/Tools/Map/Tool Sound.png"; sourceTree = SOURCE_ROOT; };
+		267F2FF315F5BE8400056385 /* Tool Split Mesh.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Tool Split Mesh.png"; path = "Resources/Tools/Map/Tool Split Mesh.png"; sourceTree = SOURCE_ROOT; };
+		267F2FF415F5BE8400056385 /* Tool Spot.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Tool Spot.png"; path = "Resources/Tools/Map/Tool Spot.png"; sourceTree = SOURCE_ROOT; };
+		267F2FF515F5BE8400056385 /* Tool Tesselate Mesh.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Tool Tesselate Mesh.png"; path = "Resources/Tools/Map/Tool Tesselate Mesh.png"; sourceTree = SOURCE_ROOT; };
+		267F2FF615F5BE8400056385 /* Tool Toggle Mode.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Tool Toggle Mode.png"; path = "Resources/Tools/Map/Tool Toggle Mode.png"; sourceTree = SOURCE_ROOT; };
+		267F301C15F5BE9000056385 /* Tool Bones.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Tool Bones.png"; path = "Resources/Tools/Model/Tool Bones.png"; sourceTree = SOURCE_ROOT; };
+		267F301D15F5BE9000056385 /* Tool Boxes.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Tool Boxes.png"; path = "Resources/Tools/Model/Tool Boxes.png"; sourceTree = SOURCE_ROOT; };
+		267F301E15F5BE9000056385 /* Tool Edit Mesh.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Tool Edit Mesh.png"; path = "Resources/Tools/Model/Tool Edit Mesh.png"; sourceTree = SOURCE_ROOT; };
+		267F301F15F5BE9000056385 /* Tool Edit Polygons.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Tool Edit Polygons.png"; path = "Resources/Tools/Model/Tool Edit Polygons.png"; sourceTree = SOURCE_ROOT; };
+		267F302015F5BE9000056385 /* Tool Edit Vertexes.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Tool Edit Vertexes.png"; path = "Resources/Tools/Model/Tool Edit Vertexes.png"; sourceTree = SOURCE_ROOT; };
+		267F302115F5BE9000056385 /* Tool Hit Boxes.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Tool Hit Boxes.png"; path = "Resources/Tools/Model/Tool Hit Boxes.png"; sourceTree = SOURCE_ROOT; };
+		267F302215F5BE9000056385 /* Tool Mesh.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Tool Mesh.png"; path = "Resources/Tools/Model/Tool Mesh.png"; sourceTree = SOURCE_ROOT; };
+		267F302315F5BE9000056385 /* Tool Move Mode.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Tool Move Mode.png"; path = "Resources/Tools/Model/Tool Move Mode.png"; sourceTree = SOURCE_ROOT; };
+		267F302415F5BE9000056385 /* Tool Normals.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Tool Normals.png"; path = "Resources/Tools/Model/Tool Normals.png"; sourceTree = SOURCE_ROOT; };
+		267F302515F5BE9000056385 /* Tool Play Blend.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Tool Play Blend.png"; path = "Resources/Tools/Model/Tool Play Blend.png"; sourceTree = SOURCE_ROOT; };
+		267F302615F5BE9000056385 /* Tool Play Next.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Tool Play Next.png"; path = "Resources/Tools/Model/Tool Play Next.png"; sourceTree = SOURCE_ROOT; };
+		267F302715F5BE9000056385 /* Tool Play Previous.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Tool Play Previous.png"; path = "Resources/Tools/Model/Tool Play Previous.png"; sourceTree = SOURCE_ROOT; };
+		267F302815F5BE9000056385 /* Tool Play Slow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Tool Play Slow.png"; path = "Resources/Tools/Model/Tool Play Slow.png"; sourceTree = SOURCE_ROOT; };
+		267F302915F5BE9000056385 /* Tool Play Stop.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Tool Play Stop.png"; path = "Resources/Tools/Model/Tool Play Stop.png"; sourceTree = SOURCE_ROOT; };
+		267F302A15F5BE9000056385 /* Tool Play.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Tool Play.png"; path = "Resources/Tools/Model/Tool Play.png"; sourceTree = SOURCE_ROOT; };
+		267F302B15F5BE9000056385 /* Tool Rotate Mode.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Tool Rotate Mode.png"; path = "Resources/Tools/Model/Tool Rotate Mode.png"; sourceTree = SOURCE_ROOT; };
+		267F302C15F5BE9000056385 /* Tool Select Vertex With Bone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Tool Select Vertex With Bone.png"; path = "Resources/Tools/Model/Tool Select Vertex With Bone.png"; sourceTree = SOURCE_ROOT; };
+		267F302D15F5BE9000056385 /* Tool Show Bone Names.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Tool Show Bone Names.png"; path = "Resources/Tools/Model/Tool Show Bone Names.png"; sourceTree = SOURCE_ROOT; };
+		267F302E15F5BE9000056385 /* Tool Show First Mesh.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Tool Show First Mesh.png"; path = "Resources/Tools/Model/Tool Show First Mesh.png"; sourceTree = SOURCE_ROOT; };
+		267F302F15F5BE9000056385 /* Tool Textured.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Tool Textured.png"; path = "Resources/Tools/Model/Tool Textured.png"; sourceTree = SOURCE_ROOT; };
 		26808224122057F600EB7897 /* view_picker.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = view_picker.c; path = Code/view_picker.c; sourceTree = "<group>"; };
 		2681880210A3A28A000B2CD8 /* light_maps.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = light_maps.c; path = Code/light_maps.c; sourceTree = "<group>"; };
 		26899FA80F1EBF25007860EB /* editor_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = editor_defs.h; path = Headers/editor_defs.h; sourceTree = "<group>"; };
 		26937AE012D2D5C3001DEEB8 /* import_obj.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = import_obj.c; path = Code/import_obj.c; sourceTree = "<group>"; };
 		26A32EE91453D09E0005AABD /* model_util_file_model.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = model_util_file_model.c; sourceTree = "<group>"; };
 		26AFB4480D95E0E60004805A /* pieces_mesh.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = pieces_mesh.c; path = Code/pieces_mesh.c; sourceTree = "<group>"; };
-		26C5F00F12612826000B0F9E /* Tool Grid.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Tool Grid.png"; sourceTree = "<group>"; };
-		26C5F01012612826000B0F9E /* Tool Height Map.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Tool Height Map.png"; sourceTree = "<group>"; };
-		26C5F01112612826000B0F9E /* Tool Light.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Tool Light.png"; sourceTree = "<group>"; };
-		26C5F01212612826000B0F9E /* Tool Liquid.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Tool Liquid.png"; sourceTree = "<group>"; };
-		26C5F01312612826000B0F9E /* Tool Mesh UV.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Tool Mesh UV.png"; sourceTree = "<group>"; };
-		26C5F01412612826000B0F9E /* Tool Mesh.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Tool Mesh.png"; sourceTree = "<group>"; };
-		26C5F01512612826000B0F9E /* Tool Node.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Tool Node.png"; sourceTree = "<group>"; };
-		26C5F01612612826000B0F9E /* Tool Particle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Tool Particle.png"; sourceTree = "<group>"; };
-		26C5F01712612826000B0F9E /* Tool Polygon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Tool Polygon.png"; sourceTree = "<group>"; };
-		26C5F01812612826000B0F9E /* Tool Scenery.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Tool Scenery.png"; sourceTree = "<group>"; };
-		26C5F01912612826000B0F9E /* Tool Sound.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Tool Sound.png"; sourceTree = "<group>"; };
-		26C5F01A12612826000B0F9E /* Tool Spot.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Tool Spot.png"; sourceTree = "<group>"; };
+		26B7B4AD15F28313001150E4 /* map_tool_palette.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = map_tool_palette.c; path = Sources/tools/map/map_tool_palette.c; sourceTree = "<group>"; };
 		26C5F0AF126130D0000B0F9E /* glue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = glue.h; path = ../dim3Common/Headers/glue.h; sourceTree = SOURCE_ROOT; };
-		26C5F0EA126135DC000B0F9E /* tool_palette.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tool_palette.c; path = Code/tool_palette.c; sourceTree = "<group>"; };
 		26CAEC6912D675A900310691 /* property_utility_common.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_utility_common.c; path = ../dim3Common/Code/property_utility_common.c; sourceTree = SOURCE_ROOT; };
 		26CAEC6A12D675A900310691 /* texture_edit_common.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = texture_edit_common.c; path = ../dim3Common/Code/texture_edit_common.c; sourceTree = SOURCE_ROOT; };
 		26CF62A4126BDE55002DCC2A /* tool_palette_common.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tool_palette_common.c; path = ../dim3Common/Code/tool_palette_common.c; sourceTree = SOURCE_ROOT; };
@@ -779,6 +864,7 @@
 				F5EC0BB200DDC1F701000001 /* Windows */,
 				F5A98817094BF740005E55AE /* Dialogs */,
 				26E4677412EB4C8400867C53 /* Palettes */,
+				26B7B4A915F282C4001150E4 /* Tools */,
 				F5E8EBA808A1C1EF00F06B82 /* Pieces */,
 				F508860900E8413C01000001 /* View */,
 				263D10CB1567608200A03C7D /* Auto Generator */,
@@ -794,6 +880,7 @@
 				0867D6AAFE840B52C02AAC07 /* InfoPlist.strings */,
 				26E300FF144B6FDE00BB4BD5 /* dim3 Editor.xib */,
 				0123D85400C0AF0B7F000001 /* dim3 Editor.icns */,
+				267F2FCB15F5BC4D00056385 /* Tools */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -1025,11 +1112,11 @@
 		2652B20B15E33A8C009F278D /* Map */ = {
 			isa = PBXGroup;
 			children = (
-				2652B20C15E33A8C009F278D /* dialog_free_rotate.c */,
-				2652B20D15E33A8C009F278D /* dialog_grid.c */,
-				2652B20E15E33A8C009F278D /* dialog_height_map_import.c */,
 				2652B20F15E33A8C009F278D /* dialog_new_map.c */,
 				2652B21015E33A8C009F278D /* dialog_obj_import.c */,
+				2652B20D15E33A8C009F278D /* dialog_grid.c */,
+				2652B20E15E33A8C009F278D /* dialog_height_map_import.c */,
+				2652B20C15E33A8C009F278D /* dialog_free_rotate.c */,
 			);
 			name = Map;
 			path = Sources/dialogs/map;
@@ -1038,9 +1125,11 @@
 		2652B21115E33A8C009F278D /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				26FD325915E492E800B726EA /* dialog_blended_animation.c */,
-				26FD325A15E492E800B726EA /* dialog_normal.c */,
 				26FD325B15E492E800B726EA /* dialog_set_vertex_bone.c */,
+				26FD325A15E492E800B726EA /* dialog_normal.c */,
+				26273B0E15EDCCB100242BE7 /* dialog_finish_import.c */,
+				26FD325915E492E800B726EA /* dialog_blended_animation.c */,
+				26273B0F15EDCCB100242BE7 /* dialog_scale_animation_time.c */,
 			);
 			name = Model;
 			path = Sources/dialogs/model;
@@ -1060,50 +1149,6 @@
 			path = Items;
 			sourceTree = "<group>";
 		};
-		26636B02125A8EE20090A321 /* Tools */ = {
-			isa = PBXGroup;
-			children = (
-				26C5F00F12612826000B0F9E /* Tool Grid.png */,
-				26C5F01012612826000B0F9E /* Tool Height Map.png */,
-				26C5F01112612826000B0F9E /* Tool Light.png */,
-				26C5F01212612826000B0F9E /* Tool Liquid.png */,
-				26C5F01312612826000B0F9E /* Tool Mesh UV.png */,
-				26C5F01412612826000B0F9E /* Tool Mesh.png */,
-				26C5F01512612826000B0F9E /* Tool Node.png */,
-				26C5F01612612826000B0F9E /* Tool Particle.png */,
-				26C5F01712612826000B0F9E /* Tool Polygon.png */,
-				26C5F01812612826000B0F9E /* Tool Scenery.png */,
-				26C5F01912612826000B0F9E /* Tool Sound.png */,
-				26C5F01A12612826000B0F9E /* Tool Spot.png */,
-				26636B03125A8EE20090A321 /* Tool Auto-Texture Mesh.png */,
-				26636B04125A8EE20090A321 /* Tool Combine Meshes.png */,
-				26636B05125A8EE20090A321 /* Tool Cull.png */,
-				26636B06125A8EE20090A321 /* Tool Edit Map Script.png */,
-				26636B07125A8EE20090A321 /* Tool Edit Mesh.png */,
-				26636B08125A8EE20090A321 /* Tool Edit Polygons.png */,
-				26636B09125A8EE20090A321 /* Tool Edit Vertexes.png */,
-				26636B0A125A8EE20090A321 /* Tool Free Look.png */,
-				26636B0B125A8EE20090A321 /* Tool Large Grid.png */,
-				26636B0D125A8EE20090A321 /* Tool Move Mode.png */,
-				26636B0E125A8EE20090A321 /* Tool Move Points Together.png */,
-				26636B0F125A8EE20090A321 /* Tool Move Points.png */,
-				26636B10125A8EE20090A321 /* Tool No Grid.png */,
-				26636B11125A8EE20090A321 /* Tool Node Link.png */,
-				262BFC951533BB51006C1CF6 /* Tool Node Duplicate.png */,
-				26636B12125A8EE20090A321 /* Tool Node Remove Link.png */,
-				26636B13125A8EE20090A321 /* Tool Node Select.png */,
-				26636B14125A8EE20090A321 /* Tool Normals.png */,
-				26636B15125A8EE20090A321 /* Tool Rotate Mode.png */,
-				26636B16125A8EE20090A321 /* Tool Run Map.png */,
-				26636B17125A8EE20090A321 /* Tool Small Grid.png */,
-				26636B18125A8EE20090A321 /* Tool Snap Points.png */,
-				26636B19125A8EE20090A321 /* Tool Split Mesh.png */,
-				26636B1A125A8EE20090A321 /* Tool Tesselate Mesh.png */,
-				26636B1B125A8EE20090A321 /* Tool Toggle Mode.png */,
-			);
-			path = Tools;
-			sourceTree = "<group>";
-		};
 		266DDE5212E670B3004DA282 /* Lists */ = {
 			isa = PBXGroup;
 			children = (
@@ -1116,13 +1161,134 @@
 			path = Lists;
 			sourceTree = "<group>";
 		};
+		267F2FCB15F5BC4D00056385 /* Tools */ = {
+			isa = PBXGroup;
+			children = (
+				267F2FCC15F5BC5500056385 /* Project */,
+				267F2FCD15F5BC5C00056385 /* Map */,
+				267F2FCE15F5BC6700056385 /* Model */,
+			);
+			name = Tools;
+			path = "Resources/Additional Data";
+			sourceTree = "<group>";
+		};
+		267F2FCC15F5BC5500056385 /* Project */ = {
+			isa = PBXGroup;
+			children = (
+				267F2FCF15F5BC7B00056385 /* Tool Run Map.png */,
+			);
+			name = Project;
+			sourceTree = "<group>";
+		};
+		267F2FCD15F5BC5C00056385 /* Map */ = {
+			isa = PBXGroup;
+			children = (
+				267F2FD215F5BE8400056385 /* Tool Auto-Texture Mesh.png */,
+				267F2FD315F5BE8400056385 /* Tool Combine Meshes.png */,
+				267F2FD415F5BE8400056385 /* Tool Cull.png */,
+				267F2FD515F5BE8400056385 /* Tool Edit Map Script.png */,
+				267F2FD615F5BE8400056385 /* Tool Edit Mesh.png */,
+				267F2FD715F5BE8400056385 /* Tool Edit Polygons.png */,
+				267F2FD815F5BE8400056385 /* Tool Edit Vertexes.png */,
+				267F2FD915F5BE8400056385 /* Tool Free Look.png */,
+				267F2FDA15F5BE8400056385 /* Tool Grid.png */,
+				267F2FDB15F5BE8400056385 /* Tool Height Map.png */,
+				267F2FDC15F5BE8400056385 /* Tool Large Grid.png */,
+				267F2FDD15F5BE8400056385 /* Tool Light.png */,
+				267F2FDE15F5BE8400056385 /* Tool Liquid.png */,
+				267F2FDF15F5BE8400056385 /* Tool Mesh UV.png */,
+				267F2FE015F5BE8400056385 /* Tool Mesh.png */,
+				267F2FE115F5BE8400056385 /* Tool Move Mode.png */,
+				267F2FE215F5BE8400056385 /* Tool Move Points Together.png */,
+				267F2FE315F5BE8400056385 /* Tool Move Points.png */,
+				267F2FE415F5BE8400056385 /* Tool No Grid.png */,
+				267F2FE515F5BE8400056385 /* Tool Node Duplicate.png */,
+				267F2FE615F5BE8400056385 /* Tool Node Link.png */,
+				267F2FE715F5BE8400056385 /* Tool Node Remove Link.png */,
+				267F2FE815F5BE8400056385 /* Tool Node Select.png */,
+				267F2FE915F5BE8400056385 /* Tool Node.png */,
+				267F2FEA15F5BE8400056385 /* Tool Normals.png */,
+				267F2FEB15F5BE8400056385 /* Tool Particle.png */,
+				267F2FEC15F5BE8400056385 /* Tool Polygon.png */,
+				267F2FED15F5BE8400056385 /* Tool Rotate Mode.png */,
+				267F2FEE15F5BE8400056385 /* Tool Run Map.png */,
+				267F2FEF15F5BE8400056385 /* Tool Scenery.png */,
+				267F2FF015F5BE8400056385 /* Tool Small Grid.png */,
+				267F2FF115F5BE8400056385 /* Tool Snap Points.png */,
+				267F2FF215F5BE8400056385 /* Tool Sound.png */,
+				267F2FF315F5BE8400056385 /* Tool Split Mesh.png */,
+				267F2FF415F5BE8400056385 /* Tool Spot.png */,
+				267F2FF515F5BE8400056385 /* Tool Tesselate Mesh.png */,
+				267F2FF615F5BE8400056385 /* Tool Toggle Mode.png */,
+			);
+			name = Map;
+			sourceTree = "<group>";
+		};
+		267F2FCE15F5BC6700056385 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				267F301C15F5BE9000056385 /* Tool Bones.png */,
+				267F301D15F5BE9000056385 /* Tool Boxes.png */,
+				267F301E15F5BE9000056385 /* Tool Edit Mesh.png */,
+				267F301F15F5BE9000056385 /* Tool Edit Polygons.png */,
+				267F302015F5BE9000056385 /* Tool Edit Vertexes.png */,
+				267F302115F5BE9000056385 /* Tool Hit Boxes.png */,
+				267F302215F5BE9000056385 /* Tool Mesh.png */,
+				267F302315F5BE9000056385 /* Tool Move Mode.png */,
+				267F302415F5BE9000056385 /* Tool Normals.png */,
+				267F302515F5BE9000056385 /* Tool Play Blend.png */,
+				267F302615F5BE9000056385 /* Tool Play Next.png */,
+				267F302715F5BE9000056385 /* Tool Play Previous.png */,
+				267F302815F5BE9000056385 /* Tool Play Slow.png */,
+				267F302915F5BE9000056385 /* Tool Play Stop.png */,
+				267F302A15F5BE9000056385 /* Tool Play.png */,
+				267F302B15F5BE9000056385 /* Tool Rotate Mode.png */,
+				267F302C15F5BE9000056385 /* Tool Select Vertex With Bone.png */,
+				267F302D15F5BE9000056385 /* Tool Show Bone Names.png */,
+				267F302E15F5BE9000056385 /* Tool Show First Mesh.png */,
+				267F302F15F5BE9000056385 /* Tool Textured.png */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
+		26B7B4A915F282C4001150E4 /* Tools */ = {
+			isa = PBXGroup;
+			children = (
+				26B7B4AB15F282D7001150E4 /* Project */,
+				26B7B4AA15F282CF001150E4 /* Map */,
+				26B7B4AC15F282DE001150E4 /* Model */,
+			);
+			name = Tools;
+			sourceTree = "<group>";
+		};
+		26B7B4AA15F282CF001150E4 /* Map */ = {
+			isa = PBXGroup;
+			children = (
+				26B7B4AD15F28313001150E4 /* map_tool_palette.c */,
+			);
+			name = Map;
+			sourceTree = "<group>";
+		};
+		26B7B4AB15F282D7001150E4 /* Project */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Project;
+			sourceTree = "<group>";
+		};
+		26B7B4AC15F282DE001150E4 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
 		26E4677412EB4C8400867C53 /* Palettes */ = {
 			isa = PBXGroup;
 			children = (
 				26FD325F15E492FE00B726EA /* Project */,
 				26FD326015E4930A00B726EA /* Map */,
 				26FD326115E4930F00B726EA /* Model */,
-				26C5F0EA126135DC000B0F9E /* tool_palette.c */,
 				26CF62A4126BDE55002DCC2A /* tool_palette_common.c */,
 				F57CACA60C38B76200B595F4 /* texture_palette.c */,
 				26EE494B126B8455001D0025 /* texture_palette_common.c */,
@@ -1271,7 +1437,6 @@
 		F522DCBE0BBC853C00DFF256 /* Icons */ = {
 			isa = PBXGroup;
 			children = (
-				26636B02125A8EE20090A321 /* Tools */,
 				26636ADA125A8ED10090A321 /* Items */,
 				266DDE5212E670B3004DA282 /* Lists */,
 			);
@@ -1364,7 +1529,9 @@
 				F5DB0C4A0856A958005A7CB7 /* Copy Application */,
 				F522DC530BBC726B00DFF256 /* Copy (Defaults) */,
 				F522DC770BBC810E00DFF256 /* Copy (Items Icons) */,
-				26F95ECA125AD24D0016127D /* Copy (Tools Icons) */,
+				267F2FCA15F5BC1200056385 /* Copy Project Tools */,
+				26F95ECA125AD24D0016127D /* Copy Map Tools */,
+				267F304415F5BEC300056385 /* Copy Model Tools */,
 				266DDE7812E67150004DA282 /* Copy (Lists Icons) */,
 			);
 			buildRules = (
@@ -1411,9 +1578,7 @@
 			files = (
 				F5A4322B055602DF002DF965 /* InfoPlist.strings in Resources */,
 				F5A4322C055602DF002DF965 /* dim3 Editor.icns in Resources */,
-				26459B6513DBDA8800D7DD73 /* Back.png in Resources */,
 				26E30100144B6FDE00BB4BD5 /* dim3 Editor.xib in Resources */,
-				262BFC961533BB51006C1CF6 /* Tool Node Duplicate.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1451,7 +1616,6 @@
 				263C5EBE122045E3008935B9 /* view_handle.c in Sources */,
 				26808225122057F600EB7897 /* view_picker.c in Sources */,
 				26E155EF12601C9D003158E5 /* OSX_glue.c in Sources */,
-				26C5F0EB126135DC000B0F9E /* tool_palette.c in Sources */,
 				26EE494C126B8455001D0025 /* texture_palette_common.c in Sources */,
 				26EE4A3E126B8E2E001D0025 /* import_text_decode_common.c in Sources */,
 				26CF62A5126BDE55002DCC2A /* tool_palette_common.c in Sources */,
@@ -1639,6 +1803,9 @@
 				26FD32F115E4935400B726EA /* map_palette_spot.c in Sources */,
 				26FD32F215E4935400B726EA /* map_palette_texture.c in Sources */,
 				26FD32F315E4935400B726EA /* map_palette.c in Sources */,
+				26273B1015EDCCB100242BE7 /* dialog_finish_import.c in Sources */,
+				26273B1115EDCCB100242BE7 /* dialog_scale_animation_time.c in Sources */,
+				26B7B4AE15F28313001150E4 /* map_tool_palette.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
