@@ -399,10 +399,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\dim3Common\Code\import_text_decode_common.c"
-					>
-				</File>
-				<File
 					RelativePath="..\..\dim3Editor\Code\launch.c"
 					>
 				</File>
@@ -826,15 +822,15 @@
 					Name="Windows"
 					>
 					<File
+						RelativePath="..\..\dim3Common\Code\import_text_decode_common.c"
+						>
+					</File>
+					<File
 						RelativePath="..\..\dim3Editor\Code\main_app.c"
 						>
 					</File>
 					<File
 						RelativePath="..\..\dim3Editor\Code\main_window.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Editor\Code\menu.c"
 						>
 					</File>
 					<File
@@ -949,6 +945,10 @@
 						Name="Model"
 						>
 					</Filter>
+					<Filter
+						Name="Map"
+						>
+					</Filter>
 				</Filter>
 				<Filter
 					Name="Tools"
@@ -967,6 +967,22 @@
 					</File>
 					<File
 						RelativePath="..\..\dim3Editor\Sources\tools\tool_palette_common.c"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="Menus"
+					>
+					<File
+						RelativePath="..\..\dim3Editor\Sources\menus\map_menu.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Editor\Sources\menus\model_menu.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Editor\Sources\menus\project_menu.c"
 						>
 					</File>
 				</Filter>
