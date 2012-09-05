@@ -42,7 +42,7 @@ extern void main_wind_menu_create(void);
 extern void main_wind_menu_dispose(void);
 extern void main_wind_menu_update(void);
 extern bool main_wind_menu_event_run(int cmd);
-extern void main_wind_switch_mode(int mode);
+extern bool main_wind_switch_mode(int mode);
 extern void main_wind_gl_setup(void);
 extern void main_wind_draw(void);
 extern void main_wind_draw_no_swap(void);

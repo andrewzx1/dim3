@@ -189,15 +189,32 @@ bool main_wind_menu_event_run(int cmd)
       
 ======================================================= */
 
-void main_wind_switch_mode(int mode)
+bool main_wind_switch_mode(int mode)
 {
-	if (state.mode==mode) return;
+	if (state.mode==mode) return(TRUE);
+
+		// save anything we are
+		// moving away from
+
+	switch (state.mode) {
+
+		case app_mode_map:
+			if (!file_close_map()) return(FALSE);
+			break;
+
+		case app_mode_model:
+		//	if (!file_close_model()) return(FALSE); // supergumba -- model
+			break;
 	
+	}
+
 		// need to rebuild menu
 		
 	main_wind_menu_dispose();
 	state.mode=mode;
 	main_wind_menu_create();
+
+	return(TRUE);
 }
 
 /* =======================================================

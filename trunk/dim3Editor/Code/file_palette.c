@@ -192,8 +192,7 @@ void file_palette_click(d3pnt *pnt,bool double_click)
 		// add map
 
 	if (file_palette.item_pane.click.id==kPropertyMapAdd) {
-		main_wind_switch_mode(app_mode_map);
-		file_new_map();
+		if (main_wind_switch_mode(app_mode_map)) file_new_map();
 		file_palette_fill();
 		main_wind_draw();
 		return;
@@ -202,13 +201,14 @@ void file_palette_click(d3pnt *pnt,bool double_click)
 		// pick map
 
 	if (file_palette.item_pane.click.id==kPropertyMap) {
-		main_wind_switch_mode(app_mode_map);
-		
-		strncpy(file_name,file_palette.item_pane.click.item->name,file_str_len);
-		file_name[file_str_len-1]=0x0;
 
-		file_open_map(file_name);
-		
+		if (main_wind_switch_mode(app_mode_map)) {
+			strncpy(file_name,file_palette.item_pane.click.item->name,file_str_len);
+			file_name[file_str_len-1]=0x0;
+
+			file_open_map(file_name);
+		}
+
 		file_palette_fill();
 		main_wind_draw();
 		return;
@@ -217,9 +217,11 @@ void file_palette_click(d3pnt *pnt,bool double_click)
 		// add model
 
 	if (file_palette.item_pane.click.id==kPropertyModelAdd) {
-		main_wind_switch_mode(app_mode_model);
-//		file_new_model();			// supergumba -- model
 		
+		if (main_wind_switch_mode(app_mode_model)) {
+	//		file_new_model();			// supergumba -- model
+		}
+
 		file_palette_fill();
 		main_wind_draw();
 		return;
@@ -228,13 +230,15 @@ void file_palette_click(d3pnt *pnt,bool double_click)
 		// open model
 	
 	if (file_palette.item_pane.click.id==kPropertyModel) {
-		main_wind_switch_mode(app_mode_model);
-	//	main_wind_play(play_mode_stop);		// supergumba -- model
+		
+		if (main_wind_switch_mode(app_mode_model)) {
+		//	main_wind_play(play_mode_stop);		// supergumba -- model
 
-		strncpy(file_name,file_palette.item_pane.click.item->name,file_str_len);
-		file_name[file_str_len-1]=0x0;
+			strncpy(file_name,file_palette.item_pane.click.item->name,file_str_len);
+			file_name[file_str_len-1]=0x0;
 
-	//	file_open_model(file_name);			// supergumba -- model
+		//	file_open_model(file_name);			// supergumba -- model
+		}
 
 		file_palette_fill();
 		main_wind_draw();
