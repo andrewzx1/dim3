@@ -143,6 +143,98 @@ and can be sold or given away.
 #define map_menu_item_PolygonSingleUV			5610
 
 //
+// model menus
+//
+
+#define model_menu_apple						128
+#define model_menu_file							129
+#define model_menu_edit							130
+#define model_menu_model						131
+#define model_menu_view							132
+#define model_menu_mesh							133
+#define model_menu_vertex						134
+#define model_menu_bone							135
+#define model_menu_pose							136
+#define model_menu_animate						137
+
+#define model_menu_item_FileSave				5100
+#define model_menu_item_FilePreference			5101
+#define model_menu_item_FileQuit				5102
+
+#define model_menu_item_EditUndo				5200
+#define model_menu_item_EditSelectMore			5201
+
+#define model_menu_item_PrepareModel			5300
+#define model_menu_item_CalcBoxes				5301
+#define model_menu_item_CalcNormals				5302
+#define model_menu_item_ScaleAll				5303
+#define model_menu_item_FlipXAll				5304
+#define model_menu_item_FlipYAll				5305
+#define model_menu_item_FlipZAll				5306
+#define model_menu_item_SwapXZAll				5307
+#define model_menu_item_SwapYZAll				5308
+#define model_menu_item_CenterXZAll				5309
+#define model_menu_item_FloorYAll				5310
+#define model_menu_item_AddHitBox				5311
+
+#define model_menu_item_Front					5400
+#define model_menu_item_Left					5401
+#define model_menu_item_Right					5402
+#define model_menu_item_Back					5403
+#define model_menu_item_Top						5404
+#define model_menu_item_Bottom					5405
+
+#define model_menu_item_NewMesh					5500
+#define model_menu_item_DuplicateMesh			5501
+#define model_menu_item_ImportOBJ				5502
+#define model_menu_item_ReplaceOBJ				5503
+#define model_menu_item_InsertXML				5504
+#define model_menu_item_Scale					5505
+#define model_menu_item_FlipX					5506
+#define model_menu_item_FlipY					5507
+#define model_menu_item_FlipZ					5508
+#define model_menu_item_FlipU					5509
+#define model_menu_item_FlipV					5510
+#define model_menu_item_SwapXZ					5511
+#define model_menu_item_SwapYZ					5512
+#define model_menu_item_CenterXZ				5513
+#define model_menu_item_FloorY					5514
+#define model_menu_item_MeshTessellate			5515
+
+#define model_menu_item_VertexSelectAll			5600
+#define model_menu_item_VertexSelectNotAttached	5601
+#define model_menu_item_VertexInvertNormals		5602
+#define model_menu_item_VertexSetNormals		5603
+#define model_menu_item_VertexSetNormalsOut		5604
+#define model_menu_item_VertexSetNormalsIn		5605
+#define model_menu_item_VertexClearBones		5606
+#define model_menu_item_VertexAutoBones			5607
+#define model_menu_item_VertexHideSelected		5608
+#define model_menu_item_VertexHideNonSelected	5609
+#define model_menu_item_VertexShowAll			5610
+#define model_menu_item_VertexDelete			5611
+#define model_menu_item_VertexPolygonDelete		5612
+#define model_menu_item_VertexCollapseSelected	5613
+#define model_menu_item_VertexCollapseSimilar	5614
+#define model_menu_item_VertexMakeQuad			5615
+#define model_menu_item_VertexTessellatePoly	5616
+
+#define model_menu_item_NewBone					5700
+#define model_menu_item_SetBone					5701
+#define model_menu_item_SelectVertexWithBone	5702
+#define model_menu_item_GoToParentBone			5703
+
+#define model_menu_item_NewPose					5800
+#define model_menu_item_DupPose					5801
+#define model_menu_item_ClearPose				5802
+
+#define model_menu_item_NewAnimate				5900
+#define model_menu_item_DupAnimate				5901
+#define model_menu_item_ResetTimeAnimate		5902
+#define model_menu_item_PlayAnimate				5903
+#define model_menu_item_PlayBlendAnimate		5904
+
+//
 // tools
 //
 

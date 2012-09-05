@@ -63,7 +63,7 @@ void os_glue_end(void)
       
 ======================================================= */
 
-void os_get_support_file_path(char *path,char *app_name)
+void os_get_support_file_path(char *path)
 {
 	strcpy(path,"Contents/Resources");
 }
@@ -179,7 +179,7 @@ void os_menu_create(os_menu_item_type *os_menus)
 	menu=os_menus;
 	
 	last_idx=0;
-	menu_id=app_menu_file;
+	menu_id=project_menu_file;				// same starting ID for all menus
 	last_menu_name[0]=0x0;
 
 	while (TRUE) {
