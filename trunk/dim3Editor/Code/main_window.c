@@ -109,9 +109,19 @@ void main_wind_menu_create(void)
 {
 	switch (state.mode) {
 
+		case app_mode_project:
+			project_menu_create();
+			project_menu_update();
+			break;
+			
 		case app_mode_map:
 			map_menu_create();
 			map_menu_update();
+			break;
+			
+		case app_mode_model:
+			model_menu_create();
+			model_menu_update();
 			break;
 
 	}
@@ -120,9 +130,17 @@ void main_wind_menu_create(void)
 void main_wind_menu_dispose(void)
 {
 	switch (state.mode) {
+	
+		case app_mode_project:
+			project_menu_dispose();
+			break;
 
 		case app_mode_map:
 			map_menu_dispose();
+			break;
+			
+		case app_mode_model:
+			model_menu_dispose();
 			break;
 
 	}
@@ -132,22 +150,54 @@ void main_wind_menu_update(void)
 {
 	switch (state.mode) {
 
+		case app_mode_project:
+			project_menu_update();
+			break;
+			
 		case app_mode_map:
 			map_menu_update();
+			break;
+			
+		case app_mode_model:
+			model_menu_update();
 			break;
 
 	}
 }
 
-void main_wind_menu_event_run(int cmd)
+bool main_wind_menu_event_run(int cmd)
 {
 	switch (state.mode) {
 
+		case app_mode_project:
+			return(project_menu_event_run(cmd));
+			
 		case app_mode_map:
-			map_menu_event_run(cmd);
-			break;
+			return(map_menu_event_run(cmd));
+			
+		case app_mode_model:
+			return(model_menu_event_run(cmd));
 
 	}
+	
+	return(FALSE);
+}
+
+/* =======================================================
+
+      Change Mode
+      
+======================================================= */
+
+void main_wind_switch_mode(int mode)
+{
+	if (state.mode==mode) return;
+	
+		// need to rebuild menu
+		
+	main_wind_menu_dispose();
+	state.mode=mode;
+	main_wind_menu_create();
 }
 
 /* =======================================================

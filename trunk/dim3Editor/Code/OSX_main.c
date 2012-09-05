@@ -321,7 +321,7 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 	
 	GetEventParameter(event,kEventParamDirectObject,typeHICommand,NULL,sizeof(HICommand),NULL,&cmd);
 	
-	if (menu_event_run(cmd.commandID)) return(noErr);
+	if (main_wind_menu_event_run(cmd.commandID)) return(noErr);
 
 	return(eventNotHandledErr);
 }
@@ -372,7 +372,7 @@ int main(int argc,char *argv[])
 	if (!main_app_initialize()) return(0);
 	
 	menu_start();
-	menu_create();
+	main_wind_menu_create();
 	
 	main_wind_open();
 	main_wind_draw();
@@ -386,7 +386,7 @@ int main(int argc,char *argv[])
 	file_close_map();
 	
 	main_wind_close();
-	menu_dispose();
+	main_wind_menu_dispose();
 	
 	main_app_shutdown();
 	

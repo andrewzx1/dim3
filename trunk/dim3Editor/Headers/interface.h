@@ -41,7 +41,8 @@ extern void main_wind_shutdown(void);
 extern void main_wind_menu_create(void);
 extern void main_wind_menu_dispose(void);
 extern void main_wind_menu_update(void);
-extern void main_wind_menu_event_run(int cmd);
+extern bool main_wind_menu_event_run(int cmd);
+extern void main_wind_switch_mode(int mode);
 extern void main_wind_gl_setup(void);
 extern void main_wind_draw(void);
 extern void main_wind_draw_no_swap(void);
@@ -63,10 +64,20 @@ extern bool setup_xml_write(void);
 // menus
 //
 
+extern void project_menu_create(void);
+extern void project_menu_dispose(void);
+extern void project_menu_update(void);
+extern bool project_menu_event_run(int cmd);
+
 extern void map_menu_create(void);
 extern void map_menu_dispose(void);
 extern void map_menu_update(void);
 extern bool map_menu_event_run(int cmd);
+
+extern void model_menu_create(void);
+extern void model_menu_dispose(void);
+extern void model_menu_update(void);
+extern bool model_menu_event_run(int cmd);
 
 //
 // undo
@@ -118,6 +129,7 @@ extern void texture_palette_reset(void);
 
 extern void file_palette_initialize(void);
 extern void file_palette_shutdown(void);
+extern void file_palette_fill(void);
 extern void file_palette_draw(void);
 extern void file_palette_scroll_wheel(d3pnt *pnt,int move);
 extern void file_palette_click(d3pnt *pnt,bool double_click);
