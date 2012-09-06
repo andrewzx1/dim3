@@ -171,6 +171,7 @@ extern void project_palette_fill_crosshairs(void);
 extern void project_palette_fill_actions(void);
 extern void project_palette_fill_shaders(void);
 extern void project_palette_fill_preload_models(void);
+extern void project_palette_fill_preferences(void);
 
 extern void project_palette_click_main(bool double_click);
 extern void project_palette_click_project(bool double_click);
@@ -197,6 +198,7 @@ extern void project_palette_click_crosshairs(bool double_click);
 extern void project_palette_click_actions(bool double_click);
 extern void project_palette_click_shaders(bool double_click);
 extern void project_palette_click_preload_models(bool double_click);
+extern void project_palette_click_preferences(bool double_click);
 
 extern void project_palette_fill_title_page_button(int intro_button_idx);
 extern void project_palette_fill_title_page_model(int intro_model_idx);
@@ -259,7 +261,6 @@ extern void project_palette_click_group_particle(int particle_idx,int group_part
 //
 
 extern void map_palette_fill_texture(int texture_idx);
-extern void map_palette_fill_editor_preference(void);
 extern void map_palette_fill_main(void);
 extern void map_palette_fill_map(void);
 extern void map_palette_fill_camera(void);
@@ -278,7 +279,6 @@ extern void map_palette_fill_scenery(int scenery_idx);
 extern void map_palette_fill_node(int node_idx);
 
 extern void map_palette_click_texture(int texture_idx,int id,bool double_click);
-extern void map_palette_click_editor_preference(int id,bool double_click);
 extern void map_palette_click_main(bool double_click);
 extern void map_palette_click_map(bool double_click);
 extern void map_palette_click_camera(bool double_click);

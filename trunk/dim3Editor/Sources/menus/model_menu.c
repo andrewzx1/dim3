@@ -44,8 +44,6 @@ os_menu_item_type		model_menu_setup[]=
 										// File menu
 
 									{"File","Save",model_menu_item_FileSave,os_menu_key_cmd,'S'},
-									{"File","",0,os_menu_key_none,0x0},
-									{"File","Preferences",model_menu_item_FilePreference,os_menu_key_none,0x0},
 								#ifdef D3_OS_WINDOWS
 									{"File","",0,os_menu_key_none,0x0},
 									{"File","Exit",model_menu_item_FileQuit,os_menu_key_none,0x0},
@@ -232,13 +230,6 @@ bool model_menu_event_run(int cmd)
 
 		case model_menu_item_FileSave:
 			file_save_model();
-			return(TRUE);
-
-		case model_menu_item_FilePreference:
-			state.model.in_preference=!state.model.in_preference;
-			model_palette_reset();
-			list_palette_set_level(&model_palette,0);
-			main_wind_draw();
 			return(TRUE);
 
 		case model_menu_item_FileQuit:

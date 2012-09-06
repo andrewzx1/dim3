@@ -568,7 +568,7 @@ void view_set_viewport_box(d3rect *box,bool erase,bool use_background)
 	glVertexPointer(2,GL_FLOAT,0,vertexes);
 		
 	if (use_background) {
-		glColor4f(pref.map.col.background.r,pref.map.col.background.g,pref.map.col.background.b,1.0f);
+		glColor4f(pref.col.background.r,pref.col.background.g,pref.col.background.b,1.0f);
 	}
 	else {
 		glColor4f(1.0f,1.0f,1.0f,1.0f);
@@ -1066,7 +1066,7 @@ void view_scroll_wheel(d3pnt *pnt,int delta)
 	move_pnt.x=move_pnt.y=move_pnt.z=0;
 
 	mv=delta*move_scroll_wheel_scale;
-	if (pref.map.flip_forward_movement) mv=-mv;
+	if (pref.flip_forward_movement) mv=-mv;
 
 		// free look
 

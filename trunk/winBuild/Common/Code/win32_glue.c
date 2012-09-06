@@ -25,15 +25,7 @@ and can be sold or given away.
  
 *********************************************************************/
 
-#ifdef D3_EDITOR
-	#include "dim3editor.h"
-#endif
-#ifdef D3_ANIMATOR
-	#include "dim3Animator.h"
-#endif
-#ifdef D3_SETUP
-	#include "dim3editor.h"
-#endif
+#include "dim3editor.h"
 
 #include "glue.h"
 

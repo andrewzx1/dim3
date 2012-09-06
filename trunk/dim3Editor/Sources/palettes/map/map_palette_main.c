@@ -64,11 +64,11 @@ void map_palette_fill_main(void)
 
 		// map
 
-	list_palette_add_header(&map_palette,spot_piece,"Settings");
-	list_palette_add_item(&map_palette,map_setting_piece,0,"General",(map_palette.item_pane.click.id==map_setting_piece),FALSE);
-	list_palette_add_item(&map_palette,map_camera_piece,0,"Camera",(map_palette.item_pane.click.id==map_camera_piece),FALSE);
-	list_palette_add_item(&map_palette,map_light_media_piece,0,"Light & Media",(map_palette.item_pane.click.id==map_light_media_piece),FALSE);
-	list_palette_add_item(&map_palette,map_sky_weather_piece,0,"Sky & Weather",(map_palette.item_pane.click.id==map_sky_weather_piece),FALSE);
+	list_palette_add_header(&map_palette,0,"Settings");
+	list_palette_add_item(&map_palette,item_map_setting,0,"General",(map_palette.item_pane.click.id==item_map_setting),FALSE);
+	list_palette_add_item(&map_palette,item_map_camera,0,"Camera",(map_palette.item_pane.click.id==item_map_camera),FALSE);
+	list_palette_add_item(&map_palette,item_map_light_media,0,"Light & Media",(map_palette.item_pane.click.id==item_map_light_media),FALSE);
+	list_palette_add_item(&map_palette,item_map_sky_weather,0,"Sky & Weather",(map_palette.item_pane.click.id==item_map_sky_weather),FALSE);
 
 		// spots
 
@@ -77,10 +77,10 @@ void map_palette_fill_main(void)
 
 	for (n=0;n!=map.nspot;n++) {
 		if (map.spots[n].name[0]!=0x0) {
-			list_palette_add_item(&map_palette,spot_piece,n,map.spots[n].name,((map_palette.item_pane.click.id==spot_piece)&&(n==map_palette.item_pane.click.idx)),FALSE);
+			list_palette_add_item(&map_palette,item_map_spot,n,map.spots[n].name,((map_palette.item_pane.click.id==item_map_spot)&&(n==map_palette.item_pane.click.idx)),FALSE);
 		}
 		else {
-			list_palette_add_item(&map_palette,spot_piece,n,"[none]",((map_palette.item_pane.click.id==spot_piece)&&(n==map_palette.item_pane.click.idx)),FALSE);
+			list_palette_add_item(&map_palette,item_map_spot,n,"[none]",((map_palette.item_pane.click.id==item_map_spot)&&(n==map_palette.item_pane.click.idx)),FALSE);
 		}
 	}
 
@@ -91,7 +91,7 @@ void map_palette_fill_main(void)
 	list_palette_add_header_button(&map_palette,kPropertyAddLight,"Lights",list_button_plus);
 
 	for (n=0;n!=map.nlight;n++) {
-		list_palette_add_color(&map_palette,light_piece,n,&map.lights[n].setting.col,((map_palette.item_pane.click.id==light_piece)&&(n==map_palette.item_pane.click.idx)),FALSE);
+		list_palette_add_color(&map_palette,item_map_light,n,&map.lights[n].setting.col,((map_palette.item_pane.click.id==item_map_light)&&(n==map_palette.item_pane.click.idx)),FALSE);
 	}
 
 		// sounds
@@ -100,7 +100,7 @@ void map_palette_fill_main(void)
 	list_palette_sort_mark_start(&map_palette);
 
 	for (n=0;n!=map.nsound;n++) {
-		list_palette_add_item(&map_palette,sound_piece,n,map.sounds[n].name,((map_palette.item_pane.click.id==sound_piece)&&(n==map_palette.item_pane.click.idx)),FALSE);
+		list_palette_add_item(&map_palette,item_map_sound,n,map.sounds[n].name,((map_palette.item_pane.click.id==item_map_sound)&&(n==map_palette.item_pane.click.idx)),FALSE);
 	}
 
 	list_palette_sort(&map_palette);
@@ -111,7 +111,7 @@ void map_palette_fill_main(void)
 	list_palette_sort_mark_start(&map_palette);
 
 	for (n=0;n!=map.nparticle;n++) {
-		list_palette_add_item(&map_palette,particle_piece,n,map.particles[n].name,((map_palette.item_pane.click.id==particle_piece)&&(n==map_palette.item_pane.click.idx)),FALSE);
+		list_palette_add_item(&map_palette,item_map_particle,n,map.particles[n].name,((map_palette.item_pane.click.id==item_map_particle)&&(n==map_palette.item_pane.click.idx)),FALSE);
 	}
 
 	list_palette_sort(&map_palette);
@@ -122,7 +122,7 @@ void map_palette_fill_main(void)
 	list_palette_sort_mark_start(&map_palette);
 
 	for (n=0;n!=map.nscenery;n++) {
-		list_palette_add_item(&map_palette,scenery_piece,n,map.sceneries[n].model_name,((map_palette.item_pane.click.id==scenery_piece)&&(n==map_palette.item_pane.click.idx)),FALSE);
+		list_palette_add_item(&map_palette,item_map_scenery,n,map.sceneries[n].model_name,((map_palette.item_pane.click.id==item_map_scenery)&&(n==map_palette.item_pane.click.idx)),FALSE);
 	}
 
 	list_palette_sort(&map_palette);
@@ -133,7 +133,7 @@ void map_palette_fill_main(void)
 	list_palette_sort_mark_start(&map_palette);
 
 	for (n=0;n!=map.nnode;n++) {
-		if (map.nodes[n].name[0]!=0x0) list_palette_add_item(&map_palette,node_piece,n,map.nodes[n].name,((map_palette.item_pane.click.id==node_piece)&&(n==map_palette.item_pane.click.idx)),FALSE);
+		if (map.nodes[n].name[0]!=0x0) list_palette_add_item(&map_palette,item_map_node,n,map.nodes[n].name,((map_palette.item_pane.click.id==item_map_node)&&(n==map_palette.item_pane.click.idx)),FALSE);
 	}
 
 	list_palette_sort(&map_palette);
@@ -144,7 +144,7 @@ void map_palette_fill_main(void)
 	list_palette_sort_mark_start(&map_palette);
 
 	for (n=0;n!=map.group.ngroup;n++) {
-		list_palette_add_item(&map_palette,group_piece,n,map.group.groups[n].name,((map_palette.item_pane.click.id==group_piece)&&(n==map_palette.item_pane.click.idx)),FALSE);
+		list_palette_add_item(&map_palette,item_map_group,n,map.group.groups[n].name,((map_palette.item_pane.click.id==item_map_group)&&(n==map_palette.item_pane.click.idx)),FALSE);
 	}
 
 	list_palette_sort(&map_palette);
@@ -155,7 +155,7 @@ void map_palette_fill_main(void)
 	list_palette_sort_mark_start(&map_palette);
 
 	for (n=0;n!=map.movement.nmovement;n++) {
-		list_palette_add_item(&map_palette,movement_piece,n,map.movement.movements[n].name,((map_palette.item_pane.click.id==movement_piece)&&(n==map_palette.item_pane.click.idx)),FALSE);
+		list_palette_add_item(&map_palette,item_map_movement,n,map.movement.movements[n].name,((map_palette.item_pane.click.id==item_map_movement)&&(n==map_palette.item_pane.click.idx)),FALSE);
 	}
 
 	list_palette_sort(&map_palette);
@@ -166,7 +166,7 @@ void map_palette_fill_main(void)
 	list_palette_sort_mark_start(&map_palette);
 
 	for (n=0;n!=map.cinema.ncinema;n++) {
-		list_palette_add_item(&map_palette,cinema_piece,n,map.cinema.cinemas[n].name,((map_palette.item_pane.click.id==cinema_piece)&&(n==map_palette.item_pane.click.idx)),FALSE);
+		list_palette_add_item(&map_palette,item_map_cinema,n,map.cinema.cinemas[n].name,((map_palette.item_pane.click.id==item_map_cinema)&&(n==map_palette.item_pane.click.idx)),FALSE);
 	}
 
 	list_palette_sort(&map_palette);
@@ -233,20 +233,16 @@ void map_palette_click_main(bool double_click)
 	state.map.cur_cinema_idx=-1;
 	state.map.cur_cinema_action_idx=-1;
 
-		// turn off preferences
-
-	state.map.in_preference=FALSE;
-
 		// special check for non-selection
 		// type double-clicks
 
 	if (double_click) {
 		switch (state.map.cur_no_sel_piece_type) {
 
-			case map_setting_piece:
-			case map_camera_piece:
-			case map_light_media_piece:
-			case map_sky_weather_piece:
+			case item_map_setting:
+			case item_map_camera:
+			case item_map_light_media:
+			case item_map_sky_weather:
 				list_palette_set_level(&map_palette,1);
 				main_wind_draw();
 				return;
@@ -260,18 +256,18 @@ void map_palette_click_main(bool double_click)
 
 	switch (state.map.cur_no_sel_piece_type) {
 
-		case group_piece:
+		case item_map_group:
 			state.map.cur_group_idx=map_palette.item_pane.click.idx;
 			select_add_group(state.map.cur_group_idx);
 			break;
 
-		case movement_piece:
+		case item_map_movement:
 			state.map.cur_movement_idx=map_palette.item_pane.click.idx;
 			state.map.cur_movement_move_idx=-1;
 			select_add_movement(state.map.cur_movement_idx);
 			break;
 
-		case cinema_piece:
+		case item_map_cinema:
 			state.map.cur_cinema_idx=map_palette.item_pane.click.idx;
 			state.map.cur_cinema_action_idx=-1;
 			select_add_cinema(state.map.cur_cinema_idx);
@@ -289,18 +285,18 @@ void map_palette_click_main(bool double_click)
 
 	switch (state.map.cur_no_sel_piece_type) {
 
-		case spot_piece:
-		case scenery_piece:
+		case item_map_spot:
+		case item_map_scenery:
 			state.map.show_object=TRUE;
 			break;
 
-		case light_piece:
-		case sound_piece:
-		case particle_piece:
+		case item_map_light:
+		case item_map_sound:
+		case item_map_particle:
 			state.map.show_lightsoundparticle=TRUE;
 			break;
 
-		case node_piece:
+		case item_map_node:
 			state.map.show_node=TRUE;
 			break;
 	}

@@ -49,7 +49,7 @@ void piece_duplicate_offset(d3pnt *pnt)
 	view=view_get_current_view();
 	
 	if (fabsf(view->ang.x)<15.0f) {
-		pnt->x=pref.map.duplicate_offset*view_snap_clip_size_factor;
+		pnt->x=pref.duplicate_offset*view_snap_clip_size_factor;
 		pnt->z=0;
 		pnt->y=0;
 		rotate_2D_point_center(&pnt->x,&pnt->z,view->ang.y);
@@ -57,9 +57,9 @@ void piece_duplicate_offset(d3pnt *pnt)
 		return;
 	}
 	
-	pnt->x=pref.map.duplicate_offset*view_snap_clip_size_factor;
+	pnt->x=pref.duplicate_offset*view_snap_clip_size_factor;
 	pnt->y=0;
-	pnt->z=pref.map.duplicate_offset*view_snap_clip_size_factor;
+	pnt->z=pref.duplicate_offset*view_snap_clip_size_factor;
 }
 
 void piece_duplicate(void)
@@ -87,7 +87,7 @@ void piece_duplicate(void)
 		
 		switch (type) {
 			
-			case mesh_piece:
+			case item_map_mesh:
 				index=map_mesh_duplicate(&map,main_idx);
 				if (index==-1) {
 					os_dialog_alert("Can Not Create Mesh","Not enough memory.");
@@ -100,10 +100,10 @@ void piece_duplicate(void)
 
 				view_vbo_mesh_initialize(index);
 				
-				select_duplicate_add(mesh_piece,index,0);
+				select_duplicate_add(item_map_mesh,index,0);
 				break;
 			
-			case liquid_piece:
+			case item_map_liquid:
 				index=map_liquid_duplicate(&map,main_idx);
 				if (index==-1) {
 					os_dialog_alert("Can Not Create Liquid","Not enough memory.");
@@ -113,10 +113,10 @@ void piece_duplicate(void)
 				map_liquid_calculate_center(&map,index,&mpt);
 				map_liquid_move(&map,index,&mov_pt);
 				
-				select_duplicate_add(liquid_piece,index,-1);
+				select_duplicate_add(item_map_liquid,index,-1);
 				break;
 				
-			case spot_piece:
+			case item_map_spot:
 				if (map.nspot==max_spot) {
 					os_dialog_alert("Can Not Create Spot","You've reached the maximum number of spots for a map.");
 					return;
@@ -126,11 +126,11 @@ void piece_duplicate(void)
 				map.spots[map.nspot].pnt.x+=mov_pt.x;
 				map.spots[map.nspot].pnt.y+=mov_pt.y;
 				map.spots[map.nspot].pnt.z+=mov_pt.z;
-				select_duplicate_add(spot_piece,map.nspot,-1);
+				select_duplicate_add(item_map_node,map.nspot,-1);
 				map.nspot++;
 				break;
 				
-			case scenery_piece:
+			case item_map_scenery:
 				if (map.nscenery==max_map_scenery) {
 					os_dialog_alert("Can Not Create Scenery","You've reached the maximum number of scenery for a map.");
 					return;
@@ -140,11 +140,11 @@ void piece_duplicate(void)
 				map.sceneries[map.nscenery].pnt.x+=mov_pt.x;
 				map.sceneries[map.nscenery].pnt.y+=mov_pt.y;
 				map.sceneries[map.nscenery].pnt.z+=mov_pt.z;
-				select_duplicate_add(scenery_piece,map.nscenery,-1);
+				select_duplicate_add(item_map_scenery,map.nscenery,-1);
 				map.nscenery++;
 				break;
 				
-			case node_piece:
+			case item_map_node:
 				if (map.nnode==max_node) {
 					os_dialog_alert("Can Not Create Node","You've reached the maximum number of nodes for a map.");
 					return;
@@ -157,11 +157,11 @@ void piece_duplicate(void)
 				for (i=0;i!=max_node_link;i++) {
 					map.nodes[map.nnode].link[i]=-1;
 				}
-				select_duplicate_add(node_piece,map.nnode,-1);
+				select_duplicate_add(item_map_node,map.nnode,-1);
 				map.nnode++;
 				break;
 				
-			case light_piece:
+			case item_map_light:
 				if (map.nlight==max_map_light) {
 					os_dialog_alert("Can Not Create Light","You've reached the maximum number of lights for a map.");
 					return;
@@ -171,11 +171,11 @@ void piece_duplicate(void)
 				map.lights[map.nlight].pnt.x+=mov_pt.x;
 				map.lights[map.nlight].pnt.y+=mov_pt.y;
 				map.lights[map.nlight].pnt.z+=mov_pt.z;
-				select_duplicate_add(light_piece,map.nlight,-1);
+				select_duplicate_add(item_map_light,map.nlight,-1);
 				map.nlight++;
 				break;
 				
-			case sound_piece:
+			case item_map_sound:
 				if (map.nsound==max_map_sound) {
 					os_dialog_alert("Can Not Create Sound","You've reached the maximum number of sounds for a map.");
 					return;
@@ -185,11 +185,11 @@ void piece_duplicate(void)
 				map.sounds[map.nsound].pnt.x+=mov_pt.x;
 				map.sounds[map.nsound].pnt.y+=mov_pt.y;
 				map.sounds[map.nsound].pnt.z+=mov_pt.z;
-				select_duplicate_add(sound_piece,map.nsound,-1);
+				select_duplicate_add(item_map_sound,map.nsound,-1);
 				map.nsound++;
 				break;
 				
-			case particle_piece:
+			case item_map_particle:
 				if (map.nparticle==max_map_particle) {
 					os_dialog_alert("Can Not Create Particle","You've reached the maximum number of particles for a map.");
 					return;
@@ -199,7 +199,7 @@ void piece_duplicate(void)
 				map.particles[map.nparticle].pnt.x+=mov_pt.x;
 				map.particles[map.nparticle].pnt.y+=mov_pt.y;
 				map.particles[map.nparticle].pnt.z+=mov_pt.z;
-				select_duplicate_add(particle_piece,map.nparticle,-1);
+				select_duplicate_add(item_map_particle,map.nparticle,-1);
 				map.nparticle++;
 				break;
 				
@@ -250,10 +250,10 @@ void piece_delete(void)
 	
 		switch (type) {
 			
-			case mesh_piece:
+			case item_map_mesh:
 				if (state.map.drag_mode==drag_mode_polygon) {
 					map_mesh_delete_poly(&map,main_idx,sub_idx);
-					select_delete_move_index(mesh_piece,main_idx,sub_idx);
+					select_delete_move_index(item_map_mesh,main_idx,sub_idx);
 					break;
 				}
 				if (state.map.drag_mode==drag_mode_mesh) {
@@ -263,25 +263,25 @@ void piece_delete(void)
 				}
 				break;
 				
-			case liquid_piece:
+			case item_map_liquid:
 				map_liquid_delete(&map,main_idx);
 				break;
 				
-			case spot_piece:
+			case item_map_spot:
 				for (i=main_idx;i<map.nspot;i++) {
 					map.spots[i]=map.spots[i+1];
 				}
 				map.nspot--;
 				break;
 				
-			case scenery_piece:
+			case item_map_scenery:
 				for (i=main_idx;i<map.nscenery;i++) {
 					map.sceneries[i]=map.sceneries[i+1];
 				}
 				map.nscenery--;
 				break;
 				
-			case node_piece:
+			case item_map_node:
 				for (i=0;i!=map.nnode;i++) {			// clear all linkage
 					if (i==main_idx) continue;
 
@@ -298,21 +298,21 @@ void piece_delete(void)
 				map.nnode--;
 				break;
 				
-			case light_piece:
+			case item_map_light:
 				for (i=main_idx;i<map.nlight;i++) {
 					map.lights[i]=map.lights[i+1];
 				}
 				map.nlight--;
 				break;
 				
-			case sound_piece:
+			case item_map_sound:
 				for (i=main_idx;i<map.nsound;i++) {
 					map.sounds[i]=map.sounds[i+1];
 				}
 				map.nsound--;
 				break;
 				
-			case particle_piece:
+			case item_map_particle:
 				for (i=main_idx;i<map.nparticle;i++) {
 					map.particles[i]=map.particles[i+1];
 				}
@@ -360,7 +360,7 @@ void piece_select_more_check_edge(d3pnt *k_pt1,d3pnt *k_pt2)
 				pt2=&mesh->vertexes[poly->v[t2]];
 				
 				if (((pt1->x==k_pt1->x) && (pt1->y==k_pt1->y) && (pt1->z==k_pt1->z) && (pt2->x==k_pt2->x) && (pt2->y==k_pt2->y) && (pt2->z==k_pt2->z)) || ((pt1->x==k_pt2->x) && (pt1->y==k_pt2->y) && (pt1->z==k_pt2->z) && (pt2->x==k_pt1->x) && (pt2->y==k_pt1->y) && (pt2->z==k_pt1->z))) {
-					select_add(mesh_piece,n,k);
+					select_add(item_map_mesh,n,k);
 					break;
 				}
 			}
@@ -386,7 +386,7 @@ void piece_select_more(void)
 	for (n=0;n!=sel_count;n++) {
 	
 		select_get(n,&type,&mesh_idx,&poly_idx);
-		if (type!=mesh_piece) continue;
+		if (type!=item_map_mesh) continue;
 		
 		mesh=&map.mesh.meshes[mesh_idx];
 		poly=&mesh->polys[poly_idx];
@@ -421,7 +421,7 @@ void piece_tesselate(bool mesh)
 	
 	for (n=0;n!=sel_count;n++) {
 		select_get(n,&type,&mesh_idx,&poly_idx);
-		if (type==mesh_piece) {
+		if (type==item_map_mesh) {
 			if (mesh) {
 				map_mesh_tesselate(&map,mesh_idx);
 			}
@@ -457,7 +457,7 @@ void piece_resize(void)
 
 	for (n=0;n!=sel_count;n++) {
 		select_get(n,&type,&mesh_idx,&poly_idx);
-		if (type==mesh_piece) break;
+		if (type==item_map_mesh) break;
 	}
 
 	if (mesh_idx==-1) return;
@@ -480,7 +480,7 @@ void piece_resize(void)
 	for (n=0;n!=sel_count;n++) {
 		select_get(n,&type,&mesh_idx,&poly_idx);
 		
-		if (type==mesh_piece) {
+		if (type==item_map_mesh) {
 
 				// resize piece
 
@@ -517,7 +517,7 @@ void piece_force_grid(void)
 	
 	for (n=0;n!=sel_count;n++) {
 		select_get(n,&type,&mesh_idx,&poly_idx);
-		if (type==mesh_piece) {
+		if (type==item_map_mesh) {
 			view_force_grid(mesh_idx,FALSE);
 			view_vbo_mesh_rebuild(mesh_idx);
 		}
@@ -542,7 +542,7 @@ void piece_flip(bool flip_x,bool flip_y,bool flip_z)
 	
 	for (n=0;n!=sel_count;n++) {
 		select_get(n,&type,&mesh_idx,&poly_idx);
-		if (type==mesh_piece) {
+		if (type==item_map_mesh) {
 			map_mesh_flip(&map,mesh_idx,flip_x,flip_y,flip_z);
 			view_vbo_mesh_rebuild(mesh_idx);
 		}
@@ -562,7 +562,7 @@ void piece_rotate(d3ang *ang)
 	
 	for (n=0;n!=sel_count;n++) {
 		select_get(n,&type,&mesh_idx,&poly_idx);
-		if (type!=mesh_piece) continue;
+		if (type!=item_map_mesh) continue;
 		
 		map_mesh_calculate_center(&map,mesh_idx,&center_pnt);
 		map_mesh_rotate(&map,mesh_idx,&center_pnt,ang);
@@ -594,7 +594,7 @@ void piece_move(int move_x,int move_y,int move_z)
 	
 	for (n=0;n!=sel_count;n++) {
 		select_get(n,&type,&mesh_idx,&poly_idx);
-		if (type==mesh_piece) {
+		if (type==item_map_mesh) {
 			if (!map.mesh.meshes[mesh_idx].flag.lock_move) {
 				map_mesh_move(&map,mesh_idx,&mov_pnt);
 				view_force_grid(mesh_idx,TRUE);
@@ -621,12 +621,12 @@ void piece_mesh_select_all_poly(void)
 	
 	for (n=0;n!=sel_count;n++) {
 		select_get(n,&type,&mesh_idx,&poly_idx);
-		if (type!=mesh_piece) continue;
+		if (type!=item_map_mesh) continue;
 		
 		mesh=&map.mesh.meshes[mesh_idx];
 		
 		for (k=0;k!=mesh->npoly;k++) {
-			if (!select_check(mesh_piece,mesh_idx,k)) select_add(mesh_piece,mesh_idx,k);
+			if (!select_check(item_map_mesh,mesh_idx,k)) select_add(item_map_mesh,mesh_idx,k);
 		}
 	}
 }
@@ -646,7 +646,7 @@ void piece_reset_uvs(bool poly_only)
 	
 	for (n=0;n!=sel_count;n++) {
 		select_get(n,&type,&mesh_idx,&poly_idx);
-		if (type!=mesh_piece) continue;
+		if (type!=item_map_mesh) continue;
 		if (map.mesh.meshes[mesh_idx].flag.lock_uv) continue;
 		
 		if (poly_only) {
@@ -669,7 +669,7 @@ void piece_whole_uvs(bool poly_only)
 	
 	for (n=0;n!=sel_count;n++) {
 		select_get(n,&type,&mesh_idx,&poly_idx);
-		if (type!=mesh_piece) continue;
+		if (type!=item_map_mesh) continue;
 		
 		if (poly_only) {
 			map_mesh_whole_poly_uv(&map,mesh_idx,poly_idx);
@@ -690,7 +690,7 @@ void piece_single_uvs(bool poly_only)
 	
 	for (n=0;n!=sel_count;n++) {
 		select_get(n,&type,&mesh_idx,&poly_idx);
-		if (type!=mesh_piece) continue;
+		if (type!=item_map_mesh) continue;
 		
 		if (poly_only) {
 			map_mesh_single_poly_uv(&map,mesh_idx,poly_idx);
@@ -711,7 +711,7 @@ void piece_rotate_uvs(void)
 	
 	for (n=0;n!=sel_count;n++) {
 		select_get(n,&type,&mesh_idx,&poly_idx);
-		if (type!=mesh_piece) continue;
+		if (type!=item_map_mesh) continue;
 
 		map_mesh_rotate_poly_uv(&map,mesh_idx,poly_idx,90);
 		view_vbo_mesh_rebuild(mesh_idx);
@@ -727,7 +727,7 @@ void piece_flip_uvs(bool flip_u,bool flip_v)
 	
 	for (n=0;n!=sel_count;n++) {
 		select_get(n,&type,&mesh_idx,&poly_idx);
-		if (type!=mesh_piece) continue;
+		if (type!=item_map_mesh) continue;
 
 		map_mesh_flip_poly_uv(&map,mesh_idx,poly_idx,flip_u,flip_v);
 		view_vbo_mesh_rebuild(mesh_idx);
@@ -748,7 +748,7 @@ void piece_mesh_recalc_normals(bool poly_only)
 	
 	for (n=0;n!=sel_count;n++) {
 		select_get(n,&type,&mesh_idx,&poly_idx);
-		if (type!=mesh_piece) continue;
+		if (type!=item_map_mesh) continue;
 		
 		if (poly_only) {
 			map_recalc_normals_mesh_poly(&map,&map.mesh.meshes[mesh_idx],poly_idx,normal_mode_none,FALSE);
@@ -777,7 +777,7 @@ void piece_mesh_invert_normals(bool poly_only)
 	
 	for (n=0;n!=sel_count;n++) {
 		select_get(n,&type,&mesh_idx,&poly_idx);
-		if (type!=mesh_piece) continue;
+		if (type!=item_map_mesh) continue;
 		
 			// invert the poly
 			
@@ -806,7 +806,7 @@ void piece_mesh_set_normals_in_out(bool out)
 	
 	for (n=0;n!=sel_count;n++) {
 		select_get(n,&type,&mesh_idx,&poly_idx);
-		if (type!=mesh_piece) continue;
+		if (type!=item_map_mesh) continue;
 		
 			// recalc the normals
 			
@@ -831,7 +831,7 @@ void piece_poly_hole(void)
 	
 	for (n=0;n!=sel_count;n++) {
 		select_get(n,&type,&mesh_idx,&poly_idx);
-		if (type==mesh_piece) {
+		if (type==item_map_mesh) {
 			map_mesh_poly_punch_hole(&map,mesh_idx,poly_idx,NULL);
 			view_vbo_mesh_rebuild(mesh_idx);
 		}
@@ -941,7 +941,7 @@ void piece_key(char ch)
 
 		switch (type) {
 		
-			case mesh_piece:
+			case item_map_mesh:
 				if (map.mesh.meshes[main_idx].flag.lock_move) break;
 				map_mesh_move(&map,main_idx,&move_pnt);
 				view_force_grid(main_idx,TRUE);
@@ -949,42 +949,42 @@ void piece_key(char ch)
 				view_vbo_mesh_rebuild(main_idx);
 				break;
 				
-			case liquid_piece:
+			case item_map_liquid:
 				map_liquid_move(&map,main_idx,&move_pnt);
 				if ((state.map.auto_texture) && (!map.liquid.liquids[main_idx].flag.lock_uv)) map_liquid_reset_uv(&map,main_idx);
 				break;
 				
-			case node_piece:
+			case item_map_node:
 				map.nodes[main_idx].pnt.x+=move_pnt.x;
 				map.nodes[main_idx].pnt.y+=move_pnt.y;
 				map.nodes[main_idx].pnt.z+=move_pnt.z;
 				break;
 				
-			case spot_piece:
+			case item_map_spot:
 				map.spots[main_idx].pnt.x+=move_pnt.x;
 				map.spots[main_idx].pnt.y+=move_pnt.y;
 				map.spots[main_idx].pnt.z+=move_pnt.z;
 				break;
 				
-			case scenery_piece:
+			case item_map_scenery:
 				map.sceneries[main_idx].pnt.x+=move_pnt.x;
 				map.sceneries[main_idx].pnt.y+=move_pnt.y;
 				map.sceneries[main_idx].pnt.z+=move_pnt.z;
 				break;
 				
-			case light_piece:
+			case item_map_light:
 				map.lights[main_idx].pnt.x+=move_pnt.x;
 				map.lights[main_idx].pnt.y+=move_pnt.y;
 				map.lights[main_idx].pnt.z+=move_pnt.z;
 				break;
 				
-			case sound_piece:
+			case item_map_sound:
 				map.sounds[main_idx].pnt.x+=move_pnt.x;
 				map.sounds[main_idx].pnt.y+=move_pnt.y;
 				map.sounds[main_idx].pnt.z+=move_pnt.z;
 				break;
 				
-			case particle_piece:
+			case item_map_particle:
 				map.particles[main_idx].pnt.x+=move_pnt.x;
 				map.particles[main_idx].pnt.y+=move_pnt.y;
 				map.particles[main_idx].pnt.z+=move_pnt.z;

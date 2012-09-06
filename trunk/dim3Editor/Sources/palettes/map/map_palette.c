@@ -83,31 +83,31 @@ void map_palette_fill_level_1(void)
 	
 	switch (state.map.cur_no_sel_piece_type) {
 
-		case map_setting_piece:
+		case item_map_setting:
 			map_palette_fill_map();
 			return;
 
-		case map_camera_piece:
+		case item_map_camera:
 			map_palette_fill_camera();
 			return;
 
-		case map_light_media_piece:
+		case item_map_light_media:
 			map_palette_fill_light_media();
 			return;
 
-		case map_sky_weather_piece:
+		case item_map_sky_weather:
 			map_palette_fill_sky_weather();
 			return;
 
-		case group_piece:
+		case item_map_group:
 			map_palette_fill_group(state.map.cur_group_idx);
 			return;
 	
-		case movement_piece:
+		case item_map_movement:
 			map_palette_fill_movement(state.map.cur_movement_idx);
 			return;
 
-		case cinema_piece:
+		case item_map_cinema:
 			map_palette_fill_cinema(state.map.cur_cinema_idx);
 			return;
 	}
@@ -123,37 +123,37 @@ void map_palette_fill_level_1(void)
 
 	switch (sel_type) {
 
-		case mesh_piece:
+		case item_map_mesh:
 			if (state.map.drag_mode!=drag_mode_polygon) sub_idx=-1;
 			map_palette_fill_mesh(main_idx,sub_idx);
 			break;
 
-		case liquid_piece:
+		case item_map_liquid:
 			map_palette_fill_liquid(main_idx);
 			break;
 
-		case spot_piece:
+		case item_map_spot:
 			map_palette_fill_spot(main_idx);
 			break;
 
-		case light_piece:
+		case item_map_node:
+			map_palette_fill_node(main_idx);
+			break;
+
+		case item_map_light:
 			map_palette_fill_light(main_idx);
 			break;
 
-		case sound_piece:
+		case item_map_sound:
 			map_palette_fill_sound(main_idx);
 			break;
 
-		case particle_piece:
+		case item_map_particle:
 			map_palette_fill_particle(main_idx);
 			break;
 
-		case scenery_piece:
+		case item_map_scenery:
 			map_palette_fill_scenery(main_idx);
-			break;
-
-		case node_piece:
-			map_palette_fill_node(main_idx);
 			break;
 
 	}
@@ -165,11 +165,11 @@ void map_palette_fill_level_2(void)
 
 	switch (state.map.cur_no_sel_piece_type) {
 
-		case movement_piece:
+		case item_map_movement:
 			map_palette_fill_movement_move(state.map.cur_movement_idx,state.map.cur_movement_move_idx);
 			break;
 
-		case cinema_piece:
+		case item_map_cinema:
 			map_palette_fill_cinema_action(state.map.cur_cinema_idx,state.map.cur_cinema_action_idx);
 			break;
 	}
@@ -187,28 +187,15 @@ void map_palette_draw(void)
 
 	list_palette_delete_all_items(&map_palette);
 
-		// if no map, do preferences
+		// if no map, do nothing
 
-	if (!state.map.map_open) {
-		map_palette_fill_editor_preference();
-		list_palette_draw(&map_palette);
-		return;
-	}
+	if (!state.map.map_open) return;
 
 		// if texture window is up,
 		// put in texture properties
 
 	if (state.map.texture_edit_idx!=-1) {
 		map_palette_fill_texture(state.map.texture_edit_idx);
-		list_palette_draw(&map_palette);
-		return;
-	}
-
-		// if preference window is up,
-		// put in preferences
-
-	if (state.map.in_preference) {
-		map_palette_fill_editor_preference();
 		list_palette_draw(&map_palette);
 		return;
 	}
@@ -253,7 +240,7 @@ void map_palette_reset(void)
 	if (select_count()==0) {
 		state.map.cur_no_sel_piece_type=-1;
 		list_palette_set_level(&map_palette,0);
-		map_palette_scroll_into_view(map_setting_piece,0);
+		map_palette_scroll_into_view(item_map_setting,0);
 		return;
 	}
 	
@@ -264,7 +251,7 @@ void map_palette_reset(void)
 	
 	list_palette_set_level(&map_palette,1);
 	
-	if ((sel_type!=mesh_piece) && (sel_type!=liquid_piece)) map_palette_scroll_into_view(sel_type,main_idx);
+	if ((sel_type!=item_map_mesh) && (sel_type!=item_map_liquid)) map_palette_scroll_into_view(sel_type,main_idx);
 }
 
 void map_palette_scroll_into_view(int item_id,int item_idx)
@@ -307,7 +294,7 @@ bool map_palette_delete(void)
 
 			// delete group
 			
-		case group_piece:
+		case item_map_group:
 			
 				// check if this group is used within a movement
 				
@@ -334,7 +321,7 @@ bool map_palette_delete(void)
 
 			// delete movement
 			
-		case movement_piece:
+		case item_map_movement:
 		
 				// check if movement is used within a cinema
 				
@@ -365,7 +352,7 @@ bool map_palette_delete(void)
 
 			// delete cinema
 			
-		case cinema_piece:
+		case item_map_cinema:
 			if (os_dialog_confirm("Delete Cinema","Is it okay to delete this cinema?",FALSE)!=0) return(FALSE);
 			map_cinema_delete(&map,state.map.cur_cinema_idx);
 			map_palette_reset();
@@ -396,15 +383,15 @@ void map_palette_click_level_1(bool double_click)
 
 	switch (state.map.cur_no_sel_piece_type) {
 
-		case group_piece:
+		case item_map_group:
 			map_palette_click_group(double_click);
 			return;
 
-		case movement_piece:
+		case item_map_movement:
 			map_palette_click_movement(double_click);
 			return;
 
-		case cinema_piece:
+		case item_map_cinema:
 			map_palette_click_cinema(double_click);
 			return;
 	}
@@ -421,19 +408,19 @@ void map_palette_click_level_1(bool double_click)
 
 		switch (state.map.cur_no_sel_piece_type) {
 			
-			case map_setting_piece:
+			case item_map_setting:
 				map_palette_click_map(double_click);
 				break;
 
-			case map_camera_piece:
+			case item_map_camera:
 				map_palette_click_camera(double_click);
 				break;
 
-			case map_light_media_piece:
+			case item_map_light_media:
 				map_palette_click_light_media(double_click);
 				break;
 
-			case map_sky_weather_piece:
+			case item_map_sky_weather:
 				map_palette_click_sky_weather(double_click);
 				break;
 
@@ -446,37 +433,37 @@ void map_palette_click_level_1(bool double_click)
 
 	switch (sel_type) {
 
-		case mesh_piece:
+		case item_map_mesh:
 			if (state.map.drag_mode!=drag_mode_polygon) sub_idx=-1;
 			map_palette_click_mesh(main_idx,sub_idx,double_click);
 			break;
 
-		case liquid_piece:
+		case item_map_liquid:
 			map_palette_click_liquid(main_idx,double_click);
 			break;
 
-		case spot_piece:
+		case item_map_spot:
 			map_palette_click_spot(main_idx,double_click);
 			break;
 
-		case light_piece:
+		case item_map_node:
+			map_palette_click_node(main_idx,double_click);
+			break;
+
+		case item_map_light:
 			map_palette_click_light(main_idx,double_click);
 			break;
 
-		case sound_piece:
+		case item_map_sound:
 			map_palette_click_sound(main_idx,double_click);
 			break;
 
-		case particle_piece:
+		case item_map_particle:
 			map_palette_click_particle(main_idx,double_click);
 			break;
 
-		case scenery_piece:
+		case item_map_scenery:
 			map_palette_click_scenery(main_idx,double_click);
-			break;
-
-		case node_piece:
-			map_palette_click_node(main_idx,double_click);
 			break;
 
 	}
@@ -488,11 +475,11 @@ void map_palette_click_level_2(bool double_click)
 
 	switch (state.map.cur_no_sel_piece_type) {
 
-		case movement_piece:
+		case item_map_movement:
 			map_palette_click_movement_move(state.map.cur_movement_idx,state.map.cur_movement_move_idx,double_click);
 			return;
 
-		case cinema_piece:
+		case item_map_cinema:
 			map_palette_click_cinema_action(state.map.cur_cinema_idx,state.map.cur_cinema_action_idx,double_click);
 			break;
 	}
@@ -527,14 +514,6 @@ void map_palette_click(d3pnt *pnt,bool double_click)
 
 	if (state.map.texture_edit_idx!=-1) {
 		map_palette_click_texture(state.map.texture_edit_idx,map_palette.item_pane.click.id,double_click);
-		main_wind_draw();
-		return;
-	}
-
-		// if preference window is up, preference properties
-
-	if (state.map.in_preference) {
-		map_palette_click_editor_preference(map_palette.item_pane.click.id,double_click);
 		main_wind_draw();
 		return;
 	}

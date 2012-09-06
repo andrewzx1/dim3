@@ -88,7 +88,7 @@ bool piece_add_obj_is_replace_ok(d3pnt *min,d3pnt *max)
 	
 	for (n=0;n!=sel_count;n++) {
 		select_get(n,&type,&main_idx,&sub_idx);
-		if (type!=mesh_piece) continue;
+		if (type!=item_map_mesh) continue;
 		
 		hit=TRUE;
 
@@ -118,7 +118,7 @@ void piece_add_obj_replace_delete_existing(void)
 		
 	for (n=0;n!=sel_cnt;n++) {
 		select_get(n,&type,&mesh_idx,&poly_idx);
-		if (type==mesh_piece) {
+		if (type==item_map_mesh) {
 			view_vbo_mesh_free(mesh_idx);
 			map_mesh_delete(&map,mesh_idx);
 		}
@@ -379,11 +379,11 @@ void import_obj_load_data(obj_import_state_type *import_state)
 		
 		if (strcmp(txt,"vn")==0) {
 			textdecode_get_piece(n,1,txt);
-			*normal++=(((float)strtod(txt,NULL))*pref.map.import_normal_factor.x);
+			*normal++=((float)strtod(txt,NULL));
 			textdecode_get_piece(n,2,txt);
-			*normal++=(((float)strtod(txt,NULL))*pref.map.import_normal_factor.y);
+			*normal++=((float)strtod(txt,NULL));
 			textdecode_get_piece(n,3,txt);
-			*normal++=(((float)strtod(txt,NULL))*pref.map.import_normal_factor.z);
+			*normal++=((float)strtod(txt,NULL));
 
 			normal_pos++;
 			continue;
@@ -1010,7 +1010,7 @@ bool import_obj(char *path,char *err_str)
 		
 		for (n=old_nmesh;n<map.mesh.nmesh;n++) {
 			if (force_grid) view_force_grid(n,FALSE);
-			select_add(mesh_piece,n,0);
+			select_add(item_map_mesh,n,0);
 		}
 		
 		import_obj_state_shutdown(&import_state);
@@ -1051,7 +1051,7 @@ bool import_obj(char *path,char *err_str)
 		textdecode_close();
 		
 		for (n=old_nmesh;n<map.mesh.nmesh;n++) {
-			select_add(mesh_piece,n,0);
+			select_add(item_map_mesh,n,0);
 		}
 		
 		import_obj_state_shutdown(&import_state);

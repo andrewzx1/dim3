@@ -48,7 +48,7 @@ extern list_palette_type	file_palette,map_palette;
 
 int texture_palette_per_page_count(void)
 {
-	return(pref.map.big_texture?16:32);
+	return(pref.big_texture?16:32);
 }
 
 int texture_palette_page_list_count(void)
@@ -114,12 +114,12 @@ int texture_palette_get_selected_texture(void)
 	
 	select_get(0,&type,&main_idx,&poly_idx);
 	
-	if (type==liquid_piece) {
+	if (type==item_map_liquid) {
 		if (view_get_uv_layer()==uv_layer_normal) return(map.liquid.liquids[main_idx].txt_idx);
 		return(map.liquid.liquids[main_idx].lmap_txt_idx);
 	}
 	
-	if (type==mesh_piece) {
+	if (type==item_map_mesh) {
 		if (view_get_uv_layer()==uv_layer_normal) return(map.mesh.meshes[main_idx].polys[poly_idx].txt_idx);
 		return(map.mesh.meshes[main_idx].polys[poly_idx].lmap_txt_idx);
 	}
@@ -141,7 +141,7 @@ void texture_palette_put_selected_texture(int txt_idx)
 		
 			// liquids
 			
-		if (type==liquid_piece) {
+		if (type==item_map_liquid) {
 			if (view_get_uv_layer()==uv_layer_normal) {
 				map.liquid.liquids[main_idx].txt_idx=txt_idx;
 			}
@@ -153,7 +153,7 @@ void texture_palette_put_selected_texture(int txt_idx)
 		
 			// meshes
 			
-		if (type!=mesh_piece) continue;
+		if (type!=item_map_mesh) continue;
 		
 		mesh=&map.mesh.meshes[main_idx];
 		
@@ -201,7 +201,7 @@ void texture_palette_reset(void)
 		// get to proper texture page
 		
 	sel=texture_palette_get_selected_texture();
-	if (sel!=-1) txt_palette_cur_page=sel/(pref.map.big_texture?16:32);
+	if (sel!=-1) txt_palette_cur_page=sel/(pref.big_texture?16:32);
 }
 
 

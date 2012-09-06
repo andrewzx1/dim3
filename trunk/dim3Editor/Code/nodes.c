@@ -55,7 +55,7 @@ int node_link_is_node_link_selected(void)
 	if (select_count()!=1) return(-1);
 	
 	select_get(0,&type,&main_idx,&sub_idx);
-	if (type!=node_piece) return(-1);
+	if (type!=item_map_node) return(-1);
 	
 	return(main_idx);
 }
@@ -64,7 +64,7 @@ void node_link_select(int node_idx)
 {
 	select_clear();
 	
-	select_add(node_piece,node_idx,-1);
+	select_add(item_map_node,node_idx,-1);
 }
 
 /* =======================================================

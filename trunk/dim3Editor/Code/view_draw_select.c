@@ -97,7 +97,7 @@ void view_draw_select_mesh(int mesh_idx)
 		
 	glEnable(GL_DEPTH_TEST);
 
-	glColor4f(pref.map.col.mesh_sel.r,pref.map.col.mesh_sel.g,pref.map.col.mesh_sel.b,1.0f);
+	glColor4f(pref.col.mesh_sel.r,pref.col.mesh_sel.g,pref.col.mesh_sel.b,1.0f);
 
 	glBindBuffer(GL_ARRAY_BUFFER,mesh->vbo.vertex);
 	glVertexPointer(3,GL_FLOAT,((3+2+2)*sizeof(float)),(GLvoid*)0);
@@ -127,10 +127,10 @@ void view_draw_select_mesh(int mesh_idx)
 
 		for (n=0;n!=8;n++) {
 			if (state.map.drag_handle_idx==n) {
-				glColor4f(pref.map.col.poly_sel.r,pref.map.col.poly_sel.g,pref.map.col.poly_sel.b,1.0f);
+				glColor4f(pref.col.poly_sel.r,pref.col.poly_sel.g,pref.col.poly_sel.b,1.0f);
 			}
 			else {
-				glColor4f(pref.map.col.mesh_sel.r,pref.map.col.mesh_sel.g,pref.map.col.mesh_sel.b,1.0f);
+				glColor4f(pref.col.mesh_sel.r,pref.col.mesh_sel.g,pref.col.mesh_sel.b,1.0f);
 			}
 			
 			*pv++=(float)pts[n].x;
@@ -149,10 +149,10 @@ void view_draw_select_mesh(int mesh_idx)
 		
 		for (n=8;n!=20;n++) {
 			if (state.map.drag_handle_idx==n) {
-				glColor4f(pref.map.col.poly_sel.r,pref.map.col.poly_sel.g,pref.map.col.poly_sel.b,1.0f);
+				glColor4f(pref.col.poly_sel.r,pref.col.poly_sel.g,pref.col.poly_sel.b,1.0f);
 			}
 			else {
-				glColor4f(pref.map.col.mesh_sel.r,pref.map.col.mesh_sel.g,pref.map.col.mesh_sel.b,1.0f);
+				glColor4f(pref.col.mesh_sel.r,pref.col.mesh_sel.g,pref.col.mesh_sel.b,1.0f);
 			}
 
 			*pv++=(float)pts[n].x;
@@ -184,10 +184,10 @@ void view_draw_select_mesh_vertex(int mesh_idx)
 	for (n=0;n!=mesh->nvertex;n++) {
 	
 		if (state.map.drag_handle_idx==n) {
-			glColor4f(pref.map.col.poly_sel.r,pref.map.col.poly_sel.g,pref.map.col.poly_sel.b,1.0f);
+			glColor4f(pref.col.poly_sel.r,pref.col.poly_sel.g,pref.col.poly_sel.b,1.0f);
 		}
 		else {
-			glColor4f(pref.map.col.mesh_sel.r,pref.map.col.mesh_sel.g,pref.map.col.mesh_sel.b,1.0f);
+			glColor4f(pref.col.mesh_sel.r,pref.col.mesh_sel.g,pref.col.mesh_sel.b,1.0f);
 		}
 		
 		vertexes[0]=(float)pt->x;
@@ -228,7 +228,7 @@ void view_draw_select_mesh_poly(int mesh_idx,int poly_idx)
 	
 	glVertexPointer(3,GL_FLOAT,0,vertexes);
 	
-	glColor4f(pref.map.col.poly_sel.r,pref.map.col.poly_sel.g,pref.map.col.poly_sel.b,1.0f);
+	glColor4f(pref.col.poly_sel.r,pref.col.poly_sel.g,pref.col.poly_sel.b,1.0f);
 	glDrawArrays(GL_LINE_LOOP,0,poly->ptsz);
 	
 	glLineWidth(1.0f);
@@ -266,7 +266,7 @@ void view_draw_select_liquid(int liquid_idx)
 	
 	glEnable(GL_DEPTH_TEST);
 
-	glColor4f(pref.map.col.mesh_sel.r,pref.map.col.mesh_sel.g,pref.map.col.mesh_sel.b,1.0f);
+	glColor4f(pref.col.mesh_sel.r,pref.col.mesh_sel.g,pref.col.mesh_sel.b,1.0f);
 	
 		// outline
 		
@@ -298,10 +298,10 @@ void view_draw_select_liquid(int liquid_idx)
 
 	for (n=0;n!=8;n++) {
 		if (state.map.drag_handle_idx==n) {
-			glColor4f(pref.map.col.poly_sel.r,pref.map.col.poly_sel.g,pref.map.col.poly_sel.b,1.0f);
+			glColor4f(pref.col.poly_sel.r,pref.col.poly_sel.g,pref.col.poly_sel.b,1.0f);
 		}
 		else {
-			glColor4f(pref.map.col.mesh_sel.r,pref.map.col.mesh_sel.g,pref.map.col.mesh_sel.b,1.0f);
+			glColor4f(pref.col.mesh_sel.r,pref.col.mesh_sel.g,pref.col.mesh_sel.b,1.0f);
 		}
 		
 		*pv++=(float)pts[n].x;
@@ -523,7 +523,7 @@ void view_draw_select(editor_view_type *view)
 			
 		switch (type) {
 		
-			case mesh_piece:
+			case item_map_mesh:
 				if (draw_mesh_once[main_idx]==0x0) {
 					draw_mesh_once[main_idx]=0x1;
 					view_draw_select_mesh(main_idx);
@@ -532,39 +532,39 @@ void view_draw_select(editor_view_type *view)
 				}
 				break;
 				
-			case liquid_piece:
+			case item_map_liquid:
 				view_draw_select_liquid(main_idx);
 				break;
 				
-			case node_piece:
+			case item_map_node:
 				view_get_sprite_vertexes(&map.nodes[main_idx].pnt,NULL,v_pnts);
 				view_draw_select_cube(v_pnts);
 				view_draw_select_rot_handles(view,&map.nodes[main_idx].pnt,&map.nodes[main_idx].ang);
 				break;
 				
-			case spot_piece:
+			case item_map_spot:
 				view_model_cube_vertexes(map.spots[main_idx].display_model,&map.spots[main_idx].pnt,&map.spots[main_idx].ang,1.0f,v_pnts);
 				view_draw_select_cube(v_pnts);
 				view_draw_select_rot_handles(view,&map.spots[main_idx].pnt,&map.spots[main_idx].ang);
 				break;
 				
-			case scenery_piece:
+			case item_map_scenery:
 				view_model_cube_vertexes(map.sceneries[main_idx].model_name,&map.sceneries[main_idx].pnt,&map.sceneries[main_idx].ang,map.sceneries[main_idx].resize,v_pnts);
 				view_draw_select_cube(v_pnts);
 				view_draw_select_rot_handles(view,&map.sceneries[main_idx].pnt,&map.sceneries[main_idx].ang);
 				break;
 				
-			case light_piece:
+			case item_map_light:
 				view_get_sprite_vertexes(&map.lights[main_idx].pnt,NULL,v_pnts);
 				view_draw_select_cube(v_pnts);
 				break;
 				
-			case sound_piece:
+			case item_map_sound:
 				view_get_sprite_vertexes(&map.sounds[main_idx].pnt,NULL,v_pnts);
 				view_draw_select_cube(v_pnts);
 				break;
 				
-			case particle_piece:
+			case item_map_particle:
 				view_get_sprite_vertexes(&map.particles[main_idx].pnt,NULL,v_pnts);
 				view_draw_select_cube(v_pnts);
 				break;
@@ -581,7 +581,7 @@ void view_draw_select(editor_view_type *view)
 		for (n=(sel_count-1);n>=0;n--) {
 		
 			select_get(n,&type,&main_idx,&sub_idx);
-			if (type!=mesh_piece) continue;
+			if (type!=item_map_mesh) continue;
 			
 			view_draw_select_mesh_poly(main_idx,sub_idx);
 		}
@@ -597,7 +597,7 @@ void view_draw_select(editor_view_type *view)
 		for (n=(sel_count-1);n>=0;n--) {
 		
 			select_get(n,&type,&main_idx,&sub_idx);
-			if (type!=mesh_piece) continue;
+			if (type!=item_map_mesh) continue;
 			
 			if (draw_mesh_once[main_idx]==0x0) {
 				draw_mesh_once[main_idx]=0x1;
