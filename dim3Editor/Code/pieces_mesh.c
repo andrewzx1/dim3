@@ -81,7 +81,7 @@ void piece_add_obj_mesh_uv(void)
 		// get mesh to replace UVs on
 		
 	select_get(0,&type,&mesh_idx,&poly_idx);
-	if (type!=mesh_piece) {
+	if (type!=item_map_mesh) {
 		os_dialog_alert("No mesh selected","You need to select a mesh to replace the UVs on.");
 		return;
 	}
@@ -443,7 +443,7 @@ void piece_add_height_map_mesh(void)
 		// finish up
 
 	select_clear();
-	select_add(mesh_piece,mesh_idx,0);
+	select_add(item_map_mesh,mesh_idx,0);
 
 	main_wind_draw();
 }
@@ -585,7 +585,7 @@ void piece_add_grid_mesh(void)
 		// finish up
 		
 	select_clear();
-	select_add(mesh_piece,mesh_idx,0);
+	select_add(item_map_mesh,mesh_idx,0);
 
 	main_wind_draw();
 }
@@ -643,7 +643,7 @@ void piece_add_polygon_mesh(void)
 	view_vbo_mesh_initialize(mesh_idx);
 
 	select_clear();
-	select_add(mesh_piece,mesh_idx,0);
+	select_add(item_map_mesh,mesh_idx,0);
 
 	main_wind_draw();
 }
@@ -670,7 +670,7 @@ void piece_combine_mesh(void)
 	
 	for (n=0;n!=select_count();n++) {
 		select_get(n,&type,&mesh_idx,&poly_idx);
-		if (type!=mesh_piece) continue;
+		if (type!=item_map_mesh) continue;
 		
 		skip=FALSE;
 		
@@ -717,7 +717,7 @@ void piece_combine_mesh(void)
 		mesh_combine_idx=new_mesh_combine_idx;
 	}
 	
-	if (mesh_combine_idx!=-1) select_add(mesh_piece,mesh_combine_idx,0);
+	if (mesh_combine_idx!=-1) select_add(item_map_mesh,mesh_combine_idx,0);
 
 		// rebuild the VBOs
 
@@ -756,7 +756,7 @@ void piece_split_mesh(void)
 		
 	for (n=0;n!=select_count();n++) {
 		select_get(n,&type,&add_mesh_idx,&add_poly_idx);
-		if (type!=mesh_piece) continue;
+		if (type!=item_map_mesh) continue;
 		
 			// if first mesh hit, copy mesh settings
 			
@@ -801,7 +801,7 @@ void piece_split_mesh(void)
 		
 			// delete poly from mesh
 			
-		select_delete_move_index(mesh_piece,add_mesh_idx,add_poly_idx);
+		select_delete_move_index(item_map_mesh,add_mesh_idx,add_poly_idx);
 		map_mesh_delete_poly(&map,add_mesh_idx,add_poly_idx);
 	}
 	
@@ -820,7 +820,7 @@ void piece_split_mesh(void)
 		// make new mesh selection
 		
 	select_clear();
-	select_add(mesh_piece,mesh_idx,0);
+	select_add(item_map_mesh,mesh_idx,0);
 	
 		// auto-switch to mesh drag mode
 		

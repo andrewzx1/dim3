@@ -234,7 +234,7 @@ bool view_clip_poly(editor_view_type *view,map_mesh_poly_type *poly)
 	
 		// get distance
 		
-	return(dist<(pref.map.clip_distance*view_snap_clip_size_factor));
+	return(dist<(pref.clip_distance*view_snap_clip_size_factor));
 }
 
 bool view_clip_liquid(editor_view_type *view,map_liquid_type *liq)
@@ -256,7 +256,7 @@ bool view_clip_liquid(editor_view_type *view,map_liquid_type *liq)
 	
 		// get distance
 		
-	return(dist<(pref.map.clip_distance*view_snap_clip_size_factor));
+	return(dist<(pref.clip_distance*view_snap_clip_size_factor));
 }
 
 bool view_clip_point(editor_view_type *view,d3pnt *pnt)
@@ -276,7 +276,7 @@ bool view_clip_point(editor_view_type *view,d3pnt *pnt)
 	
 		// get distance
 		
-	return(dist<(pref.map.clip_distance*view_snap_clip_size_factor));
+	return(dist<(pref.clip_distance*view_snap_clip_size_factor));
 }
 
 /* =======================================================
@@ -488,7 +488,7 @@ void view_draw_meshes_line(editor_view_type *view,bool opaque)
 
 	glDepthMask(GL_FALSE);
 	
-	glColor4f(pref.map.col.mesh_line.r,pref.map.col.mesh_line.g,pref.map.col.mesh_line.b,1.0f);
+	glColor4f(pref.col.mesh_line.r,pref.col.mesh_line.g,pref.col.mesh_line.b,1.0f);
 
 		// draw portal mesh lines
 
@@ -684,7 +684,7 @@ void view_draw_liquids(editor_view_type *view,bool opaque)
 		
 			// depth lines
 	
-		glColor4f(pref.map.col.mesh_line.r,pref.map.col.mesh_line.g,pref.map.col.mesh_line.b,1.0f);
+		glColor4f(pref.col.mesh_line.r,pref.col.mesh_line.g,pref.col.mesh_line.b,1.0f);
 
 		pv=vertexes;
 		
@@ -759,7 +759,7 @@ void view_draw_meshes_normals(editor_view_type *view)
 		
 			poly=&mesh->polys[k];
 			
-			if (pref.map.show_tangent_binormal) {
+			if (pref.show_tangent_binormal) {
 			
 					// draw the tangent
 
@@ -1060,7 +1060,7 @@ void view_draw_lights_sounds_particles(editor_view_type *view)
 	for (n=0;n!=map.nlight;n++) {
 		if (view_clip_point(view,&map.lights[n].pnt)) continue;
 		view_draw_sprite(&map.lights[n].pnt,NULL,light_bitmap.gl_id);
-		if (select_check(light_piece,n,-1)) view_draw_circle(&map.lights[n].pnt,&map.lights[n].setting.col,map.lights[n].setting.intensity);
+		if (select_check(item_map_light,n,-1)) view_draw_circle(&map.lights[n].pnt,&map.lights[n].setting.col,map.lights[n].setting.intensity);
 	}
 	
 	for (n=0;n!=map.nsound;n++) {
@@ -1071,7 +1071,7 @@ void view_draw_lights_sounds_particles(editor_view_type *view)
 	for (n=0;n!=map.nparticle;n++) {
 		if (view_clip_point(view,&map.particles[n].pnt)) continue;
 		view_draw_sprite(&map.particles[n].pnt,NULL,particle_bitmap.gl_id);
-		if ((select_check(particle_piece,n,-1)) && (map.particles[n].light_setting.on)) view_draw_circle(&map.particles[n].pnt,&map.particles[n].light_setting.col,map.particles[n].light_setting.intensity);
+		if ((select_check(item_map_particle,n,-1)) && (map.particles[n].light_setting.on)) view_draw_circle(&map.particles[n].pnt,&map.particles[n].light_setting.col,map.particles[n].light_setting.intensity);
 	}
 }
 

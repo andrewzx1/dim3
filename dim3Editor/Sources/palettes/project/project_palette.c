@@ -200,6 +200,10 @@ void project_palette_fill_level_1(void)
 			project_palette_fill_preload_models();
 			return;
 
+		case item_interface_preferences:
+			project_palette_fill_preferences();
+			return;
+
 	}
 }
 
@@ -558,6 +562,10 @@ void project_palette_click_level_1(bool double_click)
 			
 		case item_interface_preload_models:
 			project_palette_click_preload_models(double_click);
+			break;
+
+		case item_interface_preferences:
+			project_palette_click_preferences(double_click);
 			break;
 
 	}

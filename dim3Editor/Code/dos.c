@@ -67,7 +67,6 @@ void file_reset_state(void)
 	undo_clear();
 	
  	state.map.texture_edit_idx=-1;
-	state.map.in_preference=FALSE;
 
 		// reset the UI
 

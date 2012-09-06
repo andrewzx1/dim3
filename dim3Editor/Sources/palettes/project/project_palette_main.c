@@ -52,32 +52,46 @@ void project_palette_fill_main(void)
 {
 	list_palette_set_title(&project_palette,"Project",NULL,NULL,NULL,NULL,NULL);
 
-	list_palette_add_header(&project_palette,item_interface,"Project");
-
+	list_palette_add_header(&project_palette,item_interface,"General");
 	list_palette_add_item(&project_palette,item_interface_project,0,"Project",(state.proj.cur_item==item_interface_project),FALSE);
 	list_palette_add_item(&project_palette,item_interface_color,0,"Color",(state.proj.cur_item==item_interface_color),FALSE);
 	list_palette_add_item(&project_palette,item_interface_device,0,"Devices",(state.proj.cur_item==item_interface_device),FALSE);
+
+	list_palette_add_header(&project_palette,item_interface,"Titles");
 	list_palette_add_item(&project_palette,item_interface_logo,0,"Logo",(state.proj.cur_item==item_interface_logo),FALSE);
 	list_palette_add_item(&project_palette,item_interface_title_page,0,"Title Page",(state.proj.cur_item==item_interface_title_page),FALSE);
+	list_palette_add_item(&project_palette,item_interface_setup,0,"Setup UI",(state.proj.cur_item==item_interface_setup),FALSE);
+	list_palette_add_item(&project_palette,item_interface_progress,0,"Progress",(state.proj.cur_item==item_interface_progress),FALSE);
+
+	list_palette_add_header(&project_palette,item_interface,"Game Play");
 	list_palette_add_item(&project_palette,item_interface_singleplayer,0,"Singleplayer",(state.proj.cur_item==item_interface_singleplayer),FALSE);
 	list_palette_add_item(&project_palette,item_interface_multiplayer,0,"Multiplayer",(state.proj.cur_item==item_interface_multiplayer),FALSE);
-	list_palette_add_item(&project_palette,item_interface_setup,0,"Game Setup UI",(state.proj.cur_item==item_interface_setup),FALSE);
-	list_palette_add_item(&project_palette,item_interface_progress,0,"Progress",(state.proj.cur_item==item_interface_progress),FALSE);
+
+	list_palette_add_header(&project_palette,item_interface,"Displays");
 	list_palette_add_item(&project_palette,item_interface_hud,0,"HUD",(state.proj.cur_item==item_interface_hud),FALSE);
-	list_palette_add_item(&project_palette,item_interface_virtual_control,0,"Virtual Control",(state.proj.cur_item==item_interface_virtual_control),FALSE);
 	list_palette_add_item(&project_palette,item_interface_radar,0,"Radar",(state.proj.cur_item==item_interface_radar),FALSE);
 	list_palette_add_item(&project_palette,item_interface_label,0,"Label",(state.proj.cur_item==item_interface_label),FALSE);
 	list_palette_add_item(&project_palette,item_interface_menu,0,"Menus",(state.proj.cur_item==item_interface_menu),FALSE);
 	list_palette_add_item(&project_palette,item_interface_chooser,0,"Choosers",(state.proj.cur_item==item_interface_chooser),FALSE);
+
+	list_palette_add_header(&project_palette,item_interface,"Graphics, Sounds, Effects");
 	list_palette_add_item(&project_palette,item_interface_sound,0,"Sounds",(state.proj.cur_item==item_interface_sound),FALSE);
 	list_palette_add_item(&project_palette,item_interface_particle,0,"Particles",(state.proj.cur_item==item_interface_particle),FALSE);
 	list_palette_add_item(&project_palette,item_interface_ring,0,"Rings",(state.proj.cur_item==item_interface_ring),FALSE);
 	list_palette_add_item(&project_palette,item_interface_halo,0,"Halos",(state.proj.cur_item==item_interface_halo),FALSE);
 	list_palette_add_item(&project_palette,item_interface_mark,0,"Marks",(state.proj.cur_item==item_interface_mark),FALSE);
 	list_palette_add_item(&project_palette,item_interface_crosshair,0,"Crosshairs",(state.proj.cur_item==item_interface_crosshair),FALSE);
-	list_palette_add_item(&project_palette,item_interface_action,0,"Control Actions",(state.proj.cur_item==item_interface_action),FALSE);
 	list_palette_add_item(&project_palette,item_interface_shader,0,"Shaders",(state.proj.cur_item==item_interface_shader),FALSE);
+
+	list_palette_add_header(&project_palette,item_interface,"Controls");
+	list_palette_add_item(&project_palette,item_interface_action,0,"Control Actions",(state.proj.cur_item==item_interface_action),FALSE);
+	list_palette_add_item(&project_palette,item_interface_virtual_control,0,"Virtual Controls",(state.proj.cur_item==item_interface_virtual_control),FALSE);
+
+	list_palette_add_header(&project_palette,item_interface,"Caching");
 	list_palette_add_item(&project_palette,item_interface_preload_models,0,"Preload Models",(state.proj.cur_item==item_interface_preload_models),FALSE);
+
+	list_palette_add_header(&project_palette,item_interface,"Editor");
+	list_palette_add_item(&project_palette,item_interface_preferences,0,"Preferences",(state.proj.cur_item==item_interface_preferences),FALSE);
 }
 
 /* =======================================================

@@ -101,11 +101,12 @@ void map_palette_fill_light_media(void)
 		// music
 
 	list_palette_add_header(&map_palette,0,"Map Music");
-	list_palette_add_string(&map_palette,kMapPropertyMusicName,"Name",map.music.name,name_str_len,FALSE);
+	list_palette_add_picker_file(&map_palette,kMapPropertyMusicName,list_button_none,0,"Name","Music","mp3","",map.music.name,FALSE);
+
 	list_palette_add_int(&map_palette,kMapPropertyMusicFadeTime,"Fade In Time",&map.music.fade_msec,FALSE);
 	for (n=0;n!=max_music_preload;n++) {
 		sprintf(name,"Preload Name %d",n);
-		list_palette_add_string(&map_palette,(kMapPropertyMusicPreloadName+n),name,map.music.preload_name[n],name_str_len,FALSE);
+		list_palette_add_picker_file(&map_palette,(kMapPropertyMusicPreloadName+n),list_button_none,0,name,"Music","mp3","",map.music.preload_name[n],FALSE);
 	}
 }
 

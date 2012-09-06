@@ -44,8 +44,6 @@ os_menu_item_type		map_menu_setup[]=
 										// file
 
 									{"File","Save",map_menu_item_FileSave,os_menu_key_cmd,'S'},
-									{"File","",0,os_menu_key_none,0x0},
-									{"File","Preferences",map_menu_item_FilePreference,os_menu_key_none,0x0},
 								#ifdef D3_OS_WINDOWS
 									{"File","",0,os_menu_key_none,0x0},
 									{"File","Exit",map_menu_item_FileQuit,os_menu_key_none,0x0},
@@ -243,7 +241,7 @@ void map_menu_update(void)
        
             // pieces menu
         
-		if (select_has_type(mesh_piece)) {
+		if (select_has_type(item_map_mesh)) {
 			os_menu_enable_item(map_menu_mesh,0,TRUE);
 			if (state.map.drag_mode==drag_mode_polygon) {
 				os_menu_enable_item(map_menu_polygon,0,TRUE);
@@ -276,13 +274,6 @@ bool map_menu_event_run(int cmd)
 		case map_menu_item_FileSave:
 			file_save_map();
 			return(TRUE);
-
-        case map_menu_item_FilePreference:
-			state.map.in_preference=!state.map.in_preference;
-			map_palette_reset();
-			list_palette_set_level(&map_palette,0);
-			main_wind_draw();
-            return(TRUE);
 
 		case map_menu_item_FileQuit:
 			if (file_close_map()) {
@@ -381,31 +372,31 @@ bool map_menu_event_run(int cmd)
 			return(TRUE);
 			
 		case map_menu_item_ViewShowHideLiquids:
-			select_remove_type(liquid_piece);
+			select_remove_type(item_map_liquid);
 			state.map.show_liquid=!state.map.show_liquid;
 			main_wind_menu_update();
 			main_wind_draw();
 			break;
 
 		case map_menu_item_ViewShowHideSpots:
-			select_remove_type(spot_piece);
-			select_remove_type(scenery_piece);
+			select_remove_type(item_map_spot);
+			select_remove_type(item_map_scenery);
 			state.map.show_object=!state.map.show_object;
 			main_wind_menu_update();
 			main_wind_draw();
 			break;
 			
 		case map_menu_item_ViewShowHideLights:
-			select_remove_type(light_piece);
-			select_remove_type(sound_piece);
-			select_remove_type(particle_piece);
+			select_remove_type(item_map_light);
+			select_remove_type(item_map_sound);
+			select_remove_type(item_map_particle);
 			state.map.show_lightsoundparticle=!state.map.show_lightsoundparticle;
 			main_wind_menu_update();
 			main_wind_draw();
 			break;
 			
 		case map_menu_item_ViewShowHideNodes:
-			select_remove_type(node_piece);
+			select_remove_type(item_map_node);
 			state.map.show_node=!state.map.show_node;
 			main_wind_menu_update();
 			main_wind_draw();

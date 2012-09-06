@@ -170,11 +170,11 @@ void select_add_group(int group_idx)
 	if (group_idx==-1) return;
 
 	for (n=0;n!=map.mesh.nmesh;n++) {
-		if (map.mesh.meshes[n].group_idx==group_idx) select_add(mesh_piece,n,0);
+		if (map.mesh.meshes[n].group_idx==group_idx) select_add(item_map_mesh,n,0);
 	}
 
 	for (n=0;n!=map.liquid.nliquid;n++) {
-		if (map.liquid.liquids[n].group_idx==group_idx) select_add(liquid_piece,n,-1);
+		if (map.liquid.liquids[n].group_idx==group_idx) select_add(item_map_liquid,n,-1);
 	}
 }
 
@@ -204,12 +204,12 @@ void select_add_cinema(int cinema_idx)
 
 			case cinema_actor_player:
 				idx=map_find_spot(&map,"Start",spot_type_player);
-				if (idx!=-1) select_add(spot_piece,idx,-1);
+				if (idx!=-1) select_add(item_map_node,idx,-1);
 				break;
 
 			case cinema_actor_object:
 				idx=map_find_spot(&map,action->actor_name,spot_type_object);
-				if (idx!=-1) select_add(spot_piece,idx,-1);
+				if (idx!=-1) select_add(item_map_node,idx,-1);
 				break;
 
 			case cinema_actor_movement:
@@ -327,11 +327,11 @@ void select_get_extent(d3pnt *min,d3pnt *max)
 		
 		switch (type) {
 		
-			case mesh_piece:
+			case item_map_mesh:
 				map_mesh_calculate_extent(&map,main_idx,&t_min,&t_max);
 				break;
 				
-			case liquid_piece:
+			case item_map_liquid:
 				t_min.x=map.liquid.liquids[main_idx].lft;
 				t_max.x=map.liquid.liquids[main_idx].rgt;
 				t_min.z=map.liquid.liquids[main_idx].top;
@@ -339,7 +339,7 @@ void select_get_extent(d3pnt *min,d3pnt *max)
 				t_min.y=t_max.y=map.liquid.liquids[main_idx].y;
 				break;
 				
-			case node_piece:
+			case item_map_node:
 				t_min.x=map.nodes[main_idx].pnt.x-view_sprite_size;
 				t_max.x=map.nodes[main_idx].pnt.x+view_sprite_size;
 				t_min.y=map.nodes[main_idx].pnt.y-(view_sprite_size*2);
@@ -348,7 +348,7 @@ void select_get_extent(d3pnt *min,d3pnt *max)
 				t_max.z=map.nodes[main_idx].pnt.z+view_sprite_size;
 				break;
 				
-			case spot_piece:
+			case item_map_spot:
 				view_get_model_size(map.spots[main_idx].display_model,&size);
 				t_min.x=map.spots[main_idx].pnt.x-(size.x>>1);
 				t_max.x=map.spots[main_idx].pnt.x+(size.x>>1);
@@ -358,7 +358,7 @@ void select_get_extent(d3pnt *min,d3pnt *max)
 				t_max.z=map.spots[main_idx].pnt.z+(size.z>>1);
 				break;
 				
-			case scenery_piece:
+			case item_map_scenery:
 				view_get_model_size(map.sceneries[main_idx].model_name,&size);
 				t_min.x=map.sceneries[main_idx].pnt.x-(size.x>>1);
 				t_max.x=map.sceneries[main_idx].pnt.x+(size.x>>1);
@@ -368,7 +368,7 @@ void select_get_extent(d3pnt *min,d3pnt *max)
 				t_max.z=map.sceneries[main_idx].pnt.z+(size.z>>1);
 				break;
 				
-			case light_piece:
+			case item_map_light:
 				t_min.x=map.lights[main_idx].pnt.x-view_sprite_size;
 				t_max.x=map.lights[main_idx].pnt.x+view_sprite_size;
 				t_min.y=map.lights[main_idx].pnt.y-(view_sprite_size*2);
@@ -377,7 +377,7 @@ void select_get_extent(d3pnt *min,d3pnt *max)
 				t_max.z=map.lights[main_idx].pnt.z+view_sprite_size;
 				break;
 				
-			case sound_piece:
+			case item_map_sound:
 				t_min.x=map.sounds[main_idx].pnt.x-view_sprite_size;
 				t_max.x=map.sounds[main_idx].pnt.x+view_sprite_size;
 				t_min.y=map.sounds[main_idx].pnt.y-(view_sprite_size*2);
@@ -386,7 +386,7 @@ void select_get_extent(d3pnt *min,d3pnt *max)
 				t_max.z=map.sounds[main_idx].pnt.z+view_sprite_size;
 				break;
 				
-			case particle_piece:
+			case item_map_particle:
 				t_min.x=map.particles[main_idx].pnt.x-view_sprite_size;
 				t_max.x=map.particles[main_idx].pnt.x+view_sprite_size;
 				t_min.y=map.particles[main_idx].pnt.y-(view_sprite_size*2);
@@ -432,15 +432,15 @@ void select_get_angle(d3ang *ang)
 
 	switch (type) {
 	
-		case node_piece:
+		case item_map_node:
 			memmove(ang,&map.nodes[main_idx].ang,sizeof(d3ang));
 			break;
 
-		case spot_piece:
+		case item_map_spot:
 			memmove(ang,&map.spots[main_idx].ang,sizeof(d3ang));
 			break;
 
-		case scenery_piece:
+		case item_map_scenery:
 			memmove(ang,&map.sceneries[main_idx].ang,sizeof(d3ang));
 			break;
 	

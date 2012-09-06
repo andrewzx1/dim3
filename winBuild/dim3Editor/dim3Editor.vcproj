@@ -431,6 +431,18 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\dim3Editor\Code\texture_palette.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3Common\Code\texture_palette_common.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3Common\Code\tool_tip_common.c"
+					>
+				</File>
+				<File
 					RelativePath="..\..\dim3Editor\Code\undo.c"
 					>
 				</File>
@@ -441,30 +453,6 @@
 				<Filter
 					Name="Palettes"
 					>
-					<File
-						RelativePath="..\..\dim3Editor\Code\file_palette.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Common\Code\list_palette_common.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Common\Code\property_utility_common.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Editor\Code\texture_palette.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Common\Code\texture_palette_common.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Common\Code\tool_tip_common.c"
-						>
-					</File>
 					<Filter
 						Name="Project"
 						>
@@ -506,6 +494,10 @@
 						</File>
 						<File
 							RelativePath="..\..\dim3Editor\Sources\palettes\project\project_palette_devices.c"
+							>
+						</File>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\palettes\project\project_palette_editor_preference.c"
 							>
 						</File>
 						<File
@@ -697,10 +689,6 @@
 							>
 						</File>
 						<File
-							RelativePath="..\..\dim3Editor\Sources\palettes\map\map_palette_editor_preference.c"
-							>
-						</File>
-						<File
 							RelativePath="..\..\dim3Editor\Sources\palettes\map\map_palette_group.c"
 							>
 						</File>
@@ -768,6 +756,22 @@
 					<Filter
 						Name="Model"
 						>
+					</Filter>
+					<Filter
+						Name="Common"
+						>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\palettes\common\file_palette.c"
+							>
+						</File>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\palettes\common\list_palette_common.c"
+							>
+						</File>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\palettes\common\property_utility_common.c"
+							>
+						</File>
 					</Filter>
 				</Filter>
 				<Filter

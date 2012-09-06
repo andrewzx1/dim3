@@ -113,7 +113,7 @@ void piece_create_spot(void)
     state.map.show_object=TRUE;
 	
 	select_clear();
-	select_add(spot_piece,index,-1);
+	select_add(item_map_node,index,-1);
 
 	map_palette_reset();
 	main_wind_menu_update();
@@ -175,7 +175,7 @@ void piece_create_scenery(void)
     state.map.show_object=TRUE;
 	
 	select_clear();
-	select_add(scenery_piece,index,-1);
+	select_add(item_map_scenery,index,-1);
 
 	map_palette_reset();
 	main_wind_menu_update();
@@ -234,7 +234,7 @@ void piece_create_light(void)
 	state.map.show_lightsoundparticle=TRUE;
 	
 	select_clear();
-	select_add(light_piece,index,-1);
+	select_add(item_map_light,index,-1);
 
 	map_palette_reset();
 	main_wind_menu_update();
@@ -280,7 +280,7 @@ void piece_create_sound(void)
     state.map.show_lightsoundparticle=TRUE;
 	
 	select_clear();
-	select_add(sound_piece,index,-1);
+	select_add(item_map_sound,index,-1);
 
 	map_palette_reset();
 	main_wind_menu_update();
@@ -330,7 +330,7 @@ void piece_create_particle(void)
     state.map.show_lightsoundparticle=TRUE;
 	
 	select_clear();
-	select_add(particle_piece,index,-1);
+	select_add(item_map_particle,index,-1);
 
 	map_palette_reset();
 	main_wind_menu_update();
@@ -384,7 +384,7 @@ void piece_create_node(void)
 	state.map.show_node=TRUE;
 	
 	select_clear();
-	select_add(node_piece,index,-1);
+	select_add(item_map_node,index,-1);
 
 	map_palette_reset();
 	main_wind_menu_update();
@@ -467,7 +467,7 @@ void piece_create_liquid(void)
 		
 	state.map.show_liquid=TRUE;
 	select_clear();
-	select_add(liquid_piece,index,-1);
+	select_add(item_map_liquid,index,-1);
 
 	main_wind_draw();
 	
@@ -490,14 +490,14 @@ void piece_create_cinema(void)
 		return;
 	}
 
-	state.map.cur_no_sel_piece_type=cinema_piece;
+	state.map.cur_no_sel_piece_type=item_map_cinema;
 	state.map.cur_group_idx=-1;
 	state.map.cur_movement_idx=-1;
 	state.map.cur_movement_move_idx=-1;
 	state.map.cur_cinema_idx=cinema_idx;
 	state.map.cur_cinema_action_idx=-1;
 
-	map_palette_scroll_into_view(cinema_piece,cinema_idx);
+	map_palette_scroll_into_view(item_map_cinema,cinema_idx);
 
 	dialog_property_string_run(list_string_value_string,(void*)map.cinema.cinemas[cinema_idx].name,name_str_len,0,0);
 	
@@ -514,14 +514,14 @@ void piece_create_group(void)
 		return;
 	}
 
-	state.map.cur_no_sel_piece_type=group_piece;
+	state.map.cur_no_sel_piece_type=item_map_group;
 	state.map.cur_group_idx=group_idx;
 	state.map.cur_movement_idx=-1;
 	state.map.cur_movement_move_idx=-1;
 	state.map.cur_cinema_idx=-1;
 	state.map.cur_cinema_action_idx=-1;
 
-	map_palette_scroll_into_view(group_piece,group_idx);
+	map_palette_scroll_into_view(item_map_group,group_idx);
 
 	dialog_property_string_run(list_string_value_string,(void*)map.group.groups[group_idx].name,name_str_len,0,0);
 	
@@ -538,14 +538,14 @@ void piece_create_movement(void)
 		return;
 	}
 
-	state.map.cur_no_sel_piece_type=movement_piece;
+	state.map.cur_no_sel_piece_type=item_map_movement;
 	state.map.cur_group_idx=-1;
 	state.map.cur_movement_idx=movement_idx;
 	state.map.cur_movement_move_idx=-1;
 	state.map.cur_cinema_idx=-1;
 	state.map.cur_cinema_action_idx=-1;
 
-	map_palette_scroll_into_view(movement_piece,movement_idx);
+	map_palette_scroll_into_view(item_map_movement,movement_idx);
 
 	dialog_property_string_run(list_string_value_string,(void*)map.movement.movements[movement_idx].name,name_str_len,0,0);
 	

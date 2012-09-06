@@ -230,7 +230,7 @@ bool view_click_drag_mesh_handle(editor_view_type *view,d3pnt *pt)
 	if (select_count()==0) return(FALSE);
 	
 	select_get(0,&type,&mesh_idx,&poly_idx);
-	if (type!=mesh_piece) return(FALSE);
+	if (type!=item_map_mesh) return(FALSE);
 	
 	mesh=&map.mesh.meshes[mesh_idx];
 	
@@ -243,7 +243,7 @@ bool view_click_drag_mesh_handle(editor_view_type *view,d3pnt *pt)
 	view_pick_list_start(view,FALSE,20);
 	
 	for (n=0;n!=20;n++) {
-		view_pick_list_add_handle(&pts[n],liquid_piece,n,0);
+		view_pick_list_add_handle(&pts[n],item_map_liquid,n,0);
 	}
 
 	handle_idx=-1;
@@ -379,7 +379,7 @@ bool view_click_drag_mesh(editor_view_type *view,d3pnt *pt)
 	if (nsel==0) return(FALSE);
 	
 	select_get(0,&type,&mesh_idx,&poly_idx);
-	if (type!=mesh_piece) return(FALSE);
+	if (type!=item_map_mesh) return(FALSE);
 	
 	mesh=&map.mesh.meshes[mesh_idx];
 	
@@ -397,7 +397,7 @@ bool view_click_drag_mesh(editor_view_type *view,d3pnt *pt)
 	
 	for (k=0;k!=nsel;k++) {
 		select_get(k,&type,&mesh_idx,&poly_idx);
-		if (type!=mesh_piece) continue;
+		if (type!=item_map_mesh) continue;
 		
 		nvertex+=map.mesh.meshes[mesh_idx].nvertex;
 	}
@@ -409,7 +409,7 @@ bool view_click_drag_mesh(editor_view_type *view,d3pnt *pt)
 	
 	for (k=0;k!=nsel;k++) {
 		select_get(k,&type,&mesh_idx,&poly_idx);
-		if (type!=mesh_piece) continue;
+		if (type!=item_map_mesh) continue;
 		
 		mesh=&map.mesh.meshes[mesh_idx];
 
@@ -486,7 +486,7 @@ bool view_click_drag_mesh(editor_view_type *view,d3pnt *pt)
 		
 		for (k=0;k!=nsel;k++) {
 			select_get(k,&type,&mesh_idx,&poly_idx);
-			if (type!=mesh_piece) continue;
+			if (type!=item_map_mesh) continue;
 			
 			mesh=&map.mesh.meshes[mesh_idx];
 			dpt=mesh->vertexes;
@@ -539,7 +539,7 @@ bool view_click_drag_mesh_poly(editor_view_type *view,d3pnt *pt)
 	if (select_count()!=1) return(FALSE);
 	
 	select_get(0,&type,&mesh_idx,&poly_idx);
-	if (type!=mesh_piece) return(FALSE);
+	if (type!=item_map_mesh) return(FALSE);
 
 		// are we clicking in mesh
 		
@@ -679,7 +679,7 @@ bool view_click_drag_vertex(editor_view_type *view,d3pnt *pt)
     if (select_count()!=1) return(FALSE);
 	
 	select_get(0,&type,&mesh_idx,&poly_idx);
-	if (type!=mesh_piece) return(FALSE);
+	if (type!=item_map_mesh) return(FALSE);
 	
 		// check for clicking points
 
@@ -692,7 +692,7 @@ bool view_click_drag_vertex(editor_view_type *view,d3pnt *pt)
 	dpt=mesh->vertexes;
 	
 	for (n=0;n!=mesh->nvertex;n++) {
-		view_pick_list_add_handle(dpt,mesh_piece,n,0);
+		view_pick_list_add_handle(dpt,item_map_mesh,n,0);
 		dpt++;
 	}
 
@@ -812,7 +812,7 @@ bool view_click_drag_texture_uv(editor_view_type *view_setup,d3pnt *pt,bool enti
 	if (select_count()==0) return(FALSE);
 	
 	select_get(0,&type,&mesh_idx,&poly_idx);
-	if (type!=mesh_piece) return(FALSE);
+	if (type!=item_map_mesh) return(FALSE);
 	
 	mesh=&map.mesh.meshes[mesh_idx];
 	
@@ -890,7 +890,7 @@ bool view_click_drag_liquid_vertex(editor_view_type *view,d3pnt *pt)
     if (select_count()!=1) return(FALSE);
 	
 	select_get(0,&type,&liquid_idx,&sub_idx);
-	if (type!=liquid_piece) return(FALSE);
+	if (type!=item_map_liquid) return(FALSE);
 	
 		// check for clicking handle points
 
@@ -901,7 +901,7 @@ bool view_click_drag_liquid_vertex(editor_view_type *view,d3pnt *pt)
 	view_pick_list_start(view,FALSE,8);
 	
 	for (n=0;n!=8;n++) {
-		view_pick_list_add_handle(&pts[n],liquid_piece,n,0);
+		view_pick_list_add_handle(&pts[n],item_map_liquid,n,0);
 	}
 
 	handle_idx=-1;
@@ -1107,7 +1107,7 @@ bool view_click_drag_liquid(editor_view_type *view,d3pnt *pt)
     if (select_count()!=1) return(FALSE);
 	
 	select_get(0,&type,&main_idx,&sub_idx);
-	if (type!=liquid_piece) return(FALSE);
+	if (type!=item_map_liquid) return(FALSE);
 	
 	liq=&map.liquid.liquids[main_idx];
 		
@@ -1214,22 +1214,22 @@ bool view_click_drag_item(editor_view_type *view,d3pnt *pt)
 	pnt=NULL;
 	
 	switch (type) {
-		case node_piece:
+		case item_map_node:
 			pnt=&map.nodes[main_idx].pnt;
 			break;
-		case spot_piece:
+		case item_map_spot:
 			pnt=&map.spots[main_idx].pnt;
 			break;
-		case scenery_piece:
+		case item_map_scenery:
 			pnt=&map.sceneries[main_idx].pnt;
 			break;
-		case light_piece:
+		case item_map_light:
 			pnt=&map.lights[main_idx].pnt;
 			break;
-		case sound_piece:
+		case item_map_sound:
 			pnt=&map.sounds[main_idx].pnt;
 			break;
-		case particle_piece:
+		case item_map_particle:
 			pnt=&map.particles[main_idx].pnt;
 			break;
 	}

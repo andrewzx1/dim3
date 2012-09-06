@@ -149,7 +149,7 @@ bool view_click_snap(int mesh_idx,int liquid_idx,d3pnt *pt)
 	
 		// snap size
 		
-	snap_sz=(pref.map.snap_size*view_snap_clip_size_factor);
+	snap_sz=(pref.snap_size*view_snap_clip_size_factor);
 	
 		// any mesh vertexes to snap to?
 		
@@ -286,7 +286,7 @@ bool view_click_snap_poly(int mesh_idx,int poly_idx,d3pnt *pt)
 		
 		if (view_click_snap(mesh_idx,-1,&hpt)) {
 			d=distance_get(pt->x,pt->y,pt->z,hpt.x,hpt.y,hpt.z);
-			if (d>(pref.map.snap_size*view_snap_clip_size_factor)) continue;
+			if (d>(pref.snap_size*view_snap_clip_size_factor)) continue;
 			
 			if ((d<cur_dist) || (cur_dist<0)) {
 				cur_dist=d;
@@ -319,7 +319,7 @@ bool view_click_snap_mesh_vertexes(int mesh_idx,d3pnt *pnt)
 		
 		if (view_click_snap(mesh_idx,-1,&hpnt)) {
 			d=distance_get(pnt->x,pnt->y,pnt->z,hpnt.x,hpnt.y,hpnt.z);
-			if (d>(pref.map.snap_size*view_snap_clip_size_factor)) continue;
+			if (d>(pref.snap_size*view_snap_clip_size_factor)) continue;
 			
 			if ((d<cur_dist) || (cur_dist<0)) {
 				cur_dist=d;
@@ -347,7 +347,7 @@ int view_click_get_snap_count(d3pnt *old_dpnt,d3pnt *mpnt)
 	
 	for (k=0;k!=nsel;k++) {
 		select_get(k,&type,&mesh_idx,&poly_idx);
-		if (type!=mesh_piece) continue;
+		if (type!=item_map_mesh) continue;
 		
 		mesh=&map.mesh.meshes[mesh_idx];
 	
@@ -363,7 +363,7 @@ int view_click_get_snap_count(d3pnt *old_dpnt,d3pnt *mpnt)
 
 			for (i=0;i!=map.mesh.nmesh;i++) {
 				if (i==n) continue;
-				if (!select_check(mesh_piece,i,-1)) continue;
+				if (!select_check(item_map_mesh,i,-1)) continue;
 
 				mesh2=&map.mesh.meshes[i];
 
@@ -411,7 +411,7 @@ void view_click_snap_mesh(d3pnt *old_dpnt,d3pnt *mpnt)
 	
 	for (k=0;k!=nsel;k++) {
 		select_get(k,&type,&mesh_idx,&poly_idx);
-		if (type!=mesh_piece) continue;
+		if (type!=item_map_mesh) continue;
 		
 		mesh=&map.mesh.meshes[mesh_idx];
 	
@@ -491,7 +491,7 @@ void view_click_rot_handle_rotate_run(int type,int idx,d3ang *ang,d3ang *org_ang
 		// if it's a mesh, then
 		// we need to move the mesh
 
-	if (type==mesh_piece) {
+	if (type==item_map_mesh) {
 		mov_pnt.x=mov_pnt.y=mov_pnt.z=0;
 		rot_ang.x=org_ang->x-ang->x;
 		rot_ang.y=org_ang->y-ang->y;
@@ -538,7 +538,7 @@ void view_click_rot_handle_move_run(int type,int idx,d3pnt *pnt,d3pnt *org_pnt,i
 		// if it's a mesh, then
 		// we need to move the mesh
 
-	if (type==mesh_piece) {
+	if (type==item_map_mesh) {
 		mov_pnt.x=pnt->x-org_pnt->x;
 		mov_pnt.y=pnt->y-org_pnt->y;
 		mov_pnt.z=pnt->z-org_pnt->z;
@@ -578,7 +578,7 @@ bool view_click_rot_handles(editor_view_type *view,d3pnt *click_pt)
 
 	for (n=0;n!=sel_count;n++) {
 		select_get(n,&type,&main_idx,&sub_idx);
-		if ((type==mesh_piece) || (type==node_piece) || (type==spot_piece) || (type==scenery_piece)) item_count++;
+		if ((type==item_map_mesh) || (type==item_map_node) || (type==item_map_spot) || (type==item_map_scenery)) item_count++;
 	}
 
 	if (item_count==0) return(FALSE);
@@ -599,7 +599,7 @@ bool view_click_rot_handles(editor_view_type *view,d3pnt *click_pt)
 		
 		switch (type) {
 
-			case mesh_piece:
+			case item_map_mesh:
 				map_mesh_calculate_center(&map,main_idx,&mesh_pnt);
 				if (view_handle_create_rot_handle(view,&mesh_pnt,NULL,&center_pnt,&hand_pnts[item_count*3])) {
 					type_list[item_count]=type;
@@ -608,7 +608,7 @@ bool view_click_rot_handles(editor_view_type *view,d3pnt *click_pt)
 				}
 				break;
 		
-			case node_piece:
+			case item_map_node:
 				if (view_handle_create_rot_handle(view,&map.nodes[main_idx].pnt,&map.nodes[main_idx].ang,&center_pnt,&hand_pnts[item_count*3])) {
 					type_list[item_count]=type;
 					idx_list[item_count]=main_idx;
@@ -616,7 +616,7 @@ bool view_click_rot_handles(editor_view_type *view,d3pnt *click_pt)
 				}
 				break;
 				
-			case spot_piece:
+			case item_map_spot:
 				if (view_handle_create_rot_handle(view,&map.spots[main_idx].pnt,&map.spots[main_idx].ang,&center_pnt,&hand_pnts[item_count*3])) {
 					type_list[item_count]=type;
 					idx_list[item_count]=main_idx;
@@ -624,7 +624,7 @@ bool view_click_rot_handles(editor_view_type *view,d3pnt *click_pt)
 				}
 				break;
 				
-			case scenery_piece:
+			case item_map_scenery:
 				if (view_handle_create_rot_handle(view,&map.sceneries[main_idx].pnt,&map.sceneries[main_idx].ang,&center_pnt,&hand_pnts[item_count*3])) {
 					type_list[item_count]=type;
 					idx_list[item_count]=main_idx;
@@ -665,7 +665,7 @@ bool view_click_rot_handles(editor_view_type *view,d3pnt *click_pt)
 
 	switch (type) {
 
-		case mesh_piece:
+		case item_map_mesh:
 			map_mesh_move_rotate_copy_reset(&map,main_idx);		// reset move-rotate copy so we start at current position/rotation
 			map_mesh_calculate_center(&map,main_idx,&mesh_pnt);
 			pnt=&mesh_pnt;
@@ -673,17 +673,17 @@ bool view_click_rot_handles(editor_view_type *view,d3pnt *click_pt)
 			ang=&mesh_ang;
 			break;
 	
-		case node_piece:
+		case item_map_node:
 			pnt=&map.nodes[main_idx].pnt;
 			ang=&map.nodes[main_idx].ang;
 			break;
 			
-		case spot_piece:
+		case item_map_spot:
 			pnt=&map.spots[main_idx].pnt;
 			ang=&map.spots[main_idx].ang;
 			break;
 			
-		case scenery_piece:
+		case item_map_scenery:
 			pnt=&map.sceneries[main_idx].pnt;
 			ang=&map.sceneries[main_idx].ang;
 			break;
@@ -834,7 +834,7 @@ void view_click_piece_map_pick_start(editor_view_type *view)
 			
 				// draw color poly
 
-			view_pick_list_add(mesh_piece,n,k);
+			view_pick_list_add(item_map_mesh,n,k);
 
 			pv=vertexes;
 			
@@ -871,7 +871,7 @@ void view_click_piece_map_pick_start(editor_view_type *view)
 
 				// add to pick list
 
-			view_pick_list_add(liquid_piece,n,-1);
+			view_pick_list_add(item_map_liquid,n,-1);
 
 			vertexes[0]=vertexes[9]=(float)liq->lft;
 			vertexes[3]=vertexes[6]=(float)liq->rgt;
@@ -903,7 +903,7 @@ void view_click_piece_map_pick_start(editor_view_type *view)
 
 		for (n=0;n!=map.nspot;n++) {
 			view_model_cube_vertexes(spot->display_model,&spot->pnt,&spot->ang,1.0f,v_pnts);
-			view_pick_list_add_cube(v_pnts,spot_piece,n,-1);
+			view_pick_list_add_cube(v_pnts,item_map_spot,n,-1);
 			spot++;
 		}
 			
@@ -911,7 +911,7 @@ void view_click_piece_map_pick_start(editor_view_type *view)
 
 		for (n=0;n!=map.nscenery;n++) {
 			view_model_cube_vertexes(scenery->model_name,&scenery->pnt,&scenery->ang,scenery->resize,v_pnts);
-			view_pick_list_add_cube(v_pnts,scenery_piece,n,-1);
+			view_pick_list_add_cube(v_pnts,item_map_scenery,n,-1);
 			scenery++;
 		}
 
@@ -925,7 +925,7 @@ void view_click_piece_map_pick_start(editor_view_type *view)
 
 		for (n=0;n!=map.nlight;n++) {
 			view_get_sprite_vertexes(&map_light->pnt,NULL,v_pnts);
-			view_pick_list_add_cube(v_pnts,light_piece,n,-1);
+			view_pick_list_add_cube(v_pnts,item_map_light,n,-1);
 			map_light++;
 		}
 		
@@ -933,7 +933,7 @@ void view_click_piece_map_pick_start(editor_view_type *view)
 
 		for (n=0;n!=map.nsound;n++) {
 			view_get_sprite_vertexes(&map_sound->pnt,NULL,v_pnts);
-			view_pick_list_add_cube(v_pnts,sound_piece,n,-1);
+			view_pick_list_add_cube(v_pnts,item_map_sound,n,-1);
 			map_sound++;
 		}
 		
@@ -941,7 +941,7 @@ void view_click_piece_map_pick_start(editor_view_type *view)
 
 		for (n=0;n!=map.nparticle;n++) {
 			view_get_sprite_vertexes(&map_particle->pnt,NULL,v_pnts);
-			view_pick_list_add_cube(v_pnts,particle_piece,n,-1);
+			view_pick_list_add_cube(v_pnts,item_map_particle,n,-1);
 			map_particle++;
 		}
 	}
@@ -953,7 +953,7 @@ void view_click_piece_map_pick_start(editor_view_type *view)
 
 		for (n=0;n!=map.nnode;n++) {
 			view_get_sprite_vertexes(&node->pnt,NULL,v_pnts);
-			view_pick_list_add_cube(v_pnts,node_piece,n,-1);
+			view_pick_list_add_cube(v_pnts,item_map_node,n,-1);
 			node++;
 		}
 	}
@@ -1014,14 +1014,14 @@ void view_click_piece(editor_view_type *view,d3pnt *pt,bool double_click)
 		// special normal flip if in normal hide 
 		// mode and polygon selection
 		
-	if ((type==mesh_piece) && (view->cull) && (state.map.show_normals) && (state.map.drag_mode==drag_mode_polygon)) {
+	if ((type==item_map_mesh) && (view->cull) && (state.map.show_normals) && (state.map.drag_mode==drag_mode_polygon)) {
 		piece_mesh_poly_invert_normals(&map.mesh.meshes[main_idx].polys[sub_idx]);
 	}
 	
 		// if a node, run special node
 		// click types
 		
-	if (type==node_piece) {
+	if (type==item_map_node) {
 	
 		switch (state.map.node_mode) {
 		
@@ -1063,8 +1063,6 @@ void view_click_piece(editor_view_type *view,d3pnt *pt,bool double_click)
 	
 		// redraw and reset palettes and menus
 
-	state.map.in_preference=FALSE;
-		
 	main_wind_menu_update();
 	
 	texture_palette_reset();
@@ -1088,9 +1086,9 @@ void view_click_piece(editor_view_type *view,d3pnt *pt,bool double_click)
 			// if we are duplicate dragging, reselect
 			// old node so it's easy to click again
 			
-		if ((type==node_piece) && (state.map.node_mode==node_mode_duplicate)) {
+		if ((type==item_map_node) && (state.map.node_mode==node_mode_duplicate)) {
 			select_clear();
-			select_add(node_piece,org_node_idx,-1);
+			select_add(item_map_node,org_node_idx,-1);
 			main_wind_draw();
 		}
 		

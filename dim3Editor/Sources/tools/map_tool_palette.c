@@ -374,7 +374,7 @@ void map_tool_palette_click(int tool_idx)
 
 void map_tool_default(void)
 {
-	state.map.free_look=pref.map.free_look;
+	state.map.free_look=pref.free_look;
 	state.map.select_add=FALSE;
 	
     state.map.vertex_mode=vertex_mode_none;
@@ -383,7 +383,7 @@ void map_tool_default(void)
 	state.map.node_mode=node_mode_select;
 	state.map.handle_mode=handle_mode_rotate;
 	
-	state.map.auto_texture=pref.map.auto_texture;
+	state.map.auto_texture=pref.auto_texture;
 	
 	state.map.show_liquid=TRUE;
 	state.map.show_object=TRUE;

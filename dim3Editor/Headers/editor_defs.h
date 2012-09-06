@@ -66,8 +66,7 @@ and can be sold or given away.
 #define map_menu_polygon						134
 
 #define map_menu_item_FileSave					5100
-#define map_menu_item_FilePreference			5101
-#define map_menu_item_FileQuit					5102
+#define map_menu_item_FileQuit					5101
 
 #define map_menu_item_EditUndo					5200
 #define map_menu_item_EditDelete				5201
@@ -158,8 +157,7 @@ and can be sold or given away.
 #define model_menu_animate						137
 
 #define model_menu_item_FileSave				5100
-#define model_menu_item_FilePreference			5101
-#define model_menu_item_FileQuit				5102
+#define model_menu_item_FileQuit				5101
 
 #define model_menu_item_EditUndo				5200
 #define model_menu_item_EditSelectMore			5201
@@ -235,6 +233,85 @@ and can be sold or given away.
 #define model_menu_item_PlayBlendAnimate		5904
 
 //
+// project item types
+//
+
+#define item_interface							0
+#define item_interface_project					1
+#define item_interface_color					2
+#define item_interface_device					3
+#define item_interface_logo						4
+#define item_interface_title_page				5
+#define item_interface_singleplayer				6
+#define item_interface_multiplayer				7
+#define item_interface_setup					8
+#define item_interface_progress					9
+#define item_interface_hud						10
+#define item_interface_virtual_control			11
+#define item_interface_radar					12
+#define item_interface_label					13
+#define item_interface_menu						14
+#define item_interface_chooser					15
+#define item_interface_sound					16
+#define item_interface_particle					17
+#define item_interface_ring						18
+#define item_interface_halo						19
+#define item_interface_mark						20
+#define item_interface_crosshair				21
+#define item_interface_action					22
+#define item_interface_shader					23
+#define item_interface_preload_models			24
+#define item_interface_preferences				25
+
+#define item_intro_button_game_new				0
+#define item_intro_button_game_load				1
+#define item_intro_button_game_setup			2
+#define item_intro_button_multiplayer_host		3
+#define item_intro_button_multiplayer_join		4
+#define item_intro_button_credit				5
+#define item_intro_button_quit					6
+
+#define item_intro_button_simple_save_start		10
+#define item_intro_button_simple_save_erase		20
+
+//
+// map item types
+//
+
+#define item_map_setting						0
+#define item_map_camera							1
+#define item_map_light_media					2
+#define item_map_sky_weather					3
+
+#define item_map_mesh							10
+#define item_map_liquid							11
+#define item_map_node							12
+#define item_map_spot							13
+#define item_map_scenery						14
+#define item_map_light							15
+#define item_map_sound							16
+#define item_map_particle						17
+
+#define item_map_group							20
+#define item_map_movement						21
+#define item_map_cinema							22
+
+//
+// model item types
+//
+
+#define item_model						0
+#define item_model_mesh					1
+#define item_model_animate				2
+#define item_model_pose					3
+#define item_model_neutral_pose			4
+#define item_model_bone					5
+#define item_model_hit_box				6
+
+#define item_model_pose_move_particle	10
+#define item_model_pose_move_ring		11
+
+//
 // tools
 //
 
@@ -299,26 +376,18 @@ typedef struct		{
 #define handle_mode_move						1
 
 //
-// selection types
+// normal modes
 //
 
-#define map_setting_piece						0
-#define map_camera_piece						1
-#define map_light_media_piece					2
-#define map_sky_weather_piece					3
+#define normal_mode_none				0
+#define normal_mode_vertex				1
+#define normal_mode_face				2
 
-#define mesh_piece								10
-#define liquid_piece							11
-#define node_piece								12
-#define spot_piece								13
-#define scenery_piece							14
-#define light_piece								15
-#define sound_piece								16
-#define particle_piece							17
 
-#define group_piece								20
-#define movement_piece							21
-#define cinema_piece							22
+
+
+
+
 
 //
 // movement scales
@@ -479,49 +548,76 @@ typedef struct		{
 					} view_mesh_sort_list_type;
 					
 //
-// Item types
+// model vertex and poly masks
 //
 
-#define item_interface							0
-#define item_interface_project					1
-#define item_interface_color					2
-#define item_interface_device					3
-#define item_interface_logo						4
-#define item_interface_title_page				5
-#define item_interface_singleplayer				6
-#define item_interface_multiplayer				7
-#define item_interface_setup					8
-#define item_interface_progress					9
-#define item_interface_hud						10
-#define item_interface_virtual_control			11
-#define item_interface_radar					12
-#define item_interface_label					13
-#define item_interface_menu						14
-#define item_interface_chooser					15
-#define item_interface_sound					16
-#define item_interface_particle					17
-#define item_interface_ring						18
-#define item_interface_halo						19
-#define item_interface_mark						20
-#define item_interface_crosshair				21
-#define item_interface_action					22
-#define item_interface_shader					23
-#define item_interface_preload_models			24
+#define model_mask_max_vertex			10240
+#define model_mask_max_poly				10240
+
+#define model_mask_flag_sel				0x1
+#define model_mask_flag_hide			0x2
+
+
+
+
+
+
+
+// supergumba -- work on this
+
+/*
 
 //
-// intro button types
+// Drag Modes
 //
 
-#define item_intro_button_game_new				0
-#define item_intro_button_game_load				1
-#define item_intro_button_game_setup			2
-#define item_intro_button_multiplayer_host		3
-#define item_intro_button_multiplayer_join		4
-#define item_intro_button_credit				5
-#define item_intro_button_quit					6
+#define drag_bone_mode_rotate			0
+#define drag_bone_mode_stretch			1
 
-#define item_intro_button_simple_save_start		10
-#define item_intro_button_simple_save_erase		20
+//
+// Select Modes
+//
+
+#define select_mode_mesh				0
+#define select_mode_polygon				1
+#define select_mode_vertex				2
+
+//
+// Drag Handle Types
+//
+
+#define drag_handle_none				-1
+#define drag_handle_x					0
+#define drag_handle_y					1
+#define drag_handle_z					2
+
+//
+// drawing sizes
+//
+
+#define draw_poly_select_line_size		2.0f
+#define draw_vertex_handle_size			8.0f
+
+#define draw_model_normal_size			3.0f
+#define draw_model_normal_len			50.0f
+
+//
+// play types
+//
+
+#define play_mode_stop					0
+#define play_mode_normal				1
+#define play_mode_blend					2
+#define play_mode_slow					3
+#define play_mode_prev					4
+#define play_mode_next					5
+
+*/
+
+
+
+
+
 
 //
 // preference structures
@@ -530,7 +626,7 @@ typedef struct		{
 typedef struct		{
 						d3col					mesh_line,mesh_sel,poly_sel,poly_cull,
 												background;
-					} map_pref_col_type;
+					} app_pref_col_type;
 
 typedef struct		{
 						int						duplicate_offset,snap_size,
@@ -541,23 +637,7 @@ typedef struct		{
 												flip_horz_turn,flip_vert_turn,
 												flip_forward_movement;
 						char					engine_name[256];
-						d3vct					import_normal_factor;
-						map_pref_col_type		col;
-					} map_pref_type;
-
-typedef struct		{
-						d3col					mesh_line,mesh_sel,
-												background;
-					} model_pref_col_type;
-
-typedef struct		{
-						bool					show_tangent_binormal;
-						model_pref_col_type		col;
-					} model_pref_type;
-
-typedef struct		{
-						map_pref_type			map;
-						model_pref_type			model;
+						app_pref_col_type		col;
 					} app_pref_type;
 
 //
@@ -587,8 +667,7 @@ typedef struct		{
 						bool					map_open,
 												free_look,select_add,auto_texture,select_box_on,
 												show_liquid,show_normals,show_movements,
-												show_node,show_object,show_lightsoundparticle,
-												in_preference;
+												show_node,show_object,show_lightsoundparticle;
 						char					map_file_name[file_str_len];
 						d3pnt					select_box_start_pnt,select_box_end_pnt;
 					} map_state_type;
@@ -607,7 +686,7 @@ typedef struct		{
 												play_mode,magnify_z;
 						bool					model_open,texture,mesh,bone,hit_box,
 												normal,view_box,bone_names,sel_vertex_with_bone,
-												drag_sel_on,in_preference,show_mesh[max_model_mesh];
+												drag_sel_on,show_mesh[max_model_mesh];
 						char					model_file_name[256];
 						d3pnt					shift;
 						d3ang					ang;

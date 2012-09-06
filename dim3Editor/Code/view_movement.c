@@ -205,8 +205,8 @@ void view_mouse_scroll_movement(editor_view_type *view,d3pnt *pnt)
 		x=old_pnt.x-pnt->x;
 		y=old_pnt.y-pnt->y;
 
-		if (pref.map.flip_horz_movement) x=-x;
-		if (pref.map.flip_vert_movement) y=-y;
+		if (pref.flip_horz_movement) x=-x;
+		if (pref.flip_vert_movement) y=-y;
 		
 		memmove(&old_pnt,pnt,sizeof(d3pnt));
 		
@@ -253,7 +253,7 @@ void view_mouse_forward_movement(editor_view_type *view,d3pnt *pnt)
 		if (x!=0) {
 			turn_ang.x=turn_ang.z=0.0f;
 			turn_ang.y=((float)x)/move_mouse_turn_reduce_scale;
-			if (pref.map.flip_forward_movement) turn_ang.y=-turn_ang.y;
+			if (pref.flip_forward_movement) turn_ang.y=-turn_ang.y;
 			view_turn_angle(&turn_ang);
 		}
 
@@ -346,8 +346,8 @@ void view_mouse_turn_free(d3pnt *pnt)
 		x=old_pnt.x-pnt->x;
 		y=old_pnt.y-pnt->y;
 
-		if (pref.map.flip_horz_turn) x=-x;
-		if (pref.map.flip_vert_turn) y=-y;
+		if (pref.flip_horz_turn) x=-x;
+		if (pref.flip_vert_turn) y=-y;
 		
 		redraw=FALSE;
 	
@@ -409,8 +409,8 @@ void view_mouse_turn_center(d3pnt *pnt,d3pnt *cnt)
 		
 		ang_x=0.0f;		// supergumba -- just rotate around Y now
 		
-		if (pref.map.flip_horz_turn) ang_x=-ang_x;
-		if (pref.map.flip_vert_turn) ang_y=-ang_y;
+		if (pref.flip_horz_turn) ang_x=-ang_x;
+		if (pref.flip_vert_turn) ang_y=-ang_y;
 
 			// run the angle first to get any constraints
 

@@ -82,11 +82,11 @@ void group_set(int group_idx)
 		
 		switch (type) {
 		
-			case mesh_piece:
+			case item_map_mesh:
 				map.mesh.meshes[main_idx].group_idx=group_idx;
 				break;
 				
-			case liquid_piece:
+			case item_map_liquid:
 				map.liquid.liquids[main_idx].group_idx=group_idx;
 				break;
 				
