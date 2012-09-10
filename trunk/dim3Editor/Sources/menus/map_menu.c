@@ -243,7 +243,7 @@ void map_menu_update(void)
         
 		if (select_has_type(item_map_mesh)) {
 			os_menu_enable_item(map_menu_mesh,0,TRUE);
-			if (state.map.drag_mode==drag_mode_polygon) {
+			if (state.map.select_mode==select_mode_polygon) {
 				os_menu_enable_item(map_menu_polygon,0,TRUE);
 			}
 			else {
@@ -284,7 +284,7 @@ bool map_menu_event_run(int cmd)
 			// edit menu
 			
 		case map_menu_item_EditUndo:
-			undo_pull();
+			map_undo_pull();
 			return(TRUE);
 			
 		case map_menu_item_EditDelete:

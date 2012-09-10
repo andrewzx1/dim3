@@ -256,7 +256,7 @@ bool view_click_drag_mesh_handle(editor_view_type *view,d3pnt *pt)
 		
     if (!os_button_down()) return(FALSE);
 	
-	undo_push();
+	map_undo_push();
 	
 		// hilite the drag handle
 		
@@ -389,7 +389,7 @@ bool view_click_drag_mesh(editor_view_type *view,d3pnt *pt)
 		
     if (!os_button_down()) return(FALSE);
 	
-	undo_push();
+	map_undo_push();
 	
 		// save old vertexes
 		
@@ -552,7 +552,7 @@ bool view_click_drag_mesh_poly(editor_view_type *view,d3pnt *pt)
 		
     if (!os_button_down()) return(FALSE);
 	
-	undo_push();
+	map_undo_push();
 			
 	first_drag=TRUE;
 	
@@ -706,7 +706,7 @@ bool view_click_drag_vertex(editor_view_type *view,d3pnt *pt)
 	
     if (!os_button_down()) return(FALSE);
 	
-	undo_push();
+	map_undo_push();
 	
 		// turn on hilite
 		
@@ -926,7 +926,7 @@ bool view_click_drag_liquid_vertex(editor_view_type *view,d3pnt *pt)
 		
 		// drag
 	
-	undo_push();
+	map_undo_push();
 
 	first_drag=TRUE;
 	
@@ -1115,7 +1115,7 @@ bool view_click_drag_liquid(editor_view_type *view,d3pnt *pt)
 	
     if (!os_button_down()) return(FALSE);
 	
-	undo_push();
+	map_undo_push();
 	
 		// get the scale
 		
@@ -1240,7 +1240,7 @@ bool view_click_drag_item(editor_view_type *view,d3pnt *pt)
 	
     if (!os_button_down()) return(FALSE);
 	
-	undo_push();
+	map_undo_push();
 		
 		// get the scale
 		
@@ -1375,7 +1375,7 @@ bool view_click_box_select(editor_view_type *view,d3pnt *pt)
 		}
 		
 		for (n=0;n!=item_count;n++) {
-			if (state.map.drag_mode==drag_mode_mesh) {
+			if (state.map.select_mode==select_mode_mesh) {
 				select_add(pick_list[n].type,pick_list[n].main_idx,-1);
 			}
 			else {

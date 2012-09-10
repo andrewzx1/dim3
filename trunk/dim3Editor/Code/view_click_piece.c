@@ -700,7 +700,7 @@ bool view_click_rot_handles(editor_view_type *view,d3pnt *click_pt)
 	
     if (!os_button_down()) return(FALSE);
 	
-	undo_push();
+	map_undo_push();
 	
 	first_drag=TRUE;
 	
@@ -994,13 +994,13 @@ void view_click_piece(editor_view_type *view,d3pnt *pt,bool double_click)
 	
 		// mesh vertex drags
 		
-	switch (state.map.drag_mode) {
+	switch (state.map.select_mode) {
 	
-		case drag_mode_vertex:
+		case select_mode_vertex:
 			if (view_click_drag_vertex(view,pt)) return;
 			break;
 	
-		case drag_mode_mesh:
+		case select_mode_mesh:
 			if (view_click_drag_mesh_handle(view,pt)) return;
 			break;
 			
@@ -1014,7 +1014,7 @@ void view_click_piece(editor_view_type *view,d3pnt *pt,bool double_click)
 		// special normal flip if in normal hide 
 		// mode and polygon selection
 		
-	if ((type==item_map_mesh) && (view->cull) && (state.map.show_normals) && (state.map.drag_mode==drag_mode_polygon)) {
+	if ((type==item_map_mesh) && (view->cull) && (state.map.show_normals) && (state.map.select_mode==select_mode_polygon)) {
 		piece_mesh_poly_invert_normals(&map.mesh.meshes[main_idx].polys[sub_idx]);
 	}
 	
@@ -1101,9 +1101,9 @@ void view_click_piece(editor_view_type *view,d3pnt *pt,bool double_click)
 	
 		// mesh or poly drags
 
-	switch (state.map.drag_mode) {
+	switch (state.map.select_mode) {
 	
-		case drag_mode_mesh:
+		case select_mode_mesh:
 			if (!os_key_control_down()) {
 				view_click_drag_mesh(view,pt);
 			}
@@ -1112,7 +1112,7 @@ void view_click_piece(editor_view_type *view,d3pnt *pt,bool double_click)
 			}
 			break;
 
-		case drag_mode_polygon:
+		case select_mode_polygon:
 			if (!os_key_control_down()) {
 				view_click_drag_mesh_poly(view,pt);
 			}

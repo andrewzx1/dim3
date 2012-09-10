@@ -250,13 +250,13 @@ void map_palette_click_mesh(int mesh_idx,int poly_idx,bool double_click)
 
 		case kMeshPropertyBoundMin:
 		case kMeshPropertyBoundMax:
-			undo_push();
+			map_undo_push();
 			map_mesh_resize(&map,mesh_idx,&pal_mesh_prev_min,&pal_mesh_prev_max);
 			view_vbo_mesh_rebuild(mesh_idx);
 			break;
 
 		case kMeshPropertyBoundSize:
-			undo_push();
+			map_undo_push();
 			pal_mesh_prev_max.x=pal_mesh_prev_min.x+pal_mesh_prev_size.x;
 			pal_mesh_prev_max.y=pal_mesh_prev_min.y+pal_mesh_prev_size.y;
 			pal_mesh_prev_max.z=pal_mesh_prev_min.z+pal_mesh_prev_size.z;

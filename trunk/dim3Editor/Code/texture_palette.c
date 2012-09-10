@@ -159,7 +159,7 @@ void texture_palette_put_selected_texture(int txt_idx)
 		
 			// only set polygon
 			
-		if (state.map.drag_mode==drag_mode_polygon) {
+		if (state.map.select_mode==select_mode_polygon) {
 			if (view_get_uv_layer()==uv_layer_normal) {
 				mesh->polys[poly_idx].txt_idx=txt_idx;
 			}
