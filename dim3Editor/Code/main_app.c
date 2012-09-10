@@ -76,7 +76,8 @@ bool main_app_initialize(void)
 	
 		// setup undo
 		
-	undo_initialize();
+	map_undo_initialize();
+	//model_undo_initialize();		// supergumba -- model
 	
 	return(TRUE);
 }

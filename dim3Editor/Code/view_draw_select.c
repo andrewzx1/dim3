@@ -113,7 +113,7 @@ void view_draw_select_mesh(int mesh_idx)
 	
 		// is mesh only, draw resize handles
 		
-	if (state.map.drag_mode==drag_mode_mesh) {
+	if (state.map.select_mode==select_mode_mesh) {
 		
 		view_draw_select_mesh_get_grow_handles(mesh_idx,pts);
 
@@ -576,7 +576,7 @@ void view_draw_select(editor_view_type *view)
 		// draw afterwards so mesh highlighting doesn't
 		// effect selection
 		
-	if (state.map.drag_mode==drag_mode_polygon) {
+	if (state.map.select_mode==select_mode_polygon) {
 	
 		for (n=(sel_count-1);n>=0;n--) {
 		
@@ -590,7 +590,7 @@ void view_draw_select(editor_view_type *view)
 	
 		// draw selected mesh vertexes
 		
-	if (state.map.drag_mode==drag_mode_vertex) {
+	if (state.map.select_mode==select_mode_vertex) {
 
 		memset(draw_mesh_once,0x0,max_mesh);
 			

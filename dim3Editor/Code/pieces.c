@@ -68,7 +68,7 @@ void piece_duplicate(void)
 					index;
 	d3pnt			mpt,mov_pt;
 
-	undo_push();
+	map_undo_push();
 	
 		// duplicate selection
 		
@@ -227,7 +227,7 @@ void piece_delete(void)
 					type,main_idx,sub_idx;
 	unsigned char	*mesh_mask;
 	
-	undo_push();
+	map_undo_push();
 	
 		// sort segment so higher indexes are deleted first
 		
@@ -251,12 +251,12 @@ void piece_delete(void)
 		switch (type) {
 			
 			case item_map_mesh:
-				if (state.map.drag_mode==drag_mode_polygon) {
+				if (state.map.select_mode==select_mode_polygon) {
 					map_mesh_delete_poly(&map,main_idx,sub_idx);
 					select_delete_move_index(item_map_mesh,main_idx,sub_idx);
 					break;
 				}
-				if (state.map.drag_mode==drag_mode_mesh) {
+				if (state.map.select_mode==select_mode_mesh) {
 					if (mesh_mask[main_idx]==0x0) map_mesh_delete(&map,main_idx);
 					mesh_mask[main_idx]=0x1;
 					break;
@@ -415,7 +415,7 @@ void piece_tesselate(bool mesh)
 {
 	int				n,sel_count,type,mesh_idx,poly_idx;
 	
-	undo_push();
+	map_undo_push();
 	
 	sel_count=select_count();
 	
@@ -475,7 +475,7 @@ void piece_resize(void)
 	
 		// resize meshes
 		
-	undo_push();
+	map_undo_push();
 	
 	for (n=0;n!=sel_count;n++) {
 		select_get(n,&type,&mesh_idx,&poly_idx);
@@ -511,7 +511,7 @@ void piece_force_grid(void)
 {
 	int				n,sel_count,type,mesh_idx,poly_idx;
 	
-	undo_push();
+	map_undo_push();
 		
 	sel_count=select_count();
 	
@@ -536,7 +536,7 @@ void piece_flip(bool flip_x,bool flip_y,bool flip_z)
 {
 	int				n,sel_count,type,mesh_idx,poly_idx;
 	
-	undo_push();
+	map_undo_push();
 	
 	sel_count=select_count();
 	
@@ -556,7 +556,7 @@ void piece_rotate(d3ang *ang)
 	int				n,sel_count,type,mesh_idx,poly_idx;
 	d3pnt			center_pnt;
 	
-	undo_push();
+	map_undo_push();
 	
 	sel_count=select_count();
 	
@@ -584,7 +584,7 @@ void piece_move(int move_x,int move_y,int move_z)
 	int				n,sel_count,type,mesh_idx,poly_idx;
 	d3pnt			mov_pnt;
 	
-	undo_push();
+	map_undo_push();
 	
 	sel_count=select_count();
 	

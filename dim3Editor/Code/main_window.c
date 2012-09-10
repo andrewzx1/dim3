@@ -71,7 +71,7 @@ void main_wind_initialize(void)
         // misc setup
 
 	state.map.vertex_mode=vertex_mode_none;
-	state.map.drag_mode=drag_mode_mesh;
+	state.map.select_mode=select_mode_mesh;
 	state.map.grid_mode=grid_mode_small;
 	state.map.handle_mode=handle_mode_rotate;
 	

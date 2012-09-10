@@ -344,12 +344,12 @@ typedef struct		{
 #define vertex_mode_snap						2
 
 //
-// drag modes
+// selection modes
 //
 
-#define drag_mode_mesh							0
-#define drag_mode_polygon						1
-#define drag_mode_vertex						2
+#define select_mode_mesh						0
+#define select_mode_polygon						1
+#define select_mode_vertex						2
 
 //
 // grid modes
@@ -376,18 +376,21 @@ typedef struct		{
 #define handle_mode_move						1
 
 //
+// drag handle types
+//
+
+#define drag_handle_none				-1
+#define drag_handle_x					0
+#define drag_handle_y					1
+#define drag_handle_z					2
+
+//
 // normal modes
 //
 
 #define normal_mode_none				0
 #define normal_mode_vertex				1
 #define normal_mode_face				2
-
-
-
-
-
-
 
 //
 // movement scales
@@ -500,22 +503,22 @@ typedef struct		{
 #define import_mode_replace_all					2
 
 //
-// undos
+// map undos
 //
 
-#define max_undo_level							8
+#define max_map_undo_level						8
 
 typedef struct		{
 						int						count;
 						unsigned char			*data;
-					} undo_chunk_type;
+					} map_undo_chunk_type;
 					
 typedef struct		{
-						undo_chunk_type			mesh,liquid,
+						map_undo_chunk_type		mesh,liquid,
 												spot,scenery,node,
 												light,sound,particle,
 												selection;
-					} undo_type;
+					} map_undo_type;
 
 //
 // selections
@@ -557,67 +560,26 @@ typedef struct		{
 #define model_mask_flag_sel				0x1
 #define model_mask_flag_hide			0x2
 
-
-
-
-
-
-
-// supergumba -- work on this
-
-/*
-
 //
-// Drag Modes
+// model drawing sizes
 //
 
-#define drag_bone_mode_rotate			0
-#define drag_bone_mode_stretch			1
+#define model_draw_poly_select_line_size	2.0f
+#define model_draw_vertex_handle_size		8.0f
 
-//
-// Select Modes
-//
-
-#define select_mode_mesh				0
-#define select_mode_polygon				1
-#define select_mode_vertex				2
-
-//
-// Drag Handle Types
-//
-
-#define drag_handle_none				-1
-#define drag_handle_x					0
-#define drag_handle_y					1
-#define drag_handle_z					2
-
-//
-// drawing sizes
-//
-
-#define draw_poly_select_line_size		2.0f
-#define draw_vertex_handle_size			8.0f
-
-#define draw_model_normal_size			3.0f
-#define draw_model_normal_len			50.0f
+#define model_draw_normal_size				3.0f
+#define model_draw_normal_len				50.0f
 
 //
 // play types
 //
 
-#define play_mode_stop					0
-#define play_mode_normal				1
-#define play_mode_blend					2
-#define play_mode_slow					3
-#define play_mode_prev					4
-#define play_mode_next					5
-
-*/
-
-
-
-
-
+#define model_play_mode_stop			0
+#define model_play_mode_normal			1
+#define model_play_mode_blend			2
+#define model_play_mode_slow			3
+#define model_play_mode_prev			4
+#define model_play_mode_next			5
 
 //
 // preference structures
@@ -658,7 +620,7 @@ typedef struct		{
 					} project_state_type;
 
 typedef struct		{
-						int						vertex_mode,drag_mode,grid_mode,node_mode,
+						int						vertex_mode,select_mode,grid_mode,node_mode,
 												handle_mode,view_select_idx,drag_handle_idx,
 												texture_edit_idx,
 												cur_no_sel_piece_type,cur_group_idx,

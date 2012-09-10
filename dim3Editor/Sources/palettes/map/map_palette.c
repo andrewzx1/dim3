@@ -124,7 +124,7 @@ void map_palette_fill_level_1(void)
 	switch (sel_type) {
 
 		case item_map_mesh:
-			if (state.map.drag_mode!=drag_mode_polygon) sub_idx=-1;
+			if (state.map.select_mode!=select_mode_polygon) sub_idx=-1;
 			map_palette_fill_mesh(main_idx,sub_idx);
 			break;
 
@@ -434,7 +434,7 @@ void map_palette_click_level_1(bool double_click)
 	switch (sel_type) {
 
 		case item_map_mesh:
-			if (state.map.drag_mode!=drag_mode_polygon) sub_idx=-1;
+			if (state.map.select_mode!=select_mode_polygon) sub_idx=-1;
 			map_palette_click_mesh(main_idx,sub_idx,double_click);
 			break;
 

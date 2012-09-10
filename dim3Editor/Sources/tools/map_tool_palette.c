@@ -119,9 +119,9 @@ void map_tool_palette_set_state(void)
 	tool_palette_set_state(&map_tool_palette,2,(state.map.vertex_mode==vertex_mode_snap),disabled);
 	tool_palette_set_state(&map_tool_palette,3,(state.map.free_look),disabled);
 	tool_palette_set_state(&map_tool_palette,4,(state.map.select_add),disabled);
-	tool_palette_set_state(&map_tool_palette,5,(state.map.drag_mode==drag_mode_mesh),disabled);
-	tool_palette_set_state(&map_tool_palette,6,(state.map.drag_mode==drag_mode_polygon),disabled);
-	tool_palette_set_state(&map_tool_palette,7,(state.map.drag_mode==drag_mode_vertex),disabled);
+	tool_palette_set_state(&map_tool_palette,5,(state.map.select_mode==select_mode_mesh),disabled);
+	tool_palette_set_state(&map_tool_palette,6,(state.map.select_mode==select_mode_polygon),disabled);
+	tool_palette_set_state(&map_tool_palette,7,(state.map.select_mode==select_mode_vertex),disabled);
 	tool_palette_set_state(&map_tool_palette,8,FALSE,disabled);
 	tool_palette_set_state(&map_tool_palette,9,FALSE,disabled);
 	tool_palette_set_state(&map_tool_palette,10,FALSE,disabled);
@@ -202,18 +202,18 @@ void map_tool_palette_click(int tool_idx)
 			state.map.select_add=!state.map.select_add;
 			break;
 			
-			// drag mode buttons
+			// select mode buttons
 			
 		case 5:
-			state.map.drag_mode=drag_mode_mesh;
+			state.map.select_mode=select_mode_mesh;
 			break;
 			
 		case 6:
-			state.map.drag_mode=drag_mode_polygon;
+			state.map.select_mode=select_mode_polygon;
 			break;
 			
 		case 7:
-			state.map.drag_mode=drag_mode_vertex;
+			state.map.select_mode=select_mode_vertex;
 			break;
 			
 			// mesh polygons
@@ -378,7 +378,7 @@ void map_tool_default(void)
 	state.map.select_add=FALSE;
 	
     state.map.vertex_mode=vertex_mode_none;
-	state.map.drag_mode=drag_mode_mesh;
+	state.map.select_mode=select_mode_mesh;
 	state.map.grid_mode=grid_mode_small;
 	state.map.node_mode=node_mode_select;
 	state.map.handle_mode=handle_mode_rotate;

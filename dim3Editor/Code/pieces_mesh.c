@@ -824,7 +824,7 @@ void piece_split_mesh(void)
 	
 		// auto-switch to mesh drag mode
 		
-	state.map.drag_mode=drag_mode_mesh;
+	state.map.select_mode=select_mode_mesh;
 
 	main_wind_draw();
 }

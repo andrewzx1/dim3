@@ -982,9 +982,9 @@ bool import_obj(char *path,char *err_str)
 	
 	if ((import_mode==import_mode_replace) && (!replace_ok)) import_mode=-1;
 	
-		// always switch to drag mode 
+		// always switch to mesh select mode 
 		
-	state.map.drag_mode=drag_mode_mesh;
+	state.map.select_mode=select_mode_mesh;
 	
 		// import new
 		

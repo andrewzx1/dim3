@@ -64,7 +64,7 @@ void file_reset_state(void)
         // no selection
         
 	select_clear();
-	undo_clear();
+	map_undo_clear();
 	
  	state.map.texture_edit_idx=-1;
 

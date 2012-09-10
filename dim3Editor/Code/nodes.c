@@ -111,7 +111,7 @@ bool node_link_click(int node_idx)
 		for (n=0;n!=max_node_link;n++) {
 		
 			if (map.nodes[org_node_idx].link[n]==node_idx) {
-				undo_push();
+				map_undo_push();
 				sz=(max_node_link-n)-1;
 				if (sz>0) memmove(&map.nodes[org_node_idx].link[n],&map.nodes[org_node_idx].link[n+1],(sz*sizeof(short)));
 				map.nodes[org_node_idx].link[max_node_link-1]=-1;
@@ -119,7 +119,7 @@ bool node_link_click(int node_idx)
 			}
 			
 			if (map.nodes[node_idx].link[n]==org_node_idx) {
-				undo_push();
+				map_undo_push();
 				sz=(max_node_link-n)-1;
 				if (sz>0) memmove(&map.nodes[node_idx].link[n],&map.nodes[node_idx].link[n+1],(sz*sizeof(short)));
 				map.nodes[node_idx].link[max_node_link-1]=-1;
@@ -142,7 +142,7 @@ bool node_link_click(int node_idx)
 			return(FALSE);
 		}
 		
-		undo_push();
+		map_undo_push();
 		
 		if (!node_link_has_link(org_node_idx,node_idx)) map.nodes[org_node_idx].link[k1]=node_idx;
 		if (!node_link_has_link(node_idx,org_node_idx)) map.nodes[node_idx].link[k2]=org_node_idx;

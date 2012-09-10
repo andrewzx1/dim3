@@ -366,17 +366,17 @@ bool model_menu_event_run(int cmd)
 			return(TRUE);
 			
 		case model_menu_item_ImportOBJ:
-			main_wind_play(play_mode_stop);
+			main_wind_play(model_play_mode_stop);
 			file_import_mesh_obj(FALSE);
 			return(TRUE);
 			
 		case model_menu_item_ReplaceOBJ:
-			main_wind_play(play_mode_stop);
+			main_wind_play(model_play_mode_stop);
 			file_import_mesh_obj(TRUE);
 			return(TRUE);
 			
 		case model_menu_item_InsertXML:
-			main_wind_play(play_mode_stop);
+			main_wind_play(model_play_mode_stop);
 			file_insert_mesh_dim3_model();
 			return(TRUE);
 			
@@ -587,18 +587,18 @@ bool model_menu_event_run(int cmd)
             
 		case model_menu_item_ResetTimeAnimate:
 			if (state.model.cur_animate_idx==-1) return(TRUE);
-			main_wind_play(play_mode_stop);
+			main_wind_play(model_play_mode_stop);
 
 			dialog_animation_scale_time_run(state.model.cur_animate_idx);
 			return(TRUE);
 			
 		case model_menu_item_PlayAnimate:
-			main_wind_play(play_mode_normal);
+			main_wind_play(model_play_mode_normal);
 			return(TRUE);
 			
 		case model_menu_item_PlayBlendAnimate:
 			if (dialog_play_blend_animation_run()) {
-				main_wind_play(play_mode_blend);
+				main_wind_play(model_play_mode_blend);
 			}
 			return(TRUE);
 						
