@@ -219,7 +219,7 @@ void file_palette_click(d3pnt *pnt,bool double_click)
 	if (file_palette.item_pane.click.id==kPropertyModelAdd) {
 		
 		if (main_wind_switch_mode(app_mode_model)) {
-	//		file_new_model();			// supergumba -- model
+			model_file_new();
 		}
 
 		file_palette_fill();
@@ -232,12 +232,12 @@ void file_palette_click(d3pnt *pnt,bool double_click)
 	if (file_palette.item_pane.click.id==kPropertyModel) {
 		
 		if (main_wind_switch_mode(app_mode_model)) {
-		//	main_wind_play(model_play_mode_stop);		// supergumba -- model
+			model_play(model_play_mode_stop);
 
 			strncpy(file_name,file_palette.item_pane.click.item->name,file_str_len);
 			file_name[file_str_len-1]=0x0;
 
-		//	file_open_model(file_name);			// supergumba -- model
+			model_file_open(file_name);
 		}
 
 		file_palette_fill();

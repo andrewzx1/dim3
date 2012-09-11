@@ -67,7 +67,7 @@ void model_palette_fill_main(void)
 	list_palette_add_header_button(&model_palette,kModelPropertyMeshAdd,"Meshes",list_button_plus);
 
 	for (n=0;n!=model.nmesh;n++) {
-		list_palette_add_item(&model_palette,item_mesh,n,model.meshes[n].name,((state.model.cur_item==item_mesh)&&(state.model.cur_mesh_idx==n)),FALSE);
+		list_palette_add_item(&model_palette,item_model_mesh,n,model.meshes[n].name,((state.model.cur_item==item_model_mesh)&&(state.model.cur_mesh_idx==n)),FALSE);
 	}
 
 		// animations
@@ -76,7 +76,7 @@ void model_palette_fill_main(void)
 	list_palette_sort_mark_start(&model_palette);
 
 	for (n=0;n!=model.nanimate;n++) {
-		list_palette_add_item(&model_palette,item_animate,n,model.animates[n].name,((state.model.cur_item==item_animate)&&(state.model.cur_animate_idx==n)),FALSE);
+		list_palette_add_item(&model_palette,item_model_animate,n,model.animates[n].name,((state.model.cur_item==item_model_animate)&&(state.model.cur_animate_idx==n)),FALSE);
 	}
 
 	list_palette_sort(&model_palette);
@@ -84,12 +84,12 @@ void model_palette_fill_main(void)
 		// poses
 
 	list_palette_add_header_button(&model_palette,kModelPropertyPoseAdd,"Poses",list_button_plus);
-	list_palette_add_item(&model_palette,item_neutral_pose,0,"[Neutral]",((state.model.cur_item==item_neutral_pose)&&(state.model.cur_pose_idx==-1)),FALSE);
+	list_palette_add_item(&model_palette,item_model_neutral_pose,0,"[Neutral]",((state.model.cur_item==item_model_neutral_pose)&&(state.model.cur_pose_idx==-1)),FALSE);
 
 	list_palette_sort_mark_start(&model_palette);
 
 	for (n=0;n!=model.npose;n++) {
-		list_palette_add_item(&model_palette,item_pose,n,model.poses[n].name,((state.model.cur_item==item_pose)&&(state.model.cur_pose_idx==n)),FALSE);
+		list_palette_add_item(&model_palette,item_model_pose,n,model.poses[n].name,((state.model.cur_item==item_model_pose)&&(state.model.cur_pose_idx==n)),FALSE);
 	}
 
 	list_palette_sort(&model_palette);
@@ -101,7 +101,7 @@ void model_palette_fill_main(void)
 	list_palette_sort_mark_start(&model_palette);
 
 	for (n=0;n!=model.nbone;n++) {
-		list_palette_add_item(&model_palette,item_bone,n,model.bones[n].name,((state.model.cur_item==item_bone)&&(state.model.cur_bone_idx==n)),FALSE);
+		list_palette_add_item(&model_palette,item_model_bone,n,model.bones[n].name,((state.model.cur_item==item_model_bone)&&(state.model.cur_bone_idx==n)),FALSE);
 	}
 
 	list_palette_sort(&model_palette);
@@ -112,7 +112,7 @@ void model_palette_fill_main(void)
 	list_palette_sort_mark_start(&model_palette);
 
 	for (n=0;n!=model.nhit_box;n++) {
-		list_palette_add_item(&model_palette,item_hit_box,n,model.hit_boxes[n].name,((state.model.cur_item==item_hit_box)&&(state.model.cur_hit_box_idx==n)),FALSE);
+		list_palette_add_item(&model_palette,item_model_hit_box,n,model.hit_boxes[n].name,((state.model.cur_item==item_model_hit_box)&&(state.model.cur_hit_box_idx==n)),FALSE);
 	}
 
 	list_palette_sort(&model_palette);
@@ -164,45 +164,45 @@ void model_palette_click_main(bool double_click)
 			state.model.cur_item=item_model;
 			break;
 
-		case item_mesh:
-			state.model.cur_item=item_mesh;
+		case item_model_mesh:
+			state.model.cur_item=item_model_mesh;
 			state.model.cur_mesh_idx=model_palette.item_pane.click.idx;
 			break;
 
-		case item_animate:
-			state.model.cur_item=item_animate;
+		case item_model_animate:
+			state.model.cur_item=item_model_animate;
 			state.model.cur_animate_idx=model_palette.item_pane.click.idx;
 			state.model.cur_animate_pose_move_idx=-1;
 			state.model.cur_animate_pose_move_particle_idx=-1;
 			state.model.cur_animate_pose_move_ring_idx=-1;
 			break;
 
-		case item_pose:
-			state.model.cur_item=item_pose;
+		case item_model_pose:
+			state.model.cur_item=item_model_pose;
 			state.model.cur_pose_idx=model_palette.item_pane.click.idx;
 			state.model.cur_pose_bone_move_idx=-1;
 			break;
 			
-		case item_neutral_pose:
-			state.model.cur_item=item_neutral_pose;
+		case item_model_neutral_pose:
+			state.model.cur_item=item_model_neutral_pose;
 			state.model.cur_pose_idx=-1;
 			state.model.cur_pose_bone_move_idx=-1;
 			break;
 
-		case item_bone:
-			state.model.cur_item=item_bone;
+		case item_model_bone:
+			state.model.cur_item=item_model_bone;
 			state.model.cur_bone_idx=model_palette.item_pane.click.idx;
 			break;
 
-		case item_hit_box:
-			state.model.cur_item=item_hit_box;
+		case item_model_hit_box:
+			state.model.cur_item=item_model_hit_box;
 			state.model.cur_hit_box_idx=model_palette.item_pane.click.idx;
 			break;
 	}
 
 		// netural pose has no properties
 
-	if (model_palette.item_pane.click.id==item_neutral_pose) {
+	if (model_palette.item_pane.click.id==item_model_neutral_pose) {
 		list_palette_set_level(&model_palette,0);
 		return;
 	}

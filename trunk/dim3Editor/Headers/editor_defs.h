@@ -336,6 +336,12 @@ typedef struct		{
 					} tool_palette_type;
 
 //
+// texture palettes
+//
+
+#define texture_texture_per_page					32
+
+//
 // vertex modes
 //
 

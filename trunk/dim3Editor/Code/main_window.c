@@ -62,7 +62,7 @@ void main_wind_initialize(void)
 	file_palette_initialize();
 	project_palette_initialize();
 	map_palette_initialize();
-//	model_palette_initialize();		// supergumba -- model
+	model_palette_initialize();
 
 	tool_tip_initialize();
 
@@ -87,7 +87,7 @@ void main_wind_shutdown(void)
 	
 	project_palette_shutdown();
 	map_palette_shutdown();
-//	model_palette_shutdown();		// supergumba -- model
+	model_palette_shutdown();
 
 	file_palette_shutdown();
 	list_palette_shutdown();
@@ -203,7 +203,7 @@ bool main_wind_switch_mode(int mode)
 			break;
 
 		case app_mode_model:
-		//	if (!file_close_model()) return(FALSE); // supergumba -- model
+			if (!model_file_close()) return(FALSE);
 			break;
 	
 	}
@@ -250,6 +250,21 @@ void main_wind_gl_setup(void)
 
 /* =======================================================
 
+      Timers
+      
+======================================================= */
+
+void main_wind_timer(void)
+{
+	if (state.mode!=app_mode_model) return;
+	if (!state.model.model_open) return;
+	if (state.model.play_mode==model_play_mode_stop) return;
+	
+	main_wind_draw();
+}
+
+/* =======================================================
+
       Drawing
       
 ======================================================= */
@@ -289,15 +304,26 @@ void main_wind_draw_map(void)
 	map_tool_palette_set_state();
 	tool_palette_draw(&map_tool_palette);
 
-	texture_palette_draw(map.textures);
+	texture_palette_draw();
 	
 	map_palette_draw();
 }
 
 void main_wind_draw_model(void)
 {
+	if (state.map.texture_edit_idx==-1) {
+		model_view_draw();
+	}
+	else {
+		texture_edit_draw();
+	}
+
 	model_tool_palette_set_state();
 	tool_palette_draw(&model_tool_palette);
+
+	texture_palette_draw();
+
+	model_palette_draw();
 }
 
 void main_wind_draw_no_swap(void)
@@ -389,10 +415,10 @@ void main_wind_click_map(d3pnt *pnt,bool double_click)
 
 		// texture palette
 		
-	texture_palette_box(&tbox);
+	map_texture_palette_box(&tbox);
 
 	if ((pnt->x>=tbox.lx) && (pnt->x<=tbox.rx) && (pnt->y>=tbox.ty) && (pnt->y<tbox.by)) {
-		texture_palette_click(map.textures,pnt,double_click);
+		texture_palette_click(pnt,double_click);
 		return;
 	}
 
@@ -419,7 +445,7 @@ void main_wind_click_map(d3pnt *pnt,bool double_click)
 
 void main_wind_click_model(d3pnt *pnt,bool double_click)
 {
-	int					idx;
+	int					idx,old_play_mode;
 	d3rect				tbox;
 
 		// tool palette
@@ -432,6 +458,42 @@ void main_wind_click_model(d3pnt *pnt,bool double_click)
 		if (idx!=-1) model_tool_palette_click(idx);
 		return;
 	}
+
+		// texture palette
+		
+	model_texture_palette_box(&tbox);
+
+	if ((pnt->x>=tbox.lx) && (pnt->x<=tbox.rx) && (pnt->y>=tbox.ty) && (pnt->y<tbox.by)) {
+		texture_palette_click(pnt,double_click);
+		return;
+	}
+
+		// property palette
+		
+	list_palette_total_box(&map_palette,&tbox);
+
+	if ((pnt->x>=tbox.lx) && (pnt->x<=tbox.rx) && (pnt->y>=tbox.ty) && (pnt->y<tbox.by)) {
+		model_palette_click(pnt,double_click);
+		return;
+	}
+
+		// model clicks
+		// turn off animation as it glitches
+		// up the win32 timers
+
+	if (!state.model.model_open) return;
+
+	old_play_mode=state.model.play_mode;
+	state.model.play_mode=model_play_mode_stop;
+
+	if (state.model.texture_edit_idx==-1) {
+		model_wind_click(pnt);
+	}
+	else {
+		texture_edit_click(pnt,double_click);
+	}
+
+	state.model.play_mode=old_play_mode;
 }
 
 void main_wind_click(d3pnt *pnt,bool double_click)
@@ -510,16 +572,23 @@ void main_wind_scroll_wheel_model(d3pnt *pnt,int delta)
 	d3rect				tbox;
 
 		// scroll wheel model palette
-/*
+
 	list_palette_total_box(&model_palette,&tbox);
 
 	if ((pnt->x>=tbox.lx) && (pnt->x<=tbox.rx) && (pnt->y>=tbox.ty) && (pnt->y<tbox.by)) {
 		model_palette_scroll_wheel(pnt,delta);
 		return;
 	}
-*/
-	// supergumba -- model
-	// view scroll wheel here
+
+		// scroll wheel in model
+
+	if (state.model.texture_edit_idx==-1) {
+		state.model.magnify_z+=(delta*20);
+		main_wind_draw();
+	}
+	else {
+		texture_edit_scroll_wheel(delta);
+	}
 }
 
 void main_wind_scroll_wheel(d3pnt *pnt,int delta)
@@ -580,7 +649,7 @@ void main_wind_mouse_move(d3pnt *pnt)
       
 ======================================================= */
 
-bool main_wind_cursor(void)
+bool main_wind_cursor_map(void)
 {
 	d3pnt			pnt;
 	
@@ -590,13 +659,64 @@ bool main_wind_cursor(void)
 	return(texture_edit_cursor());
 }
 
+bool main_wind_cursor_model(void)
+{
+		// texture editing
+
+	if (state.model.texture_edit_idx==-1) return(texture_edit_cursor());
+
+		// model cursors
+
+	if (os_key_space_down()) {
+		os_set_hand_cursor();
+		return(TRUE);
+	}
+	if (os_key_command_down()) {
+		os_set_hand_cursor();
+		return(TRUE);
+	}
+	if (os_key_option_down()) {
+		os_set_resize_cursor();
+		return(TRUE);
+	}
+	if (os_key_shift_down()) {
+		os_set_add_cursor();
+		return(TRUE);
+	}
+	if (os_key_control_down()) {
+		os_set_subtract_cursor();
+		return(TRUE);
+	}
+	
+	os_set_arrow_cursor();
+	return(TRUE);
+}
+
+bool main_wind_cursor(void)
+{
+	switch (state.mode) {
+
+		case app_mode_project:
+			return(FALSE);
+
+		case app_mode_map:
+			return(main_wind_cursor_map());
+
+		case app_mode_model:
+			return(main_wind_cursor_model());
+
+	}
+
+	return(FALSE);
+}
+
 /* =======================================================
 
       Keys
       
 ======================================================= */
 
-void main_wind_key(char ch)
+void main_wind_key_map(char ch)
 {
 	editor_view_type		*view;
 	
@@ -641,6 +761,42 @@ void main_wind_key(char ch)
 		// panel keys
 		
 	view_key(ch);
+}
+
+void main_wind_key_model(char ch)
+{
+		// esc key deselects
+		
+	if (ch==0x1B) {
+		model_vertex_mask_clear_sel(state.model.cur_mesh_idx);
+		main_wind_draw();
+		return;
+	}
+
+		// check for deletes
+		// on selected item tree
+
+	if ((ch==D3_KEY_BACKSPACE) || (ch==D3_KEY_DELETE)) {
+		if (model_palette_delete()) {
+			main_wind_draw();
+			return;
+		}
+	}
+}
+
+void main_wind_key(char ch)
+{
+	switch (state.mode) {
+
+		case app_mode_map:
+			main_wind_key_map(ch);
+			break;
+
+		case app_mode_model:
+			main_wind_key_model(ch);
+			break;
+
+	}
 }
 
 /* =======================================================

@@ -81,7 +81,7 @@ void model_palette_fill_mesh(int mesh_idx)
 	list_palette_add_int(&model_palette,-1,"Vertexes",&mesh->nvertex,TRUE);
 	list_palette_add_int(&model_palette,-1,"Polygons",&mesh->npoly,TRUE);
 	
-	sel_vertex_idx=vertex_mask_get_first_sel(mesh_idx);
+	sel_vertex_idx=model_vertex_mask_get_first_sel(mesh_idx);
 	if (sel_vertex_idx!=-1) {
 		vertex=&mesh->vertexes[sel_vertex_idx];
 		list_palette_add_header(&model_palette,0,"Selected Vertex Info");
@@ -91,7 +91,7 @@ void model_palette_fill_mesh(int mesh_idx)
 		list_palette_add_vector(&model_palette,-1,"Tangent",&vertex->tangent_space.tangent,TRUE);
 	}
 	
-	sel_poly_idx=poly_mask_get_first_sel(mesh_idx);
+	sel_poly_idx=model_poly_mask_get_first_sel(mesh_idx);
 	if (sel_poly_idx!=-1) {
 		poly=&mesh->polys[sel_poly_idx];
 		list_palette_add_header(&model_palette,0,"Selected Poly Info");

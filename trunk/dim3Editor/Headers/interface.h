@@ -105,14 +105,25 @@ extern void model_tool_default(void);
 // texture palette
 //
 
-extern int texture_palette_per_page_count(void);
-extern int texture_palette_pixel_size(void);
-extern int texture_palette_page_list_count(void);
-extern int texture_palette_page_list_width(void);
-extern void texture_palette_box(d3rect *box);
-extern int texture_palette_get_selected_texture(void);
-extern void texture_palette_put_selected_texture(int txt_idx);
-extern void texture_palette_reset(void);
+extern int map_texture_palette_per_page_count(void);
+extern int map_texture_palette_pixel_size(void);
+extern int map_texture_palette_page_list_count(void);
+extern int map_texture_palette_page_list_width(void);
+extern void map_texture_palette_box(d3rect *box);
+extern bool map_texture_palette_get_disabled_state(void);
+extern int map_texture_palette_get_selected_texture(void);
+extern void map_texture_palette_put_selected_texture(int txt_idx);
+extern void map_texture_palette_reset(void);
+
+extern int model_texture_palette_per_page_count(void);
+extern int model_texture_palette_pixel_size(void);
+extern int model_texture_palette_page_list_count(void);
+extern int model_texture_palette_page_list_width(void);
+extern void model_texture_palette_box(d3rect *box);
+extern bool model_texture_palette_get_disabled_state(void);
+extern int model_texture_palette_get_selected_texture(void);
+extern void model_texture_palette_put_selected_texture(int txt_idx);
+extern void model_texture_palette_reset(void);
 
 //
 // file list palette
@@ -316,7 +327,6 @@ extern bool model_palette_delete(void);
 extern void model_palette_click(d3pnt *pnt,bool double_click);
 
 extern void model_palette_fill_texture(int texture_idx);
-extern void model_palette_fill_animator_preference(void);
 extern void model_palette_fill_main(void);
 extern void model_palette_fill_model(void);
 extern void model_palette_fill_mesh(int mesh_idx);
@@ -326,7 +336,6 @@ extern void model_palette_fill_bone(int bone_idx,int pose_idx);
 extern void model_palette_fill_hit_box(int hit_box_idx);
 
 extern void model_palette_click_texture(int texture_idx,int id,bool double_click);
-extern void model_palette_click_animator_preference(int id,bool double_click);
 extern void model_palette_click_main(bool double_click);
 extern void model_palette_click_model(bool double_click);
 extern void model_palette_click_mesh(int mesh_idx,bool double_click);
@@ -496,10 +505,10 @@ extern void map_mesh_move_all(int x,int y,int z);
 extern void map_mesh_reset_uv_all(void);
 
 //
-// import routines
+// map import routines
 //
 
-extern bool import_obj(char *path,char *err_str);
+extern bool map_import_obj(char *path,char *err_str);
 
 //
 // node routines
@@ -654,7 +663,7 @@ extern bool view_model_draw(d3pnt *pnt,d3ang *ang,char *name,float resize,int *t
 extern void view_model_cube_vertexes(char *name,d3pnt *pnt,d3ang *ang,float resize,d3pnt *v_pnts);
 
 //
-// dialogs
+// map dialogs
 //
 
 extern bool dialog_new_map_run(char *file_name);
@@ -666,22 +675,19 @@ extern bool dialog_grid_run(d3pnt *divs,bool *sides);
 extern bool dialog_obj_import_run(int *import_mode,int *scale_axis,int *scale_unit,bool *force_grid);
 extern bool dialog_height_import_run(int *div_cnt,int *size,int *high);
 
-
-
-/*
 //
-// dos
+// model files
 //
 
-extern bool file_new_model(void);
-extern bool file_open_model(char *file_name);
-extern bool file_save_model(void);
-extern bool file_close_model(void);
-extern void file_import_mesh_obj(bool replace);
-extern void file_insert_mesh_dim3_model(void);
+extern bool model_file_new(void);
+extern bool model_file_open(char *file_name);
+extern bool model_file_save(void);
+extern bool model_file_close(void);
+extern void model_file_import_mesh_obj(bool replace);
+extern void model_file_insert_mesh_dim3_model(void);
 
 //
-// undo
+// model undo
 //
 
 extern void model_undo_initialize(void);
@@ -690,81 +696,7 @@ extern void model_undo_set_bone_move(int pose_idx,int bone_idx);
 extern void model_undo_run(void);
 
 //
-// tool palette
-//
-
-extern int tool_palette_pixel_size(void);
-extern void tool_palette_box(d3rect *box);
-
-//
-// texture palette
-//
-
-extern int texture_palette_per_page_count(void);
-extern int texture_palette_pixel_size(void);
-extern int texture_palette_page_list_count(void);
-extern int texture_palette_page_list_width(void);
-extern void texture_palette_box(d3rect *box);
-extern int texture_palette_get_selected_texture(void);
-extern void texture_palette_draw(texture_type *txt_list);
-
-//
-// file palette
-//
-
-extern void file_palette_initialize(void);
-extern void file_palette_shutdown(void);
-extern void file_palette_draw(void);
-extern void file_palette_scroll_wheel(d3pnt *pnt,int move);
-extern void file_palette_click(d3pnt *pnt,bool double_click);
-
-//
-// property palette
-//
-
-extern void model_palette_initialize(void);
-extern void model_palette_shutdown(void);
-extern void model_palette_draw(void);
-extern void model_palette_reset(void);
-extern void model_palette_scroll_into_view(int item_type,int item_idx);
-extern void model_palette_scroll_wheel(d3pnt *pnt,int move);
-extern bool model_palette_delete(void);
-extern void model_palette_click(d3pnt *pnt,bool double_click);
-
-extern void model_palette_fill_texture(int texture_idx);
-extern void model_palette_fill_animator_preference(void);
-extern void model_palette_fill_main(void);
-extern void model_palette_fill_model(void);
-extern void model_palette_fill_mesh(int mesh_idx);
-extern void model_palette_fill_animation(int animate_idx);
-extern void model_palette_fill_pose(int pose_idx);
-extern void model_palette_fill_bone(int bone_idx,int pose_idx);
-extern void model_palette_fill_hit_box(int hit_box_idx);
-
-extern void model_palette_click_texture(int texture_idx,int id,bool double_click);
-extern void model_palette_click_animator_preference(int id,bool double_click);
-extern void model_palette_click_main(bool double_click);
-extern void model_palette_click_model(bool double_click);
-extern void model_palette_click_mesh(int mesh_idx,bool double_click);
-extern void model_palette_click_animation(int animation_idx,bool double_click);
-extern void model_palette_click_pose(int pose_idx,bool double_click);
-extern void model_palette_click_bone(int bone_idx,int pose_idx,bool double_click);
-extern void model_palette_click_hit_box(int hit_box_idx,bool double_click);
-
-extern void model_palette_fill_animate_pose_move(int animate_idx,int pose_move_idx);
-extern void model_palette_fill_pose_bone_move(int pose_idx,int bone_move_idx);
-
-extern void model_palette_click_animate_pose_move(int animate_idx,int pose_move_idx,bool double_click);
-extern void model_palette_click_pose_bone_move(int pose_idx,int bone_move_idx,bool double_click);
-
-extern void model_palette_fill_animate_pose_move_particle(int animate_idx,int pose_move_idx,int particle_idx);
-extern void model_palette_fill_animate_pose_move_ring(int animate_idx,int pose_move_idx,int ring_idx);
-
-extern void model_palette_click_animate_pose_move_particle(int animate_idx,int pose_move_idx,int particle_idx,bool double_click);
-extern void model_palette_click_animate_pose_move_ring(int animate_idx,int pose_move_idx,int ring_idx,bool double_click);
-
-//
-// pieces
+// model pieces
 //
 
 extern void model_piece_add_mesh(void);
@@ -786,105 +718,107 @@ extern void model_piece_add_hit_box(void);
 extern void model_piece_delete_hit_box(int hit_box_idx);
 
 //
-// importing
+// model importing
 //
 
-extern bool import_obj(char *path,bool replace,bool *found_normals,char *err_str);
-extern void insert_model(char *file_name);
+extern bool model_import_obj(char *path,bool replace,bool *found_normals,char *err_str);
+extern void model_insert(char *file_name);
 
-extern int texture_count(void);
-extern bool texture_exists(char *material_name);
-extern int texture_pick(char *material_name,char *err_str);
+extern int model_texture_count(void);
+extern bool model_texture_exists(char *material_name);
+extern int model_texture_pick(char *material_name,char *err_str);
 
 //
-// models
+// model clicking and drawing
 //
 
+extern void model_play(int play_mode);
+extern void model_view_draw(void);
 extern void model_wind_get_box(d3rect *box);
 extern void model_wind_click(d3pnt *pnt);
-extern void draw_model(int mesh_idx);
-extern void draw_model_mesh(int mesh_idx);
-extern void draw_model_bones(int sel_bone_idx);
-extern void draw_model_bone_names(int sel_bone_idx);
-extern void draw_model_bones_get_handle_rot(int bone_idx,d3ang *rot);
-extern float draw_model_bones_drag_handle_offset(void);
-extern void draw_model_bones_drag_handle_calc(d3fpnt *bone_pnt,d3vct *vct,d3ang *ang,d3fpnt *hand_pnt);
-extern void draw_model_selected_vertexes(int mesh_idx);
-extern void draw_model_selected_poly(int mesh_idx);
-extern void draw_model_box_view(void);
-extern void draw_model_box_hit_boxes(void);
-extern void draw_model_axis(void);
-extern void draw_model_normals(int mesh_idx);
-extern void draw_model_gl_setup(int z_offset);
-extern void draw_model_gl_setup_2D(void);
-extern void draw_model_2D_transform_setup(void);
-extern void draw_model_2D_transform(d3fpnt *pnt,d3pnt *tran_pnt);
-extern void draw_model_setup_bones_vertexes(int mesh_idx);
-extern void draw_model_setup_pose(int pose_idx);
-extern void draw_model_wind_pose(int mesh_idx,int pose_idx);
-extern void draw_model_wind(int mesh_idx);
+extern void model_draw(int mesh_idx);
+extern void model_draw_mesh(int mesh_idx);
+extern void model_draw_bones(int sel_bone_idx);
+extern void model_draw_bone_names(int sel_bone_idx);
+extern void model_draw_bones_get_handle_rot(int bone_idx,d3ang *rot);
+extern float model_draw_bones_drag_handle_offset(void);
+extern void model_draw_bones_drag_handle_calc(d3fpnt *bone_pnt,d3vct *vct,d3ang *ang,d3fpnt *hand_pnt);
+extern void model_draw_selected_vertexes(int mesh_idx);
+extern void model_draw_selected_poly(int mesh_idx);
+extern void model_draw_box_view(void);
+extern void model_draw_box_hit_boxes(void);
+extern void model_draw_axis(void);
+extern void model_draw_normals(int mesh_idx);
+extern void model_draw_gl_setup(int z_offset);
+extern void model_draw_gl_setup_2D(void);
+extern void model_draw_2D_transform_setup(void);
+extern void model_draw_2D_transform(d3fpnt *pnt,d3pnt *tran_pnt);
+extern void model_draw_setup_bones_vertexes(int mesh_idx);
+extern void model_draw_setup_pose(int pose_idx);
+extern void model_draw_wind_pose(int mesh_idx,int pose_idx);
+extern void model_draw_wind(int mesh_idx);
 
 //
-// vertex masks
+// model vertex masks
 //
 
-extern bool vertex_mask_initialize(void);
-extern void vertex_mask_shutdown(void);
-extern void vertex_mask_clear_sel(int mesh_idx);
-extern void vertex_mask_set_sel(int mesh_idx,int vertex_idx,bool value);
-extern void vertex_mask_set_sel_all(int mesh_idx);
-extern bool vertex_mask_check_sel_any(int mesh_idx);
-extern int vertex_mask_count_sel(int mesh_idx);
-extern int vertex_mask_get_first_sel(int mesh_idx);
-extern bool vertex_mask_check_sel(int mesh_idx,int vertex_idx);
-extern void vertex_mask_clear_hide(int mesh_idx);
-extern void vertex_mask_set_hide(int mesh_idx,int vertex_idx,bool value);
-extern bool vertex_mask_check_hide(int mesh_idx,int vertex_idx);
-extern void vertex_mask_hide_set_sel_vertexes(int mesh_idx);
-extern void vertex_mask_hide_set_non_sel_vertexes(int mesh_idx);
-extern void vertex_mask_hide_show_all_vertexes(int mesh_idx);
-extern bool vertex_mask_check_hide_poly(int mesh_idx,model_poly_type *poly);
-extern void vertex_mask_set_sel_bone(int mesh_idx,int bone_idx);
-extern void vertex_mask_set_sel_no_bone(int mesh_idx);
-extern void vertex_mask_set_sel_near_bone(int mesh_idx,int bone_idx,float percentage);
-extern void vertex_mask_set_sel_vertex_to_bone(int mesh_idx,int major_bone_idx,int minor_bone_idx,float factor);
-extern void vertex_mask_set_sel_poly_mask(int mesh_idx);
-extern void vertex_mask_set_sel_texture(int mesh_idx,int txt_idx);
+extern bool model_vertex_mask_initialize(void);
+extern void model_vertex_mask_shutdown(void);
+extern void model_vertex_mask_clear_sel(int mesh_idx);
+extern void model_vertex_mask_set_sel(int mesh_idx,int vertex_idx,bool value);
+extern void model_vertex_mask_set_sel_all(int mesh_idx);
+extern bool model_vertex_mask_check_sel_any(int mesh_idx);
+extern int model_vertex_mask_count_sel(int mesh_idx);
+extern int model_vertex_mask_get_first_sel(int mesh_idx);
+extern bool model_vertex_mask_check_sel(int mesh_idx,int vertex_idx);
+extern void model_vertex_mask_clear_hide(int mesh_idx);
+extern void model_vertex_mask_set_hide(int mesh_idx,int vertex_idx,bool value);
+extern bool model_vertex_mask_check_hide(int mesh_idx,int vertex_idx);
+extern void model_vertex_mask_hide_set_sel_vertexes(int mesh_idx);
+extern void model_vertex_mask_hide_set_non_sel_vertexes(int mesh_idx);
+extern void model_vertex_mask_hide_show_all_vertexes(int mesh_idx);
+extern bool model_vertex_mask_check_hide_poly(int mesh_idx,model_poly_type *poly);
+extern void model_vertex_mask_set_sel_bone(int mesh_idx,int bone_idx);
+extern void model_vertex_mask_set_sel_no_bone(int mesh_idx);
+extern void model_vertex_mask_set_sel_near_bone(int mesh_idx,int bone_idx,float percentage);
+extern void model_vertex_mask_set_sel_vertex_to_bone(int mesh_idx,int major_bone_idx,int minor_bone_idx,float factor);
+extern void model_vertex_mask_set_sel_poly_mask(int mesh_idx);
+extern void model_vertex_mask_set_sel_texture(int mesh_idx,int txt_idx);
 
 //
-// poly masks
+// model poly masks
 //
 
-extern bool poly_mask_initialize(void);
-extern void poly_mask_shutdown(void);
-extern void poly_mask_clear_sel(int mesh_idx);
-extern void poly_mask_set_sel(int mesh_idx,int poly_idx,bool value);
-extern bool poly_mask_check_sel(int mesh_idx,int poly_idx);
-extern int poly_mask_count_sel(int mesh_idx);
-extern int poly_mask_get_first_sel(int mesh_idx);
-extern void poly_mask_clear_hide(int mesh_idx);
-extern void poly_mask_set_hide(int mesh_idx,int poly_idx,bool value);
-extern bool poly_mask_check_hide(int mesh_idx,int poly_idx);
-extern model_poly_type* poly_mask_get_single_select(int mesh_idx);
-extern void poly_mask_select_more(int mesh_idx);
+extern bool model_poly_mask_initialize(void);
+extern void model_poly_mask_shutdown(void);
+extern void model_poly_mask_clear_sel(int mesh_idx);
+extern void model_poly_mask_set_sel(int mesh_idx,int poly_idx,bool value);
+extern bool model_poly_mask_check_sel(int mesh_idx,int poly_idx);
+extern int model_poly_mask_count_sel(int mesh_idx);
+extern int model_poly_mask_get_first_sel(int mesh_idx);
+extern void model_poly_mask_clear_hide(int mesh_idx);
+extern void model_poly_mask_set_hide(int mesh_idx,int poly_idx,bool value);
+extern bool model_poly_mask_check_hide(int mesh_idx,int poly_idx);
+extern model_poly_type* model_poly_mask_get_single_select(int mesh_idx);
+extern void model_poly_mask_select_more(int mesh_idx);
 
 //
-// vertex and poly calcs
+// model vertex and poly calcs
 //
 
-extern void vertex_find_center_sel_vertexes(int mesh_idx,int *p_cx,int *p_cy,int *p_cz);
-extern void vertex_invert_normals(int mesh_idx);
-extern void vertex_set_normals(int mesh_idx);
-extern void vertex_set_normals_in_out(int mesh_idx,bool out);
-extern void vertex_clear_bone_attachments_sel_vertexes(int mesh_idx);
-extern void vertex_auto_bone_attachments(int mesh_idx);
-extern void vertex_delete_sel_vertex(int mesh_idx);
-extern void vertex_delete_unused_vertexes(int mesh_idx);
-extern void vertex_delete_sel_poly(int mesh_idx);
-extern void vertex_collapse_selected(int mesh_idx);
-extern void vertex_collapse_similar(int mesh_idx);
-extern void polygon_make_quad(int mesh_idx);
-extern void polygon_tessellate(int mesh_idx,bool sel_only);
+extern void model_vertex_find_center_sel_vertexes(int mesh_idx,int *p_cx,int *p_cy,int *p_cz);
+extern void model_vertex_invert_normals(int mesh_idx);
+extern void model_vertex_set_normals(int mesh_idx);
+extern void model_vertex_set_normals_in_out(int mesh_idx,bool out);
+extern void model_vertex_clear_bone_attachments_sel_vertexes(int mesh_idx);
+extern void model_vertex_auto_bone_attachments(int mesh_idx);
+extern void model_vertex_delete_sel_vertex(int mesh_idx);
+extern void model_vertex_delete_unused_vertexes(int mesh_idx);
+extern void model_vertex_delete_sel_poly(int mesh_idx);
+extern void model_vertex_collapse_selected(int mesh_idx);
+extern void model_vertex_collapse_similar(int mesh_idx);
+extern void model_polygon_make_quad(int mesh_idx);
+extern void model_polygon_tessellate(int mesh_idx,bool sel_only);
 
 //
 // model picking
@@ -895,7 +829,7 @@ extern void model_pick_list_end(d3pnt *pnt,int *idx);
 extern void model_pick_list_add_poly(int idx,int ptsz,d3pnt *v_pnts);
 
 //
-// dialogs
+// model dialogs
 //
 
 extern bool dialog_new_model_run(char *file_name);
@@ -906,4 +840,3 @@ extern bool dialog_animation_scale_time_run(int animate_idx);
 extern bool dialog_play_blend_animation_run(void);
 extern bool dialog_scale_run(d3fpnt *scale);
 extern bool dialog_set_normal_run(d3vct *normal);
-*/

@@ -278,8 +278,8 @@ extern void tool_palette_mouse_move(tool_palette_type *tool_palette,d3pnt *pnt);
 // text palette
 //
 
-extern void texture_palette_draw(texture_type *txt_list);
-extern void texture_palette_click(texture_type *txt_list,d3pnt *pnt,bool dbl_click);
+extern void texture_palette_draw(void);
+extern void texture_palette_click(d3pnt *pnt,bool dbl_click);
 
 //
 // texture editing
