@@ -33,7 +33,7 @@ and can be sold or given away.
 #include "interface.h"
 #include "ui_common.h"
 
-extern map_type					map;
+extern model_type				model;
 extern app_state_type			state;
 
 extern list_palette_type		model_palette;
@@ -213,13 +213,36 @@ void model_menu_update(void)
 
 /* =======================================================
 
+      Misc Menu Routines
+      
+======================================================= */
+
+void model_prepare(void)
+{
+    model_calculate_parents(&model);
+    model_center_xz_all(&model);
+    model_floor_all(&model);
+    model_recalc_boxes(&model);
+}
+
+void model_setup_scale(d3fpnt *scale)
+{
+	int				minx,maxx,minz,maxz,miny,maxy;
+
+	model_get_vertex_extent_all(&model,&minx,&maxx,&minz,&maxz,&miny,&maxy);
+	scale->x=(float)abs(maxx-minx);
+	scale->y=(float)abs(maxy-miny);
+	scale->z=(float)abs(maxz-minz);
+}
+
+/* =======================================================
+
       Menu Events
       
 ======================================================= */
 
 bool model_menu_event_run(int cmd)
 {
-/*
 	int				major_bone_idx,minor_bone_idx,parent_idx;
 	float			bone_factor;
 	d3fpnt			scale;
@@ -229,11 +252,11 @@ bool model_menu_event_run(int cmd)
 			// file menu
 
 		case model_menu_item_FileSave:
-			file_save_model();
+			model_file_save();
 			return(TRUE);
 
 		case model_menu_item_FileQuit:
-			if (file_close_model()) {
+			if (model_file_close()) {
 				os_application_quit();
 			}
 			return(TRUE);
@@ -241,19 +264,19 @@ bool model_menu_event_run(int cmd)
 			// edit menu
 
 		case model_menu_item_EditUndo:
-			undo_run();
+			model_undo_run();
 			main_wind_draw();
 			return(TRUE);
 
 		case model_menu_item_EditSelectMore:
-			poly_mask_select_more(state.model.cur_mesh_idx);
+			model_poly_mask_select_more(state.model.cur_mesh_idx);
 			main_wind_draw();
 			return(TRUE);
 			
 			// model menu
         
 		case model_menu_item_PrepareModel:
-            prepare_model();
+            model_prepare();
             main_wind_draw();
 			return(TRUE);
 			
@@ -268,7 +291,7 @@ bool model_menu_event_run(int cmd)
 			return(TRUE);
            
 		case model_menu_item_ScaleAll:
-			setup_model_scale(&scale);
+			model_setup_scale(&scale);
 			if (!dialog_scale_run(&scale)) return(TRUE);
 			model_scale_all(&model,&scale);
             main_wind_draw();
@@ -366,22 +389,22 @@ bool model_menu_event_run(int cmd)
 			return(TRUE);
 			
 		case model_menu_item_ImportOBJ:
-			main_wind_play(model_play_mode_stop);
-			file_import_mesh_obj(FALSE);
+			model_play(model_play_mode_stop);
+			model_file_import_mesh_obj(FALSE);
 			return(TRUE);
 			
 		case model_menu_item_ReplaceOBJ:
-			main_wind_play(model_play_mode_stop);
-			file_import_mesh_obj(TRUE);
+			model_play(model_play_mode_stop);
+			model_file_import_mesh_obj(TRUE);
 			return(TRUE);
 			
 		case model_menu_item_InsertXML:
-			main_wind_play(model_play_mode_stop);
-			file_insert_mesh_dim3_model();
+			model_play(model_play_mode_stop);
+			model_file_insert_mesh_dim3_model();
 			return(TRUE);
 			
 		case model_menu_item_Scale:
-			setup_model_scale(&scale);
+			model_setup_scale(&scale);
 			if (!dialog_scale_run(&scale)) return(TRUE);
 			model_scale(&model,state.model.cur_mesh_idx,&scale);
             main_wind_draw();
@@ -433,7 +456,7 @@ bool model_menu_event_run(int cmd)
 			return(TRUE);
 
 		case model_menu_item_MeshTessellate:
-			polygon_tessellate(state.model.cur_mesh_idx,FALSE);
+			model_polygon_tessellate(state.model.cur_mesh_idx,FALSE);
 			main_wind_draw();
 			return(TRUE);
 			
@@ -441,93 +464,93 @@ bool model_menu_event_run(int cmd)
 			
 		case model_menu_item_VertexSelectAll:
 			state.model.select_mode=select_mode_vertex;
-			vertex_mask_set_sel_all(state.model.cur_mesh_idx);
+			model_vertex_mask_set_sel_all(state.model.cur_mesh_idx);
 			main_wind_draw();
 			return(TRUE);
 			
 		case model_menu_item_VertexSelectNotAttached:
 			state.model.select_mode=select_mode_vertex;
-			vertex_mask_set_sel_no_bone(state.model.cur_mesh_idx);
+			model_vertex_mask_set_sel_no_bone(state.model.cur_mesh_idx);
 			main_wind_draw();
 			return(TRUE);
 			
 		case model_menu_item_VertexInvertNormals:
-			vertex_invert_normals(state.model.cur_mesh_idx);
+			model_vertex_invert_normals(state.model.cur_mesh_idx);
 			main_wind_draw();
 			return(TRUE);
 			
 		case model_menu_item_VertexSetNormals:
-			vertex_set_normals(state.model.cur_mesh_idx);
+			model_vertex_set_normals(state.model.cur_mesh_idx);
 			main_wind_draw();
 			return(TRUE);
 
 		case model_menu_item_VertexSetNormalsOut:
-			vertex_set_normals_in_out(state.model.cur_mesh_idx,TRUE);
+			model_vertex_set_normals_in_out(state.model.cur_mesh_idx,TRUE);
 			main_wind_draw();
 			return(TRUE);
 
 		case model_menu_item_VertexSetNormalsIn:
-			vertex_set_normals_in_out(state.model.cur_mesh_idx,FALSE);
+			model_vertex_set_normals_in_out(state.model.cur_mesh_idx,FALSE);
 			main_wind_draw();
 			return(TRUE);
 		
 		case model_menu_item_VertexClearBones:
 			state.model.select_mode=select_mode_vertex;
-			vertex_clear_bone_attachments_sel_vertexes(state.model.cur_mesh_idx);
+			model_vertex_clear_bone_attachments_sel_vertexes(state.model.cur_mesh_idx);
 			main_wind_draw();
 			return(TRUE);
 			
 		case model_menu_item_VertexAutoBones:
 			state.model.select_mode=select_mode_vertex;
-			vertex_auto_bone_attachments(state.model.cur_mesh_idx);
+			model_vertex_auto_bone_attachments(state.model.cur_mesh_idx);
 			main_wind_draw();
 			return(TRUE);
 				
 		case model_menu_item_VertexHideSelected:
-			vertex_mask_hide_set_sel_vertexes(state.model.cur_mesh_idx);
+			model_vertex_mask_hide_set_sel_vertexes(state.model.cur_mesh_idx);
 			main_wind_draw();
 			return(TRUE);
 			
 		case model_menu_item_VertexHideNonSelected:
-			vertex_mask_hide_set_non_sel_vertexes(state.model.cur_mesh_idx);
+			model_vertex_mask_hide_set_non_sel_vertexes(state.model.cur_mesh_idx);
 			main_wind_draw();
 			return(TRUE);
 			
 		case model_menu_item_VertexShowAll:
-			vertex_mask_hide_show_all_vertexes(state.model.cur_mesh_idx);
+			model_vertex_mask_hide_show_all_vertexes(state.model.cur_mesh_idx);
 			main_wind_draw();
 			return(TRUE);
 			
 		case model_menu_item_VertexDelete:
 			state.model.select_mode=select_mode_vertex;
-			vertex_delete_sel_vertex(state.model.cur_mesh_idx);
+			model_vertex_delete_sel_vertex(state.model.cur_mesh_idx);
 			main_wind_draw();
 			return(TRUE);
 			
 		case model_menu_item_VertexPolygonDelete:
 			if (state.model.select_mode!=select_mode_polygon) return(TRUE);
-			vertex_delete_sel_poly(state.model.cur_mesh_idx);
+			model_vertex_delete_sel_poly(state.model.cur_mesh_idx);
 			main_wind_draw();
 			return(TRUE);
 			
 		case model_menu_item_VertexCollapseSelected:
 			if (state.model.select_mode==select_mode_mesh) return(TRUE);
-			vertex_collapse_selected(state.model.cur_mesh_idx);
+			model_vertex_collapse_selected(state.model.cur_mesh_idx);
 			main_wind_draw();
 			return(TRUE);
 
 		case model_menu_item_VertexCollapseSimilar:
-			vertex_collapse_similar(state.model.cur_mesh_idx);
+			model_vertex_collapse_similar(state.model.cur_mesh_idx);
 			main_wind_draw();
 			return(TRUE);
 
 		case model_menu_item_VertexMakeQuad:
-			polygon_make_quad(state.model.cur_mesh_idx);
+			model_polygon_make_quad(state.model.cur_mesh_idx);
 			main_wind_draw();
 			return(TRUE);
 
 		case model_menu_item_VertexTessellatePoly:
-			polygon_tessellate(state.model.cur_mesh_idx,TRUE);
+			model_polygon_tessellate(state.model.cur_mesh_idx,TRUE);
 			main_wind_draw();
 			return(TRUE);
 			
@@ -540,7 +563,7 @@ bool model_menu_event_run(int cmd)
 			
 		case model_menu_item_SetBone:
 			if (!dialog_set_vertex_bone_run(&major_bone_idx,&minor_bone_idx,&bone_factor)) return(TRUE);
-			vertex_mask_set_sel_vertex_to_bone(state.model.cur_mesh_idx,major_bone_idx,minor_bone_idx,bone_factor);
+			model_vertex_mask_set_sel_vertex_to_bone(state.model.cur_mesh_idx,major_bone_idx,minor_bone_idx,bone_factor);
 			main_wind_draw();
 			return(TRUE);
 
@@ -587,23 +610,23 @@ bool model_menu_event_run(int cmd)
             
 		case model_menu_item_ResetTimeAnimate:
 			if (state.model.cur_animate_idx==-1) return(TRUE);
-			main_wind_play(model_play_mode_stop);
+			model_play(model_play_mode_stop);
 
 			dialog_animation_scale_time_run(state.model.cur_animate_idx);
 			return(TRUE);
 			
 		case model_menu_item_PlayAnimate:
-			main_wind_play(model_play_mode_normal);
+			model_play(model_play_mode_normal);
 			return(TRUE);
 			
 		case model_menu_item_PlayBlendAnimate:
 			if (dialog_play_blend_animation_run()) {
-				main_wind_play(model_play_mode_blend);
+				model_play(model_play_mode_blend);
 			}
 			return(TRUE);
 						
 	}
-	*/
+
 	return(FALSE);
 }
 

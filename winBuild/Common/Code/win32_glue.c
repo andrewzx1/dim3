@@ -40,11 +40,14 @@ extern HACCEL			wnd_accel;
 HCURSOR					cur_arrow,cur_wait,cur_hand,cur_drag,cur_resize,
 						cur_add,cur_subtract;
 COLORREF				custom_colors[16];
+UINT_PTR				os_wnd_timer;
 bool					os_dialog_focus_flag,os_dialog_ok;
 HWND					os_dialog_wind;
 HFONT					os_dialog_font;
 os_dialog_ctrl_type		*os_dialog_ctrls;
 os_dialog_callback_ptr	os_dialog_callback;
+
+extern void main_wind_timer(void);
 
 /* =======================================================
 
@@ -146,6 +149,27 @@ void os_set_title_window(char *title)
 void os_swap_gl_buffer(void)
 {
 	SwapBuffers(wnd_gl_dc);
+}
+
+/* =======================================================
+
+      Timers
+      
+======================================================= */
+
+void CALLBACK os_timer_proc(HWND hwnd,UINT msg,UINT_PTR id,DWORD tick)
+{
+	main_wind_timer();
+}
+
+void os_start_timer(void)
+{
+	os_wnd_timer=SetTimer(wnd,1,10,os_timer_proc);
+}
+
+void os_end_timer(void)
+{
+	KillTimer(wnd,1);
 }
 
 /* =======================================================

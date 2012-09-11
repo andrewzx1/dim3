@@ -84,23 +84,23 @@ void model_palette_fill_level_1(void)
 			model_palette_fill_model();
 			break;
 
-		case item_mesh:
+		case item_model_mesh:
 			model_palette_fill_mesh(state.model.cur_mesh_idx);
 			break;
 
-		case item_animate:
+		case item_model_animate:
 			model_palette_fill_animation(state.model.cur_animate_idx);
 			break;
 
-		case item_pose:
+		case item_model_pose:
 			model_palette_fill_pose(state.model.cur_pose_idx);
 			break;
 
-		case item_bone:
+		case item_model_bone:
 			model_palette_fill_bone(state.model.cur_bone_idx,state.model.cur_pose_idx);
 			break;
 
-		case item_hit_box:
+		case item_model_hit_box:
 			model_palette_fill_hit_box(state.model.cur_hit_box_idx);
 			break;
 
@@ -111,11 +111,11 @@ void model_palette_fill_level_2(void)
 {
 	switch (state.model.cur_item) {
 
-		case item_animate:
+		case item_model_animate:
 			model_palette_fill_animate_pose_move(state.model.cur_animate_idx,state.model.cur_animate_pose_move_idx);
 			break;
 
-		case item_pose:
+		case item_model_pose:
 			model_palette_fill_pose_bone_move(state.model.cur_pose_idx,state.model.cur_pose_bone_move_idx);
 			break;
 
@@ -126,7 +126,7 @@ void model_palette_fill_level_3(void)
 {
 	switch (state.model.cur_item) {
 
-		case item_animate:
+		case item_model_animate:
 			if ((state.model.cur_animate_idx==-1) || (state.model.cur_animate_pose_move_idx==-1)) break;
 
 			if (state.model.cur_animate_pose_move_particle_idx!=-1) {
@@ -156,28 +156,11 @@ void model_palette_draw(void)
 
 	list_palette_delete_all_items(&model_palette);
 
-		// if no model, do preferences
-
-	if (!state.model.model_open) {
-		model_palette_fill_animator_preference();
-		list_palette_draw(&model_palette);
-		return;
-	}
-
 		// if texture window is up,
 		// put in texture properties
 
 	if (state.model.texture_edit_idx!=-1) {
 		model_palette_fill_texture(state.model.texture_edit_idx);
-		list_palette_draw(&model_palette);
-		return;
-	}
-
-		// if preference window is up,
-		// put in preference properties
-
-	if (state.model.in_preference) {
-		model_palette_fill_animator_preference();
 		list_palette_draw(&model_palette);
 		return;
 	}
@@ -247,27 +230,27 @@ bool model_palette_delete(void)
 
 	switch (model_palette.item_pane.click.id) {
 
-		case item_mesh:
+		case item_model_mesh:
 			if (os_dialog_confirm("Delete Mesh","Is it okay to delete this mesh?",FALSE)!=0) return(FALSE);
 			model_piece_delete_mesh(model_palette.item_pane.click.idx);
 			return(TRUE);
 
-		case item_bone:
+		case item_model_bone:
 			if (os_dialog_confirm("Delete Bone","Is it okay to delete this bone?",FALSE)!=0) return(FALSE);
 			model_piece_delete_bone(model_palette.item_pane.click.idx);
 			return(TRUE);
 
-		case item_pose:
+		case item_model_pose:
 			if (os_dialog_confirm("Delete Pose","Is it okay to delete this pose?",FALSE)!=0) return(FALSE);
 			model_piece_delete_pose(model_palette.item_pane.click.idx);
 			return(TRUE);
 
-		case item_animate:
+		case item_model_animate:
 			if (os_dialog_confirm("Delete Animation","Is it okay to delete this animation?",FALSE)!=0) return(FALSE);
 			model_piece_delete_animate(model_palette.item_pane.click.idx);
 			return(TRUE);
 
-		case item_hit_box:
+		case item_model_hit_box:
 			if (os_dialog_confirm("Delete Hit Box","Is it okay to delete this hit box?",FALSE)!=0) return(FALSE);
 			model_piece_delete_hit_box(model_palette.item_pane.click.idx);
 			return(TRUE);
@@ -296,23 +279,23 @@ void model_palette_click_level_1(bool double_click)
 			model_palette_click_model(double_click);
 			break;
 
-		case item_mesh:
+		case item_model_mesh:
 			model_palette_click_mesh(state.model.cur_mesh_idx,double_click);
 			break;
 
-		case item_animate:
+		case item_model_animate:
 			model_palette_click_animation(state.model.cur_animate_idx,double_click);
 			break;
 
-		case item_pose:
+		case item_model_pose:
 			model_palette_click_pose(state.model.cur_pose_idx,double_click);
 			break;
 
-		case item_bone:
+		case item_model_bone:
 			model_palette_click_bone(state.model.cur_bone_idx,state.model.cur_pose_idx,double_click);
 			break;
 
-		case item_hit_box:
+		case item_model_hit_box:
 			model_palette_click_hit_box(state.model.cur_hit_box_idx,double_click);
 			break;
 
@@ -323,11 +306,11 @@ void model_palette_click_level_2(bool double_click)
 {
 	switch (state.model.cur_item) {
 
-		case item_animate:
+		case item_model_animate:
 			model_palette_click_animate_pose_move(state.model.cur_animate_idx,state.model.cur_animate_pose_move_idx,double_click);
 			break;
 
-		case item_pose:
+		case item_model_pose:
 			model_palette_click_pose_bone_move(state.model.cur_pose_idx,state.model.cur_pose_bone_move_idx,double_click);
 			break;
 
@@ -338,7 +321,7 @@ void model_palette_click_level_3(bool double_click)
 {
 	switch (state.model.cur_item) {
 
-		case item_animate:
+		case item_model_animate:
 			if ((state.model.cur_animate_idx==-1) || (state.model.cur_animate_pose_move_idx==-1)) break;
 
 			if (state.model.cur_animate_pose_move_particle_idx!=-1) {
@@ -385,14 +368,6 @@ void model_palette_click(d3pnt *pnt,bool double_click)
 
 	if (state.model.texture_edit_idx!=-1) {
 		model_palette_click_texture(state.model.texture_edit_idx,model_palette.item_pane.click.id,double_click);
-		main_wind_draw();
-		return;
-	}
-
-		// if preference window is up, preference properties
-
-	if (state.model.in_preference) {
-		model_palette_click_animator_preference(model_palette.item_pane.click.id,double_click);
 		main_wind_draw();
 		return;
 	}

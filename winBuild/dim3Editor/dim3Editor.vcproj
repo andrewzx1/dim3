@@ -386,70 +386,6 @@
 			<Filter
 				Name="Sources"
 				>
-				<File
-					RelativePath="..\..\dim3Editor\Code\dos.c"
-					>
-				</File>
-				<File
-					RelativePath="..\..\dim3Editor\Code\groups.c"
-					>
-				</File>
-				<File
-					RelativePath="..\..\dim3Editor\Code\import_obj.c"
-					>
-				</File>
-				<File
-					RelativePath="..\..\dim3Editor\Code\launch.c"
-					>
-				</File>
-				<File
-					RelativePath="..\..\dim3Editor\Code\light_maps.c"
-					>
-				</File>
-				<File
-					RelativePath="..\..\dim3Editor\Code\liquid_reflection_maps.c"
-					>
-				</File>
-				<File
-					RelativePath="..\..\dim3Editor\Code\nodes.c"
-					>
-				</File>
-				<File
-					RelativePath="..\..\dim3Editor\Code\pieces.c"
-					>
-				</File>
-				<File
-					RelativePath="..\..\dim3Editor\Code\pieces_create.c"
-					>
-				</File>
-				<File
-					RelativePath="..\..\dim3Editor\Code\pieces_mesh.c"
-					>
-				</File>
-				<File
-					RelativePath="..\..\dim3Editor\Code\selection.c"
-					>
-				</File>
-				<File
-					RelativePath="..\..\dim3Editor\Code\texture_palette.c"
-					>
-				</File>
-				<File
-					RelativePath="..\..\dim3Common\Code\texture_palette_common.c"
-					>
-				</File>
-				<File
-					RelativePath="..\..\dim3Common\Code\tool_tip_common.c"
-					>
-				</File>
-				<File
-					RelativePath="..\..\dim3Editor\Code\undo.c"
-					>
-				</File>
-				<File
-					RelativePath="..\..\dim3Editor\Code\xml_setup.c"
-					>
-				</File>
 				<Filter
 					Name="Palettes"
 					>
@@ -756,6 +692,58 @@
 					<Filter
 						Name="Model"
 						>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\palettes\model\model_palette.c"
+							>
+						</File>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\palettes\model\model_palette_animation.c"
+							>
+						</File>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\palettes\model\model_palette_bone.c"
+							>
+						</File>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\palettes\model\model_palette_bone_move.c"
+							>
+						</File>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\palettes\model\model_palette_hit_box.c"
+							>
+						</File>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\palettes\model\model_palette_main.c"
+							>
+						</File>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\palettes\model\model_palette_mesh.c"
+							>
+						</File>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\palettes\model\model_palette_model.c"
+							>
+						</File>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\palettes\model\model_palette_pose.c"
+							>
+						</File>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\palettes\model\model_palette_pose_move.c"
+							>
+						</File>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\palettes\model\model_palette_pose_move_particle.c"
+							>
+						</File>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\palettes\model\model_palette_pose_move_ring.c"
+							>
+						</File>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\palettes\model\model_palette_texture.c"
+							>
+						</File>
 					</Filter>
 					<Filter
 						Name="Common"
@@ -775,98 +763,14 @@
 					</Filter>
 				</Filter>
 				<Filter
-					Name="View"
-					>
-					<File
-						RelativePath="..\..\dim3Editor\Code\view.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Editor\Code\view_click_drag.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Editor\Code\view_click_piece.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Editor\Code\view_clip.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Editor\Code\view_draw_piece.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Editor\Code\view_draw_select.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Editor\Code\view_handle.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Editor\Code\view_models.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Editor\Code\view_movement.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Editor\Code\view_picker.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Editor\Code\view_vbo.c"
-						>
-					</File>
-				</Filter>
-				<Filter
 					Name="Windows"
 					>
-					<File
-						RelativePath="..\..\dim3Common\Code\import_text_decode_common.c"
-						>
-					</File>
 					<File
 						RelativePath="..\..\dim3Editor\Code\main_app.c"
 						>
 					</File>
 					<File
 						RelativePath="..\..\dim3Editor\Code\main_window.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Common\Code\progress_common.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Common\Code\text_common.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Common\Code\texture_edit_common.c"
-						>
-					</File>
-				</Filter>
-				<Filter
-					Name="Auto Generator"
-					>
-					<File
-						RelativePath="..\..\dim3Editor\Code\auto_generate.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Editor\Code\auto_generate_setup.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Editor\Code\auto_generate_story.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Editor\Code\auto_generate_utility.c"
 						>
 					</File>
 				</Filter>
@@ -929,6 +833,10 @@
 							>
 						</File>
 						<File
+							RelativePath="..\..\dim3Editor\Sources\dialogs\model\dialog_new_model.c"
+							>
+						</File>
+						<File
 							RelativePath="..\..\dim3Editor\Sources\dialogs\model\dialog_normal.c"
 							>
 						</File>
@@ -948,10 +856,226 @@
 					<Filter
 						Name="Model"
 						>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\code\model\model_click_window.c"
+							>
+						</File>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\code\model\model_dos.c"
+							>
+						</File>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\code\model\model_draw_axis_boxes.c"
+							>
+						</File>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\code\model\model_draw_mesh_bone.c"
+							>
+						</File>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\code\model\model_draw_model.c"
+							>
+						</File>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\code\model\model_draw_selection.c"
+							>
+						</File>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\code\model\model_draw_window.c"
+							>
+						</File>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\code\model\model_insert.c"
+							>
+						</File>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\code\model\model_obj_import.c"
+							>
+						</File>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\code\model\model_picker.c"
+							>
+						</File>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\code\model\model_piece.c"
+							>
+						</File>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\code\model\model_play.c"
+							>
+						</File>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\code\model\model_poly_masks.c"
+							>
+						</File>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\code\model\model_texture_import.c"
+							>
+						</File>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\code\model\model_texture_palette.c"
+							>
+						</File>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\code\model\model_undo.c"
+							>
+						</File>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\code\model\model_vertex_masks.c"
+							>
+						</File>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\code\model\model_vertex_transform.c"
+							>
+						</File>
 					</Filter>
 					<Filter
 						Name="Map"
 						>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\code\map\map_auto_generate.c"
+							>
+						</File>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\code\map\map_auto_generate_setup.c"
+							>
+						</File>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\code\map\map_auto_generate_story.c"
+							>
+						</File>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\code\map\map_auto_generate_utility.c"
+							>
+						</File>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\code\map\map_dos.c"
+							>
+						</File>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\code\map\map_groups.c"
+							>
+						</File>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\code\map\map_import_obj.c"
+							>
+						</File>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\code\map\map_light_maps.c"
+							>
+						</File>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\code\map\map_liquid_reflection_maps.c"
+							>
+						</File>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\code\map\map_nodes.c"
+							>
+						</File>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\code\map\map_pieces.c"
+							>
+						</File>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\code\map\map_pieces_create.c"
+							>
+						</File>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\code\map\map_pieces_mesh.c"
+							>
+						</File>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\code\map\map_selection.c"
+							>
+						</File>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\code\map\map_texture_palette.c"
+							>
+						</File>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\code\map\map_undo.c"
+							>
+						</File>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\code\map\map_view.c"
+							>
+						</File>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\code\map\map_view_click_drag.c"
+							>
+						</File>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\code\map\map_view_click_piece.c"
+							>
+						</File>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\code\map\map_view_clip.c"
+							>
+						</File>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\code\map\map_view_draw_piece.c"
+							>
+						</File>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\code\map\map_view_draw_select.c"
+							>
+						</File>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\code\map\map_view_handle.c"
+							>
+						</File>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\code\map\map_view_models.c"
+							>
+						</File>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\code\map\map_view_movement.c"
+							>
+						</File>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\code\map\map_view_picker.c"
+							>
+						</File>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\code\map\map_view_vbo.c"
+							>
+						</File>
+					</Filter>
+					<Filter
+						Name="Common"
+						>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\code\common\import_text_decode.c"
+							>
+						</File>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\code\common\launch.c"
+							>
+						</File>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\code\common\progress.c"
+							>
+						</File>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\code\common\text.c"
+							>
+						</File>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\code\common\texture_edit.c"
+							>
+						</File>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\code\common\texture_palette.c"
+							>
+						</File>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\code\common\tool_tip.c"
+							>
+						</File>
+						<File
+							RelativePath="..\..\dim3Editor\Sources\code\common\xml_setup.c"
+							>
+						</File>
 					</Filter>
 				</Filter>
 				<Filter

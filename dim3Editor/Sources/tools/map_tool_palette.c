@@ -361,7 +361,7 @@ void map_tool_palette_click(int tool_idx)
 	}
 	
 	main_wind_menu_update();
-	texture_palette_reset();
+	map_texture_palette_reset();
 	
 	main_wind_draw();
 }
