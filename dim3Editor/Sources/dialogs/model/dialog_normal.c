@@ -31,7 +31,6 @@ and can be sold or given away.
 
 #include "glue.h"
 #include "interface.h"
-#include "ui_common.h"
 
 d3vct					*dialog_set_normal_vct;
 

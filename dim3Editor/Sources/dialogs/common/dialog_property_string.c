@@ -31,7 +31,6 @@ and can be sold or given away.
 
 #include "glue.h"
 #include "interface.h"
-#include "ui_common.h"
 
 int								dialog_property_string_value_type,
 								dialog_property_string_value_len,

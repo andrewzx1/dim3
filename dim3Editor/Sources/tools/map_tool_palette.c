@@ -31,7 +31,6 @@ and can be sold or given away.
 
 #include "glue.h"
 #include "interface.h"
-#include "ui_common.h"
 
 #define map_tool_count			38
 

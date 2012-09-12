@@ -233,6 +233,163 @@ and can be sold or given away.
 #define model_menu_item_PlayBlendAnimate		5904
 
 //
+// list palette
+//
+
+#define list_max_item_count									4096
+#define list_max_section_count								32
+
+#define list_max_value_sz									64
+
+#define list_title_font_size								14.0f
+#define list_item_font_size									12.0f
+#define list_item_font_high									14
+
+#define list_wheel_scroll_size								14
+
+#ifndef D3_SETUP
+	#define list_palette_border_sz							10
+	#define list_palette_tree_sz							260
+	#define list_value_clip_size							25
+#else
+	#define list_palette_border_sz							0
+	#define list_palette_tree_sz							400
+	#define list_value_clip_size							35
+#endif
+
+#define list_palette_scroll_wid								15
+#define list_title_line_high								15
+
+#define list_item_ctrl_header								0
+#define list_item_ctrl_text									1
+#define list_item_ctrl_color								2
+#define list_item_ctrl_string								3
+#define list_item_ctrl_param								4
+#define list_item_ctrl_na_blank								5
+#define list_item_ctrl_int									6
+#define list_item_ctrl_float								7
+#define list_item_ctrl_checkbox								8
+#define list_item_ctrl_point								9
+#define list_item_ctrl_angle								10
+#define list_item_ctrl_vector								11
+#define list_item_ctrl_normal_vector						12
+#define list_item_ctrl_uv									13
+#define list_item_ctrl_picker								14
+#define list_item_ctrl_pick_color							15
+
+#define list_string_value_string							0
+#define list_string_value_int								1
+#define list_string_value_positive_int						2
+#define list_string_value_range_int							3
+#define list_string_value_float								4
+#define list_string_value_positive_float					5
+#define list_string_value_0_to_1_float						6
+
+#define list_chord_value_point								0
+#define list_chord_value_angle								1
+#define list_chord_value_vector								2
+#define list_chord_value_uv									3
+
+#define list_button_none									-1
+#define list_button_edit									0
+#define list_button_plus									1
+#define list_button_minus									2
+#define list_button_set										3
+
+typedef union		{
+						int									*int_ptr;
+						float								*float_ptr;
+						bool								*bool_ptr;
+						char								*str_ptr;
+						d3pnt								*pnt_ptr;
+						d3ang								*ang_ptr;
+						d3vct								*vct_ptr;
+						d3uv								*uv_ptr;
+						d3col								*col_ptr;
+					} list_palette_item_value_type;
+
+typedef struct		{
+						int									param_idx,str_len;
+					} list_palette_item_limit_type;
+
+typedef struct		{
+						char								search_path[64],extension[8],required_file_name[file_str_len];
+						bool								file_list;
+					} list_palette_item_file_type;
+
+typedef struct		{
+						int									count,item_sz,name_offset;
+						bool								is_index,include_none;
+						char								*ptr;
+						list_palette_item_file_type			file;
+					} list_palette_item_list_type;
+
+typedef struct		{
+						int									x,y,ctrl_type,button_type,
+															id,idx,button_id,count;
+						bool								selected,disabled;
+						char								name[name_str_len];
+						list_palette_item_value_type		value;
+						list_palette_item_limit_type		limit;
+						list_palette_item_list_type			list;
+					} list_palette_item_type;
+
+typedef struct		{
+						int									*picker_idx_ptr;
+						bool								on,file_list,catch_last_click;
+						char								*picker_name_ptr;
+					} list_palette_picker_type;
+
+typedef struct		{
+						int									id,idx,item_idx;
+						list_palette_item_type				*item;
+					} list_palette_click_type;
+
+typedef struct		{
+						int									level,item_count,
+															item_sort_start_idx,push_idx,
+															scroll_offset,total_high;
+						bool								back_push_on,
+															push_on,button_click;
+						char								titles[3][128];
+						list_palette_click_type				click;
+						list_palette_item_type				*items;
+					} list_palette_pane_type;
+
+typedef struct		{
+						bool								left,never_hide_picker,never_open;
+					} list_palette_flag_type;
+
+typedef struct		{
+						bool								open;
+						list_palette_flag_type				flag;
+						list_palette_pane_type				item_pane,picker_pane;
+						list_palette_picker_type			picker;
+					} list_palette_type;
+
+//
+// tool tips
+//
+
+#define tool_tip_font_size							15.0f
+
+//
+// tool palette
+//
+
+#define tool_palette_seperator_size					4
+
+//
+// texture editing
+//
+
+#define texture_edit_item_high						140
+#define texture_edit_scroll_wheel_move				25
+
+#define texture_edit_frame_click_return_idx			100
+#define texture_edit_frame_click_delete_idx			101
+
+//
 // project item types
 //
 
