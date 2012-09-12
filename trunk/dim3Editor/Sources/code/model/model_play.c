@@ -31,7 +31,6 @@ and can be sold or given away.
 
 #include "glue.h"
 #include "interface.h"
-#include "ui_common.h"
 
 model_type						model;
 model_draw_setup				draw_setup;

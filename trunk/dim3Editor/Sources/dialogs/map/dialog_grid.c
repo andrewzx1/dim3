@@ -31,7 +31,6 @@ and can be sold or given away.
 
 #include "glue.h"
 #include "interface.h"
-#include "ui_common.h"
 
 d3pnt							*dialog_grid_divs;
 bool							*dialog_grid_sides;

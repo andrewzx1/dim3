@@ -378,10 +378,6 @@
 					RelativePath="..\..\dim3Editor\Headers\interface.h"
 					>
 				</File>
-				<File
-					RelativePath="..\..\dim3Common\Headers\ui_common.h"
-					>
-				</File>
 			</Filter>
 			<Filter
 				Name="Sources"
@@ -766,11 +762,11 @@
 					Name="Windows"
 					>
 					<File
-						RelativePath="..\..\dim3Editor\Code\main_app.c"
+						RelativePath="..\..\dim3Editor\Sources\windows\main_app.c"
 						>
 					</File>
 					<File
-						RelativePath="..\..\dim3Editor\Code\main_window.c"
+						RelativePath="..\..\dim3Editor\Sources\windows\main_window.c"
 						>
 					</File>
 				</Filter>

@@ -31,7 +31,6 @@ and can be sold or given away.
 
 #include "glue.h"
 #include "interface.h"
-#include "ui_common.h"
 
 int								*dialog_obj_import_mode,
 								*dialog_obj_import_axis,

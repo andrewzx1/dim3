@@ -29,12 +29,11 @@ and can be sold or given away.
 	#include "dim3editor.h"
 #endif
 
+#include "glue.h"
+#include "interface.h"
+
 #define kVirutalControlStick			100
 #define kVirutalControlButton			200
-
-#include "glue.h"
-#include "ui_common.h"
-#include "interface.h"
 
 extern iface_type				iface;
 extern app_state_type			state;

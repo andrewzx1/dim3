@@ -30,7 +30,6 @@ and can be sold or given away.
 #endif
 
 #include "glue.h"
-#include "ui_common.h"
 #include "interface.h"
 
 extern char						property_file_list[file_paths_max_directory_file][file_str_len];

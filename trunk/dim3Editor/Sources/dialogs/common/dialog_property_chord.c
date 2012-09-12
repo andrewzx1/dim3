@@ -31,7 +31,6 @@ and can be sold or given away.
 
 #include "glue.h"
 #include "interface.h"
-#include "ui_common.h"
 
 int								dialog_property_chord_value_type;
 void							*dialog_property_chord_value;

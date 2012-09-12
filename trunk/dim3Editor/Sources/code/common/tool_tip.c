@@ -31,7 +31,6 @@ and can be sold or given away.
 
 #include "glue.h"
 #include "interface.h"
-#include "ui_common.h"
 
 char							tool_tip_str[256];
 d3rect							tool_tip_box;

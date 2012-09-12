@@ -29,7 +29,6 @@ and can be sold or given away.
 
 #include "glue.h"
 #include "interface.h"
-#include "ui_common.h"
 
 HINSTANCE						hinst;
 ATOM							wnd_rg_class;

@@ -30,7 +30,6 @@ and can be sold or given away.
 #endif
 
 #include "glue.h"
-#include "ui_common.h"
 #include "interface.h"
 
 #define kModelPropertyMeshAdd				100		// need to be greater than item numbers
