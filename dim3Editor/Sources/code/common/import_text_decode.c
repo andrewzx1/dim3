@@ -95,7 +95,7 @@ bool textdecode_open(char *path,char p_piece_break)
 		// get file size
 		
 	if (stat(path,&sb)!=0) return(FALSE);
-	text_data_sz=sb.st_size;
+	text_data_sz=(int)sb.st_size;
 	
 		// open file
 		

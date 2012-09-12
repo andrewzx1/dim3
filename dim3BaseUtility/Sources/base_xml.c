@@ -230,7 +230,7 @@ bool xml_open_file(char *path)
 		// get file size
 		
 	if (stat(path,&sb)!=0) return(FALSE);
-	sz=sb.st_size;
+	sz=(int)sb.st_size;
 	
 		// open file
 		
