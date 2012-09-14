@@ -14,7 +14,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "26900ACF14F2044F008026D5"
-               BuildableName = "dim3Editor.app"
+               BuildableName = "dim3 Editor.app"
                BlueprintName = "dim3Editor"
                ReferencedContainer = "container:dim3Editor.xcodeproj">
             </BuildableReference>
@@ -32,7 +32,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "26900ACF14F2044F008026D5"
-            BuildableName = "dim3Editor.app"
+            BuildableName = "dim3 Editor.app"
             BlueprintName = "dim3Editor"
             ReferencedContainer = "container:dim3Editor.xcodeproj">
          </BuildableReference>
@@ -48,13 +48,13 @@
       debugDocumentVersioning = "YES"
       allowLocationSimulation = "YES">
       <PathRunnable
-         FilePath = "/Users/ggadwa/dim3/dim3Setup.app">
+         FilePath = "/Users/ggadwa/dim3/dim3 Editor.app">
       </PathRunnable>
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "26900ACF14F2044F008026D5"
-            BuildableName = "dim3Editor.app"
+            BuildableName = "dim3 Editor.app"
             BlueprintName = "dim3Editor"
             ReferencedContainer = "container:dim3Editor.xcodeproj">
          </BuildableReference>
@@ -72,7 +72,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "26900ACF14F2044F008026D5"
-            BuildableName = "dim3Editor.app"
+            BuildableName = "dim3 Editor.app"
             BlueprintName = "dim3Editor"
             ReferencedContainer = "container:dim3Editor.xcodeproj">
          </BuildableReference>

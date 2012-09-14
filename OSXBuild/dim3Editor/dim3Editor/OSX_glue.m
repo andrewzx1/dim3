@@ -182,6 +182,7 @@ void os_set_subtract_cursor(void)
 
 void os_menu_create(os_menu_item_type *os_menus)
 {
+// [[NSApp mainMenu] setAutoenablesItems:NO];
 }
 
 void os_menu_dispose(void)

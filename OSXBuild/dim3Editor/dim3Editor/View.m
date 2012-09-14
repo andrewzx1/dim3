@@ -22,19 +22,20 @@
 					NSOpenGLPFADepthSize,24,
 					0
 				};
+				
+	
+		// initialize application
+
+	if (!main_app_initialize()) {
+		[NSApp terminate:self];
+		return self;
+	}
 	
 		// init the view
 		
 	self=[super initWithFrame:frame];
     if (self==nil) return(nil);
-	
-		// startup the application
-	/* supergumba -- cocoa
-	if (!main_app_initialize()) {
-		[NSApp terminate:self];
-		return self;
-	}
-	*/
+
 		// openGL context
 		
 	NSOpenGLPixelFormat *pf=[[NSOpenGLPixelFormat alloc] initWithAttributes:pf_attrib]; 
@@ -44,7 +45,9 @@
 	
 	[pf release];
 	
-	self->k=0;
+		// initialize window
+		
+	main_wind_initialize();
     
     return self;
 }
@@ -53,7 +56,8 @@
 {
 		// shutdown
 		
-//	main_app_shutdown();		// supergumba -- cocoa
+	main_wind_shutdown();
+	main_app_shutdown();
 	
 		// dealloc the view
 		
@@ -83,22 +87,8 @@
 -(void)drawRect:(NSRect)dirtyRect
 {
 	[ctx update];
-	
-	k++;
-	switch (self->k%3) {
-		case 0:
-			glClearColor(1.0f,0.0f,0.0f,1.0f);
-			break;
-		case 1:
-			glClearColor(0.0f,1.0f,0.0f,1.0f);
-			break;
-		case 2:
-			glClearColor(0.0f,0.0f,1.0f,1.0f);
-			break;
-	}
-	glClear(GL_COLOR_BUFFER_BIT);
-	
-	[ctx flushBuffer];
+	fprintf(stdout,"GOT DRAW\n");
+//	main_wind_draw();
 }
 
 -(void)openGLFlush
