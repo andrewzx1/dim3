@@ -49,7 +49,6 @@ extern list_palette_type		file_palette,project_palette,map_palette,model_palette
 
 void main_wind_initialize(void)
 {
-fprintf(stdout,"GOT WINDOW INIT\n");
 		// initializations
 		
 	text_initialize();
@@ -83,7 +82,6 @@ fprintf(stdout,"GOT WINDOW INIT\n");
 
 void main_wind_shutdown(void)
 {
-fprintf(stdout,"GOT WINFOW SHUTDOWN\n");
 	view_shutdown();
 	
 	project_palette_shutdown();
