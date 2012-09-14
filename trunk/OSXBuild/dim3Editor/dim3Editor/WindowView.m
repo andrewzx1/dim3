@@ -2,7 +2,7 @@
 
 Module: dim3 Editor
 Author: Brian Barnes
- Usage: Obj-C Main
+ Usage: Obj-C App Delegate
 
 ***************************** License ********************************
 
@@ -25,10 +25,19 @@ and can be sold or given away.
  
 *********************************************************************/
 
-#import <Cocoa/Cocoa.h>
-#import "AppDelegate.h"
+#import "View"
 
+#include "glue.h"
 #include "interface.h"
+
+@implementation View
+
+/* =======================================================
+
+      Initialize and Shutdown View
+	        
+======================================================= */
+
 
 /* =======================================================
 
@@ -36,23 +45,15 @@ and can be sold or given away.
 	        
 ======================================================= */
 
-int main(int argc, char *argv[])
+-(void)drawRect:(NSRect)dirtyRect
 {
-	NSAutoreleasePool	*pool;
-	AppDelegate			*appDelegate;
-
-	pool=[[NSAutoreleasePool alloc] init];
-	
-	[NSApplication sharedApplication];
-	
-	main_app_initialize();
-	
-	appDelegate=[[AppDelegate alloc] init];
-	[NSApp run];
-	
-	main_app_shutdown();
-	
-	[pool release];
-	
-	return(0);
+	fprintf(stdout,"IN DRAW\n");
 }
+
+-(void)windowWillClose:(NSNotification *)notification
+{
+	os_application_quit();
+}
+
+
+@end

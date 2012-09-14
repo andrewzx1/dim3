@@ -7,12 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2653251F160149DF00061FB8 /* main_app.c in Sources */ = {isa = PBXBuildFile; fileRef = 2653251D160149DF00061FB8 /* main_app.c */; };
+		26532520160149DF00061FB8 /* main_window.c in Sources */ = {isa = PBXBuildFile; fileRef = 2653251E160149DF00061FB8 /* main_window.c */; };
 		2658269014F31CE200245C24 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2658268F14F31CE200245C24 /* OpenGL.framework */; };
 		2658269114F31D3A00245C24 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26900AD714F2044F008026D5 /* AppKit.framework */; };
-		265A6310150B28CC0063EEDD /* dim3Editor.app in Copy Application */ = {isa = PBXBuildFile; fileRef = 26900AD014F2044F008026D5 /* dim3Editor.app */; };
+		265A6310150B28CC0063EEDD /* dim3 Editor.app in Copy Application */ = {isa = PBXBuildFile; fileRef = 26900AD014F2044F008026D5 /* dim3 Editor.app */; };
 		265AB41C15FEEE99005CDBB0 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 265AB41815FEEE99005CDBB0 /* AppDelegate.m */; };
 		265AB41D15FEEE99005CDBB0 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 265AB41915FEEE99005CDBB0 /* main.m */; };
-		265AB41E15FEEE99005CDBB0 /* View.m in Sources */ = {isa = PBXBuildFile; fileRef = 265AB41B15FEEE99005CDBB0 /* View.m */; };
 		265AB42115FEEED9005CDBB0 /* OSX_glue.m in Sources */ = {isa = PBXBuildFile; fileRef = 265AB42015FEEED9005CDBB0 /* OSX_glue.m */; };
 		265AB42815FEEF39005CDBB0 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 265AB42615FEEF39005CDBB0 /* InfoPlist.strings */; };
 		265AB42B15FEEF3E005CDBB0 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 265AB42915FEEF3E005CDBB0 /* MainMenu.xib */; };
@@ -255,8 +256,6 @@
 		26F7E18A160046A400E739C4 /* model_palette_pose.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F7E17D160046A400E739C4 /* model_palette_pose.c */; };
 		26F7E18B160046A400E739C4 /* model_palette_texture.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F7E17E160046A400E739C4 /* model_palette_texture.c */; };
 		26F7E18C160046A400E739C4 /* model_palette.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F7E17F160046A400E739C4 /* model_palette.c */; };
-		26F7E18F160046BE00E739C4 /* main_app.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F7E18D160046BE00E739C4 /* main_app.c */; };
-		26F7E190160046BE00E739C4 /* main_window.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F7E18E160046BE00E739C4 /* main_window.c */; };
 		26F7E1951600472C00E739C4 /* map_menu.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F7E1921600472C00E739C4 /* map_menu.c */; };
 		26F7E1961600472C00E739C4 /* model_menu.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F7E1931600472C00E739C4 /* model_menu.c */; };
 		26F7E1971600472C00E739C4 /* project_menu.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F7E1941600472C00E739C4 /* project_menu.c */; };
@@ -269,7 +268,7 @@
 			dstPath = "$(SRCROOT)/../../../dim3/";
 			dstSubfolderSpec = 0;
 			files = (
-				265A6310150B28CC0063EEDD /* dim3Editor.app in Copy Application */,
+				265A6310150B28CC0063EEDD /* dim3 Editor.app in Copy Application */,
 			);
 			name = "Copy Application";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -277,18 +276,20 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		2653251D160149DF00061FB8 /* main_app.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = main_app.c; path = Sources/windows/main_app.c; sourceTree = "<group>"; };
+		2653251E160149DF00061FB8 /* main_window.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = main_window.c; path = Sources/windows/main_window.c; sourceTree = "<group>"; };
 		2658268F14F31CE200245C24 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/OpenGL.framework; sourceTree = DEVELOPER_DIR; };
 		265AB41715FEEE99005CDBB0 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = dim3Editor/AppDelegate.h; sourceTree = SOURCE_ROOT; };
 		265AB41815FEEE99005CDBB0 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = dim3Editor/AppDelegate.m; sourceTree = SOURCE_ROOT; };
 		265AB41915FEEE99005CDBB0 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = dim3Editor/main.m; sourceTree = SOURCE_ROOT; };
-		265AB41A15FEEE99005CDBB0 /* View.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = View.h; path = dim3Editor/View.h; sourceTree = SOURCE_ROOT; };
-		265AB41B15FEEE99005CDBB0 /* View.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = View.m; path = dim3Editor/View.m; sourceTree = SOURCE_ROOT; };
 		265AB42015FEEED9005CDBB0 /* OSX_glue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OSX_glue.m; path = dim3Editor/OSX_glue.m; sourceTree = SOURCE_ROOT; };
 		265AB42715FEEF39005CDBB0 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = dim3Editor/en.lproj/InfoPlist.strings; sourceTree = SOURCE_ROOT; };
 		265AB42A15FEEF3E005CDBB0 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = dim3Editor/en.lproj/MainMenu.xib; sourceTree = SOURCE_ROOT; };
-		26900AD014F2044F008026D5 /* dim3Editor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = dim3Editor.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		26900AD014F2044F008026D5 /* dim3 Editor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "dim3 Editor.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		26900AD414F2044F008026D5 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		26900AD714F2044F008026D5 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
+		26973C341602E78D00167FD2 /* View.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = View.h; path = dim3Editor/View.h; sourceTree = SOURCE_ROOT; };
+		26973C351602E78D00167FD2 /* View.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = View.m; path = dim3Editor/View.m; sourceTree = SOURCE_ROOT; };
 		26C1DF5D16004435007FDAC7 /* baseprivate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = baseprivate.h; path = Headers/baseprivate.h; sourceTree = "<group>"; };
 		26C1DF5E16004435007FDAC7 /* baseutility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = baseutility.h; path = Headers/baseutility.h; sourceTree = "<group>"; };
 		26C1DF5F16004435007FDAC7 /* dim3baseutility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = dim3baseutility.h; path = Headers/dim3baseutility.h; sourceTree = "<group>"; };
@@ -537,8 +538,6 @@
 		26F7E17D160046A400E739C4 /* model_palette_pose.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = model_palette_pose.c; path = Sources/palettes/model/model_palette_pose.c; sourceTree = "<group>"; };
 		26F7E17E160046A400E739C4 /* model_palette_texture.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = model_palette_texture.c; path = Sources/palettes/model/model_palette_texture.c; sourceTree = "<group>"; };
 		26F7E17F160046A400E739C4 /* model_palette.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = model_palette.c; path = Sources/palettes/model/model_palette.c; sourceTree = "<group>"; };
-		26F7E18D160046BE00E739C4 /* main_app.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = main_app.c; path = Code/main_app.c; sourceTree = "<group>"; };
-		26F7E18E160046BE00E739C4 /* main_window.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = main_window.c; path = Code/main_window.c; sourceTree = "<group>"; };
 		26F7E1921600472C00E739C4 /* map_menu.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = map_menu.c; path = Sources/menus/map_menu.c; sourceTree = "<group>"; };
 		26F7E1931600472C00E739C4 /* model_menu.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = model_menu.c; path = Sources/menus/model_menu.c; sourceTree = "<group>"; };
 		26F7E1941600472C00E739C4 /* project_menu.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = project_menu.c; path = Sources/menus/project_menu.c; sourceTree = "<group>"; };
@@ -748,7 +747,7 @@
 		26900AD114F2044F008026D5 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				26900AD014F2044F008026D5 /* dim3Editor.app */,
+				26900AD014F2044F008026D5 /* dim3 Editor.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -794,11 +793,11 @@
 		26900AF914F20597008026D5 /* OSXCode */ = {
 			isa = PBXGroup;
 			children = (
+				265AB41915FEEE99005CDBB0 /* main.m */,
 				265AB41715FEEE99005CDBB0 /* AppDelegate.h */,
 				265AB41815FEEE99005CDBB0 /* AppDelegate.m */,
-				265AB41915FEEE99005CDBB0 /* main.m */,
-				265AB41A15FEEE99005CDBB0 /* View.h */,
-				265AB41B15FEEE99005CDBB0 /* View.m */,
+				26973C341602E78D00167FD2 /* View.h */,
+				26973C351602E78D00167FD2 /* View.m */,
 				265AB42015FEEED9005CDBB0 /* OSX_glue.m */,
 			);
 			name = OSXCode;
@@ -835,8 +834,8 @@
 		26E4021C14F4B0270059C798 /* Windows */ = {
 			isa = PBXGroup;
 			children = (
-				26F7E18D160046BE00E739C4 /* main_app.c */,
-				26F7E18E160046BE00E739C4 /* main_window.c */,
+				2653251D160149DF00061FB8 /* main_app.c */,
+				2653251E160149DF00061FB8 /* main_window.c */,
 			);
 			name = Windows;
 			sourceTree = "<group>";
@@ -1150,7 +1149,7 @@
 			);
 			name = dim3Editor;
 			productName = dim3Setup;
-			productReference = 26900AD014F2044F008026D5 /* dim3Editor.app */;
+			productReference = 26900AD014F2044F008026D5 /* dim3 Editor.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -1197,7 +1196,6 @@
 			files = (
 				265AB41C15FEEE99005CDBB0 /* AppDelegate.m in Sources */,
 				265AB41D15FEEE99005CDBB0 /* main.m in Sources */,
-				265AB41E15FEEE99005CDBB0 /* View.m in Sources */,
 				265AB42115FEEED9005CDBB0 /* OSX_glue.m in Sources */,
 				26C1DF6216004440007FDAC7 /* bitmap_cocoa.m in Sources */,
 				26C1DF6316004440007FDAC7 /* file_cocoa.m in Sources */,
@@ -1435,11 +1433,11 @@
 				26F7E18A160046A400E739C4 /* model_palette_pose.c in Sources */,
 				26F7E18B160046A400E739C4 /* model_palette_texture.c in Sources */,
 				26F7E18C160046A400E739C4 /* model_palette.c in Sources */,
-				26F7E18F160046BE00E739C4 /* main_app.c in Sources */,
-				26F7E190160046BE00E739C4 /* main_window.c in Sources */,
 				26F7E1951600472C00E739C4 /* map_menu.c in Sources */,
 				26F7E1961600472C00E739C4 /* model_menu.c in Sources */,
 				26F7E1971600472C00E739C4 /* project_menu.c in Sources */,
+				2653251F160149DF00061FB8 /* main_app.c in Sources */,
+				26532520160149DF00061FB8 /* main_window.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1489,6 +1487,8 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CLANG_ENABLE_OBJC_ARC = NO;
+				CLANG_WARN_OBJCPP_ARC_ABI = NO;
 				COPY_PHASE_STRIP = NO;
 				DEPLOYMENT_POSTPROCESSING = YES;
 				GCC_DYNAMIC_NO_PIC = YES;
@@ -1515,7 +1515,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.5;
 				OTHER_LDFLAGS = "-lz";
-				PRODUCT_NAME = dim3Editor;
+				PRODUCT_NAME = "dim3 Editor";
 				SDKROOT = macosx10.7;
 				SKIP_INSTALL = NO;
 				STRIP_INSTALLED_PRODUCT = NO;

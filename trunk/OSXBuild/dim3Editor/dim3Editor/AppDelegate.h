@@ -1,10 +1,11 @@
 #import <Cocoa/Cocoa.h>
+#import "AppDelegate.h"
+#import "View.h"
 
 @interface AppDelegate : NSObject <NSApplicationDelegate>
 {
-	NSWindow	*window;
+	View				*view;
+	NSWindow			*window;
 }
-
-@property (assign) IBOutlet NSWindow *window;
 
 @end
