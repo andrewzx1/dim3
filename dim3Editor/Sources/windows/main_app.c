@@ -44,7 +44,6 @@ extern app_state_type			state;
 
 bool main_app_initialize(void)
 {
-	fprintf(stdout,"GOT APP INIT\n");
 	os_glue_start();
 	os_set_arrow_cursor();
 	
@@ -84,7 +83,6 @@ bool main_app_initialize(void)
 
 void main_app_shutdown(void)
 {
-	fprintf(stdout,"GOT APP SHUTDOWN\n");
 		// close interface and
 		// end glue
 		

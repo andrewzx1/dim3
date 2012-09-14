@@ -18,6 +18,7 @@
 		265AB42815FEEF39005CDBB0 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 265AB42615FEEF39005CDBB0 /* InfoPlist.strings */; };
 		265AB42B15FEEF3E005CDBB0 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 265AB42915FEEF3E005CDBB0 /* MainMenu.xib */; };
 		26900AD514F2044F008026D5 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26900AD414F2044F008026D5 /* Cocoa.framework */; };
+		26973C3E1602EB1600167FD2 /* View.m in Sources */ = {isa = PBXBuildFile; fileRef = 26973C351602E78D00167FD2 /* View.m */; };
 		26C1DF6216004440007FDAC7 /* bitmap_cocoa.m in Sources */ = {isa = PBXBuildFile; fileRef = 26C1DF6016004440007FDAC7 /* bitmap_cocoa.m */; };
 		26C1DF6316004440007FDAC7 /* file_cocoa.m in Sources */ = {isa = PBXBuildFile; fileRef = 26C1DF6116004440007FDAC7 /* file_cocoa.m */; };
 		26C1DF871600444C007FDAC7 /* base_bitmap_main.c in Sources */ = {isa = PBXBuildFile; fileRef = 26C1DF641600444C007FDAC7 /* base_bitmap_main.c */; };
@@ -1438,6 +1439,7 @@
 				26F7E1971600472C00E739C4 /* project_menu.c in Sources */,
 				2653251F160149DF00061FB8 /* main_app.c in Sources */,
 				26532520160149DF00061FB8 /* main_window.c in Sources */,
+				26973C3E1602EB1600167FD2 /* View.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
