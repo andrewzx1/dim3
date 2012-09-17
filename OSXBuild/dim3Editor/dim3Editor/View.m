@@ -25,6 +25,7 @@ and can be sold or given away.
  
 *********************************************************************/
 
+#import "AppDelegate.h"
 #import "View.h"
 
 #include "glue.h"
@@ -68,22 +69,15 @@ and can be sold or given away.
 	
 		// setup window
 		
+	main_wind_gl_setup();
 	main_wind_initialize();
-	
-	self->k=0;
     
     return self;
 }
 
--(void)dealloc
+-(void)windowWillClose:(NSNotification *)notification
 {
-		// shutdown the window
-		
 	main_wind_shutdown();
-	
-		// dealloc the view
-		
-    [super dealloc];
 }
 
 /* =======================================================
@@ -94,7 +88,7 @@ and can be sold or given away.
 
 -(BOOL)isOpaque
 {
-	return YES;
+	return(YES);
 }
 
 -(void)lockFocus
@@ -109,22 +103,7 @@ and can be sold or given away.
 -(void)drawRect:(NSRect)dirtyRect
 {
 	[ctx update];
-	
-	k++;
-	switch (self->k%3) {
-		case 0:
-			glClearColor(1.0f,0.0f,0.0f,1.0f);
-			break;
-		case 1:
-			glClearColor(0.0f,1.0f,0.0f,1.0f);
-			break;
-		case 2:
-			glClearColor(0.0f,0.0f,1.0f,1.0f);
-			break;
-	}
-	glClear(GL_COLOR_BUFFER_BIT);
-	
-	[ctx flushBuffer];
+	main_wind_draw();
 }
 
 -(void)openGLFlush
@@ -140,48 +119,108 @@ and can be sold or given away.
 
 -(BOOL)acceptsFirstResponder
 {
-    return YES;
+    return(YES);
 }
 
--(void)mouseDown:(NSEvent*)theEvent
+-(BOOL)acceptsMouseMovedEvents
 {
-	[self display];
-
+	return(YES);
 }
 
--(void)keyDown:(NSEvent *)theEvent
+-(void)mouseDown:(NSEvent*)event
+{
+	bool			double_click;
+	d3pnt			pnt;
+	NSPoint			wnd_pnt;
+	
+	wnd_pnt=[self convertPoint:[event locationInWindow] fromView:nil];
+	
+	pnt.x=(int)wnd_pnt.x;
+	pnt.y=(int)([self frame].size.height-wnd_pnt.y);
+	double_click=([event clickCount]==2);
+	
+	main_wind_click(&pnt,double_click);
+}
+
+-(void)mouseMoved:(NSEvent*)event
+{
+	d3pnt			pnt;
+	NSPoint			wnd_pnt;
+	
+	wnd_pnt=[self convertPoint:[event locationInWindow] fromView:nil];
+	
+	pnt.x=(int)wnd_pnt.x;
+	pnt.y=(int)([self frame].size.height-wnd_pnt.y);
+
+	main_wind_mouse_move(&pnt);
+}
+
+-(void)scrollWheel:(NSEvent*)event
+{
+	d3pnt			pnt;
+	NSPoint			wnd_pnt;
+	
+	wnd_pnt=[self convertPoint:[event locationInWindow] fromView:nil];
+	
+	pnt.x=(int)wnd_pnt.x;
+	pnt.y=(int)([self frame].size.height-wnd_pnt.y);
+
+	main_wind_scroll_wheel(&pnt,-(int)[event deltaY]);
+}
+
+-(void)keyDown:(NSEvent*)event
 {
 	int				key;
 	NSString		*chars;
 	
-	chars=[theEvent charactersIgnoringModifiers];
+		// get the key
+		
+	chars=[event charactersIgnoringModifiers];
 	if ([chars length]!=1) return;
 	
+		// translate some keys
+		
 	key=[chars characterAtIndex:0];
 	
-	[self display];
+	switch (key) {
+		case NSUpArrowFunctionKey:
+			key=D3_KEY_UP;
+			break;
+		case NSDownArrowFunctionKey:
+			key=D3_KEY_DOWN;
+			break;
+		case NSLeftArrowFunctionKey:
+			key=D3_KEY_LEFT;
+			break;
+		case NSRightArrowFunctionKey:
+			key=D3_KEY_RIGHT;
+			break;
+	}
 	
-	/*
-	[theEvent modifierFlags]&
-	enum {
-    NSAlphaShiftKeyMask = 1 << 16,
-    NSShiftKeyMask      = 1 << 17,
-    NSControlKeyMask    = 1 << 18,
-    NSAlternateKeyMask  = 1 << 19,
-    NSCommandKeyMask    = 1 << 20,
-    NSNumericPadKeyMask = 1 << 21,
-    NSHelpKeyMask       = 1 << 22,
-    NSFunctionKeyMask   = 1 << 23,
-    NSDeviceIndependentModifierFlagsMask = 0xffff0000U
-};
-*/
+		// send main key through
+		
+	main_wind_key((char)key);
 	
-	// NSLeftArrowFunctionKey
-	// need to call glue here
-	
-//	[super keyDown:theEvent];
+		// always check cursor changes
+		
+	main_wind_cursor();
 }
 
+-(void)keyUp:(NSEvent*)event
+{
+	main_wind_cursor();
+}
 
+-(void)flagsChanged:(NSEvent *)event
+{
+	main_wind_cursor();
+}
+
+-(void)cursorUpdate:(NSEvent*)event
+{
+	if (main_wind_cursor()) return;
+	
+	[super cursorUpdate:event];
+}
 
 @end

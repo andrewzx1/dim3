@@ -36,14 +36,21 @@ and can be sold or given away.
 	        
 ======================================================= */
 
--(id)init
+-(void)applicationDidFinishLaunching:(NSNotification*)aNotification
 {
 	int				wid,high;
 	NSUInteger		styleMask;
 	NSRect			deskTopRect,frame,windRect;
 	
+		// build the main menu
+		
+	[NSBundle loadNibNamed:@"MainMenu" owner:NSApp];
+	[[NSApp mainMenu] setAutoenablesItems:NO];
+	
+	main_wind_menu_create();
+	
 		// get desktop window
-				
+
 	deskTopRect=[[NSScreen mainScreen] visibleFrame];
 	wid=deskTopRect.size.width;
 	high=deskTopRect.size.height;
@@ -54,36 +61,48 @@ and can be sold or given away.
 	styleMask=NSTitledWindowMask|NSClosableWindowMask|NSMiniaturizableWindowMask|NSResizableWindowMask;
 	windRect=[NSWindow contentRectForFrameRect:frame styleMask:styleMask];
 	
-	window=[[[NSWindow alloc] initWithContentRect:windRect styleMask:styleMask backing:NSBackingStoreBuffered defer:false] autorelease];
+	window=[[NSWindow alloc] initWithContentRect:windRect styleMask:styleMask backing:NSBackingStoreBuffered defer:false];
 	[window setTitle:@"dim3 Editor"];
 	
 		// create the view
 	
-	view=[[[View alloc] initWithFrame:windRect] autorelease];
+	view=[[View alloc] initWithFrame:windRect];
 	[window setContentView:view];
 	[window setDelegate:view];
 	
 		// display the window
 
 	[window makeKeyAndOrderFront:NSApp];
-	
-	return(self);
 }
 
--(void)dealloc
+-(NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication*)sender
+{
+	if (!main_app_quit()) return(NSTerminateCancel);
+	
+	return(NSTerminateNow);
+}
+
+-(void)applicationWillTerminate:(NSNotification*)aNotification
 {
 	[window close];
-	[super dealloc];
+	[window release];
+	[view release];
+	
+	main_app_shutdown();
 }
 
 /* =======================================================
 
-      Application Launched Message
+      Menu Commands
 	        
 ======================================================= */
 
--(void)applicationDidFinishLaunching:(NSNotification *)aNotification
+-(void)menuCommand:(id)sender
 {
+	NSMenuItem		*item;
+	
+	item=(NSMenuItem*)sender;
+	main_wind_menu_event_run([item tag]);
 }
 
 @end

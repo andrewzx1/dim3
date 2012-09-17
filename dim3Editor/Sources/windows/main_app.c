@@ -90,3 +90,27 @@ void main_app_shutdown(void)
 	os_glue_end();
 }
 
+/* =======================================================
+
+      Quit
+	        
+======================================================= */
+
+bool main_app_quit(void)
+{
+	switch (state.mode) {
+
+		case app_mode_project:
+			return(project_menu_quit_save());
+			
+		case app_mode_map:
+			return(file_close_map());
+
+		case app_mode_model:
+			return(model_file_close());
+			
+	}
+	
+	return(TRUE);
+}
+

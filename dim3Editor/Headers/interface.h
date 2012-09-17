@@ -31,6 +31,7 @@ and can be sold or given away.
 
 extern bool main_app_initialize(void);
 extern void main_app_shutdown(void);
+extern bool main_app_quit(void);
 
 //
 // main window

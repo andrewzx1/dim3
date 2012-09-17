@@ -350,10 +350,10 @@ void os_menu_enable_item(int menu_idx,int item_idx,bool enable)
 
 	if (item_idx==0) {
 		if (enable) {
-			EnableMenuItem(GetMenu(wnd),(menu_idx-129),MF_BYPOSITION|MF_ENABLED);
+			EnableMenuItem(GetMenu(wnd),menu_idx,MF_BYPOSITION|MF_ENABLED);
 		}
 		else {
-			EnableMenuItem(GetMenu(wnd),(menu_idx-129),MF_BYPOSITION|MF_GRAYED);
+			EnableMenuItem(GetMenu(wnd),menu_idx,MF_BYPOSITION|MF_GRAYED);
 		}
 		DrawMenuBar(wnd);
 		return;
@@ -361,7 +361,7 @@ void os_menu_enable_item(int menu_idx,int item_idx,bool enable)
 
 		// enabling single item
 
-	menu=GetSubMenu(GetMenu(wnd),(menu_idx-129));
+	menu=GetSubMenu(GetMenu(wnd),menu_idx);
 
 	if (enable) {
 		EnableMenuItem(menu,(item_idx-1),MF_BYPOSITION|MF_ENABLED);
@@ -375,7 +375,7 @@ void os_menu_check_item(int menu_idx,int item_idx,bool check)
 {
 	HMENU			menu;
 
-	menu=GetSubMenu(GetMenu(wnd),(menu_idx-129));
+	menu=GetSubMenu(GetMenu(wnd),menu_idx);
 
 	if (check) {
 		CheckMenuItem(menu,(item_idx-1),MF_BYPOSITION|MF_CHECKED);

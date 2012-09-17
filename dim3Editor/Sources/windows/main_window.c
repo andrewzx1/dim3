@@ -766,7 +766,7 @@ void main_wind_key_model(char ch)
 {
 		// esc key deselects
 		
-	if (ch==0x1B) {
+	if (ch==D3_KEY_ESC) {
 		model_vertex_mask_clear_sel(state.model.cur_mesh_idx);
 		main_wind_draw();
 		return;

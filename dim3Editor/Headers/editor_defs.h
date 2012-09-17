@@ -47,8 +47,7 @@ and can be sold or given away.
 // project menus
 //
 
-#define project_menu_apple						128
-#define project_menu_file						129
+#define project_menu_file						0
 
 #define project_menu_item_Save					5100
 #define project_menu_item_Quit					5101
@@ -57,13 +56,12 @@ and can be sold or given away.
 // map menus
 //
 
-#define map_menu_apple							128
-#define map_menu_file							129
-#define map_menu_edit							130
-#define map_menu_view							131
-#define map_menu_map							132
-#define map_menu_mesh							133
-#define map_menu_polygon						134
+#define map_menu_file							0
+#define map_menu_edit							1
+#define map_menu_view							2
+#define map_menu_map							3
+#define map_menu_mesh							4
+#define map_menu_polygon						5
 
 #define map_menu_item_FileSave					5100
 #define map_menu_item_FileQuit					5101
@@ -145,16 +143,15 @@ and can be sold or given away.
 // model menus
 //
 
-#define model_menu_apple						128
-#define model_menu_file							129
-#define model_menu_edit							130
-#define model_menu_model						131
-#define model_menu_view							132
-#define model_menu_mesh							133
-#define model_menu_vertex						134
-#define model_menu_bone							135
-#define model_menu_pose							136
-#define model_menu_animate						137
+#define model_menu_file							0
+#define model_menu_edit							1
+#define model_menu_model						2
+#define model_menu_view							3
+#define model_menu_mesh							4
+#define model_menu_vertex						5
+#define model_menu_bone							6
+#define model_menu_pose							7
+#define model_menu_animate						8
 
 #define model_menu_item_FileSave				5100
 #define model_menu_item_FileQuit				5101
