@@ -50,15 +50,14 @@ void map_file_reset_state(void)
 		// change the palette opens
 
 	if (state.map.map_open) {
-		os_set_title_window(state.map.map_file_name);
-
 		file_palette.open=FALSE;
 		map_palette.open=TRUE;
 		map_palette_reset();
 	}
-	else {
-		os_set_title_window("dim3 Editor");
-	}
+
+		// settings
+
+	state.map.texture_edit_idx=-1;
 
         // no selection
         

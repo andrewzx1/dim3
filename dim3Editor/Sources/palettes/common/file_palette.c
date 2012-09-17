@@ -183,6 +183,7 @@ void file_palette_click(d3pnt *pnt,bool double_click)
 
 	if (file_palette.item_pane.click.id==kPropertyProject) {
 		main_wind_switch_mode(app_mode_project);
+		main_wind_set_title();
 		file_palette_fill();
 		main_wind_draw();
 		return;
@@ -192,6 +193,7 @@ void file_palette_click(d3pnt *pnt,bool double_click)
 
 	if (file_palette.item_pane.click.id==kPropertyMapAdd) {
 		if (main_wind_switch_mode(app_mode_map)) file_new_map();
+		main_wind_set_title();
 		file_palette_fill();
 		main_wind_draw();
 		return;
@@ -208,6 +210,7 @@ void file_palette_click(d3pnt *pnt,bool double_click)
 			file_open_map(file_name);
 		}
 
+		main_wind_set_title();
 		file_palette_fill();
 		main_wind_draw();
 		return;
@@ -216,11 +219,8 @@ void file_palette_click(d3pnt *pnt,bool double_click)
 		// add model
 
 	if (file_palette.item_pane.click.id==kPropertyModelAdd) {
-		
-		if (main_wind_switch_mode(app_mode_model)) {
-			model_file_new();
-		}
-
+		if (main_wind_switch_mode(app_mode_model)) model_file_new();
+		main_wind_set_title();
 		file_palette_fill();
 		main_wind_draw();
 		return;
@@ -239,6 +239,7 @@ void file_palette_click(d3pnt *pnt,bool double_click)
 			model_file_open(file_name);
 		}
 
+		main_wind_set_title();
 		file_palette_fill();
 		main_wind_draw();
 		return;

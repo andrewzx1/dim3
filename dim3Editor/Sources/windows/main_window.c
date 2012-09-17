@@ -65,7 +65,14 @@ void main_wind_initialize(void)
 
 	tool_tip_initialize();
 
+		// map setup
+
 	view_initialize();
+
+		// model setup
+
+	model_vertex_mask_initialize();
+	model_poly_mask_initialize();
    
         // misc setup
 
@@ -78,11 +85,18 @@ void main_wind_initialize(void)
 	state.map.select_add=FALSE;
 	
 	state.map.drag_handle_idx=-1;
+
+		// set title
+
+	main_wind_set_title();
 }
 
 void main_wind_shutdown(void)
 {
 	view_shutdown();
+
+	model_vertex_mask_shutdown();
+	model_poly_mask_shutdown();
 	
 	project_palette_shutdown();
 	map_palette_shutdown();
@@ -180,6 +194,35 @@ bool main_wind_menu_event_run(int cmd)
 	}
 	
 	return(FALSE);
+}
+
+/* =======================================================
+
+      Window Title
+      
+======================================================= */
+
+void main_wind_set_title(void)
+{
+	char			title[256];
+
+	title[0]=0x0;
+
+	switch (state.mode) {
+
+		case app_mode_map:
+			sprintf(title,"dim3Editor - %s - %s",iface.project.name,state.map.map_file_name);
+			break;
+			
+		case app_mode_model:
+			sprintf(title,"dim3Editor - %s - %s",iface.project.name,state.model.model_file_name);
+			break;
+
+	}
+
+	if (title[0]==0x0) sprintf(title,"dim3Editor - %s",iface.project.name);
+
+	os_set_title_window(title);
 }
 
 /* =======================================================
@@ -310,7 +353,7 @@ void main_wind_draw_map(void)
 
 void main_wind_draw_model(void)
 {
-	if (state.map.texture_edit_idx==-1) {
+	if (state.model.texture_edit_idx==-1) {
 		model_view_draw();
 	}
 	else {
