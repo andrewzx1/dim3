@@ -107,7 +107,7 @@ LRESULT CALLBACK editor_wnd_proc(HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam)
 			break;
 
 		case WM_CLOSE:
-			if (!file_close_map()) return(0);
+			if (!main_app_quit()) return(0);
 			os_application_quit();
 			break;
 

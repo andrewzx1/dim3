@@ -53,17 +53,14 @@ void model_file_reset_state(void)
 		// change the palette opens
 
 	if (state.model.model_open) {
-		os_set_title_window(state.model.model_file_name);
-
 		file_palette.open=FALSE;
 		model_palette.open=TRUE;
 		model_palette_reset();
 	}
-	else {
-		os_set_title_window("dim3 Editor");
-	}
-	
+
 		// setup state
+
+	state.model.texture_edit_idx=-1;
 
 	state.model.texture=TRUE;
 	state.model.mesh=FALSE;
@@ -219,7 +216,7 @@ bool model_file_open(char *file_name)
 	os_set_wait_cursor();
 	
 	os_select_window();
-   
+ 
 	if (!model_open(&model,file_name,TRUE)) {
 		os_set_arrow_cursor();
 		os_dialog_alert("Animator","There was a problem loading the model file.");

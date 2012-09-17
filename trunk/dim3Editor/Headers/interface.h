@@ -43,6 +43,7 @@ extern void main_wind_menu_create(void);
 extern void main_wind_menu_dispose(void);
 extern void main_wind_menu_update(void);
 extern bool main_wind_menu_event_run(int cmd);
+extern void main_wind_set_title(void);
 extern bool main_wind_switch_mode(int mode);
 extern void main_wind_gl_setup(void);
 extern void main_wind_draw(void);
@@ -68,6 +69,7 @@ extern bool setup_xml_write(void);
 extern void project_menu_create(void);
 extern void project_menu_dispose(void);
 extern void project_menu_update(void);
+extern bool project_menu_quit_save(void);
 extern bool project_menu_event_run(int cmd);
 
 extern void map_menu_create(void);
