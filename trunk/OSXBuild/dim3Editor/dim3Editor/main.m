@@ -48,6 +48,8 @@ int main(int argc, char *argv[])
 	main_app_initialize();
 	
 	appDelegate=[[AppDelegate alloc] init];
+	[NSApp setDelegate:appDelegate];
+
 	[NSApp run];
 	
 	main_app_shutdown();

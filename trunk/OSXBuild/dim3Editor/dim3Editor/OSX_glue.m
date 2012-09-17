@@ -27,10 +27,16 @@ and can be sold or given away.
 
 #import "AppDelegate.h"
 #import "View.h"
+#import "DialogView.h"
 
 #include "glue.h"
 
+int								os_menu_add_count;
 char							os_load_file_ext[32];
+
+NSWindow						*diagWindow;
+DialogView						*diagView;
+NSControl						*diagControls[64];
 
 /* =======================================================
 
@@ -40,6 +46,7 @@ char							os_load_file_ext[32];
 
 void os_glue_start(void)
 {
+	os_menu_add_count=0;
 }
 
 void os_glue_end(void)
@@ -70,13 +77,13 @@ void os_create_directory(char *path)
 
 void os_application_quit(void)
 {
-	[NSApp terminate:nil];
+	[NSApp stop:nil];
 }
 
 inline NSWindow* os_cocoa_get_window()
 {
 #ifndef D3_OS_IPHONE
-	return([[NSApp delegate] window]);
+	return(((AppDelegate*)[NSApp delegate])->window);
 #else
 	return([[UIApplication sharedApplication].delegate window]);
 #endif
@@ -180,13 +187,132 @@ void os_set_subtract_cursor(void)
       
 ======================================================= */
 
+void os_menu_create_single_menu(char *name,NSMenu *menu)
+{
+	NSString			*menu_name;
+	NSMenuItem			*mbar_item;
+	
+		// create menu item to add to menu bar
+		
+	menu_name=[[NSString alloc] initWithUTF8String:name];
+	mbar_item=[[NSMenuItem alloc] initWithTitle:menu_name action:NULL keyEquivalent:@""];
+	[menu_name release];
+	
+		// add to menu bar
+		
+	[mbar_item setSubmenu:menu];
+	[[NSApp mainMenu] addItem:mbar_item];
+	[mbar_item release];
+	
+	os_menu_add_count++;
+}
+
 void os_menu_create(os_menu_item_type *os_menus)
 {
-// [[NSApp mainMenu] setAutoenablesItems:NO];
+	char					c,last_menu_name[32],key_str[4];
+	os_menu_item_type		*menu;
+	NSString				*menu_name,*item_name,*key_equiv;
+	NSMenu					*ns_menu;
+	NSMenuItem				*ns_item;
+
+		// create the menu
+
+	menu=os_menus;
+	
+	ns_menu=NULL;
+	last_menu_name[0]=0x0;
+	
+	os_menu_add_count=0;
+
+	while (TRUE) {
+		if (menu->menu_name[0]==0x0) break;
+
+			// switching to a new menu
+
+		if (strcmp(menu->menu_name,last_menu_name)!=0) {
+			if (ns_menu!=NULL) {
+				os_menu_create_single_menu(last_menu_name,ns_menu);
+				[ns_menu release];
+			}
+			
+			strcpy(last_menu_name,menu->menu_name);
+			
+			menu_name=[[NSString alloc] initWithUTF8String:last_menu_name];
+			ns_menu=[[NSMenu alloc] initWithTitle:menu_name];
+			[menu_name release];
+			
+			[ns_menu setAutoenablesItems:NO];
+		}
+
+			// add item
+			// if menu doesn't exist, create it
+			
+		if (menu->item_name[0]!=0x0) {
+		
+			item_name=[[NSString alloc] initWithUTF8String:menu->item_name];
+			
+			c=menu->key;
+			if ((c>='A') && (c<='Z')) c+=('a'-'A');
+
+			key_str[0]=c;		// will be 0x0 if no key
+			key_str[1]=0x0;
+			key_equiv=[[NSString alloc] initWithUTF8String:key_str];
+			
+			ns_item=[[NSMenuItem alloc] initWithTitle:item_name action:@selector(menuCommand:) keyEquivalent:key_equiv];
+			
+			[key_equiv release];
+			[item_name release];
+			
+			switch (menu->key_type) {
+
+				case os_menu_key_cmd:
+					[ns_item setKeyEquivalentModifierMask:NSCommandKeyMask];
+					break;
+
+				case os_menu_key_cmd_opt:
+					[ns_item setKeyEquivalentModifierMask:NSCommandKeyMask|NSAlternateKeyMask];
+					break;
+
+				case os_menu_key_cmd_shift:
+					[ns_item setKeyEquivalentModifierMask:NSCommandKeyMask|NSShiftKeyMask];
+					break;
+
+			}
+			
+			[ns_item setTarget:[NSApp delegate]];
+			[ns_item setTag:menu->id];
+			[ns_item setEnabled:YES];
+			
+			[ns_menu addItem:ns_item];
+			[ns_item release];
+		}
+		else {
+			[ns_menu addItem:[NSMenuItem separatorItem]];
+		}
+
+			// next menu item
+
+		menu++;
+	}
+
+	if (ns_menu!=NULL) {
+		os_menu_create_single_menu(last_menu_name,ns_menu);
+		[ns_menu release];
+	}
 }
 
 void os_menu_dispose(void)
 {
+	int			n;
+	NSMenu		*main_menu;
+	
+	main_menu=[NSApp mainMenu];
+
+	for (n=0;n!=os_menu_add_count;n++) {
+		[main_menu removeItemAtIndex:1];
+	}
+	
+	os_menu_add_count=0;
 }
 
 void os_menu_enable_item(int menu_idx,int item_idx,bool enable)
@@ -194,9 +320,24 @@ void os_menu_enable_item(int menu_idx,int item_idx,bool enable)
 	NSMenu		*main_menu,*sub_menu;
 	NSMenuItem	*item;
 	
+		// get over app menu
+		
+	menu_idx++;
+	
+		// enable entire menu
+		
+	if (item_idx==0) {
+		main_menu=[NSApp mainMenu];
+		item=[main_menu itemAtIndex:menu_idx];
+		[item setEnabled:enable];
+		return;
+	}
+	
+		// enable single item
+	
 	main_menu=[NSApp mainMenu];
 	sub_menu=[[main_menu itemAtIndex:menu_idx] submenu];
-	item=[sub_menu itemAtIndex:item_idx];
+	item=[sub_menu itemAtIndex:(item_idx-1)];
 	
 	[item setEnabled:enable];
 }
@@ -206,16 +347,19 @@ void os_menu_check_item(int menu_idx,int item_idx,bool check)
 	NSMenu		*main_menu,*sub_menu;
 	NSMenuItem	*item;
 	
+		// get over app menu
+		
+	menu_idx++;
+	
+		// get the item
+	
 	main_menu=[NSApp mainMenu];
 	sub_menu=[[main_menu itemAtIndex:menu_idx] submenu];
-	item=[sub_menu itemAtIndex:item_idx];
+	item=[sub_menu itemAtIndex:(item_idx-1)];
 	
-	if (check) {
-		[item setState:NSOnState];
-	}
-	else {
-		[item setState:NSOffState];
-	}
+		// check item
+		
+	[item setState:(check?NSOnState:NSOffState)];
 }
 
 /* =======================================================
@@ -226,40 +370,27 @@ void os_menu_check_item(int menu_idx,int item_idx,bool check)
 
 bool os_key_space_down(void)
 {
-/*
-	KeyMap			map;
-	unsigned char	*c;
-	
-	GetKeys(map);
-	c=(unsigned char*)map;
-	
-	return((c[6]&0x02)!=0);
-	*/
-	return(FALSE);
+	return(CGEventSourceKeyState(kCGEventSourceStateCombinedSessionState,kVK_Space));
 }
 
 bool os_key_option_down(void)
 {
-//	return((GetCurrentEventKeyModifiers()&optionKey)!=0);
-	return(FALSE);
+	return(CGEventSourceKeyState(kCGEventSourceStateCombinedSessionState,kVK_Option));
 }
 
 bool os_key_control_down(void)
 {
-//	return((GetCurrentEventKeyModifiers()&controlKey)!=0);
-	return(FALSE);
+	return(CGEventSourceKeyState(kCGEventSourceStateCombinedSessionState,kVK_Control));
 }
 
 bool os_key_command_down(void)
 {
-//	return((GetCurrentEventKeyModifiers()&cmdKey)!=0);
-	return(FALSE);
+	return(CGEventSourceKeyState(kCGEventSourceStateCombinedSessionState,kVK_Command));
 }
 
 bool os_key_shift_down(void)
 {
-//	return(((GetCurrentEventKeyModifiers()&shiftKey)!=0)||((GetCurrentEventKeyModifiers()&alphaLock)!=0));
-	return(FALSE);
+	return(CGEventSourceKeyState(kCGEventSourceStateCombinedSessionState,kVK_Shift));
 }
 
 /* =======================================================
@@ -270,43 +401,46 @@ bool os_key_shift_down(void)
 
 void os_get_cursor(d3pnt *pnt)
 {
-/*
-	Point			ui_pt;
+	NSWindow		*wnd;
+	NSView			*view;
+	NSPoint			wnd_pnt;
 	
-	GetMouse(&ui_pt);
-	GlobalToLocal(&ui_pt);
+	wnd=os_cocoa_get_window();
+	view=os_cocoa_get_view();
+	
+	wnd_pnt=[view convertPoint:[wnd mouseLocationOutsideOfEventStream] fromView:nil];
 
-	pnt->x=ui_pt.h;
-	pnt->y=ui_pt.v;
-	*/
+	pnt->x=(int)wnd_pnt.x;
+	pnt->y=(int)([view frame].size.height-wnd_pnt.y);
 }
 
 bool os_button_down(void)
 {
-//	return(Button());
-	return(FALSE);
+	return(([NSEvent pressedMouseButtons]&0x1)!=0x0);
 }
 
 bool os_track_mouse_location(d3pnt *pnt,d3rect *offset_box)
 {
-/*
-	Point					ui_pt;
-	MouseTrackingResult		track;
+	NSWindow		*wnd;
+	NSView			*view;
+	NSEvent			*event;
+	NSPoint			wnd_pnt;
+	
+	wnd=os_cocoa_get_window();
+	view=os_cocoa_get_view();
+	
+	event=[wnd nextEventMatchingMask:NSLeftMouseUpMask|NSLeftMouseDraggedMask];
+	wnd_pnt=[view convertPoint:[event locationInWindow] fromView:nil];
+	
+	pnt->x=(int)wnd_pnt.x;
+	pnt->y=(int)([view frame].size.height-wnd_pnt.y);
 
-	TrackMouseLocation(NULL,&ui_pt,&track);
-	
-	if (offset_box==NULL) {
-		pnt->x=ui_pt.h;
-		pnt->y=ui_pt.v;
-	}
-	else {
-		pnt->x=ui_pt.h-offset_box->lx;
-		pnt->y=ui_pt.v-offset_box->ty;
+	if (offset_box!=NULL) {
+		pnt->x-=offset_box->lx;
+		pnt->y-=offset_box->ty;
 	}
 	
-	return(track==kMouseTrackingMouseReleased);
-	*/
-	return(FALSE);
+	return([event type]==NSLeftMouseUp);
 }
 
 /* =======================================================
@@ -467,6 +601,18 @@ bool os_load_file(char *title,char *path,char *ext)
 void os_pick_color(d3col *col)
 {
 /*
+	NSColorPanel		*colPanel;
+	
+	colPanel=[NSColorPanel sharedColorPanel];
+	[colPanel makeKeyAndOrderFront:NSApp];
+	
+	while (TRUE) {
+	
+		event=[wnd nextEventMatchingMask:NSLeftMouseUpMask|NSLeftMouseDraggedMask];
+	*/
+	
+
+/*
 	RGBColor		color;
 	Point			pt;
 	
@@ -515,7 +661,92 @@ bool os_launch_process(char *path,bool text_editor)
 
 bool os_dialog_run(char *title,int wid,int high,os_dialog_ctrl_type *ctrls,void *callback)
 {
-	return(FALSE);
+	int						idx,deskWid,deskHigh;
+	NSUInteger				styleMask;
+	NSString				*nsTitle;
+	NSRect					deskTopRect,frame,windRect;
+	os_dialog_ctrl_type		*ctrl;
+	NSButton	*btn;		// supergumba
+	
+		// get desktop window
+
+	deskTopRect=[[NSScreen mainScreen] visibleFrame];
+	deskWid=deskTopRect.size.width;
+	deskHigh=deskTopRect.size.height;
+	
+		// create the dialog window
+	
+	frame=NSMakeRect(((deskWid-wid)>>1),(high-((deskHigh-high)>>1)),wid,high);
+	styleMask=NSTitledWindowMask;
+	windRect=[NSWindow contentRectForFrameRect:frame styleMask:styleMask];
+	
+	diagWindow=[[NSWindow alloc] initWithContentRect:windRect styleMask:styleMask backing:NSBackingStoreBuffered defer:false];
+
+	nsTitle=[[NSString alloc] initWithUTF8String:title];
+	[diagWindow setTitle:nsTitle];
+	[nsTitle release];
+	
+		// create the view
+	
+	diagView=[[DialogView alloc] initWithFrame:windRect];
+	[diagWindow setContentView:diagView];
+	[diagWindow setDelegate:diagView];
+	
+		// get high from content view
+		
+	high=(int)[diagView frame].size.height;
+	
+		// add the controls
+		
+	idx=0;
+	
+	while (TRUE) {
+		ctrl=&ctrls[idx];
+		if (ctrl->type==-1) break;
+		
+		frame=NSMakeRect(ctrl->x,(high-ctrl->y),ctrl->wid,ctrl->high);
+		nsTitle=[[NSString alloc] initWithUTF8String:ctrl->str];
+
+		switch (ctrl->type) {
+
+			case os_dialog_ctrl_type_button:
+			case os_dialog_ctrl_type_default_button:
+				btn=[[NSButton alloc] initWithFrame:frame];
+				[[diagWindow contentView] addSubview:btn];
+				[btn setTitle:nsTitle];
+				[btn setButtonType:NSMomentaryLightButton];
+				[btn setBezelStyle:NSRoundedBezelStyle];
+				
+				/* supergumba
+					[my setTarget:self];
+					[my setAction:@selector(invisible)];
+				*/
+				
+				if (ctrl->type==os_dialog_ctrl_type_default_button) [diagWindow setDefaultButtonCell:[btn cell]];
+				
+				diagControls[idx]=btn;
+				break;
+		
+		}
+		
+		[nsTitle release];
+		
+		idx++;
+	}
+	
+		// display the window
+
+	[diagWindow makeKeyAndOrderFront:NSApp];
+	
+		// run the modal loop
+		
+		/*
+		modalSession=[NSApp beginModalSessionForWindow:conversionWindow];
+[NSApp runModalForWindow:conversionWindow];
+	[NSApp endModalSession:session];
+*/
+
+	return(TRUE);
 }
 
 void os_dialog_close(bool ok)
