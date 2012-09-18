@@ -135,7 +135,7 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\dim3Common\Headers\win32_os_defs.h"
+					RelativePath="..\Common\Headers\win32_os_defs.h"
 					>
 				</File>
 			</Filter>
@@ -1123,7 +1123,7 @@
 					>
 				</File>
 				<File
-					RelativePath="..\Common\Code\win32_glue.c"
+					RelativePath=".\win32Code\win32_glue.c"
 					>
 				</File>
 				<File
