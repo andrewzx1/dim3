@@ -84,9 +84,10 @@ and can be sold or given away.
 
 -(void)applicationWillTerminate:(NSNotification*)aNotification
 {
-	[window close];
-	[window release];
+	[view removeFromSuperviewWithoutNeedingDisplay];
 	[view release];
+
+	[window close];
 	
 	main_app_shutdown();
 }

@@ -34,9 +34,13 @@ and can be sold or given away.
 int								os_menu_add_count;
 char							os_load_file_ext[32];
 
+d3col							*os_color_pick_col_ptr;
+
+int								diagControlCount;
 NSWindow						*diagWindow;
 DialogView						*diagView;
 NSControl						*diagControls[64];
+os_dialog_callback_ptr			diag_callback;
 
 /* =======================================================
 
@@ -600,34 +604,17 @@ bool os_load_file(char *title,char *path,char *ext)
 
 void os_pick_color(d3col *col)
 {
-/*
 	NSColorPanel		*colPanel;
+	NSColor				*nsColor;
+	
+	os_color_pick_col_ptr=col;
+	
+	nsColor=[NSColor colorWithCalibratedRed:col->r green:col->g blue:col->b alpha:1.0f];
 	
 	colPanel=[NSColorPanel sharedColorPanel];
+	[colPanel setColor:nsColor];
 	[colPanel makeKeyAndOrderFront:NSApp];
-	
-	while (TRUE) {
-	
-		event=[wnd nextEventMatchingMask:NSLeftMouseUpMask|NSLeftMouseDraggedMask];
-	*/
-	
-
-/*
-	RGBColor		color;
-	Point			pt;
-	
-	color.red=(int)(col->r*(float)0xFFFF);
-	color.green=(int)(col->g*(float)0xFFFF);
-	color.blue=(int)(col->b*(float)0xFFFF);
-	
-	pt.h=pt.v=-1;
-	
-	if (GetColor(pt,"\pChoose the Light Color:",&color,&color)) {
-		col->r=((float)color.red/(float)0xFFFF);
-		col->g=((float)color.green/(float)0xFFFF);
-		col->b=((float)color.blue/(float)0xFFFF);
-	}
-	*/
+	[colPanel setTarget:os_cocoa_get_view()];
 }
 
 /* =======================================================
@@ -659,14 +646,28 @@ bool os_launch_process(char *path,bool text_editor)
       
 ======================================================= */
 
+NSControl* os_dialog_id_to_ctrl(int id)
+{
+	int			n;
+	
+	for (n=0;n!=diagControlCount;n++) {
+		if ([diagControls[n] tag]==id) return(diagControls[n]);
+	}
+	
+	return(nil);
+}
+
 bool os_dialog_run(char *title,int wid,int high,os_dialog_ctrl_type *ctrls,void *callback)
 {
-	int						idx,deskWid,deskHigh;
+	int						n,idx,result,deskWid,deskHigh;
 	NSUInteger				styleMask;
 	NSString				*nsTitle;
-	NSRect					deskTopRect,frame,windRect;
+	NSRect					deskTopRect,frame;
+	NSModalSession			modalSession;
+	NSButton				*btn;
+	NSTextField				*txt;
+	NSPopUpButton			*combo;
 	os_dialog_ctrl_type		*ctrl;
-	NSButton	*btn;		// supergumba
 	
 		// get desktop window
 
@@ -678,9 +679,9 @@ bool os_dialog_run(char *title,int wid,int high,os_dialog_ctrl_type *ctrls,void 
 	
 	frame=NSMakeRect(((deskWid-wid)>>1),(high-((deskHigh-high)>>1)),wid,high);
 	styleMask=NSTitledWindowMask;
-	windRect=[NSWindow contentRectForFrameRect:frame styleMask:styleMask];
 	
-	diagWindow=[[NSWindow alloc] initWithContentRect:windRect styleMask:styleMask backing:NSBackingStoreBuffered defer:false];
+	diagWindow=[[NSWindow alloc] initWithContentRect:frame styleMask:styleMask backing:NSBackingStoreBuffered defer:false];
+	[diagWindow setAnimationBehavior:NSWindowAnimationBehaviorDocumentWindow];
 
 	nsTitle=[[NSString alloc] initWithUTF8String:title];
 	[diagWindow setTitle:nsTitle];
@@ -688,13 +689,9 @@ bool os_dialog_run(char *title,int wid,int high,os_dialog_ctrl_type *ctrls,void 
 	
 		// create the view
 	
-	diagView=[[DialogView alloc] initWithFrame:windRect];
+	diagView=[[DialogView alloc] initWithFrame:frame];
 	[diagWindow setContentView:diagView];
 	[diagWindow setDelegate:diagView];
-	
-		// get high from content view
-		
-	high=(int)[diagView frame].size.height;
 	
 		// add the controls
 		
@@ -704,9 +701,13 @@ bool os_dialog_run(char *title,int wid,int high,os_dialog_ctrl_type *ctrls,void 
 		ctrl=&ctrls[idx];
 		if (ctrl->type==-1) break;
 		
-		frame=NSMakeRect(ctrl->x,(high-ctrl->y),ctrl->wid,ctrl->high);
+			// frame and title
+			
+		frame=NSMakeRect(ctrl->x,(high-(ctrl->y+ctrl->high)),ctrl->wid,ctrl->high);
 		nsTitle=[[NSString alloc] initWithUTF8String:ctrl->str];
 
+			// create types
+			
 		switch (ctrl->type) {
 
 			case os_dialog_ctrl_type_button:
@@ -716,23 +717,73 @@ bool os_dialog_run(char *title,int wid,int high,os_dialog_ctrl_type *ctrls,void 
 				[btn setTitle:nsTitle];
 				[btn setButtonType:NSMomentaryLightButton];
 				[btn setBezelStyle:NSRoundedBezelStyle];
-				
-				/* supergumba
-					[my setTarget:self];
-					[my setAction:@selector(invisible)];
-				*/
-				
+				[btn setTarget:diagView];
+				[btn setAction:@selector(diagButtonDown:)];
 				if (ctrl->type==os_dialog_ctrl_type_default_button) [diagWindow setDefaultButtonCell:[btn cell]];
-				
 				diagControls[idx]=btn;
 				break;
+				
+			case os_dialog_ctrl_type_text_left:
+			case os_dialog_ctrl_type_text_right:
+				txt=[[NSTextField alloc] initWithFrame:frame];
+				[[diagWindow contentView] addSubview:txt];
+				[txt setStringValue:nsTitle];
+				if (ctrl->type==os_dialog_ctrl_type_text_right) [txt setAlignment:NSRightTextAlignment];
+				[txt setEditable:NO];
+				[txt setBordered:NO];
+				[txt setDrawsBackground:NO];
+				diagControls[idx]=txt;
+				break;
+				
+			case os_dialog_ctrl_type_text_edit:
+				frame.origin.y-=2;
+				frame.size.height+=2;
+				txt=[[NSTextField alloc] initWithFrame:frame];
+				[[diagWindow contentView] addSubview:txt];
+				[txt setStringValue:nsTitle];
+				[txt setEditable:YES];
+				diagControls[idx]=txt;
+				break;
+				
+			case os_dialog_ctrl_type_combo:
+				frame.origin.y-=2;
+				frame.size.height+=2;
+				combo=[[NSPopUpButton alloc] initWithFrame:frame pullsDown:NO];
+				[[diagWindow contentView] addSubview:combo];
+				[combo setAutoenablesItems:NO];
+				[combo setTarget:diagView];
+				[combo setAction:@selector(diagComboPick:)];
+				diagControls[idx]=combo;
+				break;
+				
+				
+				
+				
+				
+				
+				
+				/* supergumba
+#define os_dialog_ctrl_type_checkbox			6
+#define os_dialog_ctrl_type_files				7
+*/
 		
 		}
+		
+			// set tag
+			
+		[diagControls[idx] setTag:ctrl->id];
 		
 		[nsTitle release];
 		
 		idx++;
 	}
+	
+	diagControlCount=idx;
+	
+		// init callback
+		
+	diag_callback=callback;
+	(*diag_callback)(os_dialog_msg_type_init,0);
 	
 		// display the window
 
@@ -740,43 +791,82 @@ bool os_dialog_run(char *title,int wid,int high,os_dialog_ctrl_type *ctrls,void 
 	
 		// run the modal loop
 		
-		/*
-		modalSession=[NSApp beginModalSessionForWindow:conversionWindow];
-[NSApp runModalForWindow:conversionWindow];
-	[NSApp endModalSession:session];
-*/
+	modalSession=[NSApp beginModalSessionForWindow:diagWindow];
+	result=[NSApp runModalForWindow:diagWindow];
+	[NSApp endModalSession:modalSession];
+	
+		// remove all the views
+		
+	for (n=0;n!=diagControlCount;n++) {
+		[diagControls[n] removeFromSuperviewWithoutNeedingDisplay];
+		[diagControls[n] release];
+	}
+		
+	[diagView removeFromSuperviewWithoutNeedingDisplay];
+	[diagView release];
+	
+		// close the window
+		
+	[diagWindow close];
 
-	return(TRUE);
+	return(result!=0);
 }
 
 void os_dialog_close(bool ok)
 {
+	[NSApp stopModalWithCode:(ok?1:0)];
 }
 
 void os_dialog_set_text(int id,char *value)
 {
+	NSString			*nsTitle;
+	NSTextField			*txt;
+	
+	txt=(NSTextField*)os_dialog_id_to_ctrl(id);
+	
+	nsTitle=[[NSString alloc] initWithUTF8String:value];
+	[txt setStringValue:nsTitle];
+	[nsTitle release];
 }
 
 void os_dialog_get_text(int id,char *value,int value_len)
 {
+	NSTextField			*txt;
+	
+	txt=(NSTextField*)os_dialog_id_to_ctrl(id);
+	[[txt stringValue] getCString:value maxLength:value_len encoding:NSASCIIStringEncoding];
 }
 
 void os_dialog_set_int(int id,int i)
 {
+	char			str[256];
+
+	sprintf(str,"%d",i);
+	os_dialog_set_text(id,str);
 }
 
 int os_dialog_get_int(int id)
 {
-	return(0);
+	char			str[256];
+
+	os_dialog_get_text(id,str,256);
+	return(atoi(str));
 }
 
 void os_dialog_set_float(int id,float f)
 {
+	char			str[256];
+
+	sprintf(str,"%.2f",f);
+	os_dialog_set_text(id,str);
 }
 
 float os_dialog_get_float(int id)
 {
-	return(0.0f);
+	char			str[256];
+
+	os_dialog_get_text(id,str,256);
+	return((float)atof(str));
 }
 
 void os_dialog_set_bool(int id,bool value)
@@ -790,19 +880,38 @@ bool os_dialog_get_bool(int id)
 
 void os_dialog_combo_clear(int id)
 {
+	NSPopUpButton		*combo;
+	
+	combo=(NSPopUpButton*)os_dialog_id_to_ctrl(id);
+	[combo removeAllItems];
 }
 
 void os_dialog_combo_add(int id,char *str)
 {
+	NSString			*nsTitle;
+	NSPopUpButton		*combo;
+	
+	combo=(NSPopUpButton*)os_dialog_id_to_ctrl(id);
+	
+	nsTitle=[[NSString alloc] initWithUTF8String:str];
+	[combo addItemWithTitle:nsTitle];
+	[nsTitle release];
 }
 
 void os_dialog_combo_set_value(int id,int value)
 {
+	NSPopUpButton		*combo;
+	
+	combo=(NSPopUpButton*)os_dialog_id_to_ctrl(id);
+	[combo selectItemAtIndex:value];
 }
 
 int os_dialog_combo_get_value(int id)
 {
-	return(0);
+	NSPopUpButton		*combo;
+	
+	combo=(NSPopUpButton*)os_dialog_id_to_ctrl(id);
+	return((int)[combo indexOfSelectedItem]);
 }
 
 void os_dialog_tree_add(int id,file_path_directory_type *fpd)
@@ -816,10 +925,19 @@ int os_dialog_tree_get_value(int id)
 
 void os_dialog_set_focus(int id,bool select_all)
 {
+	NSControl			*ctrl;
+	
+	ctrl=os_dialog_id_to_ctrl(id);
+	[diagWindow makeFirstResponder:ctrl];
+	if (select_all) [(NSTextField*)ctrl selectText:ctrl];
 }
 
 void os_dialog_enable(int id,bool enable)
 {
+	NSControl			*ctrl;
+	
+	ctrl=os_dialog_id_to_ctrl(id);
+	[ctrl setEnabled:(enable?YES:NO)];
 }
 
 

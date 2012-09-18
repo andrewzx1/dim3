@@ -31,6 +31,8 @@ and can be sold or given away.
 #include "glue.h"
 #include "interface.h"
 
+d3col							*os_color_pick_col_ptr;
+
 @implementation View
 
 /* =======================================================
@@ -75,6 +77,12 @@ and can be sold or given away.
     return self;
 }
 
+-(BOOL)windowShouldClose:(id)sender
+{
+	if (main_app_quit()) os_application_quit();
+	return(NO);
+}
+
 -(void)windowWillClose:(NSNotification *)notification
 {
 	main_wind_shutdown();
@@ -109,6 +117,27 @@ and can be sold or given away.
 -(void)openGLFlush
 {
 	[ctx flushBuffer];
+}
+
+/* =======================================================
+
+      Color Picker
+      
+======================================================= */
+
+-(void)changeColor:(id)sender
+{
+	NSColorPanel		*colPanel;
+	
+	colPanel=(NSColorPanel*)sender;
+	
+	os_color_pick_col_ptr->r=[[colPanel color] redComponent];
+	os_color_pick_col_ptr->g=[[colPanel color] greenComponent];
+	os_color_pick_col_ptr->b=[[colPanel color] blueComponent];
+	
+	[colPanel close];
+	
+	main_wind_draw();
 }
 
 /* =======================================================
