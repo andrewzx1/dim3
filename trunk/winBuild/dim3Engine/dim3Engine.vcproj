@@ -48,7 +48,7 @@
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="true"
-				AdditionalIncludeDirectories="..\Common\Libraries;..\Common\Libraries\GLEW;..\Common\Libraries\ZLib;..\Common\Libraries\SDL2;..\Common\Libraries\MPG123;..\Common\Libraries\JavaScriptCore;..\Common\Libraries\PNG;..\..\dim3Engine\Headers;..\..\dim3Common\Headers;..\..\dim3BaseUtility\Headers;..\..\dim3BaseUtility\Sources;..\..\dim3ModelUtility\Headers;..\..\dim3ModelUtility\Sources;..\..\dim3MapUtility\Headers;..\..\dim3MapUtility\Sources"
+				AdditionalIncludeDirectories="..\Common\Libraries;..\Common\Libraries\GLEW;..\Common\Libraries\ZLib;..\Common\Libraries\SDL2;..\Common\Libraries\MPG123;..\Common\Libraries\JavaScriptCore;..\Common\Headers;..\Common\Libraries\PNG;..\..\dim3Engine\Headers;..\..\dim3Common\Headers;..\..\dim3BaseUtility\Headers;..\..\dim3BaseUtility\Sources;..\..\dim3ModelUtility\Headers;..\..\dim3ModelUtility\Sources;..\..\dim3MapUtility\Headers;..\..\dim3MapUtility\Sources"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;D3_PCH;D3_ENGINE;"
 				StringPooling="true"
 				ExceptionHandling="0"
@@ -130,7 +130,7 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\dim3Common\Headers\win32_os_defs.h"
+					RelativePath="..\Common\Headers\win32_os_defs.h"
 					>
 				</File>
 			</Filter>
