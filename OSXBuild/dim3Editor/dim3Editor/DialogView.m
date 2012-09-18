@@ -30,6 +30,8 @@ and can be sold or given away.
 #include "glue.h"
 #include "interface.h"
 
+extern os_dialog_callback_ptr			diag_callback;
+
 @implementation DialogView
 
 /* =======================================================
@@ -38,9 +40,14 @@ and can be sold or given away.
 	        
 ======================================================= */
 
--(void)mouseDown:(NSEvent*)event
+-(IBAction)diagButtonDown:(id)sender
 {
-	[[self window] close];
+	(*diag_callback)(os_dialog_msg_type_command,(int)[(NSControl*)sender tag]);
+}
+
+-(IBAction)diagComboPick:(id)sender
+{
+	(*diag_callback)(os_dialog_msg_type_command,(int)[(NSControl*)sender tag]);
 }
 
 @end
