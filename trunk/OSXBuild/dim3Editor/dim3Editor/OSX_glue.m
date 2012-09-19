@@ -545,6 +545,13 @@ Boolean os_load_file_filter(AEDesc *theItem,void *info,void *callBackUD,NavFilte
 
 bool os_load_file(char *title,char *path,char *ext)
 {
+	NSOpenPanel				*openPanel;
+	
+	openPanel=[NSOpenPanel openPanel];
+	if ([openPanel runModal]!=NSFileHandlingPanelOKButton) return(FALSE);
+	
+	return(TRUE);
+	
 /*
     NavDialogCreationOptions	navoption;
     NavReplyRecord				navreply;
