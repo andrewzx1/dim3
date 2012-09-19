@@ -549,6 +549,7 @@
 		265AB42015FEEED9005CDBB0 /* OSX_glue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OSX_glue.m; path = dim3Editor/OSX_glue.m; sourceTree = SOURCE_ROOT; };
 		265AB42715FEEF39005CDBB0 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = dim3Editor/en.lproj/InfoPlist.strings; sourceTree = SOURCE_ROOT; };
 		265AB42A15FEEF3E005CDBB0 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = dim3Editor/en.lproj/MainMenu.xib; sourceTree = SOURCE_ROOT; };
+		266E2B9816096FE400CE6147 /* mac_os_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mac_os_defs.h; path = ../OSXBuild/Common/Headers/mac_os_defs.h; sourceTree = "<group>"; };
 		26900AD014F2044F008026D5 /* dim3 Editor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "dim3 Editor.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		26900AD414F2044F008026D5 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		26900AD714F2044F008026D5 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -810,9 +811,7 @@
 		26F7E1921600472C00E739C4 /* map_menu.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = map_menu.c; path = Sources/menus/map_menu.c; sourceTree = "<group>"; };
 		26F7E1931600472C00E739C4 /* model_menu.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = model_menu.c; path = Sources/menus/model_menu.c; sourceTree = "<group>"; };
 		26F7E1941600472C00E739C4 /* project_menu.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = project_menu.c; path = Sources/menus/project_menu.c; sourceTree = "<group>"; };
-		26F7E19A160047BB00E739C4 /* glue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = glue.h; path = Headers/glue.h; sourceTree = "<group>"; };
-		26F7E19B160047BB00E739C4 /* mac_os_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mac_os_defs.h; path = Headers/mac_os_defs.h; sourceTree = "<group>"; };
-		26F7E19C160047BB00E739C4 /* os_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = os_defs.h; path = Headers/os_defs.h; sourceTree = "<group>"; };
+		26F7E19C160047BB00E739C4 /* os_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = os_defs.h; path = ../dim3Common/Headers/os_defs.h; sourceTree = "<group>"; };
 		26F7E19D160047D900E739C4 /* auto_generator_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = auto_generator_defs.h; path = Headers/auto_generator_defs.h; sourceTree = "<group>"; };
 		26F7E19E160047D900E739C4 /* dim3editor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = dim3editor.h; path = Headers/dim3editor.h; sourceTree = "<group>"; };
 		26F7E19F160047D900E739C4 /* editor_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = editor_defs.h; path = Headers/editor_defs.h; sourceTree = "<group>"; };
@@ -1506,9 +1505,6 @@
 		26F7E1981600475E00E739C4 /* Common Headers */ = {
 			isa = PBXGroup;
 			children = (
-				26F7E19C160047BB00E739C4 /* os_defs.h */,
-				26F7E19B160047BB00E739C4 /* mac_os_defs.h */,
-				26F7E19A160047BB00E739C4 /* glue.h */,
 			);
 			name = "Common Headers";
 			path = ../dim3Common;
@@ -1517,6 +1513,8 @@
 		26F7E1991600478D00E739C4 /* Headers */ = {
 			isa = PBXGroup;
 			children = (
+				26F7E19C160047BB00E739C4 /* os_defs.h */,
+				266E2B9816096FE400CE6147 /* mac_os_defs.h */,
 				26F7E19D160047D900E739C4 /* auto_generator_defs.h */,
 				26F7E19E160047D900E739C4 /* dim3editor.h */,
 				26F7E19F160047D900E739C4 /* editor_defs.h */,
