@@ -343,6 +343,15 @@ bool view_initialize(char *err_str)
 
 	if (!view_initialize_display(err_str)) return(FALSE);
 
+		// rl initialize
+
+	if (!view_openrl_initialize(err_str)) {
+		view_shutdown_display();
+		view_memory_release();
+		SDL_Quit();
+		return(FALSE);
+	}
+
 		// sound initialize
 	
 	if (!al_initialize(err_str)) {
@@ -420,6 +429,8 @@ void view_shutdown(void)
 	al_shutdown();
 	view_images_shutdown();
 	view_shutdown_display();
+
+	view_openrl_shutdown();
 
 		// shutdown SDL
 		

@@ -3327,6 +3327,10 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\dim3Engine\Sources_View\view_openrl_patch.c"
+						>
+					</File>
+					<File
 						RelativePath="..\..\dim3Engine\Sources_View\view_primitive.c"
 						>
 					</File>
