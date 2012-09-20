@@ -511,94 +511,26 @@ int os_dialog_confirm(char *title,char *msg,bool include_cancel)
       
 ======================================================= */
 
-Boolean os_load_file_filter(AEDesc *theItem,void *info,void *callBackUD,NavFilterModes filterMode)
-{
-/*
-    char					*c,filename[256];
-    NavFileOrFolderInfo		*filefolder;
-    AEDesc					desc;
-	HFSUniStr255			uniname;
-    CFStringRef				cfstr;
-    FSRef					fref;
-    
-    if ((theItem->descriptorType!=typeFSS) && (theItem->descriptorType!=typeFSRef)) return(FALSE);
-
-    filefolder=(NavFileOrFolderInfo*)info;
-    if (filefolder->isFolder) return(TRUE);
-
-	AECoerceDesc(theItem,typeFSRef,&desc);
-	AEGetDescData(&desc,(void*)&fref,sizeof(FSRef));
-    AEDisposeDesc(&desc);
-
-    FSGetCatalogInfo(&fref,kFSCatInfoNone,NULL,&uniname,NULL,NULL);
-	cfstr=CFStringCreateWithCharacters(kCFAllocatorDefault,uniname.unicode,uniname.length);
-	CFStringGetCString(cfstr,filename,256,kCFStringEncodingMacRoman);
-    CFRelease(cfstr);
-    
-    c=strchr(filename,'.');
-    if (c==NULL) return(FALSE);
-    
-    return(strcasecmp((c+1),os_load_file_ext)==0);
-	*/
-	return(TRUE);
-}
-
 bool os_load_file(char *title,char *path,char *ext)
 {
-	NSOpenPanel				*openPanel;
+	NSString			*nsTitle,*extString;
+	NSURL				*url;
+	NSOpenPanel			*openPanel;
 	
 	openPanel=[NSOpenPanel openPanel];
+	
+	nsTitle=[[NSString alloc] initWithUTF8String:title];
+	[openPanel setTitle:nsTitle];
+	[nsTitle release];
+	
+	extString=[[NSString alloc] initWithUTF8String:ext];
+	[openPanel setAllowedFileTypes:[NSArray arrayWithObject:extString]];
+	[extString release];
+
 	if ([openPanel runModal]!=NSFileHandlingPanelOKButton) return(FALSE);
 	
-	return(TRUE);
-	
-/*
-    NavDialogCreationOptions	navoption;
-    NavReplyRecord				navreply;
-	NavEventUPP					navevent;
-    NavObjectFilterUPP			navfilter;
-	AEKeyword					keyword;
-	DescType					typecode;
-    Size						sz;
-	CFStringRef					cf_title_str;
-    NavDialogRef				diagref;
-	FSRef						fsref;
-	
-	strcpy(os_load_file_ext,ext);
-	
-		// get the file
-		
-	NavGetDefaultDialogCreationOptions(&navoption);
-	navoption.optionFlags-=kNavDontAddTranslateItems;
-	navoption.optionFlags-=kNavAllowPreviews;
-	
-	cf_title_str=CFStringCreateWithCString(kCFAllocatorDefault,title,kCFStringEncodingMacRoman);
-	navoption.windowTitle=cf_title_str;
-
-	navevent=NewNavEventUPP(os_load_file_event_proc);
-	navfilter=NewNavObjectFilterUPP(os_load_file_filter);
-	NavCreateGetFileDialog(&navoption,NULL,navevent,NULL,navfilter,NULL,&diagref);
-	NavDialogRun(diagref);
- 
- 	NavDialogGetReply(diagref,&navreply);
-	NavDialogDispose(diagref);
-	DisposeNavEventUPP(navevent);
-    DisposeNavObjectFilterUPP(navfilter);
-  
-	CFRelease(cf_title_str);
-
-	if (!navreply.validRecord) {
-		NavDisposeReply(&navreply);
-        return(FALSE);
-    }
-    
-	AEGetNthPtr(&(navreply.selection),1,typeFSRef,&keyword,&typecode,(void*)&fsref,sizeof(FSRef),&sz);
-    NavDisposeReply(&navreply);
-	
-    FSRefMakePath(&fsref,(unsigned char*)path,1024);
-	
-	return(TRUE);
-	*/
+	url=(NSURL*)[[openPanel URLs] objectAtIndex:0];
+	[[url path] getCString:path maxLength:1024 encoding:NSASCIIStringEncoding];
 	
 	return(TRUE);
 }
@@ -632,19 +564,21 @@ void os_pick_color(d3col *col)
 
 bool os_launch_process(char *path,bool text_editor)
 {
-/*
-	FSRef					fsref;
-	CFURLRef				cf_url;
-
-	if (FSPathMakeRef((unsigned char*)path,&fsref,NULL)!=0) return(FALSE);
+	BOOL				nsOK;
+	NSString			*nsPath;
 	
-	cf_url=CFURLCreateFromFSRef(kCFAllocatorDefault,&fsref);
-	LSOpenCFURLRef(cf_url,NULL);
-	CFRelease(cf_url);
-
-	return(TRUE);
-	*/
-	return(FALSE);
+	nsPath=[[NSString alloc] initWithUTF8String:path];
+	
+	if (!text_editor) {
+		nsOK=[[NSWorkspace sharedWorkspace] launchApplication:nsPath];
+	}
+	else {
+		nsOK=[[NSWorkspace sharedWorkspace] openFile:nsPath];
+	}
+	
+	[nsPath release];
+	
+	return(nsOK==YES);
 }
 
 /* =======================================================
@@ -763,6 +697,14 @@ bool os_dialog_run(char *title,int wid,int high,os_dialog_ctrl_type *ctrls,void 
 				diagControls[idx]=combo;
 				break;
 				
+			case os_dialog_ctrl_type_checkbox:
+				frame.origin.x-=4;
+				btn=[[NSButton alloc] initWithFrame:frame];
+				[[diagWindow contentView] addSubview:btn];
+				[btn setTitle:nsTitle];
+				[btn setButtonType:NSSwitchButton];
+				diagControls[idx]=btn;
+				break;
 				
 				
 				
@@ -770,7 +712,7 @@ bool os_dialog_run(char *title,int wid,int high,os_dialog_ctrl_type *ctrls,void 
 				
 				
 				/* supergumba
-#define os_dialog_ctrl_type_checkbox			6
+#define 			6
 #define os_dialog_ctrl_type_files				7
 */
 		
@@ -878,11 +820,18 @@ float os_dialog_get_float(int id)
 
 void os_dialog_set_bool(int id,bool value)
 {
+	NSButton			*btn;
+	
+	btn=(NSButton*)os_dialog_id_to_ctrl(id);
+	[btn setState:(value?NSOnState:NSOffState)];
 }
 
 bool os_dialog_get_bool(int id)
 {
-	return(FALSE);
+	NSButton			*btn;
+	
+	btn=(NSButton*)os_dialog_id_to_ctrl(id);
+	return([btn state]==NSOnState);
 }
 
 void os_dialog_combo_clear(int id)
