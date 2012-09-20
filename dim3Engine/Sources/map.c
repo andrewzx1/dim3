@@ -514,9 +514,14 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 		if (!app.dedicated_host) scripts_post_event_console(obj->script_idx,-1,sd_event_map,sd_event_map_open,0);
 	}
 	
-		// finish up
+		// if openrl, make sure
+		// to put static map elements into mesh list
 
 	progress_next();
+
+	view_openrl_map_setup();
+
+		// finish up
 	
 	progress_shutdown();
 	
