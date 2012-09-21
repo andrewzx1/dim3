@@ -42,6 +42,8 @@ DialogView						*diagView;
 NSControl						*diagControls[64];
 os_dialog_callback_ptr			diag_callback;
 
+NSTimer							*os_timer;
+
 /* =======================================================
 
       Glue Start and End
@@ -144,6 +146,24 @@ void os_swap_gl_buffer(void)
 	[view openGLFlush];
 }
 
+/* =======================================================
+
+      Timers
+      
+======================================================= */
+
+void os_start_timer(void)
+{
+	if (os_timer!=nil) return;
+	os_timer=[NSTimer scheduledTimerWithInterval:0.01 target:[NSApp delegate] selector:@"timerFire" userInfo:nil repeats:YES];
+}
+
+void os_end_timer(void)
+{
+	[os_timer invalidate];
+	ot_timer=nil;
+}
+    
 /* =======================================================
 
       Cursors

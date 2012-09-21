@@ -32,12 +32,9 @@ and can be sold or given away.
 #include "glue.h"
 #include "interface.h"
 
+extern app_state_type			state;
 extern file_path_setup_type		file_path_setup;
-#ifdef D3_EDITOR
-	extern list_palette_type		map_palette;
-#else
-	extern list_palette_type		model_palette;
-#endif
+extern list_palette_type		project_palette,map_palette,model_palette;
 
 char							property_file_list[file_paths_max_directory_file][file_str_len];
 
@@ -384,7 +381,6 @@ char* property_pick_file_get_list(void)
 	return((char*)property_file_list);
 }
 
-// supergumba -- delete later
 void property_pick_file(char *title,char *search_path,char *extension,char *required_file_name,char *file_name)
 {
 	int								count;
@@ -409,11 +405,17 @@ void property_pick_file(char *title,char *search_path,char *extension,char *requ
 
 		// run the list picker
 
-#ifdef D3_EDITOR
-	list_palette_start_picking_mode(&map_palette,title,(char*)property_file_list,count,file_str_len,0,TRUE,TRUE,NULL,file_name);
-#else
-	list_palette_start_picking_mode(&model_palette,title,(char*)property_file_list,count,file_str_len,0,TRUE,TRUE,NULL,file_name);
-#endif
+	switch (state.mode) {
+		case app_mode_project:
+			list_palette_start_picking_mode(&project_palette,title,(char*)property_file_list,count,file_str_len,0,TRUE,TRUE,NULL,file_name);
+			break;
+		case app_mode_map:
+			list_palette_start_picking_mode(&map_palette,title,(char*)property_file_list,count,file_str_len,0,TRUE,TRUE,NULL,file_name);
+			break;
+		case app_mode_model:
+			list_palette_start_picking_mode(&model_palette,title,(char*)property_file_list,count,file_str_len,0,TRUE,TRUE,NULL,file_name);
+			break;
+	}
 }
 
 /* =======================================================

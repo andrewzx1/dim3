@@ -82,6 +82,9 @@ extern void os_select_window(void);
 extern void os_set_title_window(char *title);
 extern void os_swap_gl_buffer(void);
 
+extern void os_start_timer(void);
+extern void os_end_timer(void);
+
 extern void os_set_arrow_cursor(void);
 extern void os_set_wait_cursor(void);
 extern void os_set_hand_cursor(void);

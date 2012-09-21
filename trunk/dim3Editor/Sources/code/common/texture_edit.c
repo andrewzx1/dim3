@@ -36,15 +36,10 @@ int								texture_edit_scroll_pos,
 								texture_edit_frame_click_idx;
 
 extern app_state_type			state;
+extern map_type					map;
+extern model_type				model;
 extern list_palette_type		file_palette;
-
-#ifdef D3_EDITOR
-	extern map_type				map;
-	extern list_palette_type	map_palette;
-#else
-	extern model_type			model;
-	extern list_palette_type	model_palette;
-#endif
+extern list_palette_type		map_palette,model_palette;
 
 extern file_path_setup_type		file_path_setup;
 
@@ -58,25 +53,26 @@ void texture_edit_switch(int texture_idx)
 {
 		// clicking again leaves
 
-#ifdef D3_EDITOR
-	if ((state.map.texture_edit_idx!=-1) && (state.map.texture_edit_idx==texture_idx)) {
-		state.map.texture_edit_idx=-1;
+	if (state.mode==app_mode_map) {
+		if ((state.map.texture_edit_idx!=-1) && (state.map.texture_edit_idx==texture_idx)) {
+			state.map.texture_edit_idx=-1;
+		}
+		else {
+			state.map.texture_edit_idx=texture_idx;
+		}
+		map_palette_reset();
+		list_palette_set_level(&map_palette,0);
 	}
 	else {
-		state.map.texture_edit_idx=texture_idx;
+		if ((state.model.texture_edit_idx!=-1) && (state.model.texture_edit_idx==texture_idx)) {
+			state.model.texture_edit_idx=-1;
+		}
+		else {
+			state.model.texture_edit_idx=texture_idx;
+		}
+		model_palette_reset();
+		list_palette_set_level(&model_palette,0);
 	}
-	map_palette_reset();
-	list_palette_set_level(&map_palette,0);
-#else
-	if ((state.model.texture_edit_idx!=-1) && (state.model.texture_edit_idx==texture_idx)) {
-		state.model.texture_edit_idx=-1;
-	}
-	else {
-		state.model.texture_edit_idx=texture_idx;
-	}
-	model_palette_reset();
-	list_palette_set_level(&model_palette,0);
-#endif
 	
 	texture_edit_frame_click_idx=-1;
 
@@ -94,17 +90,14 @@ void texture_edit_get_box(d3rect *box)
 	os_get_window_box(box);
 	
 	box->lx+=list_palette_width(&file_palette);
-#ifdef D3_EDITOR
-	box->rx-=(list_palette_width(&map_palette)+1);
-#else
-	box->rx-=(list_palette_width(&model_palette)+1);
-#endif
 	box->ty+=tool_button_size;
 
 	if (state.mode==app_mode_map) {
+		box->rx-=(list_palette_width(&map_palette)+1);
 		box->by-=map_texture_palette_pixel_size();
 	}
 	else {
+		box->rx-=(list_palette_width(&model_palette)+1);
 		box->by-=model_texture_palette_pixel_size();
 	}
 }
@@ -225,13 +218,14 @@ void texture_edit_draw(void)
 
 		// get texture and frame count
 		
-	#ifdef D3_EDITOR
+	if (state.mode==app_mode_map) {
 		texture=&map.textures[state.map.texture_edit_idx];
 		frame_count=map_count_texture_frames(&map,state.map.texture_edit_idx);
-	#else
+	}
+	else {
 		texture=&model.textures[state.model.texture_edit_idx];
 		frame_count=model_count_texture_frames(&model,state.model.texture_edit_idx);
-	#endif
+	}
 
 		// setup drawing
 
@@ -426,11 +420,12 @@ bool texture_edit_click_bitmap_open(char *bitmap_name)
 	
 		// get bitmap
 
-	#ifdef D3_EDITOR
+	if (state.mode==app_mode_map) {
 		strcpy(sub_path,"Bitmaps/Textures");
-	#else
+	}
+	else {
 		sprintf(sub_path,"Models/%s/Textures",model.name);
-	#endif
+	}
 
 	if (!dialog_file_open_run("Open a Bitmap",sub_path,"png",NULL,bitmap_name)) return(FALSE);
 	
@@ -499,13 +494,14 @@ bool texture_edit_click(d3pnt *pnt,bool double_click)
 	
 		// regular clicks
 
-	#ifdef D3_EDITOR
+	if (state.mode==app_mode_map) {
 		texture=&map.textures[state.map.texture_edit_idx];
 		frame_count=map_count_texture_frames(&map,state.map.texture_edit_idx);
-	#else
+	}
+	else {
 		texture=&model.textures[state.model.texture_edit_idx];
 		frame_count=model_count_texture_frames(&model,state.model.texture_edit_idx);
-	#endif
+	}
 
 	texture_edit_get_box(&box);
 
@@ -592,11 +588,14 @@ bool texture_edit_click(d3pnt *pnt,bool double_click)
 	if (frame_idx==texture_edit_frame_click_delete_idx) {
 
 		os_set_wait_cursor();
-		#ifdef D3_EDITOR
+		
+		if (state.mode==app_mode_map) {
 			map_delete_texture_frame(&map,state.map.texture_edit_idx);
-		#else
+		}
+		else {
 			model_delete_texture_frame(&model,state.model.texture_edit_idx);
-		#endif
+		}
+
 		os_set_arrow_cursor();
 		
 		main_wind_draw();
@@ -616,11 +615,14 @@ bool texture_edit_click(d3pnt *pnt,bool double_click)
 		strcpy(texture->frames[frame_idx].name,bitmap_name);
 
 		os_set_wait_cursor();
-		#ifdef D3_EDITOR
+		
+		if (state.mode==app_mode_map) {
 			map_refresh_textures(&map);
-		#else
+		}
+		else {
 			model_refresh_textures(&model);
-		#endif
+		}
+
 		os_set_arrow_cursor();
 	}
 

@@ -89,7 +89,30 @@ void model_tool_palette_shutdown(void)
 
 void model_tool_palette_set_state(void)
 {
-//	tool_palette_set_state(&model_tool_palette,0,TRUE,FALSE);
+	bool			disabled;
+
+	disabled=!state.model.model_open;
+
+	tool_palette_set_state(&model_tool_palette,0,state.model.texture,disabled);
+	tool_palette_set_state(&model_tool_palette,1,state.model.mesh,disabled);
+	tool_palette_set_state(&model_tool_palette,2,state.model.bone,disabled);
+	tool_palette_set_state(&model_tool_palette,3,state.model.hit_box,disabled);
+	tool_palette_set_state(&model_tool_palette,4,(state.model.select_mode==select_mode_mesh),disabled);
+	tool_palette_set_state(&model_tool_palette,5,(state.model.select_mode==select_mode_polygon),disabled);
+	tool_palette_set_state(&model_tool_palette,6,(state.model.select_mode==select_mode_vertex),disabled);
+	tool_palette_set_state(&model_tool_palette,7,state.model.view_box,disabled);
+	tool_palette_set_state(&model_tool_palette,8,state.model.normal,disabled);
+	tool_palette_set_state(&model_tool_palette,9,state.model.bone_names,disabled);
+	tool_palette_set_state(&model_tool_palette,10,state.model.sel_vertex_with_bone,disabled);
+	tool_palette_set_state(&model_tool_palette,11,(state.model.drag_bone_mode==handle_mode_rotate),disabled);
+	tool_palette_set_state(&model_tool_palette,12,(state.model.drag_bone_mode==handle_mode_move),disabled);
+	tool_palette_set_state(&model_tool_palette,13,FALSE,disabled);
+	tool_palette_set_state(&model_tool_palette,14,(state.model.play_mode==model_play_mode_stop),disabled);
+	tool_palette_set_state(&model_tool_palette,15,(state.model.play_mode==model_play_mode_normal),disabled);
+	tool_palette_set_state(&model_tool_palette,16,(state.model.play_mode==model_play_mode_blend),disabled);
+	tool_palette_set_state(&model_tool_palette,17,(state.model.play_mode==model_play_mode_slow),disabled);
+	tool_palette_set_state(&model_tool_palette,18,(state.model.play_mode==model_play_mode_prev),disabled);
+	tool_palette_set_state(&model_tool_palette,19,(state.model.play_mode==model_play_mode_next),disabled);
 }
 
 /* =======================================================
@@ -102,7 +125,89 @@ void model_tool_palette_click(int tool_idx)
 {
 	switch (tool_idx) {
 			
-						
+			// left side
+
+		case 0:
+			state.model.texture=!state.model.texture;
+			break;
+			
+		case 1:
+			state.model.mesh=!state.model.mesh;
+			break;
+			
+		case 2:
+			state.model.bone=!state.model.bone;
+			break;
+			
+		case 3:
+			state.model.hit_box=!state.model.hit_box;
+			break;
+			
+		case 4:
+			model_vertex_mask_clear_sel(state.model.cur_mesh_idx);
+			state.model.select_mode=select_mode_mesh;
+			break;
+
+		case 5:
+			model_vertex_mask_clear_sel(state.model.cur_mesh_idx);
+			state.model.select_mode=select_mode_polygon;
+			break;
+			
+		case 6:
+			model_vertex_mask_clear_sel(state.model.cur_mesh_idx);
+			state.model.select_mode=select_mode_vertex;
+			break;
+			
+		case 7:
+			state.model.view_box=!state.model.view_box;
+			break;
+			
+		case 8:
+			state.model.normal=!state.model.normal;
+			break;
+			
+		case 9:
+			state.model.bone_names=!state.model.bone_names;
+			break;
+			
+		case 10:
+			state.model.sel_vertex_with_bone=!state.model.sel_vertex_with_bone;
+			break;
+		
+		case 11:
+			state.model.drag_bone_mode=handle_mode_rotate;
+			break;
+			
+		case 12:
+			state.model.drag_bone_mode=handle_mode_move;
+			break;
+			
+			// right side
+
+		case 14:
+			model_play(model_play_mode_stop);
+			break;
+
+		case 15:
+			model_play(model_play_mode_normal);
+			break;
+
+		case 16:
+			if (dialog_play_blend_animation_run()) model_play(model_play_mode_blend);
+			break;
+
+		case 17:
+			model_play(model_play_mode_slow);
+			break;
+
+		case 18:
+			model_play(model_play_mode_prev);
+			break;
+
+		case 19:
+			model_play(model_play_mode_next);
+			break;
+
 	}
 	
 	main_wind_draw();
@@ -116,4 +221,15 @@ void model_tool_palette_click(int tool_idx)
 
 void model_tool_default(void)
 {
+	state.model.texture=TRUE;
+	state.model.mesh=FALSE;
+	state.model.bone=FALSE;
+    state.model.hit_box=FALSE;
+	state.model.normal=FALSE;
+	state.model.view_box=FALSE;
+	state.model.bone_names=TRUE;
+	state.model.sel_vertex_with_bone=FALSE;
+
+	state.model.select_mode=select_mode_vertex;
+	state.model.drag_bone_mode=handle_mode_rotate;
 }

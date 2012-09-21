@@ -47,17 +47,17 @@ extern list_palette_type		file_palette,model_palette;
 
 int model_texture_palette_per_page_count(void)
 {
-	return(32);
+	return(max_model_texture);
 }
 
 int model_texture_palette_page_list_count(void)
 {
-	return(max_model_texture/model_texture_palette_per_page_count());
+	return(1);
 }
 
 int model_texture_palette_page_list_width(void)
 {
-	return((model_texture_palette_page_list_count()>>1)*16);
+	return(0);
 }
 
 int model_texture_palette_pixel_size(void)

@@ -235,6 +235,11 @@ bool main_wind_switch_mode(int mode)
 {
 	if (state.mode==mode) return(TRUE);
 
+		// if old mode was
+		// model, turn off animation timer
+
+	if (state.mode==app_mode_model) os_end_timer();
+
 		// save anything we are
 		// moving away from
 
@@ -249,6 +254,11 @@ bool main_wind_switch_mode(int mode)
 			break;
 	
 	}
+
+		// turn on animation timer for
+		// model mode
+
+	if (mode==app_mode_model) os_start_timer();
 
 		// need to rebuild menu
 		
@@ -512,7 +522,7 @@ void main_wind_click_model(d3pnt *pnt,bool double_click)
 
 		// property palette
 		
-	list_palette_total_box(&map_palette,&tbox);
+	list_palette_total_box(&model_palette,&tbox);
 
 	if ((pnt->x>=tbox.lx) && (pnt->x<=tbox.rx) && (pnt->y>=tbox.ty) && (pnt->y<tbox.by)) {
 		model_palette_click(pnt,double_click);

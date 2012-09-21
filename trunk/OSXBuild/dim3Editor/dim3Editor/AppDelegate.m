@@ -106,4 +106,15 @@ and can be sold or given away.
 	main_wind_menu_event_run([item tag]);
 }
 
+/* =======================================================
+
+      Timers
+	        
+======================================================= */
+
+-(void)timerFire:(NSTimer*)timer
+{
+	main_wind_timer();
+}
+
 @end
