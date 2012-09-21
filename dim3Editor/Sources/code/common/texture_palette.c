@@ -295,7 +295,7 @@ void texture_palette_click(d3pnt *pnt,bool double_click)
 		map_texture_palette_box(&tbox);
 	}
 	else {
-		if (map_texture_palette_get_disabled_state()) return;
+		if (model_texture_palette_get_disabled_state()) return;
 
 		txt_list=model.textures;
 		page_list_count=model_texture_palette_page_list_count();

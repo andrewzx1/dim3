@@ -233,7 +233,7 @@ void tool_palette_draw(tool_palette_type *tool_palette)
 			x=tbox.rx;
 			for (k=(n+1);k<tool_palette->count;k++) {
 				x-=tool_button_size;
-				if (tool_palette->tools[n].separator) x-=tool_palette_seperator_size;
+				if (tool_palette->tools[k].separator) x-=tool_palette_seperator_size;
 			}
 			continue;
 		}
