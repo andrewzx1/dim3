@@ -44,7 +44,7 @@ os_dialog_ctrl_type		diag_property_new_model_ctrls[]={
 							{os_dialog_ctrl_type_text_left,0,"Enter a name for your new model.",10,10,430,20},
 							{os_dialog_ctrl_type_text_right,0,"Name:",10,35,80,20},
 							{os_dialog_ctrl_type_text_edit,diag_prop_new_model_name,"",90,32,340,20},
-							{os_dialog_ctrl_type_text_left,0,"When a model is created, the model directory is saved in the Data/Models directory.",10,60,430,20},
+							{os_dialog_ctrl_type_text_left,0,"The new model is created the Data/Models directory.",10,60,430,20},
 							{os_dialog_ctrl_type_button,diag_prop_new_model_cancel,"Cancel",275,90,80,25},
 							{os_dialog_ctrl_type_default_button,diag_prop_new_model_ok,"OK",365,90,80,25},
 							{-1,-1,"",0,0,0,0}
