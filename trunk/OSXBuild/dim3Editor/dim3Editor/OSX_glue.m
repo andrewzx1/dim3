@@ -608,6 +608,7 @@ bool os_dialog_run(char *title,int wid,int high,os_dialog_ctrl_type *ctrls,void 
 	NSButton				*btn;
 	NSTextField				*txt;
 	NSPopUpButton			*combo;
+	NSBrowser				*browser;
 	os_dialog_ctrl_type		*ctrl;
 	
 		// get desktop window
@@ -706,16 +707,14 @@ bool os_dialog_run(char *title,int wid,int high,os_dialog_ctrl_type *ctrls,void 
 				diagControls[idx]=btn;
 				break;
 				
-				
-				
-				
-				
-				
-				/* supergumba
-#define 			6
-#define os_dialog_ctrl_type_files				7
-*/
-		
+			case os_dialog_ctrl_type_files:
+				browser=[[NSBrowser alloc] initWithFrame:frame];
+				[[diagWindow contentView] addSubview:browser];
+				[browser setTarget:diagView];
+				[browser setAction:@selector(browserPick:)];
+				diagControls[idx]=browser;
+				break;
+
 		}
 		
 			// set tag
