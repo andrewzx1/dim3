@@ -252,8 +252,8 @@ void model_draw_bones(int sel_bone_idx)
 			vertexes[2]=draw_bone->fpnt.z+z_move;
 			
 			vertexes[3]=parent_bone->fpnt.x+x_move;
-			vertexes[4]=parent_bone->fpnt.y-y_move;
-			vertexes[5]=parent_bone->fpnt.z-z_move;
+			vertexes[4]=parent_bone->fpnt.y+y_move;
+			vertexes[5]=parent_bone->fpnt.z+z_move;
 			
 			glVertexPointer(3,GL_FLOAT,0,vertexes);
 			glDrawArrays(GL_LINES,0,2);
@@ -355,6 +355,7 @@ void model_draw_bone_names(int sel_bone_idx)
 	d3pnt					tran_pnt;
 	d3fpnt					pnt;
 	d3col					col;
+	d3rect					mbox;
 	model_bone_type			*bone;
 	model_draw_bone_type	*draw_bone;
 	
@@ -364,6 +365,8 @@ void model_draw_bone_names(int sel_bone_idx)
 				
 	model_draw_2D_transform_setup();
 	model_draw_gl_setup_2D();
+	
+	model_wind_get_box(&mbox);
 	
 		// draw the bone names
 		
@@ -388,6 +391,8 @@ void model_draw_bone_names(int sel_bone_idx)
 		pnt.z=draw_bone->fpnt.z+z_move;
 		
 		model_draw_2D_transform(&pnt,&tran_pnt);
+		
+		tran_pnt.x+=mbox.lx;
 		
 			// text
 			

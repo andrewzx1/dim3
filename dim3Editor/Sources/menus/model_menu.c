@@ -60,6 +60,8 @@ os_menu_item_type		model_menu_setup[]=
 									{"Model","Calculate Boxes",model_menu_item_CalcBoxes,os_menu_key_none,0x0},
 									{"Model","Calculate Normals",model_menu_item_CalcNormals,os_menu_key_none,0x0},
 									{"Model","",0,os_menu_key_none,0x0},
+									{"Model","Import Animations...",model_menu_item_ImportAnimation,os_menu_key_none,0x0},
+									{"Model","",0,os_menu_key_none,0x0},
 									{"Model","Scale...",model_menu_item_ScaleAll,os_menu_key_none,0x0},
 									{"Model","",0,os_menu_key_none,0x0},
 									{"Model","Flip X",model_menu_item_FlipXAll,os_menu_key_none,0x0},
@@ -110,7 +112,12 @@ os_menu_item_type		model_menu_setup[]=
 										// vertex menu
 
 									{"Vertex","Select All",model_menu_item_VertexSelectAll,os_menu_key_cmd,'A'},
+									{"Vertex","Select Attached",model_menu_item_VertexSelectAttached,os_menu_key_cmd_opt,'A'},
 									{"Vertex","Select Not Attached",model_menu_item_VertexSelectNotAttached,os_menu_key_cmd_shift,'A'},
+									{"Vertex","",0,os_menu_key_none,0x0},
+									{"Vertex","Show All",model_menu_item_VertexShowAll,os_menu_key_none,0x0},
+									{"Vertex","Hide Selected",model_menu_item_VertexHideSelected,os_menu_key_none,0x0},
+									{"Vertex","Hide Non-Selected",model_menu_item_VertexHideNonSelected,os_menu_key_none,0x0},
 									{"Vertex","",0,os_menu_key_none,0x0},
 									{"Vertex","Invert Normals",model_menu_item_VertexInvertNormals,os_menu_key_cmd,'I'},
 									{"Vertex","Set Normals...",model_menu_item_VertexSetNormals,os_menu_key_cmd_opt,'I'},
@@ -119,10 +126,6 @@ os_menu_item_type		model_menu_setup[]=
 									{"Vertex","",0,os_menu_key_none,0x0},
 									{"Vertex","Clear Bone Attachments",model_menu_item_VertexClearBones,os_menu_key_none,0x0},
 									{"Vertex","Auto Set Bone Attachments",model_menu_item_VertexAutoBones,os_menu_key_none,0x0},
-									{"Vertex","",0,os_menu_key_none,0x0},
-									{"Vertex","Hide Selected",model_menu_item_VertexHideSelected,os_menu_key_none,0x0},
-									{"Vertex","Hide Non-Selected",model_menu_item_VertexHideNonSelected,os_menu_key_none,0x0},
-									{"Vertex","Show All",model_menu_item_VertexShowAll,os_menu_key_none,0x0},
 									{"Vertex","",0,os_menu_key_none,0x0},
 									{"Vertex","Collapse Selected Vertexes",model_menu_item_VertexCollapseSelected,os_menu_key_none,0x0},
 									{"Vertex","Collapse Similar Vertexes",model_menu_item_VertexCollapseSimilar,os_menu_key_none,0x0},
@@ -139,6 +142,8 @@ os_menu_item_type		model_menu_setup[]=
 									{"Bone","Set Bone...",model_menu_item_SetBone,os_menu_key_none,0x0},
 									{"Bone","",0,os_menu_key_none,0x0},
 									{"Bone","Goto Parent Bone",model_menu_item_GoToParentBone,os_menu_key_cmd_opt,'B'},
+									{"Bone","",0,os_menu_key_none,0x0},
+									{"Bone","Duplicate Bone Attachments",model_menu_item_DuplicateBoneAttach,os_menu_key_none,0x0},
 
 										// pose menu
 
@@ -287,6 +292,11 @@ bool model_menu_event_run(int cmd)
 		case model_menu_item_CalcNormals:
             model_recalc_normals(&model,FALSE);
             main_wind_draw();
+			return(TRUE);
+			
+		case model_menu_item_ImportAnimation:
+			model_file_import_animations();
+			main_wind_draw();
 			return(TRUE);
            
 		case model_menu_item_ScaleAll:
@@ -467,9 +477,30 @@ bool model_menu_event_run(int cmd)
 			main_wind_draw();
 			return(TRUE);
 			
+		case model_menu_item_VertexSelectAttached:
+			state.model.select_mode=select_mode_vertex;
+			model_vertex_mask_set_sel_has_bone(state.model.cur_mesh_idx);
+			main_wind_draw();
+			return(TRUE);
+			
 		case model_menu_item_VertexSelectNotAttached:
 			state.model.select_mode=select_mode_vertex;
 			model_vertex_mask_set_sel_no_bone(state.model.cur_mesh_idx);
+			main_wind_draw();
+			return(TRUE);
+			
+		case model_menu_item_VertexShowAll:
+			model_vertex_mask_hide_show_all_vertexes(state.model.cur_mesh_idx);
+			main_wind_draw();
+			return(TRUE);
+			
+		case model_menu_item_VertexHideSelected:
+			model_vertex_mask_hide_set_sel_vertexes(state.model.cur_mesh_idx);
+			main_wind_draw();
+			return(TRUE);
+			
+		case model_menu_item_VertexHideNonSelected:
+			model_vertex_mask_hide_set_non_sel_vertexes(state.model.cur_mesh_idx);
 			main_wind_draw();
 			return(TRUE);
 			
@@ -505,21 +536,6 @@ bool model_menu_event_run(int cmd)
 			main_wind_draw();
 			return(TRUE);
 				
-		case model_menu_item_VertexHideSelected:
-			model_vertex_mask_hide_set_sel_vertexes(state.model.cur_mesh_idx);
-			main_wind_draw();
-			return(TRUE);
-			
-		case model_menu_item_VertexHideNonSelected:
-			model_vertex_mask_hide_set_non_sel_vertexes(state.model.cur_mesh_idx);
-			main_wind_draw();
-			return(TRUE);
-			
-		case model_menu_item_VertexShowAll:
-			model_vertex_mask_hide_show_all_vertexes(state.model.cur_mesh_idx);
-			main_wind_draw();
-			return(TRUE);
-			
 		case model_menu_item_VertexDelete:
 			state.model.select_mode=select_mode_vertex;
 			model_vertex_delete_sel_vertex(state.model.cur_mesh_idx);
@@ -572,6 +588,10 @@ bool model_menu_event_run(int cmd)
 			parent_idx=model.bones[state.model.cur_bone_idx].parent_idx;
 			if (parent_idx!=-1) state.model.cur_bone_idx=parent_idx;
 
+			main_wind_draw();
+			return(TRUE);
+			
+		case model_menu_item_DuplicateBoneAttach:
 			main_wind_draw();
 			return(TRUE);
 			

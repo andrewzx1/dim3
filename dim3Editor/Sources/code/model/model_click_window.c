@@ -640,7 +640,7 @@ void change_model_wind(d3pnt *start_pnt,bool shift_on,bool rotate_on,bool size_o
       
 ======================================================= */
 
-bool draw_bone_model_wind_click_box(d3pnt *click_pnt,d3fpnt *pnt)
+bool model_wind_draw_bone_click_box(d3pnt *click_pnt,d3fpnt *pnt)
 {
 	d3pnt			tran_pnt;
 	
@@ -648,7 +648,7 @@ bool draw_bone_model_wind_click_box(d3pnt *click_pnt,d3fpnt *pnt)
 	return((click_pnt->x>=(tran_pnt.x-6)) && (click_pnt->x<=(tran_pnt.x+6)) && (click_pnt->y>=(tran_pnt.y-6)) && (click_pnt->y<=(tran_pnt.y+6)));
 }
 
-bool drag_bone_model_wind(d3pnt *start_pnt)
+bool model_wind_bone_click(d3pnt *start_pnt,bool double_click)
 {
 	int						n,k,x,drag_handle;
 	float					org_ang,org_mov,
@@ -702,7 +702,7 @@ bool drag_bone_model_wind(d3pnt *start_pnt)
 		hang.y=rot.y+bone->natural_rot.y;
 		hang.z=rot.z+bone->natural_rot.z;
 		model_draw_bones_drag_handle_calc(&bone_pnt,&vct,&hang,&hand_pnt);
-		if (draw_bone_model_wind_click_box(start_pnt,&hand_pnt)) drag_handle=drag_handle_x;
+		if (model_wind_draw_bone_click_box(start_pnt,&hand_pnt)) drag_handle=drag_handle_x;
 		
 			// y drag bone
 			
@@ -713,7 +713,7 @@ bool drag_bone_model_wind(d3pnt *start_pnt)
 		hang.y=bone->natural_rot.y;
 		hang.z=rot.z+bone->natural_rot.z;
 		model_draw_bones_drag_handle_calc(&bone_pnt,&vct,&hang,&hand_pnt);
-		if (draw_bone_model_wind_click_box(start_pnt,&hand_pnt)) drag_handle=drag_handle_y;
+		if (model_wind_draw_bone_click_box(start_pnt,&hand_pnt)) drag_handle=drag_handle_y;
 		
 			// z drag bone
 			
@@ -724,7 +724,7 @@ bool drag_bone_model_wind(d3pnt *start_pnt)
 		hang.y=rot.y+bone->natural_rot.y;
 		hang.z=+bone->natural_rot.z;
 		model_draw_bones_drag_handle_calc(&bone_pnt,&vct,&hang,&hand_pnt);
-		if (draw_bone_model_wind_click_box(start_pnt,&hand_pnt)) drag_handle=drag_handle_z;
+		if (model_wind_draw_bone_click_box(start_pnt,&hand_pnt)) drag_handle=drag_handle_z;
 	}
 	
 		// click on any bones?
@@ -739,7 +739,7 @@ bool drag_bone_model_wind(d3pnt *start_pnt)
 			bone_pnt.y=draw_bone->fpnt.y+draw_setup.move.y;
 			bone_pnt.z=draw_bone->fpnt.z+draw_setup.move.z;
 			
-			if (draw_bone_model_wind_click_box(start_pnt,&bone_pnt)) {
+			if (model_wind_draw_bone_click_box(start_pnt,&bone_pnt)) {
 				k=n;
 				break;
 			}
@@ -758,6 +758,10 @@ bool drag_bone_model_wind(d3pnt *start_pnt)
 		if (state.model.sel_vertex_with_bone) model_vertex_mask_set_sel_bone(state.model.cur_mesh_idx,state.model.cur_bone_idx);
 
 		list_palette_set_level(&model_palette,1);
+		
+			// double click selects vertexes
+			
+		if (double_click) model_vertex_mask_set_sel_bone(state.model.cur_mesh_idx,state.model.cur_bone_idx);
 
 		main_wind_draw();
 
@@ -839,7 +843,7 @@ bool drag_bone_model_wind(d3pnt *start_pnt)
       
 ======================================================= */
 
-bool drag_hit_box_handle_model_wind(d3pnt *start_pnt)
+bool model_wind_hit_box_click(d3pnt *start_pnt)
 {
 	int						n,k,box_idx,pt_idx,xsz,zsz,ysz,offx,offz,offy,
 							kx,ky,kz;
@@ -887,7 +891,7 @@ bool drag_hit_box_handle_model_wind(d3pnt *start_pnt)
 			hand_pnt.x=(float)edge_pnt[k].x;
 			hand_pnt.y=(float)edge_pnt[k].y;
 			hand_pnt.z=(float)edge_pnt[k].z;
-			if (draw_bone_model_wind_click_box(start_pnt,&hand_pnt)) {
+			if (model_wind_draw_bone_click_box(start_pnt,&hand_pnt)) {
 				box_idx=n;
 				pt_idx=k;
 				break;
@@ -997,7 +1001,7 @@ bool model_wind_click_mesh_show(d3pnt *pnt)
       
 ======================================================= */
 
-void model_wind_click(d3pnt *pnt)
+void model_wind_click(d3pnt *pnt,bool double_click)
 {
 	bool			shift_on,rotate_on,size_on;
 	d3rect			mbox;
@@ -1025,11 +1029,11 @@ void model_wind_click(d3pnt *pnt)
 	}
 	
 	if (state.model.bone) {
-		if (drag_bone_model_wind(pnt)) return;
+		if (model_wind_bone_click(pnt,double_click)) return;
 	}
 	
 	if (state.model.hit_box) {
-		drag_hit_box_handle_model_wind(pnt);
+		model_wind_hit_box_click(pnt);
 		return;
 	}
 		

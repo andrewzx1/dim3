@@ -262,6 +262,7 @@ void model_poly_mask_select_more(int mesh_idx)
 
 			if (model_poly_mask_check_hide(mesh_idx,k)) continue;
 			poly2=&model.meshes[mesh_idx].polys[k];
+			if (model_vertex_mask_check_hide_poly(mesh_idx,poly2)) continue;
 
 				// check for shared edges
 

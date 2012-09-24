@@ -46,6 +46,7 @@ extern bool main_wind_menu_event_run(int cmd);
 extern void main_wind_set_title(void);
 extern bool main_wind_switch_mode(int mode);
 extern void main_wind_gl_setup(void);
+extern void main_wind_timer(void);
 extern void main_wind_draw(void);
 extern void main_wind_draw_no_swap(void);
 extern void main_wind_click(d3pnt *pnt,bool double_click);
@@ -828,6 +829,7 @@ extern bool model_file_save(void);
 extern bool model_file_close(void);
 extern void model_file_import_mesh_obj(bool replace);
 extern void model_file_insert_mesh_dim3_model(void);
+extern void model_file_import_animations(void);
 
 //
 // model undo
@@ -865,7 +867,8 @@ extern void model_piece_delete_hit_box(int hit_box_idx);
 //
 
 extern bool model_import_obj(char *path,bool replace,bool *found_normals,char *err_str);
-extern void model_insert(char *file_name);
+extern void model_insert_mesh(char *file_name);
+extern void model_insert_animations(char *file_name);
 
 extern int model_texture_count(void);
 extern bool model_texture_exists(char *material_name);
@@ -878,7 +881,7 @@ extern int model_texture_pick(char *material_name,char *err_str);
 extern void model_play(int play_mode);
 extern void model_view_draw(void);
 extern void model_wind_get_box(d3rect *box);
-extern void model_wind_click(d3pnt *pnt);
+extern void model_wind_click(d3pnt *pnt,bool double_click);
 extern void model_draw(int mesh_idx);
 extern void model_draw_mesh(int mesh_idx);
 extern void model_draw_bones(int sel_bone_idx);
@@ -922,6 +925,7 @@ extern void model_vertex_mask_hide_set_non_sel_vertexes(int mesh_idx);
 extern void model_vertex_mask_hide_show_all_vertexes(int mesh_idx);
 extern bool model_vertex_mask_check_hide_poly(int mesh_idx,model_poly_type *poly);
 extern void model_vertex_mask_set_sel_bone(int mesh_idx,int bone_idx);
+extern void model_vertex_mask_set_sel_has_bone(int mesh_idx);
 extern void model_vertex_mask_set_sel_no_bone(int mesh_idx);
 extern void model_vertex_mask_set_sel_near_bone(int mesh_idx,int bone_idx,float percentage);
 extern void model_vertex_mask_set_sel_vertex_to_bone(int mesh_idx,int major_bone_idx,int minor_bone_idx,float factor);

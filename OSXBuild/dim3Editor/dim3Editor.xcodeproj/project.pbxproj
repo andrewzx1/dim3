@@ -79,6 +79,7 @@
 		2621462C16050A5100F18538 /* spot.png in Copy Item Icons */ = {isa = PBXBuildFile; fileRef = 262145861605040300F18538 /* spot.png */; };
 		2653251F160149DF00061FB8 /* main_app.c in Sources */ = {isa = PBXBuildFile; fileRef = 2653251D160149DF00061FB8 /* main_app.c */; };
 		26532520160149DF00061FB8 /* main_window.c in Sources */ = {isa = PBXBuildFile; fileRef = 2653251E160149DF00061FB8 /* main_window.c */; };
+		2653B6D2160D76A300EE0CD7 /* DialogOutlineDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 2653B6D1160D76A300EE0CD7 /* DialogOutlineDataSource.m */; };
 		2658269014F31CE200245C24 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2658268F14F31CE200245C24 /* OpenGL.framework */; };
 		2658269114F31D3A00245C24 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26900AD714F2044F008026D5 /* AppKit.framework */; };
 		265A6310150B28CC0063EEDD /* dim3 Editor.app in Copy Application */ = {isa = PBXBuildFile; fileRef = 26900AD014F2044F008026D5 /* dim3 Editor.app */; };
@@ -165,7 +166,6 @@
 		26C1DFFA160044CF007FDAC7 /* model_util_texture.c in Sources */ = {isa = PBXBuildFile; fileRef = 26C1DFE4160044CF007FDAC7 /* model_util_texture.c */; };
 		26C1DFFB160044CF007FDAC7 /* model_util_transform.c in Sources */ = {isa = PBXBuildFile; fileRef = 26C1DFE5160044CF007FDAC7 /* model_util_transform.c */; };
 		26C2CB8D1606B427004B25A8 /* dim3 Editor.icns in Resources */ = {isa = PBXBuildFile; fileRef = 26C2CB8C1606B427004B25A8 /* dim3 Editor.icns */; };
-		26C2CB971606B51E004B25A8 /* dim3Editor-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 26C2CB961606B51E004B25A8 /* dim3Editor-Info.plist */; };
 		26E4021714F4721D0059C798 /* libPNG.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 26E4021514F4721D0059C798 /* libPNG.a */; };
 		26E4022714F4B3ED0059C798 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26E4022614F4B3ED0059C798 /* Foundation.framework */; };
 		26F278F41606CB96007470ED /* DialogView.m in Sources */ = {isa = PBXBuildFile; fileRef = 26F278F31606CB96007470ED /* DialogView.m */; };
@@ -542,6 +542,8 @@
 		262145861605040300F18538 /* spot.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = spot.png; sourceTree = "<group>"; };
 		2653251D160149DF00061FB8 /* main_app.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = main_app.c; path = Sources/windows/main_app.c; sourceTree = "<group>"; };
 		2653251E160149DF00061FB8 /* main_window.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = main_window.c; path = Sources/windows/main_window.c; sourceTree = "<group>"; };
+		2653B6D0160D76A300EE0CD7 /* DialogOutlineDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DialogOutlineDataSource.h; path = dim3Editor/DialogOutlineDataSource.h; sourceTree = SOURCE_ROOT; };
+		2653B6D1160D76A300EE0CD7 /* DialogOutlineDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DialogOutlineDataSource.m; path = dim3Editor/DialogOutlineDataSource.m; sourceTree = SOURCE_ROOT; };
 		2658268F14F31CE200245C24 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/OpenGL.framework; sourceTree = DEVELOPER_DIR; };
 		265AB41715FEEE99005CDBB0 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = dim3Editor/AppDelegate.h; sourceTree = SOURCE_ROOT; };
 		265AB41815FEEE99005CDBB0 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = dim3Editor/AppDelegate.m; sourceTree = SOURCE_ROOT; };
@@ -1192,6 +1194,8 @@
 				265AB42015FEEED9005CDBB0 /* OSX_glue.m */,
 				26F278F21606CB96007470ED /* DialogView.h */,
 				26F278F31606CB96007470ED /* DialogView.m */,
+				2653B6D0160D76A300EE0CD7 /* DialogOutlineDataSource.h */,
+				2653B6D1160D76A300EE0CD7 /* DialogOutlineDataSource.m */,
 			);
 			name = OSXCode;
 			sourceTree = "<group>";
@@ -1583,7 +1587,6 @@
 				265AB42B15FEEF3E005CDBB0 /* MainMenu.xib in Resources */,
 				265AB42815FEEF39005CDBB0 /* InfoPlist.strings in Resources */,
 				26C2CB8D1606B427004B25A8 /* dim3 Editor.icns in Resources */,
-				26C2CB971606B51E004B25A8 /* dim3Editor-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1840,6 +1843,7 @@
 				26532520160149DF00061FB8 /* main_window.c in Sources */,
 				26973C3E1602EB1600167FD2 /* View.m in Sources */,
 				26F278F41606CB96007470ED /* DialogView.m in Sources */,
+				2653B6D2160D76A300EE0CD7 /* DialogOutlineDataSource.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

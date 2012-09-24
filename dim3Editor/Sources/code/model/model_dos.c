@@ -364,7 +364,7 @@ void model_file_insert_mesh_dim3_model(void)
 	
 	os_set_wait_cursor();
 	
-	model_insert(file_name);
+	model_insert_mesh(file_name);
 	
     model_calculate_parents(&model);
     model_center_xz(&model,state.model.cur_mesh_idx);
@@ -376,3 +376,27 @@ void model_file_insert_mesh_dim3_model(void)
 	main_wind_draw();
 }
 
+/* =======================================================
+
+      Insert Animations
+      
+======================================================= */
+
+void model_file_import_animations(void)
+{
+	char			file_name[256];
+	
+	os_set_arrow_cursor();
+
+    if (!dialog_file_open_run("Open a Model","Models",NULL,"Mesh.xml;Model.xml",file_name)) return;
+	
+	os_set_wait_cursor();
+	
+	model_insert_animations(file_name);
+	
+    model_calculate_parents(&model);
+	
+	os_set_arrow_cursor();
+	
+	main_wind_draw();
+}
