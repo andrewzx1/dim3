@@ -286,7 +286,7 @@ bool model_vertex_mask_check_hide_poly(int mesh_idx,model_poly_type *poly)
 
 void model_vertex_mask_set_sel_bone(int mesh_idx,int bone_idx)
 {
-	int					i,nt;
+	int					n,nt;
 	model_vertex_type	*vertex;
 	
 		// clear selection
@@ -299,19 +299,17 @@ void model_vertex_mask_set_sel_bone(int mesh_idx,int bone_idx)
 		
 	vertex=model.meshes[mesh_idx].vertexes;
 	
-	for (i=0;i!=nt;i++) {
-	
+	for (n=0;n!=nt;n++) {
 		if ((vertex->major_bone_idx==bone_idx) || (vertex->minor_bone_idx==bone_idx)) {
-			if (!model_vertex_mask_check_hide(mesh_idx,i)) model_vertex_mask_set_sel(mesh_idx,i,TRUE);
+			if (!model_vertex_mask_check_hide(mesh_idx,n)) model_vertex_mask_set_sel(mesh_idx,n,TRUE);
 		}
-		
 		vertex++;
 	}
 }
 
-void model_vertex_mask_set_sel_no_bone(int mesh_idx)
+void model_vertex_mask_set_sel_has_bone(int mesh_idx)
 {
-	int					i,nt;
+	int					n,nt;
 	model_vertex_type	*vertex;
 	
 		// clear selection
@@ -324,19 +322,40 @@ void model_vertex_mask_set_sel_no_bone(int mesh_idx)
 		
 	vertex=model.meshes[mesh_idx].vertexes;
 	
-	for (i=0;i!=nt;i++) {
-	
-		if ((vertex->major_bone_idx==-1) && (vertex->minor_bone_idx==-1)) {
-			if (!model_vertex_mask_check_hide(mesh_idx,i)) model_vertex_mask_set_sel(mesh_idx,i,TRUE);
+	for (n=0;n!=nt;n++) {
+		if ((vertex->major_bone_idx!=-1) || (vertex->minor_bone_idx!=-1)) {
+			if (!model_vertex_mask_check_hide(mesh_idx,n)) model_vertex_mask_set_sel(mesh_idx,n,TRUE);
 		}
+		vertex++;
+	}
+}
+
+void model_vertex_mask_set_sel_no_bone(int mesh_idx)
+{
+	int					n,nt;
+	model_vertex_type	*vertex;
+	
+		// clear selection
 		
+	model_vertex_mask_clear_sel(mesh_idx);
+	
+		// find vertexes to no bone
+
+	nt=model.meshes[mesh_idx].nvertex;
+		
+	vertex=model.meshes[mesh_idx].vertexes;
+	
+	for (n=0;n!=nt;n++) {
+		if ((vertex->major_bone_idx==-1) && (vertex->minor_bone_idx==-1)) {
+			if (!model_vertex_mask_check_hide(mesh_idx,n)) model_vertex_mask_set_sel(mesh_idx,n,TRUE);
+		}
 		vertex++;
 	}
 }
 
 void model_vertex_mask_set_sel_near_bone(int mesh_idx,int bone_idx,float percentage)
 {
-	int					i,nt,x,y,z,v_dist,dist;
+	int					n,nt,x,y,z,v_dist,dist;
 	model_bone_type		*bone;
 	model_vertex_type	*vertex;
 	
@@ -360,14 +379,14 @@ void model_vertex_mask_set_sel_near_bone(int mesh_idx,int bone_idx,float percent
 	nt=model.meshes[mesh_idx].nvertex;
 	vertex=model.meshes[mesh_idx].vertexes;
 	
-	for (i=0;i!=nt;i++) {
+	for (n=0;n!=nt;n++) {
 	
 		x=labs(bone->pnt.x-vertex->pnt.x);
 		z=labs(bone->pnt.z-vertex->pnt.z);
 		y=labs(bone->pnt.y-vertex->pnt.y);
 		dist=(int)(sqrt((x*x)+(z*z)+(y*y)));
 	
-		if (dist<v_dist) model_vertex_mask_set_sel(mesh_idx,i,TRUE);
+		if (dist<v_dist) model_vertex_mask_set_sel(mesh_idx,n,TRUE);
 	
 		vertex++;
 	}

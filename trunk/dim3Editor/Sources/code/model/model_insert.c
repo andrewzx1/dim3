@@ -39,11 +39,11 @@ extern app_state_type			state;
 
 /* =======================================================
 
-      Insert One Model Into Another
+      Insert One Model Mesh Into Another
       
 ======================================================= */
 
-void model_insert(char *file_name)
+void model_insert_mesh(char *file_name)
 {
 	int						n,k,t,b_off,v_off,t_off,nvertex,npoly,idx,
 							parent_indexes[max_model_bone];
@@ -198,4 +198,39 @@ void model_insert(char *file_name)
 		
 	model_close(&ins_model);
 }
+
+/* =======================================================
+
+      Insert One Model Animations Into Another
+      
+======================================================= */
+
+void model_insert_animations(char *file_name)
+{
+		// open model
+
+	model_open(&ins_model,file_name,TRUE);
+	
+		// bring in the bones, poses, animations
+		
+	model.nbone=ins_model.nbone;
+	if (model.bones!=NULL) free(model.bones);
+	model.bones=ins_model.bones;
+	ins_model.bones=NULL;
+
+	model.npose=ins_model.npose;
+	if (model.poses!=NULL) free(model.poses);
+	model.poses=ins_model.poses;
+	ins_model.poses=NULL;
+	
+	model.nanimate=ins_model.nanimate;
+	if (model.animates!=NULL) free(model.animates);
+	model.animates=ins_model.animates;
+	ins_model.animates=NULL;
+	
+		// close model
+		
+	model_close(&ins_model);
+}
+
 

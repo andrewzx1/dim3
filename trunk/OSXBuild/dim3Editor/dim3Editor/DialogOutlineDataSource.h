@@ -2,7 +2,7 @@
 
 Module: dim3 Editor
 Author: Brian Barnes
- Usage: Obj-C Dialog Delegate
+ Usage: Obj-C Dialog Outline DataSource
 
 ***************************** License ********************************
 
@@ -25,39 +25,11 @@ and can be sold or given away.
  
 *********************************************************************/
 
-#import "DialogView.h"
+#import <Cocoa/Cocoa.h>
 
-#include "glue.h"
-#include "interface.h"
+@interface DialogOutlineDataSource : NSObject <NSOutlineViewDataSource>
 
-extern os_dialog_callback_ptr			diag_callback;
-
-@implementation DialogView
-
-/* =======================================================
-
-      Clicking Messages
-	        
-======================================================= */
-
--(IBAction)diagButtonDown:(id)sender
-{
-	(*diag_callback)(os_dialog_msg_type_command,(int)[(NSControl*)sender tag]);
-}
-
--(IBAction)diagComboPick:(id)sender
-{
-	(*diag_callback)(os_dialog_msg_type_command,(int)[(NSControl*)sender tag]);
-}
-
--(IBAction)fileClick:(id)sender
-{
-	(*diag_callback)(os_dialog_msg_type_tree_change,(int)[(NSControl*)sender tag]);
-}
-
--(IBAction)fileDoubleClick:(id)sender
-{
-	(*diag_callback)(os_dialog_msg_type_tree_double_click,(int)[(NSControl*)sender tag]);
-}
+-(void)setupStrings;
+-(void)freeStrings;
 
 @end

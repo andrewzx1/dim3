@@ -69,6 +69,7 @@ and can be sold or given away.
 	view=[[View alloc] initWithFrame:windRect];
 	[window setContentView:view];
 	[window setDelegate:view];
+	[window setAcceptsMouseMovedEvents:YES];
 	
 		// display the window
 

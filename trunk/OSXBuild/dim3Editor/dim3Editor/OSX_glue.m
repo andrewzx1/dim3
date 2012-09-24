@@ -28,6 +28,7 @@ and can be sold or given away.
 #import "AppDelegate.h"
 #import "View.h"
 #import "DialogView.h"
+#import "DialogOutlineDataSource.h"
 
 #include "glue.h"
 
@@ -40,6 +41,7 @@ int								diagControlCount;
 NSWindow						*diagWindow;
 DialogView						*diagView;
 NSControl						*diagControls[64];
+file_path_directory_type		*diag_fpd;
 os_dialog_callback_ptr			diag_callback;
 
 NSTimer							*os_timer;
@@ -155,13 +157,13 @@ void os_swap_gl_buffer(void)
 void os_start_timer(void)
 {
 	if (os_timer!=nil) return;
-	os_timer=[NSTimer scheduledTimerWithInterval:0.01 target:[NSApp delegate] selector:@"timerFire" userInfo:nil repeats:YES];
+	os_timer=[NSTimer scheduledTimerWithTimeInterval:0.01 target:[NSApp delegate] selector:@selector(timerFire:) userInfo:nil repeats:YES];
 }
 
 void os_end_timer(void)
 {
 	[os_timer invalidate];
-	ot_timer=nil;
+	os_timer=nil;
 }
     
 /* =======================================================
@@ -623,12 +625,16 @@ bool os_dialog_run(char *title,int wid,int high,os_dialog_ctrl_type *ctrls,void 
 	int						n,idx,result,deskWid,deskHigh;
 	NSUInteger				styleMask;
 	NSString				*nsTitle;
-	NSRect					deskTopRect,frame;
+	NSRect					deskTopRect,frame,innerFrame;
 	NSModalSession			modalSession;
 	NSButton				*btn;
 	NSTextField				*txt;
 	NSPopUpButton			*combo;
-	NSBrowser				*browser;
+	NSOutlineView			*outline;
+	NSCell					*outlineCell;
+	NSTableColumn			*outlineCol;
+	NSScrollView			*outlineScroll;
+	DialogOutlineDataSource	*outlineDataSource;
 	os_dialog_ctrl_type		*ctrl;
 	
 		// get desktop window
@@ -654,6 +660,11 @@ bool os_dialog_run(char *title,int wid,int high,os_dialog_ctrl_type *ctrls,void 
 	diagView=[[DialogView alloc] initWithFrame:frame];
 	[diagWindow setContentView:diagView];
 	[diagWindow setDelegate:diagView];
+	
+		// no outline view yet
+		
+	outlineDataSource=nil;
+	diag_fpd=NULL;
 	
 		// add the controls
 		
@@ -728,11 +739,39 @@ bool os_dialog_run(char *title,int wid,int high,os_dialog_ctrl_type *ctrls,void 
 				break;
 				
 			case os_dialog_ctrl_type_files:
-				browser=[[NSBrowser alloc] initWithFrame:frame];
-				[[diagWindow contentView] addSubview:browser];
-				[browser setTarget:diagView];
-				[browser setAction:@selector(browserPick:)];
-				diagControls[idx]=browser;
+				frame.origin.x+=4.0f;
+				frame.origin.y+=4.0f;
+				frame.size.width-=8.0f;
+				frame.size.height-=8.0f;
+				
+				innerFrame=frame;
+				innerFrame.size.width-=28;
+				
+				outlineDataSource=[[DialogOutlineDataSource alloc] init];
+				outline=[[NSOutlineView alloc] initWithFrame:innerFrame];
+				[outline setAutoresizesOutlineColumn:NO];
+				[outline setTarget:diagView];
+				[outline setAction:@selector(fileClick:)];
+				[outline setDoubleAction:@selector(fileDoubleClick:)];
+				[outline setDataSource:outlineDataSource];
+				
+				outlineCol=[[NSTableColumn alloc] initWithIdentifier:@"FILE"];
+				outlineCell=[outlineCol headerCell];
+				[outlineCell setTitle:@"Files"];
+				[outlineCol setHeaderCell:outlineCell];
+				[outlineCol setEditable:NO];
+				[outlineCol setMinWidth:innerFrame.size.width];
+				[outline addTableColumn:outlineCol];
+				[outline setOutlineTableColumn:outlineCol];
+				[outlineCol release];
+				
+				outlineScroll=[[NSScrollView alloc] initWithFrame:frame];
+				[outlineScroll setHasVerticalScroller:YES];
+				[outlineScroll setDocumentView:outline];
+
+				[[diagWindow contentView] addSubview:outlineScroll];
+				
+				diagControls[idx]=outline;
 				break;
 
 		}
@@ -769,7 +808,12 @@ bool os_dialog_run(char *title,int wid,int high,os_dialog_ctrl_type *ctrls,void 
 		[diagControls[n] removeFromSuperviewWithoutNeedingDisplay];
 		[diagControls[n] release];
 	}
-		
+	
+	if (outlineDataSource!=nil) {
+		[outlineDataSource freeStrings];
+		[outlineDataSource release];
+	}
+	
 	[diagView removeFromSuperviewWithoutNeedingDisplay];
 	[diagView release];
 	
@@ -891,11 +935,21 @@ int os_dialog_combo_get_value(int id)
 
 void os_dialog_tree_add(int id,file_path_directory_type *fpd)
 {
+	NSOutlineView		*outline;
+	
+	diag_fpd=fpd;
+	
+	outline=(NSOutlineView*)os_dialog_id_to_ctrl(id);
+	[(DialogOutlineDataSource*)[outline dataSource] setupStrings];
+	[outline reloadData];
 }
 
 int os_dialog_tree_get_value(int id)
 {
-	return(0);
+	NSOutlineView		*outline;
+	
+	outline=(NSOutlineView*)os_dialog_id_to_ctrl(id);
+	return((int)[outline selectedRow]);
 }
 
 void os_dialog_set_focus(int id,bool select_all)

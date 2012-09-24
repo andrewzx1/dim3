@@ -539,7 +539,7 @@ void main_wind_click_model(d3pnt *pnt,bool double_click)
 	state.model.play_mode=model_play_mode_stop;
 
 	if (state.model.texture_edit_idx==-1) {
-		model_wind_click(pnt);
+		model_wind_click(pnt,double_click);
 	}
 	else {
 		texture_edit_click(pnt,double_click);
@@ -635,7 +635,7 @@ void main_wind_scroll_wheel_model(d3pnt *pnt,int delta)
 		// scroll wheel in model
 
 	if (state.model.texture_edit_idx==-1) {
-		state.model.magnify_z+=(delta*20);
+		state.model.magnify_z-=(delta*20);
 		main_wind_draw();
 	}
 	else {
