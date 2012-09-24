@@ -755,13 +755,9 @@ bool model_wind_bone_click(d3pnt *start_pnt,bool double_click)
 		state.model.cur_bone_idx=k;
 		model_palette_scroll_into_view(item_model_bone,state.model.cur_bone_idx);
 
-		if (state.model.sel_vertex_with_bone) model_vertex_mask_set_sel_bone(state.model.cur_mesh_idx,state.model.cur_bone_idx);
+		if ((state.model.sel_vertex_with_bone) || (double_click)) model_vertex_mask_set_sel_bone(state.model.cur_mesh_idx,state.model.cur_bone_idx);
 
 		list_palette_set_level(&model_palette,1);
-		
-			// double click selects vertexes
-			
-		if (double_click) model_vertex_mask_set_sel_bone(state.model.cur_mesh_idx,state.model.cur_bone_idx);
 
 		main_wind_draw();
 

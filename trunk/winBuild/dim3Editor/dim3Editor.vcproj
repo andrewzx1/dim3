@@ -825,6 +825,10 @@
 							>
 						</File>
 						<File
+							RelativePath="..\..\dim3Editor\Sources\dialogs\model\dialog_bone_attach_duplicate.c"
+							>
+						</File>
+						<File
 							RelativePath="..\..\dim3Editor\Sources\dialogs\model\dialog_finish_import.c"
 							>
 						</File>

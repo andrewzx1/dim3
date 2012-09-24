@@ -592,6 +592,7 @@ bool model_menu_event_run(int cmd)
 			return(TRUE);
 			
 		case model_menu_item_DuplicateBoneAttach:
+			model_bone_attach_duplicate(state.model.cur_mesh_idx);
 			main_wind_draw();
 			return(TRUE);
 			

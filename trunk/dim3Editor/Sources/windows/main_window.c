@@ -635,7 +635,7 @@ void main_wind_scroll_wheel_model(d3pnt *pnt,int delta)
 		// scroll wheel in model
 
 	if (state.model.texture_edit_idx==-1) {
-		state.model.magnify_z-=(delta*20);
+		state.model.magnify_z+=(delta*20);
 		main_wind_draw();
 	}
 	else {
