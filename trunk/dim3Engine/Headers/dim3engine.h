@@ -40,12 +40,6 @@ and can be sold or given away.
 #include "mpg123.h"
 
 //
-// OpenRL Mode
-//
-
-//#define OpenRL				1
-
-//
 // Utility Headers
 //
 

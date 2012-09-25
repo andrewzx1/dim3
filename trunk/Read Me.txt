@@ -76,6 +76,9 @@ The win32 projects are in the winbuild directory.
 
 Pre-processor Macros:
 
-D3_ENGINE, D3_EDITOR, D3_ANIMATOR, D3_SETUP = which program we are compiling
+D3_ENGINE, D3_EDITOR = which program we are compiling for
 TARGET_IPHONE = for the iphone compile
+D3_PCH = if precompiled header file needs to be included in source (OS X compile doesn't need it, win32 does)
+D3_OPENRL = for experimental OpenRL compile
+
 
