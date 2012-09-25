@@ -34,12 +34,14 @@ and can be sold or given away.
 
 extern model_type			model;
 
-int							*dialog_from_bone_idx,*dialog_to_bone_idx;
+int							*dialog_from_bone_idx,*dialog_to_bone_idx,
+							*dialog_vertex_slop;
 
 // controls
 
 #define diag_prop_bone_attach_from		5000
 #define diag_prop_bone_attach_to		5001
+#define diag_prop_bone_attach_slop		5002
 #define diag_prop_bone_attach_cancel	5003
 #define diag_prop_bone_attach_ok		5004
 
@@ -49,8 +51,10 @@ os_dialog_ctrl_type		diag_property_bone_attach_ctrls[]={
 							{os_dialog_ctrl_type_combo,diag_prop_bone_attach_from,"",90,40,310,20},
 							{os_dialog_ctrl_type_text_right,0,"To Bone:",10,70,75,20},
 							{os_dialog_ctrl_type_combo,diag_prop_bone_attach_to,"",90,70,310,20},
-							{os_dialog_ctrl_type_button,diag_prop_bone_attach_cancel,"Cancel",250,100,80,25},
-							{os_dialog_ctrl_type_default_button,diag_prop_bone_attach_ok,"OK",340,100,80,25},
+							{os_dialog_ctrl_type_text_right,0,"Within:",10,100,75,20},
+							{os_dialog_ctrl_type_text_edit,diag_prop_bone_attach_slop,"",90,100,100,20},
+							{os_dialog_ctrl_type_button,diag_prop_bone_attach_cancel,"Cancel",250,130,80,25},
+							{os_dialog_ctrl_type_default_button,diag_prop_bone_attach_ok,"OK",340,130,80,25},
 							{-1,-1,"",0,0,0,0}
 						};
 
@@ -67,6 +71,8 @@ void dialog_property_bone_attach_proc(int msg_type,int id)
 		case os_dialog_msg_type_init:
 			dialog_set_vertex_bone_set_bone_combo(diag_prop_bone_attach_to,-1);
 			dialog_set_vertex_bone_set_bone_combo(diag_prop_bone_attach_from,-1);
+			os_dialog_set_int(diag_prop_bone_attach_slop,0);
+			os_dialog_set_focus(diag_prop_bone_attach_slop,TRUE);
 			break;
 
 		case os_dialog_msg_type_command:
@@ -77,8 +83,9 @@ void dialog_property_bone_attach_proc(int msg_type,int id)
 			}
 
 			if (id==diag_prop_bone_attach_ok) {
-				*dialog_from_bone_idx=dialog_set_vertex_bone_get_bone_combo(diag_prop_bone_attach_to);
-				*dialog_to_bone_idx=dialog_set_vertex_bone_get_bone_combo(diag_prop_bone_attach_from);
+				*dialog_from_bone_idx=dialog_set_vertex_bone_get_bone_combo(diag_prop_bone_attach_from);
+				*dialog_to_bone_idx=dialog_set_vertex_bone_get_bone_combo(diag_prop_bone_attach_to);
+				*dialog_vertex_slop=os_dialog_get_int(diag_prop_bone_attach_slop);
 				os_dialog_close(TRUE);
 				return;
 			}
@@ -87,14 +94,15 @@ void dialog_property_bone_attach_proc(int msg_type,int id)
 	}
 }
 
-bool dialog_bone_attach_duplicate_run(int *from_bone_idx,int *to_bone_idx)
+bool dialog_bone_attach_duplicate_run(int *from_bone_idx,int *to_bone_idx,int *vertex_slop)
 {
 	bool				ok;
 
 	dialog_from_bone_idx=from_bone_idx;
 	dialog_to_bone_idx=to_bone_idx;
+	dialog_vertex_slop=vertex_slop;
 
-	ok=os_dialog_run("Duplicate Bone Attachments",425,130,diag_property_bone_attach_ctrls,dialog_property_bone_attach_proc);
+	ok=os_dialog_run("Duplicate Bone Attachments",425,160,diag_property_bone_attach_ctrls,dialog_property_bone_attach_proc);
 
 	if ((*dialog_from_bone_idx==-1) || (*dialog_to_bone_idx==-1)) return(FALSE);
 	return(ok);
