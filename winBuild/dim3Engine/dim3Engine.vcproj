@@ -48,8 +48,8 @@
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="true"
-				AdditionalIncludeDirectories="..\Common\Libraries;..\Common\Libraries\GLEW;..\Common\Libraries\ZLib;..\Common\Libraries\SDL2;..\Common\Libraries\MPG123;..\Common\Libraries\JavaScriptCore;..\Common\Headers;..\Common\Libraries\PNG;..\..\dim3Engine\Headers;..\..\dim3Common\Headers;..\..\dim3BaseUtility\Headers;..\..\dim3BaseUtility\Sources;..\..\dim3ModelUtility\Headers;..\..\dim3ModelUtility\Sources;..\..\dim3MapUtility\Headers;..\..\dim3MapUtility\Sources"
-				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;D3_PCH;D3_ENGINE;"
+				AdditionalIncludeDirectories="..\Common\Libraries;..\Common\Libraries\GLEW;..\Common\Libraries\ZLib;..\Common\Libraries\SDL2;..\Common\Libraries\MPG123;..\Common\Libraries\JavaScriptCore;..\Common\Headers;..\Common\Libraries\PNG;..\..\dim3Engine\Headers;..\..\dim3Common\Headers;..\..\dim3BaseUtility\Headers;..\..\dim3BaseUtility\Sources;..\..\dim3ModelUtility\Headers;..\..\dim3ModelUtility\Sources;..\..\dim3MapUtility\Headers;..\..\dim3MapUtility\Sources;..\..\dim3Engine\Sources_OpenRL"
+				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;D3_PCH;D3_ENGINE;D3_OPENRL"
 				StringPooling="true"
 				ExceptionHandling="0"
 				RuntimeLibrary="2"
@@ -3754,6 +3754,70 @@
 								PreprocessorDefinitions=""
 							/>
 						</FileConfiguration>
+					</File>
+				</Filter>
+				<Filter
+					Name="OpenRL"
+					>
+					<File
+						RelativePath="..\..\dim3Engine\Sources_OpenRL\ray.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Engine\Sources_OpenRL\ray_color.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Engine\Sources_OpenRL\ray_eye.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Engine\Sources_OpenRL\ray_interface.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Engine\Sources_OpenRL\ray_light.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Engine\Sources_OpenRL\ray_main.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Engine\Sources_OpenRL\ray_material.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Engine\Sources_OpenRL\ray_math.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Engine\Sources_OpenRL\ray_mesh.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Engine\Sources_OpenRL\ray_os_defs.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Engine\Sources_OpenRL\ray_overlay.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Engine\Sources_OpenRL\ray_precalc.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Engine\Sources_OpenRL\ray_render.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Engine\Sources_OpenRL\ray_scene.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Engine\Sources_OpenRL\ray_types.h"
+						>
 					</File>
 				</Filter>
 			</Filter>

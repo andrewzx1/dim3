@@ -31,6 +31,10 @@ and can be sold or given away.
 
 #include "interface.h"
 
+#ifdef D3_OPENRL
+	#include "ray_interface.h"
+#endif
+
 extern map_type				map;
 extern server_type			server;
 extern view_type			view;
@@ -39,7 +43,7 @@ extern setup_type			setup;
 extern network_setup_type	net_setup;
 extern file_path_setup_type	file_path_setup;
 
-#ifdef OpenRL
+#ifdef D3_OPENRL
 
 	#define view_rl_buffer_wid		320
 	#define view_rl_buffer_high		200
@@ -56,7 +60,7 @@ extern file_path_setup_type	file_path_setup;
       
 ======================================================= */
 
-#ifndef OpenRL
+#ifndef D3_OPENRL
 
 bool view_openrl_initialize(char *err_str) { return(TRUE); }
 void view_openrl_shutdown(void) {}
@@ -73,7 +77,8 @@ void view_openrl_render(void) {}
 
 bool view_openrl_initialize(char *err_str)
 {
-	unsigned char		*data;
+	int					n,sz;
+	unsigned char		*data,*dptr;
 
 		// initialize OpenRL
 
@@ -84,7 +89,7 @@ bool view_openrl_initialize(char *err_str)
 
 		// make the scene
 
-	view_rl_scene_id=rlSceneAdd(view_rl_buffer_wid,view_rl_buffer_high,RL_SCENE_TARGET_MEMORY,RL_SCENE_FORMAT_32_RGBA);
+	view_rl_scene_id=rlSceneAdd(view_rl_buffer_wid,view_rl_buffer_high,RL_SCENE_TARGET_MEMORY,RL_SCENE_FORMAT_32_RGBA,0);
 	if (view_rl_scene_id<0) {
 		strcpy(err_str,"Unable to create OpenRL scene");
 		rlShutdown();
@@ -109,12 +114,12 @@ bool view_openrl_initialize(char *err_str)
 		// we need a texture to transfer
 		// the scene to opengl raster
 
+	glActiveTexture(GL_TEXTURE0);
 	glGenTextures(1,&view_rl_gl_id);
+	glBindTexture(GL_TEXTURE_2D,view_rl_gl_id);
 
-	glBindTexture(GL_TEXTURE,view_rl_gl_id);
-
-	glTexParameterf(GL_TEXTURE,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-	glTexParameterf(GL_TEXTURE,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+	glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+	glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
 
 	sz=(view_rl_buffer_wid*4)*view_rl_buffer_high;
 	data=malloc(sz);
@@ -125,11 +130,21 @@ bool view_openrl_initialize(char *err_str)
 	}
 	bzero(data,sz);
 
-	glTexImage2D(GL_TEXTURE,0,GL_RGBA,view_rl_buffer_wid,view_rl_buffer_high,0,GL_RGBA,GL_UNSIGNED_BYTE,data);
+	dptr=data;
+	for (n=0;n!=(sz/4);n++) {
+		*dptr++=0xFF;
+		*dptr++=0x0;
+		*dptr++=0x0;
+		*dptr++=0xFF;
+	}
+
+	glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,view_rl_buffer_wid,view_rl_buffer_high,0,GL_RGBA,GL_UNSIGNED_BYTE,data);
 
 	free(data);
 
-	glBindTexture(GL_TEXTURE,0);
+	glBindTexture(GL_TEXTURE_2D,0);
+
+	return(TRUE);
 }
 
 void view_openrl_shutdown(void)
@@ -154,7 +169,7 @@ void view_openrl_map_setup(void)
 	d3pnt				*pnt;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
-	
+
 	for (n=0;n!=map.mesh.nmesh;n++) {
 		mesh=&map.mesh.meshes[n];
 		if (!mesh->flag.on) continue;
@@ -171,10 +186,10 @@ void view_openrl_map_setup(void)
 
 		pnt=mesh->vertexes;
 
-		for (k=0;k!=mesh->nvertex;n++) {
-			*vp++=pnt->x;
-			*vp++=pnt->y;
-			*vp++=pnt->z;
+		for (k=0;k!=mesh->nvertex;k++) {
+			*vp++=(float)pnt->x;
+			*vp++=(float)pnt->y;
+			*vp++=(float)pnt->z;
 			pnt++;
 		}
 		
@@ -252,62 +267,65 @@ void view_openrl_map_setup(void)
 
 void view_openrl_transfer_to_opengl(void)
 {
-	int				err;
-	float			vertexes[8],uvs[8];
+	int				lx,rx,ty,by,err;
 	unsigned char	*data;
+
+		// draws on 2D screen
+
+	gl_2D_view_screen();
+
+	lx=view.screen.x_sz-view_rl_buffer_wid;
+	rx=view.screen.x_sz;
+	ty=0;
+	by=view_rl_buffer_high;
 
 		// get the scene buffer
 		// and push it to a texture
 		// scene memory buffers was set
 		// to RL_SCENE_FORMAT_32_RGBA
 
-	err=rlSceneGetBuffer(sceneId,(void**)&data);
+	err=rlSceneGetBuffer(view_rl_scene_id,(void**)&data);
 	if (err!=RL_ERROR_OK) return;
 
-	glBindTexture(GL_TEXTURE_2D,view_rl_gl_id);
+	gl_texture_bind(0,view_rl_gl_id);
 	glTexSubImage2D(GL_TEXTURE_2D,0,0,0,view_rl_buffer_wid,view_rl_buffer_high,GL_RGBA,GL_UNSIGNED_BYTE,data);
 
 		// build the vertex and uv list
 
-	vertexes[0]=0.0f;
-	vertexes[1]=0.0f;
-	vertexes[2]=0.0f;
-	vertexes[3]=(float)view_rl_buffer_high;
-	vertexes[4]=(float)view_rl_buffer_wid;
-	vertexes[5]=0.0f;
-	vertexes[6]=(float)view_rl_buffer_wid;
-	vertexes[7]=(float)view_rl_buffer_high;
-	
-	uvs[0]=0.0f;
-	uvs[1]=0.0f;
-	uvs[2]=0.0f;
-	uvs[3]=1.0f;
-	uvs[4]=1.0f;
-	uvs[5]=0.0f;
-	uvs[6]=1.0f;
-	uvs[7]=1.0f;
-
-		// draw the quad
-
-	glVertexPointer(2,GL_FLOAT,0,(GLvoid*)vertexes);
-	glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)uvs);
-	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
-	glBindTexture(GL_TEXTURE_2D,0);
+	view_primitive_2D_texture_quad(view_rl_gl_id,NULL,1.0f,lx,rx,ty,by,0.0f,1.0f,0.0f,1.0f,TRUE);
 }
 
 void view_openrl_render(void)
 {
+	float			ang_y;
+	ray_point_type	pnt;
+	ray_matrix_type	mat,x_mat;
+
 		// position light over player
 
-	rlSceneLightSetPosition(view_rl_scene_id,view_rl_player_light_id,view.render->camera.pnt.x,view.render->camera.pnt.y,view.render->camera.pnt.z);
+	rlSceneLightSetPosition(view_rl_scene_id,view_rl_player_light_id,(float)view.render->camera.pnt.x,(float)view.render->camera.pnt.y,(float)view.render->camera.pnt.z);
+
+		// build the eye point
+
+	pnt.x=(float)view.render->camera.pnt.x;
+	pnt.y=(float)view.render->camera.pnt.y;
+	pnt.z=(float)view.render->camera.pnt.z;
+
+		// build the rotation matrix
+
+	ang_y=angle_add(view.render->camera.ang.y,180.0f);
+	rlMatrixRotateY(&mat,ang_y);
+
+	rlMatrixRotateX(&x_mat,-view.render->camera.ang.x);
+	rlMatrixMultiply(&mat,&x_mat);
 
 		// set the eye position
 
-	rlSceneEyePositionSet(view_rl_scene_id,view.render->camera.pnt.x,view.render->camera.pnt.y,view.render->camera.pnt.z,view.render->camera.ang.x,view.render->camera.ang.y,view.render->camera.ang.z,200.0f,1000000.0f);
+	rlSceneEyePositionSet(view_rl_scene_id,&pnt,&mat,200.0f,1000000.0f);
 
 		// render
 
-	rlSceneClearBuffer(view_rl_scene_id,0.3f,0.3f,1.0f);
+	rlSceneClearBuffer(view_rl_scene_id,0.0f,0.0f,0.0f,1.0f);
 
 	if (rlSceneRender(view_rl_scene_id)!=RL_ERROR_OK) return;
 
@@ -316,6 +334,10 @@ void view_openrl_render(void)
 	while (rlSceneRenderState(view_rl_scene_id)==RL_SCENE_STATE_RENDERING) {
 		usleep(10);
 	}
+
+		// transfer to OpenGL
+
+	view_openrl_transfer_to_opengl();
 }
 
 #endif

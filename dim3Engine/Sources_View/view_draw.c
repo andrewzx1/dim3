@@ -333,6 +333,10 @@ void view_draw_scene_render(obj_type *obj,weapon_type *weap)
 			zoom_draw(obj,weap);
 		}
 	}
+
+		// OpenRL drawing
+
+	view_openrl_render();
 }
 
 void view_draw(void)
