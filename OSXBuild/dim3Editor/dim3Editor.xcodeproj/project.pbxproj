@@ -168,6 +168,7 @@
 		26C2CB8D1606B427004B25A8 /* dim3 Editor.icns in Resources */ = {isa = PBXBuildFile; fileRef = 26C2CB8C1606B427004B25A8 /* dim3 Editor.icns */; };
 		26E4021714F4721D0059C798 /* libPNG.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 26E4021514F4721D0059C798 /* libPNG.a */; };
 		26E4022714F4B3ED0059C798 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26E4022614F4B3ED0059C798 /* Foundation.framework */; };
+		26E5DA461611552B003D7755 /* dialog_bone_attach_duplicate.c in Sources */ = {isa = PBXBuildFile; fileRef = 26E5DA451611552B003D7755 /* dialog_bone_attach_duplicate.c */; };
 		26F278F41606CB96007470ED /* DialogView.m in Sources */ = {isa = PBXBuildFile; fileRef = 26F278F31606CB96007470ED /* DialogView.m */; };
 		26F7E04B160045A900E739C4 /* import_text_decode.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F7E043160045A900E739C4 /* import_text_decode.c */; };
 		26F7E04C160045A900E739C4 /* launch.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F7E044160045A900E739C4 /* launch.c */; };
@@ -646,6 +647,7 @@
 		26E4021514F4721D0059C798 /* libPNG.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPNG.a; path = ../../Common/Libraries/PNG/libPNG.a; sourceTree = "<group>"; };
 		26E4021614F4721D0059C798 /* png.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = png.h; path = ../../Common/Libraries/PNG/png.h; sourceTree = "<group>"; };
 		26E4022614F4B3ED0059C798 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
+		26E5DA451611552B003D7755 /* dialog_bone_attach_duplicate.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_bone_attach_duplicate.c; path = Sources/dialogs/model/dialog_bone_attach_duplicate.c; sourceTree = "<group>"; };
 		26F278F21606CB96007470ED /* DialogView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DialogView.h; path = dim3Editor/DialogView.h; sourceTree = SOURCE_ROOT; };
 		26F278F31606CB96007470ED /* DialogView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DialogView.m; path = dim3Editor/DialogView.m; sourceTree = SOURCE_ROOT; };
 		26F278F91607CE53007470ED /* glue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = glue.h; path = Headers/glue.h; sourceTree = "<group>"; };
@@ -1352,6 +1354,7 @@
 				26F7E0CE1600463800E739C4 /* dialog_normal.c */,
 				26F7E0CF1600463800E739C4 /* dialog_scale_animation_time.c */,
 				26F7E0D01600463800E739C4 /* dialog_set_vertex_bone.c */,
+				26E5DA451611552B003D7755 /* dialog_bone_attach_duplicate.c */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -1844,6 +1847,7 @@
 				26973C3E1602EB1600167FD2 /* View.m in Sources */,
 				26F278F41606CB96007470ED /* DialogView.m in Sources */,
 				2653B6D2160D76A300EE0CD7 /* DialogOutlineDataSource.m in Sources */,
+				26E5DA461611552B003D7755 /* dialog_bone_attach_duplicate.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

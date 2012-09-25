@@ -986,7 +986,7 @@ extern int dialog_import_finish_run(void);
 extern void dialog_set_vertex_bone_set_bone_combo(int id,int bone_idx);
 extern int dialog_set_vertex_bone_get_bone_combo(int id);
 extern bool dialog_set_vertex_bone_run(int *major_bone_idx,int *minor_bone_idx,float *factor);
-extern bool dialog_bone_attach_duplicate_run(int *from_bone_idx,int *to_bone_idx);
+extern bool dialog_bone_attach_duplicate_run(int *from_bone_idx,int *to_bone_idx,int *vertex_slop);
 extern bool dialog_animation_scale_time_run(int animate_idx);
 extern bool dialog_play_blend_animation_run(void);
 extern bool dialog_scale_run(d3fpnt *scale);

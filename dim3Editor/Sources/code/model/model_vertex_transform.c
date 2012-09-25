@@ -808,7 +808,8 @@ void model_polygon_tessellate(int mesh_idx,bool sel_only)
 
 void model_bone_attach_duplicate(int mesh_idx)
 {
-	int					n,k,from_bone_idx,to_bone_idx;
+	int					n,k,from_bone_idx,to_bone_idx,
+						vertex_slop;
 	d3pnt				dist;
 	model_mesh_type		*mesh;
 	model_vertex_type	*vertex,*chk_vertex;
@@ -816,7 +817,7 @@ void model_bone_attach_duplicate(int mesh_idx)
 
 		// get bones to duplicate
 
-	if (!dialog_bone_attach_duplicate_run(&from_bone_idx,&to_bone_idx)) return;
+	if (!dialog_bone_attach_duplicate_run(&from_bone_idx,&to_bone_idx,&vertex_slop)) return;
 
 	mesh=&model.meshes[mesh_idx];
 
@@ -840,37 +841,32 @@ void model_bone_attach_duplicate(int mesh_idx)
 
 		// now find new attachments
 
-	vertex=mesh->vertexes;
-
 	for (n=0;n!=mesh->nvertex;n++) {
+		vertex=&mesh->vertexes[n];
 		if ((vertex->major_bone_idx!=from_bone_idx) && (vertex->minor_bone_idx!=from_bone_idx)) continue;
 
 			// find vertex like this one
 			// for other bone
 	
-		dist.x=vertex->pnt.x-from_bone->pnt.x;
-		dist.y=vertex->pnt.y-from_bone->pnt.y;
-		dist.z=vertex->pnt.z-from_bone->pnt.z;
-
-		chk_vertex=mesh->vertexes;
+		dist.x=abs(vertex->pnt.x-from_bone->pnt.x);
+		dist.y=abs(vertex->pnt.y-from_bone->pnt.y);
+		dist.z=abs(vertex->pnt.z-from_bone->pnt.z);
 
 		for (k=0;k!=mesh->nvertex;k++) {
 			if (k==n) continue;
-
-			if (dist.x!=(chk_vertex->pnt.x-to_bone->pnt.x)) continue;
-			if (dist.y!=(chk_vertex->pnt.y-to_bone->pnt.y)) continue;
-			if (dist.z!=(chk_vertex->pnt.z-to_bone->pnt.z)) continue;
+			
+			chk_vertex=&mesh->vertexes[k];
+			
+			if (abs(dist.x-abs(chk_vertex->pnt.x-to_bone->pnt.x))>vertex_slop) continue;
+			if (abs(dist.y-abs(chk_vertex->pnt.y-to_bone->pnt.y))>vertex_slop) continue;
+			if (abs(dist.z-abs(chk_vertex->pnt.z-to_bone->pnt.z))>vertex_slop) continue;
 
 			if (vertex->major_bone_idx==from_bone_idx) chk_vertex->major_bone_idx=to_bone_idx;
 			if (vertex->minor_bone_idx==from_bone_idx) {
 				chk_vertex->minor_bone_idx=to_bone_idx;
 				chk_vertex->bone_factor=vertex->bone_factor;
 			}
-
-			chk_vertex++;
 		}
-
-		vertex++;
 	}
 
 	 model_calculate_parents(&model);

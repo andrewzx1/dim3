@@ -680,7 +680,7 @@ bool model_wind_bone_click(d3pnt *start_pnt,bool double_click)
 		
 	drag_handle=drag_handle_none;
 	
-	if ((state.model.cur_pose_idx==-1) || (state.model.cur_bone_idx!=-1)) {
+	if ((state.model.cur_pose_idx!=-1) && (state.model.cur_bone_idx!=-1)) {
 	
 		bone=&model.bones[state.model.cur_bone_idx];
 		draw_bone=&draw_setup.bones[state.model.cur_bone_idx];
@@ -1032,7 +1032,10 @@ void model_wind_click(d3pnt *pnt,bool double_click)
 		model_wind_hit_box_click(pnt);
 		return;
 	}
+	
+		// drag selections if no
+		// double click
 		
-	select_model_wind(pnt);
+	if (!double_click) select_model_wind(pnt);
 }
 

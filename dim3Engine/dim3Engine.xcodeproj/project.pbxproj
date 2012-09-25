@@ -465,6 +465,7 @@
 		26A45D091489AD6C00C02936 /* script_point_angle_vector.c in Sources */ = {isa = PBXBuildFile; fileRef = 26A45D071489AD6C00C02936 /* script_point_angle_vector.c */; };
 		26CBE2041581AD1E00093D7C /* simple_save_pick.c in Sources */ = {isa = PBXBuildFile; fileRef = 26CBE2031581AD1E00093D7C /* simple_save_pick.c */; };
 		26E1844513CEA27800812348 /* dim3 Engine.app in Copy Application */ = {isa = PBXBuildFile; fileRef = F5CD87F70557721D0023AD9B /* dim3 Engine.app */; };
+		26E5DA4B16116602003D7755 /* view_openrl_patch.c in Sources */ = {isa = PBXBuildFile; fileRef = 26E5DA4A16116602003D7755 /* view_openrl_patch.c */; };
 		26EE3E1713DA7F78000ABAF1 /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26EE3E1613DA7F78000ABAF1 /* AudioUnit.framework */; };
 		26F0C43F1563297300AFE368 /* app_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 26F0C43E1563297300AFE368 /* app_defs.h */; };
 		26FF359E15A936820010C22E /* gl_shader_execute.c in Sources */ = {isa = PBXBuildFile; fileRef = 26FF359D15A936810010C22E /* gl_shader_execute.c */; };
@@ -963,6 +964,7 @@
 		26A45D061489AD6C00C02936 /* script_color.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_color.c; sourceTree = "<group>"; };
 		26A45D071489AD6C00C02936 /* script_point_angle_vector.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_point_angle_vector.c; sourceTree = "<group>"; };
 		26CBE2031581AD1E00093D7C /* simple_save_pick.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = simple_save_pick.c; sourceTree = "<group>"; };
+		26E5DA4A16116602003D7755 /* view_openrl_patch.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = view_openrl_patch.c; sourceTree = "<group>"; };
 		26EE3E1613DA7F78000ABAF1 /* AudioUnit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioUnit.framework; path = ../../../../System/Library/Frameworks/AudioUnit.framework; sourceTree = "<group>"; };
 		26F0C43E1563297300AFE368 /* app_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = app_defs.h; path = Headers/app_defs.h; sourceTree = "<group>"; };
 		26FF359D15A936810010C22E /* gl_shader_execute.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = gl_shader_execute.c; sourceTree = "<group>"; };
@@ -1512,6 +1514,7 @@
 				260B3F901411F781006ED023 /* view_setup.c */,
 				260B3F911411F781006ED023 /* view_vertex_list.c */,
 				260B3F921411F781006ED023 /* view_vertex_object.c */,
+				26E5DA4A16116602003D7755 /* view_openrl_patch.c */,
 			);
 			name = View;
 			sourceTree = "<group>";
@@ -2369,6 +2372,7 @@
 				2682E450159D1F7C001CE3DB /* gl_shader_simple.c in Sources */,
 				26FF359E15A936820010C22E /* gl_shader_execute.c in Sources */,
 				2602769315C88619007B19CD /* label.c in Sources */,
+				26E5DA4B16116602003D7755 /* view_openrl_patch.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

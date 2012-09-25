@@ -194,7 +194,7 @@ d3col							*os_color_pick_col_ptr;
 	pnt.x=(int)wnd_pnt.x;
 	pnt.y=(int)([self frame].size.height-wnd_pnt.y);
 
-	main_wind_scroll_wheel(&pnt,-(int)[event deltaY]);
+	main_wind_scroll_wheel(&pnt,(int)[event deltaY]);
 }
 
 -(void)keyDown:(NSEvent*)event
