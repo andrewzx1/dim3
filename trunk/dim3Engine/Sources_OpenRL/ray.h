@@ -29,8 +29,8 @@
 //
 
 #define ray_TRIG_PI									3.14159265358979f
-#define ray_ANG_to_RAD								(float)(TRIG_PI/180.0f)
-#define ray_RAD_to_ANG								(float)(180.0f/TRIG_PI)
+#define ray_ANG_to_RAD								(float)(ray_TRIG_PI/180.0f)
+#define ray_RAD_to_ANG								(float)(180.0f/ray_TRIG_PI)
 					
 //
 // scene eye

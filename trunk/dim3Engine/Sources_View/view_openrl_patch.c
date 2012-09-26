@@ -299,7 +299,7 @@ void view_openrl_render(void)
 {
 	float			ang_y;
 	ray_point_type	pnt;
-	ray_matrix_type	mat,x_mat;
+	ray_matrix_type	mat,x_mat,scale_mat;
 
 		// position light over player
 
@@ -312,12 +312,18 @@ void view_openrl_render(void)
 	pnt.z=(float)view.render->camera.pnt.z;
 
 		// build the rotation matrix
+		// dim3 always had a backwards look, so
+		// we need to fix that with the matrix
+		// normally it wouldn't be this complex
 
 	ang_y=angle_add(view.render->camera.ang.y,180.0f);
 	rlMatrixRotateY(&mat,ang_y);
 
 	rlMatrixRotateX(&x_mat,-view.render->camera.ang.x);
 	rlMatrixMultiply(&mat,&x_mat);
+
+	rlMatrixScale(&scale_mat,-1.0f,1.0f,1.0f);
+	rlMatrixMultiply(&mat,&scale_mat);
 
 		// set the eye position
 
