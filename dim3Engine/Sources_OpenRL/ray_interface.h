@@ -134,4 +134,5 @@ extern void rlMatrixVectorMultiply(ray_matrix_type *mat,ray_vector_type *v);
 extern void rlMatrixRotateX(ray_matrix_type *mat,float ang);
 extern void rlMatrixRotateY(ray_matrix_type *mat,float ang);
 extern void rlMatrixRotateZ(ray_matrix_type *mat,float ang);
+extern void rlMatrixScale(ray_matrix_type *mat,float x,float y,float z);
 

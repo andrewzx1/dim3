@@ -135,7 +135,7 @@ void rlMatrixVectorMultiply(ray_matrix_type *mat,ray_vector_type *v)
 
 /* =======================================================
 
-      Rotation Matrixes
+      Setup Special Matrixes
       
 ======================================================= */
 
@@ -188,6 +188,29 @@ void rlMatrixRotateZ(ray_matrix_type *mat,float ang)
 	mat->data[0][1]=r_sin;
 	mat->data[1][0]=-r_sin;
 	mat->data[1][1]=r_cos;
+}
+
+void rlMatrixScale(ray_matrix_type *mat,float x,float y,float z)
+{
+	mat->data[0][0]=x;
+	mat->data[0][1]=0.0f;
+	mat->data[0][2]=0.0f;
+	mat->data[0][3]=0.0f;
+	
+	mat->data[1][0]=0.0f;
+	mat->data[1][1]=y;
+	mat->data[1][2]=0.0f;
+	mat->data[1][3]=0.0f;
+
+	mat->data[2][0]=0.0f;
+	mat->data[2][1]=0.0f;
+	mat->data[2][2]=z;
+	mat->data[2][3]=0.0f;
+
+	mat->data[3][0]=0.0f;
+	mat->data[3][1]=0.0f;
+	mat->data[3][2]=0.0f;
+	mat->data[3][3]=1.0f;
 }
 
 /* =======================================================
