@@ -566,7 +566,7 @@ int rlSceneRender(int sceneId)
 	int						n,idx;
 	ray_scene_type			*scene;
 #ifndef WIN32
-	os_thread				thread;
+	pthread_t				thread;
 #endif
 
 		// get the scene

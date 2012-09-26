@@ -268,9 +268,6 @@ int main(int argc,char *argv[])
 			// main loop
 
 		if (app_run_ok) {
-		
-		//	SDL_iPhoneSetAnimationCallback(sdl_wind,1,test_loop,0);
-		//	return(0);
 
 			while (!app.loop_quit) {
 
