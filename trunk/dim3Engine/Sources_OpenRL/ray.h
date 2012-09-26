@@ -28,9 +28,9 @@
 // math defines
 //
 
-#define TRIG_PI										3.14159265358979f
-#define ANG_to_RAD									(float)(TRIG_PI/180.0f)
-#define RAD_to_ANG									(float)(180.0f/TRIG_PI)
+#define ray_TRIG_PI									3.14159265358979f
+#define ray_ANG_to_RAD								(float)(TRIG_PI/180.0f)
+#define ray_RAD_to_ANG								(float)(180.0f/TRIG_PI)
 					
 //
 // scene eye
@@ -187,7 +187,11 @@ typedef struct		{
 					} ray_draw_scene_thread_info;
 
 typedef struct		{
-						os_mutex					lock;
+					#ifndef WIN32
+						pthread_mutex_t				lock;
+					#else
+						HANDLE						lock;
+					#endif
 						ray_draw_scene_thread_info	thread_info[ray_render_max_thread_count];
 					} ray_scene_render_type;
 

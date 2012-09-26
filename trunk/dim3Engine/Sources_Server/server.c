@@ -150,7 +150,7 @@ bool server_game_start(bool in_file_load,int skill,int option_flags,int simple_s
 
 	js.game_script_idx=scripts_add(thing_type_game,"Game","Game",-1,-1,-1,err_str);
 	if (js.game_script_idx==-1) return(FALSE);
-		
+
 		// send the construct event
 	
 	if (!scripts_post_event(js.game_script_idx,-1,sd_event_construct,0,0,err_str)) {

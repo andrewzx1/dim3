@@ -245,6 +245,8 @@ int scripts_add_single(int thing_type,char *sub_dir,char *name,int obj_idx,int w
 		// and remember the global object
 		
 	script->cx=JSGlobalContextCreateInGroup(js.cx_group,NULL);
+	JSGlobalContextRetain(script->cx);
+	
 	script->global_obj=JSContextGetGlobalObject(script->cx);
 	
 		// load in script

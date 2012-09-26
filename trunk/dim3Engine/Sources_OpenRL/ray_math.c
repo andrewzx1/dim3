@@ -144,7 +144,7 @@ void rlMatrixRotateX(ray_matrix_type *mat,float ang)
 	float		r_cos,r_sin;
 	double		rad;
 	
-	rad=(double)(ang*ANG_to_RAD);
+	rad=(double)(ang*ray_ANG_to_RAD);
 	r_cos=(float)cos(rad);
 	r_sin=(float)sin(rad);
 	
@@ -161,7 +161,7 @@ void rlMatrixRotateY(ray_matrix_type *mat,float ang)
 	float		r_cos,r_sin;
 	double		rad;
 	
-	rad=(double)(ang*ANG_to_RAD);
+	rad=(double)(ang*ray_ANG_to_RAD);
 	r_cos=(float)cos(rad);
 	r_sin=(float)sin(rad);
 	
@@ -178,7 +178,7 @@ void rlMatrixRotateZ(ray_matrix_type *mat,float ang)
 	float		r_cos,r_sin;
 	double		rad;
 	
-	rad=(double)(ang*ANG_to_RAD);
+	rad=(double)(ang*ray_ANG_to_RAD);
 	r_cos=(float)cos(rad);
 	r_sin=(float)sin(rad);
 	

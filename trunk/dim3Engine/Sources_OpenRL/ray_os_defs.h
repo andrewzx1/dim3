@@ -19,20 +19,12 @@
 	#include <OpenGL/glu.h>
 
 	#include <zlib.h>
-	
-	#define GL_TEXTURE_RECTANGLE	GL_TEXTURE_RECTANGLE_ARB
-
-	#define os_mutex				pthread_mutex_t
-	#define os_thread				pthread_t
 
 #endif
 
 #ifdef LINUX
 
 	#include <unistd.h>
-
-	#define os_mutex				pthread_mutex_t
-	#define os_thread				pthread_t
 
 #endif
 
@@ -65,9 +57,6 @@
 	
 	#define random					rand
 	#define srandom					srand
-
-	#define os_mutex				HANDLE	
-	#define os_thread				uintptr_t
 
 #endif
 

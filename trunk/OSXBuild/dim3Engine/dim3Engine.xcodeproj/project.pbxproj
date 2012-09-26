@@ -369,7 +369,6 @@
 		260B43241411F8CC006ED023 /* pnglibconf.h in Headers */ = {isa = PBXBuildFile; fileRef = 260B42F01411F8CC006ED023 /* pnglibconf.h */; };
 		2618337B14DDE4F9004DD37A /* begin_code.h in Headers */ = {isa = PBXBuildFile; fileRef = 2618333F14DDE4F9004DD37A /* begin_code.h */; };
 		2618337C14DDE4F9004DD37A /* close_code.h in Headers */ = {isa = PBXBuildFile; fileRef = 2618334014DDE4F9004DD37A /* close_code.h */; };
-		2618337D14DDE4F9004DD37A /* libSDL2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2618334114DDE4F9004DD37A /* libSDL2.a */; };
 		2618337E14DDE4F9004DD37A /* SDL_assert.h in Headers */ = {isa = PBXBuildFile; fileRef = 2618334214DDE4F9004DD37A /* SDL_assert.h */; };
 		2618337F14DDE4F9004DD37A /* SDL_atomic.h in Headers */ = {isa = PBXBuildFile; fileRef = 2618334314DDE4F9004DD37A /* SDL_atomic.h */; };
 		2618338014DDE4F9004DD37A /* SDL_audio.h in Headers */ = {isa = PBXBuildFile; fileRef = 2618334414DDE4F9004DD37A /* SDL_audio.h */; };
@@ -426,8 +425,6 @@
 		261833B414DDE4F9004DD37A /* SDL_version.h in Headers */ = {isa = PBXBuildFile; fileRef = 2618337814DDE4F9004DD37A /* SDL_version.h */; };
 		261833B514DDE4F9004DD37A /* SDL_video.h in Headers */ = {isa = PBXBuildFile; fileRef = 2618337914DDE4F9004DD37A /* SDL_video.h */; };
 		261833B614DDE4F9004DD37A /* SDL.h in Headers */ = {isa = PBXBuildFile; fileRef = 2618337A14DDE4F9004DD37A /* SDL.h */; };
-		261833B814DDE50C004DD37A /* libPNG.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 261833B714DDE50C004DD37A /* libPNG.a */; };
-		261833BA14DDE518004DD37A /* libmpg123.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 261833B914DDE518004DD37A /* libmpg123.a */; };
 		26184E7213CA0CE6003A9A79 /* CoreAudioKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26184E7113CA0CE6003A9A79 /* CoreAudioKit.framework */; };
 		26184E7613CA0D2E003A9A79 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26184E7513CA0D2E003A9A79 /* IOKit.framework */; };
 		262579141525325A00C371C3 /* singleplayer_option.c in Sources */ = {isa = PBXBuildFile; fileRef = 262579131525325A00C371C3 /* singleplayer_option.c */; };
@@ -445,6 +442,26 @@
 		2649D14813412B2900573F6F /* setup_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 2649D13D13412B2900573F6F /* setup_defs.h */; };
 		2649D14913412B2900573F6F /* sound_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 2649D13E13412B2900573F6F /* sound_defs.h */; };
 		2649D14A13412B2900573F6F /* view_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 2649D13F13412B2900573F6F /* view_defs.h */; };
+		2669FCE7161273A0002292C6 /* mac_os_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 2669FCE6161273A0002292C6 /* mac_os_defs.h */; };
+		2669FCE9161273D5002292C6 /* os_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 2669FCE8161273D5002292C6 /* os_defs.h */; };
+		2669FCEF161274DD002292C6 /* view_openrl_patch.c in Sources */ = {isa = PBXBuildFile; fileRef = 2669FCEE161274DD002292C6 /* view_openrl_patch.c */; };
+		2669FD0016127502002292C6 /* ray_color.c in Sources */ = {isa = PBXBuildFile; fileRef = 2669FCF116127502002292C6 /* ray_color.c */; };
+		2669FD0116127502002292C6 /* ray_eye.c in Sources */ = {isa = PBXBuildFile; fileRef = 2669FCF216127502002292C6 /* ray_eye.c */; };
+		2669FD0216127502002292C6 /* ray_interface.h in Headers */ = {isa = PBXBuildFile; fileRef = 2669FCF316127502002292C6 /* ray_interface.h */; };
+		2669FD0316127502002292C6 /* ray_light.c in Sources */ = {isa = PBXBuildFile; fileRef = 2669FCF416127502002292C6 /* ray_light.c */; };
+		2669FD0416127502002292C6 /* ray_main.c in Sources */ = {isa = PBXBuildFile; fileRef = 2669FCF516127502002292C6 /* ray_main.c */; };
+		2669FD0516127502002292C6 /* ray_material.c in Sources */ = {isa = PBXBuildFile; fileRef = 2669FCF616127502002292C6 /* ray_material.c */; };
+		2669FD0616127502002292C6 /* ray_math.c in Sources */ = {isa = PBXBuildFile; fileRef = 2669FCF716127502002292C6 /* ray_math.c */; };
+		2669FD0716127502002292C6 /* ray_mesh.c in Sources */ = {isa = PBXBuildFile; fileRef = 2669FCF816127502002292C6 /* ray_mesh.c */; };
+		2669FD0916127502002292C6 /* ray_overlay.c in Sources */ = {isa = PBXBuildFile; fileRef = 2669FCFA16127502002292C6 /* ray_overlay.c */; };
+		2669FD0A16127502002292C6 /* ray_precalc.c in Sources */ = {isa = PBXBuildFile; fileRef = 2669FCFB16127502002292C6 /* ray_precalc.c */; };
+		2669FD0B16127502002292C6 /* ray_render.c in Sources */ = {isa = PBXBuildFile; fileRef = 2669FCFC16127502002292C6 /* ray_render.c */; };
+		2669FD0C16127502002292C6 /* ray_scene.c in Sources */ = {isa = PBXBuildFile; fileRef = 2669FCFD16127502002292C6 /* ray_scene.c */; };
+		2669FD0D16127502002292C6 /* ray_types.h in Headers */ = {isa = PBXBuildFile; fileRef = 2669FCFE16127502002292C6 /* ray_types.h */; };
+		2669FD0E16127502002292C6 /* ray.h in Headers */ = {isa = PBXBuildFile; fileRef = 2669FCFF16127502002292C6 /* ray.h */; };
+		2669FD1A16127B66002292C6 /* libSDL2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2669FD1916127B66002292C6 /* libSDL2.a */; };
+		2669FD1C16127B84002292C6 /* libPNG.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2669FD1B16127B84002292C6 /* libPNG.a */; };
+		2669FD1E16127B95002292C6 /* libmpg123.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2669FD1D16127B95002292C6 /* libmpg123.a */; };
 		267DEDB9158ACD9300216D36 /* script_obj_watch_angle.c in Sources */ = {isa = PBXBuildFile; fileRef = 267DEDB7158ACD9300216D36 /* script_obj_watch_angle.c */; };
 		267DEDBA158ACD9300216D36 /* script_obj_watch_position.c in Sources */ = {isa = PBXBuildFile; fileRef = 267DEDB8158ACD9300216D36 /* script_obj_watch_position.c */; };
 		267E82861330155B0087DCED /* interface.h in Headers */ = {isa = PBXBuildFile; fileRef = 267E82851330155B0087DCED /* interface.h */; };
@@ -458,14 +475,12 @@
 		269BAD4C15C0DE1B007EE1E9 /* ForceFeedback.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 269BAD4B15C0DE1B007EE1E9 /* ForceFeedback.framework */; };
 		269BAD4E15C0DE8B007EE1E9 /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 269BAD4D15C0DE8B007EE1E9 /* JavaScriptCore.framework */; };
 		269BAD5015C0DEE3007EE1E9 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 269BAD4F15C0DEE3007EE1E9 /* Carbon.framework */; };
-		269D27C312DEBB7E00AF5695 /* mac_os_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 269D27C212DEBB7E00AF5695 /* mac_os_defs.h */; };
 		269EA83B14B9617C0069CA6C /* metrics_draw.c in Sources */ = {isa = PBXBuildFile; fileRef = 269EA83A14B9617C0069CA6C /* metrics_draw.c */; };
 		26A32EDF1453CFE80005AABD /* model_util_file_model.c in Sources */ = {isa = PBXBuildFile; fileRef = 26A32EDE1453CFE80005AABD /* model_util_file_model.c */; };
 		26A45D081489AD6C00C02936 /* script_color.c in Sources */ = {isa = PBXBuildFile; fileRef = 26A45D061489AD6C00C02936 /* script_color.c */; };
 		26A45D091489AD6C00C02936 /* script_point_angle_vector.c in Sources */ = {isa = PBXBuildFile; fileRef = 26A45D071489AD6C00C02936 /* script_point_angle_vector.c */; };
 		26CBE2041581AD1E00093D7C /* simple_save_pick.c in Sources */ = {isa = PBXBuildFile; fileRef = 26CBE2031581AD1E00093D7C /* simple_save_pick.c */; };
 		26E1844513CEA27800812348 /* dim3 Engine.app in Copy Application */ = {isa = PBXBuildFile; fileRef = F5CD87F70557721D0023AD9B /* dim3 Engine.app */; };
-		26E5DA4B16116602003D7755 /* view_openrl_patch.c in Sources */ = {isa = PBXBuildFile; fileRef = 26E5DA4A16116602003D7755 /* view_openrl_patch.c */; };
 		26EE3E1713DA7F78000ABAF1 /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26EE3E1613DA7F78000ABAF1 /* AudioUnit.framework */; };
 		26F0C43F1563297300AFE368 /* app_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 26F0C43E1563297300AFE368 /* app_defs.h */; };
 		26FF359E15A936820010C22E /* gl_shader_execute.c in Sources */ = {isa = PBXBuildFile; fileRef = 26FF359D15A936810010C22E /* gl_shader_execute.c */; };
@@ -473,7 +488,6 @@
 		26FF68B61523D61B00FACC3B /* script_singleplayer_high_score.c in Sources */ = {isa = PBXBuildFile; fileRef = 26FF68B31523D61B00FACC3B /* script_singleplayer_high_score.c */; };
 		26FF68B71523D61B00FACC3B /* script_singleplayer_setting.c in Sources */ = {isa = PBXBuildFile; fileRef = 26FF68B41523D61B00FACC3B /* script_singleplayer_setting.c */; };
 		26FF68B81523D61B00FACC3B /* script_singleplayer.c in Sources */ = {isa = PBXBuildFile; fileRef = 26FF68B51523D61B00FACC3B /* script_singleplayer.c */; };
-		F50AF8A40885FBA200F261B1 /* os_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = F50AF8A30885FBA200F261B1 /* os_defs.h */; };
 		F52E82410C1632E6003D4818 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F52E82400C1632E6003D4818 /* OpenGL.framework */; };
 		F5B01DA908F867E600AE5F87 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5B01DA808F867E600AE5F87 /* Cocoa.framework */; };
 		F5CD8732055771B80023AD9B /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0867D6AAFE840B52C02AAC07 /* InfoPlist.strings */; };
@@ -494,7 +508,7 @@
 		F5C5EB340913286000F94729 /* Copy Application */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 12;
-			dstPath = "$(SRCROOT)/../../dim3/";
+			dstPath = "$(SRCROOT)/../../../dim3/";
 			dstSubfolderSpec = 0;
 			files = (
 				26E1844513CEA27800812348 /* dim3 Engine.app in Copy Application */,
@@ -869,7 +883,6 @@
 		260B42F01411F8CC006ED023 /* pnglibconf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pnglibconf.h; sourceTree = "<group>"; };
 		2618333F14DDE4F9004DD37A /* begin_code.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = begin_code.h; sourceTree = "<group>"; };
 		2618334014DDE4F9004DD37A /* close_code.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = close_code.h; sourceTree = "<group>"; };
-		2618334114DDE4F9004DD37A /* libSDL2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libSDL2.a; sourceTree = "<group>"; };
 		2618334214DDE4F9004DD37A /* SDL_assert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL_assert.h; sourceTree = "<group>"; };
 		2618334314DDE4F9004DD37A /* SDL_atomic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL_atomic.h; sourceTree = "<group>"; };
 		2618334414DDE4F9004DD37A /* SDL_audio.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL_audio.h; sourceTree = "<group>"; };
@@ -926,8 +939,6 @@
 		2618337814DDE4F9004DD37A /* SDL_version.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL_version.h; sourceTree = "<group>"; };
 		2618337914DDE4F9004DD37A /* SDL_video.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL_video.h; sourceTree = "<group>"; };
 		2618337A14DDE4F9004DD37A /* SDL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL.h; sourceTree = "<group>"; };
-		261833B714DDE50C004DD37A /* libPNG.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libPNG.a; sourceTree = "<group>"; };
-		261833B914DDE518004DD37A /* libmpg123.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libmpg123.a; sourceTree = "<group>"; };
 		26184E7113CA0CE6003A9A79 /* CoreAudioKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudioKit.framework; path = ../../../../System/Library/Frameworks/CoreAudioKit.framework; sourceTree = "<group>"; };
 		26184E7513CA0D2E003A9A79 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = ../../../../System/Library/Frameworks/IOKit.framework; sourceTree = "<group>"; };
 		262579131525325A00C371C3 /* singleplayer_option.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = singleplayer_option.c; sourceTree = "<group>"; };
@@ -945,6 +956,26 @@
 		2649D13D13412B2900573F6F /* setup_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = setup_defs.h; path = Headers/setup_defs.h; sourceTree = "<group>"; };
 		2649D13E13412B2900573F6F /* sound_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = sound_defs.h; path = Headers/sound_defs.h; sourceTree = "<group>"; };
 		2649D13F13412B2900573F6F /* view_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = view_defs.h; path = Headers/view_defs.h; sourceTree = "<group>"; };
+		2669FCE6161273A0002292C6 /* mac_os_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mac_os_defs.h; path = ../OSXBuild/Common/Headers/mac_os_defs.h; sourceTree = "<group>"; };
+		2669FCE8161273D5002292C6 /* os_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = os_defs.h; path = ../dim3Common/Headers/os_defs.h; sourceTree = "<group>"; };
+		2669FCEE161274DD002292C6 /* view_openrl_patch.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = view_openrl_patch.c; sourceTree = "<group>"; };
+		2669FCF116127502002292C6 /* ray_color.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ray_color.c; path = ../Sources_OpenRL/ray_color.c; sourceTree = "<group>"; };
+		2669FCF216127502002292C6 /* ray_eye.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ray_eye.c; path = ../Sources_OpenRL/ray_eye.c; sourceTree = "<group>"; };
+		2669FCF316127502002292C6 /* ray_interface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ray_interface.h; path = ../Sources_OpenRL/ray_interface.h; sourceTree = "<group>"; };
+		2669FCF416127502002292C6 /* ray_light.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ray_light.c; path = ../Sources_OpenRL/ray_light.c; sourceTree = "<group>"; };
+		2669FCF516127502002292C6 /* ray_main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ray_main.c; path = ../Sources_OpenRL/ray_main.c; sourceTree = "<group>"; };
+		2669FCF616127502002292C6 /* ray_material.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ray_material.c; path = ../Sources_OpenRL/ray_material.c; sourceTree = "<group>"; };
+		2669FCF716127502002292C6 /* ray_math.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ray_math.c; path = ../Sources_OpenRL/ray_math.c; sourceTree = "<group>"; };
+		2669FCF816127502002292C6 /* ray_mesh.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ray_mesh.c; path = ../Sources_OpenRL/ray_mesh.c; sourceTree = "<group>"; };
+		2669FCFA16127502002292C6 /* ray_overlay.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ray_overlay.c; path = ../Sources_OpenRL/ray_overlay.c; sourceTree = "<group>"; };
+		2669FCFB16127502002292C6 /* ray_precalc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ray_precalc.c; path = ../Sources_OpenRL/ray_precalc.c; sourceTree = "<group>"; };
+		2669FCFC16127502002292C6 /* ray_render.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ray_render.c; path = ../Sources_OpenRL/ray_render.c; sourceTree = "<group>"; };
+		2669FCFD16127502002292C6 /* ray_scene.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ray_scene.c; path = ../Sources_OpenRL/ray_scene.c; sourceTree = "<group>"; };
+		2669FCFE16127502002292C6 /* ray_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ray_types.h; path = ../Sources_OpenRL/ray_types.h; sourceTree = "<group>"; };
+		2669FCFF16127502002292C6 /* ray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ray.h; path = ../Sources_OpenRL/ray.h; sourceTree = "<group>"; };
+		2669FD1916127B66002292C6 /* libSDL2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libSDL2.a; sourceTree = "<group>"; };
+		2669FD1B16127B84002292C6 /* libPNG.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libPNG.a; sourceTree = "<group>"; };
+		2669FD1D16127B95002292C6 /* libmpg123.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libmpg123.a; sourceTree = "<group>"; };
 		267DEDB7158ACD9300216D36 /* script_obj_watch_angle.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_obj_watch_angle.c; sourceTree = "<group>"; };
 		267DEDB8158ACD9300216D36 /* script_obj_watch_position.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_obj_watch_position.c; sourceTree = "<group>"; };
 		267E82851330155B0087DCED /* interface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = interface.h; path = Headers/interface.h; sourceTree = "<group>"; };
@@ -958,13 +989,11 @@
 		269BAD4B15C0DE1B007EE1E9 /* ForceFeedback.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ForceFeedback.framework; path = ../../../../System/Library/Frameworks/ForceFeedback.framework; sourceTree = "<group>"; };
 		269BAD4D15C0DE8B007EE1E9 /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = ../../../../System/Library/Frameworks/JavaScriptCore.framework; sourceTree = "<group>"; };
 		269BAD4F15C0DEE3007EE1E9 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = ../../../../System/Library/Frameworks/Carbon.framework; sourceTree = "<group>"; };
-		269D27C212DEBB7E00AF5695 /* mac_os_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mac_os_defs.h; path = ../dim3Common/Headers/mac_os_defs.h; sourceTree = SOURCE_ROOT; };
 		269EA83A14B9617C0069CA6C /* metrics_draw.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = metrics_draw.c; sourceTree = "<group>"; };
 		26A32EDE1453CFE80005AABD /* model_util_file_model.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = model_util_file_model.c; sourceTree = "<group>"; };
 		26A45D061489AD6C00C02936 /* script_color.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_color.c; sourceTree = "<group>"; };
 		26A45D071489AD6C00C02936 /* script_point_angle_vector.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_point_angle_vector.c; sourceTree = "<group>"; };
 		26CBE2031581AD1E00093D7C /* simple_save_pick.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = simple_save_pick.c; sourceTree = "<group>"; };
-		26E5DA4A16116602003D7755 /* view_openrl_patch.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = view_openrl_patch.c; sourceTree = "<group>"; };
 		26EE3E1613DA7F78000ABAF1 /* AudioUnit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioUnit.framework; path = ../../../../System/Library/Frameworks/AudioUnit.framework; sourceTree = "<group>"; };
 		26F0C43E1563297300AFE368 /* app_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = app_defs.h; path = Headers/app_defs.h; sourceTree = "<group>"; };
 		26FF359D15A936810010C22E /* gl_shader_execute.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = gl_shader_execute.c; sourceTree = "<group>"; };
@@ -972,7 +1001,6 @@
 		26FF68B31523D61B00FACC3B /* script_singleplayer_high_score.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_singleplayer_high_score.c; sourceTree = "<group>"; };
 		26FF68B41523D61B00FACC3B /* script_singleplayer_setting.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_singleplayer_setting.c; sourceTree = "<group>"; };
 		26FF68B51523D61B00FACC3B /* script_singleplayer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_singleplayer.c; sourceTree = "<group>"; };
-		F50AF8A30885FBA200F261B1 /* os_defs.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = os_defs.h; path = ../dim3Common/Headers/os_defs.h; sourceTree = SOURCE_ROOT; };
 		F52E82400C1632E6003D4818 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
 		F5B01DA808F867E600AE5F87 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		F5C5EA7E091323C400F94729 /* dim3engine.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = dim3engine.h; path = Headers/dim3engine.h; sourceTree = "<group>"; };
@@ -992,14 +1020,14 @@
 				26EE3E1713DA7F78000ABAF1 /* AudioUnit.framework in Frameworks */,
 				260B3C721411EFED006ED023 /* Foundation.framework in Frameworks */,
 				260B3C741411EFF6006ED023 /* AppKit.framework in Frameworks */,
-				2618337D14DDE4F9004DD37A /* libSDL2.a in Frameworks */,
-				261833B814DDE50C004DD37A /* libPNG.a in Frameworks */,
-				261833BA14DDE518004DD37A /* libmpg123.a in Frameworks */,
 				269BAD4815C0DDFE007EE1E9 /* CoreAudio.framework in Frameworks */,
 				269BAD4A15C0DE10007EE1E9 /* AudioToolbox.framework in Frameworks */,
 				269BAD4C15C0DE1B007EE1E9 /* ForceFeedback.framework in Frameworks */,
 				269BAD4E15C0DE8B007EE1E9 /* JavaScriptCore.framework in Frameworks */,
 				269BAD5015C0DEE3007EE1E9 /* Carbon.framework in Frameworks */,
+				2669FD1A16127B66002292C6 /* libSDL2.a in Frameworks */,
+				2669FD1C16127B84002292C6 /* libPNG.a in Frameworks */,
+				2669FD1E16127B95002292C6 /* libmpg123.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1009,9 +1037,9 @@
 		016FFAA200BCCD027F000001 /* Headers */ = {
 			isa = PBXGroup;
 			children = (
+				2669FCE8161273D5002292C6 /* os_defs.h */,
+				2669FCE6161273A0002292C6 /* mac_os_defs.h */,
 				F5C5EA7E091323C400F94729 /* dim3engine.h */,
-				F50AF8A30885FBA200F261B1 /* os_defs.h */,
-				269D27C212DEBB7E00AF5695 /* mac_os_defs.h */,
 				26F0C43E1563297300AFE368 /* app_defs.h */,
 				2649D13C13412B2900573F6F /* server_defs.h */,
 				2649D13F13412B2900573F6F /* view_defs.h */,
@@ -1037,6 +1065,7 @@
 				260B42E91411F8CC006ED023 /* MPG123 */,
 			);
 			name = Libraries;
+			path = ../Common/Libraries;
 			sourceTree = "<group>";
 		};
 		195DF8C9FE9D4F0611CA2CBB /* Products */ = {
@@ -1099,6 +1128,7 @@
 				260B3DC91411F67B006ED023 /* Sources */,
 			);
 			name = dim3BaseUtility;
+			path = ../../dim3BaseUtility;
 			sourceTree = "<group>";
 		};
 		260B3DC01411F296006ED023 /* dim3ModelUtility */ = {
@@ -1108,6 +1138,7 @@
 				260B3E191411F683006ED023 /* Sources */,
 			);
 			name = dim3ModelUtility;
+			path = ../../dim3ModelUtility;
 			sourceTree = "<group>";
 		};
 		260B3DC11411F2A4006ED023 /* dim3MapUtility */ = {
@@ -1117,6 +1148,7 @@
 				260B3E4B1411F68B006ED023 /* Sources */,
 			);
 			name = dim3MapUtility;
+			path = ../../dim3MapUtility;
 			sourceTree = "<group>";
 		};
 		260B3DC21411F67B006ED023 /* Cocoa_Stubs */ = {
@@ -1269,6 +1301,7 @@
 				260B3F471411F781006ED023 /* Sources_View */,
 			);
 			name = dim3Engine;
+			path = ../../dim3Engine;
 			sourceTree = "<group>";
 		};
 		260B3E7C1411F781006ED023 /* Sources */ = {
@@ -1330,6 +1363,7 @@
 				264470E414AED1A00099DEE3 /* Sky */,
 				264470E514AED21D0099DEE3 /* Effects */,
 				264470E614AED2860099DEE3 /* Input */,
+				2669FCF0161274E6002292C6 /* OpenRL */,
 			);
 			path = Sources_View;
 			sourceTree = "<group>";
@@ -1337,31 +1371,29 @@
 		260B42E91411F8CC006ED023 /* MPG123 */ = {
 			isa = PBXGroup;
 			children = (
-				261833B914DDE518004DD37A /* libmpg123.a */,
+				2669FD1D16127B95002292C6 /* libmpg123.a */,
 				260B42EB1411F8CC006ED023 /* mpg123.h */,
 			);
-			name = MPG123;
-			path = ../dim3Common/Libraries/MPG123;
+			path = MPG123;
 			sourceTree = "<group>";
 		};
 		260B42EC1411F8CC006ED023 /* PNG */ = {
 			isa = PBXGroup;
 			children = (
-				261833B714DDE50C004DD37A /* libPNG.a */,
+				2669FD1B16127B84002292C6 /* libPNG.a */,
 				260B42EE1411F8CC006ED023 /* png.h */,
 				260B42EF1411F8CC006ED023 /* pngconf.h */,
 				260B42F01411F8CC006ED023 /* pnglibconf.h */,
 			);
-			name = PNG;
-			path = ../dim3Common/Libraries/PNG;
+			path = PNG;
 			sourceTree = "<group>";
 		};
 		260B42F11411F8CC006ED023 /* SDL */ = {
 			isa = PBXGroup;
 			children = (
+				2669FD1916127B66002292C6 /* libSDL2.a */,
 				2618333F14DDE4F9004DD37A /* begin_code.h */,
 				2618334014DDE4F9004DD37A /* close_code.h */,
-				2618334114DDE4F9004DD37A /* libSDL2.a */,
 				2618334214DDE4F9004DD37A /* SDL_assert.h */,
 				2618334314DDE4F9004DD37A /* SDL_atomic.h */,
 				2618334414DDE4F9004DD37A /* SDL_audio.h */,
@@ -1419,8 +1451,7 @@
 				2618337914DDE4F9004DD37A /* SDL_video.h */,
 				2618337A14DDE4F9004DD37A /* SDL.h */,
 			);
-			name = SDL;
-			path = ../dim3Common/Libraries/SDL;
+			path = SDL;
 			sourceTree = "<group>";
 		};
 		26188CEE14A1A00400EDF154 /* Video */ = {
@@ -1514,7 +1545,7 @@
 				260B3F901411F781006ED023 /* view_setup.c */,
 				260B3F911411F781006ED023 /* view_vertex_list.c */,
 				260B3F921411F781006ED023 /* view_vertex_object.c */,
-				26E5DA4A16116602003D7755 /* view_openrl_patch.c */,
+				2669FCEE161274DD002292C6 /* view_openrl_patch.c */,
 			);
 			name = View;
 			sourceTree = "<group>";
@@ -1589,6 +1620,27 @@
 				260B3F771411F781006ED023 /* player_input.c */,
 			);
 			name = Input;
+			sourceTree = "<group>";
+		};
+		2669FCF0161274E6002292C6 /* OpenRL */ = {
+			isa = PBXGroup;
+			children = (
+				2669FCF116127502002292C6 /* ray_color.c */,
+				2669FCF216127502002292C6 /* ray_eye.c */,
+				2669FCF316127502002292C6 /* ray_interface.h */,
+				2669FCF416127502002292C6 /* ray_light.c */,
+				2669FCF516127502002292C6 /* ray_main.c */,
+				2669FCF616127502002292C6 /* ray_material.c */,
+				2669FCF716127502002292C6 /* ray_math.c */,
+				2669FCF816127502002292C6 /* ray_mesh.c */,
+				2669FCFA16127502002292C6 /* ray_overlay.c */,
+				2669FCFB16127502002292C6 /* ray_precalc.c */,
+				2669FCFC16127502002292C6 /* ray_render.c */,
+				2669FCFD16127502002292C6 /* ray_scene.c */,
+				2669FCFE16127502002292C6 /* ray_types.h */,
+				2669FCFF16127502002292C6 /* ray.h */,
+			);
+			name = OpenRL;
 			sourceTree = "<group>";
 		};
 		26A45D051489AD0A00C02936 /* Script API */ = {
@@ -1839,8 +1891,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F50AF8A40885FBA200F261B1 /* os_defs.h in Headers */,
-				269D27C312DEBB7E00AF5695 /* mac_os_defs.h in Headers */,
 				267E82861330155B0087DCED /* interface.h in Headers */,
 				2649D14013412B2900573F6F /* gui_defs.h in Headers */,
 				2649D14113412B2900573F6F /* input_defs.h in Headers */,
@@ -1925,6 +1975,11 @@
 				261833B514DDE4F9004DD37A /* SDL_video.h in Headers */,
 				261833B614DDE4F9004DD37A /* SDL.h in Headers */,
 				26F0C43F1563297300AFE368 /* app_defs.h in Headers */,
+				2669FCE7161273A0002292C6 /* mac_os_defs.h in Headers */,
+				2669FCE9161273D5002292C6 /* os_defs.h in Headers */,
+				2669FD0216127502002292C6 /* ray_interface.h in Headers */,
+				2669FD0D16127502002292C6 /* ray_types.h in Headers */,
+				2669FD0E16127502002292C6 /* ray.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2372,7 +2427,18 @@
 				2682E450159D1F7C001CE3DB /* gl_shader_simple.c in Sources */,
 				26FF359E15A936820010C22E /* gl_shader_execute.c in Sources */,
 				2602769315C88619007B19CD /* label.c in Sources */,
-				26E5DA4B16116602003D7755 /* view_openrl_patch.c in Sources */,
+				2669FCEF161274DD002292C6 /* view_openrl_patch.c in Sources */,
+				2669FD0016127502002292C6 /* ray_color.c in Sources */,
+				2669FD0116127502002292C6 /* ray_eye.c in Sources */,
+				2669FD0316127502002292C6 /* ray_light.c in Sources */,
+				2669FD0416127502002292C6 /* ray_main.c in Sources */,
+				2669FD0516127502002292C6 /* ray_material.c in Sources */,
+				2669FD0616127502002292C6 /* ray_math.c in Sources */,
+				2669FD0716127502002292C6 /* ray_mesh.c in Sources */,
+				2669FD0916127502002292C6 /* ray_overlay.c in Sources */,
+				2669FD0A16127502002292C6 /* ray_precalc.c in Sources */,
+				2669FD0B16127502002292C6 /* ray_render.c in Sources */,
+				2669FD0C16127502002292C6 /* ray_scene.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2416,8 +2482,11 @@
 				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
 				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = Headers/dim3engine.h;
-				GCC_PREPROCESSOR_DEFINITIONS = D3_ENGINE;
+				GCC_PREFIX_HEADER = "$(SRCROOT)/../../dim3Engine/Headers/dim3engine.h";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					D3_ENGINE,
+					D3_OPENRL,
+				);
 				GCC_REUSE_STRINGS = YES;
 				GCC_STRICT_ALIASING = YES;
 				GCC_UNROLL_LOOPS = YES;
@@ -2435,12 +2504,13 @@
 				GCC_WARN_UNUSED_VALUE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
-					"$(SRCROOT)/../dim3BaseUtility/Headers",
-					"$(SRCROOT)/../dim3ModelUtility/Headers",
-					"$(SRCROOT)/../dim3MapUtility/Headers",
-					"$(SRCROOT)/../dim3Common/Libraries/SDL",
-					"$(SRCROOT)/../dim3Common/Libraries/PNG",
-					"$(SRCROOT)/../dim3Common/Libraries/MPG123",
+					"$(SRCROOT)/../../dim3BaseUtility/Headers",
+					"$(SRCROOT)/../../dim3ModelUtility/Headers",
+					"$(SRCROOT)/../../dim3MapUtility/Headers",
+					"$(SRCROOT)/../../dim3Engine/Sources_OpenRL",
+					"$(SRCROOT)/../Common/Libraries/SDL",
+					"$(SRCROOT)/../Common/Libraries/PNG",
+					"$(SRCROOT)/../Common/Libraries/MPG123",
 				);
 				IBC_STRIP_NIBS = NO;
 				INFOPLIST_FILE = "Resources/Info-dim3_Engine.plist";
@@ -2449,6 +2519,9 @@
 					"$(SRCROOT)/../dim3Common/Libraries/SDL",
 					"$(SRCROOT)/../dim3Common/Libraries/PNG",
 					"$(SRCROOT)/../dim3Common/Libraries/MPG123",
+					"\"$(SRCROOT)/../Common/Libraries/SDL\"",
+					"\"$(SRCROOT)/../Common/Libraries/PNG\"",
+					"\"$(SRCROOT)/../Common/Libraries/MPG123\"",
 				);
 				LLVM_LTO = NO;
 				MACOSX_DEPLOYMENT_TARGET = 10.5;
