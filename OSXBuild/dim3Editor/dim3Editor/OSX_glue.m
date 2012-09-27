@@ -935,13 +935,20 @@ int os_dialog_combo_get_value(int id)
 
 void os_dialog_tree_add(int id,file_path_directory_type *fpd)
 {
+	NSObject			*item;
 	NSOutlineView		*outline;
 	
 	diag_fpd=fpd;
 	
 	outline=(NSOutlineView*)os_dialog_id_to_ctrl(id);
 	[(DialogOutlineDataSource*)[outline dataSource] setupStrings];
+
 	[outline reloadData];
+	
+	item=[(DialogOutlineDataSource*)[outline dataSource] indexToItem:0];
+	if (item!=nil) {
+		if ([outline isExpandable:item]) [outline expandItem:item];
+	}
 }
 
 int os_dialog_tree_get_value(int id)
@@ -949,7 +956,7 @@ int os_dialog_tree_get_value(int id)
 	NSOutlineView		*outline;
 	
 	outline=(NSOutlineView*)os_dialog_id_to_ctrl(id);
-	return((int)[outline selectedRow]);
+	return((int)[(DialogOutlineDataSource*)[outline dataSource] itemToIndex:[outline itemAtRow:[outline selectedRow]]]);
 }
 
 void os_dialog_set_focus(int id,bool select_all)
