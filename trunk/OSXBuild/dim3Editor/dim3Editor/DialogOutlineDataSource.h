@@ -31,5 +31,7 @@ and can be sold or given away.
 
 -(void)setupStrings;
 -(void)freeStrings;
+-(NSObject*)indexToItem:(int)idx;
+-(int)itemToIndex:(NSObject*)item;
 
 @end

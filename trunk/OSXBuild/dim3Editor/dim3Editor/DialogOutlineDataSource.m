@@ -68,8 +68,6 @@ NSString							*file_ns_strs[file_paths_max_directory_file];
 		file_ns_strs[n]=[[NSString alloc] initWithUTF8String:diag_fpd->files[n].file_name];
 		if (diag_fpd->files[n].is_dir) nfile_root++;
 	}
-	
-	fprintf(stdout,"SETUP, nfile_root=%d\n",nfile_root);
 
 	initialized=TRUE;
 }
@@ -131,6 +129,22 @@ int diag_datasource_index_for_item(NSString *item)
 	}
 
 	return(-1);
+}
+
+/* =======================================================
+
+      Item - Index Functions
+	        
+======================================================= */
+
+-(NSObject*)indexToItem:(int)idx
+{
+	return(file_ns_strs[idx]);
+}
+
+-(int)itemToIndex:(NSObject*)item
+{
+	return(diag_datasource_index_for_item((NSString*)item));
 }
 
 /* =======================================================

@@ -2516,9 +2516,6 @@
 				INFOPLIST_FILE = "Resources/Info-dim3_Engine.plist";
 				INSTALL_PATH = "";
 				LIBRARY_SEARCH_PATHS = (
-					"$(SRCROOT)/../dim3Common/Libraries/SDL",
-					"$(SRCROOT)/../dim3Common/Libraries/PNG",
-					"$(SRCROOT)/../dim3Common/Libraries/MPG123",
 					"\"$(SRCROOT)/../Common/Libraries/SDL\"",
 					"\"$(SRCROOT)/../Common/Libraries/PNG\"",
 					"\"$(SRCROOT)/../Common/Libraries/MPG123\"",
