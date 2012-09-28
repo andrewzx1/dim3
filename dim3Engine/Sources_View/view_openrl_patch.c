@@ -181,7 +181,7 @@ void view_openrl_map_setup(void)
 			
 			// add the mesh
 
-		meshId=rlSceneMeshAdd(view_rl_scene_id,0);
+		meshId=rlSceneMeshAdd(view_rl_scene_id,-1,0);
 		if (meshId<0) return;
 
 			// the vertexes
@@ -305,7 +305,7 @@ void view_openrl_model_setup(void)
 			
 			// add the mesh
 
-		meshId=rlSceneMeshAdd(view_rl_scene_id,0);
+		meshId=rlSceneMeshAdd(view_rl_scene_id,-1,0);
 		if (meshId<0) continue;
 
 			// the vertexes

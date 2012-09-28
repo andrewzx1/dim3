@@ -107,7 +107,7 @@ extern int rlSceneLightSetIntensity(int sceneId,int lightId,float intensity,floa
 
 	// scene meshes
 
-extern int rlSceneMeshAdd(int sceneId,unsigned long flags);
+extern int rlSceneMeshAdd(int sceneId,int parentMeshId,unsigned long flags);
 extern int rlSceneMeshDelete(int sceneId,int meshId);
 extern int rlSceneMeshDeleteAll(int scenedId);
 extern int rlSceneMeshSetVertex(int sceneId,int meshId,int format,int count,void *vertex_data);
