@@ -37,6 +37,7 @@ and can be sold or given away.
 
 extern map_type				map;
 extern server_type			server;
+extern camera_type			camera;
 extern view_type			view;
 extern iface_type			iface;
 extern setup_type			setup;
@@ -50,7 +51,8 @@ extern file_path_setup_type	file_path_setup;
 
 	int								view_rl_scene_id,
 									view_rl_purple_material_id,view_rl_yellow_material_id,
-									view_rl_player_light_id;
+									view_rl_green_material_id,view_rl_player_light_id;
+	int								view_rl_model_mesh_ids[max_obj_list];
 	GLuint							view_rl_gl_id;
 #endif
 
@@ -103,6 +105,9 @@ bool view_openrl_initialize(char *err_str)
 
 	view_rl_yellow_material_id=rlMaterialAdd(1,1,0);
 	rlMaterialAttachBufferColor(view_rl_yellow_material_id,RL_MATERIAL_BUFFER_COLOR,1.0f,1.0f,0.0f);
+	
+	view_rl_green_material_id=rlMaterialAdd(1,1,0);
+	rlMaterialAttachBufferColor(view_rl_green_material_id,RL_MATERIAL_BUFFER_COLOR,0.0f,1.0f,0.0f);
 
 		// single player light
 
@@ -157,7 +162,7 @@ void view_openrl_shutdown(void)
 
 /* =======================================================
 
-      OpenRL Mesh Setup
+      OpenRL Map Mesh Setup
       
 ======================================================= */
 
@@ -256,6 +261,116 @@ void view_openrl_map_setup(void)
 		}
 
 		rlSceneMeshSetPoly(view_rl_scene_id,meshId,RL_MESH_FORMAT_POLY_SHORT_VERTEX_UV_NORMAL,mesh->npoly,ray_polys);
+		free(ray_polys);
+	}
+}
+
+/* =======================================================
+
+      OpenRL Model Mesh Setup
+      
+======================================================= */
+
+// supergumba -- precreate these meshes, and then just replace
+// the vertex and normals on them.  Need new code in OpenRL to auto fix boxes
+// when vertexes are changed
+
+void view_openrl_model_setup(void)
+{
+	int					n,i,t,meshId,uv_count;
+	float				*uvs,*vt;
+	short				*vk,*ray_polys;
+	obj_type			*obj;
+	model_draw			*draw;
+	model_type			*mdl;
+	model_mesh_type		*mesh;
+	model_poly_type		*poly;
+	
+	for (n=0;n!=max_obj_list;n++) {
+		view_rl_model_mesh_ids[n]=-1;
+		
+		obj=server.obj_list.objs[n];
+		if (obj==NULL) continue;
+		
+		if (obj->hidden) continue;
+		if ((map.camera.mode==cv_fpp) && (obj->idx==camera.obj_idx)) continue;		// supergumba -- we need to get this in scene anyway
+		
+			// get the model
+			
+		draw=&obj->draw;
+		if ((draw->model_idx==-1) || (!draw->on)) continue;
+	
+		mdl=server.model_list.models[draw->model_idx];
+		mesh=&mdl->meshes[0];
+			
+			// add the mesh
+
+		meshId=rlSceneMeshAdd(view_rl_scene_id,0);
+		if (meshId<0) continue;
+
+			// the vertexes
+
+		rlSceneMeshSetVertex(view_rl_scene_id,meshId,RL_MESH_FORMAT_VERTEX_3_FLOAT,mesh->nvertex,draw->setup.mesh_arrays[0].gl_vertex_array);
+
+			// the UVs
+
+		uvs=(float*)malloc((mesh->npoly*(8*2))*sizeof(float));		// supergumba -- this will work but chews up a lot of memory
+		vt=uvs;
+
+		uv_count=0;
+		poly=mesh->polys;
+	
+		for (i=0;i!=mesh->npoly;i++) {
+			for (t=0;t!=poly->ptsz;t++) {
+				*vt++=poly->gx[t];
+				*vt++=poly->gy[t];
+			}
+			uv_count+=poly->ptsz;
+			poly++;
+		}
+			
+		rlSceneMeshSetUV(view_rl_scene_id,meshId,RL_MESH_FORMAT_UV_2_FLOAT,uv_count,uvs);
+		free(uvs);
+
+			// the normals
+
+		rlSceneMeshSetNormal(view_rl_scene_id,meshId,RL_MESH_FORMAT_NORMAL_3_FLOAT,mesh->nvertex,draw->setup.mesh_arrays[0].gl_normal_array);
+
+			// polygons
+
+		ray_polys=(short*)malloc((mesh->npoly*(2+(3*8)))*sizeof(short));		// supergumba -- this will work but chews up a lot of memory
+		vk=ray_polys;
+
+		uv_count=0;
+		poly=mesh->polys;
+	
+		for (i=0;i!=mesh->npoly;i++) {
+			*vk++=poly->ptsz;
+			*vk++=view_rl_green_material_id;
+
+			for (t=0;t!=poly->ptsz;t++) {
+				*vk++=(short)poly->v[t];	// vertex
+				*vk++=uv_count;				// uv, each vertex has unique uv count
+				*vk++=(short)i;				// normal, one normal for each poly
+				uv_count++;
+			}
+
+			poly++;
+		}
+
+		rlSceneMeshSetPoly(view_rl_scene_id,meshId,RL_MESH_FORMAT_POLY_SHORT_VERTEX_UV_NORMAL,mesh->npoly,ray_polys);
+		free(ray_polys);
+
+		view_rl_model_mesh_ids[n]=meshId;
+	}
+}
+
+void view_openrl_model_release(void)
+{
+	int					n;
+	
+	for (n=0;n!=max_obj_list;n++) {
+		if (view_rl_model_mesh_ids[n]!=-1) rlSceneMeshDelete(view_rl_scene_id,view_rl_model_mesh_ids[n]);
 	}
 }
 
@@ -328,6 +443,10 @@ void view_openrl_render(void)
 		// set the eye position
 
 	rlSceneEyePositionSet(view_rl_scene_id,&pnt,&mat,200.0f,1000000.0f);
+	
+		// add in models
+		
+	view_openrl_model_setup();
 
 		// render
 
@@ -340,6 +459,10 @@ void view_openrl_render(void)
 	while (rlSceneRenderState(view_rl_scene_id)==RL_SCENE_STATE_RENDERING) {
 		usleep(10);
 	}
+	
+		// release models
+		
+	view_openrl_model_release();
 
 		// transfer to OpenGL
 

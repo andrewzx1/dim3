@@ -238,6 +238,11 @@ int rlSceneMeshSetVertex(int sceneId,int meshId,int format,int count,void *verte
 		vertex->z=*vp++;
 		vertex++;
 	}
+	
+		// mesh bounds are calculated
+		// when vertex list changes
+		
+	ray_precalc_mesh_bounds(mesh);
 
 	return(RL_ERROR_OK);
 }
@@ -516,10 +521,6 @@ int rlSceneMeshSetPoly(int sceneId,int meshId,int format,int count,void *poly_da
 
 		poly++;
 	}
-	
-		// calculate the mesh bounds
-		
-	ray_precalc_mesh_bounds(mesh);
 
 	return(RL_ERROR_OK);
 }
