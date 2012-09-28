@@ -14,11 +14,40 @@ int ray_scene_mesh_get_index(ray_scene_type *scene,int meshId)
 {
 	int					n;
 
+	if (meshId==-1) return(-1);
+
 	for (n=0;n!=scene->mesh_list.count;n++) {
 		if (scene->mesh_list.meshes[n]->id==meshId) return(n);
 	}
 
 	return(-1);
+}
+
+/* =======================================================
+
+      Get Blocks
+      
+======================================================= */
+
+ray_vertex_block* ray_scene_mesh_get_vertex_block(ray_scene_type *scene,ray_mesh_type *mesh)
+{
+	int					idx,count;
+	ray_mesh_type		*cur_mesh;
+
+	count=0;
+	cur_mesh=mesh;
+
+	while (count<ray_max_parent_depth) {
+		if (cur_mesh->vertex_block.vertexes!=NULL) return(&cur_mesh->vertex_block);
+		if (cur_mesh->parent_id==-1) return(NULL);
+
+		idx=ray_scene_mesh_get_index(scene,cur_mesh->parent_id);
+		if (idx==-1) return(NULL);
+
+		cur_mesh=scene->mesh_list.meshes[idx];
+
+		count++;
+	}
 }
 
 /* =======================================================
@@ -29,10 +58,11 @@ int ray_scene_mesh_get_index(ray_scene_type *scene,int meshId)
 	   If >=0, then a mesh ID
 	   RL_ERROR_UNKNOWN_SCENE_ID
 	   RL_ERROR_OUT_OF_MEMORY
+	   RL_ERROR_UNKNOWN_MESH_ID (if parentMeshId!=-1 and not a real id)
       
 ======================================================= */
 
-int rlSceneMeshAdd(int sceneId,unsigned long flags)
+int rlSceneMeshAdd(int sceneId,int parentMeshId,unsigned long flags)
 {
 	int					idx;
 	ray_mesh_type		*mesh;
@@ -50,8 +80,15 @@ int rlSceneMeshAdd(int sceneId,unsigned long flags)
 	mesh=(ray_mesh_type*)malloc(sizeof(ray_mesh_type));
 	if (mesh==NULL) return(RL_ERROR_OUT_OF_MEMORY);
 
+		// validate parent mesh id
+
+	if (parentMeshId!=-1) {
+		if (ray_scene_mesh_get_index(sceneId,parentMeshId)==-1) return(RL_ERROR_UNKNOWN_MESH_ID);
+	}
+
 		// mesh settings
 
+	mesh->parent_id=parentMeshId;
 	mesh->flags=flags;
 
 	mesh->vertex_block.count=0;

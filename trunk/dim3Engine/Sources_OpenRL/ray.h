@@ -24,6 +24,8 @@
 
 #define ray_max_material							1024
 
+#define ray_max_parent_depth						4
+
 //
 // math defines
 //
@@ -48,7 +50,7 @@ typedef struct		{
 // scene meshes
 //
 // these are the meshes inside of each scene object.  They contain
-// vertex, uv, normal, tangent, and triangle lists.
+// vertex, uv, normal, and triangle lists.
 //
 
 typedef struct		{
@@ -65,11 +67,6 @@ typedef struct		{
 						int							count;
 						ray_vector_type				*normals;
 					} ray_normal_block;
-
-typedef struct		{
-						int							count;
-						ray_vector_type				*tangents;
-					} ray_tangent_block;
 
 typedef struct		{
 						int							vertex_idx[3],uv_idx[3],normal_idx[3];
@@ -102,12 +99,11 @@ typedef struct		{
 					} ray_poly_block;
 
 typedef struct		{
-						int							id;
+						int							id,parent_id;
 						unsigned long				flags;
 						ray_vertex_block			vertex_block;
 						ray_uv_block				uv_block;
 						ray_normal_block			normal_block;
-						ray_tangent_block			tangent_block;
 						ray_poly_block				poly_block;
 						ray_bound_type				bound;
 					} ray_mesh_type;
@@ -313,6 +309,8 @@ extern bool ray_scene_overlay_get_pixel(ray_scene_type *scene,int x,int y,ray_co
 
 extern int ray_scene_get_index(int sceneId);
 extern int ray_material_get_index(int materialId);
+
+extern ray_vertex_block* ray_scene_mesh_get_vertex_block(ray_scene_type *scene,ray_mesh_type *mesh);
 
 extern void ray_render_clear_threads(ray_scene_type *scene);
 
