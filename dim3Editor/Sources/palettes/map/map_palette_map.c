@@ -135,7 +135,6 @@ void map_palette_fill_map(void)
 		// editor setup
 
 	list_palette_add_header(&map_palette,0,"Map Editor Setup");
-	list_palette_add_uv(&map_palette,kMapPropertyEditorTextureFactor,"Texture Scale (1000 units)",&map.editor_setup.txt_scale,FALSE);
 	list_palette_add_int(&map_palette,kMapPropertyEditorViewNearZ,"Near Z",&map.editor_setup.view_near_dist,FALSE);
 	list_palette_add_int(&map_palette,kMapPropertyEditorViewFarZ,"Far Z",&map.editor_setup.view_far_dist,FALSE);
 	list_palette_add_checkbox(&map_palette,kMapPropertyEditorLinkStartAlways,"Always Start at Player Spot",&map.editor_setup.link_always_start,FALSE);

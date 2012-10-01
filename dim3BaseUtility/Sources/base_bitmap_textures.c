@@ -272,10 +272,9 @@ void bitmap_texture_clear(texture_type *texture)
 	texture->glow.min=0.0f;
 	texture->glow.max=1.0f;
 
-	texture->scale.on=FALSE;
-	texture->scale.lock_offset=FALSE;
-	texture->scale.uv.x=texture->scale.uv.y=0.25f;
-    
+ 	texture->scale.uv_offset.x=texture->scale.uv_offset.y=0.0f;
+ 	texture->scale.uv_size.x=texture->scale.uv_size.y=0.25f;
+  
 	frame=texture->frames;
 
     for (n=0;n!=max_texture_frame;n++) {
@@ -321,18 +320,10 @@ void bitmap_texture_read_xml(texture_type *texture,int main_tag,bool read_scale)
 
 	if (read_scale) {
 		scale_tag=xml_findfirstchild("Scale",main_tag);
-		if (scale_tag!=-1) {
-			texture->scale.uv.x=xml_get_attribute_float_default(main_tag,"txt_scale_x",0.04f)*6.94f;
-			texture->scale.uv.y=xml_get_attribute_float_default(main_tag,"txt_scale_y",0.04f)*6.04f;
-			texture->scale.on=xml_get_attribute_boolean(main_tag,"txt_scale_on");
-			texture->scale.lock_offset=xml_get_attribute_boolean(main_tag,"txt_scale_lock_offset");
-		}
-		else {
-			texture->scale.uv.x=xml_get_attribute_float_default(scale_tag,"x",0.25f);
-			texture->scale.uv.y=xml_get_attribute_float_default(scale_tag,"y",0.25f);
-			texture->scale.on=xml_get_attribute_boolean(scale_tag,"on");
-			texture->scale.lock_offset=xml_get_attribute_boolean(scale_tag,"lock_offset");
-		}
+		texture->scale.uv_size.x=xml_get_attribute_float_default(scale_tag,"x",0.25f);
+		texture->scale.uv_size.y=xml_get_attribute_float_default(scale_tag,"y",0.25f);
+		texture->scale.uv_offset.x=xml_get_attribute_float_default(scale_tag,"x_off",0.0f);
+		texture->scale.uv_offset.y=xml_get_attribute_float_default(scale_tag,"y_off",0.0f);
 	}
 	
 		// images
@@ -383,10 +374,10 @@ void bitmap_texture_write_xml(texture_type *texture,int frame_count,bool write_s
 		
 	if (write_scale) {
 		xml_add_tagstart("Scale");
-		xml_add_attribute_float("x",texture->scale.uv.x);
-		xml_add_attribute_float("y",texture->scale.uv.y);
-		xml_add_attribute_boolean("on",texture->scale.on);
-		xml_add_attribute_boolean("lock_offset",texture->scale.lock_offset);
+		xml_add_attribute_float("x",texture->scale.uv_size.x);
+		xml_add_attribute_float("y",texture->scale.uv_size.y);
+		xml_add_attribute_float("x_off",texture->scale.uv_offset.x);
+		xml_add_attribute_float("y_off",texture->scale.uv_offset.y);
 		xml_add_tagend(TRUE);
 	}
 	

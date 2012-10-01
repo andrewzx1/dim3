@@ -10,7 +10,7 @@ ray_global_type					ray_global;
       
 ======================================================= */
 
-bool ray_intersect_triangle(ray_point_type *eye_point,ray_vector_type *eye_vector,ray_mesh_type *mesh,ray_trig_type *trig,float *ptr_t,float *ptr_u,float *ptr_v)
+bool ray_intersect_triangle(ray_scene_type *scene,ray_point_type *eye_point,ray_vector_type *eye_vector,ray_mesh_type *mesh,ray_trig_type *trig,float *ptr_t,float *ptr_u,float *ptr_v)
 {
 	float				det,invDet,t,u,v;
 	ray_vector_type		perpVector,lineToTrigPointVector,lineToTrigPerpVector;
@@ -117,7 +117,7 @@ void ray_intersect_mesh_list(ray_scene_type *scene,ray_point_type *eye_point,ray
 					// first hit exits out of polygons as you
 					// can only hit one triangle
 				
-				if (ray_intersect_triangle(eye_point,eye_vector,mesh,trig,&it,&iu,&iv)) {
+				if (ray_intersect_triangle(scene,eye_point,eye_vector,mesh,trig,&it,&iu,&iv)) {
 					if (it<collision->t) {
 						collision->t=it;
 						collision->u=iu;
@@ -149,16 +149,16 @@ bool ray_block_mesh_list(ray_scene_type *scene,ray_point_type *pnt,ray_vector_ty
 	
 	for (n=0;n!=index_block->count;n++) {
 	
+			// indexes in this mesh list have
+			// already been pared down non-render
+			// and non-light blocking
+			
 		mesh_idx=index_block->indexes[n];
 		mesh=scene->mesh_list.meshes[mesh_idx];
 		
 			// bounds check
 			
 		if (!ray_bound_ray_collision(pnt,vct,&mesh->bound)) continue;
-		
-			// check non blocking light flag
-
-		if ((mesh->flags&RL_MESH_FLAG_NON_LIGHT_BLOCKING)!=0) continue;
 
 			// run through the polys
 			
@@ -182,7 +182,7 @@ bool ray_block_mesh_list(ray_scene_type *scene,ray_point_type *pnt,ray_vector_ty
 					// only except t that is less 1.0f, otherwise
 					// we've gone past the light
 					
-				if (ray_intersect_triangle(pnt,vct,mesh,trig,&t,&u,&v)) {
+				if (ray_intersect_triangle(scene,pnt,vct,mesh,trig,&t,&u,&v)) {
 					if (t<1.0f) return(TRUE);
 				}
 			}

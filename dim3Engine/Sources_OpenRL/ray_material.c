@@ -41,7 +41,7 @@ void ray_get_material_rgb(ray_scene_type *scene,ray_collision_type *collision,ra
 	ray_vector_type			*n0,*n1,*n2;
 	ray_material_type		*material;
 
-		// get mesh/trig and materials
+		// get mesh/poly/trig and materials
 		
 	mesh=scene->mesh_list.meshes[collision->mesh_idx];
 	poly=&mesh->poly_block.polys[collision->poly_idx];
@@ -69,7 +69,7 @@ void ray_get_material_rgb(ray_scene_type *scene,ray_collision_type *collision,ra
 	fx=(inv*uv0->x)+(collision->u*uv1->x)+(collision->v*uv2->x);
 	fy=(inv*uv0->y)+(collision->u*uv1->y)+(collision->v*uv2->y);
 	
-		// calcualte the surface normal
+		// calculate the surface normal
 		
 	n0=&mesh->normal_block.normals[trig->normal_idx[0]];
 	n1=&mesh->normal_block.normals[trig->normal_idx[1]];
@@ -211,7 +211,7 @@ int rlMaterialDelete(int materialId)
 		for (k=0;k!=scene->mesh_list.count;k++) {
 			mesh=scene->mesh_list.meshes[k];
 
-			poly=mesh->poly_block.polys;
+			poly=mesh->poly_block.polys;			// don't need to parent, we will check the parents as we get them
 
 			for (t=0;t!=mesh->poly_block.count;t++) {
 				if (poly->material_idx==idx) return(RL_ERROR_MATERIAL_ATTACHED_TO_MESH);
@@ -261,8 +261,8 @@ int rlMaterialDelete(int materialId)
 
 int rlMaterialAttachBufferData(int materialId,int target,int format,unsigned char* data)
 {
-	int						idx,sz;
-	unsigned char			*rgb_data;
+	int						n,pixel_cnt,idx,sz;
+	unsigned char			*rgba_data,*rptr,*dptr;
 	ray_material_type		*material;
 
 		// get material
@@ -274,33 +274,56 @@ int rlMaterialAttachBufferData(int materialId,int target,int format,unsigned cha
 
 		// validate target and format
 
-	if ((target!=RL_MATERIAL_BUFFER_COLOR) && (target!=RL_MATERIAL_BUFFER_NORMAL) && (target!=RL_MATERIAL_BUFFER_SPECULAR) && (target!=RL_MATERIAL_BUFFER_REFLECTION)) return(RL_ERROR_UNKNOWN_TARGET);
-	if (format!=RL_MATERIAL_FORMAT_32_RGBA) return(RL_ERROR_UNKNOWN_FORMAT);
-		
-		// save new material target
+	if ((target!=RL_MATERIAL_TARGET_COLOR) && (target!=RL_MATERIAL_TARGET_NORMAL) && (target!=RL_MATERIAL_TARGET_SPECULAR) && (target!=RL_MATERIAL_TARGET_REFLECTION)) return(RL_ERROR_UNKNOWN_TARGET);
+	if ((format!=RL_MATERIAL_FORMAT_32_RGBA) && (format!=RL_MATERIAL_FORMAT_24_RGB)) return(RL_ERROR_UNKNOWN_FORMAT);
+
+		// memory for rgba data
 		
 	sz=(material->wid*material->high)<<2;
 	
-	rgb_data=malloc(sz);
-	if (rgb_data==NULL) return(RL_ERROR_OUT_OF_MEMORY);
-	memmove(rgb_data,data,sz);
+	rgba_data=malloc(sz);
+	if (rgba_data==NULL) return(RL_ERROR_OUT_OF_MEMORY);
+	
+		// all materials are in 32 bit RGBA
+		// if material is not that format, than
+		// we need to translate
+		
+	if (format==RL_MATERIAL_FORMAT_32_RGBA) {
+		memmove(rgba_data,data,sz);
+	}
+	else {
+	
+		rptr=rgba_data;
+		dptr=data;
+		
+		pixel_cnt=material->wid*material->high;
+		
+		for (n=0;n!=pixel_cnt;n++) {
+			*rptr++=*dptr++;
+			*rptr++=*dptr++;
+			*rptr++=*dptr++;
+			*rptr++=0xFF;
+		}
+	}
+		
+		// save new material target
 	
 	switch (target) {
 	
-		case RL_MATERIAL_BUFFER_COLOR:
-			material->color.data=rgb_data;
+		case RL_MATERIAL_TARGET_COLOR:
+			material->color.data=rgba_data;
 			break;
 			
-		case RL_MATERIAL_BUFFER_NORMAL:
-			material->normal.data=rgb_data;
+		case RL_MATERIAL_TARGET_NORMAL:
+			material->normal.data=rgba_data;
 			break;
 			
-		case RL_MATERIAL_BUFFER_SPECULAR:
-			material->specular.data=rgb_data;
+		case RL_MATERIAL_TARGET_SPECULAR:
+			material->specular.data=rgba_data;
 			break;
 			
-		case RL_MATERIAL_BUFFER_REFLECTION:
-			material->reflection.data=rgb_data;
+		case RL_MATERIAL_TARGET_REFLECTION:
+			material->reflection.data=rgba_data;
 			break;
 			
 	}
@@ -319,13 +342,12 @@ int rlMaterialAttachBufferData(int materialId,int target,int format,unsigned cha
       
 ======================================================= */
 
-int rlMaterialAttachBufferColor(int materialId,int target,float r,float g,float b)
+int rlMaterialAttachBufferColor(int materialId,int target,ray_color_type *col)
 {
 	int						n,sz,idx,err;
 	unsigned long			pixel;
 	unsigned long			*pd,*pixel_data;
-	ray_color_type			col;
-	ray_material_type		*material;
+				ray_material_type		*material;
 
 		// get material
 
@@ -343,11 +365,7 @@ int rlMaterialAttachBufferColor(int materialId,int target,float r,float g,float 
 
 	pd=pixel_data;
 	
-	col.r=r;
-	col.g=g;
-	col.b=b;
-	col.a=1.0f;
-	pixel=ray_create_ulong_color_from_float(&col);
+	pixel=ray_create_ulong_color_from_float(col);
 
 	for (n=0;n!=sz;n++) {
 		*pd++=pixel;
@@ -356,198 +374,6 @@ int rlMaterialAttachBufferColor(int materialId,int target,float r,float g,float 
 		// attach to material
 
 	err=rlMaterialAttachBufferData(materialId,target,RL_MATERIAL_FORMAT_32_RGBA,(unsigned char*)pixel_data);
-
-	free(pixel_data);
-
-	return(err);
-}
-
-/* =======================================================
-
-      PNG IO Replacements
-      
-======================================================= */
-
-void rlMaterialPNGfRead(png_structp png_ptr,png_bytep data,png_size_t length)
-{
-	FILE			*file;
-
-	file=(FILE*)png_get_io_ptr(png_ptr);
-	fread(data,1,length,file);
-}
-
-/* =======================================================
-
-      Attach a Material Target from a PNG File
-
-	  Returns:
-	   RL_ERROR_OK
-	   RL_ERROR_UNKNOWN_MATERIAL_ID
-	   RL_ERROR_FILE_NOT_FOUND
-	   RL_ERROR_OUT_OF_MEMORY
-	   RL_ERROR_FILE_PNG_BAD_HEADER
-	   RL_ERROR_FILE_PNG_LESS_24_BITS
-	   RL_ERROR_FILE_PNG_WRONG_WIDTH_HEIGHT
-      
-======================================================= */
-
-int rlMaterialAttachBufferPNG(int materialId,int target,char *path)
-{
-	int						x,y,k,idx,bit_depth,err,
-							rowbytes,channels,wid,high;
-	unsigned char			header[8];
-	unsigned char			*pixel_data,*ptr,*rp;
-	FILE					*file;
-	png_structp				png_ptr;
-	png_infop				info_ptr;
-	png_bytep				*rptrs;
-	ray_material_type		*material;
-
-		// get material
-
-	idx=ray_material_get_index(materialId);
-	if (idx==-1) return(RL_ERROR_UNKNOWN_MATERIAL_ID);
-
-	material=ray_global.material_list.materials[idx];
-
-		// open file
-
-	file=fopen(path,"rb");
-	if (file==NULL) return(RL_ERROR_FILE_NOT_FOUND);
-	
-	fread(header,1,8,file);
-	if (png_sig_cmp(header,0,8)) return(RL_ERROR_FILE_PNG_BAD_HEADER);
-	
-		// get info
-		
-	png_ptr=png_create_read_struct(PNG_LIBPNG_VER_STRING,NULL,NULL,NULL);
-	if (png_ptr==NULL) {
-		fclose(file);
-		return(RL_ERROR_OUT_OF_MEMORY);
-	}
-	
-	info_ptr=png_create_info_struct(png_ptr);
-	if (info_ptr==NULL) {
-		png_destroy_read_struct(&png_ptr,NULL,NULL);
-		fclose(file);
-		return(RL_ERROR_OUT_OF_MEMORY);
-	}
-	
-	if (setjmp(png_jmpbuf(png_ptr))) {
-		png_destroy_read_struct(&png_ptr,&info_ptr,NULL);
-		fclose(file);
-		return(RL_ERROR_OUT_OF_MEMORY);
-	}
-	
-		// we have to force libPNG to call back
-		// for fread and fwrite because changes
-		// in the libraries in win32 cause all sorts of havoc
-
-	png_set_read_fn(png_ptr,file,rlMaterialPNGfRead);
-	png_set_sig_bytes(png_ptr,8);
-	
-	png_read_info(png_ptr,info_ptr);
-	
-	wid=png_get_image_width(png_ptr,info_ptr);
-	high=png_get_image_height(png_ptr,info_ptr);
-	rowbytes=(int)png_get_rowbytes(png_ptr,info_ptr);
-	channels=png_get_channels(png_ptr,info_ptr);
-	bit_depth=png_get_bit_depth(png_ptr,info_ptr)*channels;
-
-		// check for width/height with material
-
-	if ((wid!=material->wid) || (high!=material->high)) {
-		png_destroy_read_struct(&png_ptr,&info_ptr,NULL);
-		fclose(file);
-		return(RL_ERROR_FILE_PNG_WRONG_WIDTH_HEIGHT);
-	}
-
-		// check for at least 24 bits
-
-	if ((bit_depth!=24) && (bit_depth!=32)) {
-		png_destroy_read_struct(&png_ptr,&info_ptr,NULL);
-		fclose(file);
-		return(RL_ERROR_FILE_PNG_LESS_24_BITS);
-	}
-
-		// create the bitmap
-		
-	pixel_data=malloc((wid<<2)*high);
-	if (pixel_data==NULL) {
-		png_destroy_read_struct(&png_ptr,&info_ptr,NULL);
-		fclose(file);
-		return(RL_ERROR_OUT_OF_MEMORY);
-	}
-
-		// read the file
-
-	png_set_interlace_handling(png_ptr);
-	png_read_update_info(png_ptr,info_ptr);
-		
-	rptrs=(png_bytep*)malloc(sizeof(png_bytep)*high);
-	if (rptrs==NULL) {
-		png_destroy_read_struct(&png_ptr,&info_ptr,NULL);
-		fclose(file);
-		return(RL_ERROR_OUT_OF_MEMORY);
-	}
-	
-	for (y=0;y!=high;y++) {
-		rptrs[y]=(png_byte*)malloc(rowbytes);
-		if (rptrs[y]==NULL) {
-			for (k=0;k<y;k++) {
-				free(rptrs[y]);
-			}
-			png_destroy_read_struct(&png_ptr,&info_ptr,NULL);
-			free(rptrs);
-			fclose(file);
-			return(RL_ERROR_OUT_OF_MEMORY);
-		}
-	}
-	
-	png_read_image(png_ptr,rptrs);
-	
-		// translate
-		
-	ptr=pixel_data;
-	
-	if (channels==4) {
-	
-			// RGBA
-			
-		for (y=0;y!=high;y++) {
-			memmove(ptr,rptrs[y],rowbytes);
-			ptr+=rowbytes;
-		}
-	}
-	else {
-	
-			// RGB
-			
-		for (y=0;y!=high;y++) {
-			rp=rptrs[y];
-			for (x=0;x!=wid;x++) {
-				*ptr++=*rp++;
-				*ptr++=*rp++;
-				*ptr++=*rp++;
-				*ptr++=0xFF;
-			}
-		}
-	}
-
-		// clean up
-		
-	for (y=0;y!=high;y++) {
-		free(rptrs[y]);
-	}
-	
-	free(rptrs);
-		
-	png_destroy_read_struct(&png_ptr,&info_ptr,NULL);
-	fclose(file);
-	
-		// attach to material
-	
-	err=rlMaterialAttachBufferData(materialId,target,RL_MATERIAL_FORMAT_32_RGBA,pixel_data);
 
 	free(pixel_data);
 

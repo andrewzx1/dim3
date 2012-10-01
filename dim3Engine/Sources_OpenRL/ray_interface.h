@@ -17,16 +17,17 @@
 #define RL_SCENE_STATE_IDLE							0
 #define RL_SCENE_STATE_RENDERING					1
 
-	// material buffers
+	// material buffer targets
 
-#define RL_MATERIAL_BUFFER_COLOR					0
-#define RL_MATERIAL_BUFFER_NORMAL					1
-#define RL_MATERIAL_BUFFER_SPECULAR					2
-#define RL_MATERIAL_BUFFER_REFLECTION				3
+#define RL_MATERIAL_TARGET_COLOR					0
+#define RL_MATERIAL_TARGET_NORMAL					1
+#define RL_MATERIAL_TARGET_SPECULAR					2
+#define RL_MATERIAL_TARGET_REFLECTION				3
 
 	// material formats
 
 #define RL_MATERIAL_FORMAT_32_RGBA					0
+#define RL_MATERIAL_FORMAT_24_RGB					1
 
 	// mesh formats
 
@@ -79,15 +80,14 @@ extern int rlShutdown(void);
 extern int rlMaterialAdd(int wid,int high,unsigned long flags);
 extern int rlMaterialDelete(int materialId);
 extern int rlMaterialAttachBufferData(int materialId,int target,int format,unsigned char* data);
-extern int rlMaterialAttachBufferColor(int materialId,int target,float r,float g,float b);	
-extern int rlMaterialAttachBufferPNG(int materialId,int target,char *path);
+extern int rlMaterialAttachBufferColor(int materialId,int target,ray_color_type *col);
 extern int rlMaterialSetShineFactor(int materialId,float shineFactor);
 
 	// scenes
 
 extern int rlSceneAdd(int wid,int high,int target,int format,unsigned long flags);
 extern int rlSceneDelete(int sceneId);
-extern int rlSceneClearBuffer(int sceneId,float r,float g,float b,float alpha);
+extern int rlSceneClearBuffer(int sceneId,ray_color_type *col);
 extern int rlSceneGetBuffer(int sceneId,void **buffer);
 extern int rlSceneRender(int sceneId);
 extern int rlSceneRenderState(int sceneId);
@@ -101,15 +101,16 @@ extern int rlSceneEyePositionSet(int sceneId,ray_point_type *pnt,ray_matrix_type
 extern int rlSceneLightAdd(int sceneId);
 extern int rlSceneLightDelete(int sceneId,int lightId);
 extern int rlSceneLightDeleteAll(int scenedId);
-extern int rlSceneLightSetPosition(int sceneId,int lightId,float x,float y,float z);
-extern int rlSceneLightSetColor(int sceneId,int lightId,float r,float g,float b);
+extern int rlSceneLightSetPosition(int sceneId,int lightId,ray_point_type *pnt);
+extern int rlSceneLightSetColor(int sceneId,int lightId,ray_color_type *col);
 extern int rlSceneLightSetIntensity(int sceneId,int lightId,float intensity,float exponent);
 
 	// scene meshes
 
-extern int rlSceneMeshAdd(int sceneId,int parentMeshId,unsigned long flags);
+extern int rlSceneMeshAdd(int sceneId,unsigned long flags);
 extern int rlSceneMeshDelete(int sceneId,int meshId);
 extern int rlSceneMeshDeleteAll(int scenedId);
+extern int rlSceneMeshSetHidden(int sceneId,int meshId,bool hidden);
 extern int rlSceneMeshSetVertex(int sceneId,int meshId,int format,int count,void *vertex_data);
 extern int rlSceneMeshSetUV(int sceneId,int meshId,int format,int count,void *uv_data);
 extern int rlSceneMeshSetNormal(int sceneId,int meshId,int format,int count,void *normal_data);
@@ -120,10 +121,10 @@ extern int rlSceneMeshSetPoly(int sceneId,int meshId,int format,int count,void *
 extern int rlSceneOverlayAdd(int sceneId,int materialId,unsigned long flags);
 extern int rlSceneOverlayDelete(int sceneId,int overlayId);
 extern int rlSceneOverlayDeleteAll(int sceneId);
-extern int rlSceneOverlaySetPosition(int sceneId,int overlayId,int x,int y);
+extern int rlSceneOverlaySetPosition(int sceneId,int overlayId,ray_2d_point_type *pnt);
 extern int rlSceneOverlaySetSize(int sceneId,int overlayId,int width,int height);
-extern int rlSceneOverlaySetUV(int sceneId,int overlayId,float u,float v);
-extern int rlSceneOverlaySetUVStamp(int sceneId,int overlayId,float u,float v);
+extern int rlSceneOverlaySetUV(int sceneId,int overlayId,ray_uv_type *uv);
+extern int rlSceneOverlaySetUVStamp(int sceneId,int overlayId,ray_uv_type *uv);
 extern int rlSceneOverlaySetMaterial(int sceneId,int overlayId,int materialId);
 
 	// math utilities
@@ -134,5 +135,5 @@ extern void rlMatrixVectorMultiply(ray_matrix_type *mat,ray_vector_type *v);
 extern void rlMatrixRotateX(ray_matrix_type *mat,float ang);
 extern void rlMatrixRotateY(ray_matrix_type *mat,float ang);
 extern void rlMatrixRotateZ(ray_matrix_type *mat,float ang);
-extern void rlMatrixScale(ray_matrix_type *mat,float x,float y,float z);
+extern void rlMatrixScale(ray_matrix_type *mat,ray_vector_type *v);
 

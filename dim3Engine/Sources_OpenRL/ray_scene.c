@@ -234,11 +234,10 @@ int rlSceneDelete(int sceneId)
      
 ======================================================= */
 
-int rlSceneClearBuffer(int sceneId,float r,float g,float b,float alpha)
+int rlSceneClearBuffer(int sceneId,ray_color_type *col)
 {
 	int					n,idx,sz;
 	unsigned long		*data,ul;
-	ray_color_type		col;
 	ray_scene_type		*scene;
 	
 		// get scene
@@ -254,11 +253,7 @@ int rlSceneClearBuffer(int sceneId,float r,float g,float b,float alpha)
 	
 		// buffer clear color
 
-	col.r=r;
-	col.g=g;
-	col.b=b;
-	col.a=alpha;
-	ul=ray_create_ulong_color_from_float(&col);
+	ul=ray_create_ulong_color_from_float(col);
 	
 		// clear the buffer
 		

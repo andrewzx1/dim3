@@ -25,28 +25,49 @@ int ray_scene_mesh_get_index(ray_scene_type *scene,int meshId)
 
 /* =======================================================
 
-      Get Blocks
+      Set Mesh Bounds
       
 ======================================================= */
 
-ray_vertex_block* ray_scene_mesh_get_vertex_block(ray_scene_type *scene,ray_mesh_type *mesh)
+void ray_scene_mesh_precalc(ray_scene_type *scene,ray_mesh_type *mesh)
 {
-	int					idx,count;
-	ray_mesh_type		*cur_mesh;
+	int					n,k;
+	ray_poly_type		*poly;
+	ray_trig_type		*trig;
+	
+		// can't do any precalcs
+		// if no vertex data
+		
+	if (mesh->vertex_block.vertexes==NULL) return;
+	
+		// mesh bounds
+		
+	ray_precalc_mesh_bounds(mesh);
+	
+		// polygon and trig precalcs,
+		// can't do if no polygon data
+		
+	if (mesh->poly_block.polys==NULL) return;
 
-	count=0;
-	cur_mesh=mesh;
+	poly=mesh->poly_block.polys;
+	
+	for (n=0;n!=mesh->poly_block.count;n++) {
+			
+			// poly precalcs
+			
+		ray_precalc_polygon_bounds(mesh,poly);
+	
+			// trig precalcs
+			
+		trig=poly->trig_block.trigs;
+			
+		for (k=0;k!=poly->trig_block.count;k++) {
+			ray_precalc_triangle_vectors(mesh,trig);
+			ray_precalc_triangle_bounds(mesh,trig);
+			trig++;
+		}
 
-	while (count<ray_max_parent_depth) {
-		if (cur_mesh->vertex_block.vertexes!=NULL) return(&cur_mesh->vertex_block);
-		if (cur_mesh->parent_id==-1) return(NULL);
-
-		idx=ray_scene_mesh_get_index(scene,cur_mesh->parent_id);
-		if (idx==-1) return(NULL);
-
-		cur_mesh=scene->mesh_list.meshes[idx];
-
-		count++;
+		poly++;
 	}
 }
 
@@ -58,11 +79,10 @@ ray_vertex_block* ray_scene_mesh_get_vertex_block(ray_scene_type *scene,ray_mesh
 	   If >=0, then a mesh ID
 	   RL_ERROR_UNKNOWN_SCENE_ID
 	   RL_ERROR_OUT_OF_MEMORY
-	   RL_ERROR_UNKNOWN_MESH_ID (if parentMeshId!=-1 and not a real id)
       
 ======================================================= */
 
-int rlSceneMeshAdd(int sceneId,int parentMeshId,unsigned long flags)
+int rlSceneMeshAdd(int sceneId,unsigned long flags)
 {
 	int					idx;
 	ray_mesh_type		*mesh;
@@ -80,15 +100,8 @@ int rlSceneMeshAdd(int sceneId,int parentMeshId,unsigned long flags)
 	mesh=(ray_mesh_type*)malloc(sizeof(ray_mesh_type));
 	if (mesh==NULL) return(RL_ERROR_OUT_OF_MEMORY);
 
-		// validate parent mesh id
-
-	if (parentMeshId!=-1) {
-		if (ray_scene_mesh_get_index(sceneId,parentMeshId)==-1) return(RL_ERROR_UNKNOWN_MESH_ID);
-	}
-
 		// mesh settings
 
-	mesh->parent_id=parentMeshId;
 	mesh->flags=flags;
 
 	mesh->vertex_block.count=0;
@@ -99,9 +112,6 @@ int rlSceneMeshAdd(int sceneId,int parentMeshId,unsigned long flags)
 
 	mesh->normal_block.count=0;
 	mesh->normal_block.normals=NULL;
-
-	mesh->tangent_block.count=0;
-	mesh->tangent_block.tangents=NULL;
 
 	mesh->poly_block.count=0;
 	mesh->poly_block.polys=NULL;
@@ -147,11 +157,13 @@ int rlSceneMeshDelete(int sceneId,int meshId)
 		// can't delete if scene in use
 
 	if (rlSceneRenderState(sceneId)==RL_SCENE_STATE_RENDERING) return(RL_ERROR_SCENE_IN_USE);
-
-		// get the mesh
-
+	
+		// get the mesh index
+		
 	idx=ray_scene_mesh_get_index(scene,meshId);
 	if (idx==-1) return(RL_ERROR_UNKNOWN_MESH_ID);
+	
+		// get the mesh
 
 	mesh=scene->mesh_list.meshes[idx];
 
@@ -160,7 +172,6 @@ int rlSceneMeshDelete(int sceneId,int meshId)
 	if (mesh->vertex_block.vertexes!=NULL) free(mesh->vertex_block.vertexes);
 	if (mesh->uv_block.uvs!=NULL) free(mesh->uv_block.uvs);
 	if (mesh->normal_block.normals!=NULL) free(mesh->normal_block.normals);
-	if (mesh->tangent_block.tangents!=NULL) free(mesh->tangent_block.tangents);
 	
 	for (n=0;n!=mesh->poly_block.count;n++) {
 		if (mesh->poly_block.polys[n].trig_block.trigs!=NULL) free(mesh->poly_block.polys[n].trig_block.trigs);
@@ -211,6 +222,47 @@ int rlSceneMeshDeleteAll(int sceneId)
 		err=rlSceneMeshDelete(sceneId,scene->mesh_list.meshes[0]->id);
 		if (err!=RL_ERROR_OK) return(err);
 	}
+	
+	return(RL_ERROR_OK);
+}
+
+/* =======================================================
+
+      Sets Hidden State For Mesh
+
+	  Returns:
+	   RL_ERROR_OK
+	   RL_ERROR_UNKNOWN_SCENE_ID
+	   RL_ERROR_UNKNOWN_MESH_ID
+	   RL_ERROR_SCENE_IN_USE
+	   RL_ERROR_OUT_OF_MEMORY
+      
+======================================================= */
+
+int rlSceneMeshSetHidden(int sceneId,int meshId,bool hidden)
+{
+	int				idx;
+	ray_mesh_type	*mesh;
+	ray_scene_type	*scene;
+
+		// get scene
+
+	idx=ray_scene_get_index(sceneId);
+	if (idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
+
+	scene=ray_global.scene_list.scenes[idx];
+
+		// can't alter scenes in use
+
+	if (rlSceneRenderState(sceneId)==RL_SCENE_STATE_RENDERING) return(RL_ERROR_SCENE_IN_USE);
+
+		// get mesh
+
+	idx=ray_scene_mesh_get_index(scene,meshId);
+	if (idx==-1) return(RL_ERROR_UNKNOWN_MESH_ID);
+
+	mesh=scene->mesh_list.meshes[idx];
+	mesh->hidden=hidden;
 	
 	return(RL_ERROR_OK);
 }
@@ -276,10 +328,10 @@ int rlSceneMeshSetVertex(int sceneId,int meshId,int format,int count,void *verte
 		vertex++;
 	}
 	
-		// mesh bounds are calculated
-		// when vertex list changes
+		// vertex changes require
+		// a rebuild of precalcs
 		
-	ray_precalc_mesh_bounds(mesh);
+	ray_scene_mesh_precalc(scene,mesh);
 
 	return(RL_ERROR_OK);
 }
@@ -494,12 +546,6 @@ int rlSceneMeshSetPoly(int sceneId,int meshId,int format,int count,void *poly_da
 			poly->uv_idx[k]=(int)*pp++;
 			poly->normal_idx[k]=(int)*pp++;
 		}
-		
-			// precalc bounds
-			// and some culling info
-			
-		ray_precalc_polygon_bounds(mesh,poly);
-		ray_precalc_polygon_cull(mesh,poly);
 
 			// get memory for tesselated
 			// trigs, we need to clean
@@ -546,18 +592,17 @@ int rlSceneMeshSetPoly(int sceneId,int meshId,int format,int count,void *poly_da
 			trig->vertex_idx[2]=poly->vertex_idx[k+2];
 			trig->uv_idx[2]=poly->uv_idx[k+2];
 			trig->normal_idx[2]=poly->normal_idx[2];
-			
-				// precalc intersection vectors
-				// and bounds
-				
-			ray_precalc_triangle_vectors(mesh,trig);
-			ray_precalc_triangle_bounds(mesh,trig);
 
 			trig++;
 		}
 
 		poly++;
 	}
+	
+		// poly change requires
+		// rebuild of precalc
+		
+	ray_scene_mesh_precalc(scene,mesh);
 
 	return(RL_ERROR_OK);
 }

@@ -184,8 +184,6 @@ void write_map_settings_xml(map_type *map)
 	xml_add_tagend(TRUE);
 
     xml_add_tagstart("Editor");
-	xml_add_attribute_float("txt_uv_scale_x",map->editor_setup.txt_scale.x);
-	xml_add_attribute_float("txt_uv_scale_y",map->editor_setup.txt_scale.y);
 	xml_add_attribute_int("view_near_dist",map->editor_setup.view_near_dist);
 	xml_add_attribute_int("view_far_dist",map->editor_setup.view_far_dist);
 	xml_add_attribute_boolean("link_always_start",map->editor_setup.link_always_start);

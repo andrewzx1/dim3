@@ -370,7 +370,8 @@ typedef struct		{
 //
 
 typedef struct		{
-						int						wid,high;
+						int						wid,high,
+												rl_material_id;
 						bool					opaque;
 						GLuint					gl_id;
 					} bitmap_type;
@@ -389,8 +390,7 @@ typedef struct		{
 //
 
 typedef struct		{
-						d3uv					uv;
-						bool					on,lock_offset;
+						d3uv					uv_offset,uv_size;
 					} texture_scale_type;
 					
 //

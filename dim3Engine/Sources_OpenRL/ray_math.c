@@ -42,25 +42,6 @@ float ray_vector_dot_product(ray_vector_type *v1,ray_vector_type *v2)
 	return((v1->x*v2->x)+(v1->y*v2->y)+(v1->z*v2->z));
 }
 
-void find_triangle_point_for_UV(ray_mesh_type *mesh,ray_trig_type *trig,float u,float v,ray_point_type *p)
-{
-	float				uv;
-	ray_point_type		*p0,*p1,*p2;
-
-		// get the ray points
-		
-	p0=&mesh->vertex_block.vertexes[trig->vertex_idx[0]];
-	p1=&mesh->vertex_block.vertexes[trig->vertex_idx[1]];
-	p2=&mesh->vertex_block.vertexes[trig->vertex_idx[2]];
-	
-		// calculate the point
-		
-	uv=(1-u)-v;
-	p->x=(uv*p0->x)+(u*p1->x)+(v*p2->x);
-	p->y=(uv*p0->y)+(u*p1->y)+(v*p2->y);
-	p->z=(uv*p0->z)+(u*p1->z)+(v*p2->z);
-}
-
 void ray_vector_find_line_point_for_T(ray_point_type *p,ray_vector_type *v,float t,ray_point_type *lp)
 {
 	lp->x=p->x+(v->x*t);
@@ -190,21 +171,21 @@ void rlMatrixRotateZ(ray_matrix_type *mat,float ang)
 	mat->data[1][1]=r_cos;
 }
 
-void rlMatrixScale(ray_matrix_type *mat,float x,float y,float z)
+void rlMatrixScale(ray_matrix_type *mat,ray_vector_type *v)
 {
-	mat->data[0][0]=x;
+	mat->data[0][0]=v->x;
 	mat->data[0][1]=0.0f;
 	mat->data[0][2]=0.0f;
 	mat->data[0][3]=0.0f;
 	
 	mat->data[1][0]=0.0f;
-	mat->data[1][1]=y;
+	mat->data[1][1]=v->y;
 	mat->data[1][2]=0.0f;
 	mat->data[1][3]=0.0f;
 
 	mat->data[2][0]=0.0f;
 	mat->data[2][1]=0.0f;
-	mat->data[2][2]=z;
+	mat->data[2][2]=v->z;
 	mat->data[2][3]=0.0f;
 
 	mat->data[3][0]=0.0f;
