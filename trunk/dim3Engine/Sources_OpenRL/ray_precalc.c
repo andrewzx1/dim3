@@ -16,9 +16,9 @@ void ray_precalc_mesh_bounds(ray_mesh_type *mesh)
 	ray_point_type		*pnt;
 	ray_bound_type		*bnd;
 	
-	pnt=mesh->vertex_block.vertexes;
-	
 	bnd=&mesh->bound;
+	
+	pnt=mesh->vertex_block.vertexes;
 
 	bnd->min.x=bnd->max.x=pnt->x;
 	bnd->min.y=bnd->max.y=pnt->y;
@@ -76,43 +76,6 @@ void ray_precalc_polygon_bounds(ray_mesh_type *mesh,ray_poly_type *poly)
 		
 		pnt++;
 	}
-}
-
-void ray_precalc_polygon_cull(ray_mesh_type *mesh,ray_poly_type *poly)
-{
-	int						n;
-	float					f;
-	ray_vector_type			*np;
-
-		// get mid point, this is where we
-		// do the normal culling calc from
-
-	poly->cull.mid_pnt.x=(poly->bound.min.x+poly->bound.max.x)*0.5f;
-	poly->cull.mid_pnt.y=(poly->bound.min.y+poly->bound.max.y)*0.5f;
-	poly->cull.mid_pnt.z=(poly->bound.min.z+poly->bound.max.z)*0.5f;
-
-		// average the normal
-
-	poly->cull.normal.x=0.0f;
-	poly->cull.normal.y=0.0f;
-	poly->cull.normal.z=0.0f;
-
-	if (poly->nvertex==0) return;
-
-	for (n=0;n!=poly->nvertex;n++) {
-		np=&mesh->normal_block.normals[poly->normal_idx[n]];
-		poly->cull.normal.x+=np->x;
-		poly->cull.normal.y+=np->y;
-		poly->cull.normal.z+=np->z;
-	}
-
-	f=(float)(poly->nvertex);
-
-	poly->cull.normal.x/=f;
-	poly->cull.normal.y/=f;
-	poly->cull.normal.z/=f;
-
-	ray_vector_normalize(&poly->cull.normal);
 }
 
 /* =======================================================
@@ -205,7 +168,7 @@ void ray_precalc_triangle_vectors(ray_mesh_type *mesh,ray_trig_type *trig)
       
 ======================================================= */
 
-void ray_precalc_bound_mesh_indexes(ray_scene_type *scene,ray_bound_type *bnd,ray_mesh_index_block *index_block)
+void ray_precalc_bound_mesh_indexes(ray_scene_type *scene,ray_bound_type *bnd,ray_mesh_index_block *index_block,bool ignore_skip_light)
 {
 	int					n;
 	short				*idx;
@@ -216,6 +179,14 @@ void ray_precalc_bound_mesh_indexes(ray_scene_type *scene,ray_bound_type *bnd,ra
 	
 	for (n=0;n!=scene->mesh_list.count;n++) {
 		mesh=scene->mesh_list.meshes[n];
+		
+			// special knock-out flags
+			
+		if (mesh->hidden) continue;
+		if ((ignore_skip_light) && ((mesh->flags&RL_MESH_FLAG_NON_LIGHT_BLOCKING)!=0)) continue;
+		
+			// bound collisions
+			
 		if (!ray_bound_bound_collision(bnd,&mesh->bound)) continue;
 		
 		*idx++=n;
@@ -236,14 +207,14 @@ void ray_precalc_light_mesh_indexes_all(ray_scene_type *scene)
 	
 	for (n=0;n!=scene->light_list.count;n++) {
 		light=scene->light_list.lights[n];
-		ray_precalc_bound_mesh_indexes(scene,&light->bound,&light->mesh_index_block);
+		ray_precalc_bound_mesh_indexes(scene,&light->bound,&light->mesh_index_block,TRUE);
 	}
 }
 
 /* =======================================================
 
       Build Thread Mesh Indexes
-      
+ 
 ======================================================= */
 
 void ray_precalc_thread_mesh_indexes_all(ray_scene_type *scene,ray_draw_scene_thread_info *thread_info)
@@ -315,6 +286,6 @@ void ray_precalc_thread_mesh_indexes_all(ray_scene_type *scene,ray_draw_scene_th
 		
 		// create bound intersections
 		
-	ray_precalc_bound_mesh_indexes(scene,&bound,&thread_info->mesh_index_block);
+	ray_precalc_bound_mesh_indexes(scene,&bound,&thread_info->mesh_index_block,FALSE);
 }
 

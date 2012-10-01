@@ -163,3 +163,6 @@ extern bool write_map_xml(map_type *map,char *err_str);
 extern void map_textures_new(map_type *map);
 extern void map_textures_read_complete(map_type *map);
 
+extern float map_get_texture_reduce_coord(float f);
+extern float map_get_texture_round_coord(float f);
+extern void map_get_texture_uv_get_scale(map_type *map,int txt_idx,d3uv *uv_offset,d3uv *uv_size);

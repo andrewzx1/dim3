@@ -748,7 +748,6 @@ typedef struct		{
 typedef struct		{
 						int									view_near_dist,view_far_dist;
 						bool								link_always_start;
-						d3uv								txt_scale;
 					} map_editor_setup_type;
 
 //

@@ -237,7 +237,7 @@ int rlSceneOverlayDeleteAll(int sceneId)
       
 ======================================================= */
 
-int rlSceneOverlaySetPosition(int sceneId,int overlayId,int x,int y)
+int rlSceneOverlaySetPosition(int sceneId,int overlayId,ray_2d_point_type *pnt)
 {
 	int					idx;
 	ray_overlay_type	*overlay;
@@ -259,8 +259,8 @@ int rlSceneOverlaySetPosition(int sceneId,int overlayId,int x,int y)
 
 		// reset point
 		
-	overlay->pnt.x=x;
-	overlay->pnt.y=y;
+	overlay->pnt.x=pnt->x;
+	overlay->pnt.y=pnt->y;
 
 	return(RL_ERROR_OK);
 }
@@ -315,7 +315,7 @@ int rlSceneOverlaySetSize(int sceneId,int overlayId,int width,int height)
       
 ======================================================= */
 
-int rlSceneOverlaySetUV(int sceneId,int overlayId,float u,float v)
+int rlSceneOverlaySetUV(int sceneId,int overlayId,ray_uv_type *uv)
 {
 	int					idx;
 	ray_overlay_type	*overlay;
@@ -337,8 +337,8 @@ int rlSceneOverlaySetUV(int sceneId,int overlayId,float u,float v)
 
 		// reset UV
 		
-	overlay->uv.x=u;
-	overlay->uv.y=v;
+	overlay->uv.x=uv->x;
+	overlay->uv.y=uv->y;
 
 	return(RL_ERROR_OK);
 }
@@ -354,7 +354,7 @@ int rlSceneOverlaySetUV(int sceneId,int overlayId,float u,float v)
       
 ======================================================= */
 
-int rlSceneOverlaySetUVStamp(int sceneId,int overlayId,float u,float v)
+int rlSceneOverlaySetUVStamp(int sceneId,int overlayId,ray_uv_type *uv)
 {
 	int					idx;
 	ray_overlay_type	*overlay;
@@ -376,8 +376,8 @@ int rlSceneOverlaySetUVStamp(int sceneId,int overlayId,float u,float v)
 
 		// reset UV
 		
-	overlay->uv_size.x=u;
-	overlay->uv_size.y=v;
+	overlay->uv_size.x=uv->x;
+	overlay->uv_size.y=uv->y;
 
 	return(RL_ERROR_OK);
 }

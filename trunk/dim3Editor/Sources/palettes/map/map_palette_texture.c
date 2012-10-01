@@ -43,9 +43,8 @@ and can be sold or given away.
 #define kTexturePropertyGlowMax				8
 #define kTexturePropertyShineFactor			9
 #define kTexturePropertyMaterialName		10
-#define kTexturePropertyScaleOn				11
-#define kTexturePropertyScaleLockOffset		12
-#define kTexturePropertyScale				13
+#define kTexturePropertyScaleOffset			11
+#define kTexturePropertyScaleSize			12
 
 #define kTexturePropertyFrameWaitStart		20
 #define kTexturePropertyFrameWaitEnd		(20+(max_texture_frame-1))
@@ -95,10 +94,9 @@ void map_palette_fill_texture(int texture_idx)
 		}
 	}
 
-	list_palette_add_header(&map_palette,0,"Texture Auto UVs");
-	list_palette_add_checkbox(&map_palette,kTexturePropertyScaleOn,"Use Texture Scale",&texture->scale.on,FALSE);
-	list_palette_add_checkbox(&map_palette,kTexturePropertyScaleLockOffset,"Lock Offsets",&texture->scale.lock_offset,FALSE);
-	list_palette_add_uv(&map_palette,kTexturePropertyScale,"Scale (1000 units)",&texture->scale.uv,FALSE);
+	list_palette_add_header(&map_palette,0,"Texture UVs");
+	list_palette_add_uv(&map_palette,kTexturePropertyScaleOffset,"Offset",&texture->scale.uv_offset,FALSE);
+	list_palette_add_uv(&map_palette,kTexturePropertyScaleSize,"Scale (1000 units)",&texture->scale.uv_size,FALSE);
 }
 
 /* =======================================================

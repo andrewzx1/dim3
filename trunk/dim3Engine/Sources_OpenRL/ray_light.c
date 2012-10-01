@@ -183,7 +183,7 @@ int rlSceneLightDeleteAll(int sceneId)
       
 ======================================================= */
 
-int rlSceneLightSetPosition(int sceneId,int lightId,float x,float y,float z)
+int rlSceneLightSetPosition(int sceneId,int lightId,ray_point_type *pnt)
 {
 	int					idx;
 	ray_light_type		*light;
@@ -205,9 +205,9 @@ int rlSceneLightSetPosition(int sceneId,int lightId,float x,float y,float z)
 
 		// reset light
 
-	light->pnt.x=x;
-	light->pnt.y=y;
-	light->pnt.z=z;
+	light->pnt.x=pnt->x;
+	light->pnt.y=pnt->y;
+	light->pnt.z=pnt->z;
 	
 		// setup bounds
 		
@@ -227,7 +227,7 @@ int rlSceneLightSetPosition(int sceneId,int lightId,float x,float y,float z)
       
 ======================================================= */
 
-int rlSceneLightSetColor(int sceneId,int lightId,float r,float g,float b)
+int rlSceneLightSetColor(int sceneId,int lightId,ray_color_type *col)
 {
 	int					idx;
 	ray_light_type		*light;
@@ -249,9 +249,9 @@ int rlSceneLightSetColor(int sceneId,int lightId,float r,float g,float b)
 
 		// reset light
 
-	light->col.r=r;
-	light->col.g=g;
-	light->col.b=b;
+	light->col.r=col->r;
+	light->col.g=col->g;
+	light->col.b=col->b;
 
 	return(RL_ERROR_OK);
 }

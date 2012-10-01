@@ -29,10 +29,6 @@ and can be sold or given away.
 	#include "dim3maputility.h"
 #endif
 
-extern float map_get_texture_reduce_coord(float f);
-extern float map_get_texture_round_coord(float f);
-extern void map_get_texture_uv_get_scale(map_type *map,int txt_idx,float *txt_scale_x,float *txt_scale_y);
-
 /* =======================================================
 
       Move Liquid
@@ -79,33 +75,26 @@ void map_liquid_move_copy(map_type *map,int liquid_idx,d3pnt *mov_pt)
 
 void map_liquid_reset_uv(map_type *map,int liquid_idx)
 {
-	float					ltxtx,rtxtx,ltxtz,rtxtz,
-							txt_scale_x,txt_scale_y;
+	float					ltxtx,rtxtx,ltxtz,rtxtz;
+	d3uv					uv_offset,uv_size;
 	map_liquid_type			*liq;
 
 	liq=&map->liquid.liquids[liquid_idx];
 	
 		// get scale
 
-	map_get_texture_uv_get_scale(map,liq->txt_idx,&txt_scale_x,&txt_scale_y);
+	map_get_texture_uv_get_scale(map,liq->txt_idx,&uv_offset,&uv_size);
 	
-	ltxtx=((float)liq->lft)*txt_scale_x;
-	rtxtx=((float)liq->rgt)*txt_scale_x;
+	ltxtx=((float)liq->lft)*uv_size.x;
+	rtxtx=((float)liq->rgt)*uv_size.x;
 
-	ltxtz=((float)liq->top)*txt_scale_y;
-	rtxtz=((float)liq->bot)*txt_scale_y;
+	ltxtz=((float)liq->top)*uv_size.y;
+	rtxtz=((float)liq->bot)*uv_size.y;
 
-	liq->main_uv.offset.x=map_get_texture_round_coord(map_get_texture_reduce_coord(ltxtx));
+	liq->main_uv.offset.x=map_get_texture_round_coord(map_get_texture_reduce_coord(ltxtx))+uv_offset.x;
 	liq->main_uv.size.x=map_get_texture_round_coord(rtxtx-ltxtx);
 	
-	liq->main_uv.offset.y=map_get_texture_round_coord(map_get_texture_reduce_coord(ltxtz));
+	liq->main_uv.offset.y=map_get_texture_round_coord(map_get_texture_reduce_coord(ltxtz))+uv_offset.y;
 	liq->main_uv.size.y=map_get_texture_round_coord(rtxtz-ltxtz);
-	
-		// deal with offset locks
-		
-	if (map->textures[liq->txt_idx].scale.lock_offset) {
-		liq->main_uv.offset.x=0.0f;
-		liq->main_uv.offset.y=0.0f;
-	}
 }
 

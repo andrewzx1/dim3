@@ -1110,19 +1110,16 @@ void map_mesh_flip_poly_uv(map_type *map,int mesh_idx,int poly_idx,bool flip_u,b
       
 ======================================================= */
 
-void map_get_texture_uv_get_scale(map_type *map,int txt_idx,float *txt_scale_x,float *txt_scale_y)
+void map_get_texture_uv_get_scale(map_type *map,int txt_idx,d3uv *uv_offset,d3uv *uv_size)
 {
 	texture_type		*texture;
 
 	texture=&map->textures[txt_idx];
-	if (!texture->scale.on) {
-		*txt_scale_x=map->editor_setup.txt_scale.x/1000.0f;
-		*txt_scale_y=map->editor_setup.txt_scale.y/1000.0f;
-		return;
-	}
-	
-	*txt_scale_x=texture->scale.uv.x/1000.0f;
-	*txt_scale_y=texture->scale.uv.y/1000.0f;
+
+	uv_offset->x=texture->scale.uv_offset.x;
+	uv_offset->y=texture->scale.uv_offset.y;
+	uv_size->x=texture->scale.uv_size.x/1000.0f;
+	uv_size->y=texture->scale.uv_size.y/1000.0f;
 }
 
 void map_mesh_reset_poly_uv(map_type *map,int mesh_idx,int poly_idx)
@@ -1130,8 +1127,9 @@ void map_mesh_reset_poly_uv(map_type *map,int mesh_idx,int poly_idx)
 	int						n,kx,ky,kz;
 	float					f,fx,fy,fz,ltxtx,rtxtx,ltxty,rtxty,ltxtz,rtxtz,
 							x_txtoff,y_txtoff,x_txtfact,y_txtfact,x_txtfact_2,
-							f_dist_1,f_dist_2,txt_scale_x,txt_scale_y;
+							f_dist_1,f_dist_2;
 	d3pnt					*pt;
+	d3uv					uv_offset,uv_size;
 	map_mesh_type			*mesh;
 	map_mesh_poly_type		*poly;
 
@@ -1140,7 +1138,7 @@ void map_mesh_reset_poly_uv(map_type *map,int mesh_idx,int poly_idx)
 	
 		// get scale
 
-	map_get_texture_uv_get_scale(map,poly->txt_idx,&txt_scale_x,&txt_scale_y);
+	map_get_texture_uv_get_scale(map,poly->txt_idx,&uv_offset,&uv_size);
 	
 		// setup box and slope
 		// needed for texture calculations
@@ -1151,8 +1149,8 @@ void map_mesh_reset_poly_uv(map_type *map,int mesh_idx,int poly_idx)
 		
 	if (poly->box.wall_like) {
 		
-		ltxtx=(float)(poly->line.lx+poly->line.lz)*txt_scale_x;
-		rtxtx=(float)(poly->line.rx+poly->line.rz)*txt_scale_x;
+		ltxtx=(float)(poly->line.lx+poly->line.lz)*uv_size.x;
+		rtxtx=(float)(poly->line.rx+poly->line.rz)*uv_size.x;
 			
 			// get point texture factor
 				
@@ -1163,26 +1161,19 @@ void map_mesh_reset_poly_uv(map_type *map,int mesh_idx,int poly_idx)
 		fx=(float)(poly->line.rx-poly->line.lx);
 		fz=(float)(poly->line.rz-poly->line.lz);
 		f=(fx*fx)+(fz*fz);
-		x_txtfact_2=sqrtf(f)*txt_scale_x;
+		x_txtfact_2=sqrtf(f)*uv_size.x;
 		if (x_txtfact<0) x_txtfact_2=-x_txtfact_2;
 		
 		if (fabsf(x_txtfact_2)>fabsf(x_txtfact)) x_txtfact=x_txtfact_2;		// if distance calc is longer, use that
 		
-		x_txtoff=map_get_texture_round_coord(map_get_texture_reduce_coord(ltxtx));
+		x_txtoff=map_get_texture_round_coord(map_get_texture_reduce_coord(ltxtx))+uv_offset.x;
 		x_txtfact=map_get_texture_round_coord(x_txtfact);
 		
-		ltxty=((float)poly->box.min.y)*txt_scale_y;
-		rtxty=((float)poly->box.max.y)*txt_scale_y;
+		ltxty=((float)poly->box.min.y)*uv_size.y;
+		rtxty=((float)poly->box.max.y)*uv_size.y;
 		
-		y_txtoff=map_get_texture_round_coord(map_get_texture_reduce_coord(ltxty));
+		y_txtoff=map_get_texture_round_coord(map_get_texture_reduce_coord(ltxty))+uv_offset.y;
 		y_txtfact=map_get_texture_round_coord(rtxty-ltxty);
-	
-			// deal with offset locks
-			
-		if (map->textures[poly->txt_idx].scale.lock_offset) {
-			x_txtoff=0.0f;
-			y_txtoff=0.0f;
-		}
 				
 			// create the polygons UVs
 			
@@ -1211,24 +1202,17 @@ void map_mesh_reset_poly_uv(map_type *map,int mesh_idx,int poly_idx)
 			
 		// floor-like polygon
 
-	ltxtx=((float)poly->box.min.x)*txt_scale_x;
-	rtxtx=((float)poly->box.max.x)*txt_scale_x;
+	ltxtx=((float)poly->box.min.x)*uv_size.x;
+	rtxtx=((float)poly->box.max.x)*uv_size.x;
 
-	ltxtz=((float)poly->box.min.z)*txt_scale_y;
-	rtxtz=((float)poly->box.max.z)*txt_scale_y;
+	ltxtz=((float)poly->box.min.z)*uv_size.y;
+	rtxtz=((float)poly->box.max.z)*uv_size.y;
 
-	x_txtoff=map_get_texture_round_coord(map_get_texture_reduce_coord(ltxtx));
+	x_txtoff=map_get_texture_round_coord(map_get_texture_reduce_coord(ltxtx))+uv_offset.x;
 	x_txtfact=map_get_texture_round_coord(rtxtx-ltxtx);
 	
-	y_txtoff=map_get_texture_round_coord(map_get_texture_reduce_coord(ltxtz));
+	y_txtoff=map_get_texture_round_coord(map_get_texture_reduce_coord(ltxtz))+uv_offset.y;
 	y_txtfact=map_get_texture_round_coord(rtxtz-ltxtz);
-	
-		// deal with offset locks
-		
-	if (map->textures[poly->txt_idx].scale.lock_offset) {
-		x_txtoff=0.0f;
-		y_txtoff=0.0f;
-	}
 
 		// set the polygon UVs
 		

@@ -88,8 +88,6 @@ bool map_new(map_type *map,char *name)
 	
 		// editor setup
 
-	map->editor_setup.txt_scale.x=0.25f;
-	map->editor_setup.txt_scale.y=0.25f;
 	map->editor_setup.view_near_dist=400;
 	map->editor_setup.view_far_dist=300000;
 	map->editor_setup.link_always_start=TRUE;

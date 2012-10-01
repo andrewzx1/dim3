@@ -80,17 +80,11 @@ typedef struct		{
 					} ray_trig_block;
 
 typedef struct		{
-						ray_point_type				mid_pnt;
-						ray_vector_type				normal;
-					} ray_poly_cull_type;
-
-typedef struct		{
 						int							material_idx,
 													nvertex,
 													vertex_idx[8],uv_idx[8],normal_idx[8];
 						ray_trig_block				trig_block;
 						ray_bound_type				bound;
-						ray_poly_cull_type			cull;
 					} ray_poly_type;
 
 typedef struct		{
@@ -99,7 +93,8 @@ typedef struct		{
 					} ray_poly_block;
 
 typedef struct		{
-						int							id,parent_id;
+						int							id;
+						bool						hidden;
 						unsigned long				flags;
 						ray_vertex_block			vertex_block;
 						ray_uv_block				uv_block;
@@ -297,7 +292,6 @@ extern float ray_distance_between_points(ray_point_type *p1,ray_point_type *p2);
 
 extern void ray_precalc_mesh_bounds(ray_mesh_type *mesh);
 extern void ray_precalc_polygon_bounds(ray_mesh_type *mesh,ray_poly_type *poly);
-extern void ray_precalc_polygon_cull(ray_mesh_type *mesh,ray_poly_type *poly);
 extern void ray_precalc_triangle_bounds(ray_mesh_type *mesh,ray_trig_type *trig);
 extern void ray_precalc_light_bounds(ray_light_type *light);
 extern void ray_precalc_triangle_vectors(ray_mesh_type *mesh,ray_trig_type *trig);
@@ -309,8 +303,6 @@ extern bool ray_scene_overlay_get_pixel(ray_scene_type *scene,int x,int y,ray_co
 
 extern int ray_scene_get_index(int sceneId);
 extern int ray_material_get_index(int materialId);
-
-extern ray_vertex_block* ray_scene_mesh_get_vertex_block(ray_scene_type *scene,ray_mesh_type *mesh);
 
 extern void ray_render_clear_threads(ray_scene_type *scene);
 

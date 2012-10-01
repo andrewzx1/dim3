@@ -520,6 +520,7 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 	progress_next();
 
 	view_openrl_map_setup();
+	view_openrl_model_setup();
 
 		// finish up
 	
@@ -596,6 +597,10 @@ void map_end(void)
 	game_time_pause_start();
 	
 	console_add_system("Closing Map");
+	
+		// openrl cache cleanup
+		
+	view_openrl_mesh_cleanup();
 	
 		// detach objects
 		
