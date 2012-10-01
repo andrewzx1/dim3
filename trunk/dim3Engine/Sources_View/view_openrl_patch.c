@@ -50,8 +50,7 @@ extern file_path_setup_type	file_path_setup;
 	#define view_rl_buffer_high		200
 
 	int								view_rl_scene_id,
-									view_rl_purple_material_id,view_rl_yellow_material_id,
-									view_rl_green_material_id,view_rl_player_light_id;
+									view_rl_purple_material_id,view_rl_player_light_id;
 	GLuint							view_rl_gl_id;
 
 #endif
@@ -68,6 +67,8 @@ bool view_openrl_initialize(char *err_str) { return(TRUE); }
 void view_openrl_shutdown(void) {}
 void view_openrl_map_setup(void) {}
 void view_openrl_render(void) {}
+void view_openrl_model_setup(void) {}
+void view_openrl_mesh_cleanup(void) {}
 
 #else
 
@@ -107,20 +108,6 @@ bool view_openrl_initialize(char *err_str)
 	col.a=1.0f;
 	view_rl_purple_material_id=rlMaterialAdd(1,1,0);
 	rlMaterialAttachBufferColor(view_rl_purple_material_id,RL_MATERIAL_TARGET_COLOR,&col);
-
-	col.r=1.0f;
-	col.g=1.0f;
-	col.b=0.0f;
-	col.a=1.0f;
-	view_rl_yellow_material_id=rlMaterialAdd(1,1,0);
-	rlMaterialAttachBufferColor(view_rl_yellow_material_id,RL_MATERIAL_TARGET_COLOR,&col);
-	
-	col.r=0.0f;
-	col.g=1.0f;
-	col.b=0.0f;
-	col.a=1.0f;
-	view_rl_green_material_id=rlMaterialAdd(1,1,0);
-	rlMaterialAttachBufferColor(view_rl_green_material_id,RL_MATERIAL_TARGET_COLOR,&col);
 
 		// single player light
 		
@@ -343,18 +330,36 @@ void view_openrl_map_setup(void)
 
 void view_openrl_model_setup(void)
 {
-	int					n,i,t,mesh_id,uv_count;
+	int					n,k,i,t,mesh_id,uv_count;
 	float				*uvs,*vt;
 	short				*vk,*ray_polys;
+	char				sub_path[1024];
 	obj_type			*obj;
 	model_draw			*draw;
 	model_type			*mdl;
 	model_mesh_type		*mesh;
 	model_poly_type		*poly;
+	texture_type		*texture;
+	texture_frame_type	*frame;
 	
-		// model textures
-		
-		
+		// model materials
+
+	for (k=0;k!=max_model_list;k++) {
+
+		mdl=server.model_list.models[k];
+		if (mdl==NULL) continue;
+
+		sprintf(sub_path,"Models/%s/Textures",mdl->name);
+
+		for (n=0;n!=max_model_texture;n++) {
+			texture=&mdl->textures[n];
+			
+			frame=&texture->frames[0];
+			if (frame->name[0]==0x0) continue;
+			
+			frame->bitmap.rl_material_id=view_openrl_create_material(sub_path,frame);
+		}
+	}
 		
 		// object models
 	
@@ -414,7 +419,7 @@ void view_openrl_model_setup(void)
 	
 		for (i=0;i!=mesh->npoly;i++) {
 			*vk++=poly->ptsz;
-			*vk++=view_rl_green_material_id;
+			*vk++=mdl->textures[poly->txt_idx].frames[0].bitmap.rl_material_id;
 
 			for (t=0;t!=poly->ptsz;t++) {
 				*vk++=(short)poly->v[t];	// vertex
