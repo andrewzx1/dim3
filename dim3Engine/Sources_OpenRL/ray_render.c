@@ -251,7 +251,7 @@ bool ray_trace_lights(ray_scene_type *scene,ray_point_type *pnt,ray_vector_type 
 		ray_vector_normalize(&surface_normal);
 	}
 	
-		// defualt to no specular
+		// default to no specular
 		
 	spec_col.r=0.0f;
 	spec_col.g=0.0f;
