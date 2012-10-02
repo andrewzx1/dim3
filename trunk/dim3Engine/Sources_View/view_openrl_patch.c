@@ -110,7 +110,7 @@ bool view_openrl_initialize(char *err_str)
 	rlMaterialAttachBufferColor(view_rl_purple_material_id,RL_MATERIAL_TARGET_COLOR,&col);
 
 		// single player light
-		
+/*
 	view_rl_player_light_id=rlSceneLightAdd(view_rl_scene_id);
 	rlSceneLightSetIntensity(view_rl_scene_id,view_rl_player_light_id,50000.0f,1.0f);
 	
@@ -118,6 +118,7 @@ bool view_openrl_initialize(char *err_str)
 	col.g=1.0f;
 	col.b=1.0f;
 	rlSceneLightSetColor(view_rl_scene_id,view_rl_player_light_id,&col);
+*/
 
 		// we need a texture to transfer
 		// the scene to opengl raster
@@ -216,7 +217,7 @@ int view_openrl_create_material(char *sub_path,texture_frame_type *frame)
 
 void view_openrl_map_setup(void)
 {
-	int					n,k,i,t,uv_count,meshId;
+	int					n,k,i,t,uv_count,mesh_id,light_id;
 	float				*vertexes,*vp,*uvs,*vt,*normals,*vn;
 	short				*vk,*ray_polys;
 	d3pnt				*pnt;
@@ -224,6 +225,9 @@ void view_openrl_map_setup(void)
 	map_mesh_poly_type	*poly;
 	texture_type		*texture;
 	texture_frame_type	*frame;
+	map_light_type		*lit;
+	ray_point_type		lit_pnt;
+	ray_color_type		lit_col;
 	
 		// build the materials
 		
@@ -244,8 +248,8 @@ void view_openrl_map_setup(void)
 			
 			// add the mesh
 
-		meshId=rlSceneMeshAdd(view_rl_scene_id,0);
-		if (meshId<0) return;
+		mesh_id=rlSceneMeshAdd(view_rl_scene_id,0);
+		if (mesh_id<0) return;
 
 			// the vertexes
 
@@ -261,7 +265,7 @@ void view_openrl_map_setup(void)
 			pnt++;
 		}
 		
-		rlSceneMeshSetVertex(view_rl_scene_id,meshId,RL_MESH_FORMAT_VERTEX_3_FLOAT,mesh->nvertex,vertexes);
+		rlSceneMeshSetVertex(view_rl_scene_id,mesh_id,RL_MESH_FORMAT_VERTEX_3_FLOAT,mesh->nvertex,vertexes);
 		free(vertexes);
 
 			// the UVs
@@ -281,7 +285,7 @@ void view_openrl_map_setup(void)
 			poly++;
 		}
 			
-		rlSceneMeshSetUV(view_rl_scene_id,meshId,RL_MESH_FORMAT_UV_2_FLOAT,uv_count,uvs);
+		rlSceneMeshSetUV(view_rl_scene_id,mesh_id,RL_MESH_FORMAT_UV_2_FLOAT,uv_count,uvs);
 		free(uvs);
 
 			// the normals
@@ -298,7 +302,7 @@ void view_openrl_map_setup(void)
 			poly++;
 		}
 		
-		rlSceneMeshSetNormal(view_rl_scene_id,meshId,RL_MESH_FORMAT_NORMAL_3_FLOAT,mesh->npoly,normals);
+		rlSceneMeshSetNormal(view_rl_scene_id,mesh_id,RL_MESH_FORMAT_NORMAL_3_FLOAT,mesh->npoly,normals);
 		free(normals);
 
 			// polygons
@@ -323,8 +327,27 @@ void view_openrl_map_setup(void)
 			poly++;
 		}
 
-		rlSceneMeshSetPoly(view_rl_scene_id,meshId,RL_MESH_FORMAT_POLY_SHORT_VERTEX_UV_NORMAL,mesh->npoly,ray_polys);
+		rlSceneMeshSetPoly(view_rl_scene_id,mesh_id,RL_MESH_FORMAT_POLY_SHORT_VERTEX_UV_NORMAL,mesh->npoly,ray_polys);
 		free(ray_polys);
+	}
+	
+		// build the lights
+		
+	for (n=0;n!=map.nlight;n++) {
+		lit=&map.lights[n];
+		
+		light_id=rlSceneLightAdd(view_rl_scene_id);
+		rlSceneLightSetIntensity(view_rl_scene_id,light_id,80000.0f,1.0f);
+	
+		lit_col.r=1.0f;
+		lit_col.g=1.0f;
+		lit_col.b=1.0f;
+		rlSceneLightSetColor(view_rl_scene_id,light_id,&lit_col);
+
+		lit_pnt.x=lit->pnt.x;
+		lit_pnt.y=lit->pnt.y;
+		lit_pnt.z=lit->pnt.z;
+		rlSceneLightSetPosition(view_rl_scene_id,light_id,&lit_pnt);
 	}
 }
 
@@ -419,7 +442,7 @@ void view_openrl_model_setup(void)
 	
 		for (i=0;i!=mesh->npoly;i++) {
 			*vk++=poly->ptsz;
-			*vk++=mdl->textures[poly->txt_idx].frames[0].bitmap.rl_material_id;
+			*vk++=(short)mdl->textures[poly->txt_idx].frames[0].bitmap.rl_material_id;
 
 			for (t=0;t!=poly->ptsz;t++) {
 				*vk++=(short)poly->v[t];	// vertex
@@ -560,7 +583,7 @@ void view_openrl_render(void)
 	
 		// update the player light
 		// position
-		
+/*
 	light_vct.x=0.0f;
 	light_vct.y=0.0f;
 	light_vct.z=10000.0f;
@@ -570,9 +593,14 @@ void view_openrl_render(void)
 	light_pnt.x=((float)view.render->camera.pnt.x)+light_vct.x;
 	light_pnt.y=((float)view.render->camera.pnt.y)+light_vct.y;
 	light_pnt.z=((float)view.render->camera.pnt.z)+light_vct.z;
-	
+
+
+	light_pnt.x=((float)view.render->camera.pnt.x);
+	light_pnt.y=((float)view.render->camera.pnt.y);
+	light_pnt.z=((float)view.render->camera.pnt.z);
+
 	rlSceneLightSetPosition(view_rl_scene_id,view_rl_player_light_id,&light_pnt);
-	
+	*/
 		// update the models
 		
 	view_openrl_model_update();

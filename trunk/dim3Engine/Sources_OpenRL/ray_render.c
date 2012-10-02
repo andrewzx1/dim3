@@ -245,9 +245,9 @@ bool ray_trace_lights(ray_scene_type *scene,ray_point_type *pnt,ray_vector_type 
 		// map, precalc the surface normals
 		
 	if (material_pixel.normal.on) {
-		surface_normal.x=material_pixel.surface_normal.x+material_pixel.normal.rgb.r;
-		surface_normal.y=material_pixel.surface_normal.y+material_pixel.normal.rgb.g;
-		surface_normal.z=material_pixel.surface_normal.z+material_pixel.normal.rgb.b;
+		surface_normal.x=material_pixel.surface_normal.x+((material_pixel.normal.rgb.r*2.0f)-1.0f);
+		surface_normal.y=material_pixel.surface_normal.y+((material_pixel.normal.rgb.g*2.0f)-1.0f);
+		surface_normal.z=material_pixel.surface_normal.z+((material_pixel.normal.rgb.b*2.0f)-1.0f);
 		ray_vector_normalize(&surface_normal);
 	}
 	
@@ -319,7 +319,7 @@ bool ray_trace_lights(ray_scene_type *scene,ray_point_type *pnt,ray_vector_type 
 				spec_factor=ray_vector_dot_product(&light_normal,(ray_vector_type*)&material_pixel.normal.rgb);
 				if (spec_factor<0.0f) spec_factor=0.0f;
 				spec_factor=powf(spec_factor,material_pixel.shine_factor);
-				spec_factor*=att;
+				//spec_factor*=att;		// supergumba
 				
 				if (spec_factor>1.0f) spec_factor=1.0f;
 				
@@ -334,13 +334,25 @@ bool ray_trace_lights(ray_scene_type *scene,ray_point_type *pnt,ray_vector_type 
 	
 		diffuse=(diffuse+1.0f)*0.5f;
 		
+	//	light_col.r=light_col.b=light_col.g=1.0f;		// supergumba
+	//	spec_col.r=spec_col.g=spec_col.b=0.0f;
+		
 			// mix with material and
 			// add to pixel
 			
 		col->r+=(material_pixel.color.rgb.r*(light_col.r*diffuse))+spec_col.r;
 		col->g+=(material_pixel.color.rgb.g*(light_col.g*diffuse))+spec_col.g;
 		col->b+=(material_pixel.color.rgb.b*(light_col.b*diffuse))+spec_col.b;
-				
+		
+		col->r=col->g=col->b=diffuse;		// supergumba
+		/*
+		col->r=light_col.r+spec_col.r;
+		col->g=light_col.g+spec_col.g;
+		col->b=light_col.b+spec_col.b;
+		col->r=spec_factor;
+		col->g=spec_factor;
+		col->b=spec_factor;
+		*/
 			// we hit a light
 
 		hit=TRUE;
