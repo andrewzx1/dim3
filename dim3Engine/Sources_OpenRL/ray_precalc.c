@@ -54,7 +54,7 @@ void ray_precalc_polygon_bounds(ray_mesh_type *mesh,ray_poly_type *poly)
 	
 	bnd=&poly->bound;
 	
-	pnt=&mesh->vertex_block.vertexes[poly->vertex_idx[0]];
+	pnt=&mesh->vertex_block.vertexes[poly->idxs[0].vertex];
 
 	bnd->min.x=bnd->max.x=pnt->x;
 	bnd->min.y=bnd->max.y=pnt->y;
@@ -63,7 +63,7 @@ void ray_precalc_polygon_bounds(ray_mesh_type *mesh,ray_poly_type *poly)
 	pnt++;
 	
 	for (n=1;n<poly->nvertex;n++) {
-		pnt=&mesh->vertex_block.vertexes[poly->vertex_idx[n]];
+		pnt=&mesh->vertex_block.vertexes[poly->idxs[n].vertex];
 		
 		if (pnt->x<bnd->min.x) bnd->min.x=pnt->x;
 		if (pnt->x>bnd->max.x) bnd->max.x=pnt->x;
@@ -91,9 +91,9 @@ void ray_precalc_triangle_bounds(ray_mesh_type *mesh,ray_trig_type *trig)
 	
 		// get the points
 		
-	p0=&mesh->vertex_block.vertexes[trig->vertex_idx[0]];
-	p1=&mesh->vertex_block.vertexes[trig->vertex_idx[1]];
-	p2=&mesh->vertex_block.vertexes[trig->vertex_idx[2]];
+	p0=&mesh->vertex_block.vertexes[trig->idxs[0].vertex];
+	p1=&mesh->vertex_block.vertexes[trig->idxs[1].vertex];
+	p2=&mesh->vertex_block.vertexes[trig->idxs[2].vertex];
 
 		// find bounds
 
@@ -151,9 +151,9 @@ void ray_precalc_triangle_vectors(ray_mesh_type *mesh,ray_trig_type *trig)
 	
 		// get the points
 		
-	p0=&mesh->vertex_block.vertexes[trig->vertex_idx[0]];
-	p1=&mesh->vertex_block.vertexes[trig->vertex_idx[1]];
-	p2=&mesh->vertex_block.vertexes[trig->vertex_idx[2]];
+	p0=&mesh->vertex_block.vertexes[trig->idxs[0].vertex];
+	p1=&mesh->vertex_block.vertexes[trig->idxs[1].vertex];
+	p2=&mesh->vertex_block.vertexes[trig->idxs[2].vertex];
 
 		// precalc the vectors sharing
 		// triangle around vertex 0
@@ -187,7 +187,7 @@ void ray_precalc_bound_mesh_indexes(ray_scene_type *scene,ray_bound_type *bnd,ra
 		
 			// bound collisions
 			
-		//if (!ray_bound_bound_collision(bnd,&mesh->bound)) continue;
+		if (!ray_bound_bound_collision(bnd,&mesh->bound)) continue;
 		
 		*idx++=n;
 		index_block->count++;

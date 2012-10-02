@@ -31,7 +31,7 @@ bool ray_intersect_triangle(ray_scene_type *scene,ray_point_type *eye_point,ray_
 
 		// calculate triangle U and test
 	
-	p0=&mesh->vertex_block.vertexes[trig->vertex_idx[0]];
+	p0=&mesh->vertex_block.vertexes[trig->idxs[0].vertex];
 	
 	ray_vector_create_from_points(&lineToTrigPointVector,eye_point,p0);
 	u=invDet*ray_vector_dot_product(&lineToTrigPointVector,&perpVector);
@@ -67,7 +67,7 @@ bool ray_intersect_triangle(ray_scene_type *scene,ray_point_type *eye_point,ray_
 // supergumba -- find so way to use T to eliminate meshes that are further
 // out than the original hit point, and maybe sort the meshes (that might be too costly)
 
-void ray_intersect_mesh_list(ray_scene_type *scene,ray_point_type *eye_point,ray_vector_type *eye_vector,ray_vector_type *eye_normal,ray_mesh_index_block *index_block,ray_collision_type *collision)
+void ray_intersect_mesh_list(ray_scene_type *scene,ray_point_type *eye_point,ray_vector_type *eye_vector,ray_mesh_index_block *index_block,ray_collision_type *collision)
 {
 	int					n,k,i,mesh_idx;
 	float				it,iu,iv;
@@ -139,7 +139,7 @@ void ray_intersect_mesh_list(ray_scene_type *scene,ray_point_type *eye_point,ray
       
 ======================================================= */
 
-bool ray_block_mesh_list(ray_scene_type *scene,ray_point_type *pnt,ray_vector_type *vct,ray_vector_type *vct_normal,ray_mesh_index_block *index_block,ray_collision_type *collision)
+bool ray_block_mesh_list(ray_scene_type *scene,ray_point_type *pnt,ray_vector_type *vct,ray_mesh_index_block *index_block,ray_collision_type *collision)
 {
 	int					n,k,i,mesh_idx;
 	float				t,u,v;
@@ -224,7 +224,7 @@ bool ray_mesh_special_lighting_conditions(ray_scene_type *scene,int mesh_idx,ray
       
 ======================================================= */
 
-bool ray_trace_lights(ray_scene_type *scene,ray_point_type *pnt,ray_vector_type *eye_normal,ray_collision_type *collision,ray_color_type *col)
+bool ray_trace_lights(ray_scene_type *scene,ray_point_type *eye_pnt,ray_point_type *trig_pnt,ray_collision_type *collision,ray_color_type *col)
 {
 	int							n;
 	float						dist,att,diffuse,spec_factor;
@@ -232,24 +232,16 @@ bool ray_trace_lights(ray_scene_type *scene,ray_point_type *pnt,ray_vector_type 
 	ray_material_pixel_type		material_pixel;
 	ray_color_type				light_col,spec_col;
 	ray_vector_type				light_vector,light_normal,
-								surface_normal,half_vector;
+								light_bump_normal,bump_normal,
+								eye_normal,eye_bump_normal,
+								half_normal;
 	ray_light_type				*light;
-	
+
 	col->r=col->g=col->b=0.0f;
 	
 		// get material pixels
 		
 	ray_get_material_rgb(scene,collision,&material_pixel);
-	
-		// if this material has a normal
-		// map, precalc the surface normals
-		
-	if (material_pixel.normal.on) {
-		surface_normal.x=material_pixel.surface_normal.x+((material_pixel.normal.rgb.r*2.0f)-1.0f);
-		surface_normal.y=material_pixel.surface_normal.y+((material_pixel.normal.rgb.g*2.0f)-1.0f);
-		surface_normal.z=material_pixel.surface_normal.z+((material_pixel.normal.rgb.b*2.0f)-1.0f);
-		ray_vector_normalize(&surface_normal);
-	}
 	
 		// default to no specular
 		
@@ -266,24 +258,17 @@ bool ray_trace_lights(ray_scene_type *scene,ray_point_type *pnt,ray_vector_type 
 
 			// outside of intensity globe?
 
-		dist=ray_distance_between_points(pnt,&light->pnt);
+		dist=ray_distance_between_points(trig_pnt,&light->pnt);
 		if (dist>light->intensity) continue;
 		
 			// get light vector
-			// and normalize version for
-			// effects and culling
 			
-		ray_vector_create_from_points(&light_vector,&light->pnt,pnt);
-		
-		light_normal.x=light_vector.x;
-		light_normal.y=light_vector.y;
-		light_normal.z=light_vector.z;
-		ray_vector_normalize(&light_normal);
+		ray_vector_create_from_points(&light_vector,&light->pnt,trig_pnt);
 	
 			// check for mesh collides
 			// blocking light
 
-		if (ray_block_mesh_list(scene,pnt,&light_vector,&light_normal,&light->mesh_index_block,collision)) continue;
+		if (ray_block_mesh_list(scene,trig_pnt,&light_vector,&light->mesh_index_block,collision)) continue;
 
 			// attenuate the light for distance
 
@@ -296,6 +281,14 @@ bool ray_trace_lights(ray_scene_type *scene,ray_point_type *pnt,ray_vector_type 
 			// add in the exponent
 			
 		att=powf(att,light->exponent);
+
+			// get the light normal for bump
+			// and spec calculations
+
+		light_normal.x=light_vector.x;
+		light_normal.y=light_vector.y;
+		light_normal.z=light_vector.z;
+		ray_vector_normalize(&light_normal);
 		
 			// handle any diffuse calcs
 			// it will either be the surface normal
@@ -303,23 +296,66 @@ bool ray_trace_lights(ray_scene_type *scene,ray_point_type *pnt,ray_vector_type 
 			// plus the normal map and the light normal
 			
 		if (material_pixel.normal.on) {
-			diffuse=ray_vector_dot_product(&light_normal,&surface_normal);
-			
+
+				// translate light normal to
+				// same space as normal map
+
+			light_bump_normal.x=ray_vector_dot_product(&light_normal,&material_pixel.surface.tangent);
+			light_bump_normal.y=ray_vector_dot_product(&light_normal,&material_pixel.surface.binormal);
+			light_bump_normal.z=ray_vector_dot_product(&light_normal,&material_pixel.surface.normal);
+			ray_vector_normalize(&light_bump_normal);
+
+				// unpack the bump normal
+
+			bump_normal.x=(material_pixel.normal.rgb.r*2.0f)-1.0f;
+			bump_normal.y=(material_pixel.normal.rgb.g*2.0f)-1.0f;
+			bump_normal.z=(material_pixel.normal.rgb.b*2.0f)-1.0f;
+			ray_vector_normalize(&bump_normal);
+
+				// the diffuse is the dot between the
+				// light normal (now in the same space
+				// as the bump normal) and the bump normal
+				// (both have to be normalized)
+
+			diffuse=ray_vector_dot_product(&light_bump_normal,&bump_normal);
+
 				// get the spec
 				// specular calculations require the bump maps
-				// we need the half vector (between eye and light)
-				// to calculate this
-				
+				// so we only calculate this if we've calced
+				// the bumps
+
 			if (material_pixel.specular.on) {
-				half_vector.x=eye_normal->x+light_normal.x;
-				half_vector.y=eye_normal->y+light_normal.y;
-				half_vector.z=eye_normal->z+light_normal.z;
-				ray_vector_normalize(&half_vector);
+
+					// spec requires the eye vector,
+					// but it must be moved into the same
+					// space as the bump and spec maps
+
+				ray_vector_create_from_points(&eye_normal,eye_pnt,trig_pnt);
+				ray_vector_normalize(&eye_normal);
+
+				eye_bump_normal.x=ray_vector_dot_product(&eye_normal,&material_pixel.surface.tangent);
+				eye_bump_normal.y=ray_vector_dot_product(&eye_normal,&material_pixel.surface.binormal);
+				eye_bump_normal.z=ray_vector_dot_product(&eye_normal,&material_pixel.surface.normal);
+				ray_vector_normalize(&eye_bump_normal);
+
+					// get the half normal (vector) between
+					// the eye and the normal, we use
+					// the light bump normal as it's now
+					// in eye space
+
+				half_normal.x=eye_bump_normal.x+light_bump_normal.x;
+				half_normal.y=eye_bump_normal.y+light_bump_normal.y;
+				half_normal.z=eye_bump_normal.z+light_bump_normal.z;
+				ray_vector_normalize(&half_normal);
+
+					// the spec factor is the dot of the bump
+					// map with the half vector (the spec depends
+					// on the definition of the bumps)
 			
-				spec_factor=ray_vector_dot_product(&light_normal,(ray_vector_type*)&material_pixel.normal.rgb);
+				spec_factor=ray_vector_dot_product(&half_normal,&bump_normal);
 				if (spec_factor<0.0f) spec_factor=0.0f;
 				spec_factor=powf(spec_factor,material_pixel.shine_factor);
-				//spec_factor*=att;		// supergumba
+				spec_factor*=att;
 				
 				if (spec_factor>1.0f) spec_factor=1.0f;
 				
@@ -329,23 +365,24 @@ bool ray_trace_lights(ray_scene_type *scene,ray_point_type *pnt,ray_vector_type 
 			}
 		}
 		else {
-			diffuse=ray_vector_dot_product(&light_normal,&material_pixel.surface_normal);
+			diffuse=ray_vector_dot_product(&light_normal,&material_pixel.surface.normal);
 		}
 	
 		diffuse=(diffuse+1.0f)*0.5f;
 		
-	//	light_col.r=light_col.b=light_col.g=1.0f;		// supergumba
-	//	spec_col.r=spec_col.g=spec_col.b=0.0f;
+	//	spec_col.r=spec_col.g=spec_col.b=0.0f;		// supergumba
 		
 			// mix with material and
 			// add to pixel
 			
-		col->r+=(material_pixel.color.rgb.r*(light_col.r*diffuse))+spec_col.r;
-		col->g+=(material_pixel.color.rgb.g*(light_col.g*diffuse))+spec_col.g;
-		col->b+=(material_pixel.color.rgb.b*(light_col.b*diffuse))+spec_col.b;
+		col->r+=((material_pixel.color.rgb.r*(light_col.r*diffuse))+spec_col.r);
+		col->g+=((material_pixel.color.rgb.g*(light_col.g*diffuse))+spec_col.g);
+		col->b+=((material_pixel.color.rgb.b*(light_col.b*diffuse))+spec_col.b);
 		
-		col->r=col->g=col->b=diffuse;		// supergumba
 		/*
+		col->r+=(light_col.r*diffuse);
+		col->g+=(light_col.g*diffuse);
+		col->b+=(light_col.b*diffuse);		// supergumba
 		col->r=light_col.r+spec_col.r;
 		col->g=light_col.g+spec_col.g;
 		col->b=light_col.b+spec_col.b;
@@ -408,7 +445,7 @@ void ray_render_thread(void *arg)
 	unsigned long				ambient_ulong;
 	unsigned long				*buf;
 	ray_point_type				*eye_point,trig_point,view_plane_point;
-	ray_vector_type				eye_vector,eye_normal;
+	ray_vector_type				eye_vector;
 	ray_color_type				pixel_col,overlay_col;
 	ray_collision_type			collision;
 	ray_draw_scene_thread_info	*thread_info;
@@ -478,14 +515,6 @@ void ray_render_thread(void *arg)
 			view_plane_point.z=zadd;
 			
 			ray_vector_create_from_points(&eye_vector,&view_plane_point,eye_point);
-			
-				// need normalized eye vector
-				// for culling and effects
-				
-			eye_normal.x=eye_vector.x;
-			eye_normal.y=eye_vector.y;
-			eye_normal.z=eye_vector.z;
-			ray_vector_normalize(&eye_normal);
 
 				// rotate eye vector around eye
 				
@@ -493,7 +522,7 @@ void ray_render_thread(void *arg)
 
 				// find nearest mesh-trig intersection
 				
-			ray_intersect_mesh_list(scene,eye_point,&eye_vector,&eye_normal,&thread_info->mesh_index_block,&collision);
+			ray_intersect_mesh_list(scene,eye_point,&eye_vector,&thread_info->mesh_index_block,&collision);
 			if (collision.trig_idx==-1) continue;
 			
 				// get buffer
@@ -510,7 +539,7 @@ void ray_render_thread(void *arg)
 				// run regular lighting
 
 			ray_vector_find_line_point_for_T(eye_point,&eye_vector,collision.t,&trig_point);
-			if (ray_trace_lights(scene,&trig_point,&eye_normal,&collision,&pixel_col)) {
+			if (ray_trace_lights(scene,eye_point,&trig_point,&collision,&pixel_col)) {
 				ray_set_buffer(buf,&pixel_col,&overlay_col);
 				continue;
 			}

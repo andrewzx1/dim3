@@ -50,7 +50,7 @@ typedef struct		{
 // scene meshes
 //
 // these are the meshes inside of each scene object.  They contain
-// vertex, uv, normal, and triangle lists.
+// vertex, uv, normal, tangent, and triangle lists.
 //
 
 typedef struct		{
@@ -69,7 +69,17 @@ typedef struct		{
 					} ray_normal_block;
 
 typedef struct		{
-						int							vertex_idx[3],uv_idx[3],normal_idx[3];
+						int							count;
+						ray_vector_type				*tangents;
+					} ray_tangent_block;
+
+typedef struct		{
+						int							vertex,uv,
+													normal,tangent;
+					} ray_polygon_index_type;
+
+typedef struct		{
+						ray_polygon_index_type		idxs[3];
 						ray_vector_type				v1,v2;
 						ray_bound_type				bound;
 					} ray_trig_type;
@@ -80,9 +90,8 @@ typedef struct		{
 					} ray_trig_block;
 
 typedef struct		{
-						int							material_idx,
-													nvertex,
-													vertex_idx[8],uv_idx[8],normal_idx[8];
+						int							material_idx,nvertex;
+						ray_polygon_index_type		idxs[8];
 						ray_trig_block				trig_block;
 						ray_bound_type				bound;
 					} ray_poly_type;
@@ -99,6 +108,7 @@ typedef struct		{
 						ray_vertex_block			vertex_block;
 						ray_uv_block				uv_block;
 						ray_normal_block			normal_block;
+						ray_tangent_block			tangent_block;
 						ray_poly_block				poly_block;
 						ray_bound_type				bound;
 					} ray_mesh_type;
@@ -231,14 +241,17 @@ typedef struct		{
 //
 
 typedef struct		{
-						bool						on;
-						ray_color_type				rgb;
+						ray_vector_type					normal,tangent,binormal;
+					} ray_material_pixel_surface_type;
+typedef struct		{
+						bool							on;
+						ray_color_type					rgb;
 					} ray_material_pixel_col_type;
 
 typedef struct		{
-						float						shine_factor;
-						ray_vector_type				surface_normal;
-						ray_material_pixel_col_type	color,normal,specular,reflection;
+						float							shine_factor;
+						ray_material_pixel_surface_type	surface;
+						ray_material_pixel_col_type		color,normal,specular,reflection;
 					} ray_material_pixel_type;
 
 //

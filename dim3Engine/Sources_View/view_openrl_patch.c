@@ -218,7 +218,7 @@ int view_openrl_create_material(char *sub_path,texture_frame_type *frame)
 void view_openrl_map_setup(void)
 {
 	int					n,k,i,t,uv_count,mesh_id,light_id;
-	float				*vertexes,*vp,*uvs,*vt,*normals,*vn;
+	float				*vertexes,*vp,*uvs,*vt,*normals,*tangents,*vn;
 	short				*vk,*ray_polys;
 	d3pnt				*pnt;
 	map_mesh_type		*mesh;
@@ -305,9 +305,26 @@ void view_openrl_map_setup(void)
 		rlSceneMeshSetNormal(view_rl_scene_id,mesh_id,RL_MESH_FORMAT_NORMAL_3_FLOAT,mesh->npoly,normals);
 		free(normals);
 
+			// the tangents
+
+		tangents=(float*)malloc((mesh->npoly*3)*sizeof(float));
+		vn=tangents;
+
+		poly=mesh->polys;
+	
+		for (i=0;i!=mesh->npoly;i++) {
+			*vn++=poly->tangent_space.tangent.x;
+			*vn++=poly->tangent_space.tangent.y;
+			*vn++=poly->tangent_space.tangent.z;
+			poly++;
+		}
+		
+		rlSceneMeshSetTangent(view_rl_scene_id,mesh_id,RL_MESH_FORMAT_TANGENT_3_FLOAT,mesh->npoly,tangents);
+		free(tangents);
+
 			// polygons
 
-		ray_polys=(short*)malloc((mesh->npoly*(2+(3*8)))*sizeof(short));		// supergumba -- this will work but chews up a lot of memory
+		ray_polys=(short*)malloc((mesh->npoly*(2+(4*8)))*sizeof(short));		// supergumba -- this will work but chews up a lot of memory
 		vk=ray_polys;
 
 		uv_count=0;
@@ -321,13 +338,14 @@ void view_openrl_map_setup(void)
 				*vk++=(short)poly->v[t];	// vertex
 				*vk++=uv_count;				// uv, each vertex has unique uv count
 				*vk++=(short)i;				// normal, one normal for each poly
+				*vk++=(short)i;				// tangent, one tangent for each poly
 				uv_count++;
 			}
 
 			poly++;
 		}
 
-		rlSceneMeshSetPoly(view_rl_scene_id,mesh_id,RL_MESH_FORMAT_POLY_SHORT_VERTEX_UV_NORMAL,mesh->npoly,ray_polys);
+		rlSceneMeshSetPoly(view_rl_scene_id,mesh_id,RL_MESH_FORMAT_POLY_SHORT_VERTEX_UV_NORMAL_TANGENT,mesh->npoly,ray_polys);
 		free(ray_polys);
 	}
 	
@@ -337,16 +355,16 @@ void view_openrl_map_setup(void)
 		lit=&map.lights[n];
 		
 		light_id=rlSceneLightAdd(view_rl_scene_id);
-		rlSceneLightSetIntensity(view_rl_scene_id,light_id,80000.0f,1.0f);
+		rlSceneLightSetIntensity(view_rl_scene_id,light_id,(float)lit->setting.intensity,lit->setting.exponent);
 	
-		lit_col.r=1.0f;
-		lit_col.g=1.0f;
-		lit_col.b=1.0f;
+		lit_col.r=lit->setting.col.r;
+		lit_col.g=lit->setting.col.g;
+		lit_col.b=lit->setting.col.b;
 		rlSceneLightSetColor(view_rl_scene_id,light_id,&lit_col);
 
-		lit_pnt.x=lit->pnt.x;
-		lit_pnt.y=lit->pnt.y;
-		lit_pnt.z=lit->pnt.z;
+		lit_pnt.x=(float)lit->pnt.x;
+		lit_pnt.y=(float)lit->pnt.y;
+		lit_pnt.z=(float)lit->pnt.z;
 		rlSceneLightSetPosition(view_rl_scene_id,light_id,&lit_pnt);
 	}
 }
@@ -364,6 +382,8 @@ void view_openrl_model_setup(void)
 	model_poly_type		*poly;
 	texture_type		*texture;
 	texture_frame_type	*frame;
+
+	return;	// supergumba
 	
 		// model materials
 
@@ -434,7 +454,7 @@ void view_openrl_model_setup(void)
 
 			// polygons
 
-		ray_polys=(short*)malloc((mesh->npoly*(2+(3*8)))*sizeof(short));		// supergumba -- this will work but chews up a lot of memory
+		ray_polys=(short*)malloc((mesh->npoly*(2+(4*8)))*sizeof(short));		// supergumba -- this will work but chews up a lot of memory
 		vk=ray_polys;
 
 		uv_count=0;
@@ -448,13 +468,14 @@ void view_openrl_model_setup(void)
 				*vk++=(short)poly->v[t];	// vertex
 				*vk++=uv_count;				// uv, each vertex has unique uv count
 				*vk++=(short)i;				// normal, one normal for each poly
+				*vk++=(short)i;				// tangent, one tangent for each poly
 				uv_count++;
 			}
 
 			poly++;
 		}
 
-		rlSceneMeshSetPoly(view_rl_scene_id,mesh_id,RL_MESH_FORMAT_POLY_SHORT_VERTEX_UV_NORMAL,mesh->npoly,ray_polys);
+		rlSceneMeshSetPoly(view_rl_scene_id,mesh_id,RL_MESH_FORMAT_POLY_SHORT_VERTEX_UV_NORMAL_TANGENT,mesh->npoly,ray_polys);
 		free(ray_polys);
 
 			// set the draw's mesh id
@@ -481,6 +502,8 @@ void view_openrl_model_update(void)
 	model_draw			*draw;
 	model_type			*mdl;
 	model_mesh_type		*mesh;
+
+	return;	// supergumba
 	
 	for (n=0;n!=max_obj_list;n++) {
 	
@@ -507,6 +530,7 @@ void view_openrl_model_update(void)
 
 		rlSceneMeshSetVertex(view_rl_scene_id,draw->openrl_mesh_id,RL_MESH_FORMAT_VERTEX_3_FLOAT,mesh->nvertex,draw->setup.mesh_arrays[0].gl_vertex_array);
 		rlSceneMeshSetNormal(view_rl_scene_id,draw->openrl_mesh_id,RL_MESH_FORMAT_NORMAL_3_FLOAT,mesh->nvertex,draw->setup.mesh_arrays[0].gl_normal_array);
+		rlSceneMeshSetTangent(view_rl_scene_id,draw->openrl_mesh_id,RL_MESH_FORMAT_NORMAL_3_FLOAT,mesh->nvertex,draw->setup.mesh_arrays[0].gl_tangent_array);
 	}
 }
 
@@ -607,8 +631,8 @@ void view_openrl_render(void)
 
 		// render
 
-	col.r=0.0f;
-	col.g=0.0f;
+	col.r=1.0f;		// supergumba -- yellow so we can see mistakes
+	col.g=1.0f;
 	col.b=0.0f;
 	col.a=1.0f;
 	rlSceneClearBuffer(view_rl_scene_id,&col);
