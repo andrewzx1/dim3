@@ -103,6 +103,7 @@ int rlSceneMeshAdd(int sceneId,unsigned long flags)
 		// mesh settings
 
 	mesh->flags=flags;
+	mesh->hidden=FALSE;
 
 	mesh->vertex_block.count=0;
 	mesh->vertex_block.vertexes=NULL;
@@ -112,6 +113,9 @@ int rlSceneMeshAdd(int sceneId,unsigned long flags)
 
 	mesh->normal_block.count=0;
 	mesh->normal_block.normals=NULL;
+
+	mesh->tangent_block.count=0;
+	mesh->tangent_block.tangents=NULL;
 
 	mesh->poly_block.count=0;
 	mesh->poly_block.polys=NULL;
@@ -172,6 +176,7 @@ int rlSceneMeshDelete(int sceneId,int meshId)
 	if (mesh->vertex_block.vertexes!=NULL) free(mesh->vertex_block.vertexes);
 	if (mesh->uv_block.uvs!=NULL) free(mesh->uv_block.uvs);
 	if (mesh->normal_block.normals!=NULL) free(mesh->normal_block.normals);
+	if (mesh->tangent_block.tangents!=NULL) free(mesh->tangent_block.tangents);
 	
 	for (n=0;n!=mesh->poly_block.count;n++) {
 		if (mesh->poly_block.polys[n].trig_block.trigs!=NULL) free(mesh->poly_block.polys[n].trig_block.trigs);
@@ -407,6 +412,7 @@ int rlSceneMeshSetUV(int sceneId,int meshId,int format,int count,void *uv_data)
 	   RL_ERROR_OK
 	   RL_ERROR_UNKNOWN_SCENE_ID
 	   RL_ERROR_UNKNOWN_MESH_ID
+	   RL_ERROR_UNKNOWN_FORMAT
 	   RL_ERROR_SCENE_IN_USE
 	   RL_ERROR_OUT_OF_MEMORY
       
@@ -438,6 +444,10 @@ int rlSceneMeshSetNormal(int sceneId,int meshId,int format,int count,void *norma
 
 	mesh=scene->mesh_list.meshes[idx];
 
+		// get the format
+
+	if (format!=RL_MESH_FORMAT_NORMAL_3_FLOAT) return(RL_ERROR_UNKNOWN_FORMAT);
+
 		// get new memory
 
 	normals=(ray_vector_type*)malloc(count*sizeof(ray_vector_type));
@@ -465,6 +475,75 @@ int rlSceneMeshSetNormal(int sceneId,int meshId,int format,int count,void *norma
 
 /* =======================================================
 
+      Sets Tangents for a Mesh
+
+	  Returns:
+	   RL_ERROR_OK
+	   RL_ERROR_UNKNOWN_SCENE_ID
+	   RL_ERROR_UNKNOWN_MESH_ID
+	   RL_ERROR_UNKNOWN_FORMAT
+	   RL_ERROR_SCENE_IN_USE
+	   RL_ERROR_OUT_OF_MEMORY
+      
+======================================================= */
+
+int rlSceneMeshSetTangent(int sceneId,int meshId,int format,int count,void *tangent_data)
+{
+	int				n,idx;
+	float			*np;
+	ray_vector_type	*tangents,*tangent;
+	ray_mesh_type	*mesh;
+	ray_scene_type	*scene;
+
+		// get scene
+
+	idx=ray_scene_get_index(sceneId);
+	if (idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
+
+	scene=ray_global.scene_list.scenes[idx];
+
+		// can't alter scenes in use
+
+	if (rlSceneRenderState(sceneId)==RL_SCENE_STATE_RENDERING) return(RL_ERROR_SCENE_IN_USE);
+
+		// get mesh
+
+	idx=ray_scene_mesh_get_index(scene,meshId);
+	if (idx==-1) return(RL_ERROR_UNKNOWN_MESH_ID);
+
+	mesh=scene->mesh_list.meshes[idx];
+
+		// get the format
+
+	if (format!=RL_MESH_FORMAT_TANGENT_3_FLOAT) return(RL_ERROR_UNKNOWN_FORMAT);
+
+		// get new memory
+
+	tangents=(ray_vector_type*)malloc(count*sizeof(ray_vector_type));
+	if (tangents==NULL) return(RL_ERROR_OUT_OF_MEMORY);
+
+	if (mesh->tangent_block.tangents!=NULL) free(mesh->tangent_block.tangents);
+
+	mesh->tangent_block.count=count;
+	mesh->tangent_block.tangents=tangents;
+
+		// copy the normals
+
+	tangent=tangents;
+	np=(float*)tangent_data;
+
+	for (n=0;n!=count;n++) {
+		tangent->x=*np++;
+		tangent->y=*np++;
+		tangent->z=*np++;
+		tangent++;
+	}
+
+	return(RL_ERROR_OK);
+}
+
+/* =======================================================
+
       Sets Polys for a Mesh
 
 	  The current format is first short = vertexes count
@@ -475,6 +554,7 @@ int rlSceneMeshSetNormal(int sceneId,int meshId,int format,int count,void *norma
 	   RL_ERROR_OK
 	   RL_ERROR_UNKNOWN_SCENE_ID
 	   RL_ERROR_UNKNOWN_MESH_ID
+	   RL_ERROR_UNKNOWN_FORMAT
 	   RL_ERROR_SCENE_IN_USE
 	   RL_ERROR_OUT_OF_MEMORY
       
@@ -482,12 +562,13 @@ int rlSceneMeshSetNormal(int sceneId,int meshId,int format,int count,void *norma
 
 int rlSceneMeshSetPoly(int sceneId,int meshId,int format,int count,void *poly_data)
 {
-	int					n,k,ntrig,scene_idx,mesh_idx;
-	short				*pp;
-	ray_mesh_type		*mesh;
-	ray_poly_type		*polys,*poly;
-	ray_trig_type		*trigs,*trig;
-	ray_scene_type		*scene;
+	int						n,k,ntrig,scene_idx,mesh_idx;
+	short					*pp;
+	ray_polygon_index_type	*pidx;
+	ray_mesh_type			*mesh;
+	ray_poly_type			*polys,*poly;
+	ray_trig_type			*trigs,*trig;
+	ray_scene_type			*scene;
 
 		// get scene
 
@@ -506,6 +587,10 @@ int rlSceneMeshSetPoly(int sceneId,int meshId,int format,int count,void *poly_da
 	if (mesh_idx==-1) return(RL_ERROR_UNKNOWN_MESH_ID);
 
 	mesh=scene->mesh_list.meshes[mesh_idx];
+
+		// get the format
+
+	if (format!=RL_MESH_FORMAT_POLY_SHORT_VERTEX_UV_NORMAL_TANGENT) return(RL_ERROR_UNKNOWN_FORMAT);
 	
 		// create polygon memory
 		
@@ -540,11 +625,15 @@ int rlSceneMeshSetPoly(int sceneId,int meshId,int format,int count,void *poly_da
 		poly->material_idx=ray_material_get_index((int)*pp++);		// supergumba -- look up errors here
 		
 			// load the vertexes
+
+		pidx=poly->idxs;
 			
 		for (k=0;k!=poly->nvertex;k++) {
-			poly->vertex_idx[k]=(int)*pp++;
-			poly->uv_idx[k]=(int)*pp++;
-			poly->normal_idx[k]=(int)*pp++;
+			pidx->vertex=(int)*pp++;
+			pidx->uv=(int)*pp++;
+			pidx->normal=(int)*pp++;
+			pidx->tangent=(int)*pp++;
+			pidx++;
 		}
 
 			// get memory for tesselated
@@ -580,19 +669,9 @@ int rlSceneMeshSetPoly(int sceneId,int meshId,int format,int count,void *poly_da
 		trig=trigs;
 			
 		for (k=0;k!=ntrig;k++) {
-
-			trig->vertex_idx[0]=poly->vertex_idx[0];
-			trig->uv_idx[0]=poly->uv_idx[0];
-			trig->normal_idx[0]=poly->normal_idx[0];
-
-			trig->vertex_idx[1]=poly->vertex_idx[k+1];
-			trig->uv_idx[1]=poly->uv_idx[k+1];
-			trig->normal_idx[1]=poly->normal_idx[1];
-
-			trig->vertex_idx[2]=poly->vertex_idx[k+2];
-			trig->uv_idx[2]=poly->uv_idx[k+2];
-			trig->normal_idx[2]=poly->normal_idx[2];
-
+			memmove(&trig->idxs[0],&poly->idxs[0],sizeof(ray_polygon_index_type));
+			memmove(&trig->idxs[1],&poly->idxs[k+1],sizeof(ray_polygon_index_type));
+			memmove(&trig->idxs[2],&poly->idxs[k+2],sizeof(ray_polygon_index_type));
 			trig++;
 		}
 

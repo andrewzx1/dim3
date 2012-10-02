@@ -29,6 +29,8 @@ int ray_material_get_index(int materialId)
       
 ======================================================= */
 
+// supergumba -- we need a way to mip map here, probably based on the T collision
+
 void ray_get_material_rgb(ray_scene_type *scene,ray_collision_type *collision,ray_material_pixel_type *pixel)
 {
 	int						x,y,offset;
@@ -61,9 +63,9 @@ void ray_get_material_rgb(ray_scene_type *scene,ray_collision_type *collision,ra
 	
 		// calculate the uv
 		
-	uv0=&mesh->uv_block.uvs[trig->uv_idx[0]];
-	uv1=&mesh->uv_block.uvs[trig->uv_idx[1]];
-	uv2=&mesh->uv_block.uvs[trig->uv_idx[2]];
+	uv0=&mesh->uv_block.uvs[trig->idxs[0].uv];
+	uv1=&mesh->uv_block.uvs[trig->idxs[1].uv];
+	uv2=&mesh->uv_block.uvs[trig->idxs[2].uv];
 		
 	inv=(1-collision->u)-collision->v;
 	fx=(inv*uv0->x)+(collision->u*uv1->x)+(collision->v*uv2->x);
@@ -71,15 +73,32 @@ void ray_get_material_rgb(ray_scene_type *scene,ray_collision_type *collision,ra
 	
 		// calculate the surface normal
 		
-	n0=&mesh->normal_block.normals[trig->normal_idx[0]];
-	n1=&mesh->normal_block.normals[trig->normal_idx[1]];
-	n2=&mesh->normal_block.normals[trig->normal_idx[2]];
+	n0=&mesh->normal_block.normals[trig->idxs[0].normal];
+	n1=&mesh->normal_block.normals[trig->idxs[1].normal];
+	n2=&mesh->normal_block.normals[trig->idxs[2].normal];
 		
-	pixel->surface_normal.x=(inv*n0->x)+(collision->u*n1->x)+(collision->v*n2->x);
-	pixel->surface_normal.y=(inv*n0->y)+(collision->u*n1->y)+(collision->v*n2->y);
-	pixel->surface_normal.z=(inv*n0->z)+(collision->u*n1->z)+(collision->v*n2->z);
+	pixel->surface.normal.x=(inv*n0->x)+(collision->u*n1->x)+(collision->v*n2->x);
+	pixel->surface.normal.y=(inv*n0->y)+(collision->u*n1->y)+(collision->v*n2->y);
+	pixel->surface.normal.z=(inv*n0->z)+(collision->u*n1->z)+(collision->v*n2->z);
 	
-	ray_vector_normalize(&pixel->surface_normal);
+	ray_vector_normalize(&pixel->surface.normal);
+
+		// calculate the surface tangent
+		
+	n0=&mesh->tangent_block.tangents[trig->idxs[0].tangent];
+	n1=&mesh->tangent_block.tangents[trig->idxs[1].tangent];
+	n2=&mesh->tangent_block.tangents[trig->idxs[2].tangent];
+		
+	pixel->surface.tangent.x=(inv*n0->x)+(collision->u*n1->x)+(collision->v*n2->x);
+	pixel->surface.tangent.y=(inv*n0->y)+(collision->u*n1->y)+(collision->v*n2->y);
+	pixel->surface.tangent.z=(inv*n0->z)+(collision->u*n1->z)+(collision->v*n2->z);
+	
+	ray_vector_normalize(&pixel->surface.tangent);
+
+		// calculate the binormal
+
+	ray_vector_cross_product(&pixel->surface.binormal,&pixel->surface.normal,&pixel->surface.tangent);
+	ray_vector_normalize(&pixel->surface.binormal);
 		
 		// change to texture coordinate
 		
