@@ -187,7 +187,7 @@ void ray_precalc_bound_mesh_indexes(ray_scene_type *scene,ray_bound_type *bnd,ra
 		
 			// bound collisions
 			
-		if (!ray_bound_bound_collision(bnd,&mesh->bound)) continue;
+		//if (!ray_bound_bound_collision(bnd,&mesh->bound)) continue;
 		
 		*idx++=n;
 		index_block->count++;
