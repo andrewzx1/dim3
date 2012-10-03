@@ -5,15 +5,6 @@
 #include "ray_types.h"
 
 //
-// defines
-//
-
-#define ray_render_reserve_for_os_thread_count		2
-
-#define ray_render_min_thread_count					4
-#define ray_render_max_thread_count					64
-
-//
 // sizes
 //
 
@@ -24,7 +15,7 @@
 
 #define ray_max_material							1024
 
-#define ray_max_parent_depth						4
+#define ray_render_max_thread_count					64
 
 //
 // math defines
@@ -33,7 +24,15 @@
 #define ray_TRIG_PI									3.14159265358979f
 #define ray_ANG_to_RAD								(float)(ray_TRIG_PI/180.0f)
 #define ray_RAD_to_ANG								(float)(180.0f/ray_TRIG_PI)
-					
+
+//
+// bounds struct
+//
+
+typedef struct		{
+                        ray_point_type				min,max;
+                    } ray_bound_type;
+
 //
 // scene eye
 //
@@ -199,6 +198,7 @@ typedef struct		{
 typedef struct		{
 						int							id;
 						ray_eye_type				eye;
+						ray_color_type				ambient_col;
 						ray_light_list				light_list;
 						ray_mesh_list				mesh_list;
 						ray_overlay_list			overlay_list;
@@ -295,8 +295,6 @@ extern inline void ray_vector_create_from_points(ray_vector_type *v,ray_point_ty
 extern inline void ray_vector_cross_product(ray_vector_type *cp,ray_vector_type *v1,ray_vector_type *v2);
 extern inline float ray_vector_dot_product(ray_vector_type *v1,ray_vector_type *v2);
 extern inline void ray_vector_find_line_point_for_T(ray_point_type *p,ray_vector_type *v,float t,ray_point_type *lp);
-
-extern bool ray_normal_cull(ray_point_type *eye_point,ray_point_type *poly_mid_point,ray_vector_type *normal);
 
 extern bool ray_bound_bound_collision(ray_bound_type *bnd_1,ray_bound_type *bnd_2);
 extern bool ray_bound_ray_collision(ray_point_type *p,ray_vector_type *v,ray_bound_type *bnd);

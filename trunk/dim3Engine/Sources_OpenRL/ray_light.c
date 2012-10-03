@@ -23,6 +23,35 @@ int ray_scene_light_get_index(ray_scene_type *scene,int lightId)
 
 /* =======================================================
 
+      Sets the Scene Ambient Color
+
+	  Returns:
+	   RL_ERROR_OK
+	   RL_ERROR_UNKNOWN_SCENE_ID
+      
+======================================================= */
+
+int rlSceneAmbient(int sceneId,ray_color_type *col)
+{
+	int					idx;
+	ray_scene_type		*scene;
+	
+		// get scene
+
+	idx=ray_scene_get_index(sceneId);
+	if (idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
+
+	scene=ray_global.scene_list.scenes[idx];
+
+		// set the ambient
+
+	memmove(&scene->ambient_col,col,sizeof(ray_color_type));
+
+	return(RL_ERROR_OK);
+}
+
+/* =======================================================
+
       Adds a New Light to a Scene
 
 	  Returns:

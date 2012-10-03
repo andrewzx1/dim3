@@ -185,7 +185,7 @@ void view_draw_models_final(void)
 
 /* =======================================================
 
-      Drawing Mainline
+      Drawing Mainline OpenGL
       
 ======================================================= */
 
@@ -333,11 +333,9 @@ void view_draw_scene_render(obj_type *obj,weapon_type *weap)
 			zoom_draw(obj,weap);
 		}
 	}
-
-		// OpenRL drawing
-
-	view_openrl_render();
 }
+
+#ifndef D3_OPENRL
 
 void view_draw(void)
 {
@@ -402,7 +400,7 @@ void view_draw(void)
 		// render the scene
 
 	gl_fs_shader_render_begin();
-	view_draw_scene_render(obj,weap);
+	view_draw_scene_render(obj,weap);		// supergumba
 	gl_fs_shader_render_finish();
 
 		// draw tints and fades
@@ -411,6 +409,8 @@ void view_draw(void)
 	view_draw_effect_tint();
 	view_fade_draw();
 }
+
+#endif
 
 bool view_draw_node(node_type *node)
 {
@@ -449,7 +449,7 @@ bool view_draw_node(node_type *node)
 
 		// render the scene
 
-	view_draw_scene_render(NULL,NULL);
+	view_draw_scene_render(NULL,NULL);		// supergumba
 
 		// restore the old rendering
 		
@@ -458,3 +458,83 @@ bool view_draw_node(node_type *node)
 	return(TRUE);
 }
 
+/* =======================================================
+
+      Drawing Mainline OpenRL
+      
+======================================================= */
+
+#ifdef D3_OPENRL
+
+void view_draw(void)
+{
+	int				n;
+	obj_type		*obj,*camera_obj;
+	weapon_type		*weap;
+
+		// get player object and held weapon
+	
+	obj=server.obj_list.objs[server.player_obj_idx];
+	weap=weapon_find_current(obj);
+
+		// use the camera render
+
+	view.render=&view_camera_render;
+	
+		// set view camera
+		
+	camera_view_draw_run();
+	
+	camera_obj=server.obj_list.objs[camera.obj_idx];
+	memmove(&view.render->camera.pnt,&camera.cur_pos.pnt,sizeof(d3pnt));
+	memmove(&view.render->camera.ang,&camera.cur_pos.ang,sizeof(d3ang));
+
+	view.render->camera.fov=map.camera.plane.fov;
+	view.render->camera.flip=FALSE;
+	view.render->camera.under_liquid_idx=camera_check_liquid(obj,&view.render->camera.pnt);
+	
+	view.render->force_camera_obj=FALSE;
+
+		// camera adjustments
+	
+	if (map.camera.mode==cv_fpp) {
+		view_calculate_scope(obj,camera_obj);
+		view_calculate_recoil(obj);
+	}
+	
+	view_calculate_shakes(obj);
+	view_calculate_sways(obj);
+	view_calculate_bump(obj);
+	
+		// reset view counts
+	
+	view.count.mesh=0;
+	view.count.mesh_poly=0;
+	view.count.liquid=0;
+	view.count.liquid_poly=0;
+	view.count.model=0;
+	view.count.model_poly=0;
+	view.count.shadow=0;
+	view.count.shadow_poly=0;
+	view.count.effect=0;
+	view.count.obscure_percent=0;
+	
+		// build the scene
+		
+	view_draw_scene_build();
+
+	for (n=0;n!=max_obj_list;n++) {
+		obj=server.obj_list.objs[n];
+		if (obj!=NULL) render_model_build_vertex_lists(&obj->draw,TRUE);
+	}
+
+		// openRL rendering
+
+	view_openrl_render();
+		
+		// view fading
+
+	view_fade_draw();
+}
+
+#endif

@@ -66,7 +66,7 @@ bool ray_scene_initialize_mesh_indexes(ray_scene_type *scene)
      
 ======================================================= */
 
-int rlSceneAdd(int wid,int high,int target,int format,unsigned long flags)
+int rlSceneAdd(int wid,int high,int target,int format,void *attachment,unsigned long flags)
 {
 	int					n,y,y_add;
 	ray_scene_type		*scene;
@@ -123,6 +123,10 @@ int rlSceneAdd(int wid,int high,int target,int format,unsigned long flags)
 		
 		scene->render.thread_info[n].parent_scene=scene;
 	}
+
+		// setup
+
+	scene->ambient_col.r=scene->ambient_col.g=scene->ambient_col.b=0.0f;
 
 		// any lists
 
