@@ -231,13 +231,14 @@ bool ray_trace_lights(ray_scene_type *scene,ray_point_type *eye_pnt,ray_point_ty
 	bool						hit;
 	ray_material_pixel_type		material_pixel;
 	ray_color_type				light_col,spec_col;
-	ray_vector_type				light_vector,light_normal,
-								light_bump_normal,bump_normal,
-								eye_normal,eye_bump_normal,
-								half_normal;
+	ray_vector_type				light_vector,light_vector_normal,
+								light_poly_space_vector,bump_map_normal,
+								eye_vector,eye_poly_space_vector,
+								half_poly_space_vector;
 	ray_light_type				*light;
 
 	col->r=col->g=col->b=0.0f;
+	col->a=1.0f;
 	
 		// get material pixels
 		
@@ -282,13 +283,14 @@ bool ray_trace_lights(ray_scene_type *scene,ray_point_type *eye_pnt,ray_point_ty
 			
 		att=powf(att,light->exponent);
 
-			// get the light normal for bump
-			// and spec calculations
+			// get a normalized version of
+			// the light vector for bump and
+			// spec calculations
 
-		light_normal.x=light_vector.x;
-		light_normal.y=light_vector.y;
-		light_normal.z=light_vector.z;
-		ray_vector_normalize(&light_normal);
+		light_vector_normal.x=light_vector.x;
+		light_vector_normal.y=light_vector.y;
+		light_vector_normal.z=light_vector.z;
+		ray_vector_normalize(&light_vector_normal);
 		
 			// handle any diffuse calcs
 			// it will either be the surface normal
@@ -300,24 +302,24 @@ bool ray_trace_lights(ray_scene_type *scene,ray_point_type *eye_pnt,ray_point_ty
 				// translate light normal to
 				// same space as normal map
 
-			light_bump_normal.x=ray_vector_dot_product(&light_normal,&material_pixel.surface.tangent);
-			light_bump_normal.y=ray_vector_dot_product(&light_normal,&material_pixel.surface.binormal);
-			light_bump_normal.z=ray_vector_dot_product(&light_normal,&material_pixel.surface.normal);
-			ray_vector_normalize(&light_bump_normal);
+			light_poly_space_vector.x=ray_vector_dot_product(&light_vector_normal,&material_pixel.surface.tangent);
+			light_poly_space_vector.y=ray_vector_dot_product(&light_vector_normal,&material_pixel.surface.binormal);
+			light_poly_space_vector.z=ray_vector_dot_product(&light_vector_normal,&material_pixel.surface.normal);
+			ray_vector_normalize(&light_poly_space_vector);
 
-				// unpack the bump normal
+				// unpack the bump map normals
 
-			bump_normal.x=(material_pixel.normal.rgb.r*2.0f)-1.0f;
-			bump_normal.y=(material_pixel.normal.rgb.g*2.0f)-1.0f;
-			bump_normal.z=(material_pixel.normal.rgb.b*2.0f)-1.0f;
-			ray_vector_normalize(&bump_normal);
+			bump_map_normal.x=(material_pixel.normal.rgb.r*2.0f)-1.0f;
+			bump_map_normal.y=(material_pixel.normal.rgb.g*2.0f)-1.0f;
+			bump_map_normal.z=(material_pixel.normal.rgb.b*2.0f)-1.0f;
+			ray_vector_normalize(&bump_map_normal);
 
 				// the diffuse is the dot between the
-				// light normal (now in the same space
+				// light vector (now in the same space
 				// as the bump normal) and the bump normal
 				// (both have to be normalized)
 
-			diffuse=ray_vector_dot_product(&light_bump_normal,&bump_normal);
+			diffuse=ray_vector_dot_product(&light_poly_space_vector,&bump_map_normal);
 
 				// get the spec
 				// specular calculations require the bump maps
@@ -330,47 +332,56 @@ bool ray_trace_lights(ray_scene_type *scene,ray_point_type *eye_pnt,ray_point_ty
 					// but it must be moved into the same
 					// space as the bump and spec maps
 
-				ray_vector_create_from_points(&eye_normal,eye_pnt,trig_pnt);
-				ray_vector_normalize(&eye_normal);
+				ray_vector_create_from_points(&eye_vector,eye_pnt,trig_pnt);
+				ray_vector_normalize(&eye_vector);
 
-				eye_bump_normal.x=ray_vector_dot_product(&eye_normal,&material_pixel.surface.tangent);
-				eye_bump_normal.y=ray_vector_dot_product(&eye_normal,&material_pixel.surface.binormal);
-				eye_bump_normal.z=ray_vector_dot_product(&eye_normal,&material_pixel.surface.normal);
-				ray_vector_normalize(&eye_bump_normal);
+				eye_poly_space_vector.x=ray_vector_dot_product(&eye_vector,&material_pixel.surface.tangent);
+				eye_poly_space_vector.y=ray_vector_dot_product(&eye_vector,&material_pixel.surface.binormal);
+				eye_poly_space_vector.z=ray_vector_dot_product(&eye_vector,&material_pixel.surface.normal);
+				ray_vector_normalize(&eye_poly_space_vector);
 
-					// get the half normal (vector) between
-					// the eye and the normal, we use
-					// the light bump normal as it's now
-					// in eye space
+					// get the half vector between
+					// the eye and the light vector
+					// (we already got the light vector into the
+					// right space in the bump calc)
 
-				half_normal.x=eye_bump_normal.x+light_bump_normal.x;
-				half_normal.y=eye_bump_normal.y+light_bump_normal.y;
-				half_normal.z=eye_bump_normal.z+light_bump_normal.z;
-				ray_vector_normalize(&half_normal);
+				half_poly_space_vector.x=eye_poly_space_vector.x+light_poly_space_vector.x;
+				half_poly_space_vector.y=eye_poly_space_vector.y+light_poly_space_vector.y;
+				half_poly_space_vector.z=eye_poly_space_vector.z+light_poly_space_vector.z;
+				ray_vector_normalize(&half_poly_space_vector);
 
 					// the spec factor is the dot of the bump
 					// map with the half vector (the spec depends
 					// on the definition of the bumps)
 			
-				spec_factor=ray_vector_dot_product(&half_normal,&bump_normal);
+				spec_factor=ray_vector_dot_product(&half_poly_space_vector,&bump_map_normal);
 				if (spec_factor<0.0f) spec_factor=0.0f;
 				spec_factor=powf(spec_factor,material_pixel.shine_factor);
-				spec_factor*=att;
 				
-				if (spec_factor>1.0f) spec_factor=1.0f;
+				/* supergumba
+				bump_map_normal.x=0.0f;
+				bump_map_normal.y=0.0f;
+				bump_map_normal.z=1.0f;
+				spec_factor=ray_vector_dot_product(&eye_bump_normal,&bump_map_normal);
+				if (spec_factor<0.0f) spec_factor=0.0f;
+				*/
 				
-				spec_col.r=material_pixel.specular.rgb.r*spec_factor;
-				spec_col.g=material_pixel.specular.rgb.g*spec_factor;
-				spec_col.b=material_pixel.specular.rgb.b*spec_factor;
+					// and mix it with the specular map
+					// we add in the attentuation factor
+					// so specs are attenuated by the lighting
+				
+				spec_col.r=(material_pixel.specular.rgb.r*spec_factor)*att;
+				spec_col.g=(material_pixel.specular.rgb.g*spec_factor)*att;
+				spec_col.b=(material_pixel.specular.rgb.b*spec_factor)*att;
 			}
 		}
 		else {
-			diffuse=ray_vector_dot_product(&light_normal,&material_pixel.surface.normal);
+			diffuse=ray_vector_dot_product(&light_vector_normal,&material_pixel.surface.normal);
 		}
 	
 		diffuse=(diffuse+1.0f)*0.5f;
 		
-	//	spec_col.r=spec_col.g=spec_col.b=0.0f;		// supergumba
+		spec_col.r=spec_col.g=spec_col.b=0.0f;		// supergumba
 		
 			// mix with material and
 			// add to pixel
@@ -378,6 +389,10 @@ bool ray_trace_lights(ray_scene_type *scene,ray_point_type *eye_pnt,ray_point_ty
 		col->r+=((material_pixel.color.rgb.r*(light_col.r*diffuse))+spec_col.r);
 		col->g+=((material_pixel.color.rgb.g*(light_col.g*diffuse))+spec_col.g);
 		col->b+=((material_pixel.color.rgb.b*(light_col.b*diffuse))+spec_col.b);
+		
+	//	col->r=spec_factor;
+	//	col->g=spec_factor;
+	//	col->b=spec_factor;
 		
 		/*
 		col->r+=(light_col.r*diffuse);
