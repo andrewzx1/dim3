@@ -50,7 +50,9 @@ extern file_path_setup_type	file_path_setup;
 	#define view_rl_buffer_high		200
 
 	int								view_rl_scene_id,
-									view_rl_purple_material_id,view_rl_player_light_id;
+									view_rl_purple_material_id,
+									view_rl_lx,view_rl_rx,
+									view_rl_ty,view_rl_by;
 	GLuint							view_rl_gl_id;
 
 #endif
@@ -80,20 +82,21 @@ void view_openrl_mesh_cleanup(void) {}
 
 bool view_openrl_initialize(char *err_str)
 {
-	int					n,sz;
+	int					n,sz,wid,high;
+	float				f;
 	unsigned char		*data,*dptr;
-	ray_color_type		col;
+	rlColor				col;
 
 		// initialize OpenRL
 
-	if (rlInitialize()!=RL_ERROR_OK) {
+	if (rlInitialize(1)!=RL_ERROR_OK) {
 		strcpy(err_str,"Unable to initialize OpenRL");
 		return(FALSE);
 	}
 
 		// make the scene
 
-	view_rl_scene_id=rlSceneAdd(view_rl_buffer_wid,view_rl_buffer_high,RL_SCENE_TARGET_MEMORY,RL_SCENE_FORMAT_32_RGBA,0);
+	view_rl_scene_id=rlSceneAdd(view_rl_buffer_wid,view_rl_buffer_high,RL_SCENE_TARGET_MEMORY,RL_SCENE_FORMAT_32_RGBA,NULL,0);
 	if (view_rl_scene_id<0) {
 		strcpy(err_str,"Unable to create OpenRL scene");
 		rlShutdown();
@@ -108,17 +111,6 @@ bool view_openrl_initialize(char *err_str)
 	col.a=1.0f;
 	view_rl_purple_material_id=rlMaterialAdd(1,1,0);
 	rlMaterialAttachBufferColor(view_rl_purple_material_id,RL_MATERIAL_TARGET_COLOR,&col);
-
-		// single player light
-/*
-	view_rl_player_light_id=rlSceneLightAdd(view_rl_scene_id);
-	rlSceneLightSetIntensity(view_rl_scene_id,view_rl_player_light_id,50000.0f,1.0f);
-	
-	col.r=1.0f;
-	col.g=1.0f;
-	col.b=1.0f;
-	rlSceneLightSetColor(view_rl_scene_id,view_rl_player_light_id,&col);
-*/
 
 		// we need a texture to transfer
 		// the scene to opengl raster
@@ -153,6 +145,19 @@ bool view_openrl_initialize(char *err_str)
 
 	glBindTexture(GL_TEXTURE_2D,0);
 
+		// get drawing size
+
+//	f=((float)view.screen.x_sz)/((float)view_rl_buffer_wid);
+	f=1.0f;
+
+	wid=(int)(((float)view_rl_buffer_wid)*f);
+	view_rl_lx=(view.screen.x_sz-wid)>>1;
+	view_rl_rx=view_rl_lx+wid;
+
+	high=(int)(((float)view_rl_buffer_high)*f);
+	view_rl_ty=(view.screen.y_sz-high)>>1;
+	view_rl_by=view_rl_ty+high;
+
 	return(TRUE);
 }
 
@@ -170,7 +175,7 @@ void view_openrl_shutdown(void)
       
 ======================================================= */
 
-int view_openrl_create_material(char *sub_path,texture_frame_type *frame)
+int view_openrl_create_material(char *sub_path,texture_type *texture,texture_frame_type *frame)
 {
 	int					material_id,wid,high;
 	bool				alpha_channel;
@@ -211,6 +216,8 @@ int view_openrl_create_material(char *sub_path,texture_frame_type *frame)
 		rlMaterialAttachBufferData(material_id,RL_MATERIAL_TARGET_SPECULAR,(alpha_channel?RL_MATERIAL_FORMAT_32_RGBA:RL_MATERIAL_FORMAT_24_RGB),png_data);
 		free(png_data);
 	}
+
+	rlMaterialSetShineFactor(material_id,texture->shine_factor);
 	
 	return(material_id);
 }
@@ -226,8 +233,8 @@ void view_openrl_map_setup(void)
 	texture_type		*texture;
 	texture_frame_type	*frame;
 	map_light_type		*lit;
-	ray_point_type		lit_pnt;
-	ray_color_type		lit_col;
+	rlPoint				lit_pnt;
+	rlColor				lit_col;
 	
 		// build the materials
 		
@@ -237,7 +244,7 @@ void view_openrl_map_setup(void)
 		frame=&texture->frames[0];
 		if (frame->name[0]==0x0) continue;
 		
-		frame->bitmap.rl_material_id=view_openrl_create_material("Bitmaps/Textures",frame);
+		frame->bitmap.rl_material_id=view_openrl_create_material("Bitmaps/Textures",texture,frame);
 	}
 			
 		// build the meshes
@@ -348,6 +355,13 @@ void view_openrl_map_setup(void)
 		rlSceneMeshSetPoly(view_rl_scene_id,mesh_id,RL_MESH_FORMAT_POLY_SHORT_VERTEX_UV_NORMAL_TANGENT,mesh->npoly,ray_polys);
 		free(ray_polys);
 	}
+
+		// the ambient
+
+	lit_col.r=map.ambient.light_color.r;
+	lit_col.g=map.ambient.light_color.g;
+	lit_col.b=map.ambient.light_color.b;
+	rlSceneAmbient(view_rl_scene_id,&lit_col);
 	
 		// build the lights
 		
@@ -382,8 +396,6 @@ void view_openrl_model_setup(void)
 	model_poly_type		*poly;
 	texture_type		*texture;
 	texture_frame_type	*frame;
-
-	return;	// supergumba
 	
 		// model materials
 
@@ -400,7 +412,7 @@ void view_openrl_model_setup(void)
 			frame=&texture->frames[0];
 			if (frame->name[0]==0x0) continue;
 			
-			frame->bitmap.rl_material_id=view_openrl_create_material(sub_path,frame);
+			frame->bitmap.rl_material_id=view_openrl_create_material(sub_path,texture,frame);
 		}
 	}
 		
@@ -503,8 +515,6 @@ void view_openrl_model_update(void)
 	model_type			*mdl;
 	model_mesh_type		*mesh;
 
-	return;	// supergumba
-	
 	for (n=0;n!=max_obj_list;n++) {
 	
 		obj=server.obj_list.objs[n];
@@ -542,17 +552,12 @@ void view_openrl_model_update(void)
 
 void view_openrl_transfer_to_opengl(void)
 {
-	int				lx,rx,ty,by,err;
+	int				err;
 	unsigned char	*data;
 
 		// draws on 2D screen
 
 	gl_2D_view_screen();
-
-	lx=view.screen.x_sz-view_rl_buffer_wid;
-	rx=view.screen.x_sz;
-	ty=0;
-	by=view_rl_buffer_high;
 
 		// get the scene buffer
 		// and push it to a texture
@@ -567,16 +572,16 @@ void view_openrl_transfer_to_opengl(void)
 
 		// build the vertex and uv list
 
-	view_primitive_2D_texture_quad(view_rl_gl_id,NULL,1.0f,lx,rx,ty,by,0.0f,1.0f,0.0f,1.0f,TRUE);
+	view_primitive_2D_texture_quad(view_rl_gl_id,NULL,1.0f,view_rl_lx,view_rl_rx,view_rl_ty,view_rl_by,0.0f,1.0f,0.0f,1.0f,TRUE);
 }
 
 void view_openrl_render(void)
 {
 	float			ang_y;
-	ray_point_type	pnt,light_pnt;
-	ray_vector_type	scale,light_vct;
-	ray_matrix_type	mat,x_mat,scale_mat;
-	ray_color_type	col;
+	rlPoint			pnt;
+	rlVector		scale;
+	rlMatrix		mat,x_mat,scale_mat;
+	rlColor			col;
 
 		// build the eye point
 
@@ -604,35 +609,15 @@ void view_openrl_render(void)
 		// set the eye position
 
 	rlSceneEyePositionSet(view_rl_scene_id,&pnt,&mat,200.0f,1000000.0f);
-	
-		// update the player light
-		// position
-/*
-	light_vct.x=0.0f;
-	light_vct.y=0.0f;
-	light_vct.z=10000.0f;
-	
-	rlMatrixVectorMultiply(&mat,&light_vct);
-		
-	light_pnt.x=((float)view.render->camera.pnt.x)+light_vct.x;
-	light_pnt.y=((float)view.render->camera.pnt.y)+light_vct.y;
-	light_pnt.z=((float)view.render->camera.pnt.z)+light_vct.z;
 
-
-	light_pnt.x=((float)view.render->camera.pnt.x);
-	light_pnt.y=((float)view.render->camera.pnt.y);
-	light_pnt.z=((float)view.render->camera.pnt.z);
-
-	rlSceneLightSetPosition(view_rl_scene_id,view_rl_player_light_id,&light_pnt);
-	*/
 		// update the models
 		
 	view_openrl_model_update();
 
 		// render
 
-	col.r=1.0f;		// supergumba -- yellow so we can see mistakes
-	col.g=1.0f;
+	col.r=0.0f;
+	col.g=0.0f;
 	col.b=0.0f;
 	col.a=1.0f;
 	rlSceneClearBuffer(view_rl_scene_id,&col);

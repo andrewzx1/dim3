@@ -3,15 +3,19 @@
 
 #define _ray_types
 
-	// types
+	// internal types
 
 typedef struct		{
                         float						x,y,z;
                     } ray_vector_type;
-					
+
 typedef struct		{
                         float						x,y,z;
                     } ray_point_type;
+
+typedef struct		{
+						int							x,y;
+					} ray_2d_point_type;
 					
 typedef struct		{
                         float						x,y;
@@ -22,14 +26,16 @@ typedef struct		{
 					} ray_color_type;
 
 typedef struct		{
-                        ray_point_type				min,max;
-                    } ray_bound_type;
-					
-typedef struct		{
 						float						data[4][4];
 					} ray_matrix_type;
 					
-typedef struct		{
-						int							x,y;
-					} ray_2d_point_type;
+	// external types
+
+typedef ray_vector_type rlVector;
+typedef ray_point_type rlPoint;
+typedef ray_2d_point_type rl2DPoint;
+typedef ray_uv_type rlUV;
+typedef ray_color_type rlColor;
+typedef ray_matrix_type rlMatrix;
+
 					

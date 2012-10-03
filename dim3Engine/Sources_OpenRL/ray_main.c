@@ -14,7 +14,7 @@ extern ray_global_type				ray_global;
       
 ======================================================= */
 
-int rlInitialize(void)
+int rlInitialize(int reserveTheadCount)
 {
 #ifdef OSX
 	int					names[2];
@@ -61,11 +61,10 @@ int rlInitialize(void)
 	ray_global.settings.thread_count=info.dwNumberOfProcessors;
 #endif
 
-		// always reserve some threads for the OS
-		// and make sure we are within the min/max threads
+		// reverve some threads
 
-	ray_global.settings.thread_count-=ray_render_reserve_for_os_thread_count;
-	if (ray_global.settings.thread_count<ray_render_min_thread_count) ray_global.settings.thread_count=ray_render_min_thread_count;
+	ray_global.settings.thread_count-=reserveTheadCount;
+	if (ray_global.settings.thread_count<1) ray_global.settings.thread_count=1;
 	if (ray_global.settings.thread_count>ray_render_max_thread_count) ray_global.settings.thread_count=ray_render_max_thread_count;
 
 	return(RL_ERROR_OK);

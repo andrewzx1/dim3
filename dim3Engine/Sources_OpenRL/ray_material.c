@@ -181,6 +181,10 @@ int rlMaterialAdd(int wid,int high,unsigned long flags)
 	material->specular.data=NULL;
 	material->reflection.data=NULL;
 
+		// rendering setup
+
+	material->shine_factor=1.0f;
+
 		// set id
 
 	material->id=ray_global.material_list.next_id;
