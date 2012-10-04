@@ -198,7 +198,7 @@ bool ray_block_mesh_list(ray_scene_type *scene,ray_point_type *pnt,ray_vector_ty
       
 ======================================================= */
 
-bool ray_mesh_special_lighting_conditions(ray_scene_type *scene,int mesh_idx,ray_collision_type *collision,ray_color_type *pixel_col)
+bool ray_mesh_special_lighting_conditions(ray_scene_type *scene,ray_point_type *eye_pnt,ray_point_type *trig_pnt,int mesh_idx,ray_collision_type *collision,ray_color_type *pixel_col)
 {
 	ray_mesh_type			*mesh;
 	ray_material_pixel_type	material_pixel;
@@ -208,7 +208,7 @@ bool ray_mesh_special_lighting_conditions(ray_scene_type *scene,int mesh_idx,ray
 		// highlighting
 
 	if ((mesh->flags&RL_MESH_FLAG_HIGHLIGHT)!=0) {
-		ray_get_material_rgb(scene,collision,&material_pixel);
+		ray_get_material_rgb(scene,eye_pnt,trig_pnt,collision,&material_pixel);
 		pixel_col->r=material_pixel.color.rgb.r;
 		pixel_col->g=material_pixel.color.rgb.g;
 		pixel_col->b=material_pixel.color.rgb.b;
@@ -227,7 +227,8 @@ bool ray_mesh_special_lighting_conditions(ray_scene_type *scene,int mesh_idx,ray
 bool ray_trace_lights(ray_scene_type *scene,ray_point_type *eye_pnt,ray_point_type *trig_pnt,ray_collision_type *collision,ray_color_type *col)
 {
 	int							n;
-	float						dist,att,diffuse,spec_factor;
+	float						dist,cone_diffuse,att,
+								diffuse,spec_factor;
 	bool						hit;
 	ray_material_pixel_type		material_pixel;
 	ray_color_type				light_col,spec_col;
@@ -236,22 +237,12 @@ bool ray_trace_lights(ray_scene_type *scene,ray_point_type *eye_pnt,ray_point_ty
 								eye_vector,half_vector,half_poly_space_vector;
 	ray_light_type				*light;
 
-/* supergumba -- figure out mipmapping level
-
-	dist=ray_distance_between_points(eye_pnt,trig_pnt);
-	col->r=col->g=col->b=(dist/collision->max_t);
-	col->a=1.0f;
-
-	<0.25 max, >0.75 min
-	return(TRUE);
-*/
-
 	col->r=col->g=col->b=0.0f;
 	col->a=1.0f;
 	
 		// get material pixels
 		
-	ray_get_material_rgb(scene,collision,&material_pixel);
+	ray_get_material_rgb(scene,eye_pnt,trig_pnt,collision,&material_pixel);
 	
 		// default to no specular
 		
@@ -274,7 +265,28 @@ bool ray_trace_lights(ray_scene_type *scene,ray_point_type *eye_pnt,ray_point_ty
 			// get light vector
 			
 		ray_vector_create_from_points(&light_vector,&light->pnt,trig_pnt);
-	
+
+			// get a normalized version of
+			// the light vector for cone, bump
+			// and specular calculations
+
+		light_vector_normal.x=light_vector.x;
+		light_vector_normal.y=light_vector.y;
+		light_vector_normal.z=light_vector.z;
+		ray_vector_normalize(&light_vector_normal);
+
+			// are we within the light cone?
+
+		if (light->direction.on) {
+			cone_diffuse=1.0f-ray_vector_dot_product(&light_vector_normal,&light->direction.vct);
+			if (cone_diffuse>light->direction.cos_sweep) continue;
+
+			cone_diffuse=1.0f-(cone_diffuse/light->direction.cos_sweep);
+		}
+		else {
+			cone_diffuse=1.0f;
+		}
+
 			// check for mesh collides
 			// blocking light
 
@@ -288,15 +300,6 @@ bool ray_trace_lights(ray_scene_type *scene,ray_point_type *eye_pnt,ray_point_ty
 		light_col.r=light->col.r*att;
 		light_col.g=light->col.g*att;
 		light_col.b=light->col.b*att;
-
-			// get a normalized version of
-			// the light vector for bump and
-			// spec calculations
-
-		light_vector_normal.x=light_vector.x;
-		light_vector_normal.y=light_vector.y;
-		light_vector_normal.z=light_vector.z;
-		ray_vector_normalize(&light_vector_normal);
 		
 			// handle any diffuse calcs
 			// it will either be the surface normal
@@ -373,8 +376,13 @@ bool ray_trace_lights(ray_scene_type *scene,ray_point_type *eye_pnt,ray_point_ty
 		else {
 			diffuse=ray_vector_dot_product(&light_vector_normal,&material_pixel.surface.normal);
 		}
+
+			// move the diffuse to from -1..1
+			// to 0..1 and add in any light
+			// cone based diffuse
 	
 		diffuse=(diffuse+1.0f)*0.5f;
+		diffuse*=cone_diffuse;
 		
 			// mix with material and
 			// add to pixel
@@ -517,6 +525,8 @@ void ray_render_thread(void *arg)
 				
 			ray_intersect_mesh_list(scene,eye_point,&eye_vector,&thread_info->mesh_index_block,&collision);
 			if (collision.trig_idx==-1) continue;
+
+			ray_vector_find_line_point_for_T(eye_point,&eye_vector,collision.t,&trig_point);
 			
 				// get buffer
 				
@@ -524,14 +534,13 @@ void ray_render_thread(void *arg)
 
 				// check for special lighting conditions
 
-			if (ray_mesh_special_lighting_conditions(scene,collision.mesh_idx,&collision,&pixel_col)) {
+			if (ray_mesh_special_lighting_conditions(scene,eye_point,&trig_point,collision.mesh_idx,&collision,&pixel_col)) {
 				ray_set_buffer(buf,&scene->ambient_col,&pixel_col,&overlay_col);
 				continue;
 			}
 			
 				// run regular lighting
 
-			ray_vector_find_line_point_for_T(eye_point,&eye_vector,collision.t,&trig_point);
 			if (ray_trace_lights(scene,eye_point,&trig_point,&collision,&pixel_col)) {
 				ray_set_buffer(buf,&scene->ambient_col,&pixel_col,&overlay_col);
 				continue;

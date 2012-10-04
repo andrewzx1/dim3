@@ -78,6 +78,7 @@ extern int rlMaterialDelete(int materialId);
 extern int rlMaterialAttachBufferData(int materialId,int target,int format,unsigned char* data);
 extern int rlMaterialAttachBufferColor(int materialId,int target,rlColor *col);
 extern int rlMaterialSetShineFactor(int materialId,float shineFactor);
+extern int rlMaterialBuildMipMaps(int materialId);
 
 	// scenes
 
@@ -101,6 +102,7 @@ extern int rlSceneLightDeleteAll(int scenedId);
 extern int rlSceneLightSetPosition(int sceneId,int lightId,rlPoint *pnt);
 extern int rlSceneLightSetColor(int sceneId,int lightId,rlColor *col);
 extern int rlSceneLightSetIntensity(int sceneId,int lightId,float intensity,float exponent);
+extern int rlSceneLightSetDirection(int sceneId,int lightId,rlVector *vector,float angle,bool active);
 
 	// scene meshes
 

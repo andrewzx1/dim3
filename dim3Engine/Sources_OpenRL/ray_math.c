@@ -328,3 +328,79 @@ float ray_distance_between_points(ray_point_type *p1,ray_point_type *p2)
 
 	return((float)sqrt((dx*dx)+(dy*dy)+(dz*dz)));
 }
+
+/* =======================================================
+
+      Bitmap Reductions
+      
+======================================================= */
+
+unsigned char* ray_bitmap_reduction(int factor,int wid,int high,unsigned char *data)
+{
+	int					x,y,x2,y2,kx,ky,
+						r_wid,r_high,sz,
+						merge_count,pixel_offset;
+	float				f;
+	unsigned char		*r_data;
+	unsigned long		buf,*r_buf;
+	ray_color_type		col,merge_col;
+
+		// memory for new bitmap
+
+	r_wid=wid/factor;
+	r_high=high/factor;
+
+	sz=(r_wid*r_high)<<2;
+	r_data=(unsigned char*)malloc(sz);
+	if (r_data==NULL) return(NULL);
+
+		// build it
+
+	for (y=0;y!=r_high;y++) {
+
+		for (x=0;x!=r_wid;x++) {
+
+				// merge the pixels into
+				// the reduced pixel
+
+			merge_count=0;
+			merge_col.r=merge_col.g=merge_col.b=merge_col.a=0.0f;
+
+			kx=x*factor;
+			ky=y*factor;
+
+			for (y2=ky;y2!=(ky+factor);y2++) {
+				for (x2=kx;x2!=(kx+factor);x2++) {
+					if ((y2>=high) || (x2>=wid)) continue;
+
+					pixel_offset=(wid*y2)+x2;
+					buf=*(((unsigned long*)data)+pixel_offset);
+					ray_create_float_color_from_ulong(buf,&col);
+
+					merge_col.r+=col.r;
+					merge_col.g+=col.g;
+					merge_col.b+=col.b;
+					merge_col.a+=col.a;
+
+					merge_count++;
+				}
+			}
+
+			if (merge_count!=0) {
+				f=1.0f/((float)merge_count);
+				merge_col.r*=f;
+				merge_col.g*=f;
+				merge_col.b*=f;
+				merge_col.a*=f;
+			}
+
+				// write back merged pixel
+
+			pixel_offset=(r_wid*y)+x;
+			r_buf=(((unsigned long*)r_data)+pixel_offset);
+			*r_buf=ray_create_ulong_color_from_float(&merge_col);
+		}
+	}
+
+	return(r_data);
+}
