@@ -116,7 +116,7 @@ bool view_openrl_initialize(char *err_str)
 		// player light
 		
 	view_rl_player_light_id=rlSceneLightAdd(view_rl_scene_id);
-	rlSceneLightSetIntensity(view_rl_scene_id,view_rl_player_light_id,50000.0f,1.0f);
+	rlSceneLightSetIntensity(view_rl_scene_id,view_rl_player_light_id,500000.0f,1.0f);
 	
 	col.r=col.g=col.b=1.0f;
 	rlSceneLightSetColor(view_rl_scene_id,view_rl_player_light_id,&col);
@@ -227,6 +227,10 @@ int view_openrl_create_material(char *sub_path,texture_type *texture,texture_fra
 	}
 
 	rlMaterialSetShineFactor(material_id,texture->shine_factor);
+
+		// mipmaps
+
+	rlMaterialBuildMipMaps(material_id);
 	
 	return(material_id);
 }
@@ -588,7 +592,7 @@ void view_openrl_render(void)
 {
 	float			ang_y;
 	rlPoint			pnt;
-	rlVector		scale;
+	rlVector		scale,dir;
 	rlMatrix		mat,x_mat,scale_mat;
 	rlColor			col;
 
@@ -617,12 +621,17 @@ void view_openrl_render(void)
 
 		// set the eye position
 
-	rlSceneEyePositionSet(view_rl_scene_id,&pnt,&mat,200.0f,1000000.0f);
+	rlSceneEyePositionSet(view_rl_scene_id,&pnt,&mat,200.0f,300000.0f);
 
 		// the light position
 		
 	pnt.y-=1000;
 	rlSceneLightSetPosition(view_rl_scene_id,view_rl_player_light_id,&pnt);
+
+	dir.x=-1.0f;
+	dir.y=0.0f;
+	dir.z=0.0f;
+	rlSceneLightSetDirection(view_rl_scene_id,view_rl_player_light_id,&dir,30.0f,TRUE);
 
 		// update the models
 		

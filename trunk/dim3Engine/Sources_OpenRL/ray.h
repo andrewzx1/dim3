@@ -5,7 +5,7 @@
 #include "ray_types.h"
 
 //
-// sizes
+// data
 //
 
 #define ray_max_scene								32
@@ -15,7 +15,18 @@
 
 #define ray_max_material							1024
 
+//
+// threading
+//
+
 #define ray_render_max_thread_count					64
+
+//
+// mipmaps
+//
+
+#define ray_mipmap_max_level						8
+#define ray_mipmap_distance_exponent				0.7f
 
 //
 // math defines
@@ -136,10 +147,17 @@ typedef struct		{
 //
 
 typedef struct		{
+						float						cos_sweep;
+						bool						on;
+						ray_vector_type				vct;
+					} ray_light_direction_type;
+
+typedef struct		{
 						int							id;
 						float						intensity,exponent;
 						ray_point_type				pnt;
 						ray_color_type				col;
+						ray_light_direction_type	direction;
 						ray_bound_type				bound;
 						ray_mesh_index_block		mesh_index_block;
 					} ray_light_type;
@@ -187,11 +205,7 @@ typedef struct		{
 					} ray_draw_scene_thread_info;
 
 typedef struct		{
-					#ifndef WIN32
-						pthread_mutex_t				lock;
-					#else
-						HANDLE						lock;
-					#endif
+						ray_mutex					lock;
 						ray_draw_scene_thread_info	thread_info[ray_render_max_thread_count];
 					} ray_scene_render_type;
 
@@ -219,21 +233,29 @@ typedef struct		{
 //
 
 typedef struct		{
-						unsigned char				*data;
-					} ray_material_buffer_type;
+						unsigned char					*color,*normal,*specular,*reflection;
+					} ray_material_mipmap_data_type;
 
 typedef struct		{
-						int							id,wid,high,
-													row_bytes,
-													wid_mask,high_mask;
-						float						wid_scale,high_scale,
-													shine_factor;
-						ray_material_buffer_type	color,normal,specular,reflection;
+						int								wid,high;
+						float							wid_scale,high_scale;
+						ray_material_mipmap_data_type	data;
+					} ray_material_mipmap_type;
+
+typedef struct		{
+						int								count;
+						ray_material_mipmap_type		mipmaps[ray_mipmap_max_level];
+					} ray_material_mipmap_list;
+
+typedef struct		{
+						int								id,wid,high;
+						float							shine_factor;
+						ray_material_mipmap_list		mipmap_list;
 					} ray_material_type;
 
 typedef struct		{
-						int							count,next_id;
-						ray_material_type*			materials[ray_max_material];
+						int								count,next_id;
+						ray_material_type*				materials[ray_max_material];
 					} ray_material_list;
 
 //
@@ -300,6 +322,7 @@ extern bool ray_bound_bound_collision(ray_bound_type *bnd_1,ray_bound_type *bnd_
 extern bool ray_bound_ray_collision(ray_point_type *p,ray_vector_type *v,ray_bound_type *bnd);
 
 extern float ray_distance_between_points(ray_point_type *p1,ray_point_type *p2);
+extern unsigned char* ray_bitmap_reduction(int factor,int wid,int high,unsigned char *data);
 
 extern void ray_precalc_mesh_bounds(ray_mesh_type *mesh);
 extern void ray_precalc_polygon_bounds(ray_mesh_type *mesh,ray_poly_type *poly);
@@ -309,7 +332,7 @@ extern void ray_precalc_triangle_vectors(ray_mesh_type *mesh,ray_trig_type *trig
 extern void ray_precalc_light_mesh_indexes_all(ray_scene_type *scene);
 extern void ray_precalc_thread_mesh_indexes_all(ray_scene_type *scene,ray_draw_scene_thread_info *thread_info);
 
-extern void ray_get_material_rgb(ray_scene_type *scene,ray_collision_type *collision,ray_material_pixel_type *pixel);
+extern void ray_get_material_rgb(ray_scene_type *scene,ray_point_type *eye_pnt,ray_point_type *trig_pnt,ray_collision_type *collision,ray_material_pixel_type *pixel);
 extern bool ray_scene_overlay_get_pixel(ray_scene_type *scene,int x,int y,ray_color_type *col);
 
 extern int ray_scene_get_index(int sceneId);

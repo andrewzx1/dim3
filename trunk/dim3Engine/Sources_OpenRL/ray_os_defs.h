@@ -9,11 +9,15 @@
 
 	#include <pthread.h>
 
+	typedef pthread_mutex_t			ray_mutex;
+
 #endif
 
 #ifdef __linux__
 
 	#include <unistd.h>
+
+	typedef pthread_mutex_t			ray_mutex;
 
 #endif
 
@@ -36,6 +40,9 @@
 	#define inline					__inline
 
 	typedef unsigned char			bool;
+	typedef HANDLE					ray_mutex;	
+
+	#define usleep(x)               Sleep((DWORD)((x)/1000))
 
 #endif
 

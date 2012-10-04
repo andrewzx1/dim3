@@ -91,6 +91,10 @@ int rlSceneLightAdd(int sceneId)
 	light->col.r=1.0f;
 	light->col.g=1.0f;
 	light->col.b=1.0f;
+
+	light->direction.on=FALSE;
+	light->direction.cos_sweep=0.0f;
+	light->direction.vct.x=light->direction.vct.y=light->direction.vct.z=0.0f;
 	
 		// alloc for mesh indexes
 		
@@ -328,3 +332,45 @@ int rlSceneLightSetIntensity(int sceneId,int lightId,float intensity,float expon
 	return(RL_ERROR_OK);
 }
 
+/* =======================================================
+
+      Changes Direction of a Light Already in a Scene
+
+	  Returns:
+	   RL_ERROR_OK
+	   RL_ERROR_UNKNOWN_SCENE_ID
+	   RL_ERROR_UNKNOWN_LIGHT_ID
+      
+======================================================= */
+
+int rlSceneLightSetDirection(int sceneId,int lightId,rlVector *vector,float angle,bool active)
+{
+	int					idx;
+	ray_light_type		*light;
+	ray_scene_type		*scene;
+
+		// get scene
+
+	idx=ray_scene_get_index(sceneId);
+	if (idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
+
+	scene=ray_global.scene_list.scenes[idx];
+
+		// get the light
+
+	idx=ray_scene_light_get_index(scene,lightId);
+	if (idx==-1) return(RL_ERROR_UNKNOWN_LIGHT_ID);
+
+	light=scene->light_list.lights[idx];
+
+		// reset direction
+
+	light->direction.on=active;
+
+	light->direction.cos_sweep=angle/90.0f;
+
+	memmove(&light->direction.vct,vector,sizeof(ray_vector_type));
+	ray_vector_normalize(&light->direction.vct);
+
+	return(RL_ERROR_OK);
+}

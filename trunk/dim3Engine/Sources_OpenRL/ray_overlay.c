@@ -27,13 +27,15 @@ int ray_scene_overlay_get_index(ray_scene_type *scene,int overlayId)
       
 ======================================================= */
 
+// supergumba -- need mipmap levels here, too
 bool ray_scene_overlay_get_pixel(ray_scene_type *scene,int x,int y,ray_color_type *col)
 {
-	int					n,px,py,offset;
-	unsigned long		buf;
-	float				f,fx,fy;
-	ray_overlay_type	*overlay;
-	ray_material_type	*material;
+	int							n,px,py,offset,mm_level;
+	unsigned long				buf;
+	float						f,fx,fy;
+	ray_overlay_type			*overlay;
+	ray_material_type			*material;
+	ray_material_mipmap_type	*mipmap;
 	
 	for (n=0;n!=scene->overlay_list.count;n++) {
 		overlay=scene->overlay_list.overlays[n];
@@ -44,11 +46,17 @@ bool ray_scene_overlay_get_pixel(ray_scene_type *scene,int x,int y,ray_color_typ
 		if (x>=(overlay->pnt.x+overlay->pnt_size.x)) continue;
 		if (y<overlay->pnt.y) continue;
 		if (y>=(overlay->pnt.y+overlay->pnt_size.y)) continue;
+
+			// get mipmap level
+
+		mm_level=0;
 		
 			// sanity check for materials
 			
 		material=ray_global.material_list.materials[overlay->material_idx];
-		if (material->color.data==NULL) continue;
+		mipmap=&material->mipmap_list.mipmaps[mm_level];
+
+		if (mipmap->data.color==NULL) continue;
 		
 			// get uv
 			
@@ -60,17 +68,17 @@ bool ray_scene_overlay_get_pixel(ray_scene_type *scene,int x,int y,ray_color_typ
 		
 			// change to texture coordinate
 		
-		px=(int)(fx*material->wid_scale);
-		py=(int)(fy*material->high_scale);
+		fx-=floorf(fx);
+		px=(int)(fx*mipmap->wid_scale);
+
+		fy-=floorf(fy);
+		py=(int)(fy*mipmap->high_scale);
 	
-		px=px&material->wid_mask;
-		py=py&material->high_mask;
-	
-		offset=(material->wid*py)+px;
+		offset=(mipmap->wid*py)+px;
 	
 			// get color
 			
-		buf=*(((unsigned long*)material->color.data)+offset);
+		buf=*(((unsigned long*)mipmap->data.color)+offset);
 		ray_create_float_color_from_ulong(buf,col);
 
 		return(TRUE);
