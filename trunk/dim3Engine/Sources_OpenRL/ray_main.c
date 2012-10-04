@@ -16,7 +16,7 @@ extern ray_global_type				ray_global;
 
 int rlInitialize(int reserveTheadCount)
 {
-#ifdef OSX
+#ifdef __APPLE__
 	int					names[2];
 	size_t				len;
 	uint32_t			count;
@@ -38,7 +38,7 @@ int rlInitialize(int reserveTheadCount)
 		// determine the number of
 		// cores to build ray thread size
 
-#ifdef OSX
+#ifdef __APPLE__
 	names[0]=CTL_HW;
 	names[1]=HW_AVAILCPU;
 	len=4;
@@ -50,9 +50,11 @@ int rlInitialize(int reserveTheadCount)
         sysctl(names,2,&count,&len,NULL,0);
         if (count<1) count=1;
     }
+	
+	ray_global.settings.thread_count=count;
 #endif
 
-#ifdef LINUX
+#ifdef __linux__
 	ray_global.settings.thread_count=sysconf(_SC_NPROCESSORS_ONLN);
 #endif
 
@@ -66,7 +68,7 @@ int rlInitialize(int reserveTheadCount)
 	ray_global.settings.thread_count-=reserveTheadCount;
 	if (ray_global.settings.thread_count<1) ray_global.settings.thread_count=1;
 	if (ray_global.settings.thread_count>ray_render_max_thread_count) ray_global.settings.thread_count=ray_render_max_thread_count;
-
+	
 	return(RL_ERROR_OK);
 }
 

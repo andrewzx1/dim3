@@ -462,6 +462,7 @@
 		2669FD1A16127B66002292C6 /* libSDL2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2669FD1916127B66002292C6 /* libSDL2.a */; };
 		2669FD1C16127B84002292C6 /* libPNG.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2669FD1B16127B84002292C6 /* libPNG.a */; };
 		2669FD1E16127B95002292C6 /* libmpg123.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2669FD1D16127B95002292C6 /* libmpg123.a */; };
+		267381E3161D3FB300512DCC /* ray_os_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 267381E2161D3FB300512DCC /* ray_os_defs.h */; };
 		267DEDB9158ACD9300216D36 /* script_obj_watch_angle.c in Sources */ = {isa = PBXBuildFile; fileRef = 267DEDB7158ACD9300216D36 /* script_obj_watch_angle.c */; };
 		267DEDBA158ACD9300216D36 /* script_obj_watch_position.c in Sources */ = {isa = PBXBuildFile; fileRef = 267DEDB8158ACD9300216D36 /* script_obj_watch_position.c */; };
 		267E82861330155B0087DCED /* interface.h in Headers */ = {isa = PBXBuildFile; fileRef = 267E82851330155B0087DCED /* interface.h */; };
@@ -976,6 +977,7 @@
 		2669FD1916127B66002292C6 /* libSDL2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libSDL2.a; sourceTree = "<group>"; };
 		2669FD1B16127B84002292C6 /* libPNG.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libPNG.a; sourceTree = "<group>"; };
 		2669FD1D16127B95002292C6 /* libmpg123.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libmpg123.a; sourceTree = "<group>"; };
+		267381E2161D3FB300512DCC /* ray_os_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ray_os_defs.h; path = ../Sources_OpenRL/ray_os_defs.h; sourceTree = "<group>"; };
 		267DEDB7158ACD9300216D36 /* script_obj_watch_angle.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_obj_watch_angle.c; sourceTree = "<group>"; };
 		267DEDB8158ACD9300216D36 /* script_obj_watch_position.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_obj_watch_position.c; sourceTree = "<group>"; };
 		267E82851330155B0087DCED /* interface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = interface.h; path = Headers/interface.h; sourceTree = "<group>"; };
@@ -1625,6 +1627,7 @@
 		2669FCF0161274E6002292C6 /* OpenRL */ = {
 			isa = PBXGroup;
 			children = (
+				267381E2161D3FB300512DCC /* ray_os_defs.h */,
 				2669FCF116127502002292C6 /* ray_color.c */,
 				2669FCF216127502002292C6 /* ray_eye.c */,
 				2669FCF316127502002292C6 /* ray_interface.h */,
@@ -1980,6 +1983,7 @@
 				2669FD0216127502002292C6 /* ray_interface.h in Headers */,
 				2669FD0D16127502002292C6 /* ray_types.h in Headers */,
 				2669FD0E16127502002292C6 /* ray.h in Headers */,
+				267381E3161D3FB300512DCC /* ray_os_defs.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

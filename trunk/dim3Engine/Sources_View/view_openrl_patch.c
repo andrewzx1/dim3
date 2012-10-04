@@ -51,6 +51,7 @@ extern file_path_setup_type	file_path_setup;
 
 	int								view_rl_scene_id,
 									view_rl_purple_material_id,
+									view_rl_player_light_id,
 									view_rl_lx,view_rl_rx,
 									view_rl_ty,view_rl_by;
 	GLuint							view_rl_gl_id;
@@ -89,7 +90,7 @@ bool view_openrl_initialize(char *err_str)
 
 		// initialize OpenRL
 
-	if (rlInitialize(1)!=RL_ERROR_OK) {
+	if (rlInitialize(0)!=RL_ERROR_OK) {
 		strcpy(err_str,"Unable to initialize OpenRL");
 		return(FALSE);
 	}
@@ -111,6 +112,14 @@ bool view_openrl_initialize(char *err_str)
 	col.a=1.0f;
 	view_rl_purple_material_id=rlMaterialAdd(1,1,0);
 	rlMaterialAttachBufferColor(view_rl_purple_material_id,RL_MATERIAL_TARGET_COLOR,&col);
+
+		// player light
+		
+	view_rl_player_light_id=rlSceneLightAdd(view_rl_scene_id);
+	rlSceneLightSetIntensity(view_rl_scene_id,view_rl_player_light_id,50000.0f,1.0f);
+	
+	col.r=col.g=col.b=1.0f;
+	rlSceneLightSetColor(view_rl_scene_id,view_rl_player_light_id,&col);
 
 		// we need a texture to transfer
 		// the scene to opengl raster
@@ -148,7 +157,7 @@ bool view_openrl_initialize(char *err_str)
 		// get drawing size
 
 //	f=((float)view.screen.x_sz)/((float)view_rl_buffer_wid);
-	f=1.0f;
+	f=2.0f;
 
 	wid=(int)(((float)view_rl_buffer_wid)*f);
 	view_rl_lx=(view.screen.x_sz-wid)>>1;
@@ -609,6 +618,11 @@ void view_openrl_render(void)
 		// set the eye position
 
 	rlSceneEyePositionSet(view_rl_scene_id,&pnt,&mat,200.0f,1000000.0f);
+
+		// the light position
+		
+	pnt.y-=1000;
+	rlSceneLightSetPosition(view_rl_scene_id,view_rl_player_light_id,&pnt);
 
 		// update the models
 		

@@ -283,14 +283,11 @@ bool ray_trace_lights(ray_scene_type *scene,ray_point_type *eye_pnt,ray_point_ty
 			// attenuate the light for distance
 
 		att=1.0f-(dist/light->intensity);
+		att=powf(att,light->exponent);
 
 		light_col.r=light->col.r*att;
 		light_col.g=light->col.g*att;
 		light_col.b=light->col.b*att;
-
-			// add in the exponent
-			
-		att=powf(att,light->exponent);
 
 			// get a normalized version of
 			// the light vector for bump and
