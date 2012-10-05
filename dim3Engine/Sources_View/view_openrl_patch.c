@@ -51,7 +51,6 @@ extern file_path_setup_type	file_path_setup;
 
 	int								view_rl_scene_id,
 									view_rl_purple_material_id,
-									view_rl_player_light_id,
 									view_rl_lx,view_rl_rx,
 									view_rl_ty,view_rl_by;
 	GLuint							view_rl_gl_id;
@@ -112,14 +111,6 @@ bool view_openrl_initialize(char *err_str)
 	col.a=1.0f;
 	view_rl_purple_material_id=rlMaterialAdd(1,1,0);
 	rlMaterialAttachBufferColor(view_rl_purple_material_id,RL_MATERIAL_TARGET_COLOR,&col);
-
-		// player light
-		
-	view_rl_player_light_id=rlSceneLightAdd(view_rl_scene_id);
-	rlSceneLightSetIntensity(view_rl_scene_id,view_rl_player_light_id,500000.0f,1.0f);
-	
-	col.r=col.g=col.b=1.0f;
-	rlSceneLightSetColor(view_rl_scene_id,view_rl_player_light_id,&col);
 
 		// we need a texture to transfer
 		// the scene to opengl raster
@@ -492,8 +483,8 @@ void view_openrl_model_setup(void)
 			for (t=0;t!=poly->ptsz;t++) {
 				*vk++=(short)poly->v[t];	// vertex
 				*vk++=uv_count;				// uv, each vertex has unique uv count
-				*vk++=(short)i;				// normal, one normal for each poly
-				*vk++=(short)i;				// tangent, one tangent for each poly
+				*vk++=(short)poly->v[t];	// normal are parallel to vertexes
+				*vk++=(short)poly->v[t];	// tangents are parallel to vertexes
 				uv_count++;
 			}
 
@@ -592,7 +583,7 @@ void view_openrl_render(void)
 {
 	float			ang_y;
 	rlPoint			pnt;
-	rlVector		scale,dir;
+	rlVector		scale;
 	rlMatrix		mat,x_mat,scale_mat;
 	rlColor			col;
 
@@ -622,16 +613,6 @@ void view_openrl_render(void)
 		// set the eye position
 
 	rlSceneEyePositionSet(view_rl_scene_id,&pnt,&mat,200.0f,300000.0f);
-
-		// the light position
-		
-	pnt.y-=1000;
-	rlSceneLightSetPosition(view_rl_scene_id,view_rl_player_light_id,&pnt);
-
-	dir.x=-1.0f;
-	dir.y=0.0f;
-	dir.z=0.0f;
-	rlSceneLightSetDirection(view_rl_scene_id,view_rl_player_light_id,&dir,30.0f,TRUE);
 
 		// update the models
 		
