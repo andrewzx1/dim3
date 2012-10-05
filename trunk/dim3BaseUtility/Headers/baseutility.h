@@ -1518,6 +1518,7 @@ typedef struct			{
 							texture_font_size_type		size_24,size_48;
 						} texture_font_type;
 
+extern unsigned char* bitmap_text_size_data(texture_font_size_type *d3_size_font,char *name,int size,int bitmap_wid,int bitmap_high);
 extern void bitmap_text_initialize(texture_font_type *d3_font);
 extern void bitmap_text_shutdown(texture_font_type *d3_font);
 

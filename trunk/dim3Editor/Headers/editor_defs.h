@@ -327,7 +327,7 @@ typedef struct		{
 typedef struct		{
 						int									x,y,ctrl_type,button_type,
 															id,idx,button_id,count;
-						bool								selected,disabled;
+						bool								selected,disabled,moveable;
 						char								name[name_str_len];
 						list_palette_item_value_type		value;
 						list_palette_item_limit_type		limit;

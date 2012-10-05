@@ -61,7 +61,7 @@ void project_palette_fill_menus(void)
 	for (n=0;n!=iface.menu_list.nmenu;n++) {
 		strcpy(str,iface.menu_list.menus[n].name);
 		if (n==0) strcat(str," (root)");
-		list_palette_add_string_selectable_button(&project_palette,(kMenuPropertyMenuName+n),list_button_minus,(kMenuPropertyMenuDelete+n),str,(state.proj.cur_menu_idx==n),FALSE);
+		list_palette_add_string_selectable_button(&project_palette,(kMenuPropertyMenuName+n),list_button_minus,(kMenuPropertyMenuDelete+n),str,(state.proj.cur_menu_idx==n),FALSE,FALSE);
 	}
 
 	list_palette_sort(&project_palette);

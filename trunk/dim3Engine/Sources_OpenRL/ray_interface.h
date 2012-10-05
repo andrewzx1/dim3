@@ -82,7 +82,7 @@ extern int rlMaterialBuildMipMaps(int materialId);
 
 	// scenes
 
-extern int rlSceneAdd(int wid,int high,int target,int format,void *attachment,unsigned long flags);
+extern int rlSceneAdd(rl2DPoint *size,int target,int format,void *attachment,unsigned long flags);
 extern int rlSceneDelete(int sceneId);
 extern int rlSceneClearBuffer(int sceneId,rlColor *col);
 extern int rlSceneGetBuffer(int sceneId,void **buffer);
@@ -122,10 +122,11 @@ extern int rlSceneOverlayAdd(int sceneId,int materialId,unsigned long flags);
 extern int rlSceneOverlayDelete(int sceneId,int overlayId);
 extern int rlSceneOverlayDeleteAll(int sceneId);
 extern int rlSceneOverlaySetPosition(int sceneId,int overlayId,rl2DPoint *pnt);
-extern int rlSceneOverlaySetSize(int sceneId,int overlayId,int width,int height);
+extern int rlSceneOverlaySetSize(int sceneId,int overlayId,rl2DPoint *pnt);
 extern int rlSceneOverlaySetUV(int sceneId,int overlayId,rlUV *uv);
 extern int rlSceneOverlaySetUVStamp(int sceneId,int overlayId,rlUV *uv);
 extern int rlSceneOverlaySetMaterial(int sceneId,int overlayId,int materialId);
+extern int rlSceneOverlayColor(int sceneId,int overlayId,rlColor *col);
 
 	// math utilities
 

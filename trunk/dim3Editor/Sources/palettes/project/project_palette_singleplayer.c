@@ -69,7 +69,7 @@ void project_palette_fill_singleplayer(void)
 	list_palette_sort_mark_start(&project_palette);
 	
 	for (n=0;n!=iface.singleplayer.option_list.noption;n++) {
-		list_palette_add_string_selectable_button(&project_palette,(kSPPropertyOptionName+n),list_button_minus,(kSPPropertyOptionDelete+n),iface.singleplayer.option_list.options[n].name,(state.proj.cur_singleplayer_option_idx==n),FALSE);
+		list_palette_add_string_selectable_button(&project_palette,(kSPPropertyOptionName+n),list_button_minus,(kSPPropertyOptionDelete+n),iface.singleplayer.option_list.options[n].name,(state.proj.cur_singleplayer_option_idx==n),FALSE,FALSE);
 	}
 
 	list_palette_sort(&project_palette);

@@ -66,7 +66,7 @@ bool ray_scene_initialize_mesh_indexes(ray_scene_type *scene)
      
 ======================================================= */
 
-int rlSceneAdd(int wid,int high,int target,int format,void *attachment,unsigned long flags)
+int rlSceneAdd(ray_2d_point_type *size,int target,int format,void *attachment,unsigned long flags)
 {
 	int					n,y,y_add;
 	ray_scene_type		*scene;
@@ -89,10 +89,10 @@ int rlSceneAdd(int wid,int high,int target,int format,void *attachment,unsigned 
 
 	scene->buffer.target=target;
 	scene->buffer.format=format;
-	scene->buffer.wid=wid;
-	scene->buffer.high=high;
+	scene->buffer.wid=size->x;
+	scene->buffer.high=size->y;
 
-	scene->buffer.data=(unsigned long*)malloc((wid<<2)*high);
+	scene->buffer.data=(unsigned long*)malloc((scene->buffer.wid<<2)*scene->buffer.high);
 	if (scene->buffer.data==NULL) {
 		free(scene);
 		return(RL_ERROR_OUT_OF_MEMORY);
@@ -111,7 +111,7 @@ int rlSceneAdd(int wid,int high,int target,int format,void *attachment,unsigned 
 		// like parent pointer or y splits
 		
 	y=0;
-	y_add=high/ray_global.settings.thread_count;
+	y_add=scene->buffer.high/ray_global.settings.thread_count;
 
 	for (n=0;n!=ray_global.settings.thread_count;n++) {
 

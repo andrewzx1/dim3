@@ -36,7 +36,7 @@ extern char						property_file_list[file_paths_max_directory_file][file_str_len]
 
 extern file_path_setup_type		file_path_setup;
 
-bitmap_type						list_bitmaps[5];
+bitmap_type						list_btn_bitmaps[7];
 
 /* =======================================================
 
@@ -48,16 +48,16 @@ void list_palette_initialize(void)
 {
 	int				n;
 	char			sub_path[1024],path[1024];
-	char			btn_names[5][32]={"Back","Edit","Plus","Minus","Set"};
+	char			btn_names[7][32]={"Back","Edit","Plus","Minus","Set","Up","Down"};
 
 		// load buttons
 
 	os_get_support_file_path(sub_path);
 	strcat(sub_path,"/Lists");
 		
-	for (n=0;n!=5;n++) {
+	for (n=0;n!=7;n++) {
 		file_paths_app(&file_path_setup,path,sub_path,btn_names[n],"png");
-		bitmap_open(&list_bitmaps[n],path,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE);
+		bitmap_open(&list_btn_bitmaps[n],path,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE);
 	}
 }
 
@@ -65,8 +65,8 @@ void list_palette_shutdown(void)
 {
 	int				n;
 
-	for (n=0;n!=5;n++) {
-		bitmap_close(&list_bitmaps[n]);
+	for (n=0;n!=7;n++) {
+		bitmap_close(&list_btn_bitmaps[n]);
 	}
 }
 
@@ -351,7 +351,10 @@ list_palette_item_type* list_palette_pane_create_item(list_palette_pane_type *pa
 
 	item->ctrl_type=ctrl_type;
 	item->button_type=list_button_none;
+
 	item->disabled=FALSE;
+	item->selected=FALSE;
+	item->moveable=FALSE;
 
 	item->x=list_palette_border_sz+4;
 	if (ctrl_type!=list_item_ctrl_header) item->x+=10;
@@ -488,7 +491,7 @@ void list_palette_add_string_selectable(list_palette_type *list,int id,char *nam
 	item->value.str_ptr=str_ptr;
 }
 
-void list_palette_add_string_selectable_button(list_palette_type *list,int id,int button_type,int button_id,char *name,bool selected,bool disabled)
+void list_palette_add_string_selectable_button(list_palette_type *list,int id,int button_type,int button_id,char *name,bool selected,bool disabled,bool moveable)
 {
 	list_palette_item_type		*item;
 
@@ -501,6 +504,10 @@ void list_palette_add_string_selectable_button(list_palette_type *list,int id,in
 	item=&list->item_pane.items[list->item_pane.item_count-1];
 	item->button_type=button_type;
 	item->button_id=button_id;
+
+		// moveable flag
+
+	item->moveable=moveable;
 }
 
 void list_palette_add_string(list_palette_type *list,int id,char *name,char *str_ptr,int str_len,bool disabled)
@@ -1225,27 +1232,16 @@ void list_palette_pane_draw_item_string(list_palette_pane_type *pane,d3rect *box
 	text_draw_right(rx,y,list_item_font_size,&col,str2);
 }
 
-void list_palette_pane_draw_item_button(list_palette_pane_type *pane,d3rect *box,bool left,int idx)
+void list_palette_pane_draw_item_button_bitmap(list_palette_pane_type *pane,list_palette_item_type *item,int bitmap_idx,int lx,int ty,bool pushed)
 {
-	int						lx,rx,ty,by;
-	float					vertexes[8],uvs[8]={0.0f,0.0f,1.0f,0.0f,1.0f,1.0f,0.0f,1.0f};
-	list_palette_item_type *item;
+	float			vertexes[8],uvs[8]={0.0f,0.0f,1.0f,0.0f,1.0f,1.0f,0.0f,1.0f};
 	
-	item=&pane->items[idx];
-	if (item->button_type==list_button_none) return;
-
-	rx=box->rx-(list_palette_scroll_wid+1);
-	if (left) rx-=list_palette_border_sz;
-	lx=rx-16;
-	ty=((box->ty+item->y)-list_item_font_high)-pane->scroll_offset;
-	by=ty+16;
-
 	vertexes[0]=vertexes[6]=(float)lx;
-	vertexes[2]=vertexes[4]=(float)rx;
+	vertexes[2]=vertexes[4]=(float)(lx+16);
 	vertexes[1]=vertexes[3]=(float)ty;
-	vertexes[5]=vertexes[7]=(float)by;
+	vertexes[5]=vertexes[7]=(float)(ty+16);
 
-	if ((pane->push_on) && (pane->push_idx==idx) && (pane->button_click)) {
+	if (pushed) {
 		glColor4f(0.6f,0.6f,0.6f,1.0f);
 	}
 	else {
@@ -1253,7 +1249,7 @@ void list_palette_pane_draw_item_button(list_palette_pane_type *pane,d3rect *box
 	}
 
 	glEnable(GL_TEXTURE_2D);
-	glBindTexture(GL_TEXTURE_2D,list_bitmaps[item->button_type+1].gl_id);
+	glBindTexture(GL_TEXTURE_2D,list_btn_bitmaps[bitmap_idx].gl_id);
 
 	glVertexPointer(2,GL_FLOAT,0,vertexes);
 
@@ -1265,6 +1261,40 @@ void list_palette_pane_draw_item_button(list_palette_pane_type *pane,d3rect *box
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	
 	glDisable(GL_TEXTURE_2D);
+}
+
+void list_palette_pane_draw_item_button(list_palette_pane_type *pane,d3rect *box,bool left,int idx)
+{
+	int						lx,ty;
+	bool					pushed;
+	list_palette_item_type *item;
+	
+	item=&pane->items[idx];
+	if (item->button_type==list_button_none) return;
+
+	lx=box->rx-(list_palette_scroll_wid+1);
+	if (left) lx-=list_palette_border_sz;
+	lx-=16;
+	ty=((box->ty+item->y)-list_item_font_high)-pane->scroll_offset;
+
+	pushed=((pane->push_on) && (pane->push_idx==idx) && (pane->button_click));
+	list_palette_pane_draw_item_button_bitmap(pane,item,(item->button_type+1),lx,ty,pushed);
+}
+
+void list_palette_pane_draw_item_move_buttons(list_palette_pane_type *pane,d3rect *box,int idx)
+{
+	int						lx,ty;
+	list_palette_item_type *item;
+	
+	item=&pane->items[idx];
+	if (!item->moveable) return;
+
+	lx=box->lx+12;
+	ty=((box->ty+item->y)-list_item_font_high)-pane->scroll_offset;
+	list_palette_pane_draw_item_button_bitmap(pane,item,5,lx,ty,FALSE);
+
+	lx+=14;
+	list_palette_pane_draw_item_button_bitmap(pane,item,6,lx,ty,FALSE);
 }
 
 /* =======================================================
@@ -1385,7 +1415,7 @@ void list_palette_pane_draw_title(list_palette_pane_type *pane,d3rect *box)
 	}
 
 	glEnable(GL_TEXTURE_2D);
-	glBindTexture(GL_TEXTURE_2D,list_bitmaps[0].gl_id);
+	glBindTexture(GL_TEXTURE_2D,list_btn_bitmaps[0].gl_id);
 
 	vertexes[0]=vertexes[6]=(float)lx;
 	vertexes[2]=vertexes[4]=(float)rx;
@@ -1638,6 +1668,11 @@ void list_palette_pane_draw_item(list_palette_pane_type *pane,d3rect *box,bool l
 		
 	x=lx+item->x;
 	y=(box->ty+item->y)-pane->scroll_offset;
+
+	if (item->moveable) {
+		list_palette_pane_draw_item_move_buttons(pane,box,idx);
+		x+=22;
+	}
 
 	switch (item->ctrl_type) {
 
@@ -2247,14 +2282,14 @@ bool list_palette_click(list_palette_type *list,d3pnt *pnt,bool double_click)
 	switch (item->ctrl_type) {
 
 		case list_item_ctrl_string:
-			if (!double_click) return(FALSE);
+			if (!double_click) break;
 			if (item->value.str_ptr==NULL) return(TRUE);
 			dialog_property_string_run(list_string_value_string,(void*)item->value.str_ptr,item->limit.str_len,0,0);
 			main_wind_draw();
 			return(TRUE);
 
 		case list_item_ctrl_param:
-			if (!double_click) return(FALSE);
+			if (!double_click) break;
 			property_get_parameter(item->limit.param_idx,item->value.str_ptr,str);
 			dialog_property_string_run(list_string_value_string,(void*)str,item->limit.str_len,0,0);
 			property_set_parameter(item->limit.param_idx,item->value.str_ptr,str);
@@ -2262,13 +2297,13 @@ bool list_palette_click(list_palette_type *list,d3pnt *pnt,bool double_click)
 			return(TRUE);
 		
 		case list_item_ctrl_int:
-			if (!double_click) return(FALSE);
+			if (!double_click) break;
 			dialog_property_string_run(list_string_value_int,(void*)item->value.int_ptr,0,0,0);
 			main_wind_draw();
 			return(TRUE);
 
 		case list_item_ctrl_float:
-			if (!double_click) return(FALSE);
+			if (!double_click) break;
 			dialog_property_string_run(list_string_value_float,(void*)item->value.float_ptr,0,0,0);
 			main_wind_draw();
 			return(TRUE);
@@ -2279,32 +2314,32 @@ bool list_palette_click(list_palette_type *list,d3pnt *pnt,bool double_click)
 			return(TRUE);
 
 		case list_item_ctrl_point:
-			if (!double_click) return(FALSE);
+			if (!double_click) break;
 			dialog_property_chord_run(list_chord_value_point,(void*)item->value.pnt_ptr);
 			main_wind_draw();
 			return(TRUE);
 		
 		case list_item_ctrl_angle:
-			if (!double_click) return(FALSE);
+			if (!double_click) break;
 			dialog_property_chord_run(list_chord_value_angle,(void*)item->value.ang_ptr);
 			main_wind_draw();
 			return(TRUE);
 
 		case list_item_ctrl_vector:
-			if (!double_click) return(FALSE);
+			if (!double_click) break;
 			dialog_property_chord_run(list_chord_value_vector,(void*)item->value.vct_ptr);
 			main_wind_draw();
 			return(TRUE);
 
 		case list_item_ctrl_normal_vector:
-			if (!double_click) return(FALSE);
+			if (!double_click) break;
 			dialog_property_chord_run(list_chord_value_vector,(void*)item->value.vct_ptr);
 			vector_normalize(item->value.vct_ptr);
 			main_wind_draw();
 			return(TRUE);
 
 		case list_item_ctrl_uv:
-			if (!double_click) return(FALSE);
+			if (!double_click) break;
 			uv_ptr.x=item->value.uv_ptr->x;
 			uv_ptr.y=item->value.uv_ptr->y;
 			dialog_property_chord_run(list_chord_value_uv,&uv_ptr);
@@ -2314,7 +2349,7 @@ bool list_palette_click(list_palette_type *list,d3pnt *pnt,bool double_click)
 			return(TRUE);
 
 		case list_item_ctrl_picker:
-			if (!double_click) return(FALSE);
+			if (!double_click) break;
 			list_palette_start_picking_item_mode(list,item);
 			return(TRUE);
 

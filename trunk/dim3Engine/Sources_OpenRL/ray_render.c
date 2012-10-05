@@ -224,7 +224,7 @@ bool ray_mesh_special_lighting_conditions(ray_scene_type *scene,ray_point_type *
       
 ======================================================= */
 
-bool ray_trace_lights(ray_scene_type *scene,ray_point_type *eye_pnt,ray_point_type *trig_pnt,ray_collision_type *collision,ray_color_type *col)
+void ray_trace_lights(ray_scene_type *scene,ray_point_type *eye_pnt,ray_point_type *trig_pnt,ray_collision_type *collision,ray_color_type *col)
 {
 	int							n;
 	float						dist,cone_diffuse,att,
@@ -244,6 +244,15 @@ bool ray_trace_lights(ray_scene_type *scene,ray_point_type *eye_pnt,ray_point_ty
 		
 	ray_get_material_rgb(scene,eye_pnt,trig_pnt,collision,&material_pixel);
 	
+		// if there is a bump, unpack it
+
+	if (material_pixel.normal.on) {
+		bump_map_normal.x=(material_pixel.normal.rgb.r*2.0f)-1.0f;
+		bump_map_normal.y=(material_pixel.normal.rgb.g*2.0f)-1.0f;
+		bump_map_normal.z=(material_pixel.normal.rgb.b*2.0f)-1.0f;
+		ray_vector_normalize(&bump_map_normal);
+	}
+
 		// default to no specular
 		
 	spec_col.r=0.0f;
@@ -316,13 +325,6 @@ bool ray_trace_lights(ray_scene_type *scene,ray_point_type *eye_pnt,ray_point_ty
 			light_poly_space_vector.z=ray_vector_dot_product(&light_vector_normal,&material_pixel.surface.normal);
 			ray_vector_normalize(&light_poly_space_vector);
 
-				// unpack the bump map normals
-
-			bump_map_normal.x=(material_pixel.normal.rgb.r*2.0f)-1.0f;
-			bump_map_normal.y=(material_pixel.normal.rgb.g*2.0f)-1.0f;
-			bump_map_normal.z=(material_pixel.normal.rgb.b*2.0f)-1.0f;
-			ray_vector_normalize(&bump_map_normal);
-
 				// the diffuse is the dot between the
 				// light vector (now in the same space
 				// as the bump normal) and the bump normal
@@ -387,16 +389,37 @@ bool ray_trace_lights(ray_scene_type *scene,ray_point_type *eye_pnt,ray_point_ty
 			// mix with material and
 			// add to pixel
 			
-		col->r+=((material_pixel.color.rgb.r*(light_col.r*diffuse))+spec_col.r);
-		col->g+=((material_pixel.color.rgb.g*(light_col.g*diffuse))+spec_col.g);
-		col->b+=((material_pixel.color.rgb.b*(light_col.b*diffuse))+spec_col.b);
+		col->r+=((material_pixel.color.rgb.r*((light_col.r+scene->ambient_col.r)*diffuse))+spec_col.r);
+		col->g+=((material_pixel.color.rgb.g*((light_col.g+scene->ambient_col.g)*diffuse))+spec_col.g);
+		col->b+=((material_pixel.color.rgb.b*((light_col.b+scene->ambient_col.b)*diffuse))+spec_col.b);
 		
 			// we hit a light
 
 		hit=TRUE;
 	}
-	
-	return(hit);
+
+		// if there was a light hit, we
+		// are all done
+
+	if (hit) return;
+
+		// if no hit, then the color is
+		// flat head on bump, spec, and the
+		// ambient color
+
+	if (material_pixel.normal.on) {
+		light_poly_space_vector.x=0.0f;
+		light_poly_space_vector.y=0.0f;
+		light_poly_space_vector.z=1.0f;
+		diffuse=ray_vector_dot_product(&light_poly_space_vector,&bump_map_normal);
+	}
+	else {
+		diffuse=1.0f;
+	}
+
+	col->r=material_pixel.color.rgb.r*(scene->ambient_col.r*diffuse);
+	col->r=material_pixel.color.rgb.g*(scene->ambient_col.g*diffuse);
+	col->r=material_pixel.color.rgb.b*(scene->ambient_col.b*diffuse);
 }
 
 /* =======================================================
@@ -405,7 +428,7 @@ bool ray_trace_lights(ray_scene_type *scene,ray_point_type *eye_pnt,ray_point_ty
       
 ======================================================= */
 
-void ray_set_buffer(unsigned long *buf,ray_color_type *ambient_col,ray_color_type *pixel_col,ray_color_type *overlay_col)
+void ray_set_buffer(unsigned long *buf,ray_color_type *pixel_col,ray_color_type *overlay_col)
 {
 	float			inv_a;
 	
@@ -418,16 +441,10 @@ void ray_set_buffer(unsigned long *buf,ray_color_type *ambient_col,ray_color_typ
 		pixel_col->b=(pixel_col->b*inv_a)+(overlay_col->b*overlay_col->a);
 	}
 
-		// the ambient
-		// and clamping
+		// clamping
 
-	pixel_col->r+=ambient_col->r;
 	if (pixel_col->r>1.0f) pixel_col->r=1.0f;
-
-	pixel_col->g+=ambient_col->g;
 	if (pixel_col->g>1.0f) pixel_col->g=1.0f;
-
-	pixel_col->b+=ambient_col->b;
 	if (pixel_col->b>1.0f) pixel_col->b=1.0f;
 
 		// add to buffer
@@ -498,10 +515,10 @@ void ray_render_thread(void *arg)
 				// determine if in overlay
 				// do an early exit if no alpha
 				
-			if (ray_scene_overlay_get_pixel(scene,x,y,&overlay_col)) {
+			if (ray_get_overlay_rgb(scene,x,y,&overlay_col)) {
 				if (overlay_col.a==1.0f) {
 					buf=scene->buffer.data+((y*scene->buffer.wid)+x);		// buffer is unsigned long
-					ray_set_buffer(buf,&scene->ambient_col,&overlay_col,NULL);
+					ray_set_buffer(buf,&overlay_col,NULL);
 					continue;
 				}
 			}
@@ -535,22 +552,14 @@ void ray_render_thread(void *arg)
 				// check for special lighting conditions
 
 			if (ray_mesh_special_lighting_conditions(scene,eye_point,&trig_point,collision.mesh_idx,&collision,&pixel_col)) {
-				ray_set_buffer(buf,&scene->ambient_col,&pixel_col,&overlay_col);
+				ray_set_buffer(buf,&pixel_col,&overlay_col);
 				continue;
 			}
 			
 				// run regular lighting
 
-			if (ray_trace_lights(scene,eye_point,&trig_point,&collision,&pixel_col)) {
-				ray_set_buffer(buf,&scene->ambient_col,&pixel_col,&overlay_col);
-				continue;
-			}
-			
-				// otherwise buffer is
-				// just the ambient and overlay
-				// which we put as the main pixel
-				
-			ray_set_buffer(buf,&scene->ambient_col,&overlay_col,NULL);
+			ray_trace_lights(scene,eye_point,&trig_point,&collision,&pixel_col);
+			ray_set_buffer(buf,&pixel_col,&overlay_col);
 		}
 	}
 
@@ -664,6 +673,10 @@ int rlSceneRender(int sceneId)
 		// we have to check
 		
 	ray_precalc_light_mesh_indexes_all(scene);
+
+		// some presetup for overlays
+
+	ray_overlay_setup_all(scene);
 
 		// run rendering in threads
 		

@@ -87,7 +87,7 @@ void project_palette_fill_radar(void)
 	list_palette_sort_mark_start(&project_palette);
 	
 	for (n=0;n!=iface.radar.nicon;n++) {
-		list_palette_add_string_selectable_button(&project_palette,(kRadarPropertyIconName+n),list_button_minus,(kRadarPropertyIconDelete+n),iface.radar.icons[n].name,(state.proj.cur_radar_icon_idx==n),FALSE);
+		list_palette_add_string_selectable_button(&project_palette,(kRadarPropertyIconName+n),list_button_minus,(kRadarPropertyIconDelete+n),iface.radar.icons[n].name,(state.proj.cur_radar_icon_idx==n),FALSE,FALSE);
 	}
 
 	list_palette_sort(&project_palette);
