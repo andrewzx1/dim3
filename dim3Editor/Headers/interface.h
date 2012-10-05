@@ -147,7 +147,7 @@ extern void list_palette_add_header_button(list_palette_type *list,int id,char *
 extern void list_palette_add_item(list_palette_type *list,int id,int idx,char *name,bool selected,bool disabled);
 extern void list_palette_add_color(list_palette_type *list,int id,int idx,d3col *col_ptr,bool selected,bool disabled);
 extern void list_palette_add_string_selectable(list_palette_type *list,int id,char *name,char *str_ptr,int str_len,bool selected,bool disabled);
-extern void list_palette_add_string_selectable_button(list_palette_type *list,int id,int button_type,int button_id,char *name,bool selected,bool disabled);
+extern void list_palette_add_string_selectable_button(list_palette_type *list,int id,int button_type,int button_id,char *name,bool selected,bool disabled,bool moveable);
 extern void list_palette_add_string(list_palette_type *list,int id,char *name,char *str_ptr,int str_len,bool disabled);
 extern void list_palette_add_parameter(list_palette_type *list,int id,char *name,char *params,int param_idx,bool disabled);
 extern void list_palette_add_na_blank(list_palette_type *list,int id,char *name);

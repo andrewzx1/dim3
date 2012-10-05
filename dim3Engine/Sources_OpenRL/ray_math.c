@@ -122,12 +122,11 @@ void rlMatrixVectorMultiply(ray_matrix_type *mat,ray_vector_type *v)
 
 void rlMatrixRotateX(ray_matrix_type *mat,float ang)
 {
-	float		r_cos,r_sin;
-	double		rad;
+	float		r_cos,r_sin,rad;
 	
-	rad=(double)(ang*ray_ANG_to_RAD);
-	r_cos=(float)cos(rad);
-	r_sin=(float)sin(rad);
+	rad=ang*ray_ANG_to_RAD;
+	r_cos=cosf(rad);
+	r_sin=sinf(rad);
 	
 	rlMatrixIdentity(mat);
 
@@ -139,12 +138,11 @@ void rlMatrixRotateX(ray_matrix_type *mat,float ang)
 
 void rlMatrixRotateY(ray_matrix_type *mat,float ang)
 {
-	float		r_cos,r_sin;
-	double		rad;
+	float		r_cos,r_sin,rad;
 	
-	rad=(double)(ang*ray_ANG_to_RAD);
-	r_cos=(float)cos(rad);
-	r_sin=(float)sin(rad);
+	rad=ang*ray_ANG_to_RAD;
+	r_cos=cosf(rad);
+	r_sin=sinf(rad);
 	
 	rlMatrixIdentity(mat);
 	
@@ -156,12 +154,11 @@ void rlMatrixRotateY(ray_matrix_type *mat,float ang)
 
 void rlMatrixRotateZ(ray_matrix_type *mat,float ang)
 {
-	float		r_cos,r_sin;
-	double		rad;
+	float		r_cos,r_sin,rad;
 	
-	rad=(double)(ang*ray_ANG_to_RAD);
-	r_cos=(float)cos(rad);
-	r_sin=(float)sin(rad);
+	rad=ang*ray_ANG_to_RAD;
+	r_cos=cosf(rad);
+	r_sin=sinf(rad);
 	
 	rlMatrixIdentity(mat);
 	

@@ -174,9 +174,11 @@ typedef struct		{
 //
 
 typedef struct		{
-						int							id,material_idx;
+						int							id,material_idx,
+													mm_level;
 						ray_2d_point_type			pnt,pnt_size;
 						ray_uv_type					uv,uv_size;
+						ray_color_type				col;
 					} ray_overlay_type;
 
 typedef struct		{
@@ -333,7 +335,8 @@ extern void ray_precalc_light_mesh_indexes_all(ray_scene_type *scene);
 extern void ray_precalc_thread_mesh_indexes_all(ray_scene_type *scene,ray_draw_scene_thread_info *thread_info);
 
 extern void ray_get_material_rgb(ray_scene_type *scene,ray_point_type *eye_pnt,ray_point_type *trig_pnt,ray_collision_type *collision,ray_material_pixel_type *pixel);
-extern bool ray_scene_overlay_get_pixel(ray_scene_type *scene,int x,int y,ray_color_type *col);
+extern bool ray_get_overlay_rgb(ray_scene_type *scene,int x,int y,ray_color_type *col);
+extern void ray_overlay_setup_all(ray_scene_type *scene);
 
 extern int ray_scene_get_index(int sceneId);
 extern int ray_material_get_index(int materialId);

@@ -58,7 +58,7 @@ void project_palette_fill_choosers(void)
 	list_palette_sort_mark_start(&project_palette);
 	
 	for (n=0;n!=iface.chooser_list.nchooser;n++) {
-		list_palette_add_string_selectable_button(&project_palette,(kChooserPropertyChooserName+n),list_button_minus,(kChooserPropertyChooserDelete+n),iface.chooser_list.choosers[n].name,(state.proj.cur_chooser_idx==n),FALSE);
+		list_palette_add_string_selectable_button(&project_palette,(kChooserPropertyChooserName+n),list_button_minus,(kChooserPropertyChooserDelete+n),iface.chooser_list.choosers[n].name,(state.proj.cur_chooser_idx==n),FALSE,FALSE);
 	}
 
 	list_palette_sort(&project_palette);

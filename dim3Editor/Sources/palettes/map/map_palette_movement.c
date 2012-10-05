@@ -90,7 +90,7 @@ void map_palette_fill_movement(int movement_idx)
 
 	for (n=0;n!=movement->nmove;n++) {
 		sprintf(str,"(%d,%d,%d)(%d,%d,%d)@%d",move->mov.x,move->mov.y,move->mov.z,(int)move->rot.x,(int)move->rot.y,(int)move->rot.z,move->msec);
-		list_palette_add_string_selectable_button(&map_palette,(kMovementPropertyMove+n),list_button_minus,(kMovementPropertyMoveDelete+n),str,(state.map.cur_movement_move_idx==n),FALSE);
+		list_palette_add_string_selectable_button(&map_palette,(kMovementPropertyMove+n),list_button_minus,(kMovementPropertyMoveDelete+n),str,(state.map.cur_movement_move_idx==n),FALSE,TRUE);
 		move++;
 	}
 }

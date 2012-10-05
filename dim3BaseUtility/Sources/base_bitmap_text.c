@@ -73,7 +73,7 @@ void bitmap_text_size_internal(texture_font_size_type *d3_size_font,char *name,i
 	data_sz=row_add*bitmap_high;
 	
 	bm_data=malloc(data_sz);
-	if (bm_data==NULL) return;
+	if (bm_data==NULL) return(NULL);
 	
 	bzero(bm_data,data_sz);
 	
@@ -85,7 +85,7 @@ void bitmap_text_size_internal(texture_font_size_type *d3_size_font,char *name,i
 	
 	if (bitmap_ctx==NULL) {
 		free(bm_data);
-		return;
+		return(NULL);
 	}
 	
 	CGContextTranslateCTM(bitmap_ctx,0,bitmap_high);
@@ -158,14 +158,12 @@ void bitmap_text_size_internal(texture_font_size_type *d3_size_font,char *name,i
 		}
 	}
 	
-	bitmap_data(&d3_size_font->bitmap,txt_data,bitmap_wid,bitmap_high,TRUE,FALSE,FALSE,FALSE,FALSE);
-
-	free(txt_data);
-	
 		// dispose the bitmap context
 		
 	CGContextRelease(bitmap_ctx);
 	free(bm_data);
+
+	return(txt_data);
 }
 
 #endif
@@ -201,7 +199,7 @@ bool bitmap_text_font_exist(char *name)
 	return(FT_New_Face(font_library,font_filename,0,&face)==0);
 }
 
-void bitmap_text_size_internal(texture_font_size_type *d3_size_font,char *name,int size,int bitmap_wid,int bitmap_high)
+unsigned char* bitmap_text_size_internal(texture_font_size_type *d3_size_font,char *name,int size,int bitmap_wid,int bitmap_high)
 {
 	int				n, x, y, font_x, font_y, txt_x, txt_y, error;
 	unsigned char 	*data, *ptr;
@@ -214,7 +212,7 @@ void bitmap_text_size_internal(texture_font_size_type *d3_size_font,char *name,i
 	unsigned char	ch;
 	
 	data = malloc((bitmap_wid<<2)*bitmap_high);
-	if (data==NULL) return;
+	if (data==NULL) return(NULL);
 
 	// find the font
 	pat = FcPatternCreate();
@@ -226,9 +224,7 @@ void bitmap_text_size_internal(texture_font_size_type *d3_size_font,char *name,i
 
 	FT_Init_FreeType(&font_library);
 	error = FT_New_Face(font_library,font_filename,0,&face);
-	if (error) {
-		return;
-	}
+	if (error) return(NULL);
 
 	error = FT_Set_Char_Size(face,0,(size<<6),0,0);
 	
@@ -245,14 +241,11 @@ void bitmap_text_size_internal(texture_font_size_type *d3_size_font,char *name,i
 		FT_UInt glyph_index = FT_Get_Char_Index(face,ch);
 
 		error = FT_Load_Glyph(face,glyph_index,FT_LOAD_NO_HINTING);
-		if (error){
-			continue;
-		}
+		if (error) continue;
 		
 		error = FT_Render_Glyph(face->glyph,FT_RENDER_MODE_LIGHT);
-		if (error){
-			continue;
-		}
+		if (error) continue;
+
 		bitmap = face->glyph->bitmap;
 		
 		// draw the bitmap
@@ -277,8 +270,8 @@ void bitmap_text_size_internal(texture_font_size_type *d3_size_font,char *name,i
 			}
 		}
 	}
-	bitmap_data(&d3_size_font->bitmap,data,bitmap_wid,bitmap_high,TRUE,FALSE,FALSE,FALSE,FALSE);
-	free(data);
+
+	return(data);
 }
 
 #endif
@@ -320,7 +313,7 @@ bool bitmap_text_font_exist(char *name)
 	return(bitmap_enum_ok);
 }
 
-void bitmap_text_size_internal(texture_font_size_type *d3_size_font,char *name,int size,int bitmap_wid,int bitmap_high)
+unsigned char* bitmap_text_size_internal(texture_font_size_type *d3_size_font,char *name,int size,int bitmap_wid,int bitmap_high)
 {
 	int				n,x,y;
 	unsigned char	ch;
@@ -336,7 +329,7 @@ void bitmap_text_size_internal(texture_font_size_type *d3_size_font,char *name,i
 		// data for bitmap
 
 	data=malloc((bitmap_wid<<2)*bitmap_high);
-	if (data==NULL) return;
+	if (data==NULL) return(NULL);
 
 		// create bitmap
 
@@ -414,15 +407,13 @@ void bitmap_text_size_internal(texture_font_size_type *d3_size_font,char *name,i
 		}
 	}
 
-	bitmap_data(&d3_size_font->bitmap,data,bitmap_wid,bitmap_high,TRUE,FALSE,FALSE,FALSE,FALSE);
-
-	free(data);
-
 		// delete the bitmap
 
 	SelectObject(dc,old_bmp);
 	DeleteObject(bmp);
 	DeleteDC(dc);
+
+	return(data);
 }
 
 #endif
@@ -433,7 +424,7 @@ void bitmap_text_size_internal(texture_font_size_type *d3_size_font,char *name,i
       
 ======================================================= */
 
-void bitmap_text_size(texture_font_size_type *d3_size_font,char *name,int size,int bitmap_wid,int bitmap_high)
+unsigned char* bitmap_text_size_data(texture_font_size_type *d3_size_font,char *name,int size,int bitmap_wid,int bitmap_high)
 {
 	float			f_size;
 
@@ -450,7 +441,16 @@ void bitmap_text_size(texture_font_size_type *d3_size_font,char *name,int size,i
 	d3_size_font->gl_yoff=((float)d3_size_font->char_box_high/(float)bitmap_high);
 	d3_size_font->gl_yadd=(((float)d3_size_font->char_real_high/(float)bitmap_high)-0.005f);
 
-	bitmap_text_size_internal(d3_size_font,name,size,bitmap_wid,bitmap_high);
+	return(bitmap_text_size_internal(d3_size_font,name,size,bitmap_wid,bitmap_high));
+}
+
+void bitmap_text_size(texture_font_size_type *d3_size_font,char *name,int size,int bitmap_wid,int bitmap_high)
+{
+	unsigned char	*data;
+
+	data=bitmap_text_size_data(d3_size_font,name,size,bitmap_wid,bitmap_high);
+	bitmap_data(&d3_size_font->bitmap,data,bitmap_wid,bitmap_high,TRUE,FALSE,FALSE,FALSE,FALSE);
+	free(data);
 }
 
 void bitmap_text_initialize(texture_font_type *d3_font)

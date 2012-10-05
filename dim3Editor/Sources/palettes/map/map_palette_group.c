@@ -89,7 +89,7 @@ void map_palette_fill_group(int group_idx)
 	list_palette_add_int(&map_palette,-1,"Liquid Count",&pal_liquid_count,TRUE);
 	
 	list_palette_add_header(&map_palette,0,"Group Clear");
-	list_palette_add_string_selectable_button(&map_palette,kGroupPropertyClear,list_button_set,kGroupPropertyClear,"Clear Group Mesh and Liquids",FALSE,FALSE);
+	list_palette_add_string_selectable_button(&map_palette,kGroupPropertyClear,list_button_set,kGroupPropertyClear,"Clear Group Mesh and Liquids",FALSE,FALSE,FALSE);
 }
 
 /* =======================================================

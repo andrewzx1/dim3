@@ -81,7 +81,7 @@ void model_palette_fill_animation(int animate_idx)
 			if (n==animate->loop_start) strcat(str," (loop start)");
 			if (n==animate->loop_end) strcat(str," (loop end)");
 		}
-		list_palette_add_string_selectable_button(&model_palette,(kAnimationPropertyPoseMove+n),list_button_minus,(kAnimationPropertyPoseMoveDelete+n),str,((state.model.cur_animate_idx==animate_idx) && (state.model.cur_animate_pose_move_idx==n)),FALSE);
+		list_palette_add_string_selectable_button(&model_palette,(kAnimationPropertyPoseMove+n),list_button_minus,(kAnimationPropertyPoseMoveDelete+n),str,((state.model.cur_animate_idx==animate_idx) && (state.model.cur_animate_pose_move_idx==n)),FALSE,TRUE);
 	}
 }
 

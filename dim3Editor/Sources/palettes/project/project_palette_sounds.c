@@ -58,7 +58,7 @@ void project_palette_fill_sounds(void)
 	list_palette_sort_mark_start(&project_palette);
 	
 	for (n=0;n!=iface.sound_list.nsound;n++) {
-		list_palette_add_string_selectable_button(&project_palette,(kSoundProperyName+n),list_button_minus,(kSoundProperyDelete+n),iface.sound_list.sounds[n].name,(state.proj.cur_sound_idx==n),FALSE);
+		list_palette_add_string_selectable_button(&project_palette,(kSoundProperyName+n),list_button_minus,(kSoundProperyDelete+n),iface.sound_list.sounds[n].name,(state.proj.cur_sound_idx==n),FALSE,FALSE);
 	}
 
 	list_palette_sort(&project_palette);

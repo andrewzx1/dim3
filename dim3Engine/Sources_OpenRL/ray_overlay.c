@@ -27,10 +27,9 @@ int ray_scene_overlay_get_index(ray_scene_type *scene,int overlayId)
       
 ======================================================= */
 
-// supergumba -- need mipmap levels here, too
-bool ray_scene_overlay_get_pixel(ray_scene_type *scene,int x,int y,ray_color_type *col)
+bool ray_get_overlay_rgb(ray_scene_type *scene,int x,int y,ray_color_type *col)
 {
-	int							n,px,py,offset,mm_level;
+	int							n,px,py,offset;
 	unsigned long				buf;
 	float						f,fx,fy;
 	ray_overlay_type			*overlay;
@@ -47,17 +46,13 @@ bool ray_scene_overlay_get_pixel(ray_scene_type *scene,int x,int y,ray_color_typ
 		if (y<overlay->pnt.y) continue;
 		if (y>=(overlay->pnt.y+overlay->pnt_size.y)) continue;
 
-			// get mipmap level
-
-		mm_level=0;
-		
 			// sanity check for materials
 			
 		material=ray_global.material_list.materials[overlay->material_idx];
-		mipmap=&material->mipmap_list.mipmaps[mm_level];
 
+		mipmap=&material->mipmap_list.mipmaps[overlay->mm_level];
 		if (mipmap->data.color==NULL) continue;
-		
+				
 			// get uv
 			
 		f=(float)(x-overlay->pnt.x)/(float)(overlay->pnt_size.x);
@@ -81,10 +76,54 @@ bool ray_scene_overlay_get_pixel(ray_scene_type *scene,int x,int y,ray_color_typ
 		buf=*(((unsigned long*)mipmap->data.color)+offset);
 		ray_create_float_color_from_ulong(buf,col);
 
+			// add in the color
+
+		col->r*=overlay->col.r;
+		col->g*=overlay->col.g;
+		col->b*=overlay->col.b;
+		col->a*=overlay->col.a;
+
 		return(TRUE);
 	}
 
 	return(FALSE);
+}
+
+/* =======================================================
+
+      Setup Overlays Before Drawing
+      
+======================================================= */
+
+void ray_overlay_setup_all(ray_scene_type *scene)
+{
+	int					n,k,wid;
+	ray_overlay_type	*overlay;
+	ray_material_type	*material;
+
+	for (n=0;n!=scene->overlay_list.count;n++) {
+		overlay=scene->overlay_list.overlays[n];
+
+			// get drawing size
+			// if UV was 0...1
+
+		wid=(int)(((float)overlay->pnt_size.x)*(1.0f/(overlay->uv_size.x-overlay->uv.x)));
+
+			// get mipmap level
+			// closer but >= to size
+			
+		material=ray_global.material_list.materials[overlay->material_idx];
+
+		overlay->mm_level=0;
+
+		for (k=0;k!=material->mipmap_list.count;k++) {
+			if (material->mipmap_list.mipmaps[k].wid<wid) {
+				overlay->mm_level=k-1;
+				if (overlay->mm_level<0) overlay->mm_level=0;
+				break;
+			}
+		}
+	}
 }
 
 /* =======================================================
@@ -137,6 +176,11 @@ int rlSceneOverlayAdd(int sceneId,int materialId,unsigned long flags)
 
 	overlay->uv_size.x=1.0f;
 	overlay->uv_size.y=1.0f;
+
+	overlay->col.r=1.0f;
+	overlay->col.g=1.0f;
+	overlay->col.b=1.0f;
+	overlay->col.a=1.0f;
 
 		// set id
 
@@ -284,7 +328,7 @@ int rlSceneOverlaySetPosition(int sceneId,int overlayId,ray_2d_point_type *pnt)
       
 ======================================================= */
 
-int rlSceneOverlaySetSize(int sceneId,int overlayId,int width,int height)
+int rlSceneOverlaySetSize(int sceneId,int overlayId,ray_2d_point_type *pnt)
 {
 	int					idx;
 	ray_overlay_type	*overlay;
@@ -306,8 +350,8 @@ int rlSceneOverlaySetSize(int sceneId,int overlayId,int width,int height)
 
 		// reset point
 		
-	overlay->pnt_size.x=width;
-	overlay->pnt_size.y=height;
+	overlay->pnt_size.x=pnt->x;
+	overlay->pnt_size.y=pnt->y;
 
 	return(RL_ERROR_OK);
 }
@@ -428,6 +472,44 @@ int rlSceneOverlaySetMaterial(int sceneId,int overlayId,int materialId)
 	if (material_idx==-1) return(RL_ERROR_UNKNOWN_MATERIAL_ID);
 	
 	overlay->material_idx=material_idx;
+
+	return(RL_ERROR_OK);
+}
+
+/* =======================================================
+
+      Changes Color Tint of Overlay Already in a Scene
+
+	  Returns:
+	   RL_ERROR_OK
+	   RL_ERROR_UNKNOWN_SCENE_ID
+	   RL_ERROR_UNKNOWN_OVERLAY_ID
+      
+======================================================= */
+
+int rlSceneOverlayColor(int sceneId,int overlayId,ray_color_type *col)
+{
+	int					idx;
+	ray_overlay_type	*overlay;
+	ray_scene_type		*scene;
+
+		// get scene
+
+	idx=ray_scene_get_index(sceneId);
+	if (idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
+
+	scene=ray_global.scene_list.scenes[idx];
+
+		// get the overlay
+
+	idx=ray_scene_overlay_get_index(scene,overlayId);
+	if (idx==-1) return(RL_ERROR_UNKNOWN_OVERLAY_ID);
+
+	overlay=scene->overlay_list.overlays[idx];
+
+		// reset color
+
+	memmove(&overlay->col,col,sizeof(ray_color_type));
 
 	return(RL_ERROR_OK);
 }
