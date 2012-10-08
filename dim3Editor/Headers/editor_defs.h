@@ -225,6 +225,8 @@ and can be sold or given away.
 #define model_menu_item_NewPose					5800
 #define model_menu_item_DupPose					5801
 #define model_menu_item_ClearPose				5802
+#define model_menu_item_PreviousPose			5803
+#define model_menu_item_NextPose				5804
 
 #define model_menu_item_NewAnimate				5900
 #define model_menu_item_DupAnimate				5901
@@ -296,6 +298,11 @@ and can be sold or given away.
 #define list_button_minus									2
 #define list_button_set										3
 
+#define list_button_push_type_none							0
+#define list_button_push_type_button						1
+#define list_button_push_type_up							2
+#define list_button_push_type_down							3
+
 typedef union		{
 						int									*int_ptr;
 						float								*float_ptr;
@@ -326,7 +333,9 @@ typedef struct		{
 
 typedef struct		{
 						int									x,y,ctrl_type,button_type,
-															id,idx,button_id,count;
+															id,idx,button_id,
+															button_up_id,button_down_id,
+															count;
 						bool								selected,disabled,moveable;
 						char								name[name_str_len];
 						list_palette_item_value_type		value;
@@ -347,10 +356,11 @@ typedef struct		{
 
 typedef struct		{
 						int									level,item_count,
-															item_sort_start_idx,push_idx,
+															item_sort_start_idx,
+															item_push_idx,
+															button_push_idx,
 															scroll_offset,total_high;
-						bool								back_push_on,
-															push_on,button_click;
+						bool								back_push_on,item_push_on;
 						char								titles[3][128];
 						list_palette_click_type				click;
 						list_palette_item_type				*items;

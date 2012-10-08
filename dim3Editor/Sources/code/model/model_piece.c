@@ -207,6 +207,62 @@ void model_piece_delete_pose(int pose_idx)
 	model_palette_scroll_into_view(item_model,0);
 }
 
+int model_shift_pose_index(int pose_idx,int dir)
+{
+
+	int						n,k,
+							temp_index,indexes[max_model_pose];
+	char					temp_name[64],names[max_model_pose][64];
+	bool					shuffle;
+
+		// build a name list to sort
+		
+	for (n=0;n!=model.npose;n++) {
+		strcpy(names[n],model.poses[n].name);
+		indexes[n]=n;
+	}
+	
+		// sort list
+
+	while (TRUE) {
+
+		shuffle=FALSE;
+
+		for (n=0;n!=model.npose;n++) {
+			k=n+1;
+
+			if (strcasecmp(names[n],names[k])>0) {
+				shuffle=TRUE;
+
+				strcpy(temp_name,names[n]);
+				strcpy(names[n],names[k]);
+				strcpy(names[k],temp_name);
+				
+				temp_index=indexes[n];
+				indexes[n]=indexes[k];
+				indexes[k]=temp_index;
+			}
+		}
+
+		if (!shuffle) break;
+	}
+	
+		// pick previous or next
+
+	for (n=0;n!=model.npose;n++) {
+		if (pose_idx==indexes[n]) {
+			pose_idx=n;
+			break;
+		}
+	}
+	
+	pose_idx+=dir;
+	if (pose_idx==0) pose_idx=model.npose-1;
+	if (pose_idx==model.npose) pose_idx=0;
+	
+	return(indexes[pose_idx]);
+}
+
 /* =======================================================
 
       Add or Delete Animations
@@ -375,6 +431,35 @@ void model_piece_delete_animation_pose_move_ring(int animate_idx,int animate_pos
 	if (sz>0) memmove(&pose_move->ring.rings[idx],&pose_move->ring.rings[idx+1],sz);
 
 	pose_move->ring.count--;
+}
+
+/* =======================================================
+
+      Shift Pose Moves
+      
+======================================================= */
+
+int model_shift_animation_pose_move(int animate_idx,int pose_move_idx,int dir)
+{
+	int						idx;
+	model_animate_type		*animate;
+	model_pose_move_type	temp_pose_move;
+	
+	animate=&model.animates[animate_idx];
+
+		// can't move if at top or bottom
+		
+	if ((dir==-1) && (pose_move_idx==0)) return(pose_move_idx);
+	if ((dir==1) && (pose_move_idx==(animate->npose_move-1))) return(pose_move_idx);
+	
+		// move pose
+		
+	idx=pose_move_idx+dir;
+	memmove(&temp_pose_move,&animate->pose_moves[pose_move_idx],sizeof(model_pose_move_type));
+	memmove(&animate->pose_moves[pose_move_idx],&animate->pose_moves[idx],sizeof(model_pose_move_type));
+	memmove(&animate->pose_moves[idx],&temp_pose_move,sizeof(model_pose_move_type));
+	
+	return(idx);
 }
 
 /* =======================================================

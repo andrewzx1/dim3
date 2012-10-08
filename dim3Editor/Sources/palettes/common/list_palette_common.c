@@ -84,9 +84,10 @@ void list_palette_list_initialize_single_pane(list_palette_pane_type *pane)
 	pane->total_high=0;
 	
 	pane->back_push_on=FALSE;
-
-	pane->push_on=FALSE;
-	pane->push_idx=-1;
+	pane->item_push_on=FALSE;
+	
+	pane->item_push_idx=-1;
+	pane->button_push_idx=list_button_push_type_none;
 
 	pane->click.id=-1;
 	pane->click.idx=-1;
@@ -351,6 +352,10 @@ list_palette_item_type* list_palette_pane_create_item(list_palette_pane_type *pa
 
 	item->ctrl_type=ctrl_type;
 	item->button_type=list_button_none;
+	
+	item->button_id=-1;
+	item->button_up_id=-1;
+	item->button_down_id=-1;
 
 	item->disabled=FALSE;
 	item->selected=FALSE;
@@ -491,7 +496,7 @@ void list_palette_add_string_selectable(list_palette_type *list,int id,char *nam
 	item->value.str_ptr=str_ptr;
 }
 
-void list_palette_add_string_selectable_button(list_palette_type *list,int id,int button_type,int button_id,char *name,bool selected,bool disabled,bool moveable)
+void list_palette_add_string_selectable_button(list_palette_type *list,int id,int button_type,int button_id,char *name,bool selected,bool disabled)
 {
 	list_palette_item_type		*item;
 
@@ -504,10 +509,27 @@ void list_palette_add_string_selectable_button(list_palette_type *list,int id,in
 	item=&list->item_pane.items[list->item_pane.item_count-1];
 	item->button_type=button_type;
 	item->button_id=button_id;
+}
+
+void list_palette_add_string_selectable_moveable_button(list_palette_type *list,int id,int button_type,int button_id,int button_up_id,int button_down_id,char *name,bool selected,bool disabled)
+{
+	list_palette_item_type		*item;
+
+		// add item
+
+	list_palette_add_string_selectable(list,id,name,NULL,-1,selected,disabled);
+
+		// put in the button
+
+	item=&list->item_pane.items[list->item_pane.item_count-1];
+	item->button_type=button_type;
+	item->button_id=button_id;
+	item->button_up_id=button_up_id;
+	item->button_down_id=button_down_id;
 
 		// moveable flag
 
-	item->moveable=moveable;
+	item->moveable=TRUE;
 }
 
 void list_palette_add_string(list_palette_type *list,int id,char *name,char *str_ptr,int str_len,bool disabled)
@@ -1237,9 +1259,9 @@ void list_palette_pane_draw_item_button_bitmap(list_palette_pane_type *pane,list
 	float			vertexes[8],uvs[8]={0.0f,0.0f,1.0f,0.0f,1.0f,1.0f,0.0f,1.0f};
 	
 	vertexes[0]=vertexes[6]=(float)lx;
-	vertexes[2]=vertexes[4]=(float)(lx+16);
+	vertexes[2]=vertexes[4]=(float)(lx+list_item_font_high);
 	vertexes[1]=vertexes[3]=(float)ty;
-	vertexes[5]=vertexes[7]=(float)(ty+16);
+	vertexes[5]=vertexes[7]=(float)(ty+list_item_font_high);
 
 	if (pushed) {
 		glColor4f(0.6f,0.6f,0.6f,1.0f);
@@ -1277,13 +1299,14 @@ void list_palette_pane_draw_item_button(list_palette_pane_type *pane,d3rect *box
 	lx-=16;
 	ty=((box->ty+item->y)-list_item_font_high)-pane->scroll_offset;
 
-	pushed=((pane->push_on) && (pane->push_idx==idx) && (pane->button_click));
+	pushed=((pane->item_push_on) && (pane->item_push_idx==idx) && (pane->button_push_idx==list_button_push_type_button));
 	list_palette_pane_draw_item_button_bitmap(pane,item,(item->button_type+1),lx,ty,pushed);
 }
 
 void list_palette_pane_draw_item_move_buttons(list_palette_pane_type *pane,d3rect *box,int idx)
 {
 	int						lx,ty;
+	bool					pushed;
 	list_palette_item_type *item;
 	
 	item=&pane->items[idx];
@@ -1291,10 +1314,14 @@ void list_palette_pane_draw_item_move_buttons(list_palette_pane_type *pane,d3rec
 
 	lx=box->lx+12;
 	ty=((box->ty+item->y)-list_item_font_high)-pane->scroll_offset;
-	list_palette_pane_draw_item_button_bitmap(pane,item,5,lx,ty,FALSE);
+	
+	pushed=((pane->item_push_on) && (pane->item_push_idx==idx) && (pane->button_push_idx==list_button_push_type_up));
+	list_palette_pane_draw_item_button_bitmap(pane,item,5,lx,ty,pushed);
 
-	lx+=14;
-	list_palette_pane_draw_item_button_bitmap(pane,item,6,lx,ty,FALSE);
+	lx+=(list_item_font_high+2);
+	
+	pushed=((pane->item_push_on) && (pane->item_push_idx==idx) && (pane->button_push_idx==list_button_push_type_down));
+	list_palette_pane_draw_item_button_bitmap(pane,item,6,lx,ty,pushed);
 }
 
 /* =======================================================
@@ -1629,15 +1656,15 @@ void list_palette_pane_draw_item(list_palette_pane_type *pane,d3rect *box,bool l
 	
 	else {
 
-		if (!pane->push_on) {
+		if (!pane->item_push_on) {
 			selected=item->selected;
 		}
 		else {
-			if (pane->button_click) {
+			if ((pane->button_push_idx!=list_button_push_type_none)) {
 				selected=FALSE;
 			}
 			else {
-				selected=(idx==pane->push_idx);
+				selected=(pane->item_push_idx==idx);
 			}
 		}
 
@@ -1980,8 +2007,8 @@ bool list_palette_pane_click_item(list_palette_type *list,list_palette_pane_type
 
 		// do the hold and click
 		
-	pane->push_on=TRUE;
-	pane->push_idx=item_idx;
+	pane->item_push_on=TRUE;
+	pane->item_push_idx=item_idx;
 	
 	lx=(box->rx-list_palette_scroll_wid)-list_item_font_high;
 	if (list->flag.left) lx-=list_palette_border_sz;
@@ -1994,27 +2021,54 @@ bool list_palette_pane_click_item(list_palette_type *list,list_palette_pane_type
 
 	while (!os_track_mouse_location(&pt,NULL)) {
 	
+			// find if in or out of box
+			
 		out_box=FALSE;
-		out_box=out_box||(pt.x>=rx);
 		out_box=out_box||(pt.y<(y-list_item_font_high));
 		out_box=out_box||(pt.y>=y);
 		
-		if (!pane->button_click) {
-			out_box=out_box||(pt.x<box->lx);
-		}
-		else {
-			out_box=out_box||(pt.x<lx);
+		switch (pane->button_push_idx) {
+		
+			case list_button_push_type_none:
+				out_box=out_box||(pt.x<box->lx);
+				out_box=out_box||(pt.x>box->rx);
+				break;
+				
+			case list_button_push_type_button:
+				lx=(box->rx-list_palette_scroll_wid)-list_item_font_high;
+				if (list->flag.left) lx-=list_palette_border_sz;
+				out_box=out_box||(pt.x<lx);
+				
+				rx=box->rx-list_palette_scroll_wid;
+				if (list->flag.left) rx-=list_palette_border_sz;
+				out_box=out_box||(pt.x>rx);
+				break;
+				
+			case list_button_push_type_up:
+				lx=box->lx+12;
+				out_box=out_box||(pt.x<lx);
+				out_box=out_box||(pt.x>(lx+list_item_font_high));
+				break;
+				
+			case list_button_push_type_down:
+				lx=(box->lx+12)+list_item_font_high;
+				out_box=out_box||(pt.x<lx);
+				out_box=out_box||(pt.x>(lx+list_item_font_high));
+				break;
+
 		}
 		
+			// change selection
+			
 		if (out_box) {
-			if (pane->push_idx!=-1) {
-				pane->push_idx=-1;
+			if (pane->item_push_idx!=-1) {
+				pane->item_push_idx=-1;
 				main_wind_draw();
 			}
 		}
 		else {
-			if (pane->push_idx!=item_idx) {
-				pane->push_idx=item_idx;
+			if (pane->item_push_idx!=item_idx) {
+				pane->item_push_idx=item_idx;
 				main_wind_draw();
 			}
 		}
@@ -2022,20 +2076,28 @@ bool list_palette_pane_click_item(list_palette_type *list,list_palette_pane_type
 		usleep(10000);
 	}
 
-	pane->push_on=FALSE;
+	pane->item_push_on=FALSE;
 
-	if (pane->push_idx!=item_idx) {
+	if (pane->item_push_idx!=item_idx) {
 		main_wind_draw();
 		return(FALSE);
 	}
 
 		// pass back clicked item
 		
-	if (!pane->button_click) {
-		pane->click.id=item->id;
-	}
-	else {
-		pane->click.id=item->button_id;
+	switch (pane->button_push_idx) {
+		case list_button_push_type_none:
+			pane->click.id=item->id;
+			break;
+		case list_button_push_type_button:
+			pane->click.id=item->button_id;
+			break;
+		case list_button_push_type_up:
+			pane->click.id=item->button_up_id;
+			break;
+		case list_button_push_type_down:
+			pane->click.id=item->button_down_id;
+			break;
 	}
 
 	pane->click.idx=item->idx;
@@ -2192,13 +2254,24 @@ bool list_palette_pane_click(list_palette_type *list,list_palette_pane_type *pan
 
 		// is there a button
 
-	pane->button_click=FALSE;
+	pane->button_push_idx=list_button_push_type_none;
 
 	if (pane->items[item_idx].button_type!=list_button_none) {
 		x=((box->rx-box->lx)-list_palette_scroll_wid)-list_item_font_high;
 		if (list->flag.left) x-=list_palette_border_sz;
 
-		if (pt.x>=x) pane->button_click=TRUE;
+		if (pt.x>=x) pane->button_push_idx=list_button_push_type_button;
+	}
+	
+	if (pane->items[item_idx].moveable) {
+		if (pt.x<=(12+list_item_font_high)) {
+			pane->button_push_idx=list_button_push_type_up;
+		}
+		else {
+			if (pt.x<(12+(list_item_font_high*2))) {
+				pane->button_push_idx=list_button_push_type_down;
+			}
+		}
 	}
 
 		// get clicked item
@@ -2209,7 +2282,7 @@ bool list_palette_pane_click(list_palette_type *list,list_palette_pane_type *pan
 		// a button
 
 	if (item->ctrl_type==list_item_ctrl_header) {
-		if (!pane->button_click) return(FALSE);
+		if (pane->button_push_idx!=list_button_push_type_button) return(FALSE);
 	}
 
 		// run the click
@@ -2270,7 +2343,7 @@ bool list_palette_click(list_palette_type *list,d3pnt *pnt,bool double_click)
 
 		// button clicks just return
 
-	if (list->item_pane.button_click) return(TRUE);
+	if (list->item_pane.button_push_idx!=list_button_push_type_none) return(TRUE);
 
 		// any items clicked?
 

@@ -147,7 +147,8 @@ extern void list_palette_add_header_button(list_palette_type *list,int id,char *
 extern void list_palette_add_item(list_palette_type *list,int id,int idx,char *name,bool selected,bool disabled);
 extern void list_palette_add_color(list_palette_type *list,int id,int idx,d3col *col_ptr,bool selected,bool disabled);
 extern void list_palette_add_string_selectable(list_palette_type *list,int id,char *name,char *str_ptr,int str_len,bool selected,bool disabled);
-extern void list_palette_add_string_selectable_button(list_palette_type *list,int id,int button_type,int button_id,char *name,bool selected,bool disabled,bool moveable);
+extern void list_palette_add_string_selectable_button(list_palette_type *list,int id,int button_type,int button_id,char *name,bool selected,bool disabled);
+extern void list_palette_add_string_selectable_moveable_button(list_palette_type *list,int id,int button_type,int button_id,int button_up_id,int button_down_id,char *name,bool selected,bool disabled);
 extern void list_palette_add_string(list_palette_type *list,int id,char *name,char *str_ptr,int str_len,bool disabled);
 extern void list_palette_add_parameter(list_palette_type *list,int id,char *name,char *params,int param_idx,bool disabled);
 extern void list_palette_add_na_blank(list_palette_type *list,int id,char *name);
@@ -852,6 +853,7 @@ extern void model_piece_delete_bone(int bone_idx);
 extern void model_piece_add_pose(void);
 extern void model_piece_duplicate_pose(int pose_idx);
 extern void model_piece_delete_pose(int pose_idx);
+extern int model_shift_pose_index(int pose_idx,int dir);
 extern void model_piece_add_animate(void);
 extern void model_piece_duplicate_animate(int animate_idx);
 extern void model_piece_delete_animate(int animate_idx);
@@ -859,6 +861,7 @@ extern void model_piece_add_animation_pose_move_particle(int animate_idx,int ani
 extern void model_piece_delete_animation_pose_move_particle(int animate_idx,int animate_pose_move_idx,int idx);
 extern void model_piece_add_animation_pose_move_ring(int animate_idx,int animate_pose_move_idx);
 extern void model_piece_delete_animation_pose_move_ring(int animate_idx,int animate_pose_move_idx,int idx);
+extern int model_shift_animation_pose_move(int animate_idx,int pose_move_idx,int dir);
 extern void model_piece_add_hit_box(void);
 extern void model_piece_delete_hit_box(int hit_box_idx);
 

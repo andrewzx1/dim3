@@ -81,8 +81,8 @@ void map_palette_fill_cinema(int cinema_idx)
 	list_palette_add_checkbox(&map_palette,kCinemaPropertyNoCancel,"No Cancel",&cinema->no_cancel,FALSE);
 
 	list_palette_add_header(&map_palette,0,"Cinema Operations");
-	list_palette_add_string_selectable_button(&map_palette,kCinemaPropertySort,list_button_set,kCinemaPropertySort,"Sort Actions",FALSE,FALSE,FALSE);
-	list_palette_add_string_selectable_button(&map_palette,kCinemaPropertyShift,list_button_set,kCinemaPropertyShift,"Shift Actions After Selection",FALSE,FALSE,FALSE);
+	list_palette_add_string_selectable_button(&map_palette,kCinemaPropertySort,list_button_set,kCinemaPropertySort,"Sort Actions",FALSE,FALSE);
+	list_palette_add_string_selectable_button(&map_palette,kCinemaPropertyShift,list_button_set,kCinemaPropertyShift,"Shift Actions After Selection",FALSE,FALSE);
 
 	list_palette_add_header_button(&map_palette,kCinemaPropertyActionAdd,"Cinema Actions",list_button_plus);
 
@@ -110,7 +110,7 @@ void map_palette_fill_cinema(int cinema_idx)
 		
 		strcat(str,str2);
 
-		list_palette_add_string_selectable_button(&map_palette,(kCinemaPropertyAction+n),list_button_minus,(kCinemaPropertyActionDelete+n),str,(state.map.cur_cinema_action_idx==n),FALSE,FALSE);
+		list_palette_add_string_selectable_button(&map_palette,(kCinemaPropertyAction+n),list_button_minus,(kCinemaPropertyActionDelete+n),str,(state.map.cur_cinema_action_idx==n),FALSE);
 	
 		action++;
 	}

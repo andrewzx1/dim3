@@ -151,6 +151,9 @@ os_menu_item_type		model_menu_setup[]=
 									{"Pose","Duplicate Pose",model_menu_item_DupPose,os_menu_key_cmd,'D'},
 									{"Pose","",0,os_menu_key_none,0x0},
 									{"Pose","Clear Pose",model_menu_item_ClearPose,os_menu_key_none,0x0},
+									{"Pose","",0,os_menu_key_none,0x0},
+									{"Pose","Previous Pose",model_menu_item_PreviousPose,os_menu_key_cmd,'['},
+									{"Pose","Next Pose",model_menu_item_NextPose,os_menu_key_cmd,']'},
 
 										// animation menu
 
@@ -613,6 +616,18 @@ bool model_menu_event_run(int cmd)
 			if (state.model.cur_pose_idx==-1) return(TRUE);
 
 			model_pose_clear(&model,state.model.cur_pose_idx);
+			return(TRUE);
+			
+		case model_menu_item_PreviousPose:
+			if (state.model.cur_pose_idx==-1) return(TRUE);
+			state.model.cur_pose_idx=model_shift_pose_index(state.model.cur_pose_idx,-1);
+			main_wind_draw();
+			return(TRUE);
+			
+		case model_menu_item_NextPose:
+			if (state.model.cur_pose_idx==-1) return(TRUE);
+			state.model.cur_pose_idx=model_shift_pose_index(state.model.cur_pose_idx,1);
+			main_wind_draw();
 			return(TRUE);
 			
 			// animation menu

@@ -58,7 +58,7 @@ void project_palette_fill_crosshairs(void)
 	list_palette_sort_mark_start(&project_palette);
 	
 	for (n=0;n!=iface.crosshair_list.ncrosshair;n++) {
-		list_palette_add_string_selectable_button(&project_palette,(kCrosshairProperyName+n),list_button_minus,(kCrosshairProperyDelete+n),iface.crosshair_list.crosshairs[n].name,(state.proj.cur_crosshair_idx==n),FALSE,FALSE);
+		list_palette_add_string_selectable_button(&project_palette,(kCrosshairProperyName+n),list_button_minus,(kCrosshairProperyDelete+n),iface.crosshair_list.crosshairs[n].name,(state.proj.cur_crosshair_idx==n),FALSE);
 	}
 
 	list_palette_sort(&project_palette);

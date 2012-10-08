@@ -165,6 +165,8 @@
 		26C1DFF9160044CF007FDAC7 /* model_util_size.c in Sources */ = {isa = PBXBuildFile; fileRef = 26C1DFE3160044CF007FDAC7 /* model_util_size.c */; };
 		26C1DFFA160044CF007FDAC7 /* model_util_texture.c in Sources */ = {isa = PBXBuildFile; fileRef = 26C1DFE4160044CF007FDAC7 /* model_util_texture.c */; };
 		26C1DFFB160044CF007FDAC7 /* model_util_transform.c in Sources */ = {isa = PBXBuildFile; fileRef = 26C1DFE5160044CF007FDAC7 /* model_util_transform.c */; };
+		26C25375161FFA6000A6E809 /* Up.png in Copy List Icons */ = {isa = PBXBuildFile; fileRef = 26C25370161FFA4700A6E809 /* Up.png */; };
+		26C25376161FFA6300A6E809 /* Down.png in Copy List Icons */ = {isa = PBXBuildFile; fileRef = 26C25373161FFA4B00A6E809 /* Down.png */; };
 		26C2CB8D1606B427004B25A8 /* dim3 Editor.icns in Resources */ = {isa = PBXBuildFile; fileRef = 26C2CB8C1606B427004B25A8 /* dim3 Editor.icns */; };
 		26E4021714F4721D0059C798 /* libPNG.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 26E4021514F4721D0059C798 /* libPNG.a */; };
 		26E4022714F4B3ED0059C798 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26E4022614F4B3ED0059C798 /* Foundation.framework */; };
@@ -365,6 +367,8 @@
 				2621459C1605086A00F18538 /* Minus.png in Copy List Icons */,
 				2621459D1605086A00F18538 /* Plus.png in Copy List Icons */,
 				2621459E1605086A00F18538 /* Set.png in Copy List Icons */,
+				26C25375161FFA6000A6E809 /* Up.png in Copy List Icons */,
+				26C25376161FFA6300A6E809 /* Down.png in Copy List Icons */,
 			);
 			name = "Copy List Icons";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -642,6 +646,8 @@
 		26C1DFE3160044CF007FDAC7 /* model_util_size.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = model_util_size.c; path = Sources/model_util_size.c; sourceTree = "<group>"; };
 		26C1DFE4160044CF007FDAC7 /* model_util_texture.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = model_util_texture.c; path = Sources/model_util_texture.c; sourceTree = "<group>"; };
 		26C1DFE5160044CF007FDAC7 /* model_util_transform.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = model_util_transform.c; path = Sources/model_util_transform.c; sourceTree = "<group>"; };
+		26C25370161FFA4700A6E809 /* Up.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Up.png; sourceTree = "<group>"; };
+		26C25373161FFA4B00A6E809 /* Down.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Down.png; sourceTree = "<group>"; };
 		26C2CB8C1606B427004B25A8 /* dim3 Editor.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = "dim3 Editor.icns"; path = "Resources/dim3 Editor.icns"; sourceTree = SOURCE_ROOT; };
 		26C2CB961606B51E004B25A8 /* dim3Editor-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "dim3Editor-Info.plist"; path = "dim3Editor/dim3Editor-Info.plist"; sourceTree = SOURCE_ROOT; };
 		26E4021514F4721D0059C798 /* libPNG.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPNG.a; path = ../../Common/Libraries/PNG/libPNG.a; sourceTree = "<group>"; };
@@ -1008,6 +1014,8 @@
 				26214577160503FA00F18538 /* Minus.png */,
 				26214578160503FA00F18538 /* Plus.png */,
 				26214579160503FA00F18538 /* Set.png */,
+				26C25370161FFA4700A6E809 /* Up.png */,
+				26C25373161FFA4B00A6E809 /* Down.png */,
 			);
 			name = Lists;
 			path = Resources/Lists;
