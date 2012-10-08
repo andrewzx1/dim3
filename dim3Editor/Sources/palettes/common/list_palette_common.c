@@ -175,7 +175,23 @@ int list_palette_get_level(list_palette_type *list)
 
 void list_palette_set_level(list_palette_type *list,int level)
 {
-	list->picker.on=FALSE;		// level change always turns off picker
+		// if we are going from 0
+		// to another level, save the
+		// scroll, if we are going to
+		// level 0, restore the scroll
+
+	if (level!=0) {
+		if (list->item_pane.level==0) list->item_pane.sav_scroll_offset=list->item_pane.scroll_offset;
+		list->item_pane.scroll_offset=0;
+	}
+	else {
+		if (list->item_pane.level!=0) list->item_pane.scroll_offset=list->item_pane.sav_scroll_offset;
+	}
+
+		// level changes always turns off
+		// any picker
+
+	list->picker.on=FALSE;
 	list->item_pane.level=level;
 }
 

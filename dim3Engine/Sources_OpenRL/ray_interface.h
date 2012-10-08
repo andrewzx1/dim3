@@ -75,6 +75,7 @@ extern int rlShutdown(void);
 
 extern int rlMaterialAdd(int wid,int high,unsigned long flags);
 extern int rlMaterialDelete(int materialId);
+extern int rlMaterialDeleteAll(void);
 extern int rlMaterialAttachBufferData(int materialId,int target,int format,unsigned char* data);
 extern int rlMaterialAttachBufferColor(int materialId,int target,rlColor *col);
 extern int rlMaterialSetShineFactor(int materialId,float shineFactor);

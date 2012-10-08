@@ -582,12 +582,13 @@ extern void select_get_center(d3pnt *mid);
 extern void select_get_angle(d3ang *ang);
 
 //
-// groups
+// groups and movements
 //
 
 extern int group_count(int group_idx);
 extern void group_set(int group_idx);
 extern void group_clear(int group_idx,bool delete_shift);
+extern int map_shift_movement_move(int movement_idx,int move_idx,int dir);
 
 //
 // piece routines

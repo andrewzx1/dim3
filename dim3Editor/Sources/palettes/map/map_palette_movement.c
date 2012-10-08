@@ -119,19 +119,33 @@ void map_palette_click_movement(bool double_click)
 		return;
 	}
 
+		// delete move
+
+	if ((id>=kMovementPropertyMoveDelete) && (id<kMovementPropertyMoveUp)) {
+		state.map.cur_movement_move_idx=-1;
+		map_movement_move_delete(&map,state.map.cur_movement_idx,(id-kMovementPropertyMoveDelete));
+		return;
+	}
+	
+		// move pose up
+		
+	if ((id>=kMovementPropertyMoveUp) && (id<kMovementPropertyMoveDown)) {
+		state.map.cur_movement_move_idx=map_shift_movement_move(state.map.cur_movement_idx,(id-kMovementPropertyMoveUp),-1);
+		return;
+	}
+	
+		// move pose down
+		
+	if (id>=kMovementPropertyMoveDown) {
+		state.map.cur_movement_move_idx=map_shift_movement_move(state.map.cur_movement_idx,(id-kMovementPropertyMoveDown),1);
+		return;
+	}
+
 		// add move
 
 	if (id==kMovementPropertyMoveAdd) {
 		state.map.cur_movement_move_idx=map_movement_move_add(&map,state.map.cur_movement_idx);
 		list_palette_set_level(&map_palette,2);
-		return;
-	}
-
-		// delete move
-
-	if (id>=kMovementPropertyMoveDelete) {
-		state.map.cur_movement_move_idx=-1;
-		map_movement_move_delete(&map,state.map.cur_movement_idx,(id-kMovementPropertyMoveDelete));
 		return;
 	}
 }

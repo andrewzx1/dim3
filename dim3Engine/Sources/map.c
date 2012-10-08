@@ -600,7 +600,7 @@ void map_end(void)
 	
 		// openrl cache cleanup
 		
-	view_openrl_mesh_cleanup();
+	view_openrl_map_close_cleanup();
 	
 		// detach objects
 		

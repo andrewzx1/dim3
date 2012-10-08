@@ -70,7 +70,6 @@ void texture_edit_switch(int texture_idx)
 		else {
 			state.model.texture_edit_idx=texture_idx;
 		}
-		model_palette_reset();
 		list_palette_set_level(&model_palette,0);
 	}
 	
