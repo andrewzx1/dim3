@@ -38,8 +38,10 @@ and can be sold or given away.
 
 #define kAnimationPropertyPoseAdd				10
 
-#define kAnimationPropertyPoseMove				100
-#define kAnimationPropertyPoseMoveDelete		500
+#define kAnimationPropertyPoseMove				1000
+#define kAnimationPropertyPoseMoveDelete		2000
+#define kAnimationPropertyPoseMoveUp			3000
+#define kAnimationPropertyPoseMoveDown			4000
 
 extern model_type				model;
 extern app_state_type			state;
@@ -81,7 +83,7 @@ void model_palette_fill_animation(int animate_idx)
 			if (n==animate->loop_start) strcat(str," (loop start)");
 			if (n==animate->loop_end) strcat(str," (loop end)");
 		}
-		list_palette_add_string_selectable_button(&model_palette,(kAnimationPropertyPoseMove+n),list_button_minus,(kAnimationPropertyPoseMoveDelete+n),str,((state.model.cur_animate_idx==animate_idx) && (state.model.cur_animate_pose_move_idx==n)),FALSE,TRUE);
+		list_palette_add_string_selectable_moveable_button(&model_palette,(kAnimationPropertyPoseMove+n),list_button_minus,(kAnimationPropertyPoseMoveDelete+n),(kAnimationPropertyPoseMoveUp+n),(kAnimationPropertyPoseMoveDown+n),str,((state.model.cur_animate_idx==animate_idx) && (state.model.cur_animate_pose_move_idx==n)),FALSE);
 	}
 }
 
@@ -111,9 +113,25 @@ void model_palette_click_animation(int animate_idx,bool double_click)
 	
 		// pose move delete
 		
-	if (id>=kAnimationPropertyPoseMoveDelete) {
+	if ((id>=kAnimationPropertyPoseMoveDelete) && (id<kAnimationPropertyPoseMoveUp)) {
 		state.model.cur_animate_pose_move_idx=-1;
 		model_animate_pose_delete(&model,animate_idx,(id-kAnimationPropertyPoseMoveDelete));
+		return;
+	}
+	
+		// move pose up
+		
+	if ((id>=kAnimationPropertyPoseMoveUp) && (id<kAnimationPropertyPoseMoveDown)) {
+		state.model.cur_animate_pose_move_idx=model_shift_animation_pose_move(state.model.cur_animate_idx,(id-kAnimationPropertyPoseMove),-1);
+		state.model.cur_pose_idx=animate->pose_moves[state.model.cur_animate_pose_move_idx].pose_idx;
+		return;
+	}
+	
+		// move pose down
+		
+	if (id>=kAnimationPropertyPoseMoveDown) {
+		state.model.cur_animate_pose_move_idx=model_shift_animation_pose_move(state.model.cur_animate_idx,(id-kAnimationPropertyPoseMove),1);
+		state.model.cur_pose_idx=animate->pose_moves[state.model.cur_animate_pose_move_idx].pose_idx;
 		return;
 	}
 	

@@ -69,7 +69,7 @@ void project_palette_fill_menu(int menu_idx)
 	list_palette_add_header_button(&project_palette,kMenuPropertyMenuItemAdd,"Items",list_button_plus);
 	
 	for (n=0;n!=menu->nitem;n++) {
-		list_palette_add_string_selectable_button(&project_palette,(kMenuPropertyMenuItemName+n),list_button_minus,(kMenuPropertyMenuItemDelete+n),menu->items[n].data,(state.proj.cur_menu_item_idx==n),FALSE,FALSE);
+		list_palette_add_string_selectable_button(&project_palette,(kMenuPropertyMenuItemName+n),list_button_minus,(kMenuPropertyMenuItemDelete+n),menu->items[n].data,(state.proj.cur_menu_item_idx==n),FALSE);
 	}
 }
 

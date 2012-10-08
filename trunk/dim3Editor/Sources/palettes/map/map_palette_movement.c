@@ -46,6 +46,8 @@ and can be sold or given away.
 
 #define kMovementPropertyMove				1000
 #define kMovementPropertyMoveDelete			2000
+#define kMovementPropertyMoveUp				3000
+#define kMovementPropertyMoveDown			4000
 
 extern map_type					map;
 extern app_state_type			state;
@@ -90,7 +92,7 @@ void map_palette_fill_movement(int movement_idx)
 
 	for (n=0;n!=movement->nmove;n++) {
 		sprintf(str,"(%d,%d,%d)(%d,%d,%d)@%d",move->mov.x,move->mov.y,move->mov.z,(int)move->rot.x,(int)move->rot.y,(int)move->rot.z,move->msec);
-		list_palette_add_string_selectable_button(&map_palette,(kMovementPropertyMove+n),list_button_minus,(kMovementPropertyMoveDelete+n),str,(state.map.cur_movement_move_idx==n),FALSE,TRUE);
+		list_palette_add_string_selectable_moveable_button(&map_palette,(kMovementPropertyMove+n),list_button_minus,(kMovementPropertyMoveDelete+n),(kMovementPropertyMoveUp+n),(kMovementPropertyMoveDown+n),str,(state.map.cur_movement_move_idx==n),FALSE);
 		move++;
 	}
 }

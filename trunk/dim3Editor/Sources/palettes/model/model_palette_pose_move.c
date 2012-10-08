@@ -115,8 +115,8 @@ void model_palette_fill_animate_pose_move(int animate_idx,int pose_move_idx)
 		// loop
 
 	list_palette_add_header(&model_palette,0,"Animate Pose Loop");
-	list_palette_add_string_selectable_button(&model_palette,kAnimatePoseMovePropertyLoopStart,list_button_set,kAnimatePoseMovePropertyLoopStart,"Set Pose As Loop Start",FALSE,FALSE,FALSE);
-	list_palette_add_string_selectable_button(&model_palette,kAnimatePoseMovePropertyLoopEnd,list_button_set,kAnimatePoseMovePropertyLoopEnd,"Set Pose As Loop End",FALSE,FALSE,FALSE);
+	list_palette_add_string_selectable_button(&model_palette,kAnimatePoseMovePropertyLoopStart,list_button_set,kAnimatePoseMovePropertyLoopStart,"Set Pose As Loop Start",FALSE,FALSE);
+	list_palette_add_string_selectable_button(&model_palette,kAnimatePoseMovePropertyLoopEnd,list_button_set,kAnimatePoseMovePropertyLoopEnd,"Set Pose As Loop End",FALSE,FALSE);
 
 		// sound
 
@@ -156,7 +156,7 @@ void model_palette_fill_animate_pose_move(int animate_idx,int pose_move_idx)
 	list_palette_add_header_button(&model_palette,kAnimationPoseMovePropertyParticleAdd,"Animate Pose Particles",list_button_plus);
 
 	for (n=0;n!=pose_move->particle.count;n++) {
-		list_palette_add_string_selectable_button(&model_palette,(kAnimationPoseMovePropertyParticle+n),list_button_minus,(kAnimationPoseMovePropertyParticleDelete+n),pose_move->particle.particles[n].name,((state.model.cur_animate_idx==animate_idx) && (state.model.cur_animate_pose_move_idx==pose_move_idx) && (state.model.cur_animate_pose_move_particle_idx==n)),FALSE,FALSE);
+		list_palette_add_string_selectable_button(&model_palette,(kAnimationPoseMovePropertyParticle+n),list_button_minus,(kAnimationPoseMovePropertyParticleDelete+n),pose_move->particle.particles[n].name,((state.model.cur_animate_idx==animate_idx) && (state.model.cur_animate_pose_move_idx==pose_move_idx) && (state.model.cur_animate_pose_move_particle_idx==n)),FALSE);
 	}
 
 		// rings
@@ -164,7 +164,7 @@ void model_palette_fill_animate_pose_move(int animate_idx,int pose_move_idx)
 	list_palette_add_header_button(&model_palette,kAnimationPoseMovePropertyRingAdd,"Animate Pose Rings",list_button_plus);
 
 	for (n=0;n!=pose_move->ring.count;n++) {
-		list_palette_add_string_selectable_button(&model_palette,(kAnimationPoseMovePropertyRing+n),list_button_minus,(kAnimationPoseMovePropertyRingDelete+n),pose_move->ring.rings[n].name,((state.model.cur_animate_idx==animate_idx) && (state.model.cur_animate_pose_move_idx==pose_move_idx) && (state.model.cur_animate_pose_move_ring_idx==n)),FALSE,FALSE);
+		list_palette_add_string_selectable_button(&model_palette,(kAnimationPoseMovePropertyRing+n),list_button_minus,(kAnimationPoseMovePropertyRingDelete+n),pose_move->ring.rings[n].name,((state.model.cur_animate_idx==animate_idx) && (state.model.cur_animate_pose_move_idx==pose_move_idx) && (state.model.cur_animate_pose_move_ring_idx==n)),FALSE);
 	}
 }
 

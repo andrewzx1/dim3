@@ -57,7 +57,7 @@ bool bitmap_text_font_exist(char *name)
 	return(cocoa_bitmap_text_font_exist(name));
 }
 
-void bitmap_text_size_internal(texture_font_size_type *d3_size_font,char *name,int size,int bitmap_wid,int bitmap_high)
+unsigned char* bitmap_text_size_internal(texture_font_size_type *d3_size_font,char *name,int size,int bitmap_wid,int bitmap_high)
 {
 	int					n,x,y,data_sz,row_add;
 	char				ch;
@@ -135,7 +135,7 @@ void bitmap_text_size_internal(texture_font_size_type *d3_size_font,char *name,i
 	if (txt_data==NULL) {
 		CGContextRelease(bitmap_ctx);
 		free(bm_data);
-		return;
+		return(NULL);
 	}
 	
 		// create the texture

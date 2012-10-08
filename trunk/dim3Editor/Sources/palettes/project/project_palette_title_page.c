@@ -136,7 +136,7 @@ void project_palette_fill_title_page(void)
 	list_palette_sort_mark_start(&project_palette);
 	
 	for (n=0;n!=iface.intro.model_list.nmodel;n++) {
-		list_palette_add_string_selectable_button(&project_palette,(kIntroPropertyModelName+n),list_button_minus,(kIntroPropertyModelDelete+n),iface.intro.model_list.models[n].model_name,(state.proj.cur_intro_model_idx==n),FALSE,FALSE);
+		list_palette_add_string_selectable_button(&project_palette,(kIntroPropertyModelName+n),list_button_minus,(kIntroPropertyModelDelete+n),iface.intro.model_list.models[n].model_name,(state.proj.cur_intro_model_idx==n),FALSE);
 	}
 
 	list_palette_sort(&project_palette);
