@@ -228,7 +228,7 @@ int model_shift_pose_index(int pose_idx,int dir)
 
 		shuffle=FALSE;
 
-		for (n=0;n!=model.npose;n++) {
+		for (n=0;n<(model.npose-1);n++) {
 			k=n+1;
 
 			if (strcasecmp(names[n],names[k])>0) {
@@ -257,7 +257,7 @@ int model_shift_pose_index(int pose_idx,int dir)
 	}
 	
 	pose_idx+=dir;
-	if (pose_idx==0) pose_idx=model.npose-1;
+	if (pose_idx==-1) pose_idx=model.npose-1;
 	if (pose_idx==model.npose) pose_idx=0;
 	
 	return(indexes[pose_idx]);
