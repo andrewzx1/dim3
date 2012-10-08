@@ -359,7 +359,8 @@ typedef struct		{
 															item_sort_start_idx,
 															item_push_idx,
 															button_push_idx,
-															scroll_offset,total_high;
+															scroll_offset,sav_scroll_offset,
+															total_high;
 						bool								back_push_on,item_push_on;
 						char								titles[3][128];
 						list_palette_click_type				click;

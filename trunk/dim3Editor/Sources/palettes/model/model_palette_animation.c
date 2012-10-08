@@ -122,7 +122,7 @@ void model_palette_click_animation(int animate_idx,bool double_click)
 		// move pose up
 		
 	if ((id>=kAnimationPropertyPoseMoveUp) && (id<kAnimationPropertyPoseMoveDown)) {
-		state.model.cur_animate_pose_move_idx=model_shift_animation_pose_move(state.model.cur_animate_idx,(id-kAnimationPropertyPoseMove),-1);
+		state.model.cur_animate_pose_move_idx=model_shift_animation_pose_move(state.model.cur_animate_idx,(id-kAnimationPropertyPoseMoveUp),-1);
 		state.model.cur_pose_idx=animate->pose_moves[state.model.cur_animate_pose_move_idx].pose_idx;
 		return;
 	}
@@ -130,7 +130,7 @@ void model_palette_click_animation(int animate_idx,bool double_click)
 		// move pose down
 		
 	if (id>=kAnimationPropertyPoseMoveDown) {
-		state.model.cur_animate_pose_move_idx=model_shift_animation_pose_move(state.model.cur_animate_idx,(id-kAnimationPropertyPoseMove),1);
+		state.model.cur_animate_pose_move_idx=model_shift_animation_pose_move(state.model.cur_animate_idx,(id-kAnimationPropertyPoseMoveDown),1);
 		state.model.cur_pose_idx=animate->pose_moves[state.model.cur_animate_pose_move_idx].pose_idx;
 		return;
 	}

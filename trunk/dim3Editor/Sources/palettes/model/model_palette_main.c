@@ -210,7 +210,6 @@ void model_palette_click_main(bool double_click)
 		// if double-click
 
 	if (double_click) {
-		model_palette_reset();
 		list_palette_set_level(&model_palette,1);
 	}
 }

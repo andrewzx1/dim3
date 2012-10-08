@@ -123,3 +123,31 @@ void group_clear(int group_idx,bool delete_shift)
 	}
 }
 
+/* =======================================================
+
+      Shift Movement Moves
+      
+======================================================= */
+
+int map_shift_movement_move(int movement_idx,int move_idx,int dir)
+{
+	int						idx;
+	movement_type			*movement;
+	movement_move_type		temp_move;
+	
+	movement=&map.movement.movements[movement_idx];
+
+		// can't move if at top or bottom
+		
+	if ((dir==-1) && (move_idx==0)) return(move_idx);
+	if ((dir==1) && (move_idx==(movement->nmove-1))) return(move_idx);
+	
+		// shift move
+		
+	idx=move_idx+dir;
+	memmove(&temp_move,&movement->moves[move_idx],sizeof(movement_move_type));
+	memmove(&movement->moves[move_idx],&movement->moves[idx],sizeof(movement_move_type));
+	memmove(&movement->moves[idx],&temp_move,sizeof(movement_move_type));
+	
+	return(idx);
+}

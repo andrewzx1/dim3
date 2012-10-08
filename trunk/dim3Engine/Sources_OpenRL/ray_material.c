@@ -295,6 +295,29 @@ int rlMaterialDelete(int materialId)
 
 /* =======================================================
 
+      Deletes all Materials
+
+	  Returns:
+	   RL_ERROR_OK
+	   RL_ERROR_MATERIAL_ATTACHED_TO_MESH
+	   RL_ERROR_MATERIAL_ATTACHED_TO_OVERLAY
+      
+======================================================= */
+
+int rlMaterialDeleteAll(void)
+{
+	int				err;
+
+	while (ray_global.material_list.count!=0) {
+		err=rlMaterialDelete(ray_global.material_list.materials[0]->id);
+		if (err!=RL_ERROR_OK) return(err);
+	}
+	
+	return(RL_ERROR_OK);
+}
+
+/* =======================================================
+
       Attach a Material Target from a Memory Block
 
 	  Returns:

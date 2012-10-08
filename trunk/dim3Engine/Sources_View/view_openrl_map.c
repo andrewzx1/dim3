@@ -1,0 +1,234 @@
+/****************************** File *********************************
+
+Module: dim3 Engine
+Author: Brian Barnes
+ Usage: View OpenRL Map
+
+***************************** License ********************************
+
+This code can be freely used as long as these conditions are met:
+
+1. This header, in its entirety, is kept with the code
+2. This credit ÒCreated with dim3 TechnologyÓ is given on a single
+application screen and in a single piece of the documentation
+3. It is not resold, in it's current form or modified, as an
+engine-only product
+
+This code is presented as is. The author of dim3 takes no
+responsibilities for any version of this code.
+
+Any non-engine product (games, etc) created with this code is free
+from any and all payment and/or royalties to the author of dim3,
+and can be sold or given away.
+
+(c) 2000-2012 Klink! Software www.klinksoftware.com
+ 
+*********************************************************************/
+
+#ifdef D3_PCH
+	#include "dim3engine.h"
+#endif
+
+#include "interface.h"
+
+#ifdef D3_OPENRL
+	#include "ray_interface.h"
+#endif
+
+extern map_type				map;
+extern server_type			server;
+extern camera_type			camera;
+extern view_type			view;
+extern iface_type			iface;
+extern setup_type			setup;
+extern network_setup_type	net_setup;
+extern file_path_setup_type	file_path_setup;
+
+#ifdef D3_OPENRL
+
+	extern int						view_rl_scene_id;
+
+	extern int view_openrl_create_material(char *sub_path,texture_type *texture,texture_frame_type *frame);
+
+#endif
+
+/* =======================================================
+
+      Blank Patches
+      
+======================================================= */
+
+#ifndef D3_OPENRL
+
+void view_openrl_map_setup(void) {}
+
+#else
+
+/* =======================================================
+
+      OpenRL Map Mesh Setup
+      
+======================================================= */
+
+void view_openrl_map_setup(void)
+{
+	int					n,k,i,t,uv_count,mesh_id,light_id;
+	float				*vertexes,*vp,*uvs,*vt,*normals,*tangents,*vn;
+	short				*vk,*ray_polys;
+	d3pnt				*pnt;
+	map_mesh_type		*mesh;
+	map_mesh_poly_type	*poly;
+	texture_type		*texture;
+	texture_frame_type	*frame;
+	map_light_type		*lit;
+	rlPoint				lit_pnt;
+	rlColor				lit_col;
+	
+		// build the materials
+		
+	for (n=0;n!=max_map_texture;n++) {
+		texture=&map.textures[n];
+		
+		frame=&texture->frames[0];
+		if (frame->name[0]==0x0) continue;
+		
+		frame->bitmap.rl_material_id=view_openrl_create_material("Bitmaps/Textures",texture,frame);
+	}
+			
+		// build the meshes
+
+	for (n=0;n!=map.mesh.nmesh;n++) {
+		mesh=&map.mesh.meshes[n];
+		if (!mesh->flag.on) continue;
+			
+			// add the mesh
+
+		mesh_id=rlSceneMeshAdd(view_rl_scene_id,0);
+		if (mesh_id<0) return;
+
+			// the vertexes
+
+		vertexes=(float*)malloc((mesh->nvertex*3)*sizeof(float));
+		vp=vertexes;
+
+		pnt=mesh->vertexes;
+
+		for (k=0;k!=mesh->nvertex;k++) {
+			*vp++=(float)pnt->x;
+			*vp++=(float)pnt->y;
+			*vp++=(float)pnt->z;
+			pnt++;
+		}
+		
+		rlSceneMeshSetVertex(view_rl_scene_id,mesh_id,RL_MESH_FORMAT_VERTEX_3_FLOAT,mesh->nvertex,vertexes);
+		free(vertexes);
+
+			// the UVs
+
+		uvs=(float*)malloc((mesh->npoly*(8*2))*sizeof(float));		// supergumba -- this will work but chews up a lot of memory
+		vt=uvs;
+
+		uv_count=0;
+		poly=mesh->polys;
+	
+		for (i=0;i!=mesh->npoly;i++) {
+			for (t=0;t!=poly->ptsz;t++) {
+				*vt++=poly->main_uv.uvs[t].x;
+				*vt++=poly->main_uv.uvs[t].y;
+			}
+			uv_count+=poly->ptsz;
+			poly++;
+		}
+			
+		rlSceneMeshSetUV(view_rl_scene_id,mesh_id,RL_MESH_FORMAT_UV_2_FLOAT,uv_count,uvs);
+		free(uvs);
+
+			// the normals
+
+		normals=(float*)malloc((mesh->npoly*3)*sizeof(float));
+		vn=normals;
+
+		poly=mesh->polys;
+	
+		for (i=0;i!=mesh->npoly;i++) {
+			*vn++=poly->tangent_space.normal.x;
+			*vn++=poly->tangent_space.normal.y;
+			*vn++=poly->tangent_space.normal.z;
+			poly++;
+		}
+		
+		rlSceneMeshSetNormal(view_rl_scene_id,mesh_id,RL_MESH_FORMAT_NORMAL_3_FLOAT,mesh->npoly,normals);
+		free(normals);
+
+			// the tangents
+
+		tangents=(float*)malloc((mesh->npoly*3)*sizeof(float));
+		vn=tangents;
+
+		poly=mesh->polys;
+	
+		for (i=0;i!=mesh->npoly;i++) {
+			*vn++=poly->tangent_space.tangent.x;
+			*vn++=poly->tangent_space.tangent.y;
+			*vn++=poly->tangent_space.tangent.z;
+			poly++;
+		}
+		
+		rlSceneMeshSetTangent(view_rl_scene_id,mesh_id,RL_MESH_FORMAT_TANGENT_3_FLOAT,mesh->npoly,tangents);
+		free(tangents);
+
+			// polygons
+
+		ray_polys=(short*)malloc((mesh->npoly*(2+(4*8)))*sizeof(short));		// supergumba -- this will work but chews up a lot of memory
+		vk=ray_polys;
+
+		uv_count=0;
+		poly=mesh->polys;
+	
+		for (i=0;i!=mesh->npoly;i++) {
+			*vk++=poly->ptsz;
+			*vk++=(short)map.textures[poly->txt_idx].frames[0].bitmap.rl_material_id;
+
+			for (t=0;t!=poly->ptsz;t++) {
+				*vk++=(short)poly->v[t];	// vertex
+				*vk++=uv_count;				// uv, each vertex has unique uv count
+				*vk++=(short)i;				// normal, one normal for each poly
+				*vk++=(short)i;				// tangent, one tangent for each poly
+				uv_count++;
+			}
+
+			poly++;
+		}
+
+		rlSceneMeshSetPoly(view_rl_scene_id,mesh_id,RL_MESH_FORMAT_POLY_SHORT_VERTEX_UV_NORMAL_TANGENT,mesh->npoly,ray_polys);
+		free(ray_polys);
+	}
+
+		// the ambient
+
+	lit_col.r=map.ambient.light_color.r;
+	lit_col.g=map.ambient.light_color.g;
+	lit_col.b=map.ambient.light_color.b;
+	rlSceneAmbient(view_rl_scene_id,&lit_col);
+	
+		// build the lights
+		
+	for (n=0;n!=map.nlight;n++) {
+		lit=&map.lights[n];
+		
+		light_id=rlSceneLightAdd(view_rl_scene_id);
+		rlSceneLightSetIntensity(view_rl_scene_id,light_id,(float)lit->setting.intensity,lit->setting.exponent);
+	
+		lit_col.r=lit->setting.col.r;
+		lit_col.g=lit->setting.col.g;
+		lit_col.b=lit->setting.col.b;
+		rlSceneLightSetColor(view_rl_scene_id,light_id,&lit_col);
+
+		lit_pnt.x=(float)lit->pnt.x;
+		lit_pnt.y=(float)lit->pnt.y;
+		lit_pnt.z=(float)lit->pnt.z;
+		rlSceneLightSetPosition(view_rl_scene_id,light_id,&lit_pnt);
+	}
+}
+
+#endif
