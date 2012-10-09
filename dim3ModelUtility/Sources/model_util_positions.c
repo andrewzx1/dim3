@@ -64,8 +64,8 @@ void model_get_point_position(model_draw_setup *draw_setup,d3pnt *pnt)
 	fz-=cz;
 		
 	matrix_vertex_multiply_ignore_transform(&rot_x_mat,&fx,&fy,&fz);
-	matrix_vertex_multiply_ignore_transform(&rot_z_mat,&fx,&fy,&fz);
 	matrix_vertex_multiply_ignore_transform(&rot_y_mat,&fx,&fy,&fz);
+	matrix_vertex_multiply_ignore_transform(&rot_z_mat,&fx,&fy,&fz);
 
 	pnt->x=(int)((fx+cx)+draw_setup->move.x);
 	pnt->y=(int)((fy+cy)+draw_setup->move.y);

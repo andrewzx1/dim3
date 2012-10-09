@@ -471,6 +471,9 @@
 		268936BF155CCB5200147273 /* map_collide_setup.c in Sources */ = {isa = PBXBuildFile; fileRef = 268936BC155CCB5200147273 /* map_collide_setup.c */; };
 		268936C0155CCB5200147273 /* map_collide_xz.c in Sources */ = {isa = PBXBuildFile; fileRef = 268936BD155CCB5200147273 /* map_collide_xz.c */; };
 		268936C1155CCB5200147273 /* map_collide_y.c in Sources */ = {isa = PBXBuildFile; fileRef = 268936BE155CCB5200147273 /* map_collide_y.c */; };
+		268BCEBE1623C1F600A18404 /* view_openrl_map.c in Sources */ = {isa = PBXBuildFile; fileRef = 268BCEBB1623C1F600A18404 /* view_openrl_map.c */; };
+		268BCEBF1623C1F600A18404 /* view_openrl_material.c in Sources */ = {isa = PBXBuildFile; fileRef = 268BCEBC1623C1F600A18404 /* view_openrl_material.c */; };
+		268BCEC01623C1F600A18404 /* view_openrl_model.c in Sources */ = {isa = PBXBuildFile; fileRef = 268BCEBD1623C1F600A18404 /* view_openrl_model.c */; };
 		269BAD4815C0DDFE007EE1E9 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 269BAD4715C0DDFE007EE1E9 /* CoreAudio.framework */; };
 		269BAD4A15C0DE10007EE1E9 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 269BAD4915C0DE10007EE1E9 /* AudioToolbox.framework */; };
 		269BAD4C15C0DE1B007EE1E9 /* ForceFeedback.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 269BAD4B15C0DE1B007EE1E9 /* ForceFeedback.framework */; };
@@ -986,6 +989,9 @@
 		268936BC155CCB5200147273 /* map_collide_setup.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = map_collide_setup.c; sourceTree = "<group>"; };
 		268936BD155CCB5200147273 /* map_collide_xz.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = map_collide_xz.c; sourceTree = "<group>"; };
 		268936BE155CCB5200147273 /* map_collide_y.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = map_collide_y.c; sourceTree = "<group>"; };
+		268BCEBB1623C1F600A18404 /* view_openrl_map.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = view_openrl_map.c; sourceTree = "<group>"; };
+		268BCEBC1623C1F600A18404 /* view_openrl_material.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = view_openrl_material.c; sourceTree = "<group>"; };
+		268BCEBD1623C1F600A18404 /* view_openrl_model.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = view_openrl_model.c; sourceTree = "<group>"; };
 		269BAD4715C0DDFE007EE1E9 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = ../../../../System/Library/Frameworks/CoreAudio.framework; sourceTree = "<group>"; };
 		269BAD4915C0DE10007EE1E9 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = ../../../../System/Library/Frameworks/AudioToolbox.framework; sourceTree = "<group>"; };
 		269BAD4B15C0DE1B007EE1E9 /* ForceFeedback.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ForceFeedback.framework; path = ../../../../System/Library/Frameworks/ForceFeedback.framework; sourceTree = "<group>"; };
@@ -1359,6 +1365,7 @@
 				26188CEE14A1A00400EDF154 /* Video */,
 				26188CEF14A1A01100EDF154 /* Audio */,
 				263A144E149BE25400F31189 /* View */,
+				268BCEBA1623C1E000A18404 /* ViewOpenRL */,
 				263A144F149BE27500F31189 /* Render */,
 				26188CF014A1A01C00EDF154 /* GUI */,
 				264470E314AED1730099DEE3 /* HUD */,
@@ -1547,7 +1554,6 @@
 				260B3F901411F781006ED023 /* view_setup.c */,
 				260B3F911411F781006ED023 /* view_vertex_list.c */,
 				260B3F921411F781006ED023 /* view_vertex_object.c */,
-				2669FCEE161274DD002292C6 /* view_openrl_patch.c */,
 			);
 			name = View;
 			sourceTree = "<group>";
@@ -1644,6 +1650,17 @@
 				2669FCFF16127502002292C6 /* ray.h */,
 			);
 			name = OpenRL;
+			sourceTree = "<group>";
+		};
+		268BCEBA1623C1E000A18404 /* ViewOpenRL */ = {
+			isa = PBXGroup;
+			children = (
+				268BCEBC1623C1F600A18404 /* view_openrl_material.c */,
+				268BCEBB1623C1F600A18404 /* view_openrl_map.c */,
+				268BCEBD1623C1F600A18404 /* view_openrl_model.c */,
+				2669FCEE161274DD002292C6 /* view_openrl_patch.c */,
+			);
+			name = ViewOpenRL;
 			sourceTree = "<group>";
 		};
 		26A45D051489AD0A00C02936 /* Script API */ = {
@@ -2443,6 +2460,9 @@
 				2669FD0A16127502002292C6 /* ray_precalc.c in Sources */,
 				2669FD0B16127502002292C6 /* ray_render.c in Sources */,
 				2669FD0C16127502002292C6 /* ray_scene.c in Sources */,
+				268BCEBE1623C1F600A18404 /* view_openrl_map.c in Sources */,
+				268BCEBF1623C1F600A18404 /* view_openrl_material.c in Sources */,
+				268BCEC01623C1F600A18404 /* view_openrl_model.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
