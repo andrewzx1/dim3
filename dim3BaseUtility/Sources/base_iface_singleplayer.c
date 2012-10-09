@@ -61,6 +61,7 @@ void iface_read_settings_singleplayer(iface_type *iface)
     if (settings_tag!=-1) {
 		iface->singleplayer.skill=xml_get_attribute_boolean(settings_tag,"skill");
 		iface->singleplayer.map_pick=xml_get_attribute_boolean(settings_tag,"map_pick");
+		iface->singleplayer.map_pick_ss_reveal_id=xml_get_attribute_int_default(settings_tag,"map_pick_ss_reveal_id",-1);
 	}
 
 		// options
@@ -77,6 +78,7 @@ void iface_read_settings_singleplayer(iface_type *iface)
 	
 			xml_get_attribute_text(option_tag,"name",sp_option->name,name_str_len);
 			xml_get_attribute_text(option_tag,"description",sp_option->descript,64);
+			sp_option->ss_reveal_id=xml_get_attribute_int_default(option_tag,"ss_reveal_id",-1);
 			
 			iface->singleplayer.option_list.noption++;
 			if (iface->singleplayer.option_list.noption==max_net_option) break;
@@ -116,6 +118,7 @@ bool iface_write_settings_singleplayer(iface_type *iface,char *err_str)
 	xml_add_tagstart("Settings");
 	xml_add_attribute_boolean("skill",iface->singleplayer.skill);
 	xml_add_attribute_boolean("map_pick",iface->singleplayer.map_pick);
+	xml_add_attribute_int("map_pick_ss_reveal_id",iface->singleplayer.map_pick_ss_reveal_id);
 	xml_add_tagend(TRUE);
 
 		// options
@@ -129,6 +132,7 @@ bool iface_write_settings_singleplayer(iface_type *iface,char *err_str)
 		xml_add_tagstart("Option");
 		xml_add_attribute_text("name",sp_option->name);
 		xml_add_attribute_text("description",sp_option->descript);
+		xml_add_attribute_int("ss_reveal_id",sp_option->ss_reveal_id);
 		xml_add_tagend(TRUE);
 
 		sp_option++;

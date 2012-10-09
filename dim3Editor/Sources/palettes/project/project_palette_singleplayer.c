@@ -34,6 +34,7 @@ and can be sold or given away.
 
 #define kSPPropertySkill						0
 #define kSPPropertyMapPick						1
+#define kSPPropertyMapPickSSRevealId			2
 
 #define kSPPropertyOptionAdd					10
 
@@ -61,6 +62,7 @@ void project_palette_fill_singleplayer(void)
 	list_palette_add_header(&project_palette,0,"Settings");
 	list_palette_add_checkbox(&project_palette,kSPPropertySkill,"Skill",&iface.singleplayer.skill,FALSE);
 	list_palette_add_checkbox(&project_palette,kSPPropertyMapPick,"Map Pick",&iface.singleplayer.map_pick,FALSE);
+	list_palette_add_int(&project_palette,kSPPropertyMapPickSSRevealId,"Simple Save Map Pick Reveal ID",&iface.singleplayer.map_pick_ss_reveal_id,FALSE);
 
 		// options
 

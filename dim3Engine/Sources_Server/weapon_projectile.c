@@ -81,7 +81,7 @@ bool weapon_add_projectile(obj_type *obj,weapon_type *weap,proj_setup_type *proj
 	
 		// create new projectile
 		
-	proj=projectile_create(obj,weap,proj_setup);
+	proj=projectile_create(obj,weap,proj_setup,FALSE);
 	if (proj==NULL) return(FALSE);
 
 	projectile_spawn_position(proj,pt,ang,obj);

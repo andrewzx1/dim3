@@ -365,7 +365,7 @@ extern bool projectile_initialize_list(void);
 extern void projectile_free_list(void);
 extern int projectile_count_list(void);
 
-extern proj_type* projectile_create(obj_type *obj,weapon_type *weap,proj_setup_type *proj_setup);
+extern proj_type* projectile_create(obj_type *obj,weapon_type *weap,proj_setup_type *proj_setup,bool hit_scan);
 
 extern inline int projectile_get_radius(proj_type *proj);
 extern void projectile_set_position(proj_type *proj,d3pnt *pt,d3ang *ang);

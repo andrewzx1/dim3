@@ -34,6 +34,7 @@ and can be sold or given away.
 
 #define kMPOptionPropertySettingsName			0
 #define kMPOptionPropertySettingsDescript		1
+#define kMPOptionPropertySettingsSSRevealId		2
 
 extern iface_type				iface;
 extern list_palette_type		project_palette;
@@ -57,6 +58,7 @@ void project_palette_fill_singleplayer_option(int singleplayer_option_idx)
 	list_palette_add_header(&project_palette,0,"Settings");
 	list_palette_add_string(&project_palette,kMPOptionPropertySettingsName,"Name",sp_option->name,name_str_len,FALSE);
 	list_palette_add_string(&project_palette,kMPOptionPropertySettingsDescript,"Description",sp_option->descript,name_str_len,FALSE);
+	list_palette_add_int(&project_palette,kMPOptionPropertySettingsSSRevealId,"Simple Save Reveal ID",&sp_option->ss_reveal_id,FALSE);
 }
 
 /* =======================================================

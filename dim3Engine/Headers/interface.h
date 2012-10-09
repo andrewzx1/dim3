@@ -1007,7 +1007,9 @@ extern void ring_draw_position(effect_type *effect,int count,d3pnt *pnt);
 extern bool view_openrl_initialize(char *err_str);
 extern void view_openrl_shutdown(void);
 extern void view_openrl_map_setup(void);
-extern void view_openrl_model_setup(void);
+extern void view_openrl_map_model_setup(void);
+extern void view_openrl_projectile_model_setup(proj_type *proj);
+extern void view_openrl_projectile_model_close(proj_type *proj);
 extern void view_openrl_map_close_cleanup(void);
 extern void view_openrl_render(void);
 
