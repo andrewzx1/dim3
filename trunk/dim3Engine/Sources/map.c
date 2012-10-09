@@ -520,7 +520,7 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 	progress_next();
 
 	view_openrl_map_setup();
-	view_openrl_model_setup();
+	view_openrl_map_model_setup();
 
 		// finish up
 	

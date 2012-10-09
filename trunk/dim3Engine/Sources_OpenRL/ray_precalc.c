@@ -168,7 +168,7 @@ void ray_precalc_triangle_vectors(ray_mesh_type *mesh,ray_trig_type *trig)
       
 ======================================================= */
 
-void ray_precalc_bound_mesh_indexes(ray_scene_type *scene,ray_bound_type *bnd,ray_mesh_index_block *index_block,bool ignore_skip_light)
+void ray_precalc_bound_mesh_indexes(ray_scene_type *scene,ray_bound_type *bnd,ray_mesh_index_block *index_block,bool light_trace)
 {
 	int					n;
 	short				*idx;
@@ -183,7 +183,12 @@ void ray_precalc_bound_mesh_indexes(ray_scene_type *scene,ray_bound_type *bnd,ra
 			// special knock-out flags
 			
 		if (mesh->hidden) continue;
-		if ((ignore_skip_light) && ((mesh->flags&RL_MESH_FLAG_NON_LIGHT_BLOCKING)!=0)) continue;
+		if (light_trace) {
+			if ((mesh->flags&RL_MESH_FLAG_NON_LIGHT_BLOCKING)!=0) continue;
+		}
+		else {
+			if ((mesh->flags&RL_MESH_FLAG_NON_RAY_TRACE_BLOCKING)!=0) continue;
+		}
 		
 			// bound collisions
 			

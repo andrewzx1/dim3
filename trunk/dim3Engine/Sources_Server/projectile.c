@@ -95,7 +95,7 @@ int projectile_count_list(void)
       
 ======================================================= */
 
-proj_type* projectile_create(obj_type *obj,weapon_type *weap,proj_setup_type *proj_setup)
+proj_type* projectile_create(obj_type *obj,weapon_type *weap,proj_setup_type *proj_setup,bool hit_scan)
 {
 	int					n,idx;
 	proj_type			*proj;
@@ -162,6 +162,10 @@ proj_type* projectile_create(obj_type *obj,weapon_type *weap,proj_setup_type *pr
 		// scripts
 		
 	proj->script_idx=proj_setup->script_idx;
+
+		// OpenRL meshes
+
+	if (!hit_scan) view_openrl_projectile_model_setup(proj);
 
     return(proj);
 }
@@ -258,6 +262,10 @@ void projectile_dispose(proj_type *proj)
 		// to a bone
 		
 	effect_projectile_bone_attach_particle_dispose(proj->idx);
+
+		// fix any OpenRL meshes
+
+	view_openrl_projectile_model_close(proj);
 
 		// mark as unused
 

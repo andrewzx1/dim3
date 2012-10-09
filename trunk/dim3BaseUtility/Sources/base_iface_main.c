@@ -422,6 +422,7 @@ void iface_default_settings(iface_type *iface)
 
 	iface->singleplayer.skill=FALSE;
 	iface->singleplayer.map_pick=FALSE;
+	iface->singleplayer.map_pick_ss_reveal_id=-1;
 	iface->singleplayer.option_list.noption=0;
 
 		// multiplayer

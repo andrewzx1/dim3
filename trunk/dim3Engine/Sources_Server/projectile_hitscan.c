@@ -53,7 +53,7 @@ void projectile_hitscan(obj_type *obj,weapon_type *weap,proj_setup_type *proj_se
 
 		// setup projectile
 		
-	proj=projectile_create(obj,weap,proj_setup);
+	proj=projectile_create(obj,weap,proj_setup,TRUE);
     if (proj==NULL) return;
 
 	projectile_set_position(proj,pt,ang);

@@ -1320,6 +1320,7 @@ typedef struct		{
 //
 
 typedef struct		{
+						int								ss_reveal_id;
 						char							name[name_str_len],descript[64];
 					} iface_sp_option_type;
 
@@ -1329,6 +1330,7 @@ typedef struct		{
 					} iface_sp_option_list_type;
 
 typedef struct		{
+						int								map_pick_ss_reveal_id;
 						bool							skill,map_pick;
 						iface_sp_option_list_type		option_list;
 					} iface_singleplayer_type;

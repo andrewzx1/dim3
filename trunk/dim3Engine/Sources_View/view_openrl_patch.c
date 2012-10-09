@@ -61,7 +61,8 @@ extern file_path_setup_type	file_path_setup;
 
 	texture_font_size_type			view_rl_font;
 
-	extern void view_openrl_model_update(void);
+	extern void view_openrl_map_model_update(void);
+	extern void view_openrl_projectile_model_update(void);
 
 #endif
 
@@ -187,7 +188,7 @@ bool view_openrl_initialize(char *err_str)
 		// get drawing size
 
 //	f=((float)view.screen.x_sz)/((float)view_rl_buffer_wid);
-	f=1.0f;
+	f=2.0f;
 
 	wid=(int)(((float)view_rl_buffer_wid)*f);
 	view_rl_lx=(view.screen.x_sz-wid)>>1;
@@ -336,7 +337,9 @@ void view_openrl_render(void)
 
 		// update the scene
 		
-	view_openrl_model_update();
+	view_openrl_map_model_update();
+	view_openrl_projectile_model_update();
+
 	view_openrl_update_overlays();
 
 		// render
