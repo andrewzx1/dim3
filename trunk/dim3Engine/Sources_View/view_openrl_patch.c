@@ -75,10 +75,8 @@ extern file_path_setup_type	file_path_setup;
 
 bool view_openrl_initialize(char *err_str) { return(TRUE); }
 void view_openrl_shutdown(void) {}
-void view_openrl_map_setup(void) {}
-void view_openrl_render(void) {}
-void view_openrl_model_setup(void) {}
 void view_openrl_map_close_cleanup(void) {}
+void view_openrl_render(void) {}
 
 #else
 

@@ -993,6 +993,7 @@ extern void view_draw_tint_start(d3col *col,float alpha,int fade_in_msec,int lif
 // misc rendering
 //
 
+extern void draw_weapon_hand_setup(obj_type *obj,weapon_type *weap);
 extern void draw_weapon_hand(obj_type *obj,weapon_type *weap);
 extern void decal_render(void);
 

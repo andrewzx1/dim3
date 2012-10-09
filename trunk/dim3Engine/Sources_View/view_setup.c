@@ -329,10 +329,16 @@ void view_setup_objects(int tick)
 					model_draw_setup_weapon(obj,weap,FALSE,TRUE);
 					if (weap->draw_dual.on) view.count.model++;
 				}
-
 			}
 		}
 	}
+	
+		// player weapons
+		
+	obj=server.obj_list.objs[server.player_obj_idx];
+	weap=weapon_find_current(obj);
+
+	if (weap!=NULL) draw_weapon_hand_setup(obj,weap);
 }
 
 void view_setup_projectiles(int tick)
