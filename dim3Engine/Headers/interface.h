@@ -1010,6 +1010,8 @@ extern void view_openrl_map_setup(void);
 extern void view_openrl_map_model_setup(void);
 extern void view_openrl_projectile_model_setup(proj_type *proj);
 extern void view_openrl_projectile_model_close(proj_type *proj);
+extern void view_openrl_effect_mesh_setup(effect_type *effect);
+extern void view_openrl_effect_mesh_close(effect_type *effect);
 extern void view_openrl_map_close_cleanup(void);
 extern void view_openrl_render(void);
 

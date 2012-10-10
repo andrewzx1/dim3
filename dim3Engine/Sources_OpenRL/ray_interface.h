@@ -29,16 +29,15 @@
 #define RL_MATERIAL_FORMAT_32_RGBA							0
 #define RL_MATERIAL_FORMAT_24_RGB							1
 
-	// mesh formats
+	// mesh array formats
 
 #define RL_MESH_FORMAT_VERTEX_3_FLOAT						0
-
 #define RL_MESH_FORMAT_UV_2_FLOAT							0
-
 #define RL_MESH_FORMAT_NORMAL_3_FLOAT						0
 #define RL_MESH_FORMAT_TANGENT_3_FLOAT						0
 
 #define RL_MESH_FORMAT_POLY_SHORT_VERTEX_UV_NORMAL_TANGENT	0
+#define RL_MESH_FORMAT_POLY_SHORT_VERTEX_UV					1
 
 	// mesh flags
 

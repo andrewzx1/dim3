@@ -88,27 +88,39 @@ void ray_get_material_rgb(ray_scene_type *scene,ray_point_type *eye_pnt,ray_poin
 	
 		// calculate the surface normal
 		
-	n0=&mesh->normal_block.normals[trig->idxs[0].normal];
-	n1=&mesh->normal_block.normals[trig->idxs[1].normal];
-	n2=&mesh->normal_block.normals[trig->idxs[2].normal];
+	if (mesh->normal_block.normals==NULL) {
+		pixel->surface.normal.x=pixel->surface.normal.y=0.0f;
+		pixel->surface.normal.z=-1.0f;
+	}
+	else {
+		n0=&mesh->normal_block.normals[trig->idxs[0].normal];
+		n1=&mesh->normal_block.normals[trig->idxs[1].normal];
+		n2=&mesh->normal_block.normals[trig->idxs[2].normal];
+			
+		pixel->surface.normal.x=(inv*n0->x)+(collision->u*n1->x)+(collision->v*n2->x);
+		pixel->surface.normal.y=(inv*n0->y)+(collision->u*n1->y)+(collision->v*n2->y);
+		pixel->surface.normal.z=(inv*n0->z)+(collision->u*n1->z)+(collision->v*n2->z);
 		
-	pixel->surface.normal.x=(inv*n0->x)+(collision->u*n1->x)+(collision->v*n2->x);
-	pixel->surface.normal.y=(inv*n0->y)+(collision->u*n1->y)+(collision->v*n2->y);
-	pixel->surface.normal.z=(inv*n0->z)+(collision->u*n1->z)+(collision->v*n2->z);
-	
-	ray_vector_normalize(&pixel->surface.normal);
+		ray_vector_normalize(&pixel->surface.normal);
+	}
 
 		// calculate the surface tangent
 		
-	n0=&mesh->tangent_block.tangents[trig->idxs[0].tangent];
-	n1=&mesh->tangent_block.tangents[trig->idxs[1].tangent];
-	n2=&mesh->tangent_block.tangents[trig->idxs[2].tangent];
+	if (mesh->normal_block.normals==NULL) {
+		pixel->surface.tangent.x=pixel->surface.tangent.z=0.0f;
+		pixel->surface.tangent.y=1.0f;
+	}
+	else {
+		n0=&mesh->tangent_block.tangents[trig->idxs[0].tangent];
+		n1=&mesh->tangent_block.tangents[trig->idxs[1].tangent];
+		n2=&mesh->tangent_block.tangents[trig->idxs[2].tangent];
+			
+		pixel->surface.tangent.x=(inv*n0->x)+(collision->u*n1->x)+(collision->v*n2->x);
+		pixel->surface.tangent.y=(inv*n0->y)+(collision->u*n1->y)+(collision->v*n2->y);
+		pixel->surface.tangent.z=(inv*n0->z)+(collision->u*n1->z)+(collision->v*n2->z);
 		
-	pixel->surface.tangent.x=(inv*n0->x)+(collision->u*n1->x)+(collision->v*n2->x);
-	pixel->surface.tangent.y=(inv*n0->y)+(collision->u*n1->y)+(collision->v*n2->y);
-	pixel->surface.tangent.z=(inv*n0->z)+(collision->u*n1->z)+(collision->v*n2->z);
-	
-	ray_vector_normalize(&pixel->surface.tangent);
+		ray_vector_normalize(&pixel->surface.tangent);
+	}
 
 		// calculate the binormal
 

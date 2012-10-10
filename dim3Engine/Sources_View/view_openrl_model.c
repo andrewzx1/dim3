@@ -30,6 +30,7 @@ and can be sold or given away.
 #endif
 
 #include "interface.h"
+#include "objects.h"
 
 #ifdef D3_OPENRL
 	#include "ray_interface.h"
@@ -251,7 +252,7 @@ void view_openrl_map_model_update(void)
 
 		rlSceneMeshSetVertex(view_rl_scene_id,draw->openrl_mesh_id,RL_MESH_FORMAT_VERTEX_3_FLOAT,mesh->nvertex,draw->setup.mesh_arrays[0].gl_vertex_array);
 		rlSceneMeshSetNormal(view_rl_scene_id,draw->openrl_mesh_id,RL_MESH_FORMAT_NORMAL_3_FLOAT,mesh->nvertex,draw->setup.mesh_arrays[0].gl_normal_array);
-		rlSceneMeshSetTangent(view_rl_scene_id,draw->openrl_mesh_id,RL_MESH_FORMAT_NORMAL_3_FLOAT,mesh->nvertex,draw->setup.mesh_arrays[0].gl_tangent_array);
+		rlSceneMeshSetTangent(view_rl_scene_id,draw->openrl_mesh_id,RL_MESH_FORMAT_TANGENT_3_FLOAT,mesh->nvertex,draw->setup.mesh_arrays[0].gl_tangent_array);
 	}
 
 		// player weapon models
@@ -280,7 +281,7 @@ void view_openrl_map_model_update(void)
 
 		rlSceneMeshSetVertex(view_rl_scene_id,draw->openrl_mesh_id,RL_MESH_FORMAT_VERTEX_3_FLOAT,mesh->nvertex,draw->setup.mesh_arrays[0].gl_vertex_array);
 		rlSceneMeshSetNormal(view_rl_scene_id,draw->openrl_mesh_id,RL_MESH_FORMAT_NORMAL_3_FLOAT,mesh->nvertex,draw->setup.mesh_arrays[0].gl_normal_array);
-		rlSceneMeshSetTangent(view_rl_scene_id,draw->openrl_mesh_id,RL_MESH_FORMAT_NORMAL_3_FLOAT,mesh->nvertex,draw->setup.mesh_arrays[0].gl_tangent_array);
+		rlSceneMeshSetTangent(view_rl_scene_id,draw->openrl_mesh_id,RL_MESH_FORMAT_TANGENT_3_FLOAT,mesh->nvertex,draw->setup.mesh_arrays[0].gl_tangent_array);
 	}
 }
 
@@ -315,12 +316,19 @@ void view_openrl_projectile_model_update(void)
 		draw=&proj->draw;
 		if (draw->openrl_mesh_id==-1) continue;
 
+			// projectile drawings share
+			// vertex lists
+
+		render_model_build_vertex_lists(&proj->draw,TRUE);
+
+			// rebuild the mesh
+
 		mdl=server.model_list.models[draw->model_idx];
 		mesh=&mdl->meshes[0];
 
 		rlSceneMeshSetVertex(view_rl_scene_id,draw->openrl_mesh_id,RL_MESH_FORMAT_VERTEX_3_FLOAT,mesh->nvertex,draw->setup.mesh_arrays[0].gl_vertex_array);
 		rlSceneMeshSetNormal(view_rl_scene_id,draw->openrl_mesh_id,RL_MESH_FORMAT_NORMAL_3_FLOAT,mesh->nvertex,draw->setup.mesh_arrays[0].gl_normal_array);
-		rlSceneMeshSetTangent(view_rl_scene_id,draw->openrl_mesh_id,RL_MESH_FORMAT_NORMAL_3_FLOAT,mesh->nvertex,draw->setup.mesh_arrays[0].gl_tangent_array);
+		rlSceneMeshSetTangent(view_rl_scene_id,draw->openrl_mesh_id,RL_MESH_FORMAT_TANGENT_3_FLOAT,mesh->nvertex,draw->setup.mesh_arrays[0].gl_tangent_array);
 	}
 }
 

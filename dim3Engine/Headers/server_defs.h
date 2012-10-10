@@ -1068,7 +1068,8 @@ typedef union		{
 	
 typedef struct		{
 						int						effecttype,mesh_idx,size,
-												start_tick,life_tick;
+												start_tick,life_tick,
+												openrl_mesh_id;
 						bool					on;
 						d3pnt					pnt;
 						effect_data				data;
