@@ -63,6 +63,7 @@ extern file_path_setup_type	file_path_setup;
 
 	extern void view_openrl_map_model_update(void);
 	extern void view_openrl_projectile_model_update(void);
+	extern void view_openrl_effect_mesh_update(void);
 
 #endif
 
@@ -339,6 +340,7 @@ void view_openrl_render(void)
 		
 	view_openrl_map_model_update();
 	view_openrl_projectile_model_update();
+	view_openrl_effect_mesh_update();
 
 	view_openrl_update_overlays();
 

@@ -590,7 +590,7 @@ int rlSceneMeshSetPoly(int sceneId,int meshId,int format,int count,void *poly_da
 
 		// get the format
 
-	if (format!=RL_MESH_FORMAT_POLY_SHORT_VERTEX_UV_NORMAL_TANGENT) return(RL_ERROR_UNKNOWN_FORMAT);
+	if ((format!=RL_MESH_FORMAT_POLY_SHORT_VERTEX_UV_NORMAL_TANGENT) && (format!=RL_MESH_FORMAT_POLY_SHORT_VERTEX_UV)) return(RL_ERROR_UNKNOWN_FORMAT);
 	
 		// create polygon memory
 		
@@ -631,8 +631,13 @@ int rlSceneMeshSetPoly(int sceneId,int meshId,int format,int count,void *poly_da
 		for (k=0;k!=poly->nvertex;k++) {
 			pidx->vertex=(int)*pp++;
 			pidx->uv=(int)*pp++;
-			pidx->normal=(int)*pp++;
-			pidx->tangent=(int)*pp++;
+			if (format!=RL_MESH_FORMAT_POLY_SHORT_VERTEX_UV) {
+				pidx->normal=(int)*pp++;
+				pidx->tangent=(int)*pp++;
+			}
+			else {
+				pidx->normal=pidx->tangent=0;
+			}
 			pidx++;
 		}
 

@@ -3820,6 +3820,10 @@
 					Name="ViewOpenRL"
 					>
 					<File
+						RelativePath="..\..\dim3Engine\Sources_View\view_openrl_effect.c"
+						>
+					</File>
+					<File
 						RelativePath="..\..\dim3Engine\Sources_View\view_openrl_map.c"
 						>
 					</File>

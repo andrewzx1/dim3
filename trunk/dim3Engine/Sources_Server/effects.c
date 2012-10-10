@@ -144,6 +144,10 @@ int effect_spawn(int effecttype,d3pnt *pt,int life_tick)
 
 	effect->start_tick=game_time_get();
 	effect->life_tick=life_tick;
+
+		// openrl setup
+
+	view_openrl_effect_mesh_setup(effect);
 	
 	return(idx);
 }
@@ -163,6 +167,10 @@ inline void effect_dispose_single(effect_type *effect)
 		// dispose any active VBOs
 
 	view_dispose_effect_vertex_object(effect);
+
+		// dispose any openrl meshes
+
+	view_openrl_effect_mesh_close(effect);
 }
 
 void effect_dispose(void)
