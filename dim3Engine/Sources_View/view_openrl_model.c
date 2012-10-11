@@ -77,7 +77,7 @@ void view_openrl_model_setup_single_model(model_draw *draw,bool hidden,bool no_r
 {
 	int					n,k,mesh_id,uv_count;
 	unsigned long		flags;
-	float				*uvs,*vt;
+	float				*uv;
 	short				*vk,*ray_polys;
 	model_type			*mdl;
 	model_mesh_type		*mesh;
@@ -111,23 +111,28 @@ void view_openrl_model_setup_single_model(model_draw *draw,bool hidden,bool no_r
 
 		// the UVs
 
-	uvs=(float*)malloc((mesh->npoly*(8*2))*sizeof(float));		// supergumba -- this will work but chews up a lot of memory
-	vt=uvs;
-
 	uv_count=0;
 	poly=mesh->polys;
 
 	for (n=0;n!=mesh->npoly;n++) {
-		for (k=0;k!=poly->ptsz;k++) {
-			*vt++=poly->gx[k];
-			*vt++=poly->gy[k];
-		}
 		uv_count+=poly->ptsz;
 		poly++;
 	}
-		
-	rlSceneMeshSetUV(view_rl_scene_id,mesh_id,RL_MESH_FORMAT_UV_2_FLOAT,uv_count,uvs);
-	free(uvs);
+
+	rlSceneMeshSetUV(view_rl_scene_id,mesh_id,RL_MESH_FORMAT_UV_2_FLOAT,uv_count,NULL);
+	rlSceneMeshMapUVPointer(view_rl_scene_id,mesh_id,&uv);
+
+	poly=mesh->polys;
+
+	for (n=0;n!=mesh->npoly;n++) {
+		for (k=0;k!=poly->ptsz;k++) {
+			*uv++=poly->gx[k];
+			*uv++=poly->gy[k];
+		}
+		poly++;
+	}
+
+	rlSceneMeshUnMapUVPointer(view_rl_scene_id,mesh_id);
 
 		// polygons
 

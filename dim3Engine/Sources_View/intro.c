@@ -315,8 +315,8 @@ void intro_start_game(int skill,int option_flags,char *map_name,int simple_save_
 bool intro_click_has_singleplayer_options(void)
 {
 	if (iface.singleplayer.skill) return(TRUE);
-	if (iface.singleplayer.map_pick) return(TRUE);
-	return(iface.singleplayer.option_list.noption!=0);
+	if (singleplayer_map_pick_on()) return(TRUE);
+	return(singleplayer_option_count()!=0);
 }
 
 void intro_click_game(int simple_save_idx)

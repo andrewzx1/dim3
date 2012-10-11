@@ -139,6 +139,40 @@ void singleplayer_option_map_list_get_name(int idx,char *name)
 
 /* =======================================================
 
+      Determine if Options are On
+      
+======================================================= */
+
+bool singleplayer_map_pick_on(void)
+{
+	if (!iface.singleplayer.map_pick) return(FALSE);
+	if (!iface.project.simple_save) return(TRUE);
+
+	if (iface.singleplayer.map_pick_ss_reveal_id==-1) return(TRUE);
+	return(iface.singleplayer.map_pick_ss_reveal_id<=iface.simple_save_list.saves[server.simple_save_idx].save_id);
+}
+
+bool singleplayer_option_on(int idx)
+{
+	if (iface.singleplayer.option_list.options[idx].ss_reveal_id==-1) return(TRUE);
+	return(iface.singleplayer.option_list.options[idx].ss_reveal_id<=iface.simple_save_list.saves[server.simple_save_idx].save_id);
+}
+
+bool singleplayer_option_count(void)
+{
+	int				n,count;
+
+	count=0;
+
+	for (n=0;n!=iface.singleplayer.option_list.noption;n++) {
+		if (singleplayer_option_on(n)) count++;
+	}
+
+	return(count);
+}
+
+/* =======================================================
+
       Singleplayer Option Open and Close
       
 ======================================================= */
@@ -164,14 +198,14 @@ void singleplayer_option_open(void)
 	butt_wid=element_get_button_short_wid();
 	butt_high=element_get_button_high();
 
-	if (iface.singleplayer.map_pick) {
+	if (singleplayer_map_pick_on()) {
 		high=iface.scale_y-(50+control_y_add);
 	}
 	else {
 		high=50+(padding*4);
 
 		if (iface.singleplayer.skill) high+=control_y_add;
-		high+=(control_y_add*iface.singleplayer.option_list.noption);
+		high+=(control_y_add*singleplayer_option_count());
 	}
 	
 		// dialog and frame
@@ -195,14 +229,16 @@ void singleplayer_option_open(void)
 	sp_option=iface.singleplayer.option_list.options;
 
 	for (n=0;n!=iface.singleplayer.option_list.noption;n++) {
-		element_checkbox_add(sp_option->descript,FALSE,(singleplayer_option_option_start_id+n),bx,by,TRUE);
-		by+=control_y_add;
+		if (singleplayer_option_on(n)) {
+			element_checkbox_add(sp_option->descript,FALSE,(singleplayer_option_option_start_id+n),bx,by,TRUE);
+			by+=control_y_add;
+		}
 		sp_option++;
 	}
 
 		// map pick
 
-	if (iface.singleplayer.map_pick) {
+	if (singleplayer_map_pick_on()) {
 		strcpy(cols[0].name,"Map");
 		cols[0].percent_size=1.0f;
 		
@@ -277,7 +313,7 @@ void singleplayer_option_click(void)
 				
 			map_name[0]=0x0;
 			
-			if (iface.singleplayer.map_pick) {
+			if (singleplayer_map_pick_on()) {
 				idx=element_get_value(singleplayer_option_map_table_id);
 				if (idx!=-1) singleplayer_option_map_list_get_name(idx,map_name);
 			}

@@ -275,6 +275,8 @@ int rlSceneMeshSetHidden(int sceneId,int meshId,bool hidden)
 /* =======================================================
 
       Sets Vertexes for a Mesh
+	  If vertex_data is NULL, no data is copied and
+	  the pointer can be retrieved for writing later
 
 	  Returns:
 	   RL_ERROR_OK
@@ -323,14 +325,16 @@ int rlSceneMeshSetVertex(int sceneId,int meshId,int format,int count,void *verte
 
 		// copy the vertexes
 
-	vertex=vertexes;
-	vp=(float*)vertex_data;
+	if (vertex_data!=NULL) {
+		vertex=vertexes;
+		vp=(float*)vertex_data;
 
-	for (n=0;n!=count;n++) {
-		vertex->x=*vp++;
-		vertex->y=*vp++;
-		vertex->z=*vp++;
-		vertex++;
+		for (n=0;n!=count;n++) {
+			vertex->x=*vp++;
+			vertex->y=*vp++;
+			vertex->z=*vp++;
+			vertex++;
+		}
 	}
 	
 		// vertex changes require
@@ -341,9 +345,61 @@ int rlSceneMeshSetVertex(int sceneId,int meshId,int format,int count,void *verte
 	return(RL_ERROR_OK);
 }
 
+int rlSceneMeshMapVertexPointer(int sceneId,int meshId,void **vertex_data)
+{
+	int				idx;
+	ray_scene_type	*scene;
+
+		// get scene
+
+	idx=ray_scene_get_index(sceneId);
+	if (idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
+
+	scene=ray_global.scene_list.scenes[idx];
+	if (rlSceneRenderState(sceneId)==RL_SCENE_STATE_RENDERING) return(RL_ERROR_SCENE_IN_USE);
+
+		// get mesh
+
+	idx=ray_scene_mesh_get_index(scene,meshId);
+	if (idx==-1) return(RL_ERROR_UNKNOWN_MESH_ID);
+
+		// return data
+
+	*vertex_data=scene->mesh_list.meshes[idx]->vertex_block.vertexes;
+
+	return(RL_ERROR_OK);
+}
+
+int rlSceneMeshUnMapVertexPointer(int sceneId,int meshId)
+{
+	int				idx;
+	ray_scene_type	*scene;
+
+		// get scene
+
+	idx=ray_scene_get_index(sceneId);
+	if (idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
+
+	scene=ray_global.scene_list.scenes[idx];
+	if (rlSceneRenderState(sceneId)==RL_SCENE_STATE_RENDERING) return(RL_ERROR_SCENE_IN_USE);
+
+		// get mesh
+
+	idx=ray_scene_mesh_get_index(scene,meshId);
+	if (idx==-1) return(RL_ERROR_UNKNOWN_MESH_ID);
+
+		// vertex changes always force a recalc
+
+	ray_scene_mesh_precalc(scene,scene->mesh_list.meshes[idx]);
+
+	return(RL_ERROR_OK);
+}
+
 /* =======================================================
 
       Sets UVs for a Mesh
+	  If uv_data is NULL, no data is copied and
+	  the pointer can be retrieved for writing later
 
 	  Returns:
 	   RL_ERROR_OK
@@ -392,21 +448,55 @@ int rlSceneMeshSetUV(int sceneId,int meshId,int format,int count,void *uv_data)
 
 		// copy the vertexes
 
-	uv=uvs;
-	tp=(float*)uv_data;
+	if (uv_data!=NULL) {
+		uv=uvs;
+		tp=(float*)uv_data;
 
-	for (n=0;n!=count;n++) {
-		uv->x=*tp++;
-		uv->y=*tp++;
-		uv++;
+		for (n=0;n!=count;n++) {
+			uv->x=*tp++;
+			uv->y=*tp++;
+			uv++;
+		}
 	}
 
+	return(RL_ERROR_OK);
+}
+
+int rlSceneMeshMapUVPointer(int sceneId,int meshId,void **uv_data)
+{
+	int				idx;
+	ray_scene_type	*scene;
+
+		// get scene
+
+	idx=ray_scene_get_index(sceneId);
+	if (idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
+
+	scene=ray_global.scene_list.scenes[idx];
+	if (rlSceneRenderState(sceneId)==RL_SCENE_STATE_RENDERING) return(RL_ERROR_SCENE_IN_USE);
+
+		// get mesh
+
+	idx=ray_scene_mesh_get_index(scene,meshId);
+	if (idx==-1) return(RL_ERROR_UNKNOWN_MESH_ID);
+
+		// return data
+
+	*uv_data=scene->mesh_list.meshes[idx]->uv_block.uvs;
+
+	return(RL_ERROR_OK);
+}
+
+int rlSceneMeshUnMapUVPointer(int sceneId,int meshId)
+{
 	return(RL_ERROR_OK);
 }
 
 /* =======================================================
 
       Sets Normals for a Mesh
+	  If normal_data is NULL, no data is copied and
+	  the pointer can be retrieved for writing later
 
 	  Returns:
 	   RL_ERROR_OK
@@ -460,22 +550,56 @@ int rlSceneMeshSetNormal(int sceneId,int meshId,int format,int count,void *norma
 
 		// copy the normals
 
-	normal=normals;
-	np=(float*)normal_data;
+	if (normal_data!=NULL) {
+		normal=normals;
+		np=(float*)normal_data;
 
-	for (n=0;n!=count;n++) {
-		normal->x=*np++;
-		normal->y=*np++;
-		normal->z=*np++;
-		normal++;
+		for (n=0;n!=count;n++) {
+			normal->x=*np++;
+			normal->y=*np++;
+			normal->z=*np++;
+			normal++;
+		}
 	}
 
+	return(RL_ERROR_OK);
+}
+
+int rlSceneMeshMapNormalPointer(int sceneId,int meshId,void **normal_data)
+{
+	int				idx;
+	ray_scene_type	*scene;
+
+		// get scene
+
+	idx=ray_scene_get_index(sceneId);
+	if (idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
+
+	scene=ray_global.scene_list.scenes[idx];
+	if (rlSceneRenderState(sceneId)==RL_SCENE_STATE_RENDERING) return(RL_ERROR_SCENE_IN_USE);
+
+		// get mesh
+
+	idx=ray_scene_mesh_get_index(scene,meshId);
+	if (idx==-1) return(RL_ERROR_UNKNOWN_MESH_ID);
+
+		// return data
+
+	*normal_data=scene->mesh_list.meshes[idx]->normal_block.normals;
+
+	return(RL_ERROR_OK);
+}
+
+int rlSceneMeshUnMapNormalPointer(int sceneId,int meshId)
+{
 	return(RL_ERROR_OK);
 }
 
 /* =======================================================
 
       Sets Tangents for a Mesh
+	  If tangent_data is NULL, no data is copied and
+	  the pointer can be retrieved for writing later
 
 	  Returns:
 	   RL_ERROR_OK
@@ -529,16 +653,48 @@ int rlSceneMeshSetTangent(int sceneId,int meshId,int format,int count,void *tang
 
 		// copy the normals
 
-	tangent=tangents;
-	np=(float*)tangent_data;
+	if (tangent_data!=NULL) {
+		tangent=tangents;
+		np=(float*)tangent_data;
 
-	for (n=0;n!=count;n++) {
-		tangent->x=*np++;
-		tangent->y=*np++;
-		tangent->z=*np++;
-		tangent++;
+		for (n=0;n!=count;n++) {
+			tangent->x=*np++;
+			tangent->y=*np++;
+			tangent->z=*np++;
+			tangent++;
+		}
 	}
 
+	return(RL_ERROR_OK);
+}
+
+int rlSceneMeshMapTangentPointer(int sceneId,int meshId,void **tangent_data)
+{
+	int				idx;
+	ray_scene_type	*scene;
+
+		// get scene
+
+	idx=ray_scene_get_index(sceneId);
+	if (idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
+
+	scene=ray_global.scene_list.scenes[idx];
+	if (rlSceneRenderState(sceneId)==RL_SCENE_STATE_RENDERING) return(RL_ERROR_SCENE_IN_USE);
+
+		// get mesh
+
+	idx=ray_scene_mesh_get_index(scene,meshId);
+	if (idx==-1) return(RL_ERROR_UNKNOWN_MESH_ID);
+
+		// return data
+
+	*tangent_data=scene->mesh_list.meshes[idx]->tangent_block.tangents;
+
+	return(RL_ERROR_OK);
+}
+
+int rlSceneMeshUnMapTangentPointer(int sceneId,int meshId)
+{
 	return(RL_ERROR_OK);
 }
 
