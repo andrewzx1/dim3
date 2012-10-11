@@ -344,48 +344,6 @@ void simple_save_pick_click(void)
 		intro_start_game(skill_medium,0,NULL,simple_save_idx);
 		return;
 	}
-
-/*		
-	switch (id) {
-	
-		case singleplayer_option_button_ok_id:
-
-				// get setup
-
-			skill=skill_medium;
-			if (iface.singleplayer.skill) skill=element_get_value(singleplayer_option_skill_id);
-			
-			option_flags=0x0;
-			for (n=0;n!=iface.singleplayer.option_list.noption;n++) {
-				if (element_get_value(singleplayer_option_option_start_id+n)!=0) option_flags|=(0x1<<n);
-			}
-			
-				// picked map?
-				
-			map_name[0]=0x0;
-			
-			if (iface.singleplayer.map_pick) {
-				idx=element_get_value(singleplayer_option_map_table_id);
-				if (idx!=-1) singleplayer_option_map_list_get_name(idx,map_name);
-			}
-
-				// start game
-
-			if (map_name[0]==0x0) {
-				intro_start_game(skill,option_flags,NULL,intro_simple_save_idx);
-			}
-			else {
-				intro_start_game(skill,option_flags,map_name,intro_simple_save_idx);
-			}
-			
-			break;
-
-		case singleplayer_option_button_cancel_id:
-			server.next_state=gs_intro;
-			break;
-
-	}
-	*/
 }
 
 void simple_save_pick_key(void)

@@ -111,10 +111,23 @@ extern int rlSceneMeshAdd(int sceneId,unsigned long flags);
 extern int rlSceneMeshDelete(int sceneId,int meshId);
 extern int rlSceneMeshDeleteAll(int scenedId);
 extern int rlSceneMeshSetHidden(int sceneId,int meshId,bool hidden);
+
 extern int rlSceneMeshSetVertex(int sceneId,int meshId,int format,int count,void *vertex_data);
+extern int rlSceneMeshMapVertexPointer(int sceneId,int meshId,void **vertex_data);
+extern int rlSceneMeshUnMapVertexPointer(int sceneId,int meshId);
+
 extern int rlSceneMeshSetUV(int sceneId,int meshId,int format,int count,void *uv_data);
+extern int rlSceneMeshMapUVPointer(int sceneId,int meshId,void **uv_data);
+extern int rlSceneMeshUnMapUVPointer(int sceneId,int meshId);
+
 extern int rlSceneMeshSetNormal(int sceneId,int meshId,int format,int count,void *normal_data);
+extern int rlSceneMeshMapNormalPointer(int sceneId,int meshId,void **normal_data);
+extern int rlSceneMeshUnMapNormalPointer(int sceneId,int meshId);
+
 extern int rlSceneMeshSetTangent(int sceneId,int meshId,int format,int count,void *tangent_data);
+extern int rlSceneMeshMapTangentPointer(int sceneId,int meshId,void **tangent_data);
+extern int rlSceneMeshUnMapTangentPointer(int sceneId,int meshId);
+
 extern int rlSceneMeshSetPoly(int sceneId,int meshId,int format,int count,void *poly_data);
 
 	// scene overlays

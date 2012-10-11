@@ -447,6 +447,9 @@ extern void intro_start_game(int skill,int option_flags,char *map_name,int simpl
 extern bool intro_click_has_singleplayer_options(void);
 extern void intro_run(void);
 
+extern bool singleplayer_map_pick_on(void);
+extern bool singleplayer_option_on(int idx);
+extern bool singleplayer_option_count(void);
 extern void singleplayer_option_open(void);
 extern void singleplayer_option_close(void);
 extern void singleplayer_option_run(void);

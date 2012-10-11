@@ -73,7 +73,7 @@ void view_openrl_map_setup(void) {}
 void view_openrl_map_setup(void)
 {
 	int					n,k,i,t,uv_count,mesh_id,light_id;
-	float				*vertexes,*vp,*uvs,*vt,*normals,*tangents,*vn;
+	float				*vp,*vt,*vn;
 	short				*vk,*ray_polys;
 	d3pnt				*pnt;
 	map_mesh_type		*mesh;
@@ -107,9 +107,9 @@ void view_openrl_map_setup(void)
 		if (mesh_id<0) return;
 
 			// the vertexes
-
-		vertexes=(float*)malloc((mesh->nvertex*3)*sizeof(float));
-		vp=vertexes;
+		
+		rlSceneMeshSetVertex(view_rl_scene_id,mesh_id,RL_MESH_FORMAT_VERTEX_3_FLOAT,mesh->nvertex,NULL);
+		rlSceneMeshMapVertexPointer(view_rl_scene_id,mesh_id,&vp);
 
 		pnt=mesh->vertexes;
 
@@ -119,16 +119,22 @@ void view_openrl_map_setup(void)
 			*vp++=(float)pnt->z;
 			pnt++;
 		}
-		
-		rlSceneMeshSetVertex(view_rl_scene_id,mesh_id,RL_MESH_FORMAT_VERTEX_3_FLOAT,mesh->nvertex,vertexes);
-		free(vertexes);
+
+		rlSceneMeshUnMapVertexPointer(view_rl_scene_id,mesh_id);
 
 			// the UVs
 
-		uvs=(float*)malloc((mesh->npoly*(8*2))*sizeof(float));		// supergumba -- this will work but chews up a lot of memory
-		vt=uvs;
-
 		uv_count=0;
+		poly=mesh->polys;
+	
+		for (i=0;i!=mesh->npoly;i++) {
+			uv_count+=poly->ptsz;
+			poly++;
+		}
+
+		rlSceneMeshSetUV(view_rl_scene_id,mesh_id,RL_MESH_FORMAT_UV_2_FLOAT,uv_count,NULL);
+		rlSceneMeshMapUVPointer(view_rl_scene_id,mesh_id,&vt);
+
 		poly=mesh->polys;
 	
 		for (i=0;i!=mesh->npoly;i++) {
@@ -136,17 +142,15 @@ void view_openrl_map_setup(void)
 				*vt++=poly->main_uv.uvs[t].x;
 				*vt++=poly->main_uv.uvs[t].y;
 			}
-			uv_count+=poly->ptsz;
 			poly++;
 		}
-			
-		rlSceneMeshSetUV(view_rl_scene_id,mesh_id,RL_MESH_FORMAT_UV_2_FLOAT,uv_count,uvs);
-		free(uvs);
+
+		rlSceneMeshUnMapUVPointer(view_rl_scene_id,mesh_id);
 
 			// the normals
 
-		normals=(float*)malloc((mesh->npoly*3)*sizeof(float));
-		vn=normals;
+		rlSceneMeshSetNormal(view_rl_scene_id,mesh_id,RL_MESH_FORMAT_NORMAL_3_FLOAT,mesh->npoly,NULL);
+		rlSceneMeshMapNormalPointer(view_rl_scene_id,mesh_id,&vn);
 
 		poly=mesh->polys;
 	
@@ -156,14 +160,13 @@ void view_openrl_map_setup(void)
 			*vn++=poly->tangent_space.normal.z;
 			poly++;
 		}
-		
-		rlSceneMeshSetNormal(view_rl_scene_id,mesh_id,RL_MESH_FORMAT_NORMAL_3_FLOAT,mesh->npoly,normals);
-		free(normals);
+
+		rlSceneMeshUnMapNormalPointer(view_rl_scene_id,mesh_id);
 
 			// the tangents
 
-		tangents=(float*)malloc((mesh->npoly*3)*sizeof(float));
-		vn=tangents;
+		rlSceneMeshSetTangent(view_rl_scene_id,mesh_id,RL_MESH_FORMAT_TANGENT_3_FLOAT,mesh->npoly,NULL);
+		rlSceneMeshMapTangentPointer(view_rl_scene_id,mesh_id,&vn);
 
 		poly=mesh->polys;
 	
@@ -173,9 +176,8 @@ void view_openrl_map_setup(void)
 			*vn++=poly->tangent_space.tangent.z;
 			poly++;
 		}
-		
-		rlSceneMeshSetTangent(view_rl_scene_id,mesh_id,RL_MESH_FORMAT_TANGENT_3_FLOAT,mesh->npoly,tangents);
-		free(tangents);
+
+		rlSceneMeshUnMapTangentPointer(view_rl_scene_id,mesh_id);
 
 			// polygons
 
