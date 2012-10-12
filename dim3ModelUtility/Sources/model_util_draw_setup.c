@@ -105,6 +105,10 @@ void model_draw_setup_clear(model_type *model,model_draw_setup *draw_setup)
 {
 	int							n;
 	model_draw_alter_bone_type	*alter_bone;
+
+		// enhancements at 1.0f
+
+	draw_setup->enhance_factor=1.0f;
 	
 		// turn off all blended animations
 		

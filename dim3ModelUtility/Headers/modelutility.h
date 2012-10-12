@@ -86,6 +86,7 @@ typedef struct		{
 					} model_draw_mesh_array_type;
 
 typedef struct		{
+						float							enhance_factor;
 						d3pnt							center;
 						d3fpnt							move;
 						d3ang							ang;
@@ -246,6 +247,7 @@ typedef struct		{
 					
 typedef struct		{
 						int								npose_move,loop_start,loop_end;
+						float							enhance_factor;
 						char							name[64];
 						bool							loop,no_smooth;
 						model_pose_move_type			pose_moves[max_model_animate_pose];

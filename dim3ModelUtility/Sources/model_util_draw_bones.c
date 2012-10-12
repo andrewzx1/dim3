@@ -93,13 +93,13 @@ void model_create_draw_bone_from_pose(model_type *model,model_draw_setup *draw_s
 	for (n=0;n!=nbone;n++) {
 		draw_bone->parent_idx=bone->parent_idx;
 		
-		ang=angle_add(bone_move->rot.x,alter_bone->rot_add.x);
+		ang=angle_add((bone_move->rot.x*draw_setup->enhance_factor),alter_bone->rot_add.x);
 		draw_bone->rot.x=angle_add(ang,bone->natural_rot.x);
 
-		ang=angle_add(bone_move->rot.y,alter_bone->rot_add.y);
+		ang=angle_add((bone_move->rot.y*draw_setup->enhance_factor),alter_bone->rot_add.y);
         draw_bone->rot.y=angle_add(ang,bone->natural_rot.y);
 
-		ang=angle_add(bone_move->rot.z,alter_bone->rot_add.z);
+		ang=angle_add((bone_move->rot.z*draw_setup->enhance_factor),alter_bone->rot_add.z);
         draw_bone->rot.z=angle_add(ang,bone->natural_rot.z);
 
 		draw_bone->parent_dist.x=(bone->parent_dist.x*bone_move->mov.x)+(alter_bone->parent_dist_add.x+bone->natural_offset.x);
@@ -166,15 +166,15 @@ void model_create_draw_bone_from_pose_factor(model_type *model,model_draw_setup 
 	
 			// factor the bone moves
 			
-		draw_bone->rot.x=rot_x_end+((rot_x_start-rot_x_end)*accel_pose_factor);
+		draw_bone->rot.x=(rot_x_end+((rot_x_start-rot_x_end)*accel_pose_factor))*draw_setup->enhance_factor;
 		draw_bone->rot.x=angle_add(draw_bone->rot.x,alter_bone->rot_add.x);
 		draw_bone->rot.x=angle_add(draw_bone->rot.x,bone->natural_rot.x);
 
-		draw_bone->rot.y=rot_y_end+((rot_y_start-rot_y_end)*accel_pose_factor);
+		draw_bone->rot.y=(rot_y_end+((rot_y_start-rot_y_end)*accel_pose_factor))*draw_setup->enhance_factor;
 		draw_bone->rot.y=angle_add(draw_bone->rot.y,alter_bone->rot_add.y);
 		draw_bone->rot.y=angle_add(draw_bone->rot.y,bone->natural_rot.y);
 
-		draw_bone->rot.z=rot_z_end+((rot_z_start-rot_z_end)*accel_pose_factor);
+		draw_bone->rot.z=(rot_z_end+((rot_z_start-rot_z_end)*accel_pose_factor))*draw_setup->enhance_factor;
 		draw_bone->rot.z=angle_add(draw_bone->rot.z,alter_bone->rot_add.z);
 		draw_bone->rot.z=angle_add(draw_bone->rot.z,bone->natural_rot.z);
 		

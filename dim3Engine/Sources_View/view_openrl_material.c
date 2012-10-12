@@ -62,11 +62,11 @@ extern file_path_setup_type	file_path_setup;
 
 /* =======================================================
 
-      OpenRL Create Material
+      OpenRL Create Material from Texture
       
 ======================================================= */
 
-int view_openrl_create_material(char *sub_path,texture_type *texture,texture_frame_type *frame)
+int view_openrl_create_material_from_texture(char *sub_path,texture_type *texture,texture_frame_type *frame)
 {
 	int					material_id,wid,high;
 	bool				alpha_channel;
@@ -114,6 +114,32 @@ int view_openrl_create_material(char *sub_path,texture_type *texture,texture_fra
 
 	rlMaterialBuildMipMaps(material_id);
 	
+	return(material_id);
+}
+
+/* =======================================================
+
+      OpenRL Create Material from Path
+      
+======================================================= */
+
+int view_openrl_create_material_from_path(char *path)
+{
+	int					material_id,wid,high;
+	bool				alpha_channel;
+	unsigned char		*png_data;
+
+		// create material directly
+		// from PNG
+		
+	png_data=png_utility_read(path,&wid,&high,&alpha_channel);
+	if (png_data==NULL) return(-1);
+	
+	material_id=rlMaterialAdd(wid,high,0);
+	rlMaterialAttachBufferData(material_id,RL_MATERIAL_TARGET_COLOR,(alpha_channel?RL_MATERIAL_FORMAT_32_RGBA:RL_MATERIAL_FORMAT_24_RGB),png_data);
+	
+	free(png_data);
+
 	return(material_id);
 }
 

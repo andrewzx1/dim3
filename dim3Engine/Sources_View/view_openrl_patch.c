@@ -61,6 +61,9 @@ extern file_path_setup_type	file_path_setup;
 
 	texture_font_size_type			view_rl_font;
 
+	extern int view_openrl_create_material_from_path(char *path);
+	extern void view_openrl_map_setup(void);
+	extern void view_openrl_map_model_setup(void);
 	extern void view_openrl_map_model_update(void);
 	extern void view_openrl_projectile_model_update(void);
 	extern void view_openrl_effect_mesh_update(void);
@@ -77,7 +80,8 @@ extern file_path_setup_type	file_path_setup;
 
 bool view_openrl_initialize(char *err_str) { return(TRUE); }
 void view_openrl_shutdown(void) {}
-void view_openrl_map_close_cleanup(void) {}
+void view_openrl_map_start(void) {}
+void view_openrl_map_stop(void) {}
 void view_openrl_render(void) {}
 
 #else
@@ -217,11 +221,33 @@ void view_openrl_shutdown(void)
 
 /* =======================================================
 
-      OpenRL Clean Up
+      OpenRL Map Starts and Stops
       
 ======================================================= */
 
-void view_openrl_map_close_cleanup(void)
+void view_openrl_map_start(void)
+{
+	int					n;
+	view_image_type		*image;
+
+		// view images
+	
+	image=view.images;
+
+	for (n=0;n!=max_view_image;n++) {
+		if (image->path[0]!=0x0) {
+			image->bitmaps[0].openrl_material_id=view_openrl_create_material_from_path(image->path);
+			image++;
+		}
+	}
+
+		// maps and models
+
+	view_openrl_map_setup();
+	view_openrl_map_model_setup();
+}
+
+void view_openrl_map_stop(void)
 {
 	rlSceneMeshDeleteAll(view_rl_scene_id);
 	rlMaterialDeleteAll();

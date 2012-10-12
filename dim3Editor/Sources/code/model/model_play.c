@@ -88,6 +88,8 @@ void model_play_draw_calc_animation(int cur_tick,int animate_idx,int blend_idx,b
 	pose_move_2=&animate->pose_moves[pose_move_2_idx];
 	
 		// setup the poses
+
+	draw_setup.enhance_factor=animate->enhance_factor;
 	
 	draw_setup.poses[blend_idx].idx_1=pose_move_1->pose_idx;
 	draw_setup.poses[blend_idx].idx_2=pose_move_2->pose_idx;

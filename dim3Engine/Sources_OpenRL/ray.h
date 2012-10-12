@@ -16,6 +16,12 @@
 #define ray_max_material							1024
 
 //
+// ray tracing
+//
+
+#define ray_max_bounce								8
+
+//
 // threading
 //
 
@@ -115,6 +121,7 @@ typedef struct		{
 						int							id;
 						bool						hidden;
 						unsigned long				flags;
+						ray_color_type				tint_col;
 						ray_vertex_block			vertex_block;
 						ray_uv_block				uv_block;
 						ray_normal_block			normal_block;
@@ -301,7 +308,7 @@ typedef struct		{
 
 typedef struct		{
 						int							mesh_idx,poly_idx,trig_idx;
-						float						max_t,t,u,v;
+						float						min_t,max_t,t,u,v;
 					} ray_collision_type;
 
 //
