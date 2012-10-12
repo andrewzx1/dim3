@@ -48,7 +48,7 @@ extern file_path_setup_type	file_path_setup;
 
 	extern int						view_rl_scene_id;
 
-	extern int view_openrl_create_material(char *sub_path,texture_type *texture,texture_frame_type *frame);
+	extern int view_openrl_create_material_from_texture(char *sub_path,texture_type *texture,texture_frame_type *frame);
 
 #endif
 
@@ -92,7 +92,7 @@ void view_openrl_map_setup(void)
 		frame=&texture->frames[0];
 		if (frame->name[0]==0x0) continue;
 		
-		frame->bitmap.rl_material_id=view_openrl_create_material("Bitmaps/Textures",texture,frame);
+		frame->bitmap.rl_material_id=view_openrl_create_material_from_texture("Bitmaps/Textures",texture,frame);
 	}
 			
 		// build the meshes

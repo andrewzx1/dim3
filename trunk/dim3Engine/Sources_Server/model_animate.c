@@ -446,6 +446,7 @@ model_pose_move_type* model_calc_animation_second_pose(model_type *mdl,model_dra
 void model_calc_animation_poses(model_draw *draw,int tick)
 {
 	int						n,k;
+	float					enhance_factor;
 	model_type				*mdl;
 	model_draw_animation	*animation;
     model_pose_move_type	*pose_move_1,*pose_move_2;
@@ -471,6 +472,11 @@ void model_calc_animation_poses(model_draw *draw,int tick)
 
 	mdl=server.model_list.models[draw->model_idx];
 
+		// enhancement factor comes
+		// only from first animation
+
+	enhance_factor=1.0f;
+
 		// run through all animations
 
 	for (n=0;n!=max_model_blend_animation;n++) {
@@ -484,6 +490,10 @@ void model_calc_animation_poses(model_draw *draw,int tick)
 
 		pose_move_1=model_calc_animation_first_pose(mdl,draw,n);
 		pose_move_2=model_calc_animation_second_pose(mdl,draw,n);
+
+			// build the enhancement
+
+		if (n==0) enhance_factor=mdl->animates[animation->animate_idx].enhance_factor;
 
 			// single pose?
 		
@@ -515,6 +525,10 @@ void model_calc_animation_poses(model_draw *draw,int tick)
 			setup_pose->factor=((float)(1000-k))/1000.0f;
 		}
 	}
+
+		// move in enhancement factor
+
+	setup->enhance_factor=enhance_factor;
 }
 
 void model_calc_animation_move_sway(model_draw *draw)

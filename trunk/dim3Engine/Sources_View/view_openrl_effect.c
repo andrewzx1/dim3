@@ -50,8 +50,6 @@ extern file_path_setup_type	file_path_setup;
 	extern int						view_rl_scene_id,
 									view_rl_purple_material_id;
 
-	extern int view_openrl_create_material(char *sub_path,texture_type *texture,texture_frame_type *frame);
-
 #endif
 
 /* =======================================================
@@ -185,14 +183,14 @@ void view_openrl_effect_mesh_particle_quad(float *vp,float *uv,d3pnt *pnt,d3ang 
 void view_openrl_effect_mesh_particle_update(effect_type *effect,int image_offset)
 {
 	int						n,k,idx,count,particle_count,ntot_count,
-							ntrail,pixel_dif;
+							ntrail,pixel_dif,material_id;
 	short					*polys,*vk;
-	float					gravity,gx,gy,g_size,pixel_sz,f,pc[3],trail_step,
+	float					gravity,gx,gy,g_size,pixel_sz,f,trail_step,
 							alpha,alpha_dif,color_dif,f_count,f_tick;
 	float					*vp,*uv;
 	d3pnt					pnt;
 	d3ang					*rot_ang,rang;
-	d3col					col,ambient_col;
+	ray_color_type			col;
 	iface_particle_type		*particle;
 	particle_effect_data	*eff_particle;
 	matrix_type				pixel_x_mat,pixel_y_mat;
@@ -206,13 +204,6 @@ void view_openrl_effect_mesh_particle_update(effect_type *effect,int image_offse
 		// position
 	
 	particle_draw_position(effect,count,&pnt);
-
-	if (particle->ambient_factor!=1.0f) {		// get ambient before position change
-		gl_lights_calc_color((float)pnt.x,(float)pnt.y,(float)pnt.z,pc);
-		ambient_col.r=pc[0];
-		ambient_col.g=pc[1];
-		ambient_col.b=pc[2];
-	}
 	
 		// particle move rotation
 		// we can have rotations from being attached to a bone of a model
@@ -283,16 +274,7 @@ void view_openrl_effect_mesh_particle_update(effect_type *effect,int image_offse
 	col.g*=eff_particle->tint.g;
 	col.b*=eff_particle->tint.b;
 
-	if (particle->ambient_factor!=1.0f) {
-		col.r=(col.r*particle->ambient_factor)+((1.0f-particle->ambient_factor)*ambient_col.r);
-		if (col.r>1.0f) col.r=1.0f;
-
-		col.g=(col.g*particle->ambient_factor)+((1.0f-particle->ambient_factor)*ambient_col.g);
-		if (col.g>1.0f) col.g=1.0f;
-
-		col.b=(col.b*particle->ambient_factor)+((1.0f-particle->ambient_factor)*ambient_col.b);
-		if (col.b>1.0f) col.b=1.0f;
-	}
+	rlSceneMeshSetTintColor(view_rl_scene_id,effect->openrl_mesh_id,&col);
 	
 		// setup images
 		
@@ -345,6 +327,8 @@ void view_openrl_effect_mesh_particle_update(effect_type *effect,int image_offse
 
 		// build the polygons
 
+	material_id=view.images[particle->image_idx].bitmaps[0].openrl_material_id;
+
 	polys=(short*)malloc(sizeof(short)*(ntot_count*10));
 	vk=polys;
 
@@ -352,7 +336,7 @@ void view_openrl_effect_mesh_particle_update(effect_type *effect,int image_offse
 
 	for (n=0;n!=ntot_count;n++) {
 		*vk++=4;
-		*vk++=view_rl_purple_material_id;
+		*vk++=material_id;
 		for (k=0;k!=4;k++) {
 			*vk++=idx;
 			*vk++=idx;

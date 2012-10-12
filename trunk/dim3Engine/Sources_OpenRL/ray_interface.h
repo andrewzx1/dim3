@@ -110,7 +110,9 @@ extern int rlSceneLightSetDirection(int sceneId,int lightId,rlVector *vector,flo
 extern int rlSceneMeshAdd(int sceneId,unsigned long flags);
 extern int rlSceneMeshDelete(int sceneId,int meshId);
 extern int rlSceneMeshDeleteAll(int scenedId);
+
 extern int rlSceneMeshSetHidden(int sceneId,int meshId,bool hidden);
+extern int rlSceneMeshSetTintColor(int sceneId,int meshId,ray_color_type *col);
 
 extern int rlSceneMeshSetVertex(int sceneId,int meshId,int format,int count,void *vertex_data);
 extern int rlSceneMeshMapVertexPointer(int sceneId,int meshId,void **vertex_data);

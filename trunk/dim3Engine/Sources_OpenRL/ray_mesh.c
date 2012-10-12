@@ -105,6 +105,8 @@ int rlSceneMeshAdd(int sceneId,unsigned long flags)
 	mesh->flags=flags;
 	mesh->hidden=FALSE;
 
+	mesh->tint_col.r=mesh->tint_col.g=mesh->tint_col.b=mesh->tint_col.a=1.0f;
+
 	mesh->vertex_block.count=0;
 	mesh->vertex_block.vertexes=NULL;
 		
@@ -240,14 +242,12 @@ int rlSceneMeshDeleteAll(int sceneId)
 	   RL_ERROR_UNKNOWN_SCENE_ID
 	   RL_ERROR_UNKNOWN_MESH_ID
 	   RL_ERROR_SCENE_IN_USE
-	   RL_ERROR_OUT_OF_MEMORY
       
 ======================================================= */
 
 int rlSceneMeshSetHidden(int sceneId,int meshId,bool hidden)
 {
 	int				idx;
-	ray_mesh_type	*mesh;
 	ray_scene_type	*scene;
 
 		// get scene
@@ -266,8 +266,45 @@ int rlSceneMeshSetHidden(int sceneId,int meshId,bool hidden)
 	idx=ray_scene_mesh_get_index(scene,meshId);
 	if (idx==-1) return(RL_ERROR_UNKNOWN_MESH_ID);
 
-	mesh=scene->mesh_list.meshes[idx];
-	mesh->hidden=hidden;
+	scene->mesh_list.meshes[idx]->hidden=hidden;
+	
+	return(RL_ERROR_OK);
+}
+
+/* =======================================================
+
+      Sets Tint Color For Mesh
+
+	  Returns:
+	   RL_ERROR_OK
+	   RL_ERROR_UNKNOWN_SCENE_ID
+	   RL_ERROR_UNKNOWN_MESH_ID
+	   RL_ERROR_SCENE_IN_USE
+      
+======================================================= */
+
+int rlSceneMeshSetTintColor(int sceneId,int meshId,ray_color_type *col)
+{
+	int				idx;
+	ray_scene_type	*scene;
+
+		// get scene
+
+	idx=ray_scene_get_index(sceneId);
+	if (idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
+
+	scene=ray_global.scene_list.scenes[idx];
+
+		// can't alter scenes in use
+
+	if (rlSceneRenderState(sceneId)==RL_SCENE_STATE_RENDERING) return(RL_ERROR_SCENE_IN_USE);
+
+		// get mesh
+
+	idx=ray_scene_mesh_get_index(scene,meshId);
+	if (idx==-1) return(RL_ERROR_UNKNOWN_MESH_ID);
+
+	memmove(&scene->mesh_list.meshes[idx]->tint_col,col,sizeof(ray_color_type));
 	
 	return(RL_ERROR_OK);
 }

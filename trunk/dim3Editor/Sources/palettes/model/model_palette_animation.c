@@ -35,6 +35,7 @@ and can be sold or given away.
 #define kAnimationPropertyName					0
 #define kAnimationPropertyLoop					1
 #define kAnimationPropertyNoSmooth				2
+#define kAnimationPropertyEnhanceFactor			3
 
 #define kAnimationPropertyPoseAdd				10
 
@@ -71,6 +72,7 @@ void model_palette_fill_animation(int animate_idx)
 	list_palette_add_header(&model_palette,0,"Animation Settings");
 	list_palette_add_checkbox(&model_palette,kAnimationPropertyLoop,"Looping",&animate->loop,FALSE);
 	list_palette_add_checkbox(&model_palette,kAnimationPropertyNoSmooth,"No Smoothing",&animate->no_smooth,FALSE);
+	list_palette_add_float(&model_palette,kAnimationPropertyEnhanceFactor,"Enhance Factor",&animate->enhance_factor,FALSE);
 	
 	list_palette_add_header_button(&model_palette,kAnimationPropertyPoseAdd,"Animation Poses",list_button_plus);
 

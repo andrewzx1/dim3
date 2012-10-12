@@ -514,13 +514,11 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 		if (!app.dedicated_host) scripts_post_event_console(obj->script_idx,-1,sd_event_map,sd_event_map_open,0);
 	}
 	
-		// if openrl, make sure
-		// to put static map elements into mesh list
+		// openrl setup
 
 	progress_next();
 
-	view_openrl_map_setup();
-	view_openrl_map_model_setup();
+	view_openrl_map_start();
 
 		// finish up
 	
@@ -598,9 +596,9 @@ void map_end(void)
 	
 	console_add_system("Closing Map");
 	
-		// openrl cache cleanup
+		// openrl cleanup
 		
-	view_openrl_map_close_cleanup();
+	view_openrl_map_stop();
 	
 		// detach objects
 		

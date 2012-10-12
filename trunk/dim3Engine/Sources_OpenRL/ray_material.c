@@ -142,6 +142,12 @@ void ray_get_material_rgb(ray_scene_type *scene,ray_point_type *eye_pnt,ray_poin
 	pixel->color.on=TRUE;
 	buf=*(((unsigned long*)mipmap->data.color)+offset);
 	ray_create_float_color_from_ulong_no_alpha(buf,&pixel->color.rgb);
+
+		// add in the tint
+
+	pixel->color.rgb.r*=mesh->tint_col.r;
+	pixel->color.rgb.g*=mesh->tint_col.g;
+	pixel->color.rgb.b*=mesh->tint_col.b;
 	
 		// get normal
 		

@@ -118,7 +118,7 @@ void ray_intersect_mesh_list(ray_scene_type *scene,ray_point_type *eye_point,ray
 					// can only hit one triangle
 				
 				if (ray_intersect_triangle(scene,eye_point,eye_vector,mesh,trig,&it,&iu,&iv)) {
-					if (it<collision->t) {
+					if ((it>collision->min_t) && (it<collision->t)) {
 						collision->t=it;
 						collision->u=iu;
 						collision->v=iv;
@@ -464,12 +464,13 @@ void* ray_render_thread(void *arg)
 void ray_render_thread(void *arg)
 #endif
 {
-	int							x,y,xsz,y_start,y_end;
+	int							x,y,xsz,y_start,y_end,repeat_count;
 	float						xadd,yadd,zadd;
 	unsigned long				*buf;
-	ray_point_type				*eye_point,trig_point,view_plane_point;
-	ray_vector_type				eye_vector;
-	ray_color_type				pixel_col,overlay_col;
+	bool						no_hit;
+	ray_point_type				*eye_point,ray_origin,trig_point,view_plane_point;
+	ray_vector_type				ray_vector;
+	ray_color_type				pixel_col,mat_col,overlay_col;
 	ray_collision_type			collision;
 	ray_draw_scene_thread_info	*thread_info;
 	ray_scene_type				*scene;
@@ -504,6 +505,7 @@ void ray_render_thread(void *arg)
 	
 		// the collision struct
 		
+	collision.min_t=-1.0f;
 	collision.max_t=scene->eye.max_dist;
 	
 		// draw
@@ -525,41 +527,79 @@ void ray_render_thread(void *arg)
 			else {
 				overlay_col.r=overlay_col.g=overlay_col.b=overlay_col.a=0.0f;
 			}
-		
-				// get eye vector
-				
+
+				// repeat through this to
+				// capture all reflections or
+				// alpha pass-throughs
+
+			no_hit=TRUE;
+			repeat_count=0;
+
+			pixel_col.r=pixel_col.g=pixel_col.b=0.0f;
+			
+				// original ray
+
 			view_plane_point.x=xadd+(float)x;
 			view_plane_point.y=yadd+(float)y;
 			view_plane_point.z=zadd;
+
+			ray_origin.x=eye_point->x;
+			ray_origin.y=eye_point->y;
+			ray_origin.z=eye_point->z;
 			
-			ray_vector_create_from_points(&eye_vector,&view_plane_point,eye_point);
-
-				// rotate eye vector around eye
-				
-			rlMatrixVectorMultiply(&scene->eye.matrix,&eye_vector);
-
-				// find nearest mesh-trig intersection
-				
-			ray_intersect_mesh_list(scene,eye_point,&eye_vector,&thread_info->mesh_index_block,&collision);
-			if (collision.trig_idx==-1) continue;
-
-			ray_vector_find_line_point_for_T(eye_point,&eye_vector,collision.t,&trig_point);
+			ray_vector_create_from_points(&ray_vector,&view_plane_point,&ray_origin);
 			
-				// get buffer
+			rlMatrixVectorMultiply(&scene->eye.matrix,&ray_vector);
+		
+				// run the ray
+
+			while (TRUE) {
+
+					// find nearest mesh-trig intersection
+					
+				ray_intersect_mesh_list(scene,&ray_origin,&ray_vector,&thread_info->mesh_index_block,&collision);
+				if (collision.trig_idx==-1) break;
+
+				ray_vector_find_line_point_for_T(&ray_origin,&ray_vector,collision.t,&trig_point);
 				
-			buf=scene->buffer.data+((y*scene->buffer.wid)+x);		// buffer is unsigned long
+					// get buffer
+					
+				buf=scene->buffer.data+((y*scene->buffer.wid)+x);		// buffer is unsigned long
 
-				// check for special lighting conditions
+					// check for special lighting conditions
+					// else run regular lighting
 
-			if (ray_mesh_special_lighting_conditions(scene,eye_point,&trig_point,collision.mesh_idx,&collision,&pixel_col)) {
-				ray_set_buffer(buf,&pixel_col,&overlay_col);
-				continue;
+				if (!ray_mesh_special_lighting_conditions(scene,&ray_origin,&trig_point,collision.mesh_idx,&collision,&mat_col)) {
+					ray_trace_lights(scene,&ray_origin,&trig_point,&collision,&mat_col);
+				}
+
+					// add in the new lighting
+
+				no_hit=FALSE;
+
+				pixel_col.r+=(mat_col.r*mat_col.a);
+				pixel_col.g+=(mat_col.g*mat_col.a);
+				pixel_col.b+=(mat_col.b*mat_col.a);
+
+					// do we need to repeat and run
+					// ray again?
+
+				if (mat_col.a==1.0f) break;
+
+					// repeat the array
+
+				repeat_count++;
+				if (repeat_count==ray_max_bounce) break;
+
+					// alpha pass through uses same
+					// ray but moves up the min_t collision
+
+				collision.min_t=collision.t;
 			}
-			
-				// run regular lighting
 
-			ray_trace_lights(scene,eye_point,&trig_point,&collision,&pixel_col);
-			ray_set_buffer(buf,&pixel_col,&overlay_col);
+				// finally set the buffer
+
+			if (!no_hit) ray_set_buffer(buf,&pixel_col,&overlay_col);
 		}
 	}
 
