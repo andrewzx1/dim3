@@ -109,7 +109,7 @@ void view_openrl_map_setup(void)
 			// the vertexes
 		
 		rlSceneMeshSetVertex(view_rl_scene_id,mesh_id,RL_MESH_FORMAT_VERTEX_3_FLOAT,mesh->nvertex,NULL);
-		rlSceneMeshMapVertexPointer(view_rl_scene_id,mesh_id,&vp);
+		rlSceneMeshMapVertexPointer(view_rl_scene_id,mesh_id,(void**)&vp);
 
 		pnt=mesh->vertexes;
 
@@ -133,7 +133,7 @@ void view_openrl_map_setup(void)
 		}
 
 		rlSceneMeshSetUV(view_rl_scene_id,mesh_id,RL_MESH_FORMAT_UV_2_FLOAT,uv_count,NULL);
-		rlSceneMeshMapUVPointer(view_rl_scene_id,mesh_id,&vt);
+		rlSceneMeshMapUVPointer(view_rl_scene_id,mesh_id,(void**)&vt);
 
 		poly=mesh->polys;
 	
@@ -150,7 +150,7 @@ void view_openrl_map_setup(void)
 			// the normals
 
 		rlSceneMeshSetNormal(view_rl_scene_id,mesh_id,RL_MESH_FORMAT_NORMAL_3_FLOAT,mesh->npoly,NULL);
-		rlSceneMeshMapNormalPointer(view_rl_scene_id,mesh_id,&vn);
+		rlSceneMeshMapNormalPointer(view_rl_scene_id,mesh_id,(void**)&vn);
 
 		poly=mesh->polys;
 	
@@ -166,7 +166,7 @@ void view_openrl_map_setup(void)
 			// the tangents
 
 		rlSceneMeshSetTangent(view_rl_scene_id,mesh_id,RL_MESH_FORMAT_TANGENT_3_FLOAT,mesh->npoly,NULL);
-		rlSceneMeshMapTangentPointer(view_rl_scene_id,mesh_id,&vn);
+		rlSceneMeshMapTangentPointer(view_rl_scene_id,mesh_id,(void**)&vn);
 
 		poly=mesh->polys;
 	

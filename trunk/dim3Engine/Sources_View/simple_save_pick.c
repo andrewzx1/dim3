@@ -332,7 +332,7 @@ void simple_save_pick_click(void)
 			// if we have any options, then
 			// go to options interface
 
-		if (intro_click_has_singleplayer_options()) {
+		if (intro_click_has_singleplayer_options(simple_save_idx)) {
 			intro_simple_save_idx=simple_save_idx;
 			server.next_state=gs_singleplayer_option;
 			return;

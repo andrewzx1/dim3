@@ -290,10 +290,10 @@ void view_openrl_effect_mesh_particle_update(effect_type *effect,int image_offse
 	ntot_count=(particle->count*(particle->trail_count+1))*4;
 
 	rlSceneMeshSetVertex(view_rl_scene_id,effect->openrl_mesh_id,RL_MESH_FORMAT_VERTEX_3_FLOAT,ntot_count,NULL);
-	rlSceneMeshMapVertexPointer(view_rl_scene_id,effect->openrl_mesh_id,&vp);
+	rlSceneMeshMapVertexPointer(view_rl_scene_id,effect->openrl_mesh_id,(void**)&vp);
 	
 	rlSceneMeshSetUV(view_rl_scene_id,effect->openrl_mesh_id,RL_MESH_FORMAT_UV_2_FLOAT,ntot_count,NULL);
-	rlSceneMeshMapUVPointer(view_rl_scene_id,effect->openrl_mesh_id,&uv);
+	rlSceneMeshMapUVPointer(view_rl_scene_id,effect->openrl_mesh_id,(void**)&uv);
 
 		// setup the vertexes
 

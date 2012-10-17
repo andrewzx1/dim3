@@ -126,7 +126,7 @@ void piece_duplicate(void)
 				map.spots[map.nspot].pnt.x+=mov_pt.x;
 				map.spots[map.nspot].pnt.y+=mov_pt.y;
 				map.spots[map.nspot].pnt.z+=mov_pt.z;
-				select_duplicate_add(item_map_node,map.nspot,-1);
+				select_duplicate_add(item_map_spot,map.nspot,-1);
 				map.nspot++;
 				break;
 				

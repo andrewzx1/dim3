@@ -96,7 +96,7 @@ JSValueRef js_interface_interaction_start_title_func(JSContextRef cx,JSObjectRef
 	script_value_to_string(cx,argv[0],name,name_str_len);
 	script_value_to_string(cx,argv[1],sound_name,name_str_len);
 	
-	if (!title_setup("Titles",name,sound_name,-1,script_value_to_int(cx,argv[2]),err_str)) {
+	if (!title_setup(gs_running,"Titles",name,sound_name,-1,script_value_to_int(cx,argv[2]),err_str)) {
 		*exception=script_create_exception(cx,err_str);
 	}
 	

@@ -233,6 +233,8 @@ void main_wind_set_title(void)
 
 bool main_wind_switch_mode(int mode)
 {
+	char			err_str[256];
+	
 	if (state.mode==mode) return(TRUE);
 
 		// if old mode was
@@ -244,6 +246,10 @@ bool main_wind_switch_mode(int mode)
 		// moving away from
 
 	switch (state.mode) {
+	
+		case app_mode_project:
+			iface_write(&iface,err_str);
+			break;
 
 		case app_mode_map:
 			if (!file_close_map()) return(FALSE);

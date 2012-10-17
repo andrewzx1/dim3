@@ -43,7 +43,7 @@ extern setup_type			setup;
 extern js_type				js;
 extern network_setup_type	net_setup;
 
-int							title_fade_tick,title_fade_mode,title_event_id,title_last_state,
+int							title_fade_tick,title_fade_mode,title_event_id,title_exit_state,
 							title_start_tick,title_life_tick;
 char						title_dir[name_str_len],title_name[name_str_len],title_sound_name[name_str_len];
 
@@ -57,10 +57,6 @@ void title_open(void)
 {
 	int			buffer_idx;
 	
-		// remember last state
-		
-	title_last_state=server.last_state;
-
 		// titles
 		
 	gui_initialize(title_dir,title_name);
@@ -76,6 +72,12 @@ void title_open(void)
 		
 	title_fade_tick=-1;
 	title_fade_mode=title_fade_mode_in;
+	
+		// force server state, there are a couple
+		// places where this isn't being switch in,
+		// like an app intro
+		
+	server.state=gs_title;
 }
 
 void title_close(void)
@@ -97,7 +99,7 @@ void title_close(void)
 	}
 }
 
-bool title_setup(char *dir,char *name,char *sound_name,int life_tick,int event_id,char *err_str)
+bool title_setup(int exit_state,char *dir,char *name,char *sound_name,int life_tick,int event_id,char *err_str)
 {
 	char			path[1024];
 
@@ -120,6 +122,10 @@ bool title_setup(char *dir,char *name,char *sound_name,int life_tick,int event_i
 		sprintf(err_str,"Title does not exist: %s.png",name);
 		return(FALSE);
 	}
+	
+		// remember exit state
+		
+	title_exit_state=exit_state;
 	
 		// switch to title state
 		
@@ -191,7 +197,7 @@ void title_run(void)
 		// time to exit?
 		
 	if (exit) {
-		server.next_state=title_last_state;
+		server.next_state=title_exit_state;
 		return;
 	}
 	

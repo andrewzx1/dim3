@@ -131,12 +131,7 @@ bool app_run_intro(char *err_str)
 		// is there a title?
 
 	if (iface.logo.name[0]!=0x0) {
-
-		if (!title_setup("Titles",iface.logo.name,iface.logo.sound,iface.logo.life_msec,-1,err_str)) return(FALSE);
-
-		server.state=gs_title;
-		server.last_state=gs_intro;
-
+		if (!title_setup(gs_intro,"Titles",iface.logo.name,iface.logo.sound,iface.logo.life_msec,-1,err_str)) return(FALSE);
 		title_open();
 		return(TRUE);
 	}

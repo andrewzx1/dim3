@@ -83,7 +83,7 @@ void map_media_start(map_media_type *media)
 			break;
 			
 		case mi_title:
-			if (!title_setup("Titles",media->name,media->title_sound_name,-1,media->event_id,err_str)) {
+			if (!title_setup(gs_running,"Titles",media->name,media->title_sound_name,-1,media->event_id,err_str)) {
 				console_add_error(err_str);
 			}
 			break;
@@ -598,7 +598,7 @@ void map_end(void)
 	
 		// openrl cleanup
 		
-	view_openrl_map_stop();
+	view_openrl_map_end();
 	
 		// detach objects
 		
