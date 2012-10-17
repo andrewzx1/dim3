@@ -81,7 +81,7 @@ extern file_path_setup_type	file_path_setup;
 bool view_openrl_initialize(char *err_str) { return(TRUE); }
 void view_openrl_shutdown(void) {}
 void view_openrl_map_start(void) {}
-void view_openrl_map_stop(void) {}
+void view_openrl_map_end(void) {}
 void view_openrl_render(void) {}
 
 #else
@@ -247,7 +247,7 @@ void view_openrl_map_start(void)
 	view_openrl_map_model_setup();
 }
 
-void view_openrl_map_stop(void)
+void view_openrl_map_end(void)
 {
 	rlSceneMeshDeleteAll(view_rl_scene_id);
 	rlMaterialDeleteAll();

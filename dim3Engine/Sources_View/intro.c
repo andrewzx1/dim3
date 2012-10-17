@@ -312,11 +312,11 @@ void intro_start_game(int skill,int option_flags,char *map_name,int simple_save_
       
 ======================================================= */
 
-bool intro_click_has_singleplayer_options(void)
+bool intro_click_has_singleplayer_options(int simple_save_idx)
 {
 	if (iface.singleplayer.skill) return(TRUE);
-	if (singleplayer_map_pick_on()) return(TRUE);
-	return(singleplayer_option_count()!=0);
+	if (singleplayer_map_pick_on(simple_save_idx)) return(TRUE);
+	return(singleplayer_option_count(simple_save_idx)!=0);
 }
 
 void intro_click_game(int simple_save_idx)
@@ -333,7 +333,7 @@ void intro_click_game(int simple_save_idx)
 		// if we have any options, then
 		// go to options interface
 
-	if (intro_click_has_singleplayer_options()) {
+	if (intro_click_has_singleplayer_options(simple_save_idx)) {
 		intro_simple_save_idx=simple_save_idx;
 		server.next_state=gs_singleplayer_option;
 		return;
@@ -400,7 +400,7 @@ void intro_click(void)
 			// credit and quit
 			
 		case intro_button_credit_id:
-			title_setup("Bitmaps/Backgrounds","credit",NULL,-1,-1,err_str);
+			title_setup(gs_intro,"Bitmaps/Backgrounds","credit",NULL,-1,-1,err_str);
 			break;
 
 		case intro_button_quit_id:

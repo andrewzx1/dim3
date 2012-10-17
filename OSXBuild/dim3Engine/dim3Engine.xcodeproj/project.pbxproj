@@ -480,6 +480,7 @@
 		269BAD4E15C0DE8B007EE1E9 /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 269BAD4D15C0DE8B007EE1E9 /* JavaScriptCore.framework */; };
 		269BAD5015C0DEE3007EE1E9 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 269BAD4F15C0DEE3007EE1E9 /* Carbon.framework */; };
 		269EA83B14B9617C0069CA6C /* metrics_draw.c in Sources */ = {isa = PBXBuildFile; fileRef = 269EA83A14B9617C0069CA6C /* metrics_draw.c */; };
+		269FF2011627C93500840CF6 /* view_openrl_effect.c in Sources */ = {isa = PBXBuildFile; fileRef = 269FF2001627C93500840CF6 /* view_openrl_effect.c */; };
 		26A32EDF1453CFE80005AABD /* model_util_file_model.c in Sources */ = {isa = PBXBuildFile; fileRef = 26A32EDE1453CFE80005AABD /* model_util_file_model.c */; };
 		26A45D081489AD6C00C02936 /* script_color.c in Sources */ = {isa = PBXBuildFile; fileRef = 26A45D061489AD6C00C02936 /* script_color.c */; };
 		26A45D091489AD6C00C02936 /* script_point_angle_vector.c in Sources */ = {isa = PBXBuildFile; fileRef = 26A45D071489AD6C00C02936 /* script_point_angle_vector.c */; };
@@ -998,6 +999,7 @@
 		269BAD4D15C0DE8B007EE1E9 /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = ../../../../System/Library/Frameworks/JavaScriptCore.framework; sourceTree = "<group>"; };
 		269BAD4F15C0DEE3007EE1E9 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = ../../../../System/Library/Frameworks/Carbon.framework; sourceTree = "<group>"; };
 		269EA83A14B9617C0069CA6C /* metrics_draw.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = metrics_draw.c; sourceTree = "<group>"; };
+		269FF2001627C93500840CF6 /* view_openrl_effect.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = view_openrl_effect.c; sourceTree = "<group>"; };
 		26A32EDE1453CFE80005AABD /* model_util_file_model.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = model_util_file_model.c; sourceTree = "<group>"; };
 		26A45D061489AD6C00C02936 /* script_color.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_color.c; sourceTree = "<group>"; };
 		26A45D071489AD6C00C02936 /* script_point_angle_vector.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_point_angle_vector.c; sourceTree = "<group>"; };
@@ -1658,6 +1660,7 @@
 				268BCEBC1623C1F600A18404 /* view_openrl_material.c */,
 				268BCEBB1623C1F600A18404 /* view_openrl_map.c */,
 				268BCEBD1623C1F600A18404 /* view_openrl_model.c */,
+				269FF2001627C93500840CF6 /* view_openrl_effect.c */,
 				2669FCEE161274DD002292C6 /* view_openrl_patch.c */,
 			);
 			name = ViewOpenRL;
@@ -2463,6 +2466,7 @@
 				268BCEBE1623C1F600A18404 /* view_openrl_map.c in Sources */,
 				268BCEBF1623C1F600A18404 /* view_openrl_material.c in Sources */,
 				268BCEC01623C1F600A18404 /* view_openrl_model.c in Sources */,
+				269FF2011627C93500840CF6 /* view_openrl_effect.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

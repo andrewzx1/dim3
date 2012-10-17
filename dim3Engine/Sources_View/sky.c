@@ -699,14 +699,14 @@ void sky_draw_cube_setup(void)
 		*vertex_ptr++=-f_radius;
 		*vertex_ptr++=f_radius;
 
-		*uv_ptr++=0.0f;
-		*uv_ptr++=0.0f;
+		*uv_ptr++=0.00f;
+		*uv_ptr++=0.00f;
 
 		*vertex_ptr++=-f_radius;
 		*vertex_ptr++=f_radius;
 		*vertex_ptr++=f_radius;
 
-		*uv_ptr++=0.0f;
+		*uv_ptr++=0.00f;
 		*uv_ptr++=txt_fact;
 
 		*vertex_ptr++=f_radius;
@@ -714,7 +714,7 @@ void sky_draw_cube_setup(void)
 		*vertex_ptr++=f_radius;
 
 		*uv_ptr++=txt_fact;
-		*uv_ptr++=0.0f;
+		*uv_ptr++=0.00f;
 
 		*vertex_ptr++=f_radius;
 		*vertex_ptr++=f_radius;
@@ -852,17 +852,27 @@ void sky_draw_cube(void)
 	if (map.sky.fill!=-1) {
 		texture=&map.textures[map.sky.fill];
 		gl_shader_draw_execute_simple_bitmap_set_texture(texture->frames[texture->animate.current_frame].bitmap.gl_id);
+		
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE);
 		glDrawArrays(GL_TRIANGLE_STRIP,0,4);
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT);
 		
 		offset+=4;
 	}
-	
+
 		// bottom
 		
 	if (map.sky.bottom_fill!=-1) {
 		texture=&map.textures[map.sky.bottom_fill];
 		gl_shader_draw_execute_simple_bitmap_set_texture(texture->frames[texture->animate.current_frame].bitmap.gl_id);
+		
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE);
 		glDrawArrays(GL_TRIANGLE_STRIP,offset,4);
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT);
 		
 		offset+=4;
 	}
@@ -872,17 +882,27 @@ void sky_draw_cube(void)
 	if (map.sky.north_fill!=-1) {
 		texture=&map.textures[map.sky.north_fill];
 		gl_shader_draw_execute_simple_bitmap_set_texture(texture->frames[texture->animate.current_frame].bitmap.gl_id);
+		
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE);
 		glDrawArrays(GL_TRIANGLE_STRIP,offset,4);
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT);
 		
 		offset+=4;
 	}
-	
+
 		// east
 
 	if (map.sky.east_fill!=-1) {
 		texture=&map.textures[map.sky.east_fill];
 		gl_shader_draw_execute_simple_bitmap_set_texture(texture->frames[texture->animate.current_frame].bitmap.gl_id);
+		
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE);
 		glDrawArrays(GL_TRIANGLE_STRIP,offset,4);
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT);
 		
 		offset+=4;
 	}
@@ -892,7 +912,12 @@ void sky_draw_cube(void)
 	if (map.sky.south_fill!=-1) {
 		texture=&map.textures[map.sky.south_fill];
 		gl_shader_draw_execute_simple_bitmap_set_texture(texture->frames[texture->animate.current_frame].bitmap.gl_id);
+		
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE);
 		glDrawArrays(GL_TRIANGLE_STRIP,offset,4);
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT);
 		
 		offset+=4;
 	}
@@ -902,7 +927,12 @@ void sky_draw_cube(void)
 	if (map.sky.west_fill!=-1) {
 		texture=&map.textures[map.sky.west_fill];
 		gl_shader_draw_execute_simple_bitmap_set_texture(texture->frames[texture->animate.current_frame].bitmap.gl_id);
+		
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE);
 		glDrawArrays(GL_TRIANGLE_STRIP,offset,4);
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT);
 	}
 
 		// unbind the vbo

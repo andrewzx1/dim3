@@ -120,7 +120,7 @@ void view_openrl_model_setup_single_model(model_draw *draw,bool hidden,bool no_r
 	}
 
 	rlSceneMeshSetUV(view_rl_scene_id,mesh_id,RL_MESH_FORMAT_UV_2_FLOAT,uv_count,NULL);
-	rlSceneMeshMapUVPointer(view_rl_scene_id,mesh_id,&uv);
+	rlSceneMeshMapUVPointer(view_rl_scene_id,mesh_id,(void**)&uv);
 
 	poly=mesh->polys;
 

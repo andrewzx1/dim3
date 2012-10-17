@@ -444,12 +444,12 @@ extern void menu_draw_start(char *name);
 extern void intro_open(void);
 extern void intro_close(void);
 extern void intro_start_game(int skill,int option_flags,char *map_name,int simple_save_idx);
-extern bool intro_click_has_singleplayer_options(void);
+extern bool intro_click_has_singleplayer_options(int simple_save_idx);
 extern void intro_run(void);
 
-extern bool singleplayer_map_pick_on(void);
-extern bool singleplayer_option_on(int idx);
-extern bool singleplayer_option_count(void);
+extern bool singleplayer_map_pick_on(int simple_save_idx);
+extern bool singleplayer_option_on(int simple_save_idx,int idx);
+extern bool singleplayer_option_count(int simple_save_idx);
 extern void singleplayer_option_open(void);
 extern void singleplayer_option_close(void);
 extern void singleplayer_option_run(void);
@@ -483,7 +483,7 @@ extern void chooser_run(void);
 
 extern void title_open(void);
 extern void title_close(void);
-extern bool title_setup(char *dir,char *name,char *sound_name,int life_tick,int event_id,char *err_str);
+extern bool title_setup(int exit_state,char *dir,char *name,char *sound_name,int life_tick,int event_id,char *err_str);
 extern void title_run(void);
 
 extern void load_pause_open(void);
