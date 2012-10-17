@@ -68,7 +68,7 @@ extern file_path_setup_type	file_path_setup;
 
 int view_openrl_create_material_from_texture(char *sub_path,texture_type *texture,texture_frame_type *frame)
 {
-	int					material_id,wid,high;
+	int					material_id,wid,high,png_wid,png_high;
 	bool				alpha_channel;
 	char				name[256],path[1024];
 	unsigned char		*png_data;
@@ -91,9 +91,14 @@ int view_openrl_create_material_from_texture(char *sub_path,texture_type *textur
 	sprintf(name,"%s_n",frame->name);
 	file_paths_data(&file_path_setup,path,sub_path,name,"png");
 
-	png_data=png_utility_read(path,&wid,&high,&alpha_channel);
+	png_data=png_utility_read(path,&png_wid,&png_high,&alpha_channel);
 	if (png_data!=NULL) {
-		rlMaterialAttachBufferData(material_id,RL_MATERIAL_TARGET_NORMAL,(alpha_channel?RL_MATERIAL_FORMAT_32_RGBA:RL_MATERIAL_FORMAT_24_RGB),png_data);
+		if ((png_wid!=wid) || (png_high!=high)) {
+			fprintf(stdout,"%s: Not correct size for material\n",path);
+		}
+		else {
+			rlMaterialAttachBufferData(material_id,RL_MATERIAL_TARGET_NORMAL,(alpha_channel?RL_MATERIAL_FORMAT_32_RGBA:RL_MATERIAL_FORMAT_24_RGB),png_data);
+		}
 		free(png_data);
 	}
 
@@ -102,9 +107,14 @@ int view_openrl_create_material_from_texture(char *sub_path,texture_type *textur
 	sprintf(name,"%s_s",frame->name);
 	file_paths_data(&file_path_setup,path,sub_path,name,"png");
 
-	png_data=png_utility_read(path,&wid,&high,&alpha_channel);
+	png_data=png_utility_read(path,&png_wid,&png_high,&alpha_channel);
 	if (png_data!=NULL) {
-		rlMaterialAttachBufferData(material_id,RL_MATERIAL_TARGET_SPECULAR,(alpha_channel?RL_MATERIAL_FORMAT_32_RGBA:RL_MATERIAL_FORMAT_24_RGB),png_data);
+		if ((png_wid!=wid) || (png_high!=high)) {
+			fprintf(stdout,"%s: Not correct size for material\n",path);
+		}
+		else {
+			rlMaterialAttachBufferData(material_id,RL_MATERIAL_TARGET_SPECULAR,(alpha_channel?RL_MATERIAL_FORMAT_32_RGBA:RL_MATERIAL_FORMAT_24_RGB),png_data);
+		}
 		free(png_data);
 	}
 

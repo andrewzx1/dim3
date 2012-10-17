@@ -259,6 +259,7 @@ typedef struct		{
 typedef struct		{
 						int								id,wid,high;
 						float							shine_factor;
+						bool							no_alpha;
 						ray_material_mipmap_list		mipmap_list;
 					} ray_material_type;
 
@@ -342,6 +343,7 @@ extern void ray_precalc_light_mesh_indexes_all(ray_scene_type *scene);
 extern void ray_precalc_thread_mesh_indexes_all(ray_scene_type *scene,ray_draw_scene_thread_info *thread_info);
 
 extern void ray_get_material_rgb(ray_scene_type *scene,ray_point_type *eye_pnt,ray_point_type *trig_pnt,ray_collision_type *collision,ray_material_pixel_type *pixel);
+extern float ray_get_material_alpha(ray_scene_type *scene,ray_point_type *eye_pnt,ray_point_type *trig_pnt,ray_collision_type *collision);
 extern bool ray_get_overlay_rgb(ray_scene_type *scene,int x,int y,ray_color_type *col);
 extern void ray_overlay_setup_all(ray_scene_type *scene);
 
