@@ -143,9 +143,11 @@ bool ray_block_mesh_list(ray_scene_type *scene,ray_point_type *pnt,ray_vector_ty
 {
 	int					n,k,i,mesh_idx;
 	float				t,u,v;
+	ray_point_type		trig_pnt;
 	ray_mesh_type		*mesh;
 	ray_poly_type		*poly;
 	ray_trig_type		*trig;
+	ray_collision_type	lit_collision;
 	
 	for (n=0;n!=index_block->count;n++) {
 	
@@ -182,9 +184,21 @@ bool ray_block_mesh_list(ray_scene_type *scene,ray_point_type *pnt,ray_vector_ty
 					// only except t that is less 1.0f, otherwise
 					// we've gone past the light
 					
-				if (ray_intersect_triangle(scene,pnt,vct,mesh,trig,&t,&u,&v)) {
-					if (t<1.0f) return(TRUE);
-				}
+				if (!ray_intersect_triangle(scene,pnt,vct,mesh,trig,&t,&u,&v)) continue;
+				if (t>=1.0f) continue;
+				
+					// check for alphas, right now
+					// we just pass through them
+
+				lit_collision.t=t;
+				lit_collision.u=u;
+				lit_collision.v=v;
+				lit_collision.mesh_idx=mesh_idx;
+				lit_collision.poly_idx=k;
+				lit_collision.trig_idx=i;
+
+				ray_vector_find_line_point_for_T(pnt,vct,t,&trig_pnt);
+				if (ray_get_material_alpha(scene,pnt,&trig_pnt,&lit_collision)==1.0f) return(TRUE);
 			}
 		}
 	}

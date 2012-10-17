@@ -29,11 +29,37 @@ int ray_material_get_index(int materialId)
       
 ======================================================= */
 
+inline int ray_get_material_find_mipmap_level(ray_scene_type *scene,ray_point_type *eye_pnt,ray_point_type *trig_pnt,ray_material_type *material)
+{
+	int				mm_level;
+	float			mm_dist,mm_fact;
+
+		// get the mipmap level
+		// we have an exponential factor
+		// here so we can make a better than
+		// linear mipmapping drop off
+
+		// supergumba -- this is one of the areas that
+		// needs to be investigated.  This method doesn't
+		// seem to work well
+
+	mm_dist=ray_distance_between_points(eye_pnt,trig_pnt);
+	mm_fact=1.0f-(mm_dist/scene->eye.max_dist);
+
+	mm_fact=1.0f-(mm_fact*powf(mm_fact,ray_mipmap_distance_exponent));
+
+	mm_level=(int)(((float)(material->mipmap_list.count+1))*mm_fact);
+	if (mm_level<0) return(0);
+	if (mm_level>=material->mipmap_list.count) return(material->mipmap_list.count-1);
+
+	return(mm_level);
+}
+
 void ray_get_material_rgb(ray_scene_type *scene,ray_point_type *eye_pnt,ray_point_type *trig_pnt,ray_collision_type *collision,ray_material_pixel_type *pixel)
 {
 	int							x,y,offset,mm_level;
 	unsigned long				buf;
-	float						inv,fx,fy,mm_dist,mm_fact;
+	float						inv,fx,fy;
 	ray_mesh_type				*mesh;
 	ray_poly_type				*poly;
 	ray_trig_type				*trig;
@@ -51,19 +77,8 @@ void ray_get_material_rgb(ray_scene_type *scene,ray_point_type *eye_pnt,ray_poin
 	material=ray_global.material_list.materials[poly->material_idx];
 
 		// get the mipmap level
-		// we have an exponential factor
-		// here so we can make a better than
-		// linear mipmapping drop off
 
-	mm_dist=ray_distance_between_points(eye_pnt,trig_pnt);
-	mm_fact=1.0f-(mm_dist/scene->eye.max_dist);
-
-	mm_fact=1.0f-(mm_fact*powf(mm_fact,ray_mipmap_distance_exponent));
-
-	mm_level=(int)(((float)(material->mipmap_list.count+1))*mm_fact);
-	if (mm_level<0) mm_level=0;
-	if (mm_level>=material->mipmap_list.count) mm_level=material->mipmap_list.count-1;
-
+	mm_level=ray_get_material_find_mipmap_level(scene,eye_pnt,trig_pnt,material);
 	mipmap=&material->mipmap_list.mipmaps[mm_level];
 	
 		// sanity check for bad materials
@@ -77,7 +92,7 @@ void ray_get_material_rgb(ray_scene_type *scene,ray_point_type *eye_pnt,ray_poin
 	}
 	
 		// calculate the uv
-		
+
 	uv0=&mesh->uv_block.uvs[trig->idxs[0].uv];
 	uv1=&mesh->uv_block.uvs[trig->idxs[1].uv];
 	uv2=&mesh->uv_block.uvs[trig->idxs[2].uv];
@@ -85,7 +100,7 @@ void ray_get_material_rgb(ray_scene_type *scene,ray_point_type *eye_pnt,ray_poin
 	inv=(1-collision->u)-collision->v;
 	fx=(inv*uv0->x)+(collision->u*uv1->x)+(collision->v*uv2->x);
 	fy=(inv*uv0->y)+(collision->u*uv1->y)+(collision->v*uv2->y);
-	
+
 		// calculate the surface normal
 		
 	if (mesh->normal_block.normals==NULL) {
@@ -128,7 +143,7 @@ void ray_get_material_rgb(ray_scene_type *scene,ray_point_type *eye_pnt,ray_poin
 	ray_vector_normalize(&pixel->surface.binormal);
 
 		// change to texture coordinate
-		
+
 	fx-=floorf(fx);
 	x=(int)(fx*mipmap->wid_scale);
 
@@ -136,7 +151,7 @@ void ray_get_material_rgb(ray_scene_type *scene,ray_point_type *eye_pnt,ray_poin
 	y=(int)(fy*mipmap->high_scale);
 	
 	offset=(mipmap->wid*y)+x;
-	
+
 		// get color
 
 	pixel->color.on=TRUE;
@@ -173,6 +188,67 @@ void ray_get_material_rgb(ray_scene_type *scene,ray_point_type *eye_pnt,ray_poin
 	}
 }
 
+float ray_get_material_alpha(ray_scene_type *scene,ray_point_type *eye_pnt,ray_point_type *trig_pnt,ray_collision_type *collision)
+{
+	int							x,y,offset,mm_level;
+	unsigned long				buf;
+	float						inv,fx,fy;
+	ray_mesh_type				*mesh;
+	ray_poly_type				*poly;
+	ray_trig_type				*trig;
+	ray_uv_type					*uv0,*uv1,*uv2;
+	ray_material_type			*material;
+	ray_material_mipmap_type	*mipmap;
+	ray_color_type				rgb;
+	
+		// get mesh/poly/trig and materials
+		
+	mesh=scene->mesh_list.meshes[collision->mesh_idx];
+	poly=&mesh->poly_block.polys[collision->poly_idx];
+	trig=&poly->trig_block.trigs[collision->trig_idx];
+
+		// fast check for no alphas
+
+	material=ray_global.material_list.materials[poly->material_idx];
+	if (material->no_alpha) return(1.0f);
+
+		// get the mipmap level
+
+	mm_level=ray_get_material_find_mipmap_level(scene,eye_pnt,trig_pnt,material);
+	mipmap=&material->mipmap_list.mipmaps[mm_level];
+	
+		// sanity check for bad materials
+		
+	if (mipmap->data.color==NULL) return(1.0f);
+	
+		// calculate the uv
+		
+	uv0=&mesh->uv_block.uvs[trig->idxs[0].uv];
+	uv1=&mesh->uv_block.uvs[trig->idxs[1].uv];
+	uv2=&mesh->uv_block.uvs[trig->idxs[2].uv];
+		
+	inv=(1-collision->u)-collision->v;
+	fx=(inv*uv0->x)+(collision->u*uv1->x)+(collision->v*uv2->x);
+	fy=(inv*uv0->y)+(collision->u*uv1->y)+(collision->v*uv2->y);
+
+		// change to texture coordinate
+		
+	fx-=floorf(fx);
+	x=(int)(fx*mipmap->wid_scale);
+
+	fy-=floorf(fy);
+	y=(int)(fy*mipmap->high_scale);
+	
+	offset=(mipmap->wid*y)+x;
+	
+		// get color
+
+	buf=*(((unsigned long*)mipmap->data.color)+offset);
+	ray_create_float_color_from_ulong(buf,&rgb);
+
+	return(rgb.a);
+}
+
 /* =======================================================
 
       Adds a New Material with No Attachments
@@ -204,6 +280,7 @@ int rlMaterialAdd(int wid,int high,unsigned long flags)
 
 	material->wid=wid;
 	material->high=high;
+	material->no_alpha=TRUE;
 
 		// start with no attachments
 
@@ -365,6 +442,17 @@ int rlMaterialAttachBufferData(int materialId,int target,int format,unsigned cha
 
 	if ((target!=RL_MATERIAL_TARGET_COLOR) && (target!=RL_MATERIAL_TARGET_NORMAL) && (target!=RL_MATERIAL_TARGET_SPECULAR) && (target!=RL_MATERIAL_TARGET_REFLECTION)) return(RL_ERROR_UNKNOWN_TARGET);
 	if ((format!=RL_MATERIAL_FORMAT_32_RGBA) && (format!=RL_MATERIAL_FORMAT_24_RGB)) return(RL_ERROR_UNKNOWN_FORMAT);
+
+		// setup the alpha flag
+		// we use this to quickly skip out
+		// of alpha comparisons.
+		// supergumba -- in the future maybe scan
+		// RGBA textures in case they are uploaded with
+		// black alpha
+
+	if (target==RL_MATERIAL_TARGET_COLOR) {
+		material->no_alpha=(format==RL_MATERIAL_FORMAT_24_RGB);
+	}
 
 		// memory for rgba data
 		
