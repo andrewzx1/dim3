@@ -32,8 +32,8 @@ and can be sold or given away.
 #include "interface.h"
 
 #ifdef D3_OPENRL
-	#include "ray_interface.h"
-#endif
+
+#include "ray_interface.h"
 
 extern map_type				map;
 extern server_type			server;
@@ -44,25 +44,9 @@ extern setup_type			setup;
 extern network_setup_type	net_setup;
 extern file_path_setup_type	file_path_setup;
 
-#ifdef D3_OPENRL
+extern int						view_rl_scene_id;
 
-	extern int						view_rl_scene_id;
-
-	extern int view_openrl_create_material_from_texture(char *sub_path,texture_type *texture,texture_frame_type *frame);
-
-#endif
-
-/* =======================================================
-
-      Blank Patches
-      
-======================================================= */
-
-#ifndef D3_OPENRL
-
-void view_openrl_map_setup(void) {}
-
-#else
+extern int view_openrl_create_material_from_texture(char *sub_path,texture_type *texture,texture_frame_type *frame);
 
 /* =======================================================
 
@@ -70,7 +54,7 @@ void view_openrl_map_setup(void) {}
       
 ======================================================= */
 
-void view_openrl_map_setup(void)
+void view_openrl_map_mesh_start(void)
 {
 	int					n,k,i,t,uv_count,mesh_id,light_id;
 	float				*vp,*vt,*vn;
@@ -105,6 +89,8 @@ void view_openrl_map_setup(void)
 
 		mesh_id=rlSceneMeshAdd(view_rl_scene_id,0);
 		if (mesh_id<0) return;
+
+		mesh->openrl_mesh_id=mesh_id;
 
 			// the vertexes
 		
@@ -230,7 +216,43 @@ void view_openrl_map_setup(void)
 		lit_pnt.y=(float)lit->pnt.y;
 		lit_pnt.z=(float)lit->pnt.z;
 		rlSceneLightSetPosition(view_rl_scene_id,light_id,&lit_pnt);
+
+		lit->openrl_light_id=light_id;
 	}
 }
+
+void view_openrl_map_mesh_end(void)
+{
+	int					n;
+	map_mesh_type		*mesh;
+	texture_type		*texture;
+	texture_frame_type	*frame;
+	
+		// delete meshes
+
+	for (n=0;n!=map.mesh.nmesh;n++) {
+		mesh=&map.mesh.meshes[n];
+		if (mesh->flag.on) rlSceneMeshDelete(view_rl_scene_id,mesh->openrl_mesh_id);
+	}
+
+		// delete lights
+
+	for (n=0;n!=map.nlight;n++) {
+		rlSceneLightDelete(view_rl_scene_id,map.lights[n].openrl_light_id);
+	}
+
+		// delete materials
+		// we do this afterwards because we can't
+		// delete attached materials
+		
+	for (n=0;n!=max_map_texture;n++) {
+		texture=&map.textures[n];
+		
+		frame=&texture->frames[0];
+		if (frame->name[0]==0x0) continue;
+		
+		if (frame->bitmap.rl_material_id!=-1) rlMaterialDelete(frame->bitmap.rl_material_id);
+	}
+}		
 
 #endif

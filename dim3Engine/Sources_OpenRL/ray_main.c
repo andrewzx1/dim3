@@ -68,7 +68,7 @@ int rlInitialize(int reserveTheadCount)
 	ray_global.settings.thread_count-=reserveTheadCount;
 	if (ray_global.settings.thread_count<1) ray_global.settings.thread_count=1;
 	if (ray_global.settings.thread_count>ray_render_max_thread_count) ray_global.settings.thread_count=ray_render_max_thread_count;
-	
+
 	return(RL_ERROR_OK);
 }
 

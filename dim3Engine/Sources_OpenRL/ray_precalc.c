@@ -218,6 +218,26 @@ void ray_precalc_light_mesh_indexes_all(ray_scene_type *scene)
 
 /* =======================================================
 
+      Build Mesh Poly Render Flags
+      
+======================================================= */
+
+void ray_precalc_mesh_poly_setup_all(ray_scene_type *scene)
+{
+	int				n,k;
+	ray_mesh_type	*mesh;
+	
+	for (n=0;n!=scene->mesh_list.count;n++) {
+		mesh=scene->mesh_list.meshes[n];
+
+		for (k=0;k!=mesh->poly_block.count;k++) {
+			mesh->poly_block.polys[k].mm_level=-1;
+		}
+	}
+}
+
+/* =======================================================
+
       Build Thread Mesh Indexes
  
 ======================================================= */
@@ -230,7 +250,6 @@ void ray_precalc_thread_mesh_indexes_all(ray_scene_type *scene,ray_draw_scene_th
 	ray_point_type			view_plane_point;
 	ray_vector_type			eye_vector[4];
 	ray_bound_type			bound;
-	
 	
 		// get 2D drawing sizes
 		

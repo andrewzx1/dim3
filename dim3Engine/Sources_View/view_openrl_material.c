@@ -32,8 +32,8 @@ and can be sold or given away.
 #include "interface.h"
 
 #ifdef D3_OPENRL
-	#include "ray_interface.h"
-#endif
+
+#include "ray_interface.h"
 
 extern map_type				map;
 extern server_type			server;
@@ -44,21 +44,7 @@ extern setup_type			setup;
 extern network_setup_type	net_setup;
 extern file_path_setup_type	file_path_setup;
 
-#ifdef D3_OPENRL
-
-	extern int						view_rl_scene_id;
-
-#endif
-
-/* =======================================================
-
-      Blank Patches
-      
-======================================================= */
-
-#ifndef D3_OPENRL
-
-#else
+extern int					view_rl_scene_id;
 
 /* =======================================================
 

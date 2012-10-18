@@ -55,6 +55,36 @@ bool ray_scene_initialize_mesh_indexes(ray_scene_type *scene)
 
 /* =======================================================
 
+      Scene 3D to 2D
+      
+======================================================= */
+
+void ray_scene_3D_to_2D_point(ray_scene_type *scene,ray_point_type *pnt_3d,ray_2d_point_type *pnt_2d)
+{
+	float				d,t;
+	ray_vector_type		vct;
+
+		// find the vector from the eye to the point
+		// and turn it to face the eye plane
+
+	ray_vector_create_from_points(&vct,pnt_3d,&scene->eye.pnt);
+	rlMatrixVectorMultiply(&scene->eye.matrix,&vct);
+
+		// solve for z=eye min distance
+
+	d=ray_distance_between_points(&scene->eye.pnt,pnt_3d);
+	t=scene->eye.min_dist/d;
+
+		// find the intersection with the
+		// eye plane and then center into
+		// the view
+
+	pnt_2d->x=((int)(scene->eye.pnt.x*t))+(scene->buffer.wid>>1);
+	pnt_2d->y=((int)(scene->eye.pnt.y*t))+(scene->buffer.high>>1);
+}
+
+/* =======================================================
+
       Create a Scene
 
  	  Returns:

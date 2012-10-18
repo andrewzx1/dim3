@@ -147,8 +147,10 @@ int effect_spawn(int effecttype,d3pnt *pt,int life_tick)
 
 		// openrl setup
 
+#ifdef D3_OPENRL
 	view_openrl_effect_mesh_setup(effect);
-	
+#endif
+
 	return(idx);
 }
 
@@ -170,7 +172,9 @@ inline void effect_dispose_single(effect_type *effect)
 
 		// dispose any openrl meshes
 
+#ifdef D3_OPENRL
 	view_openrl_effect_mesh_close(effect);
+#endif
 }
 
 void effect_dispose(void)

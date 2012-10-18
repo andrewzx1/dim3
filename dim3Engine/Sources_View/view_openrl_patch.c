@@ -32,8 +32,8 @@ and can be sold or given away.
 #include "interface.h"
 
 #ifdef D3_OPENRL
-	#include "ray_interface.h"
-#endif
+
+#include "ray_interface.h"
 
 extern map_type				map;
 extern server_type			server;
@@ -44,47 +44,30 @@ extern setup_type			setup;
 extern network_setup_type	net_setup;
 extern file_path_setup_type	file_path_setup;
 
-#ifdef D3_OPENRL
+#define view_rl_buffer_wid		320
+#define view_rl_buffer_high		200
 
-	#define view_rl_buffer_wid		320
-	#define view_rl_buffer_high		200
+int								view_rl_scene_id,
+								view_rl_font_material_id,
+								view_rl_lx,view_rl_rx,
+								view_rl_ty,view_rl_by,
+								view_rl_last_msec,view_rl_msec_display,
+								view_rl_msec,view_rl_msec_count;
+GLuint							view_rl_gl_id;
 
-	int								view_rl_scene_id,
-									view_rl_purple_material_id,
-									view_rl_font_material_id,
-									view_rl_lx,view_rl_rx,
-									view_rl_ty,view_rl_by,
-									view_rl_last_msec,view_rl_msec_display,
-									view_rl_msec,view_rl_msec_count,
-									view_rl_overlay[4];
-	GLuint							view_rl_gl_id;
+texture_font_size_type			view_rl_font;
 
-	texture_font_size_type			view_rl_font;
-
-	extern int view_openrl_create_material_from_path(char *path);
-	extern void view_openrl_map_setup(void);
-	extern void view_openrl_map_model_setup(void);
-	extern void view_openrl_map_model_update(void);
-	extern void view_openrl_projectile_model_update(void);
-	extern void view_openrl_effect_mesh_update(void);
-
-#endif
-
-/* =======================================================
-
-      Blank Patches
-      
-======================================================= */
-
-#ifndef D3_OPENRL
-
-bool view_openrl_initialize(char *err_str) { return(TRUE); }
-void view_openrl_shutdown(void) {}
-void view_openrl_map_start(void) {}
-void view_openrl_map_end(void) {}
-void view_openrl_render(void) {}
-
-#else
+extern int view_openrl_create_material_from_path(char *path);
+extern void view_openrl_map_mesh_start(void);
+extern void view_openrl_map_mesh_end(void);
+extern void view_openrl_map_model_mesh_start(void);
+extern void view_openrl_map_model_mesh_end(void);
+extern void view_openrl_map_model_update(void);
+extern void view_openrl_projectile_model_update(void);
+extern void view_openrl_effect_mesh_update(void);
+extern void view_openrl_overlay_start(int wid,int high);
+extern void view_openrl_overlay_end(void);
+extern void view_openrl_overlay_update(void);
 
 /* =======================================================
 
@@ -97,8 +80,7 @@ bool view_openrl_initialize(char *err_str)
 	int					n,sz,wid,high;
 	float				f;
 	unsigned char		*data,*dptr;
-	rlColor				col;
-	rl2DPoint			p_pnt,s_pnt;
+	rl2DPoint			s_pnt;
 
 		// initialize OpenRL
 
@@ -119,15 +101,6 @@ bool view_openrl_initialize(char *err_str)
 		return(FALSE);
 	}
 
-		// test material
-
-	col.r=1.0f;
-	col.g=0.0f;
-	col.b=1.0f;
-	col.a=1.0f;
-	view_rl_purple_material_id=rlMaterialAdd(1,1,0);
-	rlMaterialAttachBufferColor(view_rl_purple_material_id,RL_MATERIAL_TARGET_COLOR,&col);
-
 		// text material
 
 	data=bitmap_text_size_data(&view_rl_font,"Arial",48,1024,512);
@@ -136,26 +109,6 @@ bool view_openrl_initialize(char *err_str)
 	free(data);
 
 	rlMaterialBuildMipMaps(view_rl_font_material_id);
-
-		// overlays for fps
-
-	p_pnt.x=5;
-	p_pnt.y=view_rl_buffer_high-25;
-	s_pnt.x=15;
-	s_pnt.y=20;
-
-	col.r=1.0f;
-	col.g=1.0f;
-	col.b=0.0f;
-	col.a=1.0f;
-
-	for (n=0;n!=4;n++) {
-		view_rl_overlay[n]=rlSceneOverlayAdd(view_rl_scene_id,view_rl_font_material_id,0);
-		rlSceneOverlaySetPosition(view_rl_scene_id,view_rl_overlay[n],&p_pnt);
-		rlSceneOverlaySetSize(view_rl_scene_id,view_rl_overlay[n],&s_pnt);
-		rlSceneOverlayColor(view_rl_scene_id,view_rl_overlay[n],&col);
-		p_pnt.x+=s_pnt.x;
-	}
 
 		// we need a texture to transfer
 		// the scene to opengl raster
@@ -193,7 +146,7 @@ bool view_openrl_initialize(char *err_str)
 		// get drawing size
 
 //	f=((float)view.screen.x_sz)/((float)view_rl_buffer_wid);
-	f=2.0f;
+	f=1.0f;
 
 	wid=(int)(((float)view_rl_buffer_wid)*f);
 	view_rl_lx=(view.screen.x_sz-wid)>>1;
@@ -221,79 +174,100 @@ void view_openrl_shutdown(void)
 
 /* =======================================================
 
+      OpenRL Image Cache
+      
+======================================================= */
+
+void view_openrl_image_cache(void)
+{
+	int							n;
+	char						path[1024];
+	iface_bitmap_type			*iface_bitmap;
+	iface_particle_type			*particle;
+	iface_ring_type				*ring;
+ 	iface_mark_type				*mark;
+	iface_halo_type				*halo;
+	iface_crosshair_type		*crosshair;
+
+		// hud bitmaps
+
+	iface_bitmap=iface.bitmap_list.bitmaps;
+	
+	for (n=0;n!=iface.bitmap_list.nbitmap;n++) {
+		file_paths_data(&file_path_setup,path,"Bitmaps/Interface",iface_bitmap->filename,"png");
+		iface_bitmap->openrl_material_id=view_openrl_create_material_from_path(path);
+		iface_bitmap++;
+	}
+
+		// particles
+
+	particle=iface.particle_list.particles;
+
+	for (n=0;n!=iface.particle_list.nparticle;n++) {
+		file_paths_data(&file_path_setup,path,"Bitmaps/Particles",particle->bitmap_name,"png");
+		particle->openrl_material_id=view_openrl_create_material_from_path(path);
+		particle++;
+	}
+	
+		// rings
+
+	ring=iface.ring_list.rings;
+
+	for (n=0;n!=iface.ring_list.nring;n++) {
+		file_paths_data(&file_path_setup,path,"Bitmaps/Rings",ring->bitmap_name,"png");
+		ring->openrl_material_id=view_openrl_create_material_from_path(path);
+		ring++;
+	}
+
+		// marks
+		
+	mark=iface.mark_list.marks;
+
+	for (n=0;n!=iface.mark_list.nmark;n++) {
+		file_paths_data(&file_path_setup,path,"Bitmaps/Marks",mark->bitmap_name,"png");
+		mark->openrl_material_id=view_openrl_create_material_from_path(path);
+		mark++;
+	}
+
+		// halos
+
+	halo=iface.halo_list.halos;
+
+	for (n=0;n!=iface.halo_list.nhalo;n++) {
+		file_paths_data(&file_path_setup,path,"Bitmaps/Halos",halo->bitmap_name,"png");
+		halo->openrl_material_id=view_openrl_create_material_from_path(path);
+		halo++;
+	}
+
+		// crosshairs
+
+	crosshair=iface.crosshair_list.crosshairs;
+
+	for (n=0;n!=iface.crosshair_list.ncrosshair;n++) {
+		file_paths_data(&file_path_setup,path,"Bitmaps/Crosshairs",crosshair->bitmap_name,"png");
+		crosshair->openrl_material_id=view_openrl_create_material_from_path(path);
+		crosshair++;
+	}
+}
+
+/* =======================================================
+
       OpenRL Map Starts and Stops
       
 ======================================================= */
 
 void view_openrl_map_start(void)
 {
-	int					n;
-	view_image_type		*image;
-
-		// view images
-	
-	image=view.images;
-
-	for (n=0;n!=max_view_image;n++) {
-		if (image->path[0]!=0x0) {
-			image->bitmaps[0].openrl_material_id=view_openrl_create_material_from_path(image->path);
-			image++;
-		}
-	}
-
-		// maps and models
-
-	view_openrl_map_setup();
-	view_openrl_map_model_setup();
+	view_openrl_map_mesh_start();
+	view_openrl_map_model_mesh_start();
+	view_openrl_overlay_start(view_rl_buffer_wid,view_rl_buffer_high);
 }
 
 void view_openrl_map_end(void)
 {
-	rlSceneMeshDeleteAll(view_rl_scene_id);
-	rlMaterialDeleteAll();
-}
-
-/* =======================================================
-
-      OpenRL Overlay Setup
-      
-======================================================= */
-
-void view_openrl_update_overlays(void)
-{
-	int			n,xoff,yoff;
-	rlUV		uv,uv_size;
-	char		ch,str[32];
-
-		// update timing
-
-	view_rl_msec_count++;
-	view_rl_msec+=(game_time_get_raw()-view_rl_last_msec);
-
-	if (view_rl_msec_count==10) {
-		view_rl_msec_display=view_rl_msec/view_rl_msec_count;
-		view_rl_msec=0;
-		view_rl_msec_count=0;
-	}
-
-		// update overlay
-
-	sprintf(str,"%4d",view_rl_msec_display);
-
-	for (n=0;n!=4;n++) {
-		ch=str[n]-'!';
-
-		yoff=ch/view_rl_font.char_per_line;
-		xoff=ch-(yoff*view_rl_font.char_per_line);
-
-		uv.x=((float)xoff)*view_rl_font.gl_xoff;
-		uv.y=((float)yoff)*view_rl_font.gl_yoff;
-		rlSceneOverlaySetUV(view_rl_scene_id,view_rl_overlay[n],&uv);
-
-		uv_size.x=view_rl_font.gl_xadd;
-		uv_size.y=view_rl_font.gl_yadd;
-		rlSceneOverlaySetUVStamp(view_rl_scene_id,view_rl_overlay[n],&uv_size);
-	}
+	view_openrl_map_mesh_end();
+	view_openrl_map_model_mesh_end();
+	view_openrl_overlay_end();
 }
 
 /* =======================================================
@@ -368,7 +342,7 @@ void view_openrl_render(void)
 	view_openrl_projectile_model_update();
 	view_openrl_effect_mesh_update();
 
-	view_openrl_update_overlays();
+	view_openrl_overlay_update();
 
 		// render
 

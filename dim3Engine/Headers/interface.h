@@ -1007,15 +1007,18 @@ extern void ring_draw_position(effect_type *effect,int count,d3pnt *pnt);
 // openrl
 //
 
-extern bool view_openrl_initialize(char *err_str);
-extern void view_openrl_shutdown(void);
-extern void view_openrl_projectile_model_setup(proj_type *proj);
-extern void view_openrl_projectile_model_close(proj_type *proj);
-extern void view_openrl_effect_mesh_setup(effect_type *effect);
-extern void view_openrl_effect_mesh_close(effect_type *effect);
-extern void view_openrl_map_start(void);
-extern void view_openrl_map_end(void);
-extern void view_openrl_render(void);
+#ifdef D3_OPENRL
+	extern bool view_openrl_initialize(char *err_str);
+	extern void view_openrl_shutdown(void);
+	extern void view_openrl_image_cache(void);
+	extern void view_openrl_map_start(void);
+	extern void view_openrl_map_end(void);
+	extern void view_openrl_projectile_model_setup(proj_type *proj);
+	extern void view_openrl_projectile_model_close(proj_type *proj);
+	extern void view_openrl_effect_mesh_setup(effect_type *effect);
+	extern void view_openrl_effect_mesh_close(effect_type *effect);
+	extern void view_openrl_render(void);
+#endif
 
 //
 // chats

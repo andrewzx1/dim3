@@ -728,6 +728,10 @@ int rlSceneRender(int sceneId)
 		
 	ray_precalc_light_mesh_indexes_all(scene);
 
+		// some presetup for mesh polygons
+
+	ray_precalc_mesh_poly_setup_all(scene);
+
 		// some presetup for overlays
 
 	ray_overlay_setup_all(scene);

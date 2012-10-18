@@ -630,7 +630,8 @@ typedef struct		{
 					} iface_bitmap_repeat_type;
 					
 typedef struct		{
-						int								image_idx,show_tick;
+						int								image_idx,openrl_material_id,
+														show_tick;
 						float							alpha,rot;
 						char							name[name_str_len],filename[file_str_len];
 						bool							show,old_show,
@@ -952,8 +953,8 @@ typedef struct		{
 					} iface_particle_piece_type;
 
 typedef struct		{
-						int								image_idx,chain_idx,
-														count,trail_count,
+						int								image_idx,openrl_material_id,
+														chain_idx,count,trail_count,
 														spread_offset,life_msec,
 														start_pixel_size,end_pixel_size,
 														current_variation_idx;
@@ -982,7 +983,8 @@ typedef struct		{
 //
 
 typedef struct		{
-						int								image_idx,life_msec,
+						int								image_idx,openrl_material_id,
+														life_msec,
 														start_outer_size,end_outer_size,
 														start_inner_size,end_inner_size;
 						float							start_alpha,end_alpha;
@@ -1004,7 +1006,7 @@ typedef struct		{
 //
 
 typedef struct		{
-						int								image_idx,
+						int								image_idx,openrl_material_id,
 														fade_in_msec,life_msec,fade_out_msec,total_msec;
 						char							name[name_str_len],bitmap_name[name_str_len];
 						bool							no_rotate,no_transparent,no_opaque,hilite,blend_add,team_tint;
@@ -1022,7 +1024,7 @@ typedef struct		{
 //
 
 typedef struct		{
-						int								image_idx,
+						int								image_idx,openrl_material_id,
 														min_dist,max_dist,
 														min_size,max_size;
 						float							min_alpha,max_alpha;
@@ -1040,7 +1042,7 @@ typedef struct		{
 //
 
 typedef struct		{
-						int								image_idx;
+						int								image_idx,openrl_material_id;
 						char							name[name_str_len],bitmap_name[name_str_len];
 					} iface_crosshair_type;
 

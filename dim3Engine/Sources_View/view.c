@@ -345,12 +345,14 @@ bool view_initialize(char *err_str)
 
 		// rl initialize
 
+#ifdef D3_OPENRL
 	if (!view_openrl_initialize(err_str)) {
 		view_shutdown_display();
 		view_memory_release();
 		SDL_Quit();
 		return(FALSE);
 	}
+#endif
 
 		// sound initialize
 	
@@ -430,7 +432,9 @@ void view_shutdown(void)
 	view_images_shutdown();
 	view_shutdown_display();
 
+#ifdef D3_OPENRL
 	view_openrl_shutdown();
+#endif
 
 		// shutdown SDL
 		
@@ -457,7 +461,11 @@ void view_game_start(void)
 		// load images for hud bitmaps, radar, particles,
 		// rings, halos, marks, crosshairs and remote icons
 	
+#ifndef D3_OPENRL
 	view_images_cached_load();
+#else
+	view_openrl_image_cache();
+#endif
 
 		// precalculate particles
 

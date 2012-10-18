@@ -33,8 +33,8 @@ and can be sold or given away.
 #include "objects.h"
 
 #ifdef D3_OPENRL
-	#include "ray_interface.h"
-#endif
+
+#include "ray_interface.h"
 
 extern map_type				map;
 extern server_type			server;
@@ -45,27 +45,9 @@ extern setup_type			setup;
 extern network_setup_type	net_setup;
 extern file_path_setup_type	file_path_setup;
 
-#ifdef D3_OPENRL
+extern int					view_rl_scene_id;
 
-	extern int						view_rl_scene_id;
-
-	extern int view_openrl_create_material_from_texture(char *sub_path,texture_type *texture,texture_frame_type *frame);
-
-#endif
-
-/* =======================================================
-
-      Blank Patches
-      
-======================================================= */
-
-#ifndef D3_OPENRL
-
-void view_openrl_map_model_setup(void) {}
-void view_openrl_projectile_model_setup(proj_type *proj) {}
-void view_openrl_projectile_model_close(proj_type *proj) {}
-
-#else
+extern int view_openrl_create_material_from_texture(char *sub_path,texture_type *texture,texture_frame_type *frame);
 
 /* =======================================================
 
@@ -171,7 +153,7 @@ void view_openrl_model_setup_single_model(model_draw *draw,bool hidden,bool no_r
       
 ======================================================= */
 
-void view_openrl_map_model_setup(void)
+void view_openrl_map_model_mesh_start(void)
 {
 	int					n,k;
 	char				sub_path[1024];
@@ -219,6 +201,55 @@ void view_openrl_map_model_setup(void)
 		weap=obj->weap_list.weaps[n];
 		if (weap!=NULL) view_openrl_model_setup_single_model(&weap->draw,TRUE,FALSE,TRUE);
 	}
+}
+
+void view_openrl_map_model_mesh_end(void)
+{
+	int					n,k;
+	obj_type			*obj;
+	weapon_type			*weap;
+	model_type			*mdl;
+	texture_type		*texture;
+	texture_frame_type	*frame;
+	
+		// delete object models
+	
+	for (n=0;n!=max_obj_list;n++) {
+		obj=server.obj_list.objs[n];
+		if (obj==NULL) continue;
+
+		if (obj->draw.openrl_mesh_id!=-1) rlSceneMeshDelete(view_rl_scene_id,obj->draw.openrl_mesh_id);
+	}
+
+		// delete player weapon models
+
+	obj=server.obj_list.objs[server.player_obj_idx];
+
+	for (n=0;n!=max_weap_list;n++) {
+		weap=obj->weap_list.weaps[n];
+		if (weap==NULL) continue;
+		
+		if (weap->draw.openrl_mesh_id!=-1) rlSceneMeshDelete(view_rl_scene_id,weap->draw.openrl_mesh_id);
+	}
+
+		// delete materials
+		// we do this last as we can't
+		// delete attached materials
+
+	for (k=0;k!=max_model_list;k++) {
+
+		mdl=server.model_list.models[k];
+		if (mdl==NULL) continue;
+
+		for (n=0;n!=max_model_texture;n++) {
+			texture=&mdl->textures[n];
+			
+			frame=&texture->frames[0];
+			if (frame->name[0]==0x0) continue;
+
+			if (frame->bitmap.rl_material_id!=-1) rlMaterialDelete(frame->bitmap.rl_material_id);
+		}
+	}	
 }
 
 void view_openrl_map_model_update(void)
