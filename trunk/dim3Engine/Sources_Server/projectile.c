@@ -165,7 +165,9 @@ proj_type* projectile_create(obj_type *obj,weapon_type *weap,proj_setup_type *pr
 
 		// OpenRL meshes
 
+#ifdef D3_OPENRL
 	if (!hit_scan) view_openrl_projectile_model_setup(proj);
+#endif
 
     return(proj);
 }
@@ -265,7 +267,9 @@ void projectile_dispose(proj_type *proj)
 
 		// fix any OpenRL meshes
 
+#ifdef D3_OPENRL
 	view_openrl_projectile_model_close(proj);
+#endif
 
 		// mark as unused
 

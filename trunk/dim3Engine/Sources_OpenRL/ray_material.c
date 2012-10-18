@@ -29,28 +29,47 @@ int ray_material_get_index(int materialId)
       
 ======================================================= */
 
-inline int ray_get_material_find_mipmap_level(ray_scene_type *scene,ray_point_type *eye_pnt,ray_point_type *trig_pnt,ray_material_type *material)
+inline int ray_get_material_find_mipmap_level(ray_scene_type *scene,ray_point_type *eye_pnt,ray_poly_type *poly,ray_point_type *trig_pnt,ray_material_type *material)
 {
-	int				mm_level;
-	float			mm_dist,mm_fact;
+	int					mm_level;
+	float				mm_dist,mm_fact;
+	ray_point_type		mid;
 
-		// get the mipmap level
-		// we have an exponential factor
-		// here so we can make a better than
-		// linear mipmapping drop off
+		// note: there is potential threading
+		// problems here, but they will only cause
+		// a value to be set twice (to the same value.)
+		// this is much faster than locking and doesn't
+		// cause rendering errors
 
-		// supergumba -- this is one of the areas that
-		// needs to be investigated.  This method doesn't
-		// seem to work well
+		// check cache
 
-	mm_dist=ray_distance_between_points(eye_pnt,trig_pnt);
+	if (poly->mm_level!=-1) return(poly->mm_level);
+
+		// get the mid of the bounds and find the
+		// distance to the eye
+
+	mid.x=(poly->bound.min.x+poly->bound.max.x)*0.5f;
+	mid.y=(poly->bound.min.y+poly->bound.max.y)*0.5f;
+	mid.z=(poly->bound.min.z+poly->bound.max.z)*0.5f;
+
+	mm_dist=ray_distance_between_points(eye_pnt,&mid);
 	mm_fact=1.0f-(mm_dist/scene->eye.max_dist);
+
+		// add in an exponential factor to
+		// make it a less linear drop off
 
 	mm_fact=1.0f-(mm_fact*powf(mm_fact,ray_mipmap_distance_exponent));
 
+		// get the mipmap level
+
 	mm_level=(int)(((float)(material->mipmap_list.count+1))*mm_fact);
-	if (mm_level<0) return(0);
-	if (mm_level>=material->mipmap_list.count) return(material->mipmap_list.count-1);
+	if (mm_level<0) mm_level=0;
+	if (mm_level>=material->mipmap_list.count) mm_level=material->mipmap_list.count-1;
+
+		// put it back into polygon so
+		// we only calc it once
+
+	poly->mm_level=mm_level;
 
 	return(mm_level);
 }
@@ -78,7 +97,7 @@ void ray_get_material_rgb(ray_scene_type *scene,ray_point_type *eye_pnt,ray_poin
 
 		// get the mipmap level
 
-	mm_level=ray_get_material_find_mipmap_level(scene,eye_pnt,trig_pnt,material);
+	mm_level=ray_get_material_find_mipmap_level(scene,eye_pnt,poly,trig_pnt,material);
 	mipmap=&material->mipmap_list.mipmaps[mm_level];
 	
 		// sanity check for bad materials
@@ -214,7 +233,7 @@ float ray_get_material_alpha(ray_scene_type *scene,ray_point_type *eye_pnt,ray_p
 
 		// get the mipmap level
 
-	mm_level=ray_get_material_find_mipmap_level(scene,eye_pnt,trig_pnt,material);
+	mm_level=ray_get_material_find_mipmap_level(scene,eye_pnt,poly,trig_pnt,material);
 	mipmap=&material->mipmap_list.mipmaps[mm_level];
 	
 		// sanity check for bad materials

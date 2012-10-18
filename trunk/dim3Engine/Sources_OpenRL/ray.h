@@ -106,7 +106,8 @@ typedef struct		{
 					} ray_trig_block;
 
 typedef struct		{
-						int							material_idx,nvertex;
+						int							material_idx,nvertex,
+													mm_level;
 						ray_polygon_index_type		idxs[8];
 						ray_trig_block				trig_block;
 						ray_bound_type				bound;
@@ -334,12 +335,15 @@ extern bool ray_bound_ray_collision(ray_point_type *p,ray_vector_type *v,ray_bou
 extern float ray_distance_between_points(ray_point_type *p1,ray_point_type *p2);
 extern unsigned char* ray_bitmap_reduction(int factor,int wid,int high,unsigned char *data);
 
+extern void ray_scene_3D_to_2D_point(ray_scene_type *scene,ray_point_type *pnt_3d,ray_2d_point_type *pnt_2d);
+
 extern void ray_precalc_mesh_bounds(ray_mesh_type *mesh);
 extern void ray_precalc_polygon_bounds(ray_mesh_type *mesh,ray_poly_type *poly);
 extern void ray_precalc_triangle_bounds(ray_mesh_type *mesh,ray_trig_type *trig);
 extern void ray_precalc_light_bounds(ray_light_type *light);
 extern void ray_precalc_triangle_vectors(ray_mesh_type *mesh,ray_trig_type *trig);
 extern void ray_precalc_light_mesh_indexes_all(ray_scene_type *scene);
+extern void ray_precalc_mesh_poly_setup_all(ray_scene_type *scene);
 extern void ray_precalc_thread_mesh_indexes_all(ray_scene_type *scene,ray_draw_scene_thread_info *thread_info);
 
 extern void ray_get_material_rgb(ray_scene_type *scene,ray_point_type *eye_pnt,ray_point_type *trig_pnt,ray_collision_type *collision,ray_material_pixel_type *pixel);

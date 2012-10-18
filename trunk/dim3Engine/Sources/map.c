@@ -518,7 +518,9 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 
 	progress_next();
 
+#ifdef D3_OPENRL
 	view_openrl_map_start();
+#endif
 
 		// finish up
 	
@@ -597,9 +599,11 @@ void map_end(void)
 	console_add_system("Closing Map");
 	
 		// openrl cleanup
-		
-	view_openrl_map_end();
 	
+#ifdef D3_OPENRL
+	view_openrl_map_end();
+#endif
+
 		// detach objects
 		
 	map_object_detach_all();

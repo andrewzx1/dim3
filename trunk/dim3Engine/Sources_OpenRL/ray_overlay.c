@@ -35,8 +35,12 @@ bool ray_get_overlay_rgb(ray_scene_type *scene,int x,int y,ray_color_type *col)
 	ray_overlay_type			*overlay;
 	ray_material_type			*material;
 	ray_material_mipmap_type	*mipmap;
+
+		// search overlay lists backwards
+		// so front to back ordering is
+		// used for rendering
 	
-	for (n=0;n!=scene->overlay_list.count;n++) {
+	for (n=(scene->overlay_list.count-1);n>=0;n--) {
 		overlay=scene->overlay_list.overlays[n];
 		
 			// determine if we are in overlay

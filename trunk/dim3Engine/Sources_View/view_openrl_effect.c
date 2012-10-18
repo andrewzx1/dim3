@@ -33,8 +33,8 @@ and can be sold or given away.
 #include "objects.h"
 
 #ifdef D3_OPENRL
-	#include "ray_interface.h"
-#endif
+
+#include "ray_interface.h"
 
 extern map_type				map;
 extern server_type			server;
@@ -45,25 +45,7 @@ extern setup_type			setup;
 extern network_setup_type	net_setup;
 extern file_path_setup_type	file_path_setup;
 
-#ifdef D3_OPENRL
-
-	extern int						view_rl_scene_id,
-									view_rl_purple_material_id;
-
-#endif
-
-/* =======================================================
-
-      Blank Patches
-      
-======================================================= */
-
-#ifndef D3_OPENRL
-
-	void view_openrl_effect_mesh_setup(effect_type *effect) {}
-	void view_openrl_effect_mesh_close(effect_type *effect) {}
-
-#else
+extern int						view_rl_scene_id;
 
 /* =======================================================
 
@@ -327,7 +309,7 @@ void view_openrl_effect_mesh_particle_update(effect_type *effect,int image_offse
 
 		// build the polygons
 
-	material_id=view.images[particle->image_idx].bitmaps[0].openrl_material_id;
+	material_id=particle->openrl_material_id;
 
 	polys=(short*)malloc(sizeof(short)*(ntot_count*10));
 	vk=polys;
