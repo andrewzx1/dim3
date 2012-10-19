@@ -42,6 +42,7 @@ bool ray_get_overlay_rgb(ray_scene_type *scene,int x,int y,ray_color_type *col)
 	
 	for (n=(scene->overlay_list.count-1);n>=0;n--) {
 		overlay=scene->overlay_list.overlays[n];
+		if (overlay->hidden) continue;
 		
 			// determine if we are in overlay
 			
@@ -185,6 +186,8 @@ int rlSceneOverlayAdd(int sceneId,int materialId,unsigned long flags)
 	overlay->col.g=1.0f;
 	overlay->col.b=1.0f;
 	overlay->col.a=1.0f;
+	
+	overlay->hidden=FALSE;
 
 		// set id
 
@@ -514,6 +517,44 @@ int rlSceneOverlayColor(int sceneId,int overlayId,ray_color_type *col)
 		// reset color
 
 	memmove(&overlay->col,col,sizeof(ray_color_type));
+
+	return(RL_ERROR_OK);
+}
+
+/* =======================================================
+
+      Changes Color Tint of Overlay Already in a Scene
+
+	  Returns:
+	   RL_ERROR_OK
+	   RL_ERROR_UNKNOWN_SCENE_ID
+	   RL_ERROR_UNKNOWN_OVERLAY_ID
+      
+======================================================= */
+
+int rlSceneOverlaySetHidden(int sceneId,int overlayId,bool hidden)
+{
+	int					idx;
+	ray_overlay_type	*overlay;
+	ray_scene_type		*scene;
+
+		// get scene
+
+	idx=ray_scene_get_index(sceneId);
+	if (idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
+
+	scene=ray_global.scene_list.scenes[idx];
+
+		// get the overlay
+
+	idx=ray_scene_overlay_get_index(scene,overlayId);
+	if (idx==-1) return(RL_ERROR_UNKNOWN_OVERLAY_ID);
+
+	overlay=scene->overlay_list.overlays[idx];
+
+		// reset hidden flag
+
+	overlay->hidden=hidden;
 
 	return(RL_ERROR_OK);
 }

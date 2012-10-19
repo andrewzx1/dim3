@@ -64,13 +64,11 @@ bool ray_intersect_triangle(ray_scene_type *scene,ray_point_type *eye_point,ray_
       
 ======================================================= */
 
-// supergumba -- find so way to use T to eliminate meshes that are further
-// out than the original hit point, and maybe sort the meshes (that might be too costly)
-
 void ray_intersect_mesh_list(ray_scene_type *scene,ray_point_type *eye_point,ray_vector_type *eye_vector,ray_mesh_index_block *index_block,ray_collision_type *collision)
 {
 	int					n,k,i,mesh_idx;
 	float				it,iu,iv;
+	ray_vector_type		vct;
 	ray_mesh_type		*mesh;
 	ray_poly_type		*poly;
 	ray_trig_type		*trig;
@@ -83,17 +81,24 @@ void ray_intersect_mesh_list(ray_scene_type *scene,ray_point_type *eye_point,ray
 
 	collision->t=collision->max_t;
 	
-		// we need a normalized
-		// eye vector
+		// we create a copy of the
+		// eye vector so we can
+		// reduce it when hitting items
+
+	vct.x=eye_vector->x;
+	vct.y=eye_vector->y;
+	vct.z=eye_vector->z;
+
+		// find collisions
 
 	for (n=0;n!=index_block->count;n++) {
 	
-		mesh_idx=index_block->indexes[n];
+		mesh_idx=index_block->indexes[n].idx;
 		mesh=scene->mesh_list.meshes[mesh_idx];
 	
 			// bounds check
 			
-		if (!ray_bound_ray_collision(eye_point,eye_vector,&mesh->bound)) continue;
+		if (!ray_bound_ray_collision(eye_point,&vct,&mesh->bound)) continue;
 
 			// check the polys
 			
@@ -102,29 +107,39 @@ void ray_intersect_mesh_list(ray_scene_type *scene,ray_point_type *eye_point,ray
 				// bounds check
 				
 			poly=&mesh->poly_block.polys[k];
-			if (!ray_bound_ray_collision(eye_point,eye_vector,&poly->bound)) continue;
+			if (!ray_bound_ray_collision(eye_point,&vct,&poly->bound)) continue;
 			
-				// check trigs
+				// check triangle/ray intersection
+				// first hit exits out of polygons as you
+				// can only hit one triangle of a polygon
 				
 			for (i=0;i!=poly->trig_block.count;i++) {
 			
 				trig=&poly->trig_block.trigs[i];
-				if (!ray_bound_ray_collision(eye_point,eye_vector,&trig->bound)) continue;
-				
-					// supergumba -- can we figure out earlier triangles quicker here?
+				if (!ray_bound_ray_collision(eye_point,&vct,&trig->bound)) continue;
 					
-					// check triangle/ray intersection
-					// first hit exits out of polygons as you
-					// can only hit one triangle
+					// not we still use the non-reduced eye_vector
+					// here so Ts are similiar, we've already passed
+					// the bounds test so there's no additional
+					// optimizations
+
+					// we also reduce the vector for every
+					// hit as we can no longer hit things behind it
 				
 				if (ray_intersect_triangle(scene,eye_point,eye_vector,mesh,trig,&it,&iu,&iv)) {
 					if ((it>collision->min_t) && (it<collision->t)) {
+
 						collision->t=it;
 						collision->u=iu;
 						collision->v=iv;
 						collision->mesh_idx=mesh_idx;
 						collision->poly_idx=k;
 						collision->trig_idx=i;
+
+						vct.x*=it;
+						vct.y*=it;
+						vct.z*=it;
+
 						break;
 					}
 				}
@@ -155,7 +170,7 @@ bool ray_block_mesh_list(ray_scene_type *scene,ray_point_type *pnt,ray_vector_ty
 			// already been pared down non-render
 			// and non-light blocking
 			
-		mesh_idx=index_block->indexes[n];
+		mesh_idx=index_block->indexes[n].idx;
 		mesh=scene->mesh_list.meshes[mesh_idx];
 		
 			// bounds check
@@ -478,7 +493,8 @@ void* ray_render_thread(void *arg)
 void ray_render_thread(void *arg)
 #endif
 {
-	int							x,y,xsz,y_start,y_end,repeat_count;
+	int							x,y,repeat_count,
+								x_start,x_end,y_start,y_end;
 	float						xadd,yadd,zadd;
 	unsigned long				*buf;
 	bool						no_hit;
@@ -500,10 +516,11 @@ void ray_render_thread(void *arg)
 	
 		// get 2D drawing sizes
 		
-	y_start=thread_info->y_start;
-	y_end=thread_info->y_end;
+	x_start=thread_info->draw_rect_start.x;
+	x_end=thread_info->draw_rect_end.x;
 
-	xsz=scene->buffer.wid;
+	y_start=thread_info->draw_rect_start.y;
+	y_end=thread_info->draw_rect_end.y;
 		
 		// eye point movement
 
@@ -526,7 +543,7 @@ void ray_render_thread(void *arg)
 		
 	for (y=y_start;y!=y_end;y++) {
 	
-		for (x=0;x!=xsz;x++) {
+		for (x=x_start;x!=x_end;x++) {
 		
 				// determine if in overlay
 				// do an early exit if no alpha

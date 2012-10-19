@@ -99,7 +99,7 @@ int rlSceneLightAdd(int sceneId)
 		// alloc for mesh indexes
 		
 	light->mesh_index_block.count=0;
-	light->mesh_index_block.indexes=(short*)malloc(ray_max_scene_mesh*sizeof(short));
+	light->mesh_index_block.indexes=(ray_mesh_index_type*)malloc(ray_max_scene_mesh*sizeof(ray_mesh_index_type));
 	if (light->mesh_index_block.indexes==NULL) {
 		free(light);
 		return(RL_ERROR_OUT_OF_MEMORY);

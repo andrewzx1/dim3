@@ -607,19 +607,18 @@ void view_loop_draw(void)
 
 		// draw hud and interface elements
 
+#ifndef D3_OPENRL
 	hud_draw();
 	radar_draw();
 	network_draw();
-	
+	metrics_draw();
+#endif
+
 		// virtual controls
 		
 #if defined(D3_OS_IPHONE) || defined(D3_OS_ANDRIOD)
 	virtual_control_draw();
 #endif
-
-		// metrics
-		
-	metrics_draw();
 
 		// menu
 

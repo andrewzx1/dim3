@@ -144,8 +144,13 @@ typedef struct		{
 //
 
 typedef struct		{
+						short						idx;
+						float						dist;
+					} ray_mesh_index_type;
+
+typedef struct		{
 						int							count;
-						short						*indexes;
+						ray_mesh_index_type			*indexes;
 					} ray_mesh_index_block;
 
 //
@@ -184,6 +189,7 @@ typedef struct		{
 typedef struct		{
 						int							id,material_idx,
 													mm_level;
+						bool						hidden;
 						ray_2d_point_type			pnt,pnt_size;
 						ray_uv_type					uv,uv_size;
 						ray_color_type				col;
@@ -208,9 +214,9 @@ typedef struct		{
 					} ray_scene_buffer_type;
 
 typedef struct		{
-						int							y_start,y_end;
 						bool						done;
 						void						*parent_scene;			// this is a pointer back to the parent structure, need by threading
+						ray_2d_point_type			draw_rect_start,draw_rect_end;
 						ray_mesh_index_block		mesh_index_block;
 					} ray_draw_scene_thread_info;
 

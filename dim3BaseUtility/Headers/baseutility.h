@@ -630,8 +630,8 @@ typedef struct		{
 					} iface_bitmap_repeat_type;
 					
 typedef struct		{
-						int								image_idx,openrl_material_id,
-														show_tick;
+						int								image_idx,show_tick,
+														openrl_material_id,openrl_mesh_id;
 						float							alpha,rot;
 						char							name[name_str_len],filename[file_str_len];
 						bool							show,old_show,

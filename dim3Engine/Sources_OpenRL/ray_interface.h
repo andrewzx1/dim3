@@ -68,7 +68,7 @@
 
 	// initialize and shutdown
 	
-extern int rlInitialize(int reserveThreadCount);
+extern int rlInitialize(void);
 extern int rlShutdown(void);
 
 	// materials
@@ -143,6 +143,7 @@ extern int rlSceneOverlaySetUV(int sceneId,int overlayId,rlUV *uv);
 extern int rlSceneOverlaySetUVStamp(int sceneId,int overlayId,rlUV *uv);
 extern int rlSceneOverlaySetMaterial(int sceneId,int overlayId,int materialId);
 extern int rlSceneOverlayColor(int sceneId,int overlayId,rlColor *col);
+extern int rlSceneOverlaySetHidden(int sceneId,int overlayId,bool hidden);
 
 	// math utilities
 
