@@ -206,6 +206,7 @@ void singleplayer_option_open(void)
 
 		if (iface.singleplayer.skill) high+=control_y_add;
 		high+=(control_y_add*singleplayer_option_count(intro_simple_save_idx));
+		high+=butt_high+(padding*4);
 	}
 	
 		// dialog and frame
