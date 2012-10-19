@@ -46,7 +46,7 @@ bool ray_scene_initialize_mesh_indexes(ray_scene_type *scene)
 	}
 	
 	for (n=0;n!=ray_render_max_thread_count;n++) {
-		scene->render.thread_info[n].mesh_index_block.indexes=(short*)malloc(ray_max_scene_mesh*sizeof(short));
+		scene->render.thread_info[n].mesh_index_block.indexes=(ray_mesh_index_type*)malloc(ray_max_scene_mesh*sizeof(ray_mesh_index_type));
 		if (scene->render.thread_info[n].mesh_index_block.indexes==NULL) return(FALSE);
 	}
 	
@@ -98,7 +98,8 @@ void ray_scene_3D_to_2D_point(ray_scene_type *scene,ray_point_type *pnt_3d,ray_2
 
 int rlSceneAdd(ray_2d_point_type *size,int target,int format,void *attachment,unsigned long flags)
 {
-	int					n,y,y_add;
+	int					n,x,y,x_add,y_add,
+						split,x_split,y_split;
 	ray_scene_type		*scene;
 
 		// right now only one target/format
@@ -138,19 +139,41 @@ int rlSceneAdd(ray_2d_point_type *size,int target,int format,void *attachment,un
 	}
 	
 		// precalc any thread info settings,
-		// like parent pointer or y splits
-		
-	y=0;
-	y_add=scene->buffer.high/ray_global.settings.thread_count;
+		// like parent pointer and the drawing rect
+
+	split=(int)sqrtf(ray_global.settings.thread_count);
+
+	x_add=scene->buffer.wid/split;
+	y_add=scene->buffer.high/split;
 
 	for (n=0;n!=ray_global.settings.thread_count;n++) {
 
-		scene->render.thread_info[n].y_start=y;
-		
+			// set the X
+
+		x_split=(n%split);
+
+		x=x_split*x_add;
+		scene->render.thread_info[n].draw_rect_start.x=x;
+
+		x+=x_add;
+		if (x_split==(split-1)) x=scene->buffer.wid;
+		scene->render.thread_info[n].draw_rect_end.x=x;
+
+			// set the Y
+
+		y_split=(n/split);
+
+		y=y_split*y_add;
+		scene->render.thread_info[n].draw_rect_start.y=y;
+
 		y+=y_add;
-		if (n==(ray_global.settings.thread_count-1)) y=scene->buffer.high;
-		scene->render.thread_info[n].y_end=y;
-		
+		if (y_split==(split-1)) y=scene->buffer.high;
+		scene->render.thread_info[n].draw_rect_end.y=y;
+
+			// each thread info needs a pointer
+			// back to it's scene as thread_info is
+			// what's passed to each thread
+
 		scene->render.thread_info[n].parent_scene=scene;
 	}
 

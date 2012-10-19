@@ -84,7 +84,7 @@ bool view_openrl_initialize(char *err_str)
 
 		// initialize OpenRL
 
-	if (rlInitialize(0)!=RL_ERROR_OK) {
+	if (rlInitialize()!=RL_ERROR_OK) {
 		strcpy(err_str,"Unable to initialize OpenRL");
 		return(FALSE);
 	}

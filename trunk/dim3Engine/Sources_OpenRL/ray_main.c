@@ -14,8 +14,9 @@ extern ray_global_type				ray_global;
       
 ======================================================= */
 
-int rlInitialize(int reserveTheadCount)
+int rlInitialize(void)
 {
+	int					thread_count;
 #ifdef __APPLE__
 	int					names[2];
 	size_t				len;
@@ -36,7 +37,7 @@ int rlInitialize(int reserveTheadCount)
 	ray_global.material_list.next_id=1;
 
 		// determine the number of
-		// cores to build ray thread size
+		// cores avaiable
 
 #ifdef __APPLE__
 	names[0]=CTL_HW;
@@ -51,23 +52,41 @@ int rlInitialize(int reserveTheadCount)
         if (count<1) count=1;
     }
 	
-	ray_global.settings.thread_count=count;
+	thread_count=count;
 #endif
 
 #ifdef __linux__
-	ray_global.settings.thread_count=sysconf(_SC_NPROCESSORS_ONLN);
+	thread_count=sysconf(_SC_NPROCESSORS_ONLN);
 #endif
 
 #ifdef WIN32
 	GetSystemInfo(&info);
-	ray_global.settings.thread_count=info.dwNumberOfProcessors;
+	thread_count=info.dwNumberOfProcessors;
 #endif
 
 		// reverve some threads
+		// supergumba -- this is a bit hard coded for
+		// now until I figure out better logic
 
-	ray_global.settings.thread_count-=reserveTheadCount;
-	if (ray_global.settings.thread_count<1) ray_global.settings.thread_count=1;
-	if (ray_global.settings.thread_count>ray_render_max_thread_count) ray_global.settings.thread_count=ray_render_max_thread_count;
+		// thread counts need to be an even
+		// square
+
+	if (thread_count<=4) {
+		ray_global.settings.thread_count=16;
+	}
+	else {
+		if (thread_count<=8) {
+			ray_global.settings.thread_count=25;
+		}
+		else {
+			if (thread_count<=12) {
+				ray_global.settings.thread_count=36;
+			}
+			else {
+				ray_global.settings.thread_count=ray_render_max_thread_count;
+			}
+		}
+	}
 
 	return(RL_ERROR_OK);
 }

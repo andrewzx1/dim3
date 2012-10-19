@@ -168,14 +168,13 @@ void ray_precalc_triangle_vectors(ray_mesh_type *mesh,ray_trig_type *trig)
       
 ======================================================= */
 
-void ray_precalc_bound_mesh_indexes(ray_scene_type *scene,ray_bound_type *bnd,ray_mesh_index_block *index_block,bool light_trace)
+void ray_precalc_bound_mesh_indexes(ray_scene_type *scene,ray_bound_type *bnd,ray_mesh_index_block *index_block,ray_point_type *sort_center_pnt,bool light_trace)
 {
-	int					n;
-	short				*idx;
-	ray_mesh_type		*mesh;
+	int						n,k,sz,listIdx;
+	float					dist,x,y,z;
+	ray_mesh_type			*mesh;
 	
 	index_block->count=0;
-	idx=index_block->indexes;
 	
 	for (n=0;n!=scene->mesh_list.count;n++) {
 		mesh=scene->mesh_list.meshes[n];
@@ -193,8 +192,52 @@ void ray_precalc_bound_mesh_indexes(ray_scene_type *scene,ray_bound_type *bnd,ra
 			// bound collisions
 			
 		if (!ray_bound_bound_collision(bnd,&mesh->bound)) continue;
+
+			// sort into list by distance
+			// this keeps the closest ones first
+			// so ray trace hits can be quicker
+			// as they clip the ray as they get collisions
+
+		x=(mesh->bound.min.x+mesh->bound.max.x)*0.5f;
+		y=(mesh->bound.min.y+mesh->bound.max.y)*0.5f;
+		z=(mesh->bound.min.z+mesh->bound.max.z)*0.5f;
+
+		x-=sort_center_pnt->x;
+		y-=sort_center_pnt->y;
+		z-=sort_center_pnt->z;
+
+		dist=sqrtf((x*x)+(y*y)+(z*z));
+
+			// find position in list
+
+		listIdx=-1;
+
+		for (k=0;k!=index_block->count;k++) {
+			if (index_block->indexes[k].dist>dist) {
+				listIdx=k;
+				break;
+			}
+		}
+
+			// insert at end of list
+			
+		if (listIdx==-1) {
+			index_block->indexes[index_block->count].idx=n;
+			index_block->indexes[index_block->count].dist=dist;
+		}
+	
+			// insert in list
 		
-		*idx++=n;
+		else {
+			sz=sizeof(ray_mesh_index_type)*(index_block->count-listIdx);
+			memmove(&index_block->indexes[listIdx+1],&index_block->indexes[listIdx],sz);
+			
+			index_block->indexes[listIdx].idx=n;
+			index_block->indexes[listIdx].dist=dist;
+		}
+
+			// add up list
+
 		index_block->count++;
 	}
 }
@@ -212,7 +255,7 @@ void ray_precalc_light_mesh_indexes_all(ray_scene_type *scene)
 	
 	for (n=0;n!=scene->light_list.count;n++) {
 		light=scene->light_list.lights[n];
-		ray_precalc_bound_mesh_indexes(scene,&light->bound,&light->mesh_index_block,TRUE);
+		ray_precalc_bound_mesh_indexes(scene,&light->bound,&light->mesh_index_block,&light->pnt,TRUE);
 	}
 }
 
@@ -245,7 +288,7 @@ void ray_precalc_mesh_poly_setup_all(ray_scene_type *scene)
 void ray_precalc_thread_mesh_indexes_all(ray_scene_type *scene,ray_draw_scene_thread_info *thread_info)
 {
 	int						n;
-	float					x,y,z,ty,by,wid,high;
+	float					x,y,z,lx,rx,ty,by,wid,high;
 	ray_point_type			*eye_point;
 	ray_point_type			view_plane_point;
 	ray_vector_type			eye_vector[4];
@@ -253,8 +296,10 @@ void ray_precalc_thread_mesh_indexes_all(ray_scene_type *scene,ray_draw_scene_th
 	
 		// get 2D drawing sizes
 		
-	ty=(float)thread_info->y_start;
-	by=(float)thread_info->y_end;
+	lx=(float)thread_info->draw_rect_start.x;
+	rx=(float)thread_info->draw_rect_end.x;
+	ty=(float)thread_info->draw_rect_start.y;
+	by=(float)thread_info->draw_rect_end.y;
 	
 	wid=(float)(scene->buffer.wid>>1);
 	high=(float)(scene->buffer.high>>1);
@@ -266,22 +311,22 @@ void ray_precalc_thread_mesh_indexes_all(ray_scene_type *scene,ray_draw_scene_th
 
 	view_plane_point.z=eye_point->z+scene->eye.min_dist;
 
-	view_plane_point.x=eye_point->x-wid;
+	view_plane_point.x=(eye_point->x-wid)+lx;
 	view_plane_point.y=(eye_point->y-high)+ty;
 	ray_vector_create_from_points(&eye_vector[0],&view_plane_point,eye_point);
 	rlMatrixVectorMultiply(&scene->eye.matrix,&eye_vector[0]);
 
-	view_plane_point.x=eye_point->x-wid;
+	view_plane_point.x=(eye_point->x-wid)+lx;
 	view_plane_point.y=(eye_point->y-high)+by;
 	ray_vector_create_from_points(&eye_vector[1],&view_plane_point,eye_point);
 	rlMatrixVectorMultiply(&scene->eye.matrix,&eye_vector[1]);
 
-	view_plane_point.x=eye_point->x+wid;
+	view_plane_point.x=(eye_point->x-wid)+rx;
 	view_plane_point.y=(eye_point->y-high)+ty;
 	ray_vector_create_from_points(&eye_vector[2],&view_plane_point,eye_point);
 	rlMatrixVectorMultiply(&scene->eye.matrix,&eye_vector[2]);
 
-	view_plane_point.x=eye_point->x+wid;
+	view_plane_point.x=(eye_point->x-wid)+rx;
 	view_plane_point.y=(eye_point->y-high)+by;
 	ray_vector_create_from_points(&eye_vector[3],&view_plane_point,eye_point);
 	rlMatrixVectorMultiply(&scene->eye.matrix,&eye_vector[3]);
@@ -310,6 +355,6 @@ void ray_precalc_thread_mesh_indexes_all(ray_scene_type *scene,ray_draw_scene_th
 		
 		// create bound intersections
 		
-	ray_precalc_bound_mesh_indexes(scene,&bound,&thread_info->mesh_index_block,FALSE);
+	ray_precalc_bound_mesh_indexes(scene,&bound,&thread_info->mesh_index_block,&scene->eye.pnt,FALSE);
 }
 
