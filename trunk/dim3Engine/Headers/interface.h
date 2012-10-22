@@ -84,7 +84,7 @@ extern void server_run(void);
 
 extern bool view_initialize(char *err_str);
 extern void view_shutdown(void);
-extern void view_game_start(void);
+extern bool view_game_start(char *err_str);
 extern void view_game_stop(void);
 
 extern bool view_file_paths_bitmap_check_wide(char *path,char *dir,char *name);
@@ -1010,9 +1010,11 @@ extern void ring_draw_position(effect_type *effect,int count,d3pnt *pnt);
 #ifdef D3_OPENRL
 	extern bool view_openrl_initialize(char *err_str);
 	extern void view_openrl_shutdown(void);
+	extern bool view_openrl_scene_start(char *err_str);
+	extern void view_openrl_scene_stop(void);
 	extern void view_openrl_image_cache(void);
 	extern void view_openrl_map_start(void);
-	extern void view_openrl_map_end(void);
+	extern void view_openrl_map_stop(void);
 	extern void view_openrl_projectile_model_setup(proj_type *proj);
 	extern void view_openrl_projectile_model_close(proj_type *proj);
 	extern void view_openrl_effect_mesh_setup(effect_type *effect);

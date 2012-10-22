@@ -179,9 +179,19 @@ void view_create_screen_size_list(void)
 
 bool view_initialize_display(char *err_str)
 {
+		// supergumba -- for now
+		// openrl has hard coded window
+		// screen size
+
+#ifdef D3_OPENRL
+
+	setup.screen_wid=960;
+	setup.screen_high=600;
+
+#else
 	int				n;
 	bool			ok;
-	
+
 		// is screen size legal?
 		// if not, go back to default
 		
@@ -197,7 +207,9 @@ bool view_initialize_display(char *err_str)
 		
 		if (!ok) setup.screen_wid=setup.screen_high=-1;
 	}
-	
+
+#endif
+
 		// start openGL
 		
 	if (!gl_initialize(setup.screen_wid,setup.screen_high,setup.fsaa_mode,err_str)) {
@@ -451,7 +463,7 @@ void view_shutdown(void)
       
 ======================================================= */
 
-void view_game_start(void)
+bool view_game_start(char *err_str)
 {
 		// cameras and globals
 		
@@ -464,6 +476,7 @@ void view_game_start(void)
 #ifndef D3_OPENRL
 	view_images_cached_load();
 #else
+	if (!view_openrl_scene_start(err_str)) return(FALSE);
 	view_openrl_image_cache();
 #endif
 
@@ -474,6 +487,8 @@ void view_game_start(void)
 		// clear chat messages
 		
 	chat_clear_messages();
+
+	return(TRUE);
 }
 
 void view_game_stop(void)
@@ -485,7 +500,11 @@ void view_game_stop(void)
 		// free images for hud bitmaps, radar, particles,
 		// rings, halos, marks, crosshairs and remote icons
 	
+#ifndef D3_OPENRL
 	view_images_cached_free();
+#else
+	view_openrl_scene_stop();
+#endif
 }
 
 /* =======================================================

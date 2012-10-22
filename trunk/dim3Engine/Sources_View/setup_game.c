@@ -39,10 +39,11 @@ and can be sold or given away.
 #define setup_pane_debug					5
 
 #define ctrl_screen_size_id					0
-#define ctrl_fsaa_id						1
-#define ctrl_decal_on_id					2
-#define ctrl_shadow_on_id					3
-#define ctrl_gamma_id						4
+#define ctrl_screen_openrl_pixel_double_id	1
+#define ctrl_fsaa_id						2
+#define ctrl_decal_on_id					3
+#define ctrl_shadow_on_id					4
+#define ctrl_gamma_id						5
 
 #define ctrl_sound_volume_id				30
 #define ctrl_music_on_id					31
@@ -93,6 +94,8 @@ extern server_type			server;
 extern iface_type			iface;
 extern setup_type			setup;
 
+extern int					view_rl_screen_sizes[][2];
+
 int							setup_tab_value,setup_action_scroll_pos,
 							setup_tab_index[6],
 							setup_key_control_to_action_index_list[ncontrol];
@@ -136,6 +139,8 @@ void setup_network_fill_character_table(void)
       Setup Panes
       
 ======================================================= */
+
+#ifndef D3_OPENRL
 
 void setup_game_video_pane(void)
 {
@@ -196,6 +201,40 @@ void setup_game_video_pane(void)
 
 	element_slider_add("Gamma",setup.gamma,-0.5f,0.5f,ctrl_gamma_id,x,y,TRUE);
 }
+
+#else
+
+void setup_game_video_pane(void)
+{
+	int			n,idx,
+				x,y,control_y_add,control_y_sz;
+	
+	control_y_add=element_get_control_separation_high();
+	control_y_sz=control_y_add*2;
+	
+	x=(int)(((float)iface.scale_x)*0.4f);
+	y=((iface.scale_y>>1)+(element_get_button_high()>>1))-(control_y_sz>>1);
+	
+		// setup screen size list
+		
+	idx=0;
+	n=0;
+
+	while (view_rl_screen_sizes[n][0]!=0) {
+		if (setup.screen_openrl_wid==view_rl_screen_sizes[n][0]) idx=n;
+		sprintf(setup_screen_size_list[n],"%dx%d",view_rl_screen_sizes[n][0],view_rl_screen_sizes[n][1]);
+		n++;
+	}
+
+	setup_screen_size_list[n][0]=0x0;
+	
+	element_combo_add("Screen Size",(char*)setup_screen_size_list,idx,ctrl_screen_size_id,x,y,TRUE);
+	y+=control_y_add;
+
+	element_checkbox_add("Pixel Double",setup.screen_openrl_pixel_double,ctrl_screen_openrl_pixel_double_id,x,y,TRUE);
+}
+
+#endif
 
 void setup_game_audio_pane(void)
 {
@@ -773,13 +812,24 @@ void setup_game_handle_click(int id)
 			
 		case ctrl_screen_size_id:
 			idx=element_get_value(ctrl_screen_size_id);
-			if (idx==0) {
-				setup.screen_wid=setup.screen_high=-1;
-			}
-			else {
-				setup.screen_wid=render_info.screen_sizes[idx-1].wid;
-				setup.screen_high=render_info.screen_sizes[idx-1].high;
-			}
+
+			#ifndef D3_OPENRL
+				if (idx==0) {
+					setup.screen_wid=setup.screen_high=-1;
+				}
+				else {
+					setup.screen_wid=render_info.screen_sizes[idx-1].wid;
+					setup.screen_high=render_info.screen_sizes[idx-1].high;
+				}
+			#else
+				setup.screen_openrl_wid=view_rl_screen_sizes[idx-1][0];
+				setup.screen_openrl_high=view_rl_screen_sizes[idx-1][1];
+			#endif
+
+			break;
+
+		case ctrl_screen_openrl_pixel_double_id:
+			setup.screen_openrl_pixel_double=element_get_value(ctrl_screen_openrl_pixel_double_id);
 			break;
 			
 		case ctrl_decal_on_id:

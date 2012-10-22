@@ -203,7 +203,7 @@ void view_openrl_map_model_mesh_start(void)
 	}
 }
 
-void view_openrl_map_model_mesh_end(void)
+void view_openrl_map_model_mesh_stop(void)
 {
 	int					n,k;
 	obj_type			*obj;

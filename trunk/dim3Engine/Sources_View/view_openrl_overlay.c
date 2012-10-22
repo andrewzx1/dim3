@@ -52,7 +52,7 @@ extern int						view_rl_scene_id,
 extern texture_font_size_type	view_rl_font;
 
 int								view_rl_overlay_crosshair_id,
-								view_rl_overlay[4];
+								view_rl_overlay[5];
 
 /* =======================================================
 
@@ -118,20 +118,27 @@ void view_openrl_overlay_start(int wid,int high)
 	col.b=0.0f;
 	col.a=1.0f;
 
-	for (n=0;n!=4;n++) {
+	for (n=0;n!=5;n++) {
 		view_rl_overlay[n]=rlSceneOverlayAdd(view_rl_scene_id,view_rl_font_material_id,0);
 		rlSceneOverlaySetPosition(view_rl_scene_id,view_rl_overlay[n],&p_pnt);
 		rlSceneOverlaySetSize(view_rl_scene_id,view_rl_overlay[n],&s_pnt);
 		rlSceneOverlayColor(view_rl_scene_id,view_rl_overlay[n],&col);
 		p_pnt.x+=s_pnt.x;
 	}
+
+		// fps
+
+	view_rl_msec_count=0;
+	view_rl_msec=0;
+	view_rl_msec_display=0;
+	view_rl_last_msec=game_time_get_raw();
 }
 
-void view_openrl_overlay_end(void)
+void view_openrl_overlay_stop(void)
 {
 	int				n;
 
-	for (n=0;n!=4;n++) {
+	for (n=0;n!=5;n++) {
 		rlSceneOverlayDelete(view_rl_scene_id,view_rl_overlay[n]);
 	}
 
@@ -173,9 +180,11 @@ void view_openrl_overlay_update(void)
 
 		// update overlay
 
-	sprintf(str,"%4d",view_rl_msec_display);
+	if (view_rl_msec_display==0) return;
+	
+	sprintf(str,"%.2f",(1000.0f/((float)view_rl_msec_display)));
 
-	for (n=0;n!=4;n++) {
+	for (n=0;n!=5;n++) {
 		ch=str[n]-'!';
 
 		yoff=ch/view_rl_font.char_per_line;

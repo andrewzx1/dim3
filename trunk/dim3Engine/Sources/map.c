@@ -601,7 +601,7 @@ void map_end(void)
 		// openrl cleanup
 	
 #ifdef D3_OPENRL
-	view_openrl_map_end();
+	view_openrl_map_stop();
 #endif
 
 		// detach objects
