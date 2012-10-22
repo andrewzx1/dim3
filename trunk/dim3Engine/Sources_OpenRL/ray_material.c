@@ -175,7 +175,7 @@ void ray_get_material_rgb(ray_scene_type *scene,ray_point_type *eye_pnt,ray_poin
 
 	pixel->color.on=TRUE;
 	buf=*(((unsigned long*)mipmap->data.color)+offset);
-	ray_create_float_color_from_ulong_no_alpha(buf,&pixel->color.rgb);
+	ray_create_float_color_from_ulong(buf,&pixel->color.rgb);
 
 		// add in the tint
 
@@ -209,7 +209,7 @@ void ray_get_material_rgb(ray_scene_type *scene,ray_point_type *eye_pnt,ray_poin
 
 float ray_get_material_alpha(ray_scene_type *scene,ray_point_type *eye_pnt,ray_point_type *trig_pnt,ray_collision_type *collision)
 {
-	int							x,y,offset,mm_level;
+	int							x,y,offset;
 	unsigned long				buf;
 	float						inv,fx,fy;
 	ray_mesh_type				*mesh;
@@ -231,10 +231,11 @@ float ray_get_material_alpha(ray_scene_type *scene,ray_point_type *eye_pnt,ray_p
 	material=ray_global.material_list.materials[poly->material_idx];
 	if (material->no_alpha) return(1.0f);
 
-		// get the mipmap level
+		// when getting the alpha, we
+		// don't care about the mipmap level,
+		// always get it from highest level
 
-	mm_level=ray_get_material_find_mipmap_level(scene,eye_pnt,poly,trig_pnt,material);
-	mipmap=&material->mipmap_list.mipmaps[mm_level];
+	mipmap=&material->mipmap_list.mipmaps[0];
 	
 		// sanity check for bad materials
 		

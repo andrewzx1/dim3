@@ -108,6 +108,12 @@ void ray_intersect_mesh_list(ray_scene_type *scene,ray_point_type *eye_point,ray
 				
 			poly=&mesh->poly_block.polys[k];
 			if (!ray_bound_ray_collision(eye_point,&vct,&poly->bound)) continue;
+				
+				// skiping polys, this is mostly used
+				// for reflections or pass throughs
+				// so we don't re-hit ourselves
+					
+			if ((mesh_idx==collision->skip_mesh_idx) && (k==collision->skip_poly_idx)) continue;
 			
 				// check triangle/ray intersection
 				// first hit exits out of polygons as you
@@ -265,13 +271,15 @@ void ray_trace_lights(ray_scene_type *scene,ray_point_type *eye_pnt,ray_point_ty
 								light_poly_space_vector,bump_map_normal,
 								eye_vector,half_vector,half_poly_space_vector;
 	ray_light_type				*light;
-
-	col->r=col->g=col->b=0.0f;
-	col->a=1.0f;
 	
 		// get material pixels
 		
 	ray_get_material_rgb(scene,eye_pnt,trig_pnt,collision,&material_pixel);
+	
+		// starting mix color
+
+	col->r=col->g=col->b=0.0f;
+	col->a=material_pixel.color.rgb.a;
 	
 		// if there is a bump, unpack it
 
@@ -447,8 +455,8 @@ void ray_trace_lights(ray_scene_type *scene,ray_point_type *eye_pnt,ray_point_ty
 	}
 
 	col->r=material_pixel.color.rgb.r*(scene->ambient_col.r*diffuse);
-	col->r=material_pixel.color.rgb.g*(scene->ambient_col.g*diffuse);
-	col->r=material_pixel.color.rgb.b*(scene->ambient_col.b*diffuse);
+	col->g=material_pixel.color.rgb.g*(scene->ambient_col.g*diffuse);
+	col->b=material_pixel.color.rgb.b*(scene->ambient_col.b*diffuse);
 }
 
 /* =======================================================
@@ -538,6 +546,7 @@ void ray_render_thread(void *arg)
 		
 	collision.min_t=-1.0f;
 	collision.max_t=scene->eye.max_dist;
+	collision.skip_mesh_idx=-1;
 	
 		// draw
 		
@@ -607,7 +616,7 @@ void ray_render_thread(void *arg)
 					// add in the new lighting
 
 				no_hit=FALSE;
-
+				
 				pixel_col.r+=(mat_col.r*mat_col.a);
 				pixel_col.g+=(mat_col.g*mat_col.a);
 				pixel_col.b+=(mat_col.b*mat_col.a);
@@ -626,6 +635,8 @@ void ray_render_thread(void *arg)
 					// ray but moves up the min_t collision
 
 				collision.min_t=collision.t;
+				collision.skip_mesh_idx=collision.mesh_idx;
+				collision.skip_poly_idx=collision.poly_idx;
 			}
 
 				// finally set the buffer

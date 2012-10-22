@@ -315,7 +315,8 @@ typedef struct		{
 //
 
 typedef struct		{
-						int							mesh_idx,poly_idx,trig_idx;
+						int							mesh_idx,poly_idx,trig_idx,
+													skip_mesh_idx,skip_poly_idx;
 						float						min_t,max_t,t,u,v;
 					} ray_collision_type;
 
