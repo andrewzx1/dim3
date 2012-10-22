@@ -221,7 +221,7 @@ void view_openrl_map_mesh_start(void)
 	}
 }
 
-void view_openrl_map_mesh_end(void)
+void view_openrl_map_mesh_stop(void)
 {
 	int					n;
 	map_mesh_type		*mesh;
@@ -253,6 +253,16 @@ void view_openrl_map_mesh_end(void)
 		
 		if (frame->bitmap.rl_material_id!=-1) rlMaterialDelete(frame->bitmap.rl_material_id);
 	}
-}		
+}
+
+/* =======================================================
+
+      OpenRL Map Mesh Update
+      
+======================================================= */
+
+void view_openrl_map_mesh_update(void)
+{
+}
 
 #endif

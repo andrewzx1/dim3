@@ -48,10 +48,14 @@ SDL_GLContext				*sdl_gl_ctx;
 
 bool gl_in_window_mode(void)
 {
-#if defined(D3_OS_IPHONE) || defined(D3_OS_ANDRIOD)
-	return(FALSE);
+#ifdef D3_OPENRL
+	#if defined(D3_OS_IPHONE) || defined(D3_OS_ANDRIOD)
+		return(FALSE);
+	#else
+		return((setup.window) || ((app.editor_override.on) && (setup.window_editor)));
+	#endif
 #else
-	return((setup.window) || ((app.editor_override.on) && (setup.window_editor)));
+	return(TRUE);
 #endif
 }
 

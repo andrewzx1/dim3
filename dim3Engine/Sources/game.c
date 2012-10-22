@@ -68,7 +68,9 @@ bool game_start(bool in_file_load,int skill,int option_flags,int simple_save_idx
 
 		// start view
 		
-	if (!app.dedicated_host) view_game_start();
+	if (!app.dedicated_host) {
+		if (!view_game_start(err_str)) return(FALSE);
+	}
 
 		// game in running state
 		

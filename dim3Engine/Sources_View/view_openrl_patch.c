@@ -44,9 +44,6 @@ extern setup_type			setup;
 extern network_setup_type	net_setup;
 extern file_path_setup_type	file_path_setup;
 
-#define view_rl_buffer_wid		320
-#define view_rl_buffer_high		200
-
 int								view_rl_scene_id,
 								view_rl_font_material_id,
 								view_rl_lx,view_rl_rx,
@@ -57,16 +54,19 @@ GLuint							view_rl_gl_id;
 
 texture_font_size_type			view_rl_font;
 
+int								view_rl_screen_sizes[][2]={{320,200},{400,250},{480,300},{0,0}};
+
 extern int view_openrl_create_material_from_path(char *path);
 extern void view_openrl_map_mesh_start(void);
-extern void view_openrl_map_mesh_end(void);
+extern void view_openrl_map_mesh_stop(void);
+extern void view_openrl_map_mesh_update(void);
 extern void view_openrl_map_model_mesh_start(void);
-extern void view_openrl_map_model_mesh_end(void);
+extern void view_openrl_map_model_mesh_stop(void);
 extern void view_openrl_map_model_update(void);
 extern void view_openrl_projectile_model_update(void);
 extern void view_openrl_effect_mesh_update(void);
 extern void view_openrl_overlay_start(int wid,int high);
-extern void view_openrl_overlay_end(void);
+extern void view_openrl_overlay_stop(void);
 extern void view_openrl_overlay_update(void);
 
 /* =======================================================
@@ -77,22 +77,36 @@ extern void view_openrl_overlay_update(void);
 
 bool view_openrl_initialize(char *err_str)
 {
-	int					n,sz,wid,high;
-	float				f;
-	unsigned char		*data,*dptr;
-	rl2DPoint			s_pnt;
-
-		// initialize OpenRL
-
 	if (rlInitialize()!=RL_ERROR_OK) {
 		strcpy(err_str,"Unable to initialize OpenRL");
 		return(FALSE);
 	}
 
+	return(TRUE);
+}
+
+void view_openrl_shutdown(void)
+{
+	rlShutdown();
+}
+
+/* =======================================================
+
+      View OpenRL Scene
+      
+======================================================= */
+
+bool view_openrl_scene_start(char *err_str)
+{
+	int					n,sz,wid,high;
+	float				f;
+	unsigned char		*data,*dptr;
+	rl2DPoint			s_pnt;
+
 		// make the scene
 
-	s_pnt.x=view_rl_buffer_wid;
-	s_pnt.y=view_rl_buffer_high;
+	s_pnt.x=setup.screen_openrl_wid;
+	s_pnt.y=setup.screen_openrl_high;
 
 	view_rl_scene_id=rlSceneAdd(&s_pnt,RL_SCENE_TARGET_MEMORY,RL_SCENE_FORMAT_32_RGBA,NULL,0);
 	if (view_rl_scene_id<0) {
@@ -120,7 +134,7 @@ bool view_openrl_initialize(char *err_str)
 	glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
 	glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
 
-	sz=(view_rl_buffer_wid*4)*view_rl_buffer_high;
+	sz=(setup.screen_openrl_wid*4)*setup.screen_openrl_high;
 	data=malloc(sz);
 	if (data==NULL) {
 		strcpy(err_str,"Out of memory");
@@ -137,7 +151,7 @@ bool view_openrl_initialize(char *err_str)
 		*dptr++=0xFF;
 	}
 
-	glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,view_rl_buffer_wid,view_rl_buffer_high,0,GL_RGBA,GL_UNSIGNED_BYTE,data);
+	glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,setup.screen_openrl_wid,setup.screen_openrl_high,0,GL_RGBA,GL_UNSIGNED_BYTE,data);
 
 	free(data);
 
@@ -145,31 +159,23 @@ bool view_openrl_initialize(char *err_str)
 
 		// get drawing size
 
-//	f=((float)view.screen.x_sz)/((float)view_rl_buffer_wid);
-	f=1.0f;
+	f=setup.screen_openrl_pixel_double?2.0f:1.0f;
 
-	wid=(int)(((float)view_rl_buffer_wid)*f);
+	wid=(int)(((float)setup.screen_openrl_wid)*f);
 	view_rl_lx=(view.screen.x_sz-wid)>>1;
 	view_rl_rx=view_rl_lx+wid;
 
-	high=(int)(((float)view_rl_buffer_high)*f);
+	high=(int)(((float)setup.screen_openrl_high)*f);
 	view_rl_ty=(view.screen.y_sz-high)>>1;
 	view_rl_by=view_rl_ty+high;
-
-	view_rl_msec_count=0;
-	view_rl_msec=0;
-	view_rl_msec_display=0;
-	view_rl_last_msec=game_time_get_raw();
 
 	return(TRUE);
 }
 
-void view_openrl_shutdown(void)
+void view_openrl_scene_stop(void)
 {
 	glDeleteTextures(1,&view_rl_gl_id);
-
 	rlSceneDelete(view_rl_scene_id);
-	rlShutdown();
 }
 
 /* =======================================================
@@ -260,14 +266,14 @@ void view_openrl_map_start(void)
 {
 	view_openrl_map_mesh_start();
 	view_openrl_map_model_mesh_start();
-	view_openrl_overlay_start(view_rl_buffer_wid,view_rl_buffer_high);
+	view_openrl_overlay_start(setup.screen_openrl_wid,setup.screen_openrl_high);
 }
 
-void view_openrl_map_end(void)
+void view_openrl_map_stop(void)
 {
-	view_openrl_map_mesh_end();
-	view_openrl_map_model_mesh_end();
-	view_openrl_overlay_end();
+	view_openrl_map_mesh_stop();
+	view_openrl_map_model_mesh_stop();
+	view_openrl_overlay_stop();
 }
 
 /* =======================================================
@@ -294,7 +300,7 @@ void view_openrl_transfer_to_opengl(void)
 	if (err!=RL_ERROR_OK) return;
 
 	gl_texture_bind(0,view_rl_gl_id);
-	glTexSubImage2D(GL_TEXTURE_2D,0,0,0,view_rl_buffer_wid,view_rl_buffer_high,GL_RGBA,GL_UNSIGNED_BYTE,data);
+	glTexSubImage2D(GL_TEXTURE_2D,0,0,0,setup.screen_openrl_wid,setup.screen_openrl_high,GL_RGBA,GL_UNSIGNED_BYTE,data);
 
 		// build the vertex and uv list
 
@@ -338,6 +344,7 @@ void view_openrl_render(void)
 
 		// update the scene
 		
+	view_openrl_map_mesh_update();
 	view_openrl_map_model_update();
 	view_openrl_projectile_model_update();
 	view_openrl_effect_mesh_update();

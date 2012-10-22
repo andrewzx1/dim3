@@ -122,13 +122,14 @@ typedef struct		{
 					
 typedef struct		{
 						int								screen_wid,screen_high,
+														screen_openrl_wid,screen_openrl_high,
 														fsaa_mode;
 						float							gamma,sound_volume,music_volume;
 						bool							decal_on,lightmap_on,shadow_on,
 														always_run,toggle_run,invert_look,mouse_smooth,
 														music_on,auto_aim,window,window_editor,
 														no_hud,no_draw_weapon,metrics_on,debug_on,
-														ignore_fps_lock;
+														ignore_fps_lock,screen_openrl_pixel_double;
 						setup_path_type					path;
 						setup_axis_type					mouse,joystick;
 						setup_action_list_type			action_list;
