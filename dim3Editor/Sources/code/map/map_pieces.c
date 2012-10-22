@@ -42,26 +42,6 @@ extern app_pref_type		pref;
       
 ======================================================= */
 
-void piece_duplicate_offset(d3pnt *pnt)
-{
-	editor_view_type		*view;
-	
-	view=view_get_current_view();
-	
-	if (fabsf(view->ang.x)<15.0f) {
-		pnt->x=pref.duplicate_offset*view_snap_clip_size_factor;
-		pnt->z=0;
-		pnt->y=0;
-		rotate_2D_point_center(&pnt->x,&pnt->z,view->ang.y);
-		
-		return;
-	}
-	
-	pnt->x=pref.duplicate_offset*view_snap_clip_size_factor;
-	pnt->y=0;
-	pnt->z=pref.duplicate_offset*view_snap_clip_size_factor;
-}
-
 void piece_duplicate(void)
 {
 	int				n,i,nsel_count,type,main_idx,sub_idx,
@@ -76,7 +56,9 @@ void piece_duplicate(void)
 	
 		// get duplicate offset
 		
-	piece_duplicate_offset(&mov_pt);
+	mov_pt.x=view_get_grid();
+	mov_pt.y=0;
+	mov_pt.z=view_get_grid();
 	
 		// duplicate pieces
 		
@@ -900,10 +882,8 @@ void piece_key(char ch)
 	
 		// nudge works with grid
 	
-	mv=view_get_grid()*move_key_scale;
-	if (!os_key_shift_down()) mv/=move_key_shift_reduce_scale;
-	
-	if (mv<1) mv=1;
+	mv=view_get_grid();
+	if (os_key_shift_down()) mv*=move_key_shift_multiply;
 	
 		// nudge keys movement
 

@@ -93,7 +93,7 @@ void gl_shader_reset_light_values(shader_type *shader)
 {
 	int				n;
 
-	shader->in_hilite=FALSE;
+	shader->current_hilite=0;		// 0 = not set, 1 = on, -1 = off
 
 	shader->var_values.nlight=-1;
 
@@ -780,11 +780,24 @@ void gl_shader_ambient_hilite_override(shader_type *shader,bool hilite)
 
 void gl_shader_hilite_override(shader_type *shader,view_glsl_light_list_type *light_list)
 {
+		// never set?
+		
+	if (shader->current_hilite==0) {
+		if (light_list->hilite) {
+			shader->current_hilite=1;
+			gl_shader_ambient_hilite_override(shader,TRUE);
+			return;
+		}
+		shader->current_hilite=-1;
+		gl_shader_ambient_hilite_override(shader,FALSE);
+		return;
+	}
+			
 		// going into highlight
 
 	if (light_list->hilite) {
-		if (!shader->in_hilite) {
-			shader->in_hilite=TRUE;
+		if (shader->current_hilite!=1) {
+			shader->current_hilite=1;
 			gl_shader_ambient_hilite_override(shader,TRUE);
 		}
 		return;
@@ -793,8 +806,8 @@ void gl_shader_hilite_override(shader_type *shader,view_glsl_light_list_type *li
 		// not in highlight, check if
 		// we are in and then fix override
 
-	if (shader->in_hilite) {
-		shader->in_hilite=FALSE;
+	if (shader->current_hilite!=-1) {
+		shader->current_hilite=-1;
 		gl_shader_ambient_hilite_override(shader,FALSE);
 	}
 }
@@ -908,8 +921,12 @@ inline void gl_shader_frame_start_per_shader(shader_type *shader)
 		// we set by looking into the light list.  The
 		// light list is generated per frame, so it needs
 		// to be reset here
+		
+		// need to set current hilite to 0, which means
+		// it hasn't been set yet
 
 	shader->var_values.nlight=-1;
+	shader->current_hilite=0;
 }
 
 void gl_shader_frame_start(void)

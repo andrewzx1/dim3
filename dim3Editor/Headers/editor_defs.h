@@ -579,8 +579,7 @@ typedef struct		{
 
 #define move_scroll_wheel_scale					300
 
-#define move_key_scale							30
-#define move_key_shift_reduce_scale				10
+#define move_key_shift_multiply					10
 
 #define view_texture_shift_factor				100.0f
 

@@ -77,11 +77,10 @@ void halo_draw_add(d3pnt *pnt,int obj_idx,int halo_idx)
 
 void halo_draw_setup(void)
 {
-	int						n,radius,pixel_sz,dist,d;
+	int						n,pixel_sz,dist,d;
 	float					alpha;
 	bool					hit;
 	d3pnt					spt,ept;
-	obj_type				*obj;
 	halo_draw_type			*halo_draw;
 	iface_halo_type			*halo;
 	ray_trace_contact_type	contact;
@@ -157,16 +156,6 @@ void halo_draw_setup(void)
 		}
 		else {
 			contact.obj.ignore_idx=-1;
-		}
-		
-			// push slighty towards camera to clear
-			// any ray trace errors from being too
-			// close to projecting object
-
-		if (halo_draw->obj_idx!=-1) {
-			obj=server.obj_list.objs[halo_draw->obj_idx];
-			radius=object_get_radius(obj);
-			ray_push_to_end(&spt,&ept,radius);
 		}
 
 		hit=ray_trace_map_by_point(&spt,&ept,&contact);

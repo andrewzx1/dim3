@@ -425,10 +425,10 @@ typedef struct		{
 					} shader_current_var_value;
 
 typedef struct		{
-						int									start_tick;
+						int									start_tick,current_hilite;
 						char								name[64],
 															vertex_name[64],fragment_name[64];
-						bool								need_matrix_reset,need_frame_reset,in_hilite;
+						bool								need_matrix_reset,need_frame_reset;
 						GLuint								vertex_obj,fragment_obj,program_obj;
 						shader_cached_var_loc				var_locs;
 						shader_current_var_value			var_values;

@@ -484,6 +484,7 @@
 		26A32EDF1453CFE80005AABD /* model_util_file_model.c in Sources */ = {isa = PBXBuildFile; fileRef = 26A32EDE1453CFE80005AABD /* model_util_file_model.c */; };
 		26A45D081489AD6C00C02936 /* script_color.c in Sources */ = {isa = PBXBuildFile; fileRef = 26A45D061489AD6C00C02936 /* script_color.c */; };
 		26A45D091489AD6C00C02936 /* script_point_angle_vector.c in Sources */ = {isa = PBXBuildFile; fileRef = 26A45D071489AD6C00C02936 /* script_point_angle_vector.c */; };
+		26B9EB7216320DC900E3FFFB /* view_openrl_overlay.c in Sources */ = {isa = PBXBuildFile; fileRef = 26B9EB7116320DC900E3FFFB /* view_openrl_overlay.c */; };
 		26CBE2041581AD1E00093D7C /* simple_save_pick.c in Sources */ = {isa = PBXBuildFile; fileRef = 26CBE2031581AD1E00093D7C /* simple_save_pick.c */; };
 		26E1844513CEA27800812348 /* dim3 Engine.app in Copy Application */ = {isa = PBXBuildFile; fileRef = F5CD87F70557721D0023AD9B /* dim3 Engine.app */; };
 		26EE3E1713DA7F78000ABAF1 /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26EE3E1613DA7F78000ABAF1 /* AudioUnit.framework */; };
@@ -1003,6 +1004,7 @@
 		26A32EDE1453CFE80005AABD /* model_util_file_model.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = model_util_file_model.c; sourceTree = "<group>"; };
 		26A45D061489AD6C00C02936 /* script_color.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_color.c; sourceTree = "<group>"; };
 		26A45D071489AD6C00C02936 /* script_point_angle_vector.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_point_angle_vector.c; sourceTree = "<group>"; };
+		26B9EB7116320DC900E3FFFB /* view_openrl_overlay.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = view_openrl_overlay.c; sourceTree = "<group>"; };
 		26CBE2031581AD1E00093D7C /* simple_save_pick.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = simple_save_pick.c; sourceTree = "<group>"; };
 		26EE3E1613DA7F78000ABAF1 /* AudioUnit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioUnit.framework; path = ../../../../System/Library/Frameworks/AudioUnit.framework; sourceTree = "<group>"; };
 		26F0C43E1563297300AFE368 /* app_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = app_defs.h; path = Headers/app_defs.h; sourceTree = "<group>"; };
@@ -1661,6 +1663,7 @@
 				268BCEBB1623C1F600A18404 /* view_openrl_map.c */,
 				268BCEBD1623C1F600A18404 /* view_openrl_model.c */,
 				269FF2001627C93500840CF6 /* view_openrl_effect.c */,
+				26B9EB7116320DC900E3FFFB /* view_openrl_overlay.c */,
 				2669FCEE161274DD002292C6 /* view_openrl_patch.c */,
 			);
 			name = ViewOpenRL;
@@ -2467,6 +2470,7 @@
 				268BCEBF1623C1F600A18404 /* view_openrl_material.c in Sources */,
 				268BCEC01623C1F600A18404 /* view_openrl_model.c in Sources */,
 				269FF2011627C93500840CF6 /* view_openrl_effect.c in Sources */,
+				26B9EB7216320DC900E3FFFB /* view_openrl_overlay.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
