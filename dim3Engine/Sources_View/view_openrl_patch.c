@@ -45,18 +45,18 @@ extern network_setup_type	net_setup;
 extern file_path_setup_type	file_path_setup;
 
 int								view_rl_scene_id,
-								view_rl_font_material_id,
 								view_rl_lx,view_rl_rx,
 								view_rl_ty,view_rl_by,
 								view_rl_last_msec,view_rl_msec_display,
 								view_rl_msec,view_rl_msec_count;
 GLuint							view_rl_gl_id;
 
-texture_font_size_type			view_rl_font;
-
 int								view_rl_screen_sizes[][2]={{320,200},{400,250},{480,300},{0,0}};
+texture_font_type				view_rl_fonts[2];
 
 extern int view_openrl_create_material_from_path(char *path);
+extern void view_openrl_material_text_start(void);
+extern void view_openrl_material_text_stop(void);
 extern void view_openrl_map_mesh_start(void);
 extern void view_openrl_map_mesh_stop(void);
 extern void view_openrl_map_mesh_update(void);
@@ -65,9 +65,10 @@ extern void view_openrl_map_model_mesh_stop(void);
 extern void view_openrl_map_model_update(void);
 extern void view_openrl_projectile_model_update(void);
 extern void view_openrl_effect_mesh_update(void);
-extern void view_openrl_overlay_start(int wid,int high);
+extern void view_openrl_overlay_start(void);
 extern void view_openrl_overlay_stop(void);
 extern void view_openrl_overlay_update(void);
+extern void view_openrl_overlay_cleanup(void);
 
 /* =======================================================
 
@@ -115,14 +116,9 @@ bool view_openrl_scene_start(char *err_str)
 		return(FALSE);
 	}
 
-		// text material
+		// text materials
 
-	data=bitmap_text_size_data(&view_rl_font,"Arial",48,1024,512);
-	view_rl_font_material_id=rlMaterialAdd(1024,512,0);
-	rlMaterialAttachBufferData(view_rl_font_material_id,RL_MATERIAL_TARGET_COLOR,RL_MATERIAL_FORMAT_32_RGBA,data);
-	free(data);
-
-	rlMaterialBuildMipMaps(view_rl_font_material_id);
+	view_openrl_material_text_start();
 
 		// we need a texture to transfer
 		// the scene to opengl raster
@@ -175,6 +171,8 @@ bool view_openrl_scene_start(char *err_str)
 void view_openrl_scene_stop(void)
 {
 	glDeleteTextures(1,&view_rl_gl_id);
+
+	view_openrl_material_text_stop();
 	rlSceneDelete(view_rl_scene_id);
 }
 
@@ -266,7 +264,7 @@ void view_openrl_map_start(void)
 {
 	view_openrl_map_mesh_start();
 	view_openrl_map_model_mesh_start();
-	view_openrl_overlay_start(setup.screen_openrl_wid,setup.screen_openrl_high);
+	view_openrl_overlay_start();
 }
 
 void view_openrl_map_stop(void)
@@ -307,7 +305,7 @@ void view_openrl_transfer_to_opengl(void)
 	view_primitive_2D_texture_quad(view_rl_gl_id,NULL,1.0f,view_rl_lx,view_rl_rx,view_rl_ty,view_rl_by,0.0f,1.0f,0.0f,1.0f,TRUE);
 }
 
-void view_openrl_render(void)
+void view_openrl_render_scene(void)
 {
 	float			ang_y;
 	rlPoint			pnt;
@@ -366,7 +364,18 @@ void view_openrl_render(void)
 	while (rlSceneRenderState(view_rl_scene_id)==RL_SCENE_STATE_RENDERING) {
 		usleep(10);
 	}
-	
+
+		// any clean up
+
+	view_openrl_overlay_cleanup();
+}
+
+void view_openrl_render(void)
+{
+		// render the scene
+
+	if (!view.menu.active) view_openrl_render_scene();
+
 		// transfer to OpenGL
 
 	view_openrl_transfer_to_opengl();

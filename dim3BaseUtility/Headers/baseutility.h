@@ -631,7 +631,7 @@ typedef struct		{
 					
 typedef struct		{
 						int								image_idx,show_tick,
-														openrl_material_id,openrl_mesh_id;
+														openrl_material_id,openrl_overlay_id;
 						float							alpha,rot;
 						char							name[name_str_len],filename[file_str_len];
 						bool							show,old_show,
@@ -648,7 +648,8 @@ typedef struct		{
 					} iface_bitmap_list;
 
 typedef struct		{
-						int								size,just,special;
+						int								size,just,special,openrl_overlay_count,
+														openrl_overlay_ids[max_hud_text_str_sz];
 						float							alpha;
 						char							name[name_str_len],data[max_hud_text_str_sz];
 						bool							show,old_show,monospaced,has_return;
@@ -1512,7 +1513,7 @@ extern int score_add(iface_type *iface,char *name,int score);
 
 typedef struct			{
 							int							char_box_wid,char_box_high,char_real_high,
-														char_baseline,char_per_line;
+														char_baseline,char_per_line,openrl_material_id;
 							float						gl_xoff,gl_xadd,gl_yoff,gl_yadd,char_size[90];
 							bitmap_type					bitmap;
 						} texture_font_size_type;

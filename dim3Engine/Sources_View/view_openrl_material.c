@@ -46,6 +46,10 @@ extern file_path_setup_type	file_path_setup;
 
 extern int					view_rl_scene_id;
 
+extern texture_font_type	view_rl_fonts[2];
+
+extern bool bitmap_text_font_exist(char *name);
+
 /* =======================================================
 
       OpenRL Create Material from Texture
@@ -137,6 +141,67 @@ int view_openrl_create_material_from_path(char *path)
 	free(png_data);
 
 	return(material_id);
+}
+
+/* =======================================================
+
+      View OpenRL Text Materials
+      
+======================================================= */
+
+void view_openrl_material_text_start_single_font_size(texture_font_size_type *font_size,char *name,int txt_size,int wid,int high)
+{
+	unsigned char		*data;
+
+	data=bitmap_text_size_data(font_size,name,txt_size,wid,high);
+
+	font_size->openrl_material_id=rlMaterialAdd(wid,high,0);
+	rlMaterialAttachBufferData(font_size->openrl_material_id,RL_MATERIAL_TARGET_COLOR,RL_MATERIAL_FORMAT_32_RGBA,data);
+	free(data);
+
+	rlMaterialBuildMipMaps(font_size->openrl_material_id);
+}
+
+void view_openrl_material_text_start_single_font(texture_font_type *d3_font)
+{
+	int				n,idx;
+
+		// determine which font exists, and use that
+
+	idx=0;
+
+	for (n=0;n!=max_iface_font_variant;n++) {
+		if (bitmap_text_font_exist(d3_font->name[n])) {
+			idx=n;
+			break;
+		}
+	}
+
+		// load the font
+
+	view_openrl_material_text_start_single_font_size(&d3_font->size_24,d3_font->name[idx],24,512,256);
+	view_openrl_material_text_start_single_font_size(&d3_font->size_48,d3_font->name[idx],48,1024,512);
+}
+
+void view_openrl_material_text_start(void)
+{
+	int				n;
+
+	for (n=0;n!=max_iface_font_variant;n++) {
+		strcpy(view_rl_fonts[font_interface_index].name[n],iface.font.interface_name[n]);
+		strcpy(view_rl_fonts[font_hud_index].name[n],iface.font.hud_name[n]);
+	}
+
+	view_openrl_material_text_start_single_font(&view_rl_fonts[font_interface_index]);
+	view_openrl_material_text_start_single_font(&view_rl_fonts[font_hud_index]);
+}
+
+void view_openrl_material_text_stop(void)
+{
+	rlMaterialDelete(view_rl_fonts[font_interface_index].size_24.openrl_material_id);
+	rlMaterialDelete(view_rl_fonts[font_interface_index].size_48.openrl_material_id);
+	rlMaterialDelete(view_rl_fonts[font_hud_index].size_24.openrl_material_id);
+	rlMaterialDelete(view_rl_fonts[font_hud_index].size_48.openrl_material_id);
 }
 
 #endif
