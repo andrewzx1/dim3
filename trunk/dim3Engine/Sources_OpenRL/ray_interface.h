@@ -54,13 +54,14 @@
 #define RL_ERROR_UNKNOWN_LIGHT_ID							-3
 #define RL_ERROR_UNKNOWN_MESH_ID							-4
 #define RL_ERROR_UNKNOWN_OVERLAY_ID							-5
-#define RL_ERROR_OUT_OF_MEMORY								-6
-#define RL_ERROR_UNKNOWN_TARGET								-7
-#define RL_ERROR_UNKNOWN_FORMAT								-8
-#define RL_ERROR_SCENE_IN_USE								-9
-#define RL_ERROR_MATERIAL_ATTACHED_TO_MESH					-10
-#define RL_ERROR_MATERIAL_ATTACHED_TO_OVERLAY				-11
-#define RL_ERROR_THREADING_ERROR							-12
+#define RL_ERROR_OVERLAY_QUAD_INDEX_OUT_OF_BOUNDS			-6
+#define RL_ERROR_OUT_OF_MEMORY								-7
+#define RL_ERROR_UNKNOWN_TARGET								-8
+#define RL_ERROR_UNKNOWN_FORMAT								-9
+#define RL_ERROR_SCENE_IN_USE								-10
+#define RL_ERROR_MATERIAL_ATTACHED_TO_MESH					-11
+#define RL_ERROR_MATERIAL_ATTACHED_TO_OVERLAY				-12
+#define RL_ERROR_THREADING_ERROR							-13
 
 //
 // functions
@@ -137,13 +138,16 @@ extern int rlSceneMeshSetPoly(int sceneId,int meshId,int format,int count,void *
 extern int rlSceneOverlayAdd(int sceneId,int materialId,unsigned long flags);
 extern int rlSceneOverlayDelete(int sceneId,int overlayId);
 extern int rlSceneOverlayDeleteAll(int sceneId);
+extern int rlSceneOverlaySetQuadCount(int sceneId,int overlayId,int count);
+extern int rlSceneOverlaySetMaterial(int sceneId,int overlayId,int materialId);
+extern int rlSceneOverlaySetHidden(int sceneId,int overlayId,bool hidden);
 extern int rlSceneOverlaySetPosition(int sceneId,int overlayId,rl2DPoint *pnt);
 extern int rlSceneOverlaySetSize(int sceneId,int overlayId,rl2DPoint *pnt);
-extern int rlSceneOverlaySetUV(int sceneId,int overlayId,rlUV *uv);
-extern int rlSceneOverlaySetUVStamp(int sceneId,int overlayId,rlUV *uv);
-extern int rlSceneOverlaySetMaterial(int sceneId,int overlayId,int materialId);
-extern int rlSceneOverlayColor(int sceneId,int overlayId,rlColor *col);
-extern int rlSceneOverlaySetHidden(int sceneId,int overlayId,bool hidden);
+extern int rlSceneOverlaySetQuadPosition(int sceneId,int overlayId,int quadIndex,rl2DPoint *pnt);
+extern int rlSceneOverlaySetQuadSize(int sceneId,int overlayId,int quadIndex,rl2DPoint *pnt);
+extern int rlSceneOverlaySetQuadUV(int sceneId,int overlayId,int quadIndex,rlUV *uv);
+extern int rlSceneOverlaySetQuadUVStamp(int sceneId,int overlayId,int quadIndex,rlUV *uv);
+extern int rlSceneOverlaySetQuadColor(int sceneId,int overlayId,int quadIndex,rlColor *col);
 
 	// math utilities
 

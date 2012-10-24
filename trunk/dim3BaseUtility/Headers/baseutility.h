@@ -648,8 +648,7 @@ typedef struct		{
 					} iface_bitmap_list;
 
 typedef struct		{
-						int								size,just,special,openrl_overlay_count,
-														openrl_overlay_ids[max_hud_text_str_sz];
+						int								size,just,special,openrl_overlay_id;
 						float							alpha;
 						char							name[name_str_len],data[max_hud_text_str_sz];
 						bool							show,old_show,monospaced,has_return;

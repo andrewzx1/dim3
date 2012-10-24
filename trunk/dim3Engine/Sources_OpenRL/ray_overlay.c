@@ -29,10 +29,11 @@ int ray_scene_overlay_get_index(ray_scene_type *scene,int overlayId)
 
 bool ray_get_overlay_rgb(ray_scene_type *scene,int x,int y,ray_color_type *col)
 {
-	int							n,px,py,offset;
+	int							n,k,px,py,offset;
 	unsigned long				buf;
 	float						f,fx,fy;
 	ray_overlay_type			*overlay;
+	ray_overlay_quad_type		*overlay_quad;
 	ray_material_type			*material;
 	ray_material_mipmap_type	*mipmap;
 
@@ -51,44 +52,67 @@ bool ray_get_overlay_rgb(ray_scene_type *scene,int x,int y,ray_color_type *col)
 		if (y<overlay->pnt.y) continue;
 		if (y>=(overlay->pnt.y+overlay->pnt_size.y)) continue;
 
+		col->r=1.0f;	// supergumba -- testing
+		col->g=0.0f;
+		col->b=0.0f;
+		col->a=1.0f;
+		return(TRUE);
+
 			// sanity check for materials
 			
 		material=ray_global.material_list.materials[overlay->material_idx];
 
 		mipmap=&material->mipmap_list.mipmaps[overlay->mm_level];
 		if (mipmap->data.color==NULL) continue;
+
+			// determine the quad we are in
+
+		for (k=0;k!=overlay->quad_list.count;k++) {
+			overlay_quad=overlay->quad_list.quads[k];
+
+				// in this quad?
+				// quad points are offsets of overlay box
+
+			px=overlay->pnt.x+overlay_quad->offset_pnt.x;
+			if (x<px) continue;
+			if (x>=(px+overlay_quad->pnt_size.x)) continue;
+
+			py=overlay->pnt.y+overlay_quad->offset_pnt.y;
+			if (y<py) continue;
+			if (y>=(py+overlay_quad->pnt_size.y)) continue;
 				
-			// get uv
+				// get uv
+				
+			f=(float)(x-px)/(float)(overlay_quad->pnt_size.x);
+			fx=overlay_quad->uv.x+((overlay_quad->uv_size.x)*f);
 			
-		f=(float)(x-overlay->pnt.x)/(float)(overlay->pnt_size.x);
-		fx=overlay->uv.x+((overlay->uv_size.x)*f);
-		
-		f=(float)(y-overlay->pnt.y)/(float)(overlay->pnt_size.y);
-		fy=overlay->uv.y+((overlay->uv_size.y)*f);
-		
-			// change to texture coordinate
-		
-		fx-=floorf(fx);
-		px=(int)(fx*mipmap->wid_scale);
-
-		fy-=floorf(fy);
-		py=(int)(fy*mipmap->high_scale);
-	
-		offset=(mipmap->wid*py)+px;
-	
-			// get color
+			f=(float)(y-py)/(float)(overlay_quad->pnt_size.y);
+			fy=overlay_quad->uv.y+((overlay_quad->uv_size.y)*f);
 			
-		buf=*(((unsigned long*)mipmap->data.color)+offset);
-		ray_create_float_color_from_ulong(buf,col);
+				// change to texture coordinate
+			
+			fx-=floorf(fx);
+			px=(int)(fx*mipmap->wid_scale);
 
-			// add in the color
+			fy-=floorf(fy);
+			py=(int)(fy*mipmap->high_scale);
+		
+			offset=(mipmap->wid*py)+px;
+		
+				// get color
+				
+			buf=*(((unsigned long*)mipmap->data.color)+offset);
+			ray_create_float_color_from_ulong(buf,col);
 
-		col->r*=overlay->col.r;
-		col->g*=overlay->col.g;
-		col->b*=overlay->col.b;
-		col->a*=overlay->col.a;
+				// add in the color
 
-		return(TRUE);
+			col->r*=overlay_quad->col.r;
+			col->g*=overlay_quad->col.g;
+			col->b*=overlay_quad->col.b;
+			col->a*=overlay_quad->col.a;
+
+			return(TRUE);
+		}
 	}
 
 	return(FALSE);
@@ -102,17 +126,22 @@ bool ray_get_overlay_rgb(ray_scene_type *scene,int x,int y,ray_color_type *col)
 
 void ray_overlay_setup_all(ray_scene_type *scene)
 {
-	int					n,k,wid;
-	ray_overlay_type	*overlay;
-	ray_material_type	*material;
+	int						n,k,wid;
+	ray_overlay_type		*overlay;
+	ray_overlay_quad_type	*overlay_quad;
+	ray_material_type		*material;
 
 	for (n=0;n!=scene->overlay_list.count;n++) {
 		overlay=scene->overlay_list.overlays[n];
+		if (overlay->quad_list.count==0) return;
 
 			// get drawing size
 			// if UV was 0...1
+			// use first quad in list to determine mipmap level
+			// (this assumes all quads are of relative size)
 
-		wid=(int)(((float)overlay->pnt_size.x)*(1.0f/(overlay->uv_size.x-overlay->uv.x)));
+		overlay_quad=overlay->quad_list.quads[0];
+		wid=(int)(((float)overlay_quad->pnt_size.x)*(1.0f/(overlay_quad->uv_size.x-overlay_quad->uv.x)));
 
 			// get mipmap level
 			// closer but >= to size
@@ -145,7 +174,7 @@ void ray_overlay_setup_all(ray_scene_type *scene)
 
 int rlSceneOverlayAdd(int sceneId,int materialId,unsigned long flags)
 {
-	int					idx,material_idx;
+	int					n,idx,material_idx;
 	ray_overlay_type	*overlay;
 	ray_scene_type		*scene;
 	
@@ -176,18 +205,15 @@ int rlSceneOverlayAdd(int sceneId,int materialId,unsigned long flags)
 	overlay->pnt_size.x=0;
 	overlay->pnt_size.y=0;
 	
-	overlay->uv.x=0.0f;
-	overlay->uv.y=0.0f;
-
-	overlay->uv_size.x=1.0f;
-	overlay->uv_size.y=1.0f;
-
-	overlay->col.r=1.0f;
-	overlay->col.g=1.0f;
-	overlay->col.b=1.0f;
-	overlay->col.a=1.0f;
-	
 	overlay->hidden=FALSE;
+
+		// no quads
+
+	overlay->quad_list.count=0;
+
+	for (n=0;n!=ray_max_scene_overlay_quad;n++) {
+		overlay->quad_list.quads[n]=NULL;
+	}
 
 		// set id
 
@@ -238,6 +264,12 @@ int rlSceneOverlayDelete(int sceneId,int overlayId)
 
 	overlay=scene->overlay_list.overlays[idx];
 
+		// remove quads
+
+	for (n=0;n!=ray_max_scene_overlay_quad;n++) {
+		if (overlay->quad_list.quads[n]!=NULL) free(overlay->quad_list.quads[n]);
+	}
+
 		// remove overlay
 
 	free(overlay);
@@ -282,6 +314,171 @@ int rlSceneOverlayDeleteAll(int sceneId)
 		if (err!=RL_ERROR_OK) return(err);
 	}
 	
+	return(RL_ERROR_OK);
+}
+
+/* =======================================================
+
+      Sets Number of Quads in an Overlay
+
+	  Returns:
+	   RL_ERROR_OK
+	   RL_ERROR_UNKNOWN_SCENE_ID
+	   RL_ERROR_UNKNOWN_OVERLAY_ID
+	   RL_ERROR_OUT_OF_MEMORY
+      
+======================================================= */
+
+int rlSceneOverlaySetQuadCount(int sceneId,int overlayId,int count)
+{
+	int						n,idx;
+	ray_overlay_type		*overlay;
+	ray_overlay_quad_type	*overlay_quad;
+	ray_scene_type			*scene;
+
+		// too many quads?
+
+	if (count>ray_max_scene_overlay_quad) return(RL_ERROR_OUT_OF_MEMORY);
+
+		// get scene
+
+	idx=ray_scene_get_index(sceneId);
+	if (idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
+
+	scene=ray_global.scene_list.scenes[idx];
+
+		// get the overlay
+
+	idx=ray_scene_overlay_get_index(scene,overlayId);
+	if (idx==-1) return(RL_ERROR_UNKNOWN_OVERLAY_ID);
+
+	overlay=scene->overlay_list.overlays[idx];
+
+		// if we had more quads than we started
+		// with, clear the old ones
+
+	for (n=count;n<overlay->quad_list.count;n++) {
+		if (overlay->quad_list.quads[n]!=NULL) free(overlay->quad_list.quads[n]);
+		overlay->quad_list.quads[n]=NULL;
+	}
+
+		// add any that we need
+
+	for (n=0;n!=count;n++) {
+		if (overlay->quad_list.quads[n]!=NULL) break;
+		
+		overlay->quad_list.quads[n]=malloc(sizeof(ray_overlay_quad_type));
+		if (overlay->quad_list.quads[n]==NULL) {
+			overlay->quad_list.count=0;
+			return(RL_ERROR_OUT_OF_MEMORY);
+		}
+	}
+
+		// setup quads
+
+	overlay->quad_list.count=count;
+
+	for (n=0;n!=count;n++) {
+		overlay_quad=overlay->quad_list.quads[n];
+
+		overlay_quad->offset_pnt.x=0;
+		overlay_quad->offset_pnt.y=0;
+
+		overlay_quad->pnt_size.x=overlay->pnt_size.x;
+		overlay_quad->pnt_size.y=overlay->pnt_size.y;
+
+		overlay_quad->uv.x=0.0f;
+		overlay_quad->uv.y=0.0f;
+
+		overlay_quad->uv_size.x=1.0f;
+		overlay_quad->uv_size.y=1.0f;
+
+		overlay_quad->col.r=1.0f;
+		overlay_quad->col.g=1.0f;
+		overlay_quad->col.b=1.0f;
+		overlay_quad->col.a=1.0f;
+	}
+
+	return(RL_ERROR_OK);
+}
+
+/* =======================================================
+
+      Changes Material of Overlay Already in a Scene
+
+	  Returns:
+	   RL_ERROR_OK
+	   RL_ERROR_UNKNOWN_SCENE_ID
+	   RL_ERROR_UNKNOWN_OVERLAY_ID
+	   RL_ERROR_UNKNOWN_MATERIAL_ID
+      
+======================================================= */
+
+int rlSceneOverlaySetMaterial(int sceneId,int overlayId,int materialId)
+{
+	int					idx,material_idx;
+	ray_overlay_type	*overlay;
+	ray_scene_type		*scene;
+
+		// get scene
+
+	idx=ray_scene_get_index(sceneId);
+	if (idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
+
+	scene=ray_global.scene_list.scenes[idx];
+
+		// get the overlay
+
+	idx=ray_scene_overlay_get_index(scene,overlayId);
+	if (idx==-1) return(RL_ERROR_UNKNOWN_OVERLAY_ID);
+
+	overlay=scene->overlay_list.overlays[idx];
+
+		// reset material
+		
+	material_idx=ray_material_get_index(materialId);
+	if (material_idx==-1) return(RL_ERROR_UNKNOWN_MATERIAL_ID);
+	
+	overlay->material_idx=material_idx;
+
+	return(RL_ERROR_OK);
+}
+
+/* =======================================================
+
+      Sets an Overlay to Show or Hide
+
+	  Returns:
+	   RL_ERROR_OK
+	   RL_ERROR_UNKNOWN_SCENE_ID
+	   RL_ERROR_UNKNOWN_OVERLAY_ID
+      
+======================================================= */
+
+int rlSceneOverlaySetHidden(int sceneId,int overlayId,bool hidden)
+{
+	int					idx;
+	ray_overlay_type	*overlay;
+	ray_scene_type		*scene;
+
+		// get scene
+
+	idx=ray_scene_get_index(sceneId);
+	if (idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
+
+	scene=ray_global.scene_list.scenes[idx];
+
+		// get the overlay
+
+	idx=ray_scene_overlay_get_index(scene,overlayId);
+	if (idx==-1) return(RL_ERROR_UNKNOWN_OVERLAY_ID);
+
+	overlay=scene->overlay_list.overlays[idx];
+
+		// reset hidden flag
+
+	overlay->hidden=hidden;
+
 	return(RL_ERROR_OK);
 }
 
@@ -365,20 +562,22 @@ int rlSceneOverlaySetSize(int sceneId,int overlayId,ray_2d_point_type *pnt)
 
 /* =======================================================
 
-      Changes UV of Overlay Already in a Scene
+      Changes Offset Position of a Quad in an Overlay
 
 	  Returns:
 	   RL_ERROR_OK
 	   RL_ERROR_UNKNOWN_SCENE_ID
 	   RL_ERROR_UNKNOWN_OVERLAY_ID
+	   RL_ERROR_OVERLAY_QUAD_INDEX_OUT_OF_BOUNDS
       
 ======================================================= */
 
-int rlSceneOverlaySetUV(int sceneId,int overlayId,ray_uv_type *uv)
+int rlSceneOverlaySetQuadPosition(int sceneId,int overlayId,int quadIndex,ray_2d_point_type *pnt)
 {
-	int					idx;
-	ray_overlay_type	*overlay;
-	ray_scene_type		*scene;
+	int						idx;
+	ray_overlay_type		*overlay;
+	ray_overlay_quad_type	*overlay_quad;
+	ray_scene_type			*scene;
 
 		// get scene
 
@@ -393,31 +592,130 @@ int rlSceneOverlaySetUV(int sceneId,int overlayId,ray_uv_type *uv)
 	if (idx==-1) return(RL_ERROR_UNKNOWN_OVERLAY_ID);
 
 	overlay=scene->overlay_list.overlays[idx];
+
+		// get quad
+
+	if ((quadIndex<0) || (quadIndex>=overlay->quad_list.count)) return(RL_ERROR_OVERLAY_QUAD_INDEX_OUT_OF_BOUNDS);
+	overlay_quad=overlay->quad_list.quads[quadIndex];
+
+		// reset point
+		
+	overlay_quad->offset_pnt.x=pnt->x;
+	overlay_quad->offset_pnt.y=pnt->y;
+
+	return(RL_ERROR_OK);
+}
+
+/* =======================================================
+
+      Changes Size of a Quad in an Overlay
+
+	  Returns:
+	   RL_ERROR_OK
+	   RL_ERROR_UNKNOWN_SCENE_ID
+	   RL_ERROR_UNKNOWN_OVERLAY_ID
+	   RL_ERROR_OVERLAY_QUAD_INDEX_OUT_OF_BOUNDS
+      
+======================================================= */
+
+int rlSceneOverlaySetQuadSize(int sceneId,int overlayId,int quadIndex,ray_2d_point_type *pnt)
+{
+	int						idx;
+	ray_overlay_type		*overlay;
+	ray_overlay_quad_type	*overlay_quad;
+	ray_scene_type			*scene;
+
+		// get scene
+
+	idx=ray_scene_get_index(sceneId);
+	if (idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
+
+	scene=ray_global.scene_list.scenes[idx];
+
+		// get the overlay
+
+	idx=ray_scene_overlay_get_index(scene,overlayId);
+	if (idx==-1) return(RL_ERROR_UNKNOWN_OVERLAY_ID);
+
+	overlay=scene->overlay_list.overlays[idx];
+
+		// get quad
+
+	if ((quadIndex<0) || (quadIndex>=overlay->quad_list.count)) return(RL_ERROR_OVERLAY_QUAD_INDEX_OUT_OF_BOUNDS);
+	overlay_quad=overlay->quad_list.quads[quadIndex];
+
+		// reset point
+		
+	overlay_quad->pnt_size.x=pnt->x;
+	overlay_quad->pnt_size.y=pnt->y;
+
+	return(RL_ERROR_OK);
+}
+
+/* =======================================================
+
+      Changes UV of a Quad in an Overlay
+
+	  Returns:
+	   RL_ERROR_OK
+	   RL_ERROR_UNKNOWN_SCENE_ID
+	   RL_ERROR_UNKNOWN_OVERLAY_ID
+	   RL_ERROR_OVERLAY_QUAD_INDEX_OUT_OF_BOUNDS
+      
+======================================================= */
+
+int rlSceneOverlaySetQuadUV(int sceneId,int overlayId,int quadIndex,ray_uv_type *uv)
+{
+	int						idx;
+	ray_overlay_type		*overlay;
+	ray_overlay_quad_type	*overlay_quad;
+	ray_scene_type			*scene;
+
+		// get scene
+
+	idx=ray_scene_get_index(sceneId);
+	if (idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
+
+	scene=ray_global.scene_list.scenes[idx];
+
+		// get the overlay
+
+	idx=ray_scene_overlay_get_index(scene,overlayId);
+	if (idx==-1) return(RL_ERROR_UNKNOWN_OVERLAY_ID);
+
+	overlay=scene->overlay_list.overlays[idx];
+
+		// get quad
+
+	if ((quadIndex<0) || (quadIndex>=overlay->quad_list.count)) return(RL_ERROR_OVERLAY_QUAD_INDEX_OUT_OF_BOUNDS);
+	overlay_quad=overlay->quad_list.quads[quadIndex];
 
 		// reset UV
 		
-	overlay->uv.x=uv->x;
-	overlay->uv.y=uv->y;
+	overlay_quad->uv.x=uv->x;
+	overlay_quad->uv.y=uv->y;
 
 	return(RL_ERROR_OK);
 }
 
 /* =======================================================
 
-      Changes UV Stamp of Overlay Already in a Scene
+      Changes UV Stamp of a Quad in an Overlay
 
 	  Returns:
 	   RL_ERROR_OK
 	   RL_ERROR_UNKNOWN_SCENE_ID
 	   RL_ERROR_UNKNOWN_OVERLAY_ID
+	   RL_ERROR_OVERLAY_QUAD_INDEX_OUT_OF_BOUNDS
       
 ======================================================= */
 
-int rlSceneOverlaySetUVStamp(int sceneId,int overlayId,ray_uv_type *uv)
+int rlSceneOverlaySetQuadUVStamp(int sceneId,int overlayId,int quadIndex,ray_uv_type *uv)
 {
-	int					idx;
-	ray_overlay_type	*overlay;
-	ray_scene_type		*scene;
+	int						idx;
+	ray_overlay_type		*overlay;
+	ray_overlay_quad_type	*overlay_quad;
+	ray_scene_type			*scene;
 
 		// get scene
 
@@ -432,32 +730,39 @@ int rlSceneOverlaySetUVStamp(int sceneId,int overlayId,ray_uv_type *uv)
 	if (idx==-1) return(RL_ERROR_UNKNOWN_OVERLAY_ID);
 
 	overlay=scene->overlay_list.overlays[idx];
+
+		// get quad
+
+	if ((quadIndex<0) || (quadIndex>=overlay->quad_list.count)) return(RL_ERROR_OVERLAY_QUAD_INDEX_OUT_OF_BOUNDS);
+	overlay_quad=overlay->quad_list.quads[quadIndex];
 
 		// reset UV
 		
-	overlay->uv_size.x=uv->x;
-	overlay->uv_size.y=uv->y;
+	overlay_quad->uv_size.x=uv->x;
+	overlay_quad->uv_size.y=uv->y;
 
 	return(RL_ERROR_OK);
 }
 
+
 /* =======================================================
 
-      Changes Material of Overlay Already in a Scene
+      Changes Color Tint of a Quad in an Overlay
 
 	  Returns:
 	   RL_ERROR_OK
 	   RL_ERROR_UNKNOWN_SCENE_ID
 	   RL_ERROR_UNKNOWN_OVERLAY_ID
-	   RL_ERROR_UNKNOWN_MATERIAL_ID
+	   RL_ERROR_OVERLAY_QUAD_INDEX_OUT_OF_BOUNDS
       
 ======================================================= */
 
-int rlSceneOverlaySetMaterial(int sceneId,int overlayId,int materialId)
+int rlSceneOverlaySetQuadColor(int sceneId,int overlayId,int quadIndex,ray_color_type *col)
 {
-	int					idx,material_idx;
-	ray_overlay_type	*overlay;
-	ray_scene_type		*scene;
+	int						idx;
+	ray_overlay_type		*overlay;
+	ray_overlay_quad_type	*overlay_quad;
+	ray_scene_type			*scene;
 
 		// get scene
 
@@ -473,88 +778,15 @@ int rlSceneOverlaySetMaterial(int sceneId,int overlayId,int materialId)
 
 	overlay=scene->overlay_list.overlays[idx];
 
-		// reset material
-		
-	material_idx=ray_material_get_index(materialId);
-	if (material_idx==-1) return(RL_ERROR_UNKNOWN_MATERIAL_ID);
-	
-	overlay->material_idx=material_idx;
+		// get quad
 
-	return(RL_ERROR_OK);
-}
-
-/* =======================================================
-
-      Changes Color Tint of Overlay Already in a Scene
-
-	  Returns:
-	   RL_ERROR_OK
-	   RL_ERROR_UNKNOWN_SCENE_ID
-	   RL_ERROR_UNKNOWN_OVERLAY_ID
-      
-======================================================= */
-
-int rlSceneOverlayColor(int sceneId,int overlayId,ray_color_type *col)
-{
-	int					idx;
-	ray_overlay_type	*overlay;
-	ray_scene_type		*scene;
-
-		// get scene
-
-	idx=ray_scene_get_index(sceneId);
-	if (idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
-
-	scene=ray_global.scene_list.scenes[idx];
-
-		// get the overlay
-
-	idx=ray_scene_overlay_get_index(scene,overlayId);
-	if (idx==-1) return(RL_ERROR_UNKNOWN_OVERLAY_ID);
-
-	overlay=scene->overlay_list.overlays[idx];
+	if ((quadIndex<0) || (quadIndex>=overlay->quad_list.count)) return(RL_ERROR_OVERLAY_QUAD_INDEX_OUT_OF_BOUNDS);
+	overlay_quad=overlay->quad_list.quads[quadIndex];
 
 		// reset color
 
-	memmove(&overlay->col,col,sizeof(ray_color_type));
+	memmove(&overlay_quad->col,col,sizeof(ray_color_type));
 
 	return(RL_ERROR_OK);
 }
 
-/* =======================================================
-
-      Changes Color Tint of Overlay Already in a Scene
-
-	  Returns:
-	   RL_ERROR_OK
-	   RL_ERROR_UNKNOWN_SCENE_ID
-	   RL_ERROR_UNKNOWN_OVERLAY_ID
-      
-======================================================= */
-
-int rlSceneOverlaySetHidden(int sceneId,int overlayId,bool hidden)
-{
-	int					idx;
-	ray_overlay_type	*overlay;
-	ray_scene_type		*scene;
-
-		// get scene
-
-	idx=ray_scene_get_index(sceneId);
-	if (idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
-
-	scene=ray_global.scene_list.scenes[idx];
-
-		// get the overlay
-
-	idx=ray_scene_overlay_get_index(scene,overlayId);
-	if (idx==-1) return(RL_ERROR_UNKNOWN_OVERLAY_ID);
-
-	overlay=scene->overlay_list.overlays[idx];
-
-		// reset hidden flag
-
-	overlay->hidden=hidden;
-
-	return(RL_ERROR_OK);
-}
