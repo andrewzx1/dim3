@@ -68,7 +68,6 @@ extern void view_openrl_effect_mesh_update(void);
 extern void view_openrl_overlay_start(void);
 extern void view_openrl_overlay_stop(void);
 extern void view_openrl_overlay_update(void);
-extern void view_openrl_overlay_cleanup(void);
 
 /* =======================================================
 
@@ -364,10 +363,6 @@ void view_openrl_render_scene(void)
 	while (rlSceneRenderState(view_rl_scene_id)==RL_SCENE_STATE_RENDERING) {
 		usleep(10);
 	}
-
-		// any clean up
-
-	view_openrl_overlay_cleanup();
 }
 
 void view_openrl_render(void)

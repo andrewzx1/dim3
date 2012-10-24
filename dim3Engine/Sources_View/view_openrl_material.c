@@ -204,4 +204,10 @@ void view_openrl_material_text_stop(void)
 	rlMaterialDelete(view_rl_fonts[font_hud_index].size_48.openrl_material_id);
 }
 
+texture_font_size_type* view_openrl_material_text_get_font(int text_font,int text_size)
+{
+	if (text_size<=24) return(&view_rl_fonts[text_font].size_24);
+	return(&view_rl_fonts[text_font].size_48);
+}
+
 #endif
