@@ -261,7 +261,12 @@ void gl_text_draw_internal(int x,int y,char *txt,int just,bool vcenter,d3col *co
 		ch=(int)*c++;
 
 		if ((ch<'!') || (ch>'z')) {
-			f_lft+=(f_wid/3);
+			if (font_monospaced) {
+				f_lft+=f_wid;
+			}
+			else {
+				f_lft+=(f_wid/3);
+			}
 			continue;
 		}
 
