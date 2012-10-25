@@ -37,6 +37,8 @@ bool ray_get_overlay_rgb(ray_scene_type *scene,int x,int y,ray_color_type *col)
 	ray_material_type			*material;
 	ray_material_mipmap_type	*mipmap;
 
+	if (scene->overlay_list.count==0) return(FALSE);
+
 		// search overlay lists backwards
 		// so front to back ordering is
 		// used for rendering
@@ -44,6 +46,10 @@ bool ray_get_overlay_rgb(ray_scene_type *scene,int x,int y,ray_color_type *col)
 	for (n=(scene->overlay_list.count-1);n>=0;n--) {
 		overlay=scene->overlay_list.overlays[n];
 		if (overlay->hidden) continue;
+
+			// skip if no quads
+
+		if (overlay->quad_list.count==0) continue;
 		
 			// determine if we are in overlay
 			
@@ -51,12 +57,6 @@ bool ray_get_overlay_rgb(ray_scene_type *scene,int x,int y,ray_color_type *col)
 		if (x>=(overlay->pnt.x+overlay->pnt_size.x)) continue;
 		if (y<overlay->pnt.y) continue;
 		if (y>=(overlay->pnt.y+overlay->pnt_size.y)) continue;
-
-		col->r=1.0f;	// supergumba -- testing
-		col->g=0.0f;
-		col->b=0.0f;
-		col->a=1.0f;
-		return(TRUE);
 
 			// sanity check for materials
 			
@@ -67,7 +67,7 @@ bool ray_get_overlay_rgb(ray_scene_type *scene,int x,int y,ray_color_type *col)
 
 			// determine the quad we are in
 
-		for (k=0;k!=overlay->quad_list.count;k++) {
+		for (k=(overlay->quad_list.count-1);k>=0;k--) {
 			overlay_quad=overlay->quad_list.quads[k];
 
 				// in this quad?
@@ -104,7 +104,7 @@ bool ray_get_overlay_rgb(ray_scene_type *scene,int x,int y,ray_color_type *col)
 			buf=*(((unsigned long*)mipmap->data.color)+offset);
 			ray_create_float_color_from_ulong(buf,col);
 
-				// add in the color
+				// multiply in the tint
 
 			col->r*=overlay_quad->col.r;
 			col->g*=overlay_quad->col.g;
@@ -133,7 +133,12 @@ void ray_overlay_setup_all(ray_scene_type *scene)
 
 	for (n=0;n!=scene->overlay_list.count;n++) {
 		overlay=scene->overlay_list.overlays[n];
-		if (overlay->quad_list.count==0) return;
+
+			// no need for levels if hidden
+			// or no quads
+
+		if (overlay->hidden) continue;
+		if (overlay->quad_list.count==0) continue;
 
 			// get drawing size
 			// if UV was 0...1
@@ -365,9 +370,9 @@ int rlSceneOverlaySetQuadCount(int sceneId,int overlayId,int count)
 		// add any that we need
 
 	for (n=0;n!=count;n++) {
-		if (overlay->quad_list.quads[n]!=NULL) break;
+		if (overlay->quad_list.quads[n]!=NULL) continue;
 		
-		overlay->quad_list.quads[n]=malloc(sizeof(ray_overlay_quad_type));
+		overlay->quad_list.quads[n]=(ray_overlay_quad_type*)malloc(sizeof(ray_overlay_quad_type));
 		if (overlay->quad_list.quads[n]==NULL) {
 			overlay->quad_list.count=0;
 			return(RL_ERROR_OUT_OF_MEMORY);

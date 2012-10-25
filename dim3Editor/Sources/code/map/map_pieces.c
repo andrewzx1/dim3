@@ -911,6 +911,8 @@ void piece_key(char ch)
 	}
 	
 	if ((move_pnt.x==0) && (move_pnt.y==0) && (move_pnt.z==0)) return;
+
+	fprintf(stdout,"move=%d,%d,%d\n",move_pnt.x,move_pnt.y,move_pnt.z);
 	
 		// move selection
 	
