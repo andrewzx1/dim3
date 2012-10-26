@@ -80,6 +80,7 @@ extern int rlMaterialDeleteAll(void);
 extern int rlMaterialAttachBufferData(int materialId,int target,int format,unsigned char* data);
 extern int rlMaterialAttachBufferColor(int materialId,int target,rlColor *col);
 extern int rlMaterialSetShineFactor(int materialId,float shineFactor);
+extern int rlMaterialSetReflectionMatrix(int materialId,ray_matrix_type *mat);
 extern int rlMaterialBuildMipMaps(int materialId);
 
 	// scenes

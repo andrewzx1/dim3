@@ -184,7 +184,7 @@ typedef struct		{
 //
 // scene overlays
 //
-// these contain the overlays in a scene.
+// these contain the 2D overlays in a scene.
 //
 
 typedef struct		{
@@ -277,6 +277,7 @@ typedef struct		{
 						int								id,wid,high;
 						float							shine_factor;
 						bool							no_alpha;
+						ray_matrix_type					reflect_matrix;
 						ray_material_mipmap_list		mipmap_list;
 					} ray_material_type;
 

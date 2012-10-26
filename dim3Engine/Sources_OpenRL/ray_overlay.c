@@ -32,17 +32,23 @@ bool ray_get_overlay_rgb(ray_scene_type *scene,int x,int y,ray_color_type *col)
 	int							n,k,px,py,offset;
 	unsigned long				buf;
 	float						f,fx,fy;
+	bool						hit;
 	ray_overlay_type			*overlay;
 	ray_overlay_quad_type		*overlay_quad;
 	ray_material_type			*material;
 	ray_material_mipmap_type	*mipmap;
+	ray_color_type				o_col;
 
 	if (scene->overlay_list.count==0) return(FALSE);
+
+		// no hits yet
+
+	hit=FALSE;
 
 		// search overlay lists backwards
 		// so front to back ordering is
 		// used for rendering
-	
+
 	for (n=(scene->overlay_list.count-1);n>=0;n--) {
 		overlay=scene->overlay_list.overlays[n];
 		if (overlay->hidden) continue;
@@ -102,20 +108,48 @@ bool ray_get_overlay_rgb(ray_scene_type *scene,int x,int y,ray_color_type *col)
 				// get color
 				
 			buf=*(((unsigned long*)mipmap->data.color)+offset);
-			ray_create_float_color_from_ulong(buf,col);
+			ray_create_float_color_from_ulong(buf,&o_col);
 
 				// multiply in the tint
 
-			col->r*=overlay_quad->col.r;
-			col->g*=overlay_quad->col.g;
-			col->b*=overlay_quad->col.b;
-			col->a*=overlay_quad->col.a;
+			o_col.r*=overlay_quad->col.r;
+			o_col.g*=overlay_quad->col.g;
+			o_col.b*=overlay_quad->col.b;
+			o_col.a*=overlay_quad->col.a;
 
-			return(TRUE);
+				// skip if no alpha
+
+			if (o_col.a==0.0f) continue;
+
+				// if no hits, this becomes
+				// the new color
+
+			if (!hit) {
+				col->r=o_col.r;
+				col->g=o_col.g;
+				col->b=o_col.b;
+			}
+
+				// otherwise, we need to
+				// mix the colors using the
+				// previous alpha
+
+			else {
+				f=1.0f-col->a;
+				col->r=(col->r*col->a)+(o_col.r*f);
+				col->g=(col->g*col->a)+(o_col.g*f);
+				col->b=(col->b*col->a)+(o_col.b*f);
+			}
+
+				// always adopt new alpha
+
+			col->a=o_col.a;
+
+			hit=TRUE;
 		}
 	}
 
-	return(FALSE);
+	return(hit);
 }
 
 /* =======================================================
