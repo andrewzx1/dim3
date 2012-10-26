@@ -284,6 +284,7 @@ float ray_get_material_alpha(ray_scene_type *scene,ray_point_type *eye_pnt,ray_p
 int rlMaterialAdd(int wid,int high,unsigned long flags)
 {
 	int							n;
+	ray_vector_type				reflect_vct;
 	ray_material_type			*material;
 	ray_material_mipmap_type	*mipmap;
 	
@@ -314,9 +315,18 @@ int rlMaterialAdd(int wid,int high,unsigned long flags)
 		mipmap++;
 	}
 
-		// rendering setup
+		// default shine
 
 	material->shine_factor=1.0f;
+
+		// default reflection
+		// reflection is based on alpha level, if
+		// there is a != 1.0 alpha, then material
+		// will reflect, default is to reflect
+		// straight through
+
+	reflect_vct.x=reflect_vct.y=reflect_vct.z=1.0f;
+	rlMatrixScale(&material->reflect_matrix,&reflect_vct);
 
 		// set id
 
@@ -634,6 +644,35 @@ int rlMaterialSetShineFactor(int materialId,float shineFactor)
 		// set the shine
 
 	material->shine_factor=shineFactor;
+	
+	return(RL_ERROR_OK);
+}
+
+/* =======================================================
+
+      Sets the Reflection Matrix
+
+	  Returns:
+	   RL_ERROR_OK
+	   RL_ERROR_UNKNOWN_MATERIAL_ID
+      
+======================================================= */
+
+int rlMaterialSetReflectionMatrix(int materialId,ray_matrix_type *mat)
+{
+	int						idx;
+	ray_material_type		*material;
+
+		// get material
+
+	idx=ray_material_get_index(materialId);
+	if (idx==-1) return(RL_ERROR_UNKNOWN_MATERIAL_ID);
+
+	material=ray_global.material_list.materials[idx];
+
+		// set the matrix
+
+	memmove(&material->reflect_matrix,mat,sizeof(ray_matrix_type));
 	
 	return(RL_ERROR_OK);
 }

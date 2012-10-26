@@ -84,6 +84,12 @@ void view_openrl_map_mesh_start(void)
 	for (n=0;n!=map.mesh.nmesh;n++) {
 		mesh=&map.mesh.meshes[n];
 		if (!mesh->flag.on) continue;
+
+			// this flag determines when a mesh
+			// has been moved so we only update
+			// at that time
+
+		mesh->draw.moved=FALSE;
 			
 			// add the mesh
 
@@ -263,6 +269,73 @@ void view_openrl_map_mesh_stop(void)
 
 void view_openrl_map_mesh_update(void)
 {
+	int					n,k;
+	float				*vp,*vn;
+	d3pnt				*pnt;
+	map_mesh_type		*mesh;
+	map_mesh_poly_type	*poly;
+
+		// rebuild meshes that have
+		// moved since last draw
+
+	for (n=0;n!=map.mesh.nmesh;n++) {
+		mesh=&map.mesh.meshes[n];
+		if (!mesh->flag.on) continue;
+
+			// has this mesh been moved?
+
+		if (!mesh->flag.moveable) continue;
+		if (!mesh->draw.moved) continue;
+
+			// reset vertexes
+
+		rlSceneMeshMapVertexPointer(view_rl_scene_id,mesh->openrl_mesh_id,(void**)&vp);
+
+		pnt=mesh->vertexes;
+
+		for (k=0;k!=mesh->nvertex;k++) {
+			*vp++=(float)pnt->x;
+			*vp++=(float)pnt->y;
+			*vp++=(float)pnt->z;
+			pnt++;
+		}
+
+		rlSceneMeshUnMapVertexPointer(view_rl_scene_id,mesh->openrl_mesh_id);
+
+			// the normals
+
+		rlSceneMeshMapNormalPointer(view_rl_scene_id,mesh->openrl_mesh_id,(void**)&vn);
+
+		poly=mesh->polys;
+	
+		for (k=0;k!=mesh->npoly;k++) {
+			*vn++=poly->tangent_space.normal.x;
+			*vn++=poly->tangent_space.normal.y;
+			*vn++=poly->tangent_space.normal.z;
+			poly++;
+		}
+
+		rlSceneMeshUnMapNormalPointer(view_rl_scene_id,mesh->openrl_mesh_id);
+
+			// the tangents
+
+		rlSceneMeshMapTangentPointer(view_rl_scene_id,mesh->openrl_mesh_id,(void**)&vn);
+
+		poly=mesh->polys;
+	
+		for (k=0;k!=mesh->npoly;k++) {
+			*vn++=poly->tangent_space.tangent.x;
+			*vn++=poly->tangent_space.tangent.y;
+			*vn++=poly->tangent_space.tangent.z;
+			poly++;
+		}
+
+		rlSceneMeshUnMapTangentPointer(view_rl_scene_id,mesh->openrl_mesh_id);
+
+			// reset moved flag
+
+		mesh->draw.moved=FALSE;
+	}
 }
 
 #endif

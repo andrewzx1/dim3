@@ -74,32 +74,6 @@ void view_openrl_overlay_start(void)
 	iface_crosshair_type	*crosshair;
 	texture_font_size_type	*font_size;
 
-		// crosshair
-		// supergumba, this is all hardcoded for now
-
-	crosshair=&iface.crosshair_list.crosshairs[0];
-
-	p_pnt.x=(setup.screen_openrl_wid>>1)-5;
-	p_pnt.y=(setup.screen_openrl_high>>1)-5;
-	s_pnt.x=s_pnt.y=10;
-
-	col.r=1.0f;
-	col.g=1.0f;
-	col.b=0.0f;
-	col.a=1.0f;
-
-	view_rl_overlay_crosshair_id=rlSceneOverlayAdd(view_rl_scene_id,crosshair->openrl_material_id,0);
-	rlSceneOverlaySetPosition(view_rl_scene_id,view_rl_overlay_crosshair_id,&p_pnt);
-	rlSceneOverlaySetSize(view_rl_scene_id,view_rl_overlay_crosshair_id,&s_pnt);
-
-	p_pnt.x=0;
-	p_pnt.y=0;
-
-	rlSceneOverlaySetQuadCount(view_rl_scene_id,view_rl_overlay_crosshair_id,1);
-	rlSceneOverlaySetQuadPosition(view_rl_scene_id,view_rl_overlay_crosshair_id,0,&p_pnt);
-	rlSceneOverlaySetQuadSize(view_rl_scene_id,view_rl_overlay_crosshair_id,0,&s_pnt);
-	rlSceneOverlaySetQuadColor(view_rl_scene_id,view_rl_overlay_crosshair_id,0,&col);
-
 		// hud bitmaps
 
 	bitmap=iface.bitmap_list.bitmaps;
@@ -146,6 +120,23 @@ void view_openrl_overlay_start(void)
 		rlSceneOverlaySetHidden(view_rl_scene_id,text->openrl_overlay_id,TRUE);
 		text++;
 	}
+
+		// crosshair
+
+	crosshair=&iface.crosshair_list.crosshairs[0];
+
+	p_pnt.x=p_pnt.y=0;
+	s_pnt.x=s_pnt.y=10;
+
+	view_rl_overlay_crosshair_id=rlSceneOverlayAdd(view_rl_scene_id,crosshair->openrl_material_id,0);
+	rlSceneOverlaySetPosition(view_rl_scene_id,view_rl_overlay_crosshair_id,&p_pnt);
+	rlSceneOverlaySetSize(view_rl_scene_id,view_rl_overlay_crosshair_id,&s_pnt);
+
+	rlSceneOverlaySetQuadCount(view_rl_scene_id,view_rl_overlay_crosshair_id,1);
+	rlSceneOverlaySetQuadPosition(view_rl_scene_id,view_rl_overlay_crosshair_id,0,&p_pnt);
+	rlSceneOverlaySetQuadSize(view_rl_scene_id,view_rl_overlay_crosshair_id,0,&s_pnt);
+
+	rlSceneOverlaySetHidden(view_rl_scene_id,view_rl_overlay_crosshair_id,TRUE);
 
 		// overlays for fps
 
@@ -276,7 +267,7 @@ void view_openrl_overlay_set_to_char(texture_font_size_type *font_size,int overl
 bool view_openrl_overlay_text_to_overlay(iface_text_type *text)
 {
 	int						n,x,y,txt_len,txt_wid,ch,
-							lft,top,wid,high;
+							lft,wid,high;
 	float					alpha;
 	char					*c;
 	texture_font_size_type	*font_size;
@@ -341,11 +332,6 @@ bool view_openrl_overlay_text_to_overlay(iface_text_type *text)
 	s_pnt.y=(high*setup.screen_openrl_high)/iface.scale_y;
 	rlSceneOverlaySetSize(view_rl_scene_id,text->openrl_overlay_id,&s_pnt);
 
-		// main quad size
-
-	s_pnt.x=wid;
-	s_pnt.y=high;
-
 		// get the color
 		// and alpha
 
@@ -360,11 +346,15 @@ bool view_openrl_overlay_text_to_overlay(iface_text_type *text)
 	col.b=text->color.b;
 	col.a=alpha;
 
+		// main quad size
+
+	s_pnt.x=(wid*setup.screen_openrl_wid)/iface.scale_x;
+	s_pnt.y=(high*setup.screen_openrl_high)/iface.scale_y;
+
 		// create the quads
 		// quads are offsets into overlays
 
 	lft=0;
-	top=-high;
 	
 	c=text->data;
 
@@ -375,7 +365,7 @@ bool view_openrl_overlay_text_to_overlay(iface_text_type *text)
 			// the overlay quad
 
 		p_pnt.x=(lft*setup.screen_openrl_wid)/iface.scale_x;
-		p_pnt.y=(top*setup.screen_openrl_high)/iface.scale_y;
+		p_pnt.y=0;
 
 		rlSceneOverlaySetQuadPosition(view_rl_scene_id,text->openrl_overlay_id,n,&p_pnt);
 		rlSceneOverlaySetQuadSize(view_rl_scene_id,text->openrl_overlay_id,n,&s_pnt);
@@ -398,6 +388,169 @@ bool view_openrl_overlay_text_to_overlay(iface_text_type *text)
 	}
 
 	return(TRUE);
+}
+
+/* =======================================================
+
+      OpenRL Overlay CrossHair Update
+      
+======================================================= */
+
+int view_openrl_overlay_crosshair_setup_click(obj_type *obj,rl2DPoint *p_pnt,rl2DPoint *s_pnt,rlColor *col)
+{
+	int				sz,idx;
+
+	sz=setup.screen_openrl_wid/20;
+
+	p_pnt->x=(setup.screen_openrl_wid>>1)-sz;
+	p_pnt->y=(setup.screen_openrl_high>>1)-sz;
+	s_pnt->x=s_pnt->y=sz*2;
+
+	col->r=col->g=col->b=col->a=1.0f;
+	
+	if (obj->crosshair_draw.alt_tick>game_time_get()) {
+		idx=obj->click.crosshair_down_idx;
+	}
+	else {
+		idx=obj->click.crosshair_up_idx;
+	}
+
+	if (idx==-1) return(-1);
+
+	return(iface.crosshair_list.crosshairs[idx].openrl_material_id);
+}
+
+int view_openrl_overlay_crosshair_setup_weapon(obj_type *obj,weapon_type *weap,rl2DPoint *p_pnt,rl2DPoint *s_pnt,rlColor *col)
+{
+	int				x,y,sz,dist,obj_idx,
+					item_count,weap_mode,move_tick,swap_tick;
+	
+		// weapon displays a crosshair?
+
+	if (obj->hide_all_weapons) return(-1);
+	if (!weap->crosshair.on) return(-1);
+	if (weap->crosshair.fire_idx==-1) return(-1);
+	if ((weap->zoom.on) && (weap->zoom.mode!=zoom_mode_off)) return(-1);
+	
+		// get crosshair location
+
+	if (!crosshair_get_location(obj,weap,&x,&y,&obj_idx,&dist)) return(-1);
+
+	obj->crosshair_draw.aim_obj_idx=obj_idx;
+
+	p_pnt->x=(x*setup.screen_openrl_wid)/iface.scale_x;
+	p_pnt->y=(y*setup.screen_openrl_high)/iface.scale_y;
+	
+		// get the crosshair size
+
+	switch (weap->crosshair.type) {
+
+		case ct_bone_tracking:
+		case ct_barrel_tracking:
+			sz=setup.screen_openrl_wid>>5;
+			break;
+
+		case ct_bone_tracking_resizing:
+		case ct_barrel_tracking_resizing:
+			if (dist>weap->crosshair.distance) {
+				sz=weap->crosshair.min_size;
+			}
+			else {
+				sz=weap->crosshair.max_size-((weap->crosshair.max_size*dist)/weap->crosshair.distance);
+				if (sz<weap->crosshair.min_size) sz=weap->crosshair.min_size;
+			}
+			sz=(sz*setup.screen_openrl_wid)/iface.scale_x;
+			break;
+
+		default:
+			sz=(weap->crosshair.min_size*setup.screen_openrl_wid)/iface.scale_x;
+			break;
+
+	}
+
+	s_pnt->x=s_pnt->y=sz*2;
+	
+		// change color if picking up an item or empty
+
+	item_count=obj->item_count;
+	if (item_count!=0) {
+		col->r=weap->crosshair.pickup_col.r;
+		col->g=weap->crosshair.pickup_col.g;
+		col->b=weap->crosshair.pickup_col.b;
+	}
+	else {
+		if (weap->ammo.count!=0) {
+			col->r=weap->crosshair.col.r;
+			col->g=weap->crosshair.col.g;
+			col->b=weap->crosshair.col.b;
+		}
+		else {
+			col->r=weap->crosshair.empty_col.r;
+			col->g=weap->crosshair.empty_col.g;
+			col->b=weap->crosshair.empty_col.b;
+		}
+	}
+	
+	col->a=1.0f;
+	
+		// crosshair alpha if weapon changing
+	
+	weap_mode=obj->held_weapon.mode;
+	swap_tick=obj->held_weapon.swap_tick;
+	
+	move_tick=game_time_get();
+	
+    if (weap_mode==wm_lower) {
+        move_tick-=swap_tick;
+        col->a=(float)(weap->hand.raise_tick-move_tick)/(float)weap->hand.raise_tick;
+	}
+    if (weap_mode==wm_raise) {
+        move_tick-=swap_tick;
+        col->a=1.0f-((float)(weap->hand.raise_tick-move_tick)/(float)weap->hand.raise_tick);
+	}
+	
+		// regular weapon crosshair
+		
+	return(iface.crosshair_list.crosshairs[weap->crosshair.fire_idx].openrl_material_id);
+}
+
+void view_openrl_overlay_crosshair_setup(void)
+{
+	int				material_id;
+	obj_type		*obj;
+	weapon_type		*weap;
+	rl2DPoint		p_pnt,s_pnt;
+	rlColor			col;
+
+	obj=server.obj_list.objs[server.player_obj_idx];
+	weap=weapon_find_current(obj);
+
+	if (weap==NULL) return;
+
+		// get cursor
+
+	if (obj->click.current_click_obj_idx!=-1) {
+		material_id=view_openrl_overlay_crosshair_setup_click(obj,&p_pnt,&s_pnt,&col);
+	}
+	else {
+		material_id=view_openrl_overlay_crosshair_setup_weapon(obj,weap,&p_pnt,&s_pnt,&col);
+	}
+
+	if (material_id==-1) {
+		rlSceneOverlaySetHidden(view_rl_scene_id,view_rl_overlay_crosshair_id,TRUE);
+		return;
+	}
+
+		// set cursor overlay
+
+	rlSceneOverlaySetMaterial(view_rl_scene_id,view_rl_overlay_crosshair_id,material_id);
+	rlSceneOverlaySetHidden(view_rl_scene_id,view_rl_overlay_crosshair_id,FALSE);
+
+	rlSceneOverlaySetPosition(view_rl_scene_id,view_rl_overlay_crosshair_id,&p_pnt);
+	rlSceneOverlaySetSize(view_rl_scene_id,view_rl_overlay_crosshair_id,&s_pnt);
+
+	rlSceneOverlaySetQuadSize(view_rl_scene_id,view_rl_overlay_crosshair_id,0,&s_pnt);
+	rlSceneOverlaySetQuadColor(view_rl_scene_id,view_rl_overlay_crosshair_id,0,&col);
 }
 
 /* =======================================================
@@ -439,6 +592,10 @@ void view_openrl_overlay_update(void)
 		}
 		text++;
 	}
+
+		// crosshair
+
+	view_openrl_overlay_crosshair_setup();
 
 		// update timing
 
