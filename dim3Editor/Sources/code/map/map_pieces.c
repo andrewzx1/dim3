@@ -911,8 +911,6 @@ void piece_key(char ch)
 	}
 	
 	if ((move_pnt.x==0) && (move_pnt.y==0) && (move_pnt.z==0)) return;
-
-	fprintf(stdout,"move=%d,%d,%d\n",move_pnt.x,move_pnt.y,move_pnt.z);
 	
 		// move selection
 	
@@ -926,7 +924,6 @@ void piece_key(char ch)
 			case item_map_mesh:
 				if (map.mesh.meshes[main_idx].flag.lock_move) break;
 				map_mesh_move(&map,main_idx,&move_pnt);
-				view_force_grid(main_idx,TRUE);
 				if ((state.map.auto_texture) && (!map.mesh.meshes[main_idx].flag.lock_uv)) map_mesh_reset_uv(&map,main_idx);
 				view_vbo_mesh_rebuild(main_idx);
 				break;
