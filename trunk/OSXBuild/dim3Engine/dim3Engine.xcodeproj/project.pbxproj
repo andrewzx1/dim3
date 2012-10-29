@@ -1637,10 +1637,12 @@
 		2669FCF0161274E6002292C6 /* OpenRL */ = {
 			isa = PBXGroup;
 			children = (
+				2669FCFF16127502002292C6 /* ray.h */,
+				2669FCFE16127502002292C6 /* ray_types.h */,
 				267381E2161D3FB300512DCC /* ray_os_defs.h */,
+				2669FCF316127502002292C6 /* ray_interface.h */,
 				2669FCF116127502002292C6 /* ray_color.c */,
 				2669FCF216127502002292C6 /* ray_eye.c */,
-				2669FCF316127502002292C6 /* ray_interface.h */,
 				2669FCF416127502002292C6 /* ray_light.c */,
 				2669FCF516127502002292C6 /* ray_main.c */,
 				2669FCF616127502002292C6 /* ray_material.c */,
@@ -1650,8 +1652,6 @@
 				2669FCFB16127502002292C6 /* ray_precalc.c */,
 				2669FCFC16127502002292C6 /* ray_render.c */,
 				2669FCFD16127502002292C6 /* ray_scene.c */,
-				2669FCFE16127502002292C6 /* ray_types.h */,
-				2669FCFF16127502002292C6 /* ray.h */,
 			);
 			name = OpenRL;
 			sourceTree = "<group>";

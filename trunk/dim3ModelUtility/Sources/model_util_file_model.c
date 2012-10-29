@@ -57,7 +57,7 @@ bool model_read_xml(model_type *model)
 {
 	int						n,k,t,version,model_head,
 							bone_idx,nbone,hit_box_idx,nhit_box,
-							import_tag,ui_tag,mesh_idx,nmesh,nfill,
+							ui_tag,mesh_idx,nmesh,nfill,
 							tag,light_tag,halo_tag,hit_box_tag,
 							rigid_body_tag,meshes_tag,mesh_tag,
 							vertex_tag,poly_tag,bone_tag,fills_tag,fill_tag,
@@ -230,11 +230,6 @@ bool model_read_xml(model_type *model)
 	model->rigid_body.z.max_ang=xml_get_attribute_float_default(rigid_body_tag,"z_max_ang",45.0f);
 	model->rigid_body.z.reset_factor=xml_get_attribute_float_default(rigid_body_tag,"z_factor",0.8f);
 	model->rigid_body.z.smooth_factor=xml_get_attribute_float_default(rigid_body_tag,"z_smooth",0.2f);
-	
-		// importing
-		
-    import_tag=xml_findfirstchild("Import",model_head);
-	model->import.factor=xml_get_attribute_float_default(import_tag,"factor",1.0f);
 	
   		// ui
 		
@@ -713,12 +708,6 @@ bool model_write_xml(model_type *model,char *err_str)
 	xml_add_attribute_float("z_max_ang",model->rigid_body.z.max_ang);
 	xml_add_attribute_float("z_factor",model->rigid_body.z.reset_factor);
 	xml_add_attribute_float("z_smooth",model->rigid_body.z.smooth_factor);
-    xml_add_tagend(TRUE);
-
-		// import
-		
-    xml_add_tagstart("Import");
-	xml_add_attribute_float("factor",model->import.factor);
     xml_add_tagend(TRUE);
 
   		// ui
