@@ -44,84 +44,43 @@ extern app_state_type			state;
 void model_import_obj_rerig_vertexes(model_mesh_type *mesh,int old_nvertex,model_vertex_type *old_vertex)
 {
 	int						n,k,v_idx,
-							cur_dist,dist,dist2;
+							cur_dist,dist;
 	model_vertex_type		*v1,*v2;
-	model_bone_type			*bone;
 		
-		// first find vertexes that are equal
+		// run through and re-rig the
+		// new vertexes
 
 	v1=mesh->vertexes;
 
 	for (n=0;n!=mesh->nvertex;n++) {
 	
-		v2=old_vertex;
-	
-		for (k=0;k!=old_nvertex;k++) {
-			
-			if ((v1->pnt.x==v2->pnt.x) && (v1->pnt.y==v2->pnt.y) && (v1->pnt.z==v2->pnt.z)) {
-				v1->major_bone_idx=v2->major_bone_idx;
-				v1->minor_bone_idx=v2->minor_bone_idx;
-				v1->bone_factor=v2->bone_factor;
-				break;
-			}
-			
-			v2++;
-		}
-		
-		v1++;
-	}
-	
-		// now deal with vertexes within
-		// 10% of original distance
-		
-	v1=mesh->vertexes;
+			// find the closest (by
+			// distance) older vertex
 
-	for (n=0;n!=mesh->nvertex;n++) {
-	
-			// find the closest vertex
-			// by distance
-			
 		v_idx=-1;
-		cur_dist=0;
-		
+		cur_dist=10000;
+
 		v2=old_vertex;
 	
 		for (k=0;k!=old_nvertex;k++) {
-		
-				// skip if not attached
-			
-			if (v2->major_bone_idx==-1) {
-				v2++;
-				continue;
-			}
-			
-				// get distance
-				
+
 			dist=distance_get(v1->pnt.x,v1->pnt.y,v1->pnt.z,v2->pnt.x,v2->pnt.y,v2->pnt.z);
-			if ((v_idx==-1) || (dist<cur_dist)) {
+			if (dist<cur_dist) {
+				dist=cur_dist;
 				v_idx=k;
-				cur_dist=dist;
 			}
-			
+
 			v2++;
 		}
-		
-			// if there was a hit, figure
-			// out if it's within 10% of the
-			// bone distance
-			
+
+			// set it like closest
+			// vertex
+
 		if (v_idx!=-1) {
 			v2=&old_vertex[v_idx];
-			bone=&model.bones[v2->major_bone_idx];
-			
-			dist=distance_get(bone->pnt.x,bone->pnt.y,bone->pnt.z,v2->pnt.x,v2->pnt.y,v2->pnt.z);
-			dist2=distance_get(bone->pnt.x,bone->pnt.y,bone->pnt.z,v1->pnt.x,v1->pnt.y,v1->pnt.z);
-						
-			if (abs(dist2-dist)<(dist/10)) {
-				v1->major_bone_idx=v2->major_bone_idx;
-				v1->minor_bone_idx=v2->minor_bone_idx;
-				v1->bone_factor=v2->bone_factor;
-			}
+			v1->major_bone_idx=v2->major_bone_idx;
+			v1->minor_bone_idx=v2->minor_bone_idx;
+			v1->bone_factor=v2->bone_factor;
 		}
 		
 		v1++;

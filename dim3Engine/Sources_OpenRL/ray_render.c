@@ -247,6 +247,7 @@ bool ray_mesh_special_lighting_conditions(ray_scene_type *scene,ray_point_type *
 		pixel_col->r=material_pixel.color.rgb.r;
 		pixel_col->g=material_pixel.color.rgb.g;
 		pixel_col->b=material_pixel.color.rgb.b;
+		pixel_col->a=material_pixel.color.rgb.a;
 		return(TRUE);
 	}
 
@@ -411,16 +412,19 @@ void ray_trace_lights(ray_scene_type *scene,ray_point_type *eye_pnt,ray_point_ty
 				spec_col.g=(material_pixel.specular.rgb.g*spec_factor);
 				spec_col.b=(material_pixel.specular.rgb.b*spec_factor);
 			}
+
+				// move the diffuse to from -1..1
+				// to 0..1
+			
+			diffuse=(diffuse+1.0f)*0.5f;
 		}
 		else {
-			diffuse=ray_vector_dot_product(&light_vector_normal,&material_pixel.surface.normal);
+			diffuse=1.0f;	// no normals, so no diffuse
 		}
 
-			// move the diffuse to from -1..1
-			// to 0..1 and add in any light
-			// cone based diffuse
+			// and the lighting cone
+			// into the diffuse
 	
-		diffuse=(diffuse+1.0f)*0.5f;
 		diffuse*=cone_diffuse;
 		
 			// mix with material and
@@ -542,12 +546,6 @@ void ray_render_thread(void *arg)
 		
 	ray_precalc_thread_mesh_indexes_all(scene,thread_info);
 	
-		// the collision struct
-		
-	collision.min_t=-1.0f;
-	collision.max_t=scene->eye.max_dist;
-	collision.skip_mesh_idx=-1;
-	
 		// draw
 		
 	for (y=y_start;y!=y_end;y++) {
@@ -590,6 +588,12 @@ void ray_render_thread(void *arg)
 			ray_vector_create_from_points(&ray_vector,&view_plane_point,&ray_origin);
 			
 			rlMatrixVectorMultiply(&scene->eye.matrix,&ray_vector);
+				
+				// the collision struct
+				
+			collision.min_t=-1.0f;
+			collision.max_t=scene->eye.max_dist;
+			collision.skip_mesh_idx=-1;
 		
 				// run the ray
 
@@ -614,12 +618,21 @@ void ray_render_thread(void *arg)
 				}
 
 					// add in the new lighting
+					// supergumba -- this is bad, we need
+					// to actually blend it with previous 
+					// ones and just set it if no_hit = false
+					// (remember previous alpha, check overlays)
 
 				no_hit=FALSE;
 				
-				pixel_col.r+=(mat_col.r*mat_col.a);
-				pixel_col.g+=(mat_col.g*mat_col.a);
-				pixel_col.b+=(mat_col.b*mat_col.a);
+				//pixel_col.r+=(mat_col.r*mat_col.a);
+				//pixel_col.g+=(mat_col.g*mat_col.a);
+				//pixel_col.b+=(mat_col.b*mat_col.a);
+				pixel_col.r=mat_col.r;
+				pixel_col.g=mat_col.g;
+				pixel_col.b=mat_col.b;
+
+				//break;
 
 					// do we need to repeat and run
 					// ray again?
