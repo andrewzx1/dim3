@@ -64,7 +64,7 @@ int model_xml_get_attribute_bone(model_type *model,int tag,char *tag_name)
 void model_decode_v2_mesh_xml(model_type *model,int model_head)
 {
 	int						i,n,k,j,deform_mode,bone_idx,nbone,hit_box_idx,nhit_box,trig_count,
-							import_tag,ui_tag,mesh_idx,nmesh,nfill,trig_idx,
+							ui_tag,mesh_idx,nmesh,nfill,trig_idx,
 							tag,hit_box_tag,rigid_body_tag,meshes_tag,mesh_tag,
 							vertex_tag,bone_tag,vtag,trig_tag,
 							materials_tag,material_tag,fills_tag,fill_tag;
