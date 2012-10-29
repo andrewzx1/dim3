@@ -55,8 +55,6 @@ bool model_new(model_type *model,char *name)
 	
 	model->comulative_rotation=TRUE;
 	
-	model->import.factor=1.0f;
-	
 	for (n=0;n!=max_model_light;n++) {
 		model->bone_connect.light_bone_idx[n]=-1;
 	}

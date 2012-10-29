@@ -265,14 +265,6 @@ typedef struct		{
 					} model_bone_connect_type;
 
 //
-// model import
-//
-
-typedef struct		{
-						float							factor;
-					} model_import_type;
-
-//
 // model UI settings
 //
 
@@ -317,7 +309,6 @@ typedef struct		{
 						model_bone_connect_type			bone_connect;
  						model_mesh_type					meshes[max_model_mesh];
 						model_rigid_body_type			rigid_body;
-						model_import_type				import;
 						model_ui_type					ui;
 						model_bone_type					*bones;
 						model_pose_type					*poses;

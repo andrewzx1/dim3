@@ -130,6 +130,20 @@ void model_import_obj_rerig_vertexes(model_mesh_type *mesh,int old_nvertex,model
 
 /* =======================================================
 
+      Import OBJ File Replace
+      
+======================================================= */
+
+float model_import_obj_replace_factor(float f_ty,float f_by)
+{
+	int			lx,rx,lz,rz,ty,by;
+	
+	model_get_vertex_extent(&model,state.model.cur_mesh_idx,&lx,&rx,&lz,&rz,&ty,&by);
+	return(((float)(by-ty))/fabsf(f_by-f_ty));
+}
+
+/* =======================================================
+
       Import OBJ File
       
 ======================================================= */
@@ -139,7 +153,7 @@ bool model_import_obj(char *path,bool replace,bool *found_normals,char *err_str)
 	int						n,k,i,idx,nvertex,npoly,nuv,nnormal,nline,nmaterial,
 							texture_idx,high,ptsz,old_nvertex,sz;
 	int						*poly_normal_count;
-	float					f_count,fy,f_ty,f_by;
+	float					f_count,fy,f_ty,f_by,import_factor;
 	char					txt[256],*c,vstr[256],vtstr[256],vnstr[256],
 							material_name[256],
 							material_list[max_model_texture][name_str_len];
@@ -299,13 +313,15 @@ bool model_import_obj(char *path,bool replace,bool *found_normals,char *err_str)
 		
 	if (!replace) {
 		high=dialog_import_finish_run();
-		model.import.factor=((float)high)/fabsf(f_by-f_ty);
+		import_factor=((float)high)/fabsf(f_by-f_ty);
 	}
 
 		// if a replacement, remember the old
 		// vertexes so we can reattach bones
 		
-	if (replace) {
+	else {
+		import_factor=model_import_obj_replace_factor(f_ty,f_by);
+		
 		old_nvertex=mesh->nvertex;
 		sz=sizeof(model_vertex_type)*old_nvertex;
 		old_vertex=(model_vertex_type*)malloc(sz);
@@ -342,11 +358,11 @@ bool model_import_obj(char *path,bool replace,bool *found_normals,char *err_str)
             
         if (strcmp(txt,"v")==0) {
 			textdecode_get_piece(n,1,txt);
-			vertex->pnt.x=-(int)(strtod(txt,NULL)*model.import.factor);
+			vertex->pnt.x=-(int)(strtod(txt,NULL)*import_factor);
 			textdecode_get_piece(n,2,txt);
-			vertex->pnt.y=-(int)(strtod(txt,NULL)*model.import.factor);
+			vertex->pnt.y=-(int)(strtod(txt,NULL)*import_factor);
 			textdecode_get_piece(n,3,txt);
-			vertex->pnt.z=-(int)(strtod(txt,NULL)*model.import.factor);
+			vertex->pnt.z=-(int)(strtod(txt,NULL)*import_factor);
             
             vertex->major_bone_idx=vertex->minor_bone_idx=-1;
             vertex->bone_factor=1;

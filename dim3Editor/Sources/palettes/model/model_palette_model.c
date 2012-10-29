@@ -129,9 +129,6 @@ void model_palette_fill_model(void)
 	list_palette_add_float(&model_palette,-1,"Light Exponent",&model.ui.shader.light_exponent,FALSE);
 	list_palette_add_point(&model_palette,-1,"Light Offset",&model.ui.shader.light_offset,FALSE);
 	list_palette_add_pick_color(&model_palette,-1,"Light Color",&model.ui.shader.light_col,FALSE);
-
-	list_palette_add_header(&model_palette,0,"Model Import");
-	list_palette_add_float(&model_palette,kModelPropertyImportScale,"Scale",&model.import.factor,FALSE);
 }
 
 /* =======================================================

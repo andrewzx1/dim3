@@ -236,16 +236,6 @@ void model_decode_v2_mesh_xml(model_type *model,int model_head)
 		model->rigid_body.z.smooth_factor=0.2f;
 	}
 	
-		// importing
-		
-    import_tag=xml_findfirstchild("Import",model_head);
-	if (import_tag!=-1) {
-		model->import.factor=xml_get_attribute_float_default(import_tag,"factor",1.0f);
-	}
-	else {
-		model->import.factor=1.0f;
-	}
-	
   		// ui
 		
     ui_tag=xml_findfirstchild("UI",model_head);
