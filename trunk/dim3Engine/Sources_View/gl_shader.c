@@ -577,22 +577,6 @@ void gl_shader_set_light_variables(shader_type *shader,int core_shader_group,boo
 	shader_cached_var_light_loc		*loc_light;
 	shader_current_var_light_value	*cur_light;
 	
-		// if in core and no lights,
-		// skip all this as core shaders ignore lights
-
-	if ((is_core) && (light_list->nlight==0)) return;
-	
-		// core shaders ignore lights outside their
-		// range, so we don't need to look through max
-		// lights for core shaders
-		
-	if (is_core) {
-		max_light=light_list->nlight;
-	}
-	else {
-		max_light=max_shader_light;
-	}
-	
 		// anything UI lite always replaces
 		
 	if (light_list->ui_light.on) {
@@ -612,7 +596,7 @@ void gl_shader_set_light_variables(shader_type *shader,int core_shader_group,boo
 
 			// set all other lights off
 
-		for (n=1;n<max_light;n++) {
+		for (n=1;n<max_shader_light;n++) {
 			glUniform1f(loc_light->intensity,0.0f);
 			glUniform1f(loc_light->invertIntensity,0.0f);
 			loc_light++;
@@ -624,6 +608,22 @@ void gl_shader_set_light_variables(shader_type *shader,int core_shader_group,boo
 		gl_shader_reset_light_values(shader);
 
 		return;
+	}
+	
+		// if in core and no lights,
+		// skip all this as core shaders ignore lights
+
+	if ((is_core) && (light_list->nlight==0)) return;
+	
+		// core shaders ignore lights outside their
+		// range, so we don't need to look through max
+		// lights for core shaders
+		
+	if (is_core) {
+		max_light=light_list->nlight;
+	}
+	else {
+		max_light=max_shader_light;
 	}
 	
 		// have lights changed?

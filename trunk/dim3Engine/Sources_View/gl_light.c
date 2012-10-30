@@ -1061,8 +1061,8 @@ void gl_lights_build_model_glsl_light_list(model_type *mdl,model_draw *draw,view
 		light_list->ui_light.intensity=mdl->ui.shader.light_intensity;
 		light_list->ui_light.exponent=mdl->ui.shader.light_exponent;
 		light_list->ui_light.pnt.x=draw->pnt.x+mdl->ui.shader.light_offset.x;
-		light_list->ui_light.pnt.y=draw->pnt.x+mdl->ui.shader.light_offset.y;
-		light_list->ui_light.pnt.z=draw->pnt.x+mdl->ui.shader.light_offset.z;
+		light_list->ui_light.pnt.y=draw->pnt.y+mdl->ui.shader.light_offset.y;
+		light_list->ui_light.pnt.z=draw->pnt.z+mdl->ui.shader.light_offset.z;
 		memmove(&light_list->ui_light.col,&mdl->ui.shader.light_col,sizeof(d3col));
 		
 		return;

@@ -66,7 +66,7 @@ void model_import_obj_rerig_vertexes(model_mesh_type *mesh,int old_nvertex,model
 
 			dist=distance_get(v1->pnt.x,v1->pnt.y,v1->pnt.z,v2->pnt.x,v2->pnt.y,v2->pnt.z);
 			if (dist<cur_dist) {
-				dist=cur_dist;
+				cur_dist=dist;
 				v_idx=k;
 			}
 
