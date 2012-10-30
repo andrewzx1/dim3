@@ -133,7 +133,7 @@ void ray_intersect_mesh_list(ray_scene_type *scene,ray_point_type *eye_point,ray
 					// hit as we can no longer hit things behind it
 				
 				if (ray_intersect_triangle(scene,eye_point,eye_vector,mesh,trig,&it,&iu,&iv)) {
-					if ((it>collision->min_t) && (it<collision->t)) {
+					if (it<collision->t) {
 
 						collision->t=it;
 						collision->u=iu;
@@ -495,6 +495,103 @@ void ray_set_buffer(unsigned long *buf,ray_color_type *pixel_col,ray_color_type 
 	
 /* =======================================================
 
+      Build Pass Through, Reflection and Refraction Vectors
+      
+======================================================= */
+
+void ray_build_alpha_reflect_vector(ray_scene_type *scene,ray_point_type *ray_origin,ray_vector_type *ray_vector,ray_point_type *trig_pnt,ray_collision_type *collision)
+{
+	float					f;
+	ray_vector_type			v,normal;
+
+		// get the normal
+
+	ray_get_material_normal(scene,ray_origin,trig_pnt,collision,&normal);
+
+		// calculate reflection vector
+		// (-2*((v dot n)*n))+v
+
+	f=ray_vector_dot_product(ray_vector,&normal);
+	ray_vector_scalar_multiply(&v,&normal,f);
+	ray_vector_scalar_multiply(&v,&v,-2.0f);
+	ray_vector_add(ray_vector,&v,ray_vector);
+}
+
+void ray_build_alpha_refract_vector(ray_scene_type *scene,ray_point_type *ray_origin,ray_vector_type *ray_vector,ray_point_type *trig_pnt,ray_collision_type *collision,float refract_factor)
+{
+	ray_vector_type			v,normal;
+
+		// get the normal
+
+	ray_get_material_normal(scene,ray_origin,trig_pnt,collision,&normal);
+
+		// get the vector between the
+		// normal and the ray vector
+
+	v.x=ray_vector->x;
+	v.y=ray_vector->y;
+	v.z=ray_vector->z;
+
+	ray_vector_normalize(&v);
+
+	v.x=v.x-normal.x;
+	v.y=v.y-normal.y;
+	v.z=v.z-normal.z;
+
+		// multiply by factor to either
+		// increase or decrease the angle
+
+	v.x*=refract_factor;
+	v.y*=refract_factor;
+	v.z*=refract_factor;
+
+		// rebuild into new ray
+
+	ray_vector->x=(trig_pnt->x+normal.x)+v.x;
+	ray_vector->y=(trig_pnt->y+normal.y)+v.y;
+	ray_vector->z=(trig_pnt->z+normal.z)+v.z;
+}
+
+void ray_build_alpha_vector(ray_scene_type *scene,ray_point_type *ray_origin,ray_vector_type *ray_vector,ray_point_type *trig_pnt,ray_collision_type *collision)
+{
+	ray_poly_type			*poly;
+	ray_material_type		*material;
+
+		// get the material
+
+	poly=&scene->mesh_list.meshes[collision->mesh_idx]->poly_block.polys[collision->poly_idx];
+	material=ray_global.material_list.materials[poly->material_idx];
+
+		// build the correct vector
+		// pass through does nothing as
+		// it doesn't change the vector
+
+	switch (material->alpha_type) {
+
+		case RL_MATERIAL_ALPHA_REFLECT:
+			ray_build_alpha_reflect_vector(scene,ray_origin,ray_vector,trig_pnt,collision);
+			break;
+
+		case RL_MATERIAL_ALPHA_REFRACT:
+			ray_build_alpha_refract_vector(scene,ray_origin,ray_vector,trig_pnt,collision,material->refract_factor);
+			break;
+
+	}
+
+		// move new point to origin
+
+	ray_origin->x=trig_pnt->x;
+	ray_origin->y=trig_pnt->y;
+	ray_origin->z=trig_pnt->z;
+
+		// can't hit current poly
+
+	collision->skip_mesh_idx=collision->mesh_idx;
+	collision->skip_poly_idx=collision->poly_idx;
+}
+
+/* =======================================================
+
       Ray Rendering Main Thread
       
 ======================================================= */
@@ -507,7 +604,7 @@ void ray_render_thread(void *arg)
 {
 	int							x,y,repeat_count,
 								x_start,x_end,y_start,y_end;
-	float						xadd,yadd,zadd;
+	float						f,xadd,yadd,zadd;
 	unsigned long				*buf;
 	bool						no_hit;
 	ray_point_type				*eye_point,ray_origin,trig_point,view_plane_point;
@@ -591,7 +688,6 @@ void ray_render_thread(void *arg)
 				
 				// the collision struct
 				
-			collision.min_t=-1.0f;
 			collision.max_t=scene->eye.max_dist;
 			collision.skip_mesh_idx=-1;
 		
@@ -618,21 +714,25 @@ void ray_render_thread(void *arg)
 				}
 
 					// add in the new lighting
-					// supergumba -- this is bad, we need
-					// to actually blend it with previous 
-					// ones and just set it if no_hit = false
-					// (remember previous alpha, check overlays)
+					// if it's the first hit, then pixel
+					// equals coloring, otherwise we mix it
+					// with the previous alpha
 
-				no_hit=FALSE;
-				
-				//pixel_col.r+=(mat_col.r*mat_col.a);
-				//pixel_col.g+=(mat_col.g*mat_col.a);
-				//pixel_col.b+=(mat_col.b*mat_col.a);
-				pixel_col.r=mat_col.r;
-				pixel_col.g=mat_col.g;
-				pixel_col.b=mat_col.b;
+				if (no_hit) {
+					pixel_col.r=mat_col.r;
+					pixel_col.g=mat_col.g;
+					pixel_col.b=mat_col.b;
 
-				//break;
+					no_hit=FALSE;
+				}
+				else {
+					f=1.0f-pixel_col.a;
+					pixel_col.r=(pixel_col.r*pixel_col.a)+(mat_col.r*f);
+					pixel_col.g=(pixel_col.g*pixel_col.a)+(mat_col.g*f);
+					pixel_col.b=(pixel_col.b*pixel_col.a)+(mat_col.b*f);
+				}
+
+				pixel_col.a=mat_col.a;
 
 					// do we need to repeat and run
 					// ray again?
@@ -644,12 +744,10 @@ void ray_render_thread(void *arg)
 				repeat_count++;
 				if (repeat_count==ray_max_bounce) break;
 
-					// alpha pass through uses same
-					// ray but moves up the min_t collision
+					// we have an alpha, need to rebuild
+					// the vector and trace again
 
-				collision.min_t=collision.t;
-				collision.skip_mesh_idx=collision.mesh_idx;
-				collision.skip_poly_idx=collision.poly_idx;
+				ray_build_alpha_vector(scene,&ray_origin,&ray_vector,&trig_point,&collision);
 			}
 
 				// finally set the buffer

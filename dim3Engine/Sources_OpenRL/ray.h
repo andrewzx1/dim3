@@ -274,10 +274,11 @@ typedef struct		{
 					} ray_material_mipmap_list;
 
 typedef struct		{
-						int								id,wid,high;
-						float							shine_factor;
+						int								id,wid,high,
+														alpha_type;
+						float							shine_factor,
+														refract_factor;
 						bool							no_alpha;
-						ray_matrix_type					reflect_matrix;
 						ray_material_mipmap_list		mipmap_list;
 					} ray_material_type;
 
@@ -328,7 +329,7 @@ typedef struct		{
 typedef struct		{
 						int							mesh_idx,poly_idx,trig_idx,
 													skip_mesh_idx,skip_poly_idx;
-						float						min_t,max_t,t,u,v;
+						float						max_t,t,u,v;
 					} ray_collision_type;
 
 //
@@ -343,6 +344,8 @@ extern unsigned long ray_create_ulong_black(void);
 
 extern inline void ray_vector_normalize(ray_vector_type *v);
 extern inline void ray_vector_create_from_points(ray_vector_type *v,ray_point_type *p1,ray_point_type *p2);
+extern inline void ray_vector_scalar_multiply(ray_vector_type *sm,ray_vector_type *v,float f);
+extern inline void ray_vector_add(ray_vector_type *v,ray_vector_type *v1,ray_vector_type *v2);
 extern inline void ray_vector_cross_product(ray_vector_type *cp,ray_vector_type *v1,ray_vector_type *v2);
 extern inline float ray_vector_dot_product(ray_vector_type *v1,ray_vector_type *v2);
 extern inline void ray_vector_find_line_point_for_T(ray_point_type *p,ray_vector_type *v,float t,ray_point_type *lp);
@@ -366,6 +369,7 @@ extern void ray_precalc_thread_mesh_indexes_all(ray_scene_type *scene,ray_draw_s
 
 extern void ray_get_material_rgb(ray_scene_type *scene,ray_point_type *eye_pnt,ray_point_type *trig_pnt,ray_collision_type *collision,ray_material_pixel_type *pixel);
 extern float ray_get_material_alpha(ray_scene_type *scene,ray_point_type *eye_pnt,ray_point_type *trig_pnt,ray_collision_type *collision);
+extern void ray_get_material_normal(ray_scene_type *scene,ray_point_type *eye_pnt,ray_point_type *trig_pnt,ray_collision_type *collision,ray_vector_type *normal);
 extern bool ray_get_overlay_rgb(ray_scene_type *scene,int x,int y,ray_color_type *col);
 extern void ray_overlay_setup_all(ray_scene_type *scene);
 

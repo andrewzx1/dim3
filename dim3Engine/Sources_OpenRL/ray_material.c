@@ -269,6 +269,50 @@ float ray_get_material_alpha(ray_scene_type *scene,ray_point_type *eye_pnt,ray_p
 	return(rgb.a);
 }
 
+void ray_get_material_normal(ray_scene_type *scene,ray_point_type *eye_pnt,ray_point_type *trig_pnt,ray_collision_type *collision,ray_vector_type *normal)
+{
+	float						inv,fx,fy;
+	ray_mesh_type				*mesh;
+	ray_poly_type				*poly;
+	ray_trig_type				*trig;
+	ray_uv_type					*uv0,*uv1,*uv2;
+	ray_vector_type				*n0,*n1,*n2;
+
+		// get mesh/poly/trig and materials
+		
+	mesh=scene->mesh_list.meshes[collision->mesh_idx];
+	poly=&mesh->poly_block.polys[collision->poly_idx];
+	trig=&poly->trig_block.trigs[collision->trig_idx];
+	
+		// calculate the uv
+
+	uv0=&mesh->uv_block.uvs[trig->idxs[0].uv];
+	uv1=&mesh->uv_block.uvs[trig->idxs[1].uv];
+	uv2=&mesh->uv_block.uvs[trig->idxs[2].uv];
+		
+	inv=(1-collision->u)-collision->v;
+	fx=(inv*uv0->x)+(collision->u*uv1->x)+(collision->v*uv2->x);
+	fy=(inv*uv0->y)+(collision->u*uv1->y)+(collision->v*uv2->y);
+
+		// calculate the surface normal
+		
+	if (mesh->normal_block.normals==NULL) {
+		normal->x=normal->y=0.0f;
+		normal->z=-1.0f;
+	}
+	else {
+		n0=&mesh->normal_block.normals[trig->idxs[0].normal];
+		n1=&mesh->normal_block.normals[trig->idxs[1].normal];
+		n2=&mesh->normal_block.normals[trig->idxs[2].normal];
+			
+		normal->x=(inv*n0->x)+(collision->u*n1->x)+(collision->v*n2->x);
+		normal->y=(inv*n0->y)+(collision->u*n1->y)+(collision->v*n2->y);
+		normal->z=(inv*n0->z)+(collision->u*n1->z)+(collision->v*n2->z);
+		
+		ray_vector_normalize(normal);
+	}
+}
+
 /* =======================================================
 
       Adds a New Material with No Attachments
@@ -276,17 +320,19 @@ float ray_get_material_alpha(ray_scene_type *scene,ray_point_type *eye_pnt,ray_p
 	  Returns:
 	   If >=0, then a material ID
 	   RL_ERROR_OUT_OF_MEMORY
-	   RL_ERROR_UNKNOWN_TARGET
-	   RL_ERROR_UNKNOWN_FORMAT
+	   RL_ERROR_UNKNOWN_ALPHA_TYPE
       
 ======================================================= */
 
-int rlMaterialAdd(int wid,int high,unsigned long flags)
+int rlMaterialAdd(int wid,int high,int alphaType,unsigned long flags)
 {
 	int							n;
-	ray_vector_type				reflect_vct;
 	ray_material_type			*material;
 	ray_material_mipmap_type	*mipmap;
+
+		// validate alpha type
+
+	if ((alphaType!=RL_MATERIAL_ALPHA_PASS_THROUGH) && (alphaType!=RL_MATERIAL_ALPHA_REFLECT) && (alphaType!=RL_MATERIAL_ALPHA_REFRACT)) return(RL_ERROR_UNKNOWN_ALPHA_TYPE);
 	
 		// add material
 
@@ -301,6 +347,7 @@ int rlMaterialAdd(int wid,int high,unsigned long flags)
 
 	material->wid=wid;
 	material->high=high;
+	material->alpha_type=alphaType;
 	material->no_alpha=TRUE;
 
 		// start with no attachments
@@ -315,18 +362,10 @@ int rlMaterialAdd(int wid,int high,unsigned long flags)
 		mipmap++;
 	}
 
-		// default shine
+		// default factors
 
 	material->shine_factor=1.0f;
-
-		// default reflection
-		// reflection is based on alpha level, if
-		// there is a != 1.0 alpha, then material
-		// will reflect, default is to reflect
-		// straight through
-
-	reflect_vct.x=reflect_vct.y=reflect_vct.z=1.0f;
-	rlMatrixScale(&material->reflect_matrix,&reflect_vct);
+	material->refract_factor=1.25f;
 
 		// set id
 
@@ -650,7 +689,7 @@ int rlMaterialSetShineFactor(int materialId,float shineFactor)
 
 /* =======================================================
 
-      Sets the Reflection Matrix
+      Sets the Refraction Factor for Alphas
 
 	  Returns:
 	   RL_ERROR_OK
@@ -658,7 +697,7 @@ int rlMaterialSetShineFactor(int materialId,float shineFactor)
       
 ======================================================= */
 
-int rlMaterialSetReflectionMatrix(int materialId,ray_matrix_type *mat)
+int rlMaterialSetRefractionFactor(int materialId,float refractionFactor)
 {
 	int						idx;
 	ray_material_type		*material;
@@ -670,9 +709,9 @@ int rlMaterialSetReflectionMatrix(int materialId,ray_matrix_type *mat)
 
 	material=ray_global.material_list.materials[idx];
 
-		// set the matrix
+		// set the refraction
 
-	memmove(&material->reflect_matrix,mat,sizeof(ray_matrix_type));
+	material->refract_factor=refractionFactor;
 	
 	return(RL_ERROR_OK);
 }

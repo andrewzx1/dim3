@@ -46,7 +46,7 @@ extern file_path_setup_type	file_path_setup;
 
 extern int						view_rl_scene_id;
 
-extern int view_openrl_create_material_from_texture(char *sub_path,texture_type *texture,texture_frame_type *frame);
+extern int view_openrl_create_material_from_texture(char *sub_path,texture_type *texture,texture_frame_type *frame,int alpha_type);
 
 /* =======================================================
 
@@ -56,7 +56,7 @@ extern int view_openrl_create_material_from_texture(char *sub_path,texture_type 
 
 void view_openrl_map_mesh_start(void)
 {
-	int					n,k,i,t,uv_count,mesh_id,light_id;
+	int					n,k,i,t,uv_count,mesh_id,light_id,alpha_type;
 	float				*vp,*vt,*vn;
 	short				*vk,*ray_polys;
 	d3pnt				*pnt;
@@ -75,8 +75,12 @@ void view_openrl_map_mesh_start(void)
 		
 		frame=&texture->frames[0];
 		if (frame->name[0]==0x0) continue;
+
+		alpha_type=RL_MATERIAL_ALPHA_PASS_THROUGH;
+		if (n==8) alpha_type=RL_MATERIAL_ALPHA_REFRACT;
+		if (n==9) alpha_type=RL_MATERIAL_ALPHA_REFLECT;
 		
-		frame->bitmap.rl_material_id=view_openrl_create_material_from_texture("Bitmaps/Textures",texture,frame);
+		frame->bitmap.rl_material_id=view_openrl_create_material_from_texture("Bitmaps/Textures",texture,frame,alpha_type);
 	}
 			
 		// build the meshes
@@ -197,6 +201,12 @@ void view_openrl_map_mesh_start(void)
 		rlSceneMeshSetPoly(view_rl_scene_id,mesh_id,RL_MESH_FORMAT_POLY_SHORT_VERTEX_UV_NORMAL_TANGENT,mesh->npoly,ray_polys);
 		free(ray_polys);
 	}
+
+		// liquids
+
+
+
+
 
 		// the ambient
 

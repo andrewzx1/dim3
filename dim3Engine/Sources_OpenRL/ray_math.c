@@ -30,6 +30,20 @@ void ray_vector_create_from_points(ray_vector_type *v,ray_point_type *p1,ray_poi
 	v->z=p1->z-p2->z;
 }
 
+void ray_vector_scalar_multiply(ray_vector_type *sm,ray_vector_type *v,float f)
+{
+	sm->x=v->x*f;
+	sm->y=v->y*f;
+	sm->z=v->z*f;
+}
+
+void ray_vector_add(ray_vector_type *v,ray_vector_type *v1,ray_vector_type *v2)
+{
+	v->x=v1->x+v2->x;
+	v->y=v1->y+v2->y;
+	v->z=v1->z+v2->z;
+}
+
 void ray_vector_cross_product(ray_vector_type *cp,ray_vector_type *v1,ray_vector_type *v2)
 {
 	cp->x=(v1->y*v2->z)-(v2->y*v1->z);

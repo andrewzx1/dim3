@@ -60,6 +60,9 @@ extern void view_openrl_material_text_stop(void);
 extern void view_openrl_map_mesh_start(void);
 extern void view_openrl_map_mesh_stop(void);
 extern void view_openrl_map_mesh_update(void);
+extern void view_openrl_map_liquid_mesh_start(void);
+extern void view_openrl_map_liquid_mesh_stop(void);
+extern void view_openrl_map_liquid_mesh_update(void);
 extern void view_openrl_map_model_mesh_start(void);
 extern void view_openrl_map_model_mesh_stop(void);
 extern void view_openrl_map_model_update(void);
@@ -262,6 +265,7 @@ void view_openrl_image_cache(void)
 void view_openrl_map_start(void)
 {
 	view_openrl_map_mesh_start();
+	view_openrl_map_liquid_mesh_start();
 	view_openrl_map_model_mesh_start();
 	view_openrl_overlay_start();
 }
@@ -269,6 +273,7 @@ void view_openrl_map_start(void)
 void view_openrl_map_stop(void)
 {
 	view_openrl_map_mesh_stop();
+	view_openrl_map_liquid_mesh_stop();
 	view_openrl_map_model_mesh_stop();
 	view_openrl_overlay_stop();
 }
@@ -342,6 +347,7 @@ void view_openrl_render_scene(void)
 		// update the scene
 		
 	view_openrl_map_mesh_update();
+	view_openrl_map_liquid_mesh_update();
 	view_openrl_map_model_update();
 	view_openrl_projectile_model_update();
 	view_openrl_effect_mesh_update();
