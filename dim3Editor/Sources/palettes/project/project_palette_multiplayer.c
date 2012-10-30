@@ -79,38 +79,26 @@ void project_palette_fill_multiplayer(void)
 		// games
 
 	list_palette_add_header_button(&project_palette,kMPPropertyGameAdd,"Games",list_button_plus);
-
-	list_palette_sort_mark_start(&project_palette);
 	
 	for (n=0;n!=iface.multiplayer.game_list.ngame;n++) {
 		list_palette_add_string_selectable_button(&project_palette,(kMPPropertyGameName+n),list_button_minus,(kMPPropertyGameDelete+n),iface.multiplayer.game_list.games[n].name,(state.proj.cur_multiplayer_game_idx==n),FALSE);
 	}
 
-	list_palette_sort(&project_palette);
-
 		// options
 
 	list_palette_add_header_button(&project_palette,kMPPropertyOptionAdd,"Options",list_button_plus);
-
-	list_palette_sort_mark_start(&project_palette);
 	
 	for (n=0;n!=iface.multiplayer.option_list.noption;n++) {
 		list_palette_add_string_selectable_button(&project_palette,(kMPPropertyOptionName+n),list_button_minus,(kMPPropertyOptionDelete+n),iface.multiplayer.option_list.options[n].name,(state.proj.cur_multiplayer_option_idx==n),FALSE);
 	}
 
-	list_palette_sort(&project_palette);
-
 		// characters
 
 	list_palette_add_header_button(&project_palette,kMPPropertyCharacterAdd,"Characters",list_button_plus);
-
-	list_palette_sort_mark_start(&project_palette);
 	
 	for (n=0;n!=iface.multiplayer.character_list.ncharacter;n++) {
 		list_palette_add_string_selectable_button(&project_palette,(kMPPropertyCharacterName+n),list_button_minus,(kMPPropertyCharacterDelete+n),iface.multiplayer.character_list.characters[n].name,(state.proj.cur_multiplayer_character_idx==n),FALSE);
 	}
-
-	list_palette_sort(&project_palette);
 
 		// bots
 
