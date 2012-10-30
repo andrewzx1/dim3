@@ -17,6 +17,12 @@
 #define RL_SCENE_STATE_IDLE									0
 #define RL_SCENE_STATE_RENDERING							1
 
+	// material alpha types
+
+#define RL_MATERIAL_ALPHA_PASS_THROUGH						0
+#define RL_MATERIAL_ALPHA_REFLECT							1
+#define RL_MATERIAL_ALPHA_REFRACT							2
+
 	// material buffer targets
 
 #define RL_MATERIAL_TARGET_COLOR							0
@@ -58,10 +64,11 @@
 #define RL_ERROR_OUT_OF_MEMORY								-7
 #define RL_ERROR_UNKNOWN_TARGET								-8
 #define RL_ERROR_UNKNOWN_FORMAT								-9
-#define RL_ERROR_SCENE_IN_USE								-10
-#define RL_ERROR_MATERIAL_ATTACHED_TO_MESH					-11
-#define RL_ERROR_MATERIAL_ATTACHED_TO_OVERLAY				-12
-#define RL_ERROR_THREADING_ERROR							-13
+#define RL_ERROR_UNKNOWN_ALPHA_TYPE							-10
+#define RL_ERROR_SCENE_IN_USE								-11
+#define RL_ERROR_MATERIAL_ATTACHED_TO_MESH					-12
+#define RL_ERROR_MATERIAL_ATTACHED_TO_OVERLAY				-13
+#define RL_ERROR_THREADING_ERROR							-14
 
 //
 // functions
@@ -74,13 +81,13 @@ extern int rlShutdown(void);
 
 	// materials
 
-extern int rlMaterialAdd(int wid,int high,unsigned long flags);
+extern int rlMaterialAdd(int wid,int high,int alphaType,unsigned long flags);
 extern int rlMaterialDelete(int materialId);
 extern int rlMaterialDeleteAll(void);
 extern int rlMaterialAttachBufferData(int materialId,int target,int format,unsigned char* data);
 extern int rlMaterialAttachBufferColor(int materialId,int target,rlColor *col);
 extern int rlMaterialSetShineFactor(int materialId,float shineFactor);
-extern int rlMaterialSetReflectionMatrix(int materialId,ray_matrix_type *mat);
+extern int rlMaterialSetRefractionFactor(int materialId,float refractionFactor);
 extern int rlMaterialBuildMipMaps(int materialId);
 
 	// scenes

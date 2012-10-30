@@ -56,7 +56,7 @@ extern bool bitmap_text_font_exist(char *name);
       
 ======================================================= */
 
-int view_openrl_create_material_from_texture(char *sub_path,texture_type *texture,texture_frame_type *frame)
+int view_openrl_create_material_from_texture(char *sub_path,texture_type *texture,texture_frame_type *frame,int alpha_type)
 {
 	int					material_id,wid,high,png_wid,png_high;
 	bool				alpha_channel;
@@ -71,7 +71,7 @@ int view_openrl_create_material_from_texture(char *sub_path,texture_type *textur
 	png_data=png_utility_read(path,&wid,&high,&alpha_channel);
 	if (png_data==NULL) return(-1);
 	
-	material_id=rlMaterialAdd(wid,high,0);
+	material_id=rlMaterialAdd(wid,high,alpha_type,0);
 	rlMaterialAttachBufferData(material_id,RL_MATERIAL_TARGET_COLOR,(alpha_channel?RL_MATERIAL_FORMAT_32_RGBA:RL_MATERIAL_FORMAT_24_RGB),png_data);
 	
 	free(png_data);
@@ -135,7 +135,7 @@ int view_openrl_create_material_from_path(char *path)
 	png_data=png_utility_read(path,&wid,&high,&alpha_channel);
 	if (png_data==NULL) return(-1);
 	
-	material_id=rlMaterialAdd(wid,high,0);
+	material_id=rlMaterialAdd(wid,high,RL_MATERIAL_ALPHA_PASS_THROUGH,0);
 	rlMaterialAttachBufferData(material_id,RL_MATERIAL_TARGET_COLOR,(alpha_channel?RL_MATERIAL_FORMAT_32_RGBA:RL_MATERIAL_FORMAT_24_RGB),png_data);
 	
 	free(png_data);
@@ -155,7 +155,7 @@ void view_openrl_material_text_start_single_font_size(texture_font_size_type *fo
 
 	data=bitmap_text_size_data(font_size,name,txt_size,wid,high);
 
-	font_size->openrl_material_id=rlMaterialAdd(wid,high,0);
+	font_size->openrl_material_id=rlMaterialAdd(wid,high,RL_MATERIAL_ALPHA_PASS_THROUGH,0);
 	rlMaterialAttachBufferData(font_size->openrl_material_id,RL_MATERIAL_TARGET_COLOR,RL_MATERIAL_FORMAT_32_RGBA,data);
 	free(data);
 

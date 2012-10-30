@@ -47,7 +47,7 @@ extern file_path_setup_type	file_path_setup;
 
 extern int					view_rl_scene_id;
 
-extern int view_openrl_create_material_from_texture(char *sub_path,texture_type *texture,texture_frame_type *frame);
+extern int view_openrl_create_material_from_texture(char *sub_path,texture_type *texture,texture_frame_type *frame,int alpha_type);
 
 /* =======================================================
 
@@ -179,7 +179,7 @@ void view_openrl_map_model_mesh_start(void)
 			frame=&texture->frames[0];
 			if (frame->name[0]==0x0) continue;
 			
-			frame->bitmap.rl_material_id=view_openrl_create_material_from_texture(sub_path,texture,frame);
+			frame->bitmap.rl_material_id=view_openrl_create_material_from_texture(sub_path,texture,frame,RL_MATERIAL_ALPHA_PASS_THROUGH);
 		}
 	}
 		
