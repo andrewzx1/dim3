@@ -442,6 +442,7 @@
 		2649D14813412B2900573F6F /* setup_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 2649D13D13412B2900573F6F /* setup_defs.h */; };
 		2649D14913412B2900573F6F /* sound_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 2649D13E13412B2900573F6F /* sound_defs.h */; };
 		2649D14A13412B2900573F6F /* view_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 2649D13F13412B2900573F6F /* view_defs.h */; };
+		2664B63716408CC2001D92CA /* view_openrl_liquid.c in Sources */ = {isa = PBXBuildFile; fileRef = 2664B63616408CC2001D92CA /* view_openrl_liquid.c */; };
 		2669FCE7161273A0002292C6 /* mac_os_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 2669FCE6161273A0002292C6 /* mac_os_defs.h */; };
 		2669FCE9161273D5002292C6 /* os_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 2669FCE8161273D5002292C6 /* os_defs.h */; };
 		2669FCEF161274DD002292C6 /* view_openrl_patch.c in Sources */ = {isa = PBXBuildFile; fileRef = 2669FCEE161274DD002292C6 /* view_openrl_patch.c */; };
@@ -962,6 +963,7 @@
 		2649D13D13412B2900573F6F /* setup_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = setup_defs.h; path = Headers/setup_defs.h; sourceTree = "<group>"; };
 		2649D13E13412B2900573F6F /* sound_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = sound_defs.h; path = Headers/sound_defs.h; sourceTree = "<group>"; };
 		2649D13F13412B2900573F6F /* view_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = view_defs.h; path = Headers/view_defs.h; sourceTree = "<group>"; };
+		2664B63616408CC2001D92CA /* view_openrl_liquid.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = view_openrl_liquid.c; sourceTree = "<group>"; };
 		2669FCE6161273A0002292C6 /* mac_os_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mac_os_defs.h; path = ../OSXBuild/Common/Headers/mac_os_defs.h; sourceTree = "<group>"; };
 		2669FCE8161273D5002292C6 /* os_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = os_defs.h; path = ../dim3Common/Headers/os_defs.h; sourceTree = "<group>"; };
 		2669FCEE161274DD002292C6 /* view_openrl_patch.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = view_openrl_patch.c; sourceTree = "<group>"; };
@@ -1661,6 +1663,7 @@
 			children = (
 				268BCEBC1623C1F600A18404 /* view_openrl_material.c */,
 				268BCEBB1623C1F600A18404 /* view_openrl_map.c */,
+				2664B63616408CC2001D92CA /* view_openrl_liquid.c */,
 				268BCEBD1623C1F600A18404 /* view_openrl_model.c */,
 				269FF2001627C93500840CF6 /* view_openrl_effect.c */,
 				26B9EB7116320DC900E3FFFB /* view_openrl_overlay.c */,
@@ -2471,6 +2474,7 @@
 				268BCEC01623C1F600A18404 /* view_openrl_model.c in Sources */,
 				269FF2011627C93500840CF6 /* view_openrl_effect.c in Sources */,
 				26B9EB7216320DC900E3FFFB /* view_openrl_overlay.c in Sources */,
+				2664B63716408CC2001D92CA /* view_openrl_liquid.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2515,10 +2519,7 @@
 				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/../../dim3Engine/Headers/dim3engine.h";
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					D3_ENGINE,
-					D3_OPENRL,
-				);
+				GCC_PREPROCESSOR_DEFINITIONS = D3_ENGINE;
 				GCC_REUSE_STRINGS = YES;
 				GCC_STRICT_ALIASING = YES;
 				GCC_UNROLL_LOOPS = YES;
