@@ -57,7 +57,7 @@ extern int view_openrl_create_material_from_texture(char *sub_path,texture_type 
 void view_openrl_map_mesh_start(void)
 {
 	int					n,k,i,t,uv_count,mesh_id,light_id,alpha_type;
-	float				*vp,*vt,*vn;
+	float				*vp,*vu,*vn;
 	short				*vk,*ray_polys;
 	d3pnt				*pnt;
 	map_mesh_type		*mesh;
@@ -129,14 +129,14 @@ void view_openrl_map_mesh_start(void)
 		}
 
 		rlSceneMeshSetUV(view_rl_scene_id,mesh_id,RL_MESH_FORMAT_UV_2_FLOAT,uv_count,NULL);
-		rlSceneMeshMapUVPointer(view_rl_scene_id,mesh_id,(void**)&vt);
+		rlSceneMeshMapUVPointer(view_rl_scene_id,mesh_id,(void**)&vu);
 
 		poly=mesh->polys;
 	
 		for (i=0;i!=mesh->npoly;i++) {
 			for (t=0;t!=poly->ptsz;t++) {
-				*vt++=poly->main_uv.uvs[t].x;
-				*vt++=poly->main_uv.uvs[t].y;
+				*vu++=poly->main_uv.uvs[t].x;
+				*vu++=poly->main_uv.uvs[t].y;
 			}
 			poly++;
 		}
@@ -201,12 +201,6 @@ void view_openrl_map_mesh_start(void)
 		rlSceneMeshSetPoly(view_rl_scene_id,mesh_id,RL_MESH_FORMAT_POLY_SHORT_VERTEX_UV_NORMAL_TANGENT,mesh->npoly,ray_polys);
 		free(ray_polys);
 	}
-
-		// liquids
-
-
-
-
 
 		// the ambient
 
