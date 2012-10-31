@@ -48,7 +48,7 @@ SDL_GLContext				*sdl_gl_ctx;
 
 bool gl_in_window_mode(void)
 {
-#ifdef D3_OPENRL
+#ifndef D3_OPENRL
 	#if defined(D3_OS_IPHONE) || defined(D3_OS_ANDRIOD)
 		return(FALSE);
 	#else

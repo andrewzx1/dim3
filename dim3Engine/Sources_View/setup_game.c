@@ -437,7 +437,7 @@ void setup_game_debug_pane(void)
 	x=(int)(((float)iface.scale_x)*0.6f);
 	y=((iface.scale_y>>1)+(element_get_button_high()>>1))-(control_y_sz>>1);
 	
-	element_checkbox_add("Engine Windowed Mode (requires restart)",setup.window,ctrl_debug_engine_windowed_id,x,y,TRUE);
+	element_checkbox_add("Engine Windowed Mode",setup.window,ctrl_debug_engine_windowed_id,x,y,TRUE);
 	y+=control_y_add;
 	element_checkbox_add("Editor Windowed Run Mode",setup.window_editor,ctrl_debug_editor_windowed_id,x,y,TRUE);
 	y+=control_y_add;
