@@ -11,6 +11,7 @@
 #define ray_max_scene								32
 #define ray_max_scene_light							128
 #define ray_max_scene_mesh							5120
+#define ray_max_mesh_poly							5120
 #define ray_max_scene_overlay						256
 #define ray_max_scene_overlay_quad					256
 
@@ -48,7 +49,7 @@
 //
 
 typedef struct		{
-                        ray_point_type				min,max;
+                        ray_point_type				min,max,mid;
                     } ray_bound_type;
 
 //
@@ -138,23 +139,6 @@ typedef struct		{
 					} ray_mesh_list;
 
 //
-// mesh indexes block
-//
-// these contains lists of meshes that are within a bounds area
-// to speed up rendering
-//
-
-typedef struct		{
-						short						idx;
-						float						dist;
-					} ray_mesh_index_type;
-
-typedef struct		{
-						int							count;
-						ray_mesh_index_type			*indexes;
-					} ray_mesh_index_block;
-
-//
 // scene lights
 //
 // these contain the lights in a scene.
@@ -173,7 +157,6 @@ typedef struct		{
 						ray_color_type				col;
 						ray_light_direction_type	direction;
 						ray_bound_type				bound;
-						ray_mesh_index_block		mesh_index_block;
 					} ray_light_type;
 
 typedef struct		{
@@ -227,7 +210,6 @@ typedef struct		{
 						bool						done;
 						void						*parent_scene;			// this is a pointer back to the parent structure, need by threading
 						ray_2d_point_type			draw_rect_start,draw_rect_end;
-						ray_mesh_index_block		mesh_index_block;
 					} ray_draw_scene_thread_info;
 
 typedef struct		{
@@ -350,6 +332,7 @@ extern inline void ray_vector_cross_product(ray_vector_type *cp,ray_vector_type 
 extern inline float ray_vector_dot_product(ray_vector_type *v1,ray_vector_type *v2);
 extern inline void ray_vector_find_line_point_for_T(ray_point_type *p,ray_vector_type *v,float t,ray_point_type *lp);
 
+extern void ray_to_bound(ray_point_type *p,ray_vector_type *v,ray_bound_type *bnd);
 extern bool ray_bound_bound_collision(ray_bound_type *bnd_1,ray_bound_type *bnd_2);
 extern bool ray_bound_ray_collision(ray_point_type *p,ray_vector_type *v,ray_bound_type *bnd);
 
@@ -363,9 +346,7 @@ extern void ray_precalc_polygon_bounds(ray_mesh_type *mesh,ray_poly_type *poly);
 extern void ray_precalc_triangle_bounds(ray_mesh_type *mesh,ray_trig_type *trig);
 extern void ray_precalc_light_bounds(ray_light_type *light);
 extern void ray_precalc_triangle_vectors(ray_mesh_type *mesh,ray_trig_type *trig);
-extern void ray_precalc_light_mesh_indexes_all(ray_scene_type *scene);
 extern void ray_precalc_mesh_poly_setup_all(ray_scene_type *scene);
-extern void ray_precalc_thread_mesh_indexes_all(ray_scene_type *scene,ray_draw_scene_thread_info *thread_info);
 
 extern void ray_get_material_rgb(ray_scene_type *scene,ray_point_type *eye_pnt,ray_point_type *trig_pnt,ray_collision_type *collision,ray_material_pixel_type *pixel);
 extern float ray_get_material_alpha(ray_scene_type *scene,ray_point_type *eye_pnt,ray_point_type *trig_pnt,ray_collision_type *collision);

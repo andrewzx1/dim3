@@ -64,11 +64,12 @@ bool ray_intersect_triangle(ray_scene_type *scene,ray_point_type *eye_point,ray_
       
 ======================================================= */
 
-void ray_intersect_mesh_list(ray_scene_type *scene,ray_point_type *eye_point,ray_vector_type *eye_vector,ray_mesh_index_block *index_block,ray_collision_type *collision)
+void ray_intersect_mesh_list(ray_scene_type *scene,ray_point_type *eye_point,ray_vector_type *eye_vector,ray_collision_type *collision)
 {
-	int					n,k,i,mesh_idx;
+	int					mesh_idx,poly_idx,trig_idx;
 	float				it,iu,iv;
 	ray_vector_type		vct;
+	ray_bound_type		ray_bnd;
 	ray_mesh_type		*mesh;
 	ray_poly_type		*poly;
 	ray_trig_type		*trig;
@@ -89,39 +90,44 @@ void ray_intersect_mesh_list(ray_scene_type *scene,ray_point_type *eye_point,ray
 	vct.y=eye_vector->y;
 	vct.z=eye_vector->z;
 
-		// find collisions
+	ray_to_bound(eye_point,&vct,&ray_bnd);
 
-	for (n=0;n!=index_block->count;n++) {
-	
-		mesh_idx=index_block->indexes[n].idx;
+		// run through the meshes
+
+	for (mesh_idx=0;mesh_idx!=scene->mesh_list.count;mesh_idx++) {
+
 		mesh=scene->mesh_list.meshes[mesh_idx];
-	
-			// bounds check
-			
+
+		if (mesh->hidden) continue;
+		if ((mesh->flags&RL_MESH_FLAG_NON_RAY_TRACE_BLOCKING)!=0) continue;
+
+			// mesh bounds check
+
+		if (!ray_bound_bound_collision(&ray_bnd,&mesh->bound)) continue;
 		if (!ray_bound_ray_collision(eye_point,&vct,&mesh->bound)) continue;
 
-			// check the polys
+			// run through the polys
+
+		for (poly_idx=0;poly_idx!=mesh->poly_block.count;poly_idx++) {
 			
-		for (k=0;k!=mesh->poly_block.count;k++) {
-		
 				// bounds check
 				
-			poly=&mesh->poly_block.polys[k];
+			poly=&mesh->poly_block.polys[poly_idx];
 			if (!ray_bound_ray_collision(eye_point,&vct,&poly->bound)) continue;
 				
 				// skiping polys, this is mostly used
 				// for reflections or pass throughs
 				// so we don't re-hit ourselves
 					
-			if ((mesh_idx==collision->skip_mesh_idx) && (k==collision->skip_poly_idx)) continue;
+			if ((mesh_idx==collision->skip_mesh_idx) && (poly_idx==collision->skip_poly_idx)) continue;
 			
 				// check triangle/ray intersection
 				// first hit exits out of polygons as you
 				// can only hit one triangle of a polygon
 				
-			for (i=0;i!=poly->trig_block.count;i++) {
+			for (trig_idx=0;trig_idx!=poly->trig_block.count;trig_idx++) {
 			
-				trig=&poly->trig_block.trigs[i];
+				trig=&poly->trig_block.trigs[trig_idx];
 				if (!ray_bound_ray_collision(eye_point,&vct,&trig->bound)) continue;
 					
 					// not we still use the non-reduced eye_vector
@@ -139,8 +145,8 @@ void ray_intersect_mesh_list(ray_scene_type *scene,ray_point_type *eye_point,ray
 						collision->u=iu;
 						collision->v=iv;
 						collision->mesh_idx=mesh_idx;
-						collision->poly_idx=k;
-						collision->trig_idx=i;
+						collision->poly_idx=poly_idx;
+						collision->trig_idx=trig_idx;
 
 						vct.x*=it;
 						vct.y*=it;
@@ -160,9 +166,9 @@ void ray_intersect_mesh_list(ray_scene_type *scene,ray_point_type *eye_point,ray
       
 ======================================================= */
 
-bool ray_block_mesh_list(ray_scene_type *scene,ray_point_type *pnt,ray_vector_type *vct,ray_mesh_index_block *index_block,ray_collision_type *collision)
+bool ray_block_mesh_list(ray_scene_type *scene,ray_point_type *pnt,ray_vector_type *vct,ray_collision_type *collision)
 {
-	int					n,k,i,mesh_idx;
+	int					mesh_idx,poly_idx,trig_idx;
 	float				t,u,v;
 	ray_point_type		trig_pnt;
 	ray_mesh_type		*mesh;
@@ -170,35 +176,39 @@ bool ray_block_mesh_list(ray_scene_type *scene,ray_point_type *pnt,ray_vector_ty
 	ray_trig_type		*trig;
 	ray_collision_type	lit_collision;
 	
-	for (n=0;n!=index_block->count;n++) {
+	for (mesh_idx=0;mesh_idx!=scene->mesh_list.count;mesh_idx++) {
 	
 			// indexes in this mesh list have
 			// already been pared down non-render
 			// and non-light blocking
 			
-		mesh_idx=index_block->indexes[n].idx;
 		mesh=scene->mesh_list.meshes[mesh_idx];
-		
-			// bounds check
-			
+
+		if (mesh->hidden) continue;
+		if ((mesh->flags&RL_MESH_FLAG_NON_LIGHT_BLOCKING)!=0) continue;
+
+			// mesh bounds check
+
 		if (!ray_bound_ray_collision(pnt,vct,&mesh->bound)) continue;
 
 			// run through the polys
-			
-		for (k=0;k!=mesh->poly_block.count;k++) {
-		
-			poly=&mesh->poly_block.polys[k];
+
+		for (poly_idx=0;poly_idx!=mesh->poly_block.count;poly_idx++) {
+
+				// bound collision
+
+			poly=&mesh->poly_block.polys[poly_idx];
 			if (!ray_bound_ray_collision(pnt,vct,&poly->bound)) continue;
-			
+				
 				// skip self
 				
-			if ((collision->mesh_idx==mesh_idx) && (collision->poly_idx==k)) continue;
+			if ((collision->mesh_idx==mesh_idx) && (collision->poly_idx==poly_idx)) continue;
 			
 				// check trigs
 				
-			for (i=0;i!=poly->trig_block.count;i++) {
+			for (trig_idx=0;trig_idx!=poly->trig_block.count;trig_idx++) {
 			
-				trig=&poly->trig_block.trigs[i];
+				trig=&poly->trig_block.trigs[trig_idx];
 				if (!ray_bound_ray_collision(pnt,vct,&trig->bound)) continue;
 
 					// check for intersection, but
@@ -215,8 +225,8 @@ bool ray_block_mesh_list(ray_scene_type *scene,ray_point_type *pnt,ray_vector_ty
 				lit_collision.u=u;
 				lit_collision.v=v;
 				lit_collision.mesh_idx=mesh_idx;
-				lit_collision.poly_idx=k;
-				lit_collision.trig_idx=i;
+				lit_collision.poly_idx=poly_idx;
+				lit_collision.trig_idx=trig_idx;
 
 				ray_vector_find_line_point_for_T(pnt,vct,t,&trig_pnt);
 				if (ray_get_material_alpha(scene,pnt,&trig_pnt,&lit_collision)==1.0f) return(TRUE);
@@ -337,7 +347,7 @@ void ray_trace_lights(ray_scene_type *scene,ray_point_type *eye_pnt,ray_point_ty
 			// check for mesh collides
 			// blocking light
 
-		if (ray_block_mesh_list(scene,trig_pnt,&light_vector,&light->mesh_index_block,collision)) continue;
+		if (ray_block_mesh_list(scene,trig_pnt,&light_vector,collision)) continue;
 
 			// attenuate the light for distance
 
@@ -637,12 +647,6 @@ void ray_render_thread(void *arg)
 	yadd=eye_point->y-(float)(scene->buffer.high>>1);
 	zadd=eye_point->z+scene->eye.min_dist;
 	
-		// setup the precalced mesh indexes
-		// that are used to reduce the number of meshes
-		// we have to check
-		
-	ray_precalc_thread_mesh_indexes_all(scene,thread_info);
-	
 		// draw
 		
 	for (y=y_start;y!=y_end;y++) {
@@ -697,7 +701,7 @@ void ray_render_thread(void *arg)
 
 					// find nearest mesh-trig intersection
 					
-				ray_intersect_mesh_list(scene,&ray_origin,&ray_vector,&thread_info->mesh_index_block,&collision);
+				ray_intersect_mesh_list(scene,&ray_origin,&ray_vector,&collision);
 				if (collision.trig_idx==-1) break;
 
 				ray_vector_find_line_point_for_T(&ray_origin,&ray_vector,collision.t,&trig_point);
@@ -860,12 +864,6 @@ int rlSceneRender(int sceneId)
 #else
 	ReleaseMutex(scene->render.lock);
 #endif
-
-		// setup the precalced light mesh indexes
-		// that are used to reduce the number of meshes
-		// we have to check
-		
-	ray_precalc_light_mesh_indexes_all(scene);
 
 		// some presetup for mesh polygons
 
