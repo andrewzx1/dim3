@@ -76,9 +76,8 @@ void view_openrl_map_mesh_start(void)
 		frame=&texture->frames[0];
 		if (frame->name[0]==0x0) continue;
 
-		alpha_type=RL_MATERIAL_ALPHA_PASS_THROUGH;
-		if (n==8) alpha_type=RL_MATERIAL_ALPHA_REFRACT;
-		if (n==9) alpha_type=RL_MATERIAL_ALPHA_REFLECT;
+		alpha_type=RL_MATERIAL_ALPHA_PASS_THROUGH;		// supergumba -- needs to be a setting
+		if (n==8) alpha_type=RL_MATERIAL_ALPHA_REFLECT;
 		
 		frame->bitmap.rl_material_id=view_openrl_create_material_from_texture("Bitmaps/Textures",texture,frame,alpha_type);
 	}

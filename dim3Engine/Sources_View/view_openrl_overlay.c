@@ -45,14 +45,11 @@ extern setup_type			setup;
 extern network_setup_type	net_setup;
 extern file_path_setup_type	file_path_setup;
 
-extern int						view_rl_scene_id,
-								view_rl_last_msec,view_rl_msec_display,
-								view_rl_msec,view_rl_msec_count;
+extern int						view_rl_scene_id;
 
 extern texture_font_type		view_rl_fonts[2];
 
-int								view_rl_overlay_crosshair_id,
-								view_rl_overlay;
+int								view_rl_overlay_crosshair_id;
 
 extern texture_font_size_type* view_openrl_material_text_get_font(int text_font,int text_size);
 extern int gl_text_get_monospace_width(texture_font_size_type *font,int text_size);
@@ -67,7 +64,6 @@ extern bool hud_item_fade_run(iface_item_fade_type *fade,float *alpha);
 void view_openrl_overlay_start(void)
 {
 	int						n;
-	rlColor					col;
 	rl2DPoint				p_pnt,s_pnt;
 	iface_bitmap_type		*bitmap;
 	iface_text_type			*text;
@@ -137,50 +133,10 @@ void view_openrl_overlay_start(void)
 	rlSceneOverlaySetQuadSize(view_rl_scene_id,view_rl_overlay_crosshair_id,0,&s_pnt);
 
 	rlSceneOverlaySetHidden(view_rl_scene_id,view_rl_overlay_crosshair_id,TRUE);
-
-		// overlays for fps
-
-	p_pnt.x=5;
-	p_pnt.y=setup.screen_openrl_high-25;
-	s_pnt.x=15*5;
-	s_pnt.y=20;
-
-	col.r=1.0f;
-	col.g=1.0f;
-	col.b=0.0f;
-	col.a=1.0f;
-
-	font_size=view_openrl_material_text_get_font(font_hud_index,20);
-
-	view_rl_overlay=rlSceneOverlayAdd(view_rl_scene_id,font_size->openrl_material_id,0);
-	rlSceneOverlaySetPosition(view_rl_scene_id,view_rl_overlay,&p_pnt);
-	rlSceneOverlaySetSize(view_rl_scene_id,view_rl_overlay,&s_pnt);
-
-	rlSceneOverlaySetQuadCount(view_rl_scene_id,view_rl_overlay,5);
-
-	p_pnt.x=0;
-	p_pnt.y=0;
-	s_pnt.x=15;
-	s_pnt.y=20;
-
-	for (n=0;n!=5;n++) {
-		rlSceneOverlaySetQuadPosition(view_rl_scene_id,view_rl_overlay,n,&p_pnt);
-		rlSceneOverlaySetQuadSize(view_rl_scene_id,view_rl_overlay,n,&s_pnt);
-		rlSceneOverlaySetQuadColor(view_rl_scene_id,view_rl_overlay,n,&col);
-		p_pnt.x+=s_pnt.x;
-	}
-
-		// fps
-
-	view_rl_msec_count=0;
-	view_rl_msec=0;
-	view_rl_msec_display=0;
-	view_rl_last_msec=game_time_get_raw();
 }
 
 void view_openrl_overlay_stop(void)
 {
-	rlSceneOverlayDelete(view_rl_scene_id,view_rl_overlay);
 	rlSceneOverlayDelete(view_rl_scene_id,view_rl_overlay_crosshair_id);
 }
 
@@ -562,11 +518,8 @@ void view_openrl_overlay_crosshair_setup(void)
 void view_openrl_overlay_update(void)
 {
 	int						n;
-	float					f;
-	char					str[32];
 	iface_bitmap_type		*bitmap;
 	iface_text_type			*text;
-	texture_font_size_type	*font_size;
 
 		// update hud bitmaps
 
@@ -596,34 +549,6 @@ void view_openrl_overlay_update(void)
 		// crosshair
 
 	view_openrl_overlay_crosshair_setup();
-
-		// update timing
-
-	view_rl_msec_count++;
-	view_rl_msec+=(game_time_get_raw()-view_rl_last_msec);
-
-	if (view_rl_msec_count==10) {
-		view_rl_msec_display=view_rl_msec/view_rl_msec_count;
-		view_rl_msec=0;
-		view_rl_msec_count=0;
-	}
-
-		// update overlay
-
-	if (view_rl_msec_display==0) {
-		strcat(str,"--.--");
-	}
-	else {
-		f=1000.0f/((float)view_rl_msec_display);
-		if (f<0.0f) f=0.0f;
-		sprintf(str,"%.2f  ",f);
-	}
-
-	font_size=view_openrl_material_text_get_font(font_hud_index,20);
-
-	for (n=0;n!=5;n++) {
-		view_openrl_overlay_set_to_char(font_size,view_rl_overlay,n,str[n]);
-	}
 }
 
 #endif
