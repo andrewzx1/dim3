@@ -46,9 +46,7 @@ extern file_path_setup_type	file_path_setup;
 
 int								view_rl_scene_id,
 								view_rl_lx,view_rl_rx,
-								view_rl_ty,view_rl_by,
-								view_rl_last_msec,view_rl_msec_display,
-								view_rl_msec,view_rl_msec_count;
+								view_rl_ty,view_rl_by;
 GLuint							view_rl_gl_id;
 
 int								view_rl_screen_sizes[][2]={{320,200},{400,250},{480,300},{0,0}};
@@ -380,10 +378,6 @@ void view_openrl_render(void)
 		// transfer to OpenGL
 
 	view_openrl_transfer_to_opengl();
-
-		// update timer
-
-	view_rl_last_msec=game_time_get_raw();
 }
 
 #endif
