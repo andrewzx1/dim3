@@ -95,15 +95,6 @@ int rlSceneLightAdd(int sceneId)
 	light->direction.on=FALSE;
 	light->direction.cos_sweep=0.0f;
 	light->direction.vct.x=light->direction.vct.y=light->direction.vct.z=0.0f;
-	
-		// alloc for mesh indexes
-		
-	light->mesh_index_block.count=0;
-	light->mesh_index_block.indexes=(ray_mesh_index_type*)malloc(ray_max_scene_mesh*sizeof(ray_mesh_index_type));
-	if (light->mesh_index_block.indexes==NULL) {
-		free(light);
-		return(RL_ERROR_OUT_OF_MEMORY);
-	}
 
 		// set id
 
@@ -153,10 +144,6 @@ int rlSceneLightDelete(int sceneId,int lightId)
 	if (idx==-1) return(RL_ERROR_UNKNOWN_LIGHT_ID);
 
 	light=scene->light_list.lights[idx];
-	
-		// remove mesh index block
-		
-	free(light->mesh_index_block.indexes);
 
 		// remove light
 

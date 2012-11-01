@@ -60,9 +60,9 @@ bool ray_get_overlay_rgb(ray_scene_type *scene,int x,int y,ray_color_type *col)
 			// determine if we are in overlay
 			
 		if (x<overlay->pnt.x) continue;
-		if (x>=(overlay->pnt.x+overlay->pnt_size.x)) continue;
+		if (x>(overlay->pnt.x+overlay->pnt_size.x)) continue;
 		if (y<overlay->pnt.y) continue;
-		if (y>=(overlay->pnt.y+overlay->pnt_size.y)) continue;
+		if (y>(overlay->pnt.y+overlay->pnt_size.y)) continue;
 
 			// sanity check for materials
 			
@@ -81,11 +81,11 @@ bool ray_get_overlay_rgb(ray_scene_type *scene,int x,int y,ray_color_type *col)
 
 			px=overlay->pnt.x+overlay_quad->offset_pnt.x;
 			if (x<px) continue;
-			if (x>=(px+overlay_quad->pnt_size.x)) continue;
+			if (x>(px+overlay_quad->pnt_size.x)) continue;
 
 			py=overlay->pnt.y+overlay_quad->offset_pnt.y;
 			if (y<py) continue;
-			if (y>=(py+overlay_quad->pnt_size.y)) continue;
+			if (y>(py+overlay_quad->pnt_size.y)) continue;
 				
 				// get uv
 				

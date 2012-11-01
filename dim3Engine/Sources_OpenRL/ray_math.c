@@ -207,20 +207,44 @@ void rlMatrixScale(ray_matrix_type *mat,ray_vector_type *v)
 
 /* =======================================================
 
-      Normal Culling
-      
-======================================================= */
-
-bool ray_normal_cull(ray_point_type *eye_point,ray_point_type *poly_mid_point,ray_vector_type *normal)
-{
-	return(((normal->x*(poly_mid_point->x-eye_point->x))+(normal->y*(poly_mid_point->y-eye_point->y))+(normal->z*(poly_mid_point->z-eye_point->z)))<=0.0f);
-}
-
-/* =======================================================
-
       Bound Collisions
       
 ======================================================= */
+
+void ray_to_bound(ray_point_type *p,ray_vector_type *v,ray_bound_type *bnd)
+{
+	float			f;
+
+	f=p->x+v->x;
+	if (f<p->x) {
+		bnd->min.x=f;
+		bnd->max.x=p->x;
+	}
+	else {
+		bnd->min.x=p->x;
+		bnd->max.x=f;
+	}
+
+	f=p->y+v->y;
+	if (f<p->y) {
+		bnd->min.y=f;
+		bnd->max.y=p->y;
+	}
+	else {
+		bnd->min.y=p->y;
+		bnd->max.y=f;
+	}
+
+	f=p->z+v->z;
+	if (f<p->z) {
+		bnd->min.z=f;
+		bnd->max.z=p->z;
+	}
+	else {
+		bnd->min.z=p->z;
+		bnd->max.z=f;
+	}
+}
 
 bool ray_bound_bound_collision(ray_bound_type *bnd_1,ray_bound_type *bnd_2)
 {

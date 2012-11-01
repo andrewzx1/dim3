@@ -134,6 +134,78 @@ void liquid_wave_get_high(map_liquid_type *liq,float *wave_y)
 	wave_y[2]=fy-(f*0.25f);
 }
 
+void liquid_wave_get_normal_x(map_liquid_type *liq,int div,float *wave_y,int lft_add,d3vct *normal)
+{
+	int				lft,lft_prev,lft_next,
+					y,y_prev,y_next;
+	d3vct			p10,p20,n1,n2;
+
+	lft=liq->lft+(lft_add*div);
+	y=(int)wave_y[div&0x3];
+
+	lft_prev=lft-lft_add;
+	y_prev=(int)wave_y[(div-1)&0x3];
+
+	lft_next=lft+lft_add;
+	y_next=(int)wave_y[(div+1)&0x3];
+
+		// get previous and next
+		// polygon normals
+
+	vector_create(&p10,lft_prev,y_prev,liq->top,lft_prev,y_prev,liq->bot);
+	vector_create(&p20,lft,y,liq->bot,lft_prev,y_prev,liq->bot);
+	vector_cross_product(&n1,&p10,&p20);
+	vector_normalize(&n1);
+
+	vector_create(&p10,lft,y,liq->top,lft,y,liq->bot);
+	vector_create(&p20,lft_next,y_next,liq->bot,lft,y,liq->bot);
+	vector_cross_product(&n2,&p10,&p20);
+	vector_normalize(&n2);
+
+		// average for normal
+
+	normal->x=(n1.x+n2.x)*0.5f;
+	normal->y=(n1.y+n2.y)*0.5f;
+	normal->z=(n1.z+n2.z)*0.5f;
+	vector_normalize(normal);
+}
+
+void liquid_wave_get_normal_z(map_liquid_type *liq,int div,float *wave_y,int top_add,d3vct *normal)
+{
+	int				top,top_prev,top_next,
+					y,y_prev,y_next;
+	d3vct			p10,p20,n1,n2;
+
+	top=liq->top+(top_add*div);
+	y=(int)wave_y[div&0x3];
+
+	top_prev=top-top_add;
+	y_prev=(int)wave_y[(div-1)&0x3];
+
+	top_next=top+top_add;
+	y_next=(int)wave_y[(div+1)&0x3];
+
+		// get previous and next
+		// polygon normals
+
+	vector_create(&p10,liq->rgt,y_prev,top_prev,liq->lft,y_prev,top_prev);
+	vector_create(&p20,liq->lft,y,top,liq->lft,y_prev,top_prev);
+	vector_cross_product(&n1,&p10,&p20);
+	vector_normalize(&n1);
+
+	vector_create(&p10,liq->rgt,y,top,liq->lft,y,top);
+	vector_create(&p20,liq->lft,y_next,top_next,liq->lft,y,top);
+	vector_cross_product(&n2,&p10,&p20);
+	vector_normalize(&n2);
+
+		// average for normal
+
+	normal->x=(n1.x+n2.x)*0.5f;
+	normal->y=(n1.y+n2.y)*0.5f;
+	normal->z=(n1.z+n2.z)*0.5f;
+	vector_normalize(normal);
+}
+
 /* =======================================================
 
       Check if Liquid is Transparent
@@ -283,8 +355,14 @@ bool liquid_render_liquid_create_vertex(map_liquid_type *liq,float uv_shift,bool
 	for (div=0;div<=div_count;div++) {
 
 		fy=wave_y[div&0x3];
+
+			// north-south (z) waves
 		
 		if (liq->wave.dir_north_south) {
+
+				// normal
+
+			liquid_wave_get_normal_z(liq,div,wave_y,top_add,&normal);
 			
 				// left-top
 			
@@ -303,15 +381,6 @@ bool liquid_render_liquid_create_vertex(map_liquid_type *liq,float uv_shift,bool
 			*cf++=1.0f;
 			*cf++=0.0f;
 			*cf++=0.0f;
-		
-			normal.x=0.0f;
-			normal.y=-1.0f;
-			normal.z=0.0f;
-
-			if (liq->wave.on) {
-				normal.z=liquid_normal_cycle_xz[div&0x3];
-				normal.y=liquid_normal_cycle_y[div&0x3];
-			}
 		
 			*cf++=normal.x;
 			*cf++=normal.y;
@@ -337,23 +406,31 @@ bool liquid_render_liquid_create_vertex(map_liquid_type *liq,float uv_shift,bool
 			*cf++=0.0f;
 			*cf++=0.0f;
 		
-			normal.x=0.0f;
-			normal.y=-1.0f;
-			normal.z=0.0f;
-
-			if (liq->wave.on) {
-				normal.z=liquid_normal_cycle_xz[div&0x3];
-				normal.y=liquid_normal_cycle_y[div&0x3];
-			}
-		
 			*cf++=normal.x;
 			*cf++=normal.y;
 			*cf++=normal.z;
 			
 			vp+=liq->vbo.vertex_stride;
+
+				// div change
+
+			top+=top_add;
+			if (top>liq->bot) top=liq->bot;
+
+			gy+=gy_add;
+			if (gy>gy2) gy=gy2;
+
+			lmap_gy+=lmap_gy_add;
+			if (lmap_gy>lmap_gy2) lmap_gy=lmap_gy2;
 		}
 
+			// east-west (x) waves
+
 		else {
+
+				// normal
+
+			liquid_wave_get_normal_x(liq,div,wave_y,lft_add,&normal);
 			
 				// left-top
 
@@ -372,15 +449,6 @@ bool liquid_render_liquid_create_vertex(map_liquid_type *liq,float uv_shift,bool
 			*cf++=1.0f;
 			*cf++=0.0f;
 			*cf++=0.0f;
-		
-			normal.x=0.0f;
-			normal.y=-1.0f;
-			normal.z=0.0f;
-
-			if (liq->wave.on) {
-				normal.x=liquid_normal_cycle_xz[div&0x3];
-				normal.y=liquid_normal_cycle_y[div&0x3];
-			}
 		
 			*cf++=normal.x;
 			*cf++=normal.y;
@@ -406,35 +474,14 @@ bool liquid_render_liquid_create_vertex(map_liquid_type *liq,float uv_shift,bool
 			*cf++=0.0f;
 			*cf++=0.0f;
 		
-			normal.x=0.0f;
-			normal.y=-1.0f;
-			normal.z=0.0f;
-
-			if (liq->wave.on) {
-				normal.x=liquid_normal_cycle_xz[div&0x3];
-				normal.y=liquid_normal_cycle_y[div&0x3];
-			}
-		
 			*cf++=normal.x;
 			*cf++=normal.y;
 			*cf++=normal.z;
 		
 			vp+=liq->vbo.vertex_stride;
-		}
 
-			// division changes
+				// div change
 
-		if (liq->wave.dir_north_south) {
-			top+=top_add;
-			if (top>liq->bot) top=liq->bot;
-
-			gy+=gy_add;
-			if (gy>gy2) gy=gy2;
-
-			lmap_gy+=lmap_gy_add;
-			if (lmap_gy>lmap_gy2) lmap_gy=lmap_gy2;
-		}
-		else {
 			lft+=lft_add;
 			if (lft>liq->rgt) lft=liq->rgt;
 

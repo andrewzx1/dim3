@@ -23,38 +23,6 @@ int ray_scene_get_index(int sceneId)
 
 /* =======================================================
 
-      Scene Mesh Indexes
-      
-======================================================= */
-
-void ray_scene_free_mesh_indexes(ray_scene_type *scene)
-{
-	int				n;
-
-	for (n=0;n!=ray_render_max_thread_count;n++) {
-		if (scene->render.thread_info[n].mesh_index_block.indexes!=NULL) free(scene->render.thread_info[n].mesh_index_block.indexes);
-	}
-
-}
-
-bool ray_scene_initialize_mesh_indexes(ray_scene_type *scene)
-{
-	int				n;
-	
-	for (n=0;n!=ray_render_max_thread_count;n++) {
-		scene->render.thread_info[n].mesh_index_block.indexes=NULL;
-	}
-	
-	for (n=0;n!=ray_render_max_thread_count;n++) {
-		scene->render.thread_info[n].mesh_index_block.indexes=(ray_mesh_index_type*)malloc(ray_max_scene_mesh*sizeof(ray_mesh_index_type));
-		if (scene->render.thread_info[n].mesh_index_block.indexes==NULL) return(FALSE);
-	}
-	
-	return(TRUE);
-}
-
-/* =======================================================
-
       Scene 3D to 2D
       
 ======================================================= */
@@ -129,15 +97,6 @@ int rlSceneAdd(ray_2d_point_type *size,int target,int format,void *attachment,un
 		return(RL_ERROR_OUT_OF_MEMORY);
 	}
 	
-		// space for mesh indexes
-		
-	if (!ray_scene_initialize_mesh_indexes(scene)) {
-		ray_scene_free_mesh_indexes(scene);
-		free(scene->buffer.data);
-		free(scene);
-		return(RL_ERROR_OUT_OF_MEMORY);
-	}
-	
 		// precalc any thread info settings,
 		// like parent pointer and the drawing rect
 
@@ -200,7 +159,6 @@ int rlSceneAdd(ray_2d_point_type *size,int target,int format,void *attachment,un
 	scene->render.lock=CreateMutex(NULL,FALSE,NULL);
 	if (scene->render.lock==NULL) {
 #endif
-		ray_scene_free_mesh_indexes(scene);
 		free(scene->buffer.data);
 		free(scene);
 		return(RL_ERROR_THREADING_ERROR);
@@ -248,7 +206,6 @@ int rlSceneDelete(int sceneId)
 
 	scene=ray_global.scene_list.scenes[idx];
 	
-	ray_scene_free_mesh_indexes(scene);
 	free(scene->buffer.data);
 
 		// clear render lock

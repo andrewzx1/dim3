@@ -49,6 +49,8 @@ extern float				liquid_normal_cycle_xz[4],
 							liquid_normal_cycle_y[4];
 
 extern void liquid_wave_get_high(map_liquid_type *liq,float *wave_y);
+extern void liquid_wave_get_normal_x(map_liquid_type *liq,int div,float *wave_y,int lft_add,d3vct *normal);
+extern void liquid_wave_get_normal_z(map_liquid_type *liq,int div,float *wave_y,int top_add,d3vct *normal);
 
 /* =======================================================
 
@@ -133,15 +135,8 @@ void view_openrl_map_liquid_create_draw_data(map_liquid_type *liq)
 		
 				// the normal
 
-			normal.x=0.0f;
-			normal.y=-1.0f;
-			normal.z=0.0f;
+			liquid_wave_get_normal_z(liq,div,wave_y,top_add,&normal);
 
-			if (liq->wave.on) {
-				normal.z=liquid_normal_cycle_xz[div&0x3];
-				normal.y=liquid_normal_cycle_y[div&0x3];
-			}
-			
 				// left-top
 			
 			*vp++=(float)lft;
@@ -191,14 +186,7 @@ void view_openrl_map_liquid_create_draw_data(map_liquid_type *liq)
 
 				// the normal
 
-			normal.x=0.0f;
-			normal.y=-1.0f;
-			normal.z=0.0f;
-
-			if (liq->wave.on) {
-				normal.x=liquid_normal_cycle_xz[div&0x3];
-				normal.y=liquid_normal_cycle_y[div&0x3];
-			}
+			liquid_wave_get_normal_x(liq,div,wave_y,lft_add,&normal);
 			
 				// left-top
 
