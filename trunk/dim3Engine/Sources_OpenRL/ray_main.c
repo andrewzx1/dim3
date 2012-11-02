@@ -65,28 +65,12 @@ int rlInitialize(void)
 #endif
 
 		// reverve some threads
-		// supergumba -- this is a bit hard coded for
-		// now until I figure out better logic
+		// it seems that cpu count * 3 yields
+		// the best results
 
-		// thread counts need to be an even
-		// square
-
-	if (thread_count<=4) {
-		ray_global.settings.thread_count=16;
-	}
-	else {
-		if (thread_count<=8) {
-			ray_global.settings.thread_count=25;
-		}
-		else {
-			if (thread_count<=12) {
-				ray_global.settings.thread_count=36;
-			}
-			else {
-				ray_global.settings.thread_count=ray_render_max_thread_count;
-			}
-		}
-	}
+	ray_global.settings.thread_count=thread_count*3;
+	if (ray_global.settings.thread_count<ray_render_min_thread_count) ray_global.settings.thread_count=ray_render_min_thread_count;
+	if (ray_global.settings.thread_count>ray_render_max_thread_count) ray_global.settings.thread_count=ray_render_max_thread_count;
 
 	return(RL_ERROR_OK);
 }

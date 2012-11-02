@@ -32,8 +32,9 @@ and can be sold or given away.
 #include "scripts.h"
 #include "objects.h"
 
-extern server_type		server;
-extern js_type			js;
+extern server_type			server;
+extern js_type				js;
+extern network_setup_type	net_setup;
 
 JSValueRef js_obj_pickup_get_objectId(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_obj_pickup_get_objectName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
@@ -42,6 +43,7 @@ JSValueRef js_obj_pickup_get_itemId(JSContextRef cx,JSObjectRef j_obj,JSStringRe
 JSValueRef js_obj_pickup_get_itemName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_obj_pickup_add_weapon_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_pickup_swap_weapon_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_obj_pickup_single_swap_multi_add_weapon_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_pickup_add_ammo_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_pickup_add_clip_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_pickup_add_alt_ammo_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
@@ -60,16 +62,17 @@ JSStaticValue 		obj_pickup_props[]={
 							{0,0,0,0}};
 							
 JSStaticFunction	obj_pickup_functions[]={
-							{"addWeapon",			js_obj_pickup_add_weapon_func,		kJSPropertyAttributeDontDelete},
-							{"swapWeapon",			js_obj_pickup_swap_weapon_func,		kJSPropertyAttributeDontDelete},
-							{"addAmmo",				js_obj_pickup_add_ammo_func,		kJSPropertyAttributeDontDelete},
-							{"addClip",				js_obj_pickup_add_clip_func,		kJSPropertyAttributeDontDelete},
-							{"addAltAmmo",			js_obj_pickup_add_alt_ammo_func,	kJSPropertyAttributeDontDelete},
-							{"addAltClip",			js_obj_pickup_add_alt_clip_func,	kJSPropertyAttributeDontDelete},
-							{"addHealth",			js_obj_pickup_add_health_func,		kJSPropertyAttributeDontDelete},
-							{"addArmor",			js_obj_pickup_add_armor_func,		kJSPropertyAttributeDontDelete},
-							{"addCustom",			js_obj_pickup_add_custom_func,		kJSPropertyAttributeDontDelete},
-							{"cancel",				js_obj_pickup_cancel_func,			kJSPropertyAttributeDontDelete},
+							{"addWeapon",					js_obj_pickup_add_weapon_func,						kJSPropertyAttributeDontDelete},
+							{"swapWeapon",					js_obj_pickup_swap_weapon_func,						kJSPropertyAttributeDontDelete},
+							{"singleSwapMultiAddWeapon",	js_obj_pickup_single_swap_multi_add_weapon_func,	kJSPropertyAttributeDontDelete},
+							{"addAmmo",						js_obj_pickup_add_ammo_func,						kJSPropertyAttributeDontDelete},
+							{"addClip",						js_obj_pickup_add_clip_func,						kJSPropertyAttributeDontDelete},
+							{"addAltAmmo",					js_obj_pickup_add_alt_ammo_func,					kJSPropertyAttributeDontDelete},
+							{"addAltClip",					js_obj_pickup_add_alt_clip_func,					kJSPropertyAttributeDontDelete},
+							{"addHealth",					js_obj_pickup_add_health_func,						kJSPropertyAttributeDontDelete},
+							{"addArmor",					js_obj_pickup_add_armor_func,						kJSPropertyAttributeDontDelete},
+							{"addCustom",					js_obj_pickup_add_custom_func,						kJSPropertyAttributeDontDelete},
+							{"cancel",						js_obj_pickup_cancel_func,							kJSPropertyAttributeDontDelete},
 							{0,0,0}};
 
 JSClassRef			obj_pickup_class;
@@ -185,6 +188,12 @@ JSValueRef js_obj_pickup_swap_weapon_func(JSContextRef cx,JSObjectRef func,JSObj
 	if (weap==NULL) return(script_bool_to_value(cx,FALSE));
 	
     return(script_bool_to_value(cx,item_swap_weapon(obj,weap)));
+}
+
+JSValueRef js_obj_pickup_single_swap_multi_add_weapon_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+{
+	if (net_setup.mode==net_mode_none) return(js_obj_pickup_swap_weapon_func(cx,func,j_obj,argc,argv,exception));
+	return(js_obj_pickup_add_weapon_func(cx,func,j_obj,argc,argv,exception));
 }
 
 JSValueRef js_obj_pickup_add_ammo_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)

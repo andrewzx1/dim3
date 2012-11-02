@@ -592,7 +592,7 @@ void ray_render_thread(void *arg)
 #endif
 {
 	int							x,y,repeat_count,
-								x_start,x_end,y_start,y_end;
+								y_start,y_end;
 	float						f,xadd,yadd,zadd;
 	unsigned long				*buf;
 	bool						no_hit;
@@ -614,11 +614,8 @@ void ray_render_thread(void *arg)
 	
 		// get 2D drawing sizes
 		
-	x_start=thread_info->draw_rect_start.x;
-	x_end=thread_info->draw_rect_end.x;
-
-	y_start=thread_info->draw_rect_start.y;
-	y_end=thread_info->draw_rect_end.y;
+	y_start=thread_info->y_start;
+	y_end=thread_info->y_end;
 		
 		// eye point movement
 
@@ -630,7 +627,7 @@ void ray_render_thread(void *arg)
 		
 	for (y=y_start;y!=y_end;y++) {
 	
-		for (x=x_start;x!=x_end;x++) {
+		for (x=0;x!=scene->buffer.wid;x++) {
 		
 				// determine if in overlay
 				// do an early exit if no alpha

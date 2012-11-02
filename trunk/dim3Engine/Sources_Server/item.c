@@ -164,20 +164,13 @@ bool item_add_weapon(obj_type *obj,weapon_type *weap)
 
 bool item_swap_weapon(obj_type *obj,weapon_type *weap)
 {
-	weapon_type		*weap_hide;
-
 		// add the weapon
 
 	if (!item_add_weapon(obj,weap)) return(FALSE);
 
-		// hide current weapon
-
-	weap_hide=weapon_find_current(obj);
-	weap_hide->hidden=TRUE;
-
 		// set new weapon
 
-	weapon_set(obj,weap);
+	weapon_goto(obj,weap);
 	
 	return(TRUE);
 }

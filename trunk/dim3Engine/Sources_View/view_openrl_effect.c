@@ -47,6 +47,8 @@ extern file_path_setup_type	file_path_setup;
 
 extern int						view_rl_scene_id;
 
+int test_id=-1;
+
 /* =======================================================
 
       OpenRL Effect Meshes
@@ -149,22 +151,22 @@ void view_openrl_effect_mesh_particle_quad(float *vp,float *uv,d3pnt *pnt,d3ang 
 
 			// change particle image
 		
-		if (g_size==1) continue;
+		if (g_size==1.0f) continue;
 		
-		if (gx<1) {
+		if (gx<1.0f) {
 			gx+=g_size;
 			continue;
 		}
 
-		gx=0;
+		gx=0.0f;
 		gy+=g_size;
-		if (gy>=1) gy=0;
+		if (gy>=1.0f) gy=0.0f;
 	}
 }
 
 void view_openrl_effect_mesh_particle_update(effect_type *effect,int image_offset)
 {
-	int						n,k,idx,count,particle_count,ntot_count,
+	int						n,k,idx,count,particle_count,quad_count,
 							ntrail,pixel_dif,material_id;
 	short					*polys,*vk;
 	float					gravity,gx,gy,g_size,pixel_sz,f,trail_step,
@@ -269,12 +271,12 @@ void view_openrl_effect_mesh_particle_update(effect_type *effect,int image_offse
 		// construct meshes
 		// each particle is a quad
 
-	ntot_count=(particle->count*(particle->trail_count+1))*4;
+	quad_count=particle->count*(particle->trail_count+1);
 
-	rlSceneMeshSetVertex(view_rl_scene_id,effect->openrl_mesh_id,RL_MESH_FORMAT_VERTEX_3_FLOAT,ntot_count,NULL);
+	rlSceneMeshSetVertex(view_rl_scene_id,effect->openrl_mesh_id,RL_MESH_FORMAT_VERTEX_3_FLOAT,(quad_count*4),NULL);
 	rlSceneMeshMapVertexPointer(view_rl_scene_id,effect->openrl_mesh_id,(void**)&vp);
 	
-	rlSceneMeshSetUV(view_rl_scene_id,effect->openrl_mesh_id,RL_MESH_FORMAT_UV_2_FLOAT,ntot_count,NULL);
+	rlSceneMeshSetUV(view_rl_scene_id,effect->openrl_mesh_id,RL_MESH_FORMAT_UV_2_FLOAT,(quad_count*4),NULL);
 	rlSceneMeshMapUVPointer(view_rl_scene_id,effect->openrl_mesh_id,(void**)&uv);
 
 		// setup the vertexes
@@ -311,12 +313,12 @@ void view_openrl_effect_mesh_particle_update(effect_type *effect,int image_offse
 
 	material_id=particle->openrl_material_id;
 
-	polys=(short*)malloc(sizeof(short)*(ntot_count*10));
+	polys=(short*)malloc(sizeof(short)*(quad_count*10));
 	vk=polys;
 
 	idx=0;
 
-	for (n=0;n!=ntot_count;n++) {
+	for (n=0;n!=quad_count;n++) {
 		*vk++=4;
 		*vk++=material_id;
 		for (k=0;k!=4;k++) {
@@ -326,7 +328,7 @@ void view_openrl_effect_mesh_particle_update(effect_type *effect,int image_offse
 		}
 	}
 
-	rlSceneMeshSetPoly(view_rl_scene_id,effect->openrl_mesh_id,RL_MESH_FORMAT_POLY_SHORT_VERTEX_UV,ntot_count,polys);
+	rlSceneMeshSetPoly(view_rl_scene_id,effect->openrl_mesh_id,RL_MESH_FORMAT_POLY_SHORT_VERTEX_UV,quad_count,polys);
 	free(polys);
 }
 
@@ -343,7 +345,6 @@ void view_openrl_effect_mesh_update(void)
 		if (effect->effecttype!=ef_particle) continue;
 		if (effect->openrl_mesh_id==-1) continue;
 
-			
 		view_openrl_effect_mesh_particle_update(effect,n);
 	}
 }
