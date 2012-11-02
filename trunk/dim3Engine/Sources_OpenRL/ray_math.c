@@ -213,36 +213,31 @@ void rlMatrixScale(ray_matrix_type *mat,ray_vector_type *v)
 
 void ray_to_bound(ray_point_type *p,ray_vector_type *v,ray_bound_type *bnd)
 {
-	float			f;
-
-	f=p->x+v->x;
-	if (f<p->x) {
-		bnd->min.x=f;
+	if (v->x<0.0f) {
+		bnd->min.x=p->x+v->x;
 		bnd->max.x=p->x;
 	}
 	else {
 		bnd->min.x=p->x;
-		bnd->max.x=f;
+		bnd->max.x=p->x+v->x;
 	}
 
-	f=p->y+v->y;
-	if (f<p->y) {
-		bnd->min.y=f;
+	if (v->y<0.0f) {
+		bnd->min.y=p->y+v->y;
 		bnd->max.y=p->y;
 	}
 	else {
 		bnd->min.y=p->y;
-		bnd->max.y=f;
+		bnd->max.y=p->y+v->y;
 	}
 
-	f=p->z+v->z;
-	if (f<p->z) {
-		bnd->min.z=f;
+	if (v->z<0.0f) {
+		bnd->min.z=p->z+v->z;
 		bnd->max.z=p->z;
 	}
 	else {
 		bnd->min.z=p->z;
-		bnd->max.z=f;
+		bnd->max.z=p->z+v->z;
 	}
 }
 

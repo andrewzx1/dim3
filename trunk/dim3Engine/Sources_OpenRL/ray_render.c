@@ -68,29 +68,19 @@ void ray_intersect_mesh_list(ray_scene_type *scene,ray_point_type *eye_point,ray
 {
 	int					mesh_idx,poly_idx,trig_idx;
 	float				it,iu,iv;
-	ray_vector_type		vct;
-	ray_bound_type		ray_bnd;
 	ray_mesh_type		*mesh;
 	ray_poly_type		*poly;
 	ray_trig_type		*trig;
 	
 		// clear collision
+		// anything > 1.0f is outside
+		// the max eye distance
 	
 	collision->mesh_idx=-1;
 	collision->poly_idx=-1;
 	collision->trig_idx=-1;
 
-	collision->t=collision->max_t;
-	
-		// we create a copy of the
-		// eye vector so we can
-		// reduce it when hitting items
-
-	vct.x=eye_vector->x;
-	vct.y=eye_vector->y;
-	vct.z=eye_vector->z;
-
-	ray_to_bound(eye_point,&vct,&ray_bnd);
+	collision->t=1.0f;
 
 		// run through the meshes
 
@@ -103,8 +93,7 @@ void ray_intersect_mesh_list(ray_scene_type *scene,ray_point_type *eye_point,ray
 
 			// mesh bounds check
 
-		if (!ray_bound_bound_collision(&ray_bnd,&mesh->bound)) continue;
-		if (!ray_bound_ray_collision(eye_point,&vct,&mesh->bound)) continue;
+		if (!ray_bound_ray_collision(eye_point,eye_vector,&mesh->bound)) continue;
 
 			// run through the polys
 
@@ -113,7 +102,7 @@ void ray_intersect_mesh_list(ray_scene_type *scene,ray_point_type *eye_point,ray
 				// bounds check
 				
 			poly=&mesh->poly_block.polys[poly_idx];
-			if (!ray_bound_ray_collision(eye_point,&vct,&poly->bound)) continue;
+			if (!ray_bound_ray_collision(eye_point,eye_vector,&poly->bound)) continue;
 				
 				// skiping polys, this is mostly used
 				// for reflections or pass throughs
@@ -122,21 +111,14 @@ void ray_intersect_mesh_list(ray_scene_type *scene,ray_point_type *eye_point,ray
 			if ((mesh_idx==collision->skip_mesh_idx) && (poly_idx==collision->skip_poly_idx)) continue;
 			
 				// check triangle/ray intersection
+				// we don't do bound checking as it's
+				// about as fast as the intersection test
 				// first hit exits out of polygons as you
 				// can only hit one triangle of a polygon
 				
 			for (trig_idx=0;trig_idx!=poly->trig_block.count;trig_idx++) {
 			
 				trig=&poly->trig_block.trigs[trig_idx];
-				if (!ray_bound_ray_collision(eye_point,&vct,&trig->bound)) continue;
-					
-					// not we still use the non-reduced eye_vector
-					// here so Ts are similiar, we've already passed
-					// the bounds test so there's no additional
-					// optimizations
-
-					// we also reduce the vector for every
-					// hit as we can no longer hit things behind it
 				
 				if (ray_intersect_triangle(scene,eye_point,eye_vector,mesh,trig,&it,&iu,&iv)) {
 					if (it<collision->t) {
@@ -147,10 +129,6 @@ void ray_intersect_mesh_list(ray_scene_type *scene,ray_point_type *eye_point,ray
 						collision->mesh_idx=mesh_idx;
 						collision->poly_idx=poly_idx;
 						collision->trig_idx=trig_idx;
-
-						vct.x*=it;
-						vct.y*=it;
-						vct.z*=it;
 
 						break;
 					}
@@ -209,7 +187,6 @@ bool ray_block_mesh_list(ray_scene_type *scene,ray_point_type *pnt,ray_vector_ty
 			for (trig_idx=0;trig_idx!=poly->trig_block.count;trig_idx++) {
 			
 				trig=&poly->trig_block.trigs[trig_idx];
-				if (!ray_bound_ray_collision(pnt,vct,&trig->bound)) continue;
 
 					// check for intersection, but
 					// only except t that is less 1.0f, otherwise
@@ -320,6 +297,8 @@ void ray_trace_lights(ray_scene_type *scene,ray_point_type *eye_pnt,ray_point_ty
 		if (dist>light->intensity) continue;
 		
 			// get light vector
+			// normalize it for cone, bump
+			// and spec calculations
 			
 		ray_vector_create_from_points(&light_vector,&light->pnt,trig_pnt);
 
@@ -689,6 +668,13 @@ void ray_render_thread(void *arg)
 			ray_vector_create_from_points(&ray_vector,&view_plane_point,&ray_origin);
 			
 			rlMatrixVectorMultiply(&scene->eye.matrix,&ray_vector);
+			
+				// scale it to eye distance
+				
+			ray_vector_normalize(&ray_vector);
+			ray_vector.x*=scene->eye.max_dist;
+			ray_vector.y*=scene->eye.max_dist;
+			ray_vector.z*=scene->eye.max_dist;
 				
 				// the collision struct
 				
