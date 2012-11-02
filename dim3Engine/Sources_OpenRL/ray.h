@@ -11,7 +11,6 @@
 #define ray_max_scene								32
 #define ray_max_scene_light							128
 #define ray_max_scene_mesh							5120
-#define ray_max_mesh_poly							5120
 #define ray_max_scene_overlay						256
 #define ray_max_scene_overlay_quad					256
 
@@ -27,6 +26,7 @@
 // threading
 //
 
+#define ray_render_min_thread_count					8
 #define ray_render_max_thread_count					64
 
 //
@@ -207,9 +207,9 @@ typedef struct		{
 					} ray_scene_buffer_type;
 
 typedef struct		{
+						int							y_start,y_end;
 						bool						done;
 						void						*parent_scene;			// this is a pointer back to the parent structure, need by threading
-						ray_2d_point_type			draw_rect_start,draw_rect_end;
 					} ray_draw_scene_thread_info;
 
 typedef struct		{

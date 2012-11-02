@@ -49,7 +49,7 @@ int								view_rl_scene_id,
 								view_rl_ty,view_rl_by;
 GLuint							view_rl_gl_id;
 
-int								view_rl_screen_sizes[][2]={{320,200},{400,250},{480,300},{0,0}};
+int								view_rl_screen_sizes[][2]={{240,150},{280,175},{320,200},{400,250},{480,300},{0,0}};
 texture_font_type				view_rl_fonts[2];
 
 extern int view_openrl_create_material_from_path(char *path);

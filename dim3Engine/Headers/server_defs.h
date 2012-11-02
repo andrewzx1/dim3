@@ -247,7 +247,8 @@ typedef struct		{
 					} model_draw_fade;
 
 typedef struct		{
-						int								type,direction,intensity;
+						int								type,direction,intensity,
+														openrl_light_id;
 						float							exponent;
 						bool							on;
 						d3col							col;

@@ -822,8 +822,8 @@ void setup_game_handle_click(int id)
 					setup.screen_high=render_info.screen_sizes[idx-1].high;
 				}
 			#else
-				setup.screen_openrl_wid=view_rl_screen_sizes[idx-1][0];
-				setup.screen_openrl_high=view_rl_screen_sizes[idx-1][1];
+				setup.screen_openrl_wid=view_rl_screen_sizes[idx][0];
+				setup.screen_openrl_high=view_rl_screen_sizes[idx][1];
 			#endif
 
 			break;
