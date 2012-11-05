@@ -42,9 +42,11 @@ and can be sold or given away.
 #define kTexturePropertyGlowMin				7
 #define kTexturePropertyGlowMax				8
 #define kTexturePropertyShineFactor			9
-#define kTexturePropertyMaterialName		10
-#define kTexturePropertyScaleOffset			11
-#define kTexturePropertyScaleSize			12
+#define kTextPropertyAlphaType				10
+#define kTexturePropertyRefractFactor		11
+#define kTexturePropertyMaterialName		12
+#define kTexturePropertyScaleOffset			13
+#define kTexturePropertyScaleSize			14
 
 #define kTexturePropertyFrameWaitStart		20
 #define kTexturePropertyFrameWaitEnd		(20+(max_texture_frame-1))
@@ -53,6 +55,8 @@ extern map_type					map;
 extern iface_type				iface;
 
 extern list_palette_type		map_palette;
+
+char							texture_rl_alpha_type_str[][32]={"Pass Through","Reflection","Refraction"};
 
 /* =======================================================
 
@@ -82,6 +86,8 @@ void map_palette_fill_texture(int texture_idx)
 	list_palette_add_float(&map_palette,kTexturePropertyGlowMin,"Glow Min",&texture->glow.min,FALSE);
 	list_palette_add_float(&map_palette,kTexturePropertyGlowMax,"Glow Max",&texture->glow.max,FALSE);
 	list_palette_add_float(&map_palette,kTexturePropertyShineFactor,"Shine Factor",&texture->shine_factor,FALSE);
+	list_palette_add_picker_list_int(&map_palette,kTextPropertyAlphaType,"RL Alpha Type",(char*)texture_rl_alpha_type_str,-1,name_str_len,0,FALSE,&texture->rl_alpha_type,FALSE);
+	list_palette_add_float(&map_palette,kTexturePropertyRefractFactor,"RL Refraction Factor",&texture->rl_refract_factor,FALSE);
 	list_palette_add_string(&map_palette,kTexturePropertyMaterialName,"Material Name",texture->material_name,name_str_len,FALSE);
 
 	list_palette_add_header(&map_palette,0,"Texture Frame Waits");

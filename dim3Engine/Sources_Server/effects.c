@@ -145,10 +145,8 @@ int effect_spawn(int effecttype,d3pnt *pt,int life_tick)
 	effect->start_tick=game_time_get();
 	effect->life_tick=life_tick;
 
-		// openrl setup
-
 #ifdef D3_OPENRL
-	view_openrl_effect_mesh_setup(effect);
+	effect->openrl_mesh_id=-1;
 #endif
 
 	return(idx);

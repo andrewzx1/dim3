@@ -46,7 +46,7 @@ extern file_path_setup_type	file_path_setup;
 
 extern int						view_rl_scene_id;
 
-extern int view_openrl_create_material_from_texture(char *sub_path,texture_type *texture,texture_frame_type *frame,int alpha_type);
+extern int view_openrl_create_material_from_texture(char *sub_path,texture_type *texture,texture_frame_type *frame);
 
 /* =======================================================
 
@@ -56,7 +56,7 @@ extern int view_openrl_create_material_from_texture(char *sub_path,texture_type 
 
 void view_openrl_map_mesh_start(void)
 {
-	int					n,k,i,t,uv_count,mesh_id,light_id,alpha_type;
+	int					n,k,i,t,uv_count,mesh_id,light_id;
 	float				*vp,*vu,*vn;
 	short				*vk,*ray_polys;
 	d3pnt				*pnt;
@@ -75,11 +75,8 @@ void view_openrl_map_mesh_start(void)
 		
 		frame=&texture->frames[0];
 		if (frame->name[0]==0x0) continue;
-
-		alpha_type=RL_MATERIAL_ALPHA_PASS_THROUGH;		// supergumba -- needs to be a setting
-		if (n==8) alpha_type=RL_MATERIAL_ALPHA_REFLECT;
 		
-		frame->bitmap.rl_material_id=view_openrl_create_material_from_texture("Bitmaps/Textures",texture,frame,alpha_type);
+		frame->bitmap.rl_material_id=view_openrl_create_material_from_texture("Bitmaps/Textures",texture,frame);
 	}
 			
 		// build the meshes

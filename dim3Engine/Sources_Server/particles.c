@@ -322,6 +322,12 @@ bool particle_spawn_single(int particle_idx,int obj_idx,d3pnt *pt,particle_rotat
 		if (obj!=NULL) object_get_tint(obj,&eff_particle->tint);
 	}
 	
+		// openrl setup
+
+#ifdef D3_OPENRL
+	view_openrl_effect_mesh_setup(effect);
+#endif
+	
 	return(TRUE);
 }
 

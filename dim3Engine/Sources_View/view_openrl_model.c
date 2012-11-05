@@ -55,9 +55,9 @@ extern int view_openrl_create_material_from_texture(char *sub_path,texture_type 
       
 ======================================================= */
 
-void view_openrl_model_setup_single_model(model_draw *draw,bool hidden,bool no_ray_trace_block,bool no_light_block)
+void view_openrl_model_setup_single_model(model_draw *draw,bool hidden,bool no_ray_trace_block,bool no_bounce_trace_block,bool no_light_trace_block)
 {
-	int					n,k,mesh_id,uv_count;
+	int					n,k,i,mesh_id,uv_count;
 	unsigned long		flags;
 	float				*uv;
 	short				*vk,*ray_polys;
@@ -65,86 +65,151 @@ void view_openrl_model_setup_single_model(model_draw *draw,bool hidden,bool no_r
 	model_mesh_type		*mesh;
 	model_poly_type		*poly;
 	
-	draw->openrl_mesh_id=-1;
+		// clear openrl ids
+
+	for (n=0;n!=max_model_mesh;n++) {
+		draw->meshes[n].openrl_mesh_id=-1;
+	}
 
 		// get the model
 		
 	if ((draw->model_idx==-1) || (!draw->on)) return;
 
 	mdl=server.model_list.models[draw->model_idx];
-	mesh=&mdl->meshes[0];
 
-		// get mesh flags
+		// global mesh flags
 
 	flags=0;
 	if (no_ray_trace_block) flags|=RL_MESH_FLAG_NON_RAY_TRACE_BLOCKING;
-	if (no_light_block) flags|=RL_MESH_FLAG_NON_LIGHT_BLOCKING;
+	if (no_bounce_trace_block) flags|=RL_MESH_FLAG_NON_BOUNCE_TRACE_BLOCKING;
+	if (no_light_trace_block) flags|=RL_MESH_FLAG_NON_LIGHT_TRACE_BLOCKING;
+
+		// run through the model meshes
+
+	for (i=0;i!=mdl->nmesh;i++) {
+		mesh=&mdl->meshes[i];
+			
+			// add the mesh
+
+		mesh_id=rlSceneMeshAdd(view_rl_scene_id,flags);
+		if (mesh_id<0) return;
 		
-		// add the mesh
+		if (hidden) rlSceneMeshSetHidden(view_rl_scene_id,mesh_id,TRUE);
+		
+			// we set the UVs and polys at the beginning
+			// and only change the vertexes and normals
+			// while rendering
 
-	mesh_id=rlSceneMeshAdd(view_rl_scene_id,flags);
-	if (mesh_id<0) return;
-	
-	if (hidden) rlSceneMeshSetHidden(view_rl_scene_id,mesh_id,TRUE);
-	
-		// we set the UVs and polys at the beginning
-		// and only change the vertexes and normals
-		// while rendering
+			// the UVs
 
-		// the UVs
+		uv_count=0;
+		poly=mesh->polys;
 
-	uv_count=0;
-	poly=mesh->polys;
-
-	for (n=0;n!=mesh->npoly;n++) {
-		uv_count+=poly->ptsz;
-		poly++;
-	}
-
-	rlSceneMeshSetUV(view_rl_scene_id,mesh_id,RL_MESH_FORMAT_UV_2_FLOAT,uv_count,NULL);
-	rlSceneMeshMapUVPointer(view_rl_scene_id,mesh_id,(void**)&uv);
-
-	poly=mesh->polys;
-
-	for (n=0;n!=mesh->npoly;n++) {
-		for (k=0;k!=poly->ptsz;k++) {
-			*uv++=poly->gx[k];
-			*uv++=poly->gy[k];
-		}
-		poly++;
-	}
-
-	rlSceneMeshUnMapUVPointer(view_rl_scene_id,mesh_id);
-
-		// polygons
-
-	ray_polys=(short*)malloc((mesh->npoly*(2+(4*8)))*sizeof(short));		// supergumba -- this will work but chews up a lot of memory
-	vk=ray_polys;
-
-	uv_count=0;
-	poly=mesh->polys;
-
-	for (n=0;n!=mesh->npoly;n++) {
-		*vk++=poly->ptsz;
-		*vk++=(short)mdl->textures[poly->txt_idx].frames[0].bitmap.rl_material_id;
-
-		for (k=0;k!=poly->ptsz;k++) {
-			*vk++=(short)poly->v[k];	// vertex
-			*vk++=uv_count;				// uv, each vertex has unique uv count
-			*vk++=(short)poly->v[k];	// normal are parallel to vertexes
-			*vk++=(short)poly->v[k];	// tangents are parallel to vertexes
-			uv_count++;
+		for (n=0;n!=mesh->npoly;n++) {
+			uv_count+=poly->ptsz;
+			poly++;
 		}
 
-		poly++;
+		rlSceneMeshSetUV(view_rl_scene_id,mesh_id,RL_MESH_FORMAT_UV_2_FLOAT,uv_count,NULL);
+		rlSceneMeshMapUVPointer(view_rl_scene_id,mesh_id,(void**)&uv);
+
+		poly=mesh->polys;
+
+		for (n=0;n!=mesh->npoly;n++) {
+			for (k=0;k!=poly->ptsz;k++) {
+				*uv++=poly->gx[k];
+				*uv++=poly->gy[k];
+			}
+			poly++;
+		}
+
+		rlSceneMeshUnMapUVPointer(view_rl_scene_id,mesh_id);
+
+			// polygons
+
+		ray_polys=(short*)malloc((mesh->npoly*(2+(4*8)))*sizeof(short));		// supergumba -- this will work but chews up a lot of memory
+		vk=ray_polys;
+
+		uv_count=0;
+		poly=mesh->polys;
+
+		for (n=0;n!=mesh->npoly;n++) {
+			*vk++=poly->ptsz;
+			*vk++=(short)mdl->textures[poly->txt_idx].frames[0].bitmap.rl_material_id;
+
+			for (k=0;k!=poly->ptsz;k++) {
+				*vk++=(short)poly->v[k];	// vertex
+				*vk++=uv_count;				// uv, each vertex has unique uv count
+				*vk++=(short)poly->v[k];	// normal are parallel to vertexes
+				*vk++=(short)poly->v[k];	// tangents are parallel to vertexes
+				uv_count++;
+			}
+
+			poly++;
+		}
+
+		rlSceneMeshSetPoly(view_rl_scene_id,mesh_id,RL_MESH_FORMAT_POLY_SHORT_VERTEX_UV_NORMAL_TANGENT,mesh->npoly,ray_polys);
+		free(ray_polys);
+
+			// set the draw's mesh id
+			
+		draw->meshes[i].openrl_mesh_id=mesh_id;
 	}
+}
 
-	rlSceneMeshSetPoly(view_rl_scene_id,mesh_id,RL_MESH_FORMAT_POLY_SHORT_VERTEX_UV_NORMAL_TANGENT,mesh->npoly,ray_polys);
-	free(ray_polys);
+void view_openrl_model_update_single_model(model_draw *draw,bool hidden)
+{
+	int					n,mesh_id;
+	model_type			*mdl;
+	model_mesh_type		*mesh;
 
-		// set the draw's mesh id
-		
-	draw->openrl_mesh_id=mesh_id;
+		// get model
+
+	if (draw->model_idx==-1) return;
+	mdl=server.model_list.models[draw->model_idx];
+
+		// update the meshes
+
+	for (n=0;n!=mdl->nmesh;n++) {
+		mesh_id=draw->meshes[n].openrl_mesh_id;
+		if (mesh_id==-1) continue;
+	
+			// hidden state
+
+		if (hidden) {
+			rlSceneMeshSetHidden(view_rl_scene_id,mesh_id,TRUE);
+			continue;
+		}
+			
+		rlSceneMeshSetHidden(view_rl_scene_id,mesh_id,FALSE);
+			
+			// the UVs and Polys are
+			// already set, we just need to
+			// update the vertexes, normals, and tangents
+
+		mesh=&mdl->meshes[n];
+
+		rlSceneMeshSetVertex(view_rl_scene_id,mesh_id,RL_MESH_FORMAT_VERTEX_3_FLOAT,mesh->nvertex,draw->setup.mesh_arrays[n].gl_vertex_array);
+		rlSceneMeshSetNormal(view_rl_scene_id,mesh_id,RL_MESH_FORMAT_NORMAL_3_FLOAT,mesh->nvertex,draw->setup.mesh_arrays[n].gl_normal_array);
+		rlSceneMeshSetTangent(view_rl_scene_id,mesh_id,RL_MESH_FORMAT_TANGENT_3_FLOAT,mesh->nvertex,draw->setup.mesh_arrays[n].gl_tangent_array);
+	}
+}
+
+void view_openrl_model_close_single_model(model_draw *draw)
+{
+	int				n;
+	model_type		*mdl;
+
+		// get model
+
+	if (draw->model_idx==-1) return;
+	mdl=server.model_list.models[draw->model_idx];
+
+		// update the meshes
+
+	for (n=0;n!=mdl->nmesh;n++) {
+		if (draw->meshes[n].openrl_mesh_id!=-1) rlSceneMeshDelete(view_rl_scene_id,draw->meshes[n].openrl_mesh_id);
+	}
 }
 
 /* =======================================================
@@ -190,7 +255,7 @@ void view_openrl_map_model_mesh_start(void)
 		if (obj==NULL) continue;
 		
 		no_ray_trace_block=((map.camera.mode==cv_fpp) && (obj->idx==camera.obj_idx));
-		view_openrl_model_setup_single_model(&obj->draw,TRUE,no_ray_trace_block,FALSE);
+		view_openrl_model_setup_single_model(&obj->draw,TRUE,no_ray_trace_block,FALSE,FALSE);
 	}
 
 		// player weapon models
@@ -199,7 +264,7 @@ void view_openrl_map_model_mesh_start(void)
 
 	for (n=0;n!=max_weap_list;n++) {
 		weap=obj->weap_list.weaps[n];
-		if (weap!=NULL) view_openrl_model_setup_single_model(&weap->draw,TRUE,FALSE,TRUE);
+		if (weap!=NULL) view_openrl_model_setup_single_model(&weap->draw,TRUE,FALSE,TRUE,TRUE);
 	}
 }
 
@@ -216,9 +281,7 @@ void view_openrl_map_model_mesh_stop(void)
 	
 	for (n=0;n!=max_obj_list;n++) {
 		obj=server.obj_list.objs[n];
-		if (obj==NULL) continue;
-
-		if (obj->draw.openrl_mesh_id!=-1) rlSceneMeshDelete(view_rl_scene_id,obj->draw.openrl_mesh_id);
+		if (obj!=NULL) view_openrl_model_close_single_model(&obj->draw);
 	}
 
 		// delete player weapon models
@@ -227,9 +290,7 @@ void view_openrl_map_model_mesh_stop(void)
 
 	for (n=0;n!=max_weap_list;n++) {
 		weap=obj->weap_list.weaps[n];
-		if (weap==NULL) continue;
-		
-		if (weap->draw.openrl_mesh_id!=-1) rlSceneMeshDelete(view_rl_scene_id,weap->draw.openrl_mesh_id);
+		if (weap!=NULL) view_openrl_model_close_single_model(&weap->draw);
 	}
 
 		// delete materials
@@ -257,38 +318,10 @@ void view_openrl_map_model_update(void)
 	int					n;
 	obj_type			*obj;
 	weapon_type			*weap;
-	model_draw			*draw;
-	model_type			*mdl;
-	model_mesh_type		*mesh;
 
 	for (n=0;n!=max_obj_list;n++) {
-	
 		obj=server.obj_list.objs[n];
-		if (obj==NULL) continue;
-
-		draw=&obj->draw;
-		if (draw->openrl_mesh_id==-1) continue;
-		
-		if (obj->hidden) {
-			rlSceneMeshSetHidden(view_rl_scene_id,draw->openrl_mesh_id,TRUE);
-			continue;
-		}
-		
-			// get the openrl mesh
-			// and model
-			
-		rlSceneMeshSetHidden(view_rl_scene_id,draw->openrl_mesh_id,FALSE);
-	
-		mdl=server.model_list.models[draw->model_idx];
-		mesh=&mdl->meshes[0];
-			
-			// the UVs and Polys are
-			// already set, we just need to
-			// update the vertexes, normals, and tangents
-
-		rlSceneMeshSetVertex(view_rl_scene_id,draw->openrl_mesh_id,RL_MESH_FORMAT_VERTEX_3_FLOAT,mesh->nvertex,draw->setup.mesh_arrays[0].gl_vertex_array);
-		rlSceneMeshSetNormal(view_rl_scene_id,draw->openrl_mesh_id,RL_MESH_FORMAT_NORMAL_3_FLOAT,mesh->nvertex,draw->setup.mesh_arrays[0].gl_normal_array);
-		rlSceneMeshSetTangent(view_rl_scene_id,draw->openrl_mesh_id,RL_MESH_FORMAT_TANGENT_3_FLOAT,mesh->nvertex,draw->setup.mesh_arrays[0].gl_tangent_array);
+		if (obj!=NULL) view_openrl_model_update_single_model(&obj->draw,obj->hidden);
 	}
 
 		// player weapon models
@@ -297,27 +330,7 @@ void view_openrl_map_model_update(void)
 
 	for (n=0;n!=max_weap_list;n++) {
 		weap=obj->weap_list.weaps[n];
-		if (weap==NULL) continue;
-
-		draw=&weap->draw;
-
-			// not current weapons are hidden
-
-		if (n!=obj->held_weapon.current_idx) {
-			rlSceneMeshSetHidden(view_rl_scene_id,draw->openrl_mesh_id,TRUE);
-			continue;
-		}
-
-			// current weapon
-
-		rlSceneMeshSetHidden(view_rl_scene_id,draw->openrl_mesh_id,FALSE);
-
-		mdl=server.model_list.models[draw->model_idx];
-		mesh=&mdl->meshes[0];
-
-		rlSceneMeshSetVertex(view_rl_scene_id,draw->openrl_mesh_id,RL_MESH_FORMAT_VERTEX_3_FLOAT,mesh->nvertex,draw->setup.mesh_arrays[0].gl_vertex_array);
-		rlSceneMeshSetNormal(view_rl_scene_id,draw->openrl_mesh_id,RL_MESH_FORMAT_NORMAL_3_FLOAT,mesh->nvertex,draw->setup.mesh_arrays[0].gl_normal_array);
-		rlSceneMeshSetTangent(view_rl_scene_id,draw->openrl_mesh_id,RL_MESH_FORMAT_TANGENT_3_FLOAT,mesh->nvertex,draw->setup.mesh_arrays[0].gl_tangent_array);
+		if (weap!=NULL) view_openrl_model_update_single_model(&weap->draw,(n!=obj->held_weapon.current_idx));
 	}
 }
 
@@ -329,28 +342,22 @@ void view_openrl_map_model_update(void)
 
 void view_openrl_projectile_model_setup(proj_type *proj)
 {
-	view_openrl_model_setup_single_model(&proj->draw,FALSE,FALSE,FALSE);
+	view_openrl_model_setup_single_model(&proj->draw,FALSE,FALSE,FALSE,FALSE);
 }
 
 void view_openrl_projectile_model_close(proj_type *proj)
 {
-	if (proj->draw.openrl_mesh_id!=-1) rlSceneMeshDelete(view_rl_scene_id,proj->draw.openrl_mesh_id);
+	view_openrl_model_close_single_model(&proj->draw);
 }
 
 void view_openrl_projectile_model_update(void)
 {
 	int					n;
 	proj_type			*proj;
-	model_draw			*draw;
-	model_type			*mdl;
-	model_mesh_type		*mesh;
 
 	for (n=0;n!=max_proj_list;n++) {
 		proj=server.proj_list.projs[n];
 		if (!proj->on) continue;
-
-		draw=&proj->draw;
-		if (draw->openrl_mesh_id==-1) continue;
 
 			// projectile drawings share
 			// vertex lists
@@ -359,12 +366,7 @@ void view_openrl_projectile_model_update(void)
 
 			// rebuild the mesh
 
-		mdl=server.model_list.models[draw->model_idx];
-		mesh=&mdl->meshes[0];
-
-		rlSceneMeshSetVertex(view_rl_scene_id,draw->openrl_mesh_id,RL_MESH_FORMAT_VERTEX_3_FLOAT,mesh->nvertex,draw->setup.mesh_arrays[0].gl_vertex_array);
-		rlSceneMeshSetNormal(view_rl_scene_id,draw->openrl_mesh_id,RL_MESH_FORMAT_NORMAL_3_FLOAT,mesh->nvertex,draw->setup.mesh_arrays[0].gl_normal_array);
-		rlSceneMeshSetTangent(view_rl_scene_id,draw->openrl_mesh_id,RL_MESH_FORMAT_TANGENT_3_FLOAT,mesh->nvertex,draw->setup.mesh_arrays[0].gl_tangent_array);
+		view_openrl_model_update_single_model(&proj->draw,FALSE);
 	}
 }
 

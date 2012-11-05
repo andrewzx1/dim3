@@ -203,36 +203,42 @@ typedef struct		{
 //
 
 typedef struct		{
-						int							target,format,
-													wid,high;
-						unsigned long				*data;
+						int								target,format,
+														wid,high;
+						unsigned long					*data;
 					} ray_scene_buffer_type;
 
 typedef struct		{
-						int							y_start,y_end;
-						bool						done;
-						void						*parent_scene;			// this is a pointer back to the parent structure, need by threading
+						int								y_start,y_end;
+						bool							done;
+						void							*parent_scene;			// this is a pointer back to the parent structure, need by threading
 					} ray_draw_scene_thread_info;
 
 typedef struct		{
-						ray_mutex					lock;
-						ray_draw_scene_thread_info	thread_info[ray_render_max_thread_count];
+						ray_mutex						lock;
+						ray_draw_scene_thread_info		thread_info[ray_render_max_thread_count];
 					} ray_scene_render_type;
 
 typedef struct		{
-						int							id;
-						ray_eye_type				eye;
-						ray_color_type				ambient_col;
-						ray_light_list				light_list;
-						ray_mesh_list				mesh_list;
-						ray_overlay_list			overlay_list;
-						ray_scene_buffer_type		buffer;
-						ray_scene_render_type		render;
+						int								count,
+														indexes[ray_max_scene_mesh];
+					} ray_scene_draw_mesh_index_block;
+
+typedef struct		{
+						int								id;
+						ray_eye_type					eye;
+						ray_color_type					ambient_col;
+						ray_light_list					light_list;
+						ray_mesh_list					mesh_list;
+						ray_overlay_list				overlay_list;
+						ray_scene_buffer_type			buffer;
+						ray_scene_render_type			render;
+						ray_scene_draw_mesh_index_block	draw_mesh_index_block;
 					} ray_scene_type;
 
 typedef struct		{
-						int							count,next_id;
-						ray_scene_type*				scenes[ray_max_scene];
+						int								count,next_id;
+						ray_scene_type*					scenes[ray_max_scene];
 					} ray_scene_list;
 
 //
@@ -322,6 +328,7 @@ typedef struct		{
 typedef struct		{
 						int							mesh_idx,poly_idx,trig_idx;
 						float						max_t,t,u,v;
+						bool						in_bounce;
 						ray_collision_skip_block	skip_block;
 					} ray_collision_type;
 
@@ -357,8 +364,7 @@ extern void ray_precalc_polygon_bounds(ray_mesh_type *mesh,ray_poly_type *poly);
 extern void ray_precalc_triangle_bounds(ray_mesh_type *mesh,ray_trig_type *trig);
 extern void ray_precalc_light_bounds(ray_light_type *light);
 extern void ray_precalc_triangle_vectors(ray_mesh_type *mesh,ray_trig_type *trig);
-extern void ray_precalc_mesh_poly_setup_all(ray_scene_type *scene);
-extern void ray_precalc_collide_masks(ray_scene_type *scene);
+extern void ray_precalc_mesh_setup_all(ray_scene_type *scene);
 
 extern void ray_get_material_rgb(ray_scene_type *scene,ray_point_type *eye_pnt,ray_point_type *trig_pnt,ray_collision_type *collision,ray_material_pixel_type *pixel);
 extern float ray_get_material_alpha(ray_scene_type *scene,ray_point_type *eye_pnt,ray_point_type *trig_pnt,ray_collision_type *collision);
