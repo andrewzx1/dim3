@@ -198,3 +198,41 @@ void ray_precalc_mesh_poly_setup_all(ray_scene_type *scene)
 	}
 }
 
+/* =======================================================
+
+      Build Mesh-Light Collide Masks
+      
+======================================================= */
+
+void ray_precalc_collide_masks(ray_scene_type *scene)
+{
+	int				n,k;
+	ray_mesh_type	*mesh;
+	ray_light_type	*light;
+	
+		// clear masks
+		
+	for (n=0;n!=scene->mesh_list.count;n++) {
+		memset(scene->mesh_list.meshes[n]->light_collide_mask,0x0,ray_max_scene_light);
+	}
+	
+	for (n=0;n!=scene->light_list.count;n++) {
+		memset(scene->light_list.lights[n]->mesh_collide_mask,0x0,ray_max_scene_mesh);
+	}
+	
+		// find the cross collisions
+		
+	for (n=0;n!=scene->mesh_list.count;n++) {
+		mesh=scene->mesh_list.meshes[n];
+		
+		for (k=0;k!=scene->light_list.count;k++) {
+			light=scene->light_list.lights[k];
+			
+			if (ray_bound_bound_collision(&mesh->bound,&light->bound)) {
+				light->mesh_collide_mask[n]=0x1;
+				mesh->light_collide_mask[k]=0x1;
+			}
+			
+		}
+	}
+}
