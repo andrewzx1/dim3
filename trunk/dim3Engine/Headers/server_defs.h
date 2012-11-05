@@ -290,6 +290,7 @@ typedef struct		{
 					} model_draw_texture_type;
 
 typedef struct		{
+						int								openrl_mesh_id;
 						bool							has_opaque,has_transparent,has_glow;
 						float							alpha;
 						model_draw_mesh_fade			fade;
@@ -316,8 +317,7 @@ typedef struct		{
 						int								model_idx,spin_tick,draw_dist,
 														mesh_mask,render_mesh_mask,
 														script_animation_idx,
-														script_light_idx,script_halo_idx,
-														openrl_mesh_id;
+														script_light_idx,script_halo_idx;
 						char							name[name_str_len];
 						float							alpha,resize,normal[3];
 						bool							on,player,no_culling,

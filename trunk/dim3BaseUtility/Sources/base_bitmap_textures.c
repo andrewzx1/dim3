@@ -29,6 +29,8 @@ and can be sold or given away.
 	#include "dim3baseutility.h"
 #endif
 
+char				rl_alpha_list_str[][32]=rl_alpha_list_def;
+
 /* =======================================================
 
       Set Texture Filtering
@@ -265,6 +267,9 @@ void bitmap_texture_clear(texture_type *texture)
 	texture->additive=FALSE;
 	texture->compress=FALSE;
 
+	texture->rl_alpha_type=rl_alpha_pass_through;
+	texture->rl_refract_factor=1.33f;
+
 	texture->material_name[0]=0x0;
 
 	texture->animate.on=FALSE;
@@ -308,6 +313,8 @@ void bitmap_texture_read_xml(texture_type *texture,int main_tag,bool read_scale)
 	texture->flip_normal=xml_get_attribute_boolean_default_true(main_tag,"flip_normal");
 
 	texture->shine_factor=xml_get_attribute_float_default(main_tag,"shine_factor",10.0f);
+	texture->rl_alpha_type=xml_get_attribute_list(main_tag,"rl_alpha_type",(char*)rl_alpha_list_str);
+	texture->rl_refract_factor=xml_get_attribute_float_default(main_tag,"rl_refract_factor",1.33f);
 
 	texture->glow.rate=xml_get_attribute_int(main_tag,"glow_rate");
 	texture->glow.min=xml_get_attribute_float_default(main_tag,"glow_min",0.25f);
@@ -360,6 +367,8 @@ void bitmap_texture_write_xml(texture_type *texture,int frame_count,bool write_s
 	xml_add_attribute_boolean("flip_normal",texture->flip_normal);
 
 	xml_add_attribute_float("shine_factor",texture->shine_factor);
+	xml_add_attribute_list("rl_alpha_type",(char*)rl_alpha_list_str,texture->rl_alpha_type);
+	xml_add_attribute_float("rl_refract_factor",texture->rl_refract_factor);
 	
 	xml_add_attribute_int("glow_rate",texture->glow.rate);
 	xml_add_attribute_float("glow_min",texture->glow.min);

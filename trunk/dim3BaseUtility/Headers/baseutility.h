@@ -31,7 +31,7 @@ and can be sold or given away.
       
 ======================================================= */
 
-#define dim3_version					"0017"
+#define dim3_version					"0018"
 
 /* =======================================================
 
@@ -358,6 +358,16 @@ extern void xml_key_write_color(char *name,d3col *value);
 #define max_texture_frame_mask					0x1F			// mask for maximum number of textures frames
 
 //
+// openrl alpha types
+//
+
+#define rl_alpha_pass_through					0
+#define rl_alpha_reflect						1
+#define rl_alpha_refract						2
+
+#define rl_alpha_list_def						{"pass","reflect","refract",""}
+
+//
 // tangent space
 //
 
@@ -418,8 +428,8 @@ typedef struct		{
 //
 
 typedef struct		{
-						int						shader_idx;
-						float					shine_factor;
+						int						shader_idx,rl_alpha_type;
+						float					shine_factor,rl_refract_factor;
 						bool					additive,pixelated,compress,
 												flip_normal;
 						char					material_name[name_str_len],

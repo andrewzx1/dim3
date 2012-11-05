@@ -180,40 +180,56 @@ void ray_precalc_triangle_vectors(ray_mesh_type *mesh,ray_trig_type *trig)
 
 /* =======================================================
 
-      Build Mesh Poly Render Flags
+      Precalc For Mesh Rendering
+
+	  Mesh in scene list
+	  Includes a mesh/light cross collision list
+	  Mipmap poly cache
       
 ======================================================= */
 
-void ray_precalc_mesh_poly_setup_all(ray_scene_type *scene)
+void ray_precalc_mesh_setup_all(ray_scene_type *scene)
 {
-	int				n,k;
+	int				n,k,mesh_idx;
+	float			d;
+	double			dx,dy,dz;
 	ray_mesh_type	*mesh;
-	
+	ray_light_type	*light;
+
+		// create a list of meshes within
+		// the eye max_dist, centered around
+		// the eye point.  These are the drawing
+		
+	scene->draw_mesh_index_block.count=0;
+
 	for (n=0;n!=scene->mesh_list.count;n++) {
 		mesh=scene->mesh_list.meshes[n];
+		if (mesh->hidden) continue;
+
+		dx=(mesh->bound.mid.x-scene->eye.pnt.x);
+		dy=(mesh->bound.mid.y-scene->eye.pnt.y);
+		dz=(mesh->bound.mid.z-scene->eye.pnt.z);
+
+		d=(float)sqrt((dx*dx)+(dy*dy)+(dz*dz));
+		if (d<=scene->eye.max_dist) {
+			scene->draw_mesh_index_block.indexes[scene->draw_mesh_index_block.count]=n;
+			scene->draw_mesh_index_block.count++;
+		}
+	}
+	
+		// clear masks and setup
+		// poly mipmap level cahce
+		
+	for (n=0;n!=scene->draw_mesh_index_block.count;n++) {
+
+		mesh_idx=scene->draw_mesh_index_block.indexes[n];
+		mesh=scene->mesh_list.meshes[mesh_idx];
+
+		memset(mesh->light_collide_mask,0x0,ray_max_scene_light);
 
 		for (k=0;k!=mesh->poly_block.count;k++) {
 			mesh->poly_block.polys[k].mm_level=-1;
 		}
-	}
-}
-
-/* =======================================================
-
-      Build Mesh-Light Collide Masks
-      
-======================================================= */
-
-void ray_precalc_collide_masks(ray_scene_type *scene)
-{
-	int				n,k;
-	ray_mesh_type	*mesh;
-	ray_light_type	*light;
-	
-		// clear masks
-		
-	for (n=0;n!=scene->mesh_list.count;n++) {
-		memset(scene->mesh_list.meshes[n]->light_collide_mask,0x0,ray_max_scene_light);
 	}
 	
 	for (n=0;n!=scene->light_list.count;n++) {
@@ -221,15 +237,20 @@ void ray_precalc_collide_masks(ray_scene_type *scene)
 	}
 	
 		// find the cross collisions
+		// we do a quick elimination of
+		// non light trace blocking meshes
+		// and hidden meshes
 		
-	for (n=0;n!=scene->mesh_list.count;n++) {
-		mesh=scene->mesh_list.meshes[n];
+	for (n=0;n!=scene->draw_mesh_index_block.count;n++) {
+
+		mesh_idx=scene->draw_mesh_index_block.indexes[n];
+		mesh=scene->mesh_list.meshes[mesh_idx];
 		
 		for (k=0;k!=scene->light_list.count;k++) {
 			light=scene->light_list.lights[k];
 			
 			if (ray_bound_bound_collision(&mesh->bound,&light->bound)) {
-				light->mesh_collide_mask[n]=0x1;
+				if ((mesh->flags&RL_MESH_FLAG_NON_LIGHT_TRACE_BLOCKING)==0x0) light->mesh_collide_mask[n]=0x1;
 				mesh->light_collide_mask[k]=0x1;
 			}
 			

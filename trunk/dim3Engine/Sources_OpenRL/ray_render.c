@@ -66,7 +66,7 @@ bool ray_intersect_triangle(ray_scene_type *scene,ray_point_type *eye_point,ray_
 
 void ray_intersect_mesh_list(ray_scene_type *scene,ray_point_type *eye_point,ray_vector_type *eye_vector,ray_collision_type *collision)
 {
-	int					n,mesh_idx,poly_idx,trig_idx;
+	int					n,k,mesh_idx,poly_idx,trig_idx;
 	float				it,iu,iv;
 	bool				skip;
 	ray_point_type		trig_pnt;
@@ -87,12 +87,21 @@ void ray_intersect_mesh_list(ray_scene_type *scene,ray_point_type *eye_point,ray
 
 		// run through the meshes
 
-	for (mesh_idx=0;mesh_idx!=scene->mesh_list.count;mesh_idx++) {
+	for (n=0;n!=scene->draw_mesh_index_block.count;n++) {
 
+		mesh_idx=scene->draw_mesh_index_block.indexes[n];
 		mesh=scene->mesh_list.meshes[mesh_idx];
 
+			// quick mesh skips
+
 		if (mesh->hidden) continue;
-		if ((mesh->flags&RL_MESH_FLAG_NON_RAY_TRACE_BLOCKING)!=0) continue;
+
+		if (collision->in_bounce) {
+			if ((mesh->flags&RL_MESH_FLAG_NON_BOUNCE_TRACE_BLOCKING)!=0) continue;
+		}
+		else {
+			if ((mesh->flags&RL_MESH_FLAG_NON_RAY_TRACE_BLOCKING)!=0) continue;
+		}
 
 			// mesh bounds check
 
@@ -116,8 +125,8 @@ void ray_intersect_mesh_list(ray_scene_type *scene,ray_point_type *eye_point,ray
 				
 			skip=FALSE;
 			
-			for (n=0;n!=collision->skip_block.count;n++) {
-				if ((mesh_idx==collision->skip_block.skips[n].mesh_idx) && (poly_idx==collision->skip_block.skips[n].poly_idx)) {
+			for (k=0;k!=collision->skip_block.count;k++) {
+				if ((mesh_idx==collision->skip_block.skips[k].mesh_idx) && (poly_idx==collision->skip_block.skips[k].poly_idx)) {
 					skip=TRUE;
 					break;
 				}
@@ -180,7 +189,7 @@ void ray_intersect_mesh_list(ray_scene_type *scene,ray_point_type *eye_point,ray
 
 bool ray_block_mesh_list(ray_scene_type *scene,ray_point_type *pnt,ray_vector_type *vct,ray_collision_type *collision,unsigned char *mesh_collide_mask)
 {
-	int					mesh_idx,poly_idx,trig_idx;
+	int					n,mesh_idx,poly_idx,trig_idx;
 	float				t,u,v;
 	ray_point_type		trig_pnt;
 	ray_mesh_type		*mesh;
@@ -188,7 +197,9 @@ bool ray_block_mesh_list(ray_scene_type *scene,ray_point_type *pnt,ray_vector_ty
 	ray_trig_type		*trig;
 	ray_collision_type	lit_collision;
 	
-	for (mesh_idx=0;mesh_idx!=scene->mesh_list.count;mesh_idx++) {
+	for (n=0;n!=scene->draw_mesh_index_block.count;n++) {
+
+		mesh_idx=scene->draw_mesh_index_block.indexes[n];
 	
 			// in collide list?
 			
@@ -201,7 +212,7 @@ bool ray_block_mesh_list(ray_scene_type *scene,ray_point_type *pnt,ray_vector_ty
 		mesh=scene->mesh_list.meshes[mesh_idx];
 
 		if (mesh->hidden) continue;
-		if ((mesh->flags&RL_MESH_FLAG_NON_LIGHT_BLOCKING)!=0) continue;
+		if ((mesh->flags&RL_MESH_FLAG_NON_LIGHT_TRACE_BLOCKING)!=0) continue;
 
 			// mesh bounds check
 
@@ -633,6 +644,8 @@ void ray_build_alpha_vector(ray_scene_type *scene,ray_point_type *ray_origin,ray
 	collision->skip_block.skips[collision->skip_block.count].poly_idx=collision->poly_idx;
 	
 	collision->skip_block.count++;
+
+	collision->in_bounce=TRUE;
 }
 
 /* =======================================================
@@ -733,6 +746,7 @@ void ray_render_thread(void *arg)
 				
 			collision.max_t=scene->eye.max_dist;
 			collision.skip_block.count=0;
+			collision.in_bounce=FALSE;
 		
 				// run the ray
 
@@ -904,13 +918,12 @@ int rlSceneRender(int sceneId)
 	ReleaseMutex(scene->render.lock);
 #endif
 
-		// some presetup for mesh polygons
+		// setup some precalcs for meshes
+		// and lights, including collision
+		// cross lists and mesh in scene
+		// lists
 
-	ray_precalc_mesh_poly_setup_all(scene);
-	
-		// presets for mesh-light masks
-		
-	ray_precalc_collide_masks(scene);
+	ray_precalc_mesh_setup_all(scene);
 
 		// some presetup for overlays
 

@@ -57,7 +57,26 @@ int test_id=-1;
 
 void view_openrl_effect_mesh_setup(effect_type *effect)
 {
-	effect->openrl_mesh_id=rlSceneMeshAdd(view_rl_scene_id,(RL_MESH_FLAG_NON_LIGHT_BLOCKING|RL_MESH_FLAG_HIGHLIGHT));
+	int						quad_count;
+	iface_particle_type		*particle;
+
+		// only create meshes for particles
+
+	effect->openrl_mesh_id=-1;
+	if (effect->effecttype!=ef_particle) return;
+
+		// create mesh
+
+	effect->openrl_mesh_id=rlSceneMeshAdd(view_rl_scene_id,(RL_MESH_FLAG_NON_LIGHT_TRACE_BLOCKING|RL_MESH_FLAG_HIGHLIGHT));
+	if (effect->openrl_mesh_id==-1) return;
+
+		// create vertexes and uvs
+
+	particle=&iface.particle_list.particles[effect->data.particle.particle_idx];
+	quad_count=particle->count*(particle->trail_count+1);
+
+	rlSceneMeshSetVertex(view_rl_scene_id,effect->openrl_mesh_id,RL_MESH_FORMAT_VERTEX_3_FLOAT,(quad_count*4),NULL);
+	rlSceneMeshSetUV(view_rl_scene_id,effect->openrl_mesh_id,RL_MESH_FORMAT_UV_2_FLOAT,(quad_count*4),NULL);
 }
 
 void view_openrl_effect_mesh_close(effect_type *effect)
@@ -178,6 +197,12 @@ void view_openrl_effect_mesh_particle_update(effect_type *effect,int image_offse
 	iface_particle_type		*particle;
 	particle_effect_data	*eff_particle;
 	matrix_type				pixel_x_mat,pixel_y_mat;
+
+		// have a mesh?
+
+	if (effect->openrl_mesh_id==-1) return;
+
+		// get particle
 	
 	eff_particle=&effect->data.particle;
 	particle=&iface.particle_list.particles[eff_particle->particle_idx];
@@ -273,10 +298,10 @@ void view_openrl_effect_mesh_particle_update(effect_type *effect,int image_offse
 
 	quad_count=particle->count*(particle->trail_count+1);
 
-	rlSceneMeshSetVertex(view_rl_scene_id,effect->openrl_mesh_id,RL_MESH_FORMAT_VERTEX_3_FLOAT,(quad_count*4),NULL);
+//	rlSceneMeshSetVertex(view_rl_scene_id,effect->openrl_mesh_id,RL_MESH_FORMAT_VERTEX_3_FLOAT,(quad_count*4),NULL);
 	rlSceneMeshMapVertexPointer(view_rl_scene_id,effect->openrl_mesh_id,(void**)&vp);
 	
-	rlSceneMeshSetUV(view_rl_scene_id,effect->openrl_mesh_id,RL_MESH_FORMAT_UV_2_FLOAT,(quad_count*4),NULL);
+//	rlSceneMeshSetUV(view_rl_scene_id,effect->openrl_mesh_id,RL_MESH_FORMAT_UV_2_FLOAT,(quad_count*4),NULL);
 	rlSceneMeshMapUVPointer(view_rl_scene_id,effect->openrl_mesh_id,(void**)&uv);
 
 		// setup the vertexes

@@ -56,7 +56,7 @@ extern bool bitmap_text_font_exist(char *name);
       
 ======================================================= */
 
-int view_openrl_create_material_from_texture(char *sub_path,texture_type *texture,texture_frame_type *frame,int alpha_type)
+int view_openrl_create_material_from_texture(char *sub_path,texture_type *texture,texture_frame_type *frame)
 {
 	int					material_id,wid,high,png_wid,png_high;
 	bool				alpha_channel;
@@ -71,10 +71,12 @@ int view_openrl_create_material_from_texture(char *sub_path,texture_type *textur
 	png_data=png_utility_read(path,&wid,&high,&alpha_channel);
 	if (png_data==NULL) return(-1);
 	
-	material_id=rlMaterialAdd(wid,high,alpha_type,0);
+	material_id=rlMaterialAdd(wid,high,texture->rl_alpha_type,0);
 	rlMaterialAttachBufferData(material_id,RL_MATERIAL_TARGET_COLOR,(alpha_channel?RL_MATERIAL_FORMAT_32_RGBA:RL_MATERIAL_FORMAT_24_RGB),png_data);
 	
 	free(png_data);
+
+	rlMaterialSetRefractionFactor(material_id,texture->rl_refract_factor);
 	
 		// normal map
 		
