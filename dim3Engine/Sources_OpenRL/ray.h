@@ -124,6 +124,7 @@ typedef struct		{
 						int							id;
 						bool						hidden;
 						unsigned long				flags;
+						unsigned char				light_collide_mask[ray_max_scene_light];
 						ray_color_type				tint_col;
 						ray_vertex_block			vertex_block;
 						ray_uv_block				uv_block;
@@ -153,6 +154,7 @@ typedef struct		{
 typedef struct		{
 						int							id;
 						float						intensity,exponent;
+						unsigned char				mesh_collide_mask[ray_max_scene_mesh];
 						ray_point_type				pnt;
 						ray_color_type				col;
 						ray_light_direction_type	direction;
@@ -309,9 +311,18 @@ typedef struct		{
 //
 
 typedef struct		{
-						int							mesh_idx,poly_idx,trig_idx,
-													skip_mesh_idx,skip_poly_idx;
+						int							mesh_idx,poly_idx;
+					} ray_collision_skip_type;
+
+typedef struct		{
+						int							count;
+						ray_collision_skip_type		skips[ray_max_bounce];
+					} ray_collision_skip_block;
+
+typedef struct		{
+						int							mesh_idx,poly_idx,trig_idx;
 						float						max_t,t,u,v;
+						ray_collision_skip_block	skip_block;
 					} ray_collision_type;
 
 //
@@ -347,6 +358,7 @@ extern void ray_precalc_triangle_bounds(ray_mesh_type *mesh,ray_trig_type *trig)
 extern void ray_precalc_light_bounds(ray_light_type *light);
 extern void ray_precalc_triangle_vectors(ray_mesh_type *mesh,ray_trig_type *trig);
 extern void ray_precalc_mesh_poly_setup_all(ray_scene_type *scene);
+extern void ray_precalc_collide_masks(ray_scene_type *scene);
 
 extern void ray_get_material_rgb(ray_scene_type *scene,ray_point_type *eye_pnt,ray_point_type *trig_pnt,ray_collision_type *collision,ray_material_pixel_type *pixel);
 extern float ray_get_material_alpha(ray_scene_type *scene,ray_point_type *eye_pnt,ray_point_type *trig_pnt,ray_collision_type *collision);
