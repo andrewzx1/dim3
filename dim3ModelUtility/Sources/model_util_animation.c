@@ -67,6 +67,7 @@ int model_animate_add(model_type *model)
 	strcpy(animate->name,"New Animation");
 	animate->loop=TRUE;
 	animate->no_smooth=FALSE;
+	animate->auto_stop=FALSE;
 	animate->enhance_factor=1.0f;
 	
 	animate->npose_move=0;
