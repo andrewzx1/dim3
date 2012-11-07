@@ -321,10 +321,10 @@ void model_run_animation_single(model_draw *draw,int animation_idx,int tick)
             else {
 
 					// non-looping, go to last pose and then
-					// into resting
+					// into resting or stopping
 
 				if (draw_animation->pose_move_idx>=animate->npose_move) {
-					draw_animation->mode=am_resting;
+					draw_animation->mode=animate->auto_stop?am_stopped:am_resting;
 					draw_animation->pose_move_idx=animate->npose_move-1;
 					return;
 				}

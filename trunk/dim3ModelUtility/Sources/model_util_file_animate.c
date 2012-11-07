@@ -90,6 +90,7 @@ bool model_read_v2_animate_xml(model_type *model)
         tag=xml_findfirstchild("Loop",animation_tag);
         animate->loop=xml_get_attribute_boolean(tag,"repeat");
         animate->no_smooth=xml_get_attribute_boolean(tag,"no_smooth");
+        animate->auto_stop=xml_get_attribute_boolean(tag,"auto_stop");
 		animate->enhance_factor=xml_get_attribute_float_default(tag,"enhance_factor",1.0f);
         animate->loop_start=xml_get_attribute_int(tag,"start");
         animate->loop_end=xml_get_attribute_int(tag,"end");

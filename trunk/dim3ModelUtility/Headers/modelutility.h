@@ -249,7 +249,7 @@ typedef struct		{
 						int								npose_move,loop_start,loop_end;
 						float							enhance_factor;
 						char							name[64];
-						bool							loop,no_smooth;
+						bool							loop,no_smooth,auto_stop;
 						model_pose_move_type			pose_moves[max_model_animate_pose];
 					} model_animate_type;
 
