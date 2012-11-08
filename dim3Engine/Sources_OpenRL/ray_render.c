@@ -579,6 +579,10 @@ void ray_build_alpha_refract_vector(ray_scene_type *scene,ray_point_type *ray_or
 
 		// get the vector between the
 		// normal and the ray vector
+		
+		// we subtract so we are using
+		// the reverse vector (i.e., looking
+		// through the material)
 
 	v.x=ray_vector->x;
 	v.y=ray_vector->y;
@@ -592,16 +596,20 @@ void ray_build_alpha_refract_vector(ray_scene_type *scene,ray_point_type *ray_or
 
 		// multiply by factor to either
 		// increase or decrease the angle
+		
+		// supergumba -- this won't work, need to redo here
 
 	v.x*=refract_factor;
 	v.y*=refract_factor;
 	v.z*=refract_factor;
-
-		// rebuild into new ray
-
-	ray_vector->x=(trig_pnt->x+normal.x)+v.x;
-	ray_vector->y=(trig_pnt->y+normal.y)+v.y;
-	ray_vector->z=(trig_pnt->z+normal.z)+v.z;
+	
+	
+	ray_vector->x=v.x;
+	ray_vector->y=v.y;
+	ray_vector->z=v.z;
+	
+	ray_vector_scalar_multiply(ray_vector,ray_vector,scene->eye.max_dist);
+	
 }
 
 void ray_build_alpha_vector(ray_scene_type *scene,ray_point_type *ray_origin,ray_vector_type *ray_vector,ray_point_type *trig_pnt,ray_collision_type *collision)
