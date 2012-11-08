@@ -56,7 +56,7 @@ extern iface_type				iface;
 
 extern list_palette_type		map_palette;
 
-char							texture_rl_alpha_type_str[][32]={"Pass Through","Reflection","Refraction"};
+char							texture_rl_alpha_type_str[][32]={"Pass Through","Reflection","Refraction",""};
 
 /* =======================================================
 
