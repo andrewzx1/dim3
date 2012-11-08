@@ -48,8 +48,8 @@ void setup_xml_default(void)
 	setup.screen_wid=-1;
 	setup.screen_high=-1;
 
-	setup.screen_openrl_wid=320;
-	setup.screen_openrl_high=200;
+	setup.screen_openrl_wid=240;
+	setup.screen_openrl_high=150;
 	setup.screen_openrl_pixel_double=TRUE;
 	
 	setup.fsaa_mode=fsaa_mode_none;

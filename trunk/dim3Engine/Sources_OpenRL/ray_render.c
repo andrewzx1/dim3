@@ -574,42 +574,50 @@ void ray_build_alpha_refract_vector(ray_scene_type *scene,ray_point_type *ray_or
 	ray_vector_type			v,normal;
 
 		// get the normal
+		// and flip it so it's
+		// facing through the
+		// surface
 
 	ray_get_material_normal(scene,ray_origin,trig_pnt,collision,&normal);
 
-		// get the vector between the
-		// normal and the ray vector
-		
-		// we subtract so we are using
-		// the reverse vector (i.e., looking
-		// through the material)
+	normal.x=-normal.x;
+	normal.y=-normal.y;
+	normal.z=-normal.z;
+
+		// get the line from the
+		// reverse normal end point
+		// and the normalized
+		// ray vector end point
+
+		// this will be the line between
+		// the two vectors and something
+		// we can put the factor on
 
 	v.x=ray_vector->x;
 	v.y=ray_vector->y;
 	v.z=ray_vector->z;
-
 	ray_vector_normalize(&v);
 
-	v.x=v.x-normal.x;
-	v.y=v.y-normal.y;
-	v.z=v.z-normal.z;
+	v.x-=normal.x;
+	v.y-=normal.y;
+	v.z-=normal.z;
 
-		// multiply by factor to either
-		// increase or decrease the angle
-		
-		// supergumba -- this won't work, need to redo here
+		// now apply the factor
 
-	v.x*=refract_factor;
-	v.y*=refract_factor;
-	v.z*=refract_factor;
-	
-	
-	ray_vector->x=v.x;
-	ray_vector->y=v.y;
-	ray_vector->z=v.z;
-	
+	ray_vector_scalar_multiply(&v,&v,refract_factor);
+
+		// and rebuild what the new
+		// ray by adding it to the
+		// normal to get the new
+		// cast, and then scale to
+		// max dist
+
+	ray_vector->x=v.x+normal.x;
+	ray_vector->y=v.y+normal.y;
+	ray_vector->z=v.z+normal.z;
+
+	ray_vector_normalize(ray_vector);
 	ray_vector_scalar_multiply(ray_vector,ray_vector,scene->eye.max_dist);
-	
 }
 
 void ray_build_alpha_vector(ray_scene_type *scene,ray_point_type *ray_origin,ray_vector_type *ray_vector,ray_point_type *trig_pnt,ray_collision_type *collision)

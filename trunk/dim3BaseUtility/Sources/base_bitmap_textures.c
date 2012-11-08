@@ -268,7 +268,7 @@ void bitmap_texture_clear(texture_type *texture)
 	texture->compress=FALSE;
 
 	texture->rl_alpha_type=rl_alpha_pass_through;
-	texture->rl_refract_factor=1.33f;
+	texture->rl_refract_factor=0.5f;
 
 	texture->material_name[0]=0x0;
 
@@ -314,7 +314,7 @@ void bitmap_texture_read_xml(texture_type *texture,int main_tag,bool read_scale)
 
 	texture->shine_factor=xml_get_attribute_float_default(main_tag,"shine_factor",10.0f);
 	texture->rl_alpha_type=xml_get_attribute_list(main_tag,"rl_alpha_type",(char*)rl_alpha_list_str);
-	texture->rl_refract_factor=xml_get_attribute_float_default(main_tag,"rl_refract_factor",1.33f);
+	texture->rl_refract_factor=xml_get_attribute_float_default(main_tag,"rl_refract_factor",0.5f);
 
 	texture->glow.rate=xml_get_attribute_int(main_tag,"glow_rate");
 	texture->glow.min=xml_get_attribute_float_default(main_tag,"glow_min",0.25f);
