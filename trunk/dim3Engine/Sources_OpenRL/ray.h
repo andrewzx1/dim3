@@ -203,26 +203,27 @@ typedef struct		{
 //
 
 typedef struct		{
+						int								count,
+														indexes[ray_max_scene_mesh];
+					} ray_scene_draw_mesh_index_block;
+
+typedef struct		{
 						int								target,format,
 														wid,high;
 						unsigned long					*data;
 					} ray_scene_buffer_type;
 
 typedef struct		{
-						int								y_start,y_end;
 						bool							done;
 						void							*parent_scene;			// this is a pointer back to the parent structure, need by threading
+						ray_2d_point_type				pixel_start,pixel_end;
+						ray_scene_draw_mesh_index_block	draw_mesh_index_block;
 					} ray_draw_scene_thread_info;
 
 typedef struct		{
 						ray_mutex						lock;
 						ray_draw_scene_thread_info		thread_info[ray_render_max_thread_count];
 					} ray_scene_render_type;
-
-typedef struct		{
-						int								count,
-														indexes[ray_max_scene_mesh];
-					} ray_scene_draw_mesh_index_block;
 
 typedef struct		{
 						int								id;
@@ -364,7 +365,8 @@ extern void ray_precalc_polygon_bounds(ray_mesh_type *mesh,ray_poly_type *poly);
 extern void ray_precalc_triangle_bounds(ray_mesh_type *mesh,ray_trig_type *trig);
 extern void ray_precalc_light_bounds(ray_light_type *light);
 extern void ray_precalc_triangle_vectors(ray_mesh_type *mesh,ray_trig_type *trig);
-extern void ray_precalc_mesh_setup_all(ray_scene_type *scene);
+extern void ray_precalc_render_scene_setup(ray_scene_type *scene);
+extern void ray_precalc_render_scene_thread_setup(ray_scene_type *scene,ray_draw_scene_thread_info *thread_info);
 
 extern void ray_get_material_rgb(ray_scene_type *scene,ray_point_type *eye_pnt,ray_point_type *trig_pnt,ray_collision_type *collision,ray_material_pixel_type *pixel);
 extern float ray_get_material_alpha(ray_scene_type *scene,ray_point_type *eye_pnt,ray_point_type *trig_pnt,ray_collision_type *collision);

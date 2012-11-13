@@ -64,11 +64,18 @@ void view_openrl_model_setup_single_model(model_draw *draw,bool hidden,bool no_r
 	model_type			*mdl;
 	model_mesh_type		*mesh;
 	model_poly_type		*poly;
+	model_draw_light	*lit;
+	rlPoint				lit_pnt;
+	rlColor				lit_col;
 	
 		// clear openrl ids
 
 	for (n=0;n!=max_model_mesh;n++) {
 		draw->meshes[n].openrl_mesh_id=-1;
+	}
+	
+	for (n=0;n!=max_model_light;n++) {
+		draw->lights[n].openrl_light_id=-1;
 	}
 
 		// get the model
@@ -94,7 +101,7 @@ void view_openrl_model_setup_single_model(model_draw *draw,bool hidden,bool no_r
 		mesh_id=rlSceneMeshAdd(view_rl_scene_id,flags);
 		if (mesh_id<0) return;
 		
-		if (hidden) rlSceneMeshSetHidden(view_rl_scene_id,mesh_id,TRUE);
+		if ((hidden) || ((draw->render_mesh_mask&(0x1<<n))==0)) rlSceneMeshSetHidden(view_rl_scene_id,mesh_id,TRUE);
 		
 			// we set the UVs and polys at the beginning
 			// and only change the vertexes and normals
@@ -155,13 +162,36 @@ void view_openrl_model_setup_single_model(model_draw *draw,bool hidden,bool no_r
 			
 		draw->meshes[i].openrl_mesh_id=mesh_id;
 	}
+	
+		// model lights
+		
+	for (n=0;n!=max_model_light;n++) {
+		lit=&draw->lights[n];
+		if (!lit->on) continue;
+		
+		lit->openrl_light_id=rlSceneLightAdd(view_rl_scene_id);
+		rlSceneLightSetIntensity(view_rl_scene_id,lit->openrl_light_id,(float)lit->intensity,lit->exponent);
+	
+		lit_col.r=lit->col.r;
+		lit_col.g=lit->col.g;
+		lit_col.b=lit->col.b;
+		rlSceneLightSetColor(view_rl_scene_id,lit->openrl_light_id,&lit_col);
+
+		lit_pnt.x=(float)draw->pnt.x;
+		lit_pnt.y=(float)draw->pnt.y;
+		lit_pnt.z=(float)draw->pnt.z;
+		rlSceneLightSetPosition(view_rl_scene_id,lit->openrl_light_id,&lit_pnt);
+	}
 }
 
 void view_openrl_model_update_single_model(model_draw *draw,bool hidden)
 {
 	int					n,mesh_id;
+	d3pnt				pnt;
 	model_type			*mdl;
 	model_mesh_type		*mesh;
+	model_draw_light	*lit;
+	rlPoint				lit_pnt;
 
 		// get model
 
@@ -176,7 +206,7 @@ void view_openrl_model_update_single_model(model_draw *draw,bool hidden)
 	
 			// hidden state
 
-		if (hidden) {
+		if ((hidden) || ((draw->render_mesh_mask&(0x1<<n))==0)) {
 			rlSceneMeshSetHidden(view_rl_scene_id,mesh_id,TRUE);
 			continue;
 		}
@@ -193,6 +223,21 @@ void view_openrl_model_update_single_model(model_draw *draw,bool hidden)
 		rlSceneMeshSetNormal(view_rl_scene_id,mesh_id,RL_MESH_FORMAT_NORMAL_3_FLOAT,mesh->nvertex,draw->setup.mesh_arrays[n].gl_normal_array);
 		rlSceneMeshSetTangent(view_rl_scene_id,mesh_id,RL_MESH_FORMAT_TANGENT_3_FLOAT,mesh->nvertex,draw->setup.mesh_arrays[n].gl_tangent_array);
 	}
+	
+		// update the lights
+		
+	for (n=0;n!=max_model_light;n++) {
+		lit=&draw->lights[n];
+		if (!lit->on) continue;
+		
+		memmove(&pnt,&draw->pnt,sizeof(d3pnt));
+		model_get_light_position(mdl,&draw->setup,n,&pnt);
+
+		lit_pnt.x=(float)pnt.x;
+		lit_pnt.y=(float)pnt.y;
+		lit_pnt.z=(float)pnt.z;
+		rlSceneLightSetPosition(view_rl_scene_id,lit->openrl_light_id,&lit_pnt);
+	}
 }
 
 void view_openrl_model_close_single_model(model_draw *draw)
@@ -205,10 +250,16 @@ void view_openrl_model_close_single_model(model_draw *draw)
 	if (draw->model_idx==-1) return;
 	mdl=server.model_list.models[draw->model_idx];
 
-		// update the meshes
+		// delete the meshes
 
 	for (n=0;n!=mdl->nmesh;n++) {
 		if (draw->meshes[n].openrl_mesh_id!=-1) rlSceneMeshDelete(view_rl_scene_id,draw->meshes[n].openrl_mesh_id);
+	}
+	
+		// delete the lights
+		
+	for (n=0;n!=max_model_light;n++) {
+		if (draw->lights[n].openrl_light_id!=-1) rlSceneLightDelete(view_rl_scene_id,draw->lights[n].openrl_light_id);
 	}
 }
 

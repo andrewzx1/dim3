@@ -66,7 +66,7 @@ void ray_scene_3D_to_2D_point(ray_scene_type *scene,ray_point_type *pnt_3d,ray_2
 
 int rlSceneAdd(ray_2d_point_type *size,int target,int format,void *attachment,unsigned long flags)
 {
-	int					n,y,y_add;
+	int					n,k,split,x_add,y_add;
 	ray_scene_type		*scene;
 
 		// right now only one target/format
@@ -99,19 +99,22 @@ int rlSceneAdd(ray_2d_point_type *size,int target,int format,void *attachment,un
 		// precalc any thread info settings,
 		// like parent pointer and the drawing rect
 
-//	split=(int)sqrtf(ray_global.settings.thread_count);	// supergumba
+	split=(int)sqrtf(ray_global.settings.thread_count);
 
-	y=0;
-	y_add=scene->buffer.high/ray_global.settings.thread_count;
+	x_add=scene->buffer.wid/split;
+	y_add=scene->buffer.high/split;
 
 	for (n=0;n!=ray_global.settings.thread_count;n++) {
-
-		scene->render.thread_info[n].y_start=y;
-
-		y+=y_add;
-		if (n==(ray_global.settings.thread_count-1)) y=scene->buffer.high;
-
-		scene->render.thread_info[n].y_end=y;
+	
+		k=n%split;
+		scene->render.thread_info[n].pixel_start.x=x_add*k;
+		scene->render.thread_info[n].pixel_end.x=scene->render.thread_info[n].pixel_start.x+x_add;
+		if (k==(split-1)) scene->render.thread_info[n].pixel_end.x=scene->buffer.wid;
+		
+		k=n/split;
+		scene->render.thread_info[n].pixel_start.y=y_add*k;
+		scene->render.thread_info[n].pixel_end.y=scene->render.thread_info[n].pixel_start.y+y_add;
+		if (k==(split-1)) scene->render.thread_info[n].pixel_end.y=scene->buffer.high;
 
 			// each thread info needs a pointer
 			// back to it's scene as thread_info is

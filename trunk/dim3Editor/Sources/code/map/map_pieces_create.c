@@ -112,7 +112,7 @@ void piece_create_spot(void)
     state.map.show_object=TRUE;
 	
 	select_clear();
-	select_add(item_map_node,index,-1);
+	select_add(item_map_spot,index,-1);
 
 	map_palette_reset();
 	main_wind_menu_update();

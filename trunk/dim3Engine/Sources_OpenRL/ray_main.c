@@ -65,12 +65,24 @@ int rlInitialize(void)
 #endif
 
 		// reverve some threads
-		// it seems that cpu count * 3 yields
-		// the best results
-
-	ray_global.settings.thread_count=thread_count*3;
-	if (ray_global.settings.thread_count<ray_render_min_thread_count) ray_global.settings.thread_count=ray_render_min_thread_count;
-	if (ray_global.settings.thread_count>ray_render_max_thread_count) ray_global.settings.thread_count=ray_render_max_thread_count;
+		// threads always need to be a power
+		// of 2 to equally split the screen
+		
+		// for now, we run this relatively
+		// hardcoded setup.  Will need
+		// better math here
+		
+	if (thread_count<=4) {
+		ray_global.settings.thread_count=16;
+	}
+	else {
+		if (thread_count<=8) {
+			ray_global.settings.thread_count=25;
+		}
+		else {
+			ray_global.settings.thread_count=ray_render_max_thread_count;
+		}
+	}
 
 	return(RL_ERROR_OK);
 }

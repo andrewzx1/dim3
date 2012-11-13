@@ -64,16 +64,17 @@ bool ray_intersect_triangle(ray_scene_type *scene,ray_point_type *eye_point,ray_
       
 ======================================================= */
 
-void ray_intersect_mesh_list(ray_scene_type *scene,ray_point_type *eye_point,ray_vector_type *eye_vector,ray_collision_type *collision)
+void ray_intersect_mesh_list(ray_scene_type *scene,ray_draw_scene_thread_info *thread_info,ray_point_type *eye_point,ray_vector_type *eye_vector,ray_collision_type *collision)
 {
-	int					n,k,mesh_idx,poly_idx,trig_idx;
-	float				it,iu,iv;
-	bool				skip;
-	ray_point_type		trig_pnt;
-	ray_mesh_type		*mesh;
-	ray_poly_type		*poly;
-	ray_trig_type		*trig;
-	ray_collision_type	alpha_collision;
+	int								n,k,mesh_idx,poly_idx,trig_idx;
+	float							it,iu,iv;
+	bool							skip;
+	ray_point_type					trig_pnt;
+	ray_mesh_type					*mesh;
+	ray_poly_type					*poly;
+	ray_trig_type					*trig;
+	ray_collision_type				alpha_collision;
+	ray_scene_draw_mesh_index_block	*index_block;
 	
 		// clear collision
 		// anything > 1.0f is outside
@@ -84,17 +85,28 @@ void ray_intersect_mesh_list(ray_scene_type *scene,ray_point_type *eye_point,ray
 	collision->trig_idx=-1;
 
 	collision->t=1.0f;
+	
+		// setup reduced mesh index list
+		// if bounce, we must use scene list
+		// regular ray can use reduced thread list
+		
+	if (collision->in_bounce) {
+		index_block=&scene->draw_mesh_index_block;
+	}
+	else {
+		index_block=&thread_info->draw_mesh_index_block;
+	}
 
 		// run through the meshes
 
-	for (n=0;n!=scene->draw_mesh_index_block.count;n++) {
+	for (n=0;n!=index_block->count;n++) {
 
-		mesh_idx=scene->draw_mesh_index_block.indexes[n];
+		mesh_idx=index_block->indexes[n];
 		mesh=scene->mesh_list.meshes[mesh_idx];
 
 			// quick mesh skips
-
-		if (mesh->hidden) continue;
+			// note: hidden meshes have already
+			// been removed from this list
 
 		if (collision->in_bounce) {
 			if ((mesh->flags&RL_MESH_FLAG_NON_BOUNCE_TRACE_BLOCKING)!=0) continue;
@@ -202,17 +214,14 @@ bool ray_block_mesh_list(ray_scene_type *scene,ray_point_type *pnt,ray_vector_ty
 		mesh_idx=scene->draw_mesh_index_block.indexes[n];
 	
 			// in collide list?
-			
-		if (mesh_collide_mask[mesh_idx]==0x0) continue;
 	
 			// indexes in this mesh list have
-			// already been pared down non-render
-			// and non-light blocking
+			// already been pared down non-render,
+			// non-hidden, and non-light blocking
+			
+		if (mesh_collide_mask[mesh_idx]==0x0) continue;
 			
 		mesh=scene->mesh_list.meshes[mesh_idx];
-
-		if (mesh->hidden) continue;
-		if ((mesh->flags&RL_MESH_FLAG_NON_LIGHT_TRACE_BLOCKING)!=0) continue;
 
 			// mesh bounds check
 
@@ -676,8 +685,7 @@ void* ray_render_thread(void *arg)
 void ray_render_thread(void *arg)
 #endif
 {
-	int							x,y,repeat_count,
-								y_start,y_end;
+	int							x,y,repeat_count;
 	float						f,xadd,yadd,zadd;
 	unsigned long				*buf;
 	bool						no_hit;
@@ -693,15 +701,15 @@ void ray_render_thread(void *arg)
 	thread_info=(ray_draw_scene_thread_info*)arg;
 	scene=thread_info->parent_scene;
 	
+		// build some per-thread
+		// precalcs
+		
+	ray_precalc_render_scene_thread_setup(scene,thread_info);
+	
 		// get eye point
 		
 	eye_point=&scene->eye.pnt;
-	
-		// get 2D drawing sizes
-		
-	y_start=thread_info->y_start;
-	y_end=thread_info->y_end;
-		
+			
 		// eye point movement
 
 	xadd=eye_point->x-(float)(scene->buffer.wid>>1);
@@ -710,9 +718,9 @@ void ray_render_thread(void *arg)
 	
 		// draw
 		
-	for (y=y_start;y!=y_end;y++) {
+	for (y=thread_info->pixel_start.y;y!=thread_info->pixel_end.y;y++) {
 	
-		for (x=0;x!=scene->buffer.wid;x++) {
+		for (x=thread_info->pixel_start.x;x!=thread_info->pixel_end.x;x++) {
 		
 				// determine if in overlay
 				// do an early exit if no alpha
@@ -770,7 +778,7 @@ void ray_render_thread(void *arg)
 
 					// find nearest mesh-trig intersection
 					
-				ray_intersect_mesh_list(scene,&ray_origin,&ray_vector,&collision);
+				ray_intersect_mesh_list(scene,thread_info,&ray_origin,&ray_vector,&collision);
 				if (collision.trig_idx==-1) break;
 
 				ray_vector_find_line_point_for_T(&ray_origin,&ray_vector,collision.t,&trig_point);
@@ -939,7 +947,7 @@ int rlSceneRender(int sceneId)
 		// cross lists and mesh in scene
 		// lists
 
-	ray_precalc_mesh_setup_all(scene);
+	ray_precalc_render_scene_setup(scene);
 
 		// some presetup for overlays
 
