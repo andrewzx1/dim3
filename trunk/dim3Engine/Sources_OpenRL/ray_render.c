@@ -679,11 +679,7 @@ void ray_build_alpha_vector(ray_scene_type *scene,ray_point_type *ray_origin,ray
       
 ======================================================= */
 
-#ifndef WIN32
-void* ray_render_thread(void *arg)
-#else
-void ray_render_thread(void *arg)
-#endif
+void ray_render_thread_run(ray_draw_scene_thread_info *thread_info)
 {
 	int							x,y,repeat_count;
 	float						f,xadd,yadd,zadd;
@@ -693,14 +689,12 @@ void ray_render_thread(void *arg)
 	ray_vector_type				ray_vector;
 	ray_color_type				pixel_col,mat_col,overlay_col;
 	ray_collision_type			collision;
-	ray_draw_scene_thread_info	*thread_info;
 	ray_scene_type				*scene;
 
-		// get the render info
+		// get the scene
 
-	thread_info=(ray_draw_scene_thread_info*)arg;
 	scene=thread_info->parent_scene;
-	
+
 		// build some per-thread
 		// precalcs
 		
@@ -837,19 +831,109 @@ void ray_render_thread(void *arg)
 		}
 	}
 
-		// mark this thread as finished
+		// mark this thread as
+		// finished with rendering
 
-	thread_info->done=TRUE;
+	thread_info->render_done=TRUE;
+}
 
-		// end the thread
+/* =======================================================
+
+      Thread MainLine
+      
+======================================================= */
 
 #ifndef WIN32
-	pthread_exit(0);
-	return(0);
-#else
-	_endthread();
-#endif
+
+void* ray_render_thread(void *arg)
+{
+	ray_draw_scene_thread_info	*thread_info;
+	ray_scene_type				*scene;
+
+		// get the thread and scene
+
+	thread_info=(ray_draw_scene_thread_info*)arg;
+	scene=thread_info->parent_scene;
+
+		// set some flags
+
+	thread_info->render_done=TRUE;
+	thread_info->shutdown_done=FALSE;
+
+		// these are worker threads so
+		// they suspend until needed
+
+	while (TRUE) {
+
+			// make sure to work around spurious
+			// exits
+
+		pthread_mutex_lock(&scene->render.thread_lock);
+
+		while (TRUE) {
+			pthread_cond_wait(&scene->render.thread_cond,&scene->render.thread_lock);
+			if (scene->thread_mode!=ray_thread_mode_suspend) break;
+		}
+
+		pthread_mutex_unlock(&scene->render.thread_lock);
+
+			// in shutdown?
+
+		if (scene->thread_mode==ray_thread_mode_shutdown) {
+			thread_info->shutdown_done=TRUE;
+			pthread_exit(0);
+			return(0);
+		}
+
+			// run the thread
+
+		ray_render_thread_run(thread_info);
+	}
 }
+
+#else
+
+unsigned __stdcall ray_render_thread(void *arg)
+{
+	ray_draw_scene_thread_info	*thread_info;
+	ray_scene_type				*scene;
+
+		// get the thread and scene
+
+	thread_info=(ray_draw_scene_thread_info*)arg;
+	scene=thread_info->parent_scene;
+
+		// set some flags
+
+	thread_info->render_done=TRUE;
+	thread_info->shutdown_done=FALSE;
+
+		// these are worker threads so
+		// they suspend until needed
+
+	while (TRUE) {
+
+		SuspendThread(thread_info->thread);
+
+			// in case spurious wake-up
+
+		if (scene->thread_mode==ray_thread_mode_suspend) continue;
+
+			// in shutdown?
+
+		if (scene->thread_mode==ray_thread_mode_shutdown) {
+			thread_info->shutdown_done=TRUE;
+			_endthreadex(0);
+			return(0);
+		}
+
+			// run the thread
+
+		ray_render_thread_run(thread_info);
+	}
+}
+
+#endif
 
 /* =======================================================
 
@@ -862,7 +946,7 @@ void ray_render_clear_threads(ray_scene_type *scene)
 	int				n;
 
 	for (n=0;n!=ray_global.settings.thread_count;n++) {
-		scene->render.thread_info[n].done=TRUE;
+		scene->render.thread_info[n].render_done=TRUE;
 	}
 }
 
@@ -871,7 +955,7 @@ bool ray_render_check_threads_done(ray_scene_type *scene)
 	int				n;
 
 	for (n=0;n!=ray_global.settings.thread_count;n++) {
-		if (!scene->render.thread_info[n].done) return(FALSE);
+		if (!scene->render.thread_info[n].render_done) return(FALSE);
 	}
 
 	return(TRUE);
@@ -892,9 +976,6 @@ int rlSceneRender(int sceneId)
 {
 	int						n,idx;
 	ray_scene_type			*scene;
-#ifndef WIN32
-	pthread_t				thread;
-#endif
 
 		// get the scene
 
@@ -908,9 +989,9 @@ int rlSceneRender(int sceneId)
 		// don't stomp on each other
 
 #ifndef WIN32
-	pthread_mutex_lock(&scene->render.lock);
+	pthread_mutex_lock(&scene->render.scene_lock);
 #else
-	WaitForSingleObject(scene->render.lock,INFINITE);
+	WaitForSingleObject(scene->render.scene_lock,INFINITE);
 #endif
 
 		// can not render if we are already rendering
@@ -918,9 +999,9 @@ int rlSceneRender(int sceneId)
 	if (!ray_render_check_threads_done(scene)) {
 
 		#ifndef WIN32
-			pthread_mutex_unlock(&scene->render.lock);
+			pthread_mutex_unlock(&scene->render.scene_lock);
 		#else
-			ReleaseMutex(scene->render.lock);
+			ReleaseMutex(scene->render.scene_lock);
 		#endif
 
 		return(RL_ERROR_SCENE_IN_USE);
@@ -931,15 +1012,15 @@ int rlSceneRender(int sceneId)
 		// held as long
 
 	for (n=0;n!=ray_global.settings.thread_count;n++) {
-		scene->render.thread_info[n].done=FALSE;
+		scene->render.thread_info[n].render_done=FALSE;
 	}
 
 		// unlock rendering lock
 
 #ifndef WIN32
-	pthread_mutex_unlock(&scene->render.lock);
+	pthread_mutex_unlock(&scene->render.scene_lock);
 #else
-	ReleaseMutex(scene->render.lock);
+	ReleaseMutex(scene->render.scene_lock);
 #endif
 
 		// setup some precalcs for meshes
@@ -953,18 +1034,9 @@ int rlSceneRender(int sceneId)
 
 	ray_overlay_setup_all(scene);
 
-		// run rendering in threads
-		
-	for (n=0;n!=ray_global.settings.thread_count;n++) {
+		// resume the worker threads
 
-		#ifndef WIN32
-			pthread_create(&thread,0,ray_render_thread,(void*)&scene->render.thread_info[n]);
-			pthread_detach(thread);
-		#else
-			_beginthread(ray_render_thread,0,(void*)&scene->render.thread_info[n]);
-		#endif
-
-	}
+	ray_scene_resume_threads(scene,ray_thread_mode_rendering);
 
 	return(RL_ERROR_OK);
 }

@@ -28,7 +28,7 @@
 #define RL_MATERIAL_TARGET_COLOR							0
 #define RL_MATERIAL_TARGET_NORMAL							1
 #define RL_MATERIAL_TARGET_SPECULAR							2
-#define RL_MATERIAL_TARGET_REFLECTION						3
+#define RL_MATERIAL_TARGET_GLOW								3
 
 	// material formats
 
@@ -88,6 +88,7 @@ extern int rlMaterialDeleteAll(void);
 extern int rlMaterialAttachBufferData(int materialId,int target,int format,unsigned char* data);
 extern int rlMaterialAttachBufferColor(int materialId,int target,rlColor *col);
 extern int rlMaterialSetShineFactor(int materialId,float shineFactor);
+extern int rlMaterialSetGlowFactor(int materialId,float glowFactor);
 extern int rlMaterialSetRefractionFactor(int materialId,float refractionFactor);
 extern int rlMaterialBuildMipMaps(int materialId);
 
