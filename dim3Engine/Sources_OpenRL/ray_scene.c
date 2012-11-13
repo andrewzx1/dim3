@@ -138,18 +138,29 @@ int rlSceneAdd(ray_2d_point_type *size,int target,int format,void *attachment,un
 	scene->overlay_list.count=0;
 	scene->overlay_list.next_id=1;
 
+		// clear threads
+
+	ray_scene_clear_threads(scene);
+
 		// create the scene lock mutex
 
+		// note: for pthread implementations,
+		// we need another mutex for pthread suspend/resume
+
 #ifndef WIN32
-	if (pthread_mutex_init(&scene->render.lock,NULL)==-1) {
-#else
-	scene->render.lock=CreateMutex(NULL,FALSE,NULL);
-	if (scene->render.lock==NULL) {
-#endif
+	if (pthread_mutex_init(&scene->render.scene_lock,NULL)==-1) {
 		free(scene->buffer.data);
 		free(scene);
 		return(RL_ERROR_THREADING_ERROR);
 	}
+#else
+	scene->render.scene_lock=CreateMutex(NULL,FALSE,NULL);
+	if (scene->render.scene_lock==NULL) {
+		free(scene->buffer.data);
+		free(scene);
+		return(RL_ERROR_THREADING_ERROR);
+	}
+#endif
 
 		// set the id
 		
@@ -160,6 +171,13 @@ int rlSceneAdd(ray_2d_point_type *size,int target,int format,void *attachment,un
 
 	ray_global.scene_list.scenes[ray_global.scene_list.count]=scene;
 	ray_global.scene_list.count++;
+
+		// build the threads
+
+	if (!ray_scene_create_threads(scene)) {
+		rlSceneDelete(scene->id);
+		return(RL_ERROR_THREADING_ERROR);
+	}
 	
 	return(scene->id);
 }
@@ -189,18 +207,22 @@ int rlSceneDelete(int sceneId)
 
 	if (rlSceneRenderState(sceneId)==RL_SCENE_STATE_RENDERING) return(RL_ERROR_SCENE_IN_USE);
 
-		// clear scene memory
-
 	scene=ray_global.scene_list.scenes[idx];
+
+		// exit the threads
+
+	ray_scene_release_threads(scene);
+
+		// clear scene memory
 	
 	free(scene->buffer.data);
 
 		// clear render lock
 
 #ifndef WIN32
-	pthread_mutex_destroy(&scene->render.lock);
+	pthread_mutex_destroy(&scene->render.scene_lock);
 #else
-	CloseHandle(scene->render.lock);
+	CloseHandle(scene->render.scene_lock);
 #endif
 
 		// clear lights and meshes

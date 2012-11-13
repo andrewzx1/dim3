@@ -86,6 +86,7 @@ void ray_get_material_rgb(ray_scene_type *scene,ray_point_type *eye_pnt,ray_poin
 	ray_vector_type				*n0,*n1,*n2;
 	ray_material_type			*material;
 	ray_material_mipmap_type	*mipmap;
+	ray_color_type				glow_col;
 
 		// get mesh/poly/trig and materials
 		
@@ -106,7 +107,6 @@ void ray_get_material_rgb(ray_scene_type *scene,ray_point_type *eye_pnt,ray_poin
 		pixel->color.on=FALSE;
 		pixel->normal.on=FALSE;
 		pixel->specular.on=FALSE;
-		pixel->reflection.on=FALSE;
 		return;
 	}
 	
@@ -176,6 +176,17 @@ void ray_get_material_rgb(ray_scene_type *scene,ray_point_type *eye_pnt,ray_poin
 	pixel->color.on=TRUE;
 	buf=*(((unsigned long*)mipmap->data.color)+offset);
 	ray_create_float_color_from_ulong(buf,&pixel->color.rgb);
+
+		// add in glow
+
+	if (mipmap->data.glow!=NULL) {
+		buf=*(((unsigned long*)mipmap->data.glow)+offset);
+		ray_create_float_color_from_ulong(buf,&glow_col);
+
+		pixel->color.rgb.r+=(glow_col.r*material->glow_factor);
+		pixel->color.rgb.g+=(glow_col.g*material->glow_factor);
+		pixel->color.rgb.b+=(glow_col.b*material->glow_factor);
+	}
 
 		// add in the tint
 
@@ -358,7 +369,7 @@ int rlMaterialAdd(int wid,int high,int alphaType,unsigned long flags)
 		mipmap->data.color=NULL;
 		mipmap->data.normal=NULL;
 		mipmap->data.specular=NULL;
-		mipmap->data.reflection=NULL;
+		mipmap->data.glow=NULL;
 		mipmap++;
 	}
 
@@ -438,7 +449,7 @@ int rlMaterialDelete(int materialId)
 		if (mipmap->data.color!=NULL) free(mipmap->data.color);
 		if (mipmap->data.normal!=NULL) free(mipmap->data.normal);
 		if (mipmap->data.specular!=NULL) free(mipmap->data.specular);
-		if (mipmap->data.reflection!=NULL) free(mipmap->data.reflection);
+		if (mipmap->data.glow!=NULL) free(mipmap->data.glow);
 		mipmap++;
 	}
 
@@ -509,7 +520,7 @@ int rlMaterialAttachBufferData(int materialId,int target,int format,unsigned cha
 
 		// validate target and format
 
-	if ((target!=RL_MATERIAL_TARGET_COLOR) && (target!=RL_MATERIAL_TARGET_NORMAL) && (target!=RL_MATERIAL_TARGET_SPECULAR) && (target!=RL_MATERIAL_TARGET_REFLECTION)) return(RL_ERROR_UNKNOWN_TARGET);
+	if ((target!=RL_MATERIAL_TARGET_COLOR) && (target!=RL_MATERIAL_TARGET_NORMAL) && (target!=RL_MATERIAL_TARGET_SPECULAR) && (target!=RL_MATERIAL_TARGET_GLOW)) return(RL_ERROR_UNKNOWN_TARGET);
 	if ((format!=RL_MATERIAL_FORMAT_32_RGBA) && (format!=RL_MATERIAL_FORMAT_24_RGB)) return(RL_ERROR_UNKNOWN_FORMAT);
 
 		// setup the alpha flag
@@ -561,7 +572,7 @@ int rlMaterialAttachBufferData(int materialId,int target,int format,unsigned cha
 		if (mipmap->data.color!=NULL) free(mipmap->data.color);
 		if (mipmap->data.normal!=NULL) free(mipmap->data.normal);
 		if (mipmap->data.specular!=NULL) free(mipmap->data.specular);
-		if (mipmap->data.reflection!=NULL) free(mipmap->data.reflection);
+		if (mipmap->data.glow!=NULL) free(mipmap->data.glow);
 		mipmap++;
 	}
 
@@ -599,9 +610,9 @@ int rlMaterialAttachBufferData(int materialId,int target,int format,unsigned cha
 			mipmap->data.specular=rgba_data;
 			break;
 			
-		case RL_MATERIAL_TARGET_REFLECTION:
-			if (mipmap->data.reflection!=NULL) free(mipmap->data.reflection);
-			mipmap->data.reflection=rgba_data;
+		case RL_MATERIAL_TARGET_GLOW:
+			if (mipmap->data.glow!=NULL) free(mipmap->data.glow);
+			mipmap->data.glow=rgba_data;
 			break;
 			
 	}
@@ -683,6 +694,35 @@ int rlMaterialSetShineFactor(int materialId,float shineFactor)
 		// set the shine
 
 	material->shine_factor=shineFactor;
+	
+	return(RL_ERROR_OK);
+}
+
+/* =======================================================
+
+      Sets the Glow Factor for Glows
+
+	  Returns:
+	   RL_ERROR_OK
+	   RL_ERROR_UNKNOWN_MATERIAL_ID
+      
+======================================================= */
+
+int rlMaterialSetGlowFactor(int materialId,float glowFactor)
+{
+	int						idx;
+	ray_material_type		*material;
+
+		// get material
+
+	idx=ray_material_get_index(materialId);
+	if (idx==-1) return(RL_ERROR_UNKNOWN_MATERIAL_ID);
+
+	material=ray_global.material_list.materials[idx];
+
+		// set the glow
+
+	material->glow_factor=glowFactor;
 	
 	return(RL_ERROR_OK);
 }
@@ -784,9 +824,9 @@ int rlMaterialBuildMipMaps(int materialId)
 			}
 		}
 
-		if (material->mipmap_list.mipmaps[0].data.reflection!=NULL) {
-			mipmap->data.reflection=ray_bitmap_reduction(factor,material->wid,material->high,material->mipmap_list.mipmaps[0].data.reflection);
-			if (mipmap->data.reflection==NULL) {
+		if (material->mipmap_list.mipmaps[0].data.glow!=NULL) {
+			mipmap->data.glow=ray_bitmap_reduction(factor,material->wid,material->high,material->mipmap_list.mipmaps[0].data.glow);
+			if (mipmap->data.glow==NULL) {
 				free(mipmap->data.color);
 				if (mipmap->data.normal!=NULL) free(mipmap->data.normal);
 				if (mipmap->data.specular!=NULL) free(mipmap->data.specular);

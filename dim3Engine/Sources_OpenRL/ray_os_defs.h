@@ -6,18 +6,22 @@
 	#include <sys/param.h>
 	#include <sys/sysctl.h>
 	#include <unistd.h>
-
 	#include <pthread.h>
 
 	typedef pthread_mutex_t			ray_mutex;
+	typedef pthread_t				ray_thread;
+	typedef pthread_cond_t			ray_cond;
 
 #endif
 
 #ifdef __linux__
 
 	#include <unistd.h>
+	#include <pthread.h>
 
 	typedef pthread_mutex_t			ray_mutex;
+	typedef pthread_t				ray_thread;
+	typedef pthread_cond_t			ray_cond;
 
 #endif
 
@@ -40,7 +44,9 @@
 	#define inline					__inline
 
 	typedef unsigned char			bool;
-	typedef HANDLE					ray_mutex;	
+	typedef HANDLE					ray_mutex;
+	typedef HANDLE					ray_thread;
+	typedef int						ray_cond;
 
 	#define usleep(x)               Sleep((DWORD)((x)/1000))
 

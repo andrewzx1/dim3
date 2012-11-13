@@ -30,6 +30,14 @@
 #define ray_render_max_thread_count					64
 
 //
+// worker thread mode
+//
+
+#define ray_thread_mode_suspend						0
+#define ray_thread_mode_rendering					1
+#define ray_thread_mode_shutdown					2
+
+//
 // mipmaps
 //
 
@@ -214,19 +222,21 @@ typedef struct		{
 					} ray_scene_buffer_type;
 
 typedef struct		{
-						bool							done;
+						bool							render_done,shutdown_done;
 						void							*parent_scene;			// this is a pointer back to the parent structure, need by threading
+						ray_thread						thread;
 						ray_2d_point_type				pixel_start,pixel_end;
 						ray_scene_draw_mesh_index_block	draw_mesh_index_block;
 					} ray_draw_scene_thread_info;
 
 typedef struct		{
-						ray_mutex						lock;
+						ray_mutex						scene_lock,thread_lock;	// thread_lock only needed for pthread con waits
+						ray_cond						thread_cond;			// thread_cond only needed for pthread con waits
 						ray_draw_scene_thread_info		thread_info[ray_render_max_thread_count];
 					} ray_scene_render_type;
 
 typedef struct		{
-						int								id;
+						int								id,thread_mode;
 						ray_eye_type					eye;
 						ray_color_type					ambient_col;
 						ray_light_list					light_list;
@@ -238,7 +248,8 @@ typedef struct		{
 					} ray_scene_type;
 
 typedef struct		{
-						int								count,next_id;
+						int								count,next_id,
+														thread_mode;
 						ray_scene_type*					scenes[ray_max_scene];
 					} ray_scene_list;
 
@@ -250,7 +261,8 @@ typedef struct		{
 //
 
 typedef struct		{
-						unsigned char					*color,*normal,*specular,*reflection;
+						unsigned char					*color,*normal,
+														*specular,*glow;
 					} ray_material_mipmap_data_type;
 
 typedef struct		{
@@ -267,7 +279,7 @@ typedef struct		{
 typedef struct		{
 						int								id,wid,high,
 														alpha_type;
-						float							shine_factor,
+						float							shine_factor,glow_factor,
 														refract_factor;
 						bool							no_alpha;
 						ray_material_mipmap_list		mipmap_list;
@@ -293,7 +305,7 @@ typedef struct		{
 typedef struct		{
 						float							shine_factor;
 						ray_material_pixel_surface_type	surface;
-						ray_material_pixel_col_type		color,normal,specular,reflection;
+						ray_material_pixel_col_type		color,normal,specular;
 					} ray_material_pixel_type;
 
 //
@@ -360,6 +372,12 @@ extern unsigned char* ray_bitmap_reduction(int factor,int wid,int high,unsigned 
 
 extern void ray_scene_3D_to_2D_point(ray_scene_type *scene,ray_point_type *pnt_3d,ray_2d_point_type *pnt_2d);
 
+extern void ray_scene_clear_threads(ray_scene_type *scene);
+extern void ray_scene_wait_shutdown_threads(ray_scene_type *scene);
+extern void ray_scene_resume_threads(ray_scene_type *scene,int mode);
+extern void ray_scene_release_threads(ray_scene_type *scene);
+extern bool ray_scene_create_threads(ray_scene_type *scene);
+
 extern void ray_precalc_mesh_bounds(ray_mesh_type *mesh);
 extern void ray_precalc_polygon_bounds(ray_mesh_type *mesh,ray_poly_type *poly);
 extern void ray_precalc_triangle_bounds(ray_mesh_type *mesh,ray_trig_type *trig);
@@ -378,4 +396,11 @@ extern int ray_scene_get_index(int sceneId);
 extern int ray_material_get_index(int materialId);
 
 extern void ray_render_clear_threads(ray_scene_type *scene);
+
+#ifndef WIN32
+	extern void* ray_render_thread(void *arg);
+#else
+	extern unsigned __stdcall ray_render_thread(void *arg);
+#endif
+
 

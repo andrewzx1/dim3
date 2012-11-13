@@ -67,7 +67,7 @@ void view_openrl_map_mesh_start(void)
 	map_light_type		*lit;
 	rlPoint				lit_pnt;
 	rlColor				lit_col;
-	
+
 		// build the materials
 		
 	for (n=0;n!=max_map_texture;n++) {
@@ -78,7 +78,7 @@ void view_openrl_map_mesh_start(void)
 		
 		frame->bitmap.rl_material_id=view_openrl_create_material_from_texture("Bitmaps/Textures",texture,frame);
 	}
-			
+		
 		// build the meshes
 
 	for (n=0;n!=map.mesh.nmesh;n++) {
@@ -101,7 +101,7 @@ void view_openrl_map_mesh_start(void)
 			// the vertexes
 		
 		rlSceneMeshSetVertex(view_rl_scene_id,mesh_id,RL_MESH_FORMAT_VERTEX_3_FLOAT,mesh->nvertex,NULL);
-		rlSceneMeshMapVertexPointer(view_rl_scene_id,mesh_id,(void**)&vp);
+		k=rlSceneMeshMapVertexPointer(view_rl_scene_id,mesh_id,(void**)&vp);
 
 		pnt=mesh->vertexes;
 

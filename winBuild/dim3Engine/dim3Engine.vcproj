@@ -3812,6 +3812,10 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\dim3Engine\Sources_OpenRL\ray_thread.c"
+						>
+					</File>
+					<File
 						RelativePath="..\..\dim3Engine\Sources_OpenRL\ray_types.h"
 						>
 					</File>
