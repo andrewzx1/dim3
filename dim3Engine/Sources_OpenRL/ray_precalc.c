@@ -180,7 +180,7 @@ void ray_precalc_triangle_vectors(ray_mesh_type *mesh,ray_trig_type *trig)
 
 /* =======================================================
 
-      Precalc For Mesh Rendering
+      Precalc For Scene Rendering
 
 	  Mesh in scene list
 	  Includes a mesh/light cross collision list
@@ -188,7 +188,7 @@ void ray_precalc_triangle_vectors(ray_mesh_type *mesh,ray_trig_type *trig)
       
 ======================================================= */
 
-void ray_precalc_mesh_setup_all(ray_scene_type *scene)
+void ray_precalc_render_scene_setup(ray_scene_type *scene)
 {
 	int				n,k,mesh_idx;
 	float			d;
@@ -257,3 +257,114 @@ void ray_precalc_mesh_setup_all(ray_scene_type *scene)
 		}
 	}
 }
+
+/* =======================================================
+
+      Precalc For Thread Mesh Rendering
+
+	  This includes a smaller mesh list for the
+	  initial meshes available for collisions in
+	  the thread's pixel block
+	  
+	  If the ray bounces, we retreat to the
+	  meshes in scene list, as this list is created
+	  by intersecting the original ray box
+      
+======================================================= */
+
+void ray_precalc_render_scene_thread_setup(ray_scene_type *scene,ray_draw_scene_thread_info *thread_info)
+{
+	int						n,mesh_idx;
+	float					x,y,z,lx,rx,ty,by,wid,high;
+	ray_point_type			*eye_point;
+	ray_point_type			view_plane_point;
+	ray_vector_type			eye_vector[4];
+	ray_bound_type			bound;
+	ray_mesh_type			*mesh;
+	
+		// get 2D drawing sizes
+		
+	lx=(float)thread_info->pixel_start.x;
+	rx=(float)thread_info->pixel_end.x;
+	ty=(float)thread_info->pixel_start.y;
+	by=(float)thread_info->pixel_end.y;
+	
+	wid=(float)(scene->buffer.wid>>1);
+	high=(float)(scene->buffer.high>>1);
+		
+		// get four corners of
+		// thread bounds
+		
+	eye_point=&scene->eye.pnt;
+
+	view_plane_point.z=eye_point->z+scene->eye.min_dist;
+
+	view_plane_point.x=(eye_point->x-wid)+lx;
+	view_plane_point.y=(eye_point->y-high)+ty;
+	ray_vector_create_from_points(&eye_vector[0],&view_plane_point,eye_point);
+	rlMatrixVectorMultiply(&scene->eye.matrix,&eye_vector[0]);
+
+	view_plane_point.x=(eye_point->x-wid)+lx;
+	view_plane_point.y=(eye_point->y-high)+by;
+	ray_vector_create_from_points(&eye_vector[1],&view_plane_point,eye_point);
+	rlMatrixVectorMultiply(&scene->eye.matrix,&eye_vector[1]);
+
+	view_plane_point.x=(eye_point->x-wid)+rx;
+	view_plane_point.y=(eye_point->y-high)+ty;
+	ray_vector_create_from_points(&eye_vector[2],&view_plane_point,eye_point);
+	rlMatrixVectorMultiply(&scene->eye.matrix,&eye_vector[2]);
+
+	view_plane_point.x=(eye_point->x-wid)+rx;
+	view_plane_point.y=(eye_point->y-high)+by;
+	ray_vector_create_from_points(&eye_vector[3],&view_plane_point,eye_point);
+	rlMatrixVectorMultiply(&scene->eye.matrix,&eye_vector[3]);
+	
+		// create bound
+		
+	bound.min.x=bound.max.x=eye_point->x;
+	bound.min.y=bound.max.y=eye_point->y;
+	bound.min.z=bound.max.z=eye_point->z;
+		
+	for (n=0;n!=4;n++) {
+		ray_vector_normalize(&eye_vector[n]);
+
+		x=eye_point->x+(eye_vector[n].x*scene->eye.max_dist);
+		if (x<bound.min.x) bound.min.x=x;
+		if (x>bound.max.x) bound.max.x=x;
+		
+		y=eye_point->y+(eye_vector[n].y*scene->eye.max_dist);
+		if (y<bound.min.y) bound.min.y=y;
+		if (y>bound.max.y) bound.max.y=y;
+		
+		z=eye_point->z+(eye_vector[n].z*scene->eye.max_dist);
+		if (z<bound.min.z) bound.min.z=z;
+		if (z>bound.max.z) bound.max.z=z;
+	}
+	
+		// build the mesh list for this thread
+		// we use this one first hits, but then
+		// retreat to the main list for bounces
+	
+	thread_info->draw_mesh_index_block.count=0;
+	
+	for (n=0;n!=scene->draw_mesh_index_block.count;n++) {
+	
+		mesh_idx=scene->draw_mesh_index_block.indexes[n];
+		mesh=scene->mesh_list.meshes[mesh_idx];
+		
+			// special knock-out flags
+			
+		if (mesh->hidden) continue;
+		if ((mesh->flags&RL_MESH_FLAG_NON_RAY_TRACE_BLOCKING)!=0) continue;
+		
+			// bound collisions
+			
+		if (!ray_bound_bound_collision(&bound,&mesh->bound)) continue;
+
+			// insert into list
+			
+		thread_info->draw_mesh_index_block.indexes[thread_info->draw_mesh_index_block.count]=mesh_idx;
+		thread_info->draw_mesh_index_block.count++;
+	}
+}
+
