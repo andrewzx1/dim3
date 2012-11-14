@@ -377,6 +377,8 @@ extern void ray_scene_wait_shutdown_threads(ray_scene_type *scene);
 extern void ray_scene_resume_threads(ray_scene_type *scene,int mode);
 extern void ray_scene_release_threads(ray_scene_type *scene);
 extern bool ray_scene_create_threads(ray_scene_type *scene);
+extern bool ray_scene_create_mutexes(ray_scene_type *scene);
+extern void ray_scene_release_mutexes(ray_scene_type *scene);
 
 extern void ray_precalc_mesh_bounds(ray_mesh_type *mesh);
 extern void ray_precalc_polygon_bounds(ray_mesh_type *mesh,ray_poly_type *poly);

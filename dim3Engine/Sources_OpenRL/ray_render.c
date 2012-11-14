@@ -500,28 +500,34 @@ void ray_trace_lights(ray_scene_type *scene,ray_point_type *eye_pnt,ray_point_ty
 		hit=TRUE;
 	}
 
-		// if there was a light hit, we
-		// are all done
-
-	if (hit) return;
-
 		// if no hit, then the color is
 		// flat head on bump, spec, and the
 		// ambient color
 
-	if (material_pixel.normal.on) {
-		light_poly_space_vector.x=0.0f;
-		light_poly_space_vector.y=0.0f;
-		light_poly_space_vector.z=1.0f;
-		diffuse=ray_vector_dot_product(&light_poly_space_vector,&bump_map_normal);
-	}
-	else {
-		diffuse=1.0f;
+	if (!hit) {
+
+		if (material_pixel.normal.on) {
+			light_poly_space_vector.x=0.0f;
+			light_poly_space_vector.y=0.0f;
+			light_poly_space_vector.z=1.0f;
+			diffuse=ray_vector_dot_product(&light_poly_space_vector,&bump_map_normal);
+		}
+		else {
+			diffuse=1.0f;
+		}
+
+		col->r=material_pixel.color.rgb.r*(scene->ambient_col.r*diffuse);
+		col->g=material_pixel.color.rgb.g*(scene->ambient_col.g*diffuse);
+		col->b=material_pixel.color.rgb.b*(scene->ambient_col.b*diffuse);
 	}
 
-	col->r=material_pixel.color.rgb.r*(scene->ambient_col.r*diffuse);
-	col->g=material_pixel.color.rgb.g*(scene->ambient_col.g*diffuse);
-	col->b=material_pixel.color.rgb.b*(scene->ambient_col.b*diffuse);
+		// finish with the glow
+
+	if (material_pixel.glow.on) {
+		col->r+=material_pixel.glow.rgb.a;
+		col->g+=material_pixel.glow.rgb.g;
+		col->b+=material_pixel.glow.rgb.b;
+	}
 }
 
 /* =======================================================
