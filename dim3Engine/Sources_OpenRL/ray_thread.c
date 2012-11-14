@@ -51,13 +51,11 @@ void ray_scene_wait_shutdown_threads(ray_scene_type *scene)
 
 void ray_scene_resume_threads(ray_scene_type *scene,int mode)
 {
-	int				n;
-
 	scene->thread_mode=mode;
-
-	for (n=0;n!=ray_global.settings.thread_count;n++) {
-		if (scene->render.thread_info[n].thread!=0) ResumeThread(scene->render.thread_info[n].thread);
-	}
+	
+	pthread_mutex_lock(&scene->render.thread_lock);
+	pthread_cond_broadcast(&scene->render.thread_cond);
+	pthread_mutex_unlock(&scene->render.thread_lock);
 }
 
 void ray_scene_release_threads(ray_scene_type *scene)
@@ -72,8 +70,8 @@ void ray_scene_release_threads(ray_scene_type *scene)
 
 		// release condition and mutex
 
-	if (scene->render.thread_lock!=0) pthread_mutux_destroy(&scene->render.thread_lock);
-	if (scene->render.thread_cond!=0) pthread_cond_destroy(&scene->render.thread_cond);
+	pthread_mutex_destroy(&scene->render.thread_lock);
+	pthread_cond_destroy(&scene->render.thread_cond);
 }
 
 bool ray_scene_create_threads(ray_scene_type *scene)
@@ -86,10 +84,8 @@ bool ray_scene_create_threads(ray_scene_type *scene)
 
 		// the mutex and condition
 
-	scene->render.thread_lock=0;
 	if (pthread_mutex_init(&scene->render.thread_lock,NULL)!=0) return(FALSE);
 
-	scene->render.thread_cond=0;
 	if (pthread_cond_init(&scene->render.thread_cond,NULL)!=0) {
 		pthread_mutex_destroy(&scene->render.thread_lock);
 		return(FALSE);

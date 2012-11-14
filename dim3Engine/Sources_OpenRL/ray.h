@@ -305,7 +305,7 @@ typedef struct		{
 typedef struct		{
 						float							shine_factor;
 						ray_material_pixel_surface_type	surface;
-						ray_material_pixel_col_type		color,normal,specular;
+						ray_material_pixel_col_type		color,normal,specular,glow;
 					} ray_material_pixel_type;
 
 //

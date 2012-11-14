@@ -86,7 +86,6 @@ void ray_get_material_rgb(ray_scene_type *scene,ray_point_type *eye_pnt,ray_poin
 	ray_vector_type				*n0,*n1,*n2;
 	ray_material_type			*material;
 	ray_material_mipmap_type	*mipmap;
-	ray_color_type				glow_col;
 
 		// get mesh/poly/trig and materials
 		
@@ -177,17 +176,6 @@ void ray_get_material_rgb(ray_scene_type *scene,ray_point_type *eye_pnt,ray_poin
 	buf=*(((unsigned long*)mipmap->data.color)+offset);
 	ray_create_float_color_from_ulong(buf,&pixel->color.rgb);
 
-		// add in glow
-
-	if (mipmap->data.glow!=NULL) {
-		buf=*(((unsigned long*)mipmap->data.glow)+offset);
-		ray_create_float_color_from_ulong(buf,&glow_col);
-
-		pixel->color.rgb.r+=(glow_col.r*material->glow_factor);
-		pixel->color.rgb.g+=(glow_col.g*material->glow_factor);
-		pixel->color.rgb.b+=(glow_col.b*material->glow_factor);
-	}
-
 		// add in the tint
 
 	pixel->color.rgb.r*=mesh->tint_col.r;
@@ -215,6 +203,21 @@ void ray_get_material_rgb(ray_scene_type *scene,ray_point_type *eye_pnt,ray_poin
 		pixel->shine_factor=material->shine_factor;
 		buf=*(((unsigned long*)mipmap->data.specular)+offset);
 		ray_create_float_color_from_ulong_no_alpha(buf,&pixel->specular.rgb);
+	}
+
+		// get glow
+
+	if (mipmap->data.glow==NULL) {
+		pixel->glow.on=FALSE;
+	}
+	else {
+		pixel->glow.on=TRUE;
+		buf=*(((unsigned long*)mipmap->data.glow)+offset);
+		ray_create_float_color_from_ulong(buf,&pixel->glow.rgb);
+
+		pixel->glow.rgb.r*=material->glow_factor;
+		pixel->glow.rgb.g*=material->glow_factor;
+		pixel->glow.rgb.b*=material->glow_factor;
 	}
 }
 
