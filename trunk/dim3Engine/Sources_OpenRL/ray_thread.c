@@ -159,3 +159,35 @@ bool ray_scene_create_threads(ray_scene_type *scene)
 
 #endif
 
+/* =======================================================
+
+      OS Specific Thread Utilities
+      
+======================================================= */
+
+#ifndef WIN32
+
+bool ray_scene_create_mutexes(ray_scene_type *scene)
+{
+	return(pthread_mutex_init(&scene->render.scene_lock,NULL)!=-1);
+}
+
+void ray_scene_release_mutexes(ray_scene_type *scene)
+{
+	pthread_mutex_destroy(&scene->render.scene_lock);
+}
+
+#else
+
+bool ray_scene_create_mutexes(ray_scene_type *scene)
+{
+	scene->render.scene_lock=CreateMutex(NULL,FALSE,NULL);
+	return(scene->render.scene_lock!=NULL);
+}
+
+void ray_scene_release_mutexes(ray_scene_type *scene)
+{
+	CloseHandle(scene->render.scene_lock);
+}
+
+#endif
