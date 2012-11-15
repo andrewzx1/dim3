@@ -274,13 +274,14 @@ void ray_precalc_render_scene_setup(ray_scene_type *scene)
 
 void ray_precalc_render_scene_thread_setup(ray_scene_type *scene,ray_draw_scene_thread_info *thread_info)
 {
-	int						n,mesh_idx;
+	int						n,k,mesh_idx;
 	float					x,y,z,lx,rx,ty,by,wid,high;
 	ray_point_type			*eye_point;
 	ray_point_type			view_plane_point;
 	ray_vector_type			eye_vector[4];
 	ray_bound_type			bound;
 	ray_mesh_type			*mesh;
+	ray_poly_type			*poly;
 	
 		// get 2D drawing sizes
 		
@@ -365,6 +366,16 @@ void ray_precalc_render_scene_thread_setup(ray_scene_type *scene,ray_draw_scene_
 			
 		thread_info->draw_mesh_index_block.indexes[thread_info->draw_mesh_index_block.count]=mesh_idx;
 		thread_info->draw_mesh_index_block.count++;
+
+			// set up the poly rendering flags
+
+		poly=mesh->poly_block.polys;
+
+		for (k=0;k!=mesh->poly_block.count;k++) {
+			poly->render_mask[thread_info->idx]=ray_bound_bound_collision(&bound,&mesh->poly_block.polys[k].bound)?0x1:0x0;
+			poly++;
+		}
+
 	}
 }
 

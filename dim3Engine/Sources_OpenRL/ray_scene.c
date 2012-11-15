@@ -120,6 +120,7 @@ int rlSceneAdd(ray_2d_point_type *size,int target,int format,void *attachment,un
 			// back to it's scene as thread_info is
 			// what's passed to each thread
 
+		scene->render.thread_info[n].idx=n;
 		scene->render.thread_info[n].parent_scene=scene;
 	}
 
