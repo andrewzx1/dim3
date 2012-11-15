@@ -64,7 +64,104 @@ bool ray_intersect_triangle(ray_scene_type *scene,ray_point_type *eye_point,ray_
       
 ======================================================= */
 
-void ray_intersect_mesh_list(ray_scene_type *scene,ray_draw_scene_thread_info *thread_info,ray_point_type *eye_point,ray_vector_type *eye_vector,ray_collision_type *collision)
+void ray_intersect_mesh_list_initial(ray_scene_type *scene,ray_draw_scene_thread_info *thread_info,ray_point_type *eye_point,ray_vector_type *eye_vector,ray_collision_type *collision)
+{
+	int								n,mesh_idx,poly_idx,trig_idx;
+	float							it,iu,iv;
+	ray_point_type					trig_pnt;
+	ray_mesh_type					*mesh;
+	ray_poly_type					*poly;
+	ray_trig_type					*trig;
+	ray_collision_type				alpha_collision;
+	
+		// clear collision
+		// anything > 1.0f is outside
+		// the max eye distance
+	
+	collision->mesh_idx=-1;
+	collision->poly_idx=-1;
+	collision->trig_idx=-1;
+
+	collision->t=1.0f;
+
+		// run through the meshes
+		
+		// for initial collisions, we use the
+		// thread mesh list, which has been pared
+		// down for the thread's pixel box,
+		// hidden, and non-ray trace blocking
+
+	for (n=0;n!=thread_info->draw_mesh_index_block.count;n++) {
+
+		mesh_idx=thread_info->draw_mesh_index_block.indexes[n];
+		mesh=scene->mesh_list.meshes[mesh_idx];
+
+			// mesh bounds check
+
+		if (!ray_bound_ray_collision(eye_point,eye_vector,&mesh->bound)) continue;
+
+			// run through the polys
+
+		for (poly_idx=0;poly_idx!=mesh->poly_block.count;poly_idx++) {
+			
+				// bounds check
+
+				// thread based lists have poly eliminations
+				// in them
+				
+			poly=&mesh->poly_block.polys[poly_idx];
+			if (poly->render_mask[thread_info->idx]==0x0) continue;
+
+			if (!ray_bound_ray_collision(eye_point,eye_vector,&poly->bound)) continue;
+			
+				// check triangle/ray intersection
+				// we don't do bound checking as it's
+				// about as fast as the intersection test
+				// first hit exits out of polygons as you
+				// can only hit one triangle of a polygon
+				
+			for (trig_idx=0;trig_idx!=poly->trig_block.count;trig_idx++) {
+			
+				trig=&poly->trig_block.trigs[trig_idx];
+				
+					// have we intersected this triangle
+					// closer to the last hit?
+					
+				if (!ray_intersect_triangle(scene,eye_point,eye_vector,mesh,trig,&it,&iu,&iv)) continue;
+				if (it>collision->t) continue;
+				
+					// special check for
+					// alpha==0.0f, which is a skip
+
+				if (!ray_global.material_list.materials[poly->material_idx]->no_alpha) {
+					alpha_collision.t=it;
+					alpha_collision.u=iu;
+					alpha_collision.v=iv;
+					alpha_collision.mesh_idx=mesh_idx;
+					alpha_collision.poly_idx=poly_idx;
+					alpha_collision.trig_idx=trig_idx;
+
+					ray_vector_find_line_point_for_T(eye_point,eye_vector,it,&trig_pnt);
+					if (ray_get_material_alpha(scene,eye_point,&trig_pnt,&alpha_collision)==0.0f) break;
+				}
+
+					// set the hit and exit out
+					// of the loop
+				
+				collision->t=it;
+				collision->u=iu;
+				collision->v=iv;
+				collision->mesh_idx=mesh_idx;
+				collision->poly_idx=poly_idx;
+				collision->trig_idx=trig_idx;
+
+				break;
+			}
+		}
+	}
+}
+
+void ray_intersect_mesh_list_bounce(ray_scene_type *scene,ray_draw_scene_thread_info *thread_info,ray_point_type *eye_point,ray_vector_type *eye_vector,ray_collision_type *collision)
 {
 	int								n,k,mesh_idx,poly_idx,trig_idx;
 	float							it,iu,iv;
@@ -74,7 +171,6 @@ void ray_intersect_mesh_list(ray_scene_type *scene,ray_draw_scene_thread_info *t
 	ray_poly_type					*poly;
 	ray_trig_type					*trig;
 	ray_collision_type				alpha_collision;
-	ray_scene_draw_mesh_index_block	*index_block;
 	
 		// clear collision
 		// anything > 1.0f is outside
@@ -86,34 +182,21 @@ void ray_intersect_mesh_list(ray_scene_type *scene,ray_draw_scene_thread_info *t
 
 	collision->t=1.0f;
 	
-		// setup reduced mesh index list
-		// if bounce, we must use scene list
-		// regular ray can use reduced thread list
-		
-	if (collision->in_bounce) {
-		index_block=&scene->draw_mesh_index_block;
-	}
-	else {
-		index_block=&thread_info->draw_mesh_index_block;
-	}
-
 		// run through the meshes
 
-	for (n=0;n!=index_block->count;n++) {
+		// for bounces, we need to retreat to the
+		// main scene list because bounces could go
+		// in any direction
 
-		mesh_idx=index_block->indexes[n];
+	for (n=0;n!=scene->draw_mesh_index_block.count;n++) {
+
+		mesh_idx=scene->draw_mesh_index_block.indexes[n];
 		mesh=scene->mesh_list.meshes[mesh_idx];
 
-			// quick mesh skips
-			// note: hidden meshes have already
-			// been removed from this list
+			// main list isn't pared down
+			// for flags, so we need to do that
 
-		if (collision->in_bounce) {
-			if ((mesh->flags&RL_MESH_FLAG_NON_BOUNCE_TRACE_BLOCKING)!=0) continue;
-		}
-		else {
-			if ((mesh->flags&RL_MESH_FLAG_NON_RAY_TRACE_BLOCKING)!=0) continue;
-		}
+		if ((mesh->flags&RL_MESH_FLAG_NON_BOUNCE_TRACE_BLOCKING)!=0) continue;
 
 			// mesh bounds check
 
@@ -128,8 +211,8 @@ void ray_intersect_mesh_list(ray_scene_type *scene,ray_draw_scene_thread_info *t
 			poly=&mesh->poly_block.polys[poly_idx];
 			if (!ray_bound_ray_collision(eye_point,eye_vector,&poly->bound)) continue;
 				
-				// skiping polys, this is mostly used
-				// for reflections or pass throughs
+				// skiping polys, this is used
+				// so reflections or pass throughs
 				// so we don't re-hit any polys we've
 				// already hit.  note this means we will
 				// only bounce off a surface once but we
@@ -778,7 +861,13 @@ void ray_render_thread_run(ray_draw_scene_thread_info *thread_info)
 
 					// find nearest mesh-trig intersection
 					
-				ray_intersect_mesh_list(scene,thread_info,&ray_origin,&ray_vector,&collision);
+				if (!collision.in_bounce) {
+					ray_intersect_mesh_list_initial(scene,thread_info,&ray_origin,&ray_vector,&collision);
+				}
+				else {
+					ray_intersect_mesh_list_bounce(scene,thread_info,&ray_origin,&ray_vector,&collision);
+				}
+
 				if (collision.trig_idx==-1) break;
 
 				ray_vector_find_line_point_for_T(&ray_origin,&ray_vector,collision.t,&trig_point);

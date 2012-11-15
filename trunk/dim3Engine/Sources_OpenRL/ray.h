@@ -26,7 +26,6 @@
 // threading
 //
 
-#define ray_render_min_thread_count					8
 #define ray_render_max_thread_count					64
 
 //
@@ -118,6 +117,7 @@ typedef struct		{
 typedef struct		{
 						int							material_idx,nvertex,
 													mm_level;
+						unsigned char				render_mask[ray_render_max_thread_count];
 						ray_polygon_index_type		idxs[8];
 						ray_trig_block				trig_block;
 						ray_bound_type				bound;
@@ -222,6 +222,7 @@ typedef struct		{
 					} ray_scene_buffer_type;
 
 typedef struct		{
+						int								idx;
 						bool							render_done,shutdown_done;
 						void							*parent_scene;			// this is a pointer back to the parent structure, need by threading
 						ray_thread						thread;
