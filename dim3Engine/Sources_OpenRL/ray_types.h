@@ -26,6 +26,10 @@ typedef struct		{
 					} ray_color_type;
 
 typedef struct		{
+						float						a,b,c,d;
+					} ray_plane_type;
+
+typedef struct		{
 						float						data[4][4];
 					} ray_matrix_type;
 					
