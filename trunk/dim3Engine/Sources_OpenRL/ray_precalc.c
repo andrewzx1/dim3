@@ -180,6 +180,131 @@ void ray_precalc_triangle_vectors(ray_mesh_type *mesh,ray_trig_type *trig)
 
 /* =======================================================
 
+      Frustum Culling
+      
+======================================================= */
+
+void ray_precalc_build_frustum_plane_single(ray_point_type *p0,ray_point_type *p1,ray_point_type *p2)
+{
+	ray_vector_type			v,u,normal;
+	
+		// get the normal
+		
+	ray_vector_create_from_points(&v,p1,p0);
+	ray_vector_create_from_points(&u,p2,p0);
+	
+	ray_vector_cross_product(&normal,&v,&u);
+	ray_vector_normalize(&normal);
+	
+	fprintf(stdout,"%.2f,%.2f,%.2f\n",normal.x,normal.y,normal.z);
+	
+	// A = nx, B = ny, C = nz, D= -n (dot product) p0
+	
+	// start with normals, rotate those, get the points on the plane
+	// use points on near for left/right/top/bottom and original ray to near + far
+}
+
+void ray_precalc_build_frustum_planes(ray_scene_type *scene,float lx,float rx,float ty,float by)
+{
+	float					wid,high;
+	ray_point_type			*eye_point;
+	ray_point_type			view_plane_point,
+							top_lft_near_pnt,top_rgt_near_pnt,
+							bot_lft_near_pnt,bot_rgt_near_pnt,
+							top_lft_far_pnt,top_rgt_far_pnt,
+							bot_lft_far_pnt,bot_rgt_far_pnt;
+	ray_vector_type			top_lft_vct,top_rgt_vct,
+							bot_lft_vct,bot_rgt_vct;
+	
+	wid=(float)(scene->buffer.wid>>1);
+	high=(float)(scene->buffer.high>>1);
+		
+		// the the four vectors that
+		// pass through the four corners of
+		// the near and far plane
+		
+	eye_point=&scene->eye.pnt;
+
+	view_plane_point.z=eye_point->z+scene->eye.min_dist;
+
+	view_plane_point.x=(eye_point->x-wid)+lx;
+	view_plane_point.y=(eye_point->y-high)+ty;
+	ray_vector_create_from_points(&top_lft_vct,&view_plane_point,eye_point);
+//	rlMatrixVectorMultiply(&scene->eye.matrix,&top_lft_vct);
+
+	view_plane_point.x=(eye_point->x-wid)+lx;
+	view_plane_point.y=(eye_point->y-high)+by;
+	ray_vector_create_from_points(&bot_lft_vct,&view_plane_point,eye_point);
+//	rlMatrixVectorMultiply(&scene->eye.matrix,&bot_lft_vct);
+
+	view_plane_point.x=(eye_point->x-wid)+rx;
+	view_plane_point.y=(eye_point->y-high)+ty;
+	ray_vector_create_from_points(&top_rgt_vct,&view_plane_point,eye_point);
+//	rlMatrixVectorMultiply(&scene->eye.matrix,&top_rgt_vct);
+
+	view_plane_point.x=(eye_point->x-wid)+rx;
+	view_plane_point.y=(eye_point->y-high)+by;
+	ray_vector_create_from_points(&bot_rgt_vct,&view_plane_point,eye_point);
+//	rlMatrixVectorMultiply(&scene->eye.matrix,&bot_rgt_vct);			// supergumba -- turn off rotation for now
+	
+		// get the 8 plane points
+		
+	top_lft_near_pnt.x=eye_point->x+(top_lft_vct.x*scene->eye.min_dist);
+	top_lft_near_pnt.y=eye_point->y+(top_lft_vct.y*scene->eye.min_dist);
+	top_lft_near_pnt.z=eye_point->z+(top_lft_vct.z*scene->eye.min_dist);
+		
+	top_lft_far_pnt.x=eye_point->x+(top_lft_vct.x*scene->eye.max_dist);
+	top_lft_far_pnt.y=eye_point->y+(top_lft_vct.y*scene->eye.max_dist);
+	top_lft_far_pnt.z=eye_point->z+(top_lft_vct.z*scene->eye.max_dist);
+	
+	top_rgt_near_pnt.x=eye_point->x+(top_rgt_vct.x*scene->eye.min_dist);
+	top_rgt_near_pnt.y=eye_point->y+(top_rgt_vct.y*scene->eye.min_dist);
+	top_rgt_near_pnt.z=eye_point->z+(top_rgt_vct.z*scene->eye.min_dist);
+		
+	top_rgt_far_pnt.x=eye_point->x+(top_rgt_vct.x*scene->eye.max_dist);
+	top_rgt_far_pnt.y=eye_point->y+(top_rgt_vct.y*scene->eye.max_dist);
+	top_rgt_far_pnt.z=eye_point->z+(top_rgt_vct.z*scene->eye.max_dist);
+	
+	bot_lft_near_pnt.x=eye_point->x+(bot_lft_vct.x*scene->eye.min_dist);
+	bot_lft_near_pnt.y=eye_point->y+(bot_lft_vct.y*scene->eye.min_dist);
+	bot_lft_near_pnt.z=eye_point->z+(bot_lft_vct.z*scene->eye.min_dist);
+		
+	bot_lft_far_pnt.x=eye_point->x+(bot_lft_vct.x*scene->eye.max_dist);
+	bot_lft_far_pnt.y=eye_point->y+(bot_lft_vct.y*scene->eye.max_dist);
+	bot_lft_far_pnt.z=eye_point->z+(bot_lft_vct.z*scene->eye.max_dist);
+	
+	bot_rgt_near_pnt.x=eye_point->x+(bot_rgt_vct.x*scene->eye.min_dist);
+	bot_rgt_near_pnt.y=eye_point->y+(bot_rgt_vct.y*scene->eye.min_dist);
+	bot_rgt_near_pnt.z=eye_point->z+(bot_rgt_vct.z*scene->eye.min_dist);
+		
+	bot_rgt_far_pnt.x=eye_point->x+(bot_rgt_vct.x*scene->eye.max_dist);
+	bot_rgt_far_pnt.y=eye_point->y+(bot_rgt_vct.y*scene->eye.max_dist);
+	bot_rgt_far_pnt.z=eye_point->z+(bot_rgt_vct.z*scene->eye.max_dist);
+	
+		// get the 6 frustum planes
+		
+	fprintf(stdout,"left: ");
+	ray_precalc_build_frustum_plane_single(&top_lft_near_pnt,&bot_lft_near_pnt,&top_lft_far_pnt);
+		
+	fprintf(stdout,"right: ");
+	ray_precalc_build_frustum_plane_single(&top_rgt_near_pnt,&bot_rgt_near_pnt,&top_rgt_far_pnt);
+	
+	fprintf(stdout,"top: ");
+	ray_precalc_build_frustum_plane_single(&top_lft_near_pnt,&top_rgt_near_pnt,&top_lft_far_pnt);
+
+	fprintf(stdout,"bottom: ");
+	ray_precalc_build_frustum_plane_single(&bot_lft_near_pnt,&bot_rgt_near_pnt,&bot_lft_far_pnt);
+
+	fprintf(stdout,"near: ");
+	ray_precalc_build_frustum_plane_single(&top_rgt_near_pnt,&bot_rgt_near_pnt,&top_lft_near_pnt);
+
+	fprintf(stdout,"far: ");
+	ray_precalc_build_frustum_plane_single(&top_lft_far_pnt,&bot_lft_far_pnt,&top_rgt_far_pnt);
+		
+}
+
+/* =======================================================
+
       Precalc For Scene Rendering
 
 	  Mesh in scene list
@@ -195,6 +320,8 @@ void ray_precalc_render_scene_setup(ray_scene_type *scene)
 	double			dx,dy,dz;
 	ray_mesh_type	*mesh;
 	ray_light_type	*light;
+	
+	//ray_precalc_build_frustum_planes(scene,0.0f,(float)scene->buffer.wid,0.0f,(float)scene->buffer.high);
 
 		// create a list of meshes within
 		// the eye max_dist, centered around
