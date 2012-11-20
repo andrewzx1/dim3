@@ -184,10 +184,9 @@ void ray_precalc_triangle_vectors(ray_mesh_type *mesh,ray_trig_type *trig)
       
 ======================================================= */
 
-void ray_precalc_build_frustum_plane_single(ray_plane_type *plane,ray_point_type *center_pnt,ray_point_type *p0,ray_point_type *p1,ray_point_type *p2)
+void ray_precalc_build_frustum_plane_single(ray_plane_type *plane,ray_point_type *p0,ray_point_type *p1,ray_point_type *p2)
 {
-	ray_vector_type			v,u,normal,p0_ray,
-							center_vct;
+	ray_vector_type			v,u,normal;
 	
 		// get the normal
 		
@@ -197,16 +196,6 @@ void ray_precalc_build_frustum_plane_single(ray_plane_type *plane,ray_point_type
 	ray_vector_cross_product(&normal,&v,&u);
 	ray_vector_normalize(&normal);
 
-		// flip the normal if not
-		// pointing at center
-
-	ray_vector_create_from_points(&center_vct,center_pnt,p0);
-	if (ray_vector_dot_product(&normal,&center_vct)<=0.0f) {
-		normal.x=-normal.x;
-		normal.y=-normal.y;
-		normal.z=-normal.z;
-	}
-
 		// get the a,b,c
 
 	plane->a=normal.x;
@@ -215,19 +204,14 @@ void ray_precalc_build_frustum_plane_single(ray_plane_type *plane,ray_point_type
 
 		// calculate d
 
-	p0_ray.x=p0->x;
-	p0_ray.y=p0->y;
-	p0_ray.z=p0->z;
-
-	plane->d=-ray_vector_dot_product(&normal,&p0_ray);
+	plane->d=-((plane->a*p0->x)+(plane->b*p0->y)+(plane->c*p0->z));
 }
 
-void ray_precalc_build_frustum_planes(ray_scene_type *scene,float lx,float rx,float ty,float by,ray_plane_type *planes)
+void ray_precalc_build_frustum_planes(ray_scene_type *scene,ray_draw_scene_thread_info *thread_info,ray_plane_type *planes)
 {
-	float					wid,high;
+	float					lx,rx,ty,by,wid,high;
 	ray_point_type			*eye_point;
 	ray_point_type			view_plane_point,
-							center_pnt,
 							top_lft_near_pnt,top_rgt_near_pnt,
 							bot_lft_near_pnt,bot_rgt_near_pnt,
 							top_lft_far_pnt,top_rgt_far_pnt,
@@ -237,6 +221,11 @@ void ray_precalc_build_frustum_planes(ray_scene_type *scene,float lx,float rx,fl
 							bot_lft_vct,bot_rgt_vct;
 	
 		// projection plane size
+
+	lx=(float)thread_info->pixel_start.x;
+	rx=(float)thread_info->pixel_end.x;
+	ty=(float)thread_info->pixel_start.y;
+	by=(float)thread_info->pixel_end.y;
 
 	wid=(float)(scene->buffer.wid>>1);
 	high=(float)(scene->buffer.high>>1);
@@ -279,12 +268,8 @@ void ray_precalc_build_frustum_planes(ray_scene_type *scene,float lx,float rx,fl
 	rlMatrixVectorMultiply(&scene->eye.matrix,&bot_rgt_vct);
 	ray_vector_normalize(&bot_rgt_vct);
 	
-		// get the center and 8 plane points
+		// get the 8 plane points
 
-	center_pnt.x=eye_point->x+(center_vct.x*((scene->eye.max_dist-scene->eye.min_dist)*0.5f));
-	center_pnt.y=eye_point->y+(center_vct.y*((scene->eye.max_dist-scene->eye.min_dist)*0.5f));
-	center_pnt.z=eye_point->z+(center_vct.z*((scene->eye.max_dist-scene->eye.min_dist)*0.5f));
-		
 	top_lft_near_pnt.x=eye_point->x+(top_lft_vct.x*scene->eye.min_dist);
 	top_lft_near_pnt.y=eye_point->y+(top_lft_vct.y*scene->eye.min_dist);
 	top_lft_near_pnt.z=eye_point->z+(top_lft_vct.z*scene->eye.min_dist);
@@ -320,12 +305,14 @@ void ray_precalc_build_frustum_planes(ray_scene_type *scene,float lx,float rx,fl
 		// get the 6 frustum planes
 		// left, right, top, bottom, near, and far
 		
-	ray_precalc_build_frustum_plane_single(&planes[0],&center_pnt,&top_lft_near_pnt,&bot_lft_near_pnt,&top_lft_far_pnt);
-	ray_precalc_build_frustum_plane_single(&planes[1],&center_pnt,&top_rgt_near_pnt,&bot_rgt_near_pnt,&top_rgt_far_pnt);
-	ray_precalc_build_frustum_plane_single(&planes[2],&center_pnt,&top_lft_near_pnt,&top_rgt_near_pnt,&top_lft_far_pnt);
-	ray_precalc_build_frustum_plane_single(&planes[3],&center_pnt,&bot_lft_near_pnt,&bot_rgt_near_pnt,&bot_lft_far_pnt);
-	ray_precalc_build_frustum_plane_single(&planes[4],&center_pnt,&top_lft_near_pnt,&bot_lft_near_pnt,&top_rgt_near_pnt);
-	ray_precalc_build_frustum_plane_single(&planes[5],&center_pnt,&top_lft_far_pnt,&bot_lft_far_pnt,&top_rgt_far_pnt);
+		//fprintf(stdout,"center ray = %d,%d,%d\n",(int)center_vct.x,(int)center_vct.y,(int)center_vct.z);
+		
+	ray_precalc_build_frustum_plane_single(&planes[0],&bot_lft_near_pnt,&top_lft_near_pnt,&bot_lft_far_pnt);
+	ray_precalc_build_frustum_plane_single(&planes[1],&top_rgt_near_pnt,&bot_rgt_near_pnt,&top_rgt_far_pnt);
+	ray_precalc_build_frustum_plane_single(&planes[2],&top_lft_near_pnt,&top_rgt_near_pnt,&top_lft_far_pnt);
+	ray_precalc_build_frustum_plane_single(&planes[3],&bot_rgt_near_pnt,&bot_lft_near_pnt,&bot_rgt_far_pnt);
+	ray_precalc_build_frustum_plane_single(&planes[4],&top_lft_near_pnt,&bot_lft_near_pnt,&top_rgt_near_pnt);
+	ray_precalc_build_frustum_plane_single(&planes[5],&bot_lft_far_pnt,&top_lft_far_pnt,&bot_rgt_far_pnt);
 }
 
 bool ray_precalc_frustum_plane_bound_cull(ray_plane_type *planes,ray_bound_type *bnd)
@@ -443,7 +430,7 @@ void ray_precalc_render_scene_setup(ray_scene_type *scene)
 
 void ray_precalc_render_scene_thread_setup(ray_scene_type *scene,ray_draw_scene_thread_info *thread_info)
 {
-	int						n,k,mesh_idx,count;
+	int						n,k,mesh_idx;
 	float					x,y,z,lx,rx,ty,by,wid,high;
 	ray_point_type			*eye_point;
 	ray_point_type			view_plane_point;
@@ -462,12 +449,6 @@ void ray_precalc_render_scene_thread_setup(ray_scene_type *scene,ray_draw_scene_
 	
 	wid=(float)(scene->buffer.wid>>1);
 	high=(float)(scene->buffer.high>>1);
-	
-		// build the frustum planes
-		// for this chunk of rendering
-
-	ray_precalc_build_frustum_planes(scene,0.0f,(float)scene->buffer.wid,0.0f,(float)scene->buffer.high,planes);
-
 		
 		// get four corners of
 		// thread bounds
@@ -518,55 +499,19 @@ void ray_precalc_render_scene_thread_setup(ray_scene_type *scene,ray_draw_scene_
 		if (z>bound.max.z) bound.max.z=z;
 	}
 	
+	
+
+	
+		// build the frustum planes
+		// for this chunk of rendering
+
+	ray_precalc_build_frustum_planes(scene,thread_info,planes);
+
 		// build the mesh list for this thread
 		// we use this one first hits, but then
 		// retreat to the main list for bounces
-	
+
 	thread_info->draw_mesh_index_block.count=0;
-
-	count=0;
-	
-	for (n=0;n!=scene->draw_mesh_index_block.count;n++) {
-	
-		mesh_idx=scene->draw_mesh_index_block.indexes[n];
-		mesh=scene->mesh_list.meshes[mesh_idx];
-		
-			// special knock-out flags
-			
-		if (mesh->hidden) continue;
-		if ((mesh->flags&RL_MESH_FLAG_NON_RAY_TRACE_BLOCKING)!=0) continue;
-		
-			// bound collisions
-			
-		if (!ray_bound_bound_collision(&bound,&mesh->bound)) continue;
-
-			// insert into list
-			
-		thread_info->draw_mesh_index_block.indexes[thread_info->draw_mesh_index_block.count]=mesh_idx;
-		thread_info->draw_mesh_index_block.count++;
-
-			// set up the poly rendering flags
-
-		poly=mesh->poly_block.polys;
-
-		for (k=0;k!=mesh->poly_block.count;k++) {
-			poly->render_mask[thread_info->idx]=ray_bound_bound_collision(&bound,&mesh->poly_block.polys[k].bound)?0x1:0x0;
-			if (poly->render_mask[thread_info->idx]==0x1) count++;
-			poly++;
-		}
-
-	}
-
-	fprintf(stdout,"%d: regular count=%d.%d\n",thread_info->idx,thread_info->draw_mesh_index_block.count,count);
-
-
-
-
-
-/*
-	thread_info->draw_mesh_index_block.count=0;
-
-	count=0;
 	
 	for (n=0;n!=scene->draw_mesh_index_block.count;n++) {
 	
@@ -592,15 +537,10 @@ void ray_precalc_render_scene_thread_setup(ray_scene_type *scene,ray_draw_scene_
 		poly=mesh->poly_block.polys;
 
 		for (k=0;k!=mesh->poly_block.count;k++) {
-			poly->render_mask[thread_info->idx]=ray_bound_bound_collision(&bound,&mesh->poly_block.polys[k].bound)?0x1:0x0;
-			if (poly->render_mask[thread_info->idx]==0x1) count++;
+			poly->render_mask[thread_info->idx]=ray_precalc_frustum_plane_bound_cull(planes,&poly->bound)?0x1:0x0;
 			poly++;
 		}
 
 	}
-
-	fprintf(stdout,"%d: frustum count=%d.%d\n",thread_info->idx,thread_info->draw_mesh_index_block.count,count);
-*/
-
 }
 
