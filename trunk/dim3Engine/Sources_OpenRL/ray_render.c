@@ -607,7 +607,7 @@ void ray_trace_lights(ray_scene_type *scene,ray_point_type *eye_pnt,ray_point_ty
 		// finish with the glow
 
 	if (material_pixel.glow.on) {
-		col->r+=material_pixel.glow.rgb.a;
+		col->r+=material_pixel.glow.rgb.r;
 		col->g+=material_pixel.glow.rgb.g;
 		col->b+=material_pixel.glow.rgb.b;
 	}

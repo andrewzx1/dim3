@@ -111,6 +111,24 @@ int view_openrl_create_material_from_texture(char *sub_path,texture_type *textur
 	}
 
 	rlMaterialSetShineFactor(material_id,texture->shine_factor);
+	
+		// glow map
+		
+	sprintf(name,"%s_g",frame->name);
+	file_paths_data(&file_path_setup,path,sub_path,name,"png");
+
+	png_data=png_utility_read(path,&png_wid,&png_high,&alpha_channel);
+	if (png_data!=NULL) {
+		if ((png_wid!=wid) || (png_high!=high)) {
+			fprintf(stdout,"%s: Not correct size for material\n",path);
+		}
+		else {
+			rlMaterialAttachBufferData(material_id,RL_MATERIAL_TARGET_GLOW,(alpha_channel?RL_MATERIAL_FORMAT_32_RGBA:RL_MATERIAL_FORMAT_24_RGB),png_data);
+		}
+		free(png_data);
+	}
+
+	rlMaterialSetGlowFactor(material_id,texture->glow.min);
 
 		// mipmaps
 
