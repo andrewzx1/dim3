@@ -21,6 +21,8 @@
 //
 
 #define ray_max_bounce								8
+#define ray_max_light_per_mesh						8
+#define ray_max_mesh_per_light						128
 
 //
 // threading
@@ -129,10 +131,14 @@ typedef struct		{
 					} ray_poly_block;
 
 typedef struct		{
+						int							count,
+													indexes[ray_max_light_per_mesh];
+					} ray_collide_lights_list;
+
+typedef struct		{
 						int							id;
 						bool						hidden;
 						unsigned long				flags;
-						unsigned char				light_collide_mask[ray_max_scene_light];
 						ray_color_type				tint_col;
 						ray_vertex_block			vertex_block;
 						ray_uv_block				uv_block;
@@ -140,6 +146,7 @@ typedef struct		{
 						ray_tangent_block			tangent_block;
 						ray_poly_block				poly_block;
 						ray_bound_type				bound;
+						ray_collide_lights_list		collide_lights_list;
 					} ray_mesh_type;
 
 typedef struct		{
@@ -160,13 +167,18 @@ typedef struct		{
 					} ray_light_direction_type;
 
 typedef struct		{
+						int							count,
+													indexes[ray_max_mesh_per_light];
+					} ray_collide_meshes_list;
+
+typedef struct		{
 						int							id;
 						float						intensity,exponent;
-						unsigned char				mesh_collide_mask[ray_max_scene_mesh];
 						ray_point_type				pnt;
 						ray_color_type				col;
 						ray_light_direction_type	direction;
 						ray_bound_type				bound;
+						ray_collide_meshes_list		collide_meshes_list;
 					} ray_light_type;
 
 typedef struct		{

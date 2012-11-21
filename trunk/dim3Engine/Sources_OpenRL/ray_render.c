@@ -282,7 +282,7 @@ void ray_intersect_mesh_list_bounce(ray_scene_type *scene,ray_draw_scene_thread_
       
 ======================================================= */
 
-bool ray_block_mesh_list(ray_scene_type *scene,ray_point_type *pnt,ray_vector_type *vct,ray_collision_type *collision,unsigned char *mesh_collide_mask)
+bool ray_block_mesh_list(ray_scene_type *scene,ray_point_type *pnt,ray_vector_type *vct,ray_collision_type *collision,ray_collide_meshes_list *collision_meshes_list)
 {
 	int					n,mesh_idx,poly_idx,trig_idx;
 	float				t,u,v;
@@ -292,18 +292,16 @@ bool ray_block_mesh_list(ray_scene_type *scene,ray_point_type *pnt,ray_vector_ty
 	ray_trig_type		*trig;
 	ray_collision_type	lit_collision;
 	
-	for (n=0;n!=scene->draw_mesh_index_block.count;n++) {
+			// check the list of possible
+			// light to mesh collision
 
-		mesh_idx=scene->draw_mesh_index_block.indexes[n];
-	
-			// in collide list?
-	
 			// indexes in this mesh list have
 			// already been pared down non-render,
 			// non-hidden, and non-light blocking
-			
-		if (mesh_collide_mask[mesh_idx]==0x0) continue;
-			
+	
+	for (n=0;n!=collision_meshes_list->count;n++) {
+
+		mesh_idx=collision_meshes_list->indexes[n];
 		mesh=scene->mesh_list.meshes[mesh_idx];
 
 			// mesh bounds check
@@ -431,20 +429,18 @@ void ray_trace_lights(ray_scene_type *scene,ray_point_type *eye_pnt,ray_point_ty
 	spec_col.g=0.0f;
 	spec_col.b=0.0f;
 	
+		// find lights that can hit
+		// this mesh
 		// use collision list to cut down
 		// on the lights we look at
 		
 	mesh=scene->mesh_list.meshes[collision->mesh_idx];
 
-		// find lights
-
 	hit=FALSE;
 	
-	for (n=0;n!=scene->light_list.count;n++) {
+	for (n=0;n!=mesh->collide_lights_list.count;n++) {
 		
-		if (mesh->light_collide_mask[n]==0x0) continue;
-		
-		light=scene->light_list.lights[n];
+		light=scene->light_list.lights[mesh->collide_lights_list.indexes[n]];
 
 			// outside of intensity globe?
 
@@ -481,7 +477,7 @@ void ray_trace_lights(ray_scene_type *scene,ray_point_type *eye_pnt,ray_point_ty
 			// check for mesh collides
 			// blocking light
 
-		if (ray_block_mesh_list(scene,trig_pnt,&light_vector,collision,light->mesh_collide_mask)) continue;
+		if (ray_block_mesh_list(scene,trig_pnt,&light_vector,collision,&light->collide_meshes_list)) continue;
 
 			// attenuate the light for distance
 
