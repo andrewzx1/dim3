@@ -373,15 +373,15 @@ void ray_precalc_render_scene_setup(ray_scene_type *scene)
 		}
 	}
 	
-		// clear masks and setup
+		// clear collide light list and setup
 		// poly mipmap level cahce
 		
 	for (n=0;n!=scene->draw_mesh_index_block.count;n++) {
 
 		mesh_idx=scene->draw_mesh_index_block.indexes[n];
 		mesh=scene->mesh_list.meshes[mesh_idx];
-
-		memset(mesh->light_collide_mask,0x0,ray_max_scene_light);
+		
+		mesh->collide_lights_list.count=0;
 
 		for (k=0;k!=mesh->poly_block.count;k++) {
 			mesh->poly_block.polys[k].mm_level=-1;
@@ -389,7 +389,7 @@ void ray_precalc_render_scene_setup(ray_scene_type *scene)
 	}
 	
 	for (n=0;n!=scene->light_list.count;n++) {
-		memset(scene->light_list.lights[n]->mesh_collide_mask,0x0,ray_max_scene_mesh);
+		scene->light_list.lights[n]->collide_meshes_list.count=0;
 	}
 	
 		// find the cross collisions
@@ -406,8 +406,24 @@ void ray_precalc_render_scene_setup(ray_scene_type *scene)
 			light=scene->light_list.lights[k];
 			
 			if (ray_bound_bound_collision(&mesh->bound,&light->bound)) {
-				if ((mesh->flags&RL_MESH_FLAG_NON_LIGHT_TRACE_BLOCKING)==0x0) light->mesh_collide_mask[mesh_idx]=0x1;
-				mesh->light_collide_mask[k]=0x1;
+
+					// add this mesh to the light
+					// collision list
+
+				if ((mesh->flags&RL_MESH_FLAG_NON_LIGHT_TRACE_BLOCKING)==0x0) {
+					if (light->collide_meshes_list.count<ray_max_mesh_per_light) {
+						light->collide_meshes_list.indexes[light->collide_meshes_list.count]=mesh_idx;
+						light->collide_meshes_list.count++;
+					}
+				}
+
+					// add this light to the mesh
+					// collision list
+
+				if (mesh->collide_lights_list.count<ray_max_light_per_mesh) {
+					mesh->collide_lights_list.indexes[mesh->collide_lights_list.count]=k;
+					mesh->collide_lights_list.count++;
+				}
 			}
 			
 		}
