@@ -111,6 +111,9 @@ extern int rlSceneAmbient(int sceneId,rlColor *col);
 extern int rlSceneLightAdd(int sceneId);
 extern int rlSceneLightDelete(int sceneId,int lightId);
 extern int rlSceneLightDeleteAll(int scenedId);
+
+extern int rlSceneLightSetHidden(int sceneId,int lightId,bool hidden);
+
 extern int rlSceneLightSetPosition(int sceneId,int lightId,rlPoint *pnt);
 extern int rlSceneLightSetColor(int sceneId,int lightId,rlColor *col);
 extern int rlSceneLightSetIntensity(int sceneId,int lightId,float intensity,float exponent);

@@ -137,7 +137,7 @@ void view_force_grid(int mesh_idx,bool pos_only)
       
 ======================================================= */
 
-bool view_click_snap(int mesh_idx,int liquid_idx,d3pnt *pt)
+bool view_click_snap(int mesh_idx,int vertex_idx,int liquid_idx,d3pnt *pt)
 {
 	int				n,t,y,snap_sz;
 	d3pnt			*dpt;
@@ -156,15 +156,19 @@ bool view_click_snap(int mesh_idx,int liquid_idx,d3pnt *pt)
 		
 	for (n=0;n!=map.mesh.nmesh;n++) {
 		
-		if (n==mesh_idx) {
-			mesh++;
-			continue;
-		}
-
 		dpt=mesh->vertexes;
 		
 		for (t=0;t!=mesh->nvertex;t++) {
+			
+				// not to itself
+				
+			if ((n==mesh_idx) && (t==vertex_idx)) {
+				dpt++;
+				continue;
+			}
 		
+				// check distance
+				
 			if (abs(dpt->x-pt->x)>snap_sz) {
 				dpt++;
 				continue;
@@ -283,7 +287,7 @@ bool view_click_snap_poly(int mesh_idx,int poly_idx,d3pnt *pt)
 	for (n=0;n!=poly->ptsz;n++) {
 		memmove(&hpt,pt,sizeof(d3pnt));
 		
-		if (view_click_snap(mesh_idx,-1,&hpt)) {
+		if (view_click_snap(mesh_idx,poly->v[n],-1,&hpt)) {
 			d=distance_get(pt->x,pt->y,pt->z,hpt.x,hpt.y,hpt.z);
 			if (d>(pref.snap_size*view_snap_clip_size_factor)) continue;
 			
@@ -316,7 +320,7 @@ bool view_click_snap_mesh_vertexes(int mesh_idx,d3pnt *pnt)
 	for (n=0;n!=mesh->nvertex;n++) {
 		memmove(&hpnt,pnt,sizeof(d3pnt));
 		
-		if (view_click_snap(mesh_idx,-1,&hpnt)) {
+		if (view_click_snap(mesh_idx,n,-1,&hpnt)) {
 			d=distance_get(pnt->x,pnt->y,pnt->z,hpnt.x,hpnt.y,hpnt.z);
 			if (d>(pref.snap_size*view_snap_clip_size_factor)) continue;
 			

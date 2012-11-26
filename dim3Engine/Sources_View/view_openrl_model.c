@@ -48,6 +48,7 @@ extern file_path_setup_type	file_path_setup;
 extern int					view_rl_scene_id;
 
 extern int view_openrl_create_material_from_texture(char *sub_path,texture_type *texture,texture_frame_type *frame,int alpha_type);
+extern int gl_light_get_intensity(int tick,int light_type,int intensity);
 
 /* =======================================================
 
@@ -58,7 +59,7 @@ extern int view_openrl_create_material_from_texture(char *sub_path,texture_type 
 void view_openrl_model_setup_single_model(model_draw *draw,bool hidden,bool no_ray_trace_block,bool no_bounce_trace_block,bool no_light_trace_block)
 {
 	int					n,k,i,mesh_id,uv_count;
-	unsigned long		flags;
+	unsigned long		flags,mesh_flags;
 	float				*uv;
 	short				*vk,*ray_polys;
 	model_type			*mdl;
@@ -97,8 +98,11 @@ void view_openrl_model_setup_single_model(model_draw *draw,bool hidden,bool no_r
 		mesh=&mdl->meshes[i];
 			
 			// add the mesh
+			
+		mesh_flags=flags;
+		if (mesh->rt_non_light_blocking) mesh_flags|=RL_MESH_FLAG_NON_LIGHT_TRACE_BLOCKING;
 
-		mesh_id=rlSceneMeshAdd(view_rl_scene_id,flags);
+		mesh_id=rlSceneMeshAdd(view_rl_scene_id,mesh_flags);
 		if (mesh_id<0) return;
 		
 		if ((hidden) || ((draw->render_mesh_mask&(0x1<<n))==0)) rlSceneMeshSetHidden(view_rl_scene_id,mesh_id,TRUE);
@@ -186,7 +190,7 @@ void view_openrl_model_setup_single_model(model_draw *draw,bool hidden,bool no_r
 
 void view_openrl_model_update_single_model(model_draw *draw,bool hidden)
 {
-	int					n,mesh_id;
+	int					n,mesh_id,tick,intensity;
 	d3pnt				pnt;
 	model_type			*mdl;
 	model_mesh_type		*mesh;
@@ -226,9 +230,17 @@ void view_openrl_model_update_single_model(model_draw *draw,bool hidden)
 	
 		// update the lights
 		
+	tick=game_time_get();
+		
 	for (n=0;n!=max_model_light;n++) {
+	
 		lit=&draw->lights[n];
-		if (!lit->on) continue;
+		if (!lit->on) {
+			if (lit->openrl_light_id!=-1) rlSceneLightSetHidden(view_rl_scene_id,lit->openrl_light_id,TRUE);
+			continue;
+		}
+		
+		rlSceneLightSetHidden(view_rl_scene_id,lit->openrl_light_id,FALSE);
 		
 		memmove(&pnt,&draw->pnt,sizeof(d3pnt));
 		model_get_light_position(mdl,&draw->setup,n,&pnt);
@@ -237,6 +249,9 @@ void view_openrl_model_update_single_model(model_draw *draw,bool hidden)
 		lit_pnt.y=(float)pnt.y;
 		lit_pnt.z=(float)pnt.z;
 		rlSceneLightSetPosition(view_rl_scene_id,lit->openrl_light_id,&lit_pnt);
+		
+		intensity=gl_light_get_intensity(tick,lit->type,lit->intensity);
+		rlSceneLightSetIntensity(view_rl_scene_id,lit->openrl_light_id,intensity,lit->exponent);
 	}
 }
 

@@ -174,6 +174,7 @@ typedef struct		{
 typedef struct		{
 						int							id;
 						float						intensity,exponent;
+						bool						hidden;
 						ray_point_type				pnt;
 						ray_color_type				col;
 						ray_light_direction_type	direction;

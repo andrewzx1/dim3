@@ -68,9 +68,11 @@ and can be sold or given away.
 #define kMeshPropertyBaseOn						57
 #define kMeshPropertyBaseTeam					58
 
-#define kMeshPropertyBoundMin					60
-#define kMeshPropertyBoundMax					61
-#define kMeshPropertyBoundSize					62
+#define kMeshPropertyPolyCount					60
+#define kMeshPropertyVertexCount				61
+#define kMeshPropertyBoundMin					62
+#define kMeshPropertyBoundMax					63
+#define kMeshPropertyBoundSize					64
 
 #define kMeshPolyPropertyClimbable				70
 #define kMeshPolyPropertyNeverCull				71
@@ -190,7 +192,9 @@ void map_palette_fill_mesh(int mesh_idx,int poly_idx)
 	pal_mesh_size.y=pal_mesh_max.y-pal_mesh_min.y;
 	pal_mesh_size.z=pal_mesh_max.z-pal_mesh_min.z;
 
-	list_palette_add_header(&map_palette,0,"Mesh Bounds");
+	list_palette_add_header(&map_palette,0,"Mesh Data");
+	list_palette_add_int(&map_palette,kMeshPropertyPolyCount,"Polygons",&mesh->npoly,TRUE);
+	list_palette_add_int(&map_palette,kMeshPropertyVertexCount,"Vertexes",&mesh->nvertex,TRUE);
 	list_palette_add_point(&map_palette,kMeshPropertyBoundMin,"Min",&pal_mesh_min,FALSE);
 	list_palette_add_point(&map_palette,kMeshPropertyBoundMax,"Max",&pal_mesh_max,FALSE);
 	list_palette_add_point(&map_palette,kMeshPropertyBoundSize,"Size",&pal_mesh_size,FALSE);

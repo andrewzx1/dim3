@@ -63,6 +63,7 @@ int model_mesh_add(model_type *model)
 	mesh->blend_add=FALSE;
 	mesh->never_cull=FALSE;
 	mesh->locked=FALSE;
+	mesh->rt_non_light_blocking=FALSE;
 
 	mesh->import_move.x=0;
 	mesh->import_move.y=0;

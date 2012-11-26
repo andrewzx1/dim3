@@ -404,6 +404,7 @@ void ray_precalc_render_scene_setup(ray_scene_type *scene)
 		
 		for (k=0;k!=scene->light_list.count;k++) {
 			light=scene->light_list.lights[k];
+			if (light->hidden) continue;
 			
 			if (ray_bound_bound_collision(&mesh->bound,&light->bound)) {
 

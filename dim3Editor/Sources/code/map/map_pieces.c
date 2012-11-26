@@ -38,6 +38,49 @@ extern app_pref_type		pref;
 
 /* =======================================================
 
+      Mesh and Polygon Duplication
+      
+======================================================= */
+
+bool map_piece_duplicate_mesh(int mesh_idx,d3pnt *mov_pnt)
+{
+	int			index;
+	
+	index=map_mesh_duplicate(&map,mesh_idx);
+	if (index==-1) {
+		os_dialog_alert("Can Not Create Mesh","Not enough memory.");
+		return(FALSE);
+	}
+	
+	map_mesh_move(&map,index,mov_pnt);
+	view_force_grid(index,TRUE);
+
+	view_vbo_mesh_initialize(index);
+	
+	select_duplicate_add(item_map_mesh,index,0);
+	
+	return(TRUE);
+}
+
+bool map_piece_duplicate_mesh_poly(int mesh_idx,int poly_idx,d3pnt *mov_pnt)
+{
+	int			index;
+	
+	index=map_mesh_add_duplicate_internal_poly(&map,mesh_idx,poly_idx,mov_pnt);
+	if (index==-1) {
+		os_dialog_alert("Can Not Create Polygon","Not enough memory.");
+		return(FALSE);
+	}
+	
+	view_vbo_mesh_rebuild(mesh_idx);
+	
+	select_duplicate_add(item_map_mesh,mesh_idx,index);
+	
+	return(TRUE);
+}
+
+/* =======================================================
+
       Duplicate Piece
       
 ======================================================= */
@@ -70,19 +113,12 @@ void piece_duplicate(void)
 		switch (type) {
 			
 			case item_map_mesh:
-				index=map_mesh_duplicate(&map,main_idx);
-				if (index==-1) {
-					os_dialog_alert("Can Not Create Mesh","Not enough memory.");
-					return;
+				if (state.map.select_mode!=select_mode_polygon) {
+					if (!map_piece_duplicate_mesh(main_idx,&mov_pt)) return;
 				}
-				
-				map_mesh_calculate_center(&map,index,&mpt);
-				map_mesh_move(&map,index,&mov_pt);
-				view_force_grid(main_idx,TRUE);
-
-				view_vbo_mesh_initialize(index);
-				
-				select_duplicate_add(item_map_mesh,index,0);
+				else {
+					if (!map_piece_duplicate_mesh_poly(main_idx,sub_idx,&mov_pt)) return;
+				}
 				break;
 			
 			case item_map_liquid:

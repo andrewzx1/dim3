@@ -391,38 +391,16 @@ int view_openrl_overlay_crosshair_setup_weapon(obj_type *obj,weapon_type *weap,r
 		// get crosshair location
 
 	if (!crosshair_get_location(obj,weap,&x,&y,&obj_idx,&dist)) return(-1);
-
 	obj->crosshair_draw.aim_obj_idx=obj_idx;
 
-	p_pnt->x=(x*setup.screen_openrl_wid)/iface.scale_x;
-	p_pnt->y=(y*setup.screen_openrl_high)/iface.scale_y;
+		// we can't handle some of this as it's
+		// tied to the OpenGL portion, so lets
+		// just pretend everything is centered
+		
+	sz=(weap->crosshair.min_size*setup.screen_openrl_wid)/iface.scale_x;
 	
-		// get the crosshair size
-
-	switch (weap->crosshair.type) {
-
-		case ct_bone_tracking:
-		case ct_barrel_tracking:
-			sz=setup.screen_openrl_wid>>5;
-			break;
-
-		case ct_bone_tracking_resizing:
-		case ct_barrel_tracking_resizing:
-			if (dist>weap->crosshair.distance) {
-				sz=weap->crosshair.min_size;
-			}
-			else {
-				sz=weap->crosshair.max_size-((weap->crosshair.max_size*dist)/weap->crosshair.distance);
-				if (sz<weap->crosshair.min_size) sz=weap->crosshair.min_size;
-			}
-			sz=(sz*setup.screen_openrl_wid)/iface.scale_x;
-			break;
-
-		default:
-			sz=(weap->crosshair.min_size*setup.screen_openrl_wid)/iface.scale_x;
-			break;
-
-	}
+	p_pnt->x=(setup.screen_openrl_wid>>1)-sz;
+	p_pnt->y=(setup.screen_openrl_high>>1)-sz;
 
 	s_pnt->x=s_pnt->y=sz*2;
 	

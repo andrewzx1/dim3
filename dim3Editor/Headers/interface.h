@@ -760,7 +760,7 @@ extern void view_pick_list_add_2D_handle(d3pnt *pnt,int type,int main_idx,int su
 extern int view_get_grid(void);
 extern void view_click_grid(d3pnt *pt);
 extern void view_force_grid(int mesh_idx,bool pos_only);
-extern bool view_click_snap(int mesh_idx,int liquid_idx,d3pnt *pt);
+extern bool view_click_snap(int mesh_idx,int vertex_idx,int liquid_idx,d3pnt *pt);
 extern bool view_click_snap_poly(int mesh_idx,int poly_idx,d3pnt *pt);
 extern void view_click_snap_mesh(d3pnt *old_dpt,d3pnt *mpt);
 extern void view_click_piece_map_pick_start(editor_view_type *view);

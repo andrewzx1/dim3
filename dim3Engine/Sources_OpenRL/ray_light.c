@@ -95,6 +95,8 @@ int rlSceneLightAdd(int sceneId)
 	light->direction.on=FALSE;
 	light->direction.cos_sweep=0.0f;
 	light->direction.vct.x=light->direction.vct.y=light->direction.vct.z=0.0f;
+	
+	light->hidden=FALSE;
 
 		// set id
 
@@ -189,6 +191,44 @@ int rlSceneLightDeleteAll(int sceneId)
 		if (err!=RL_ERROR_OK) return(err);
 	}
 	
+	return(RL_ERROR_OK);
+}
+
+/* =======================================================
+
+      Shows or Hides Light in Scene
+
+	  Returns:
+	   RL_ERROR_OK
+	   RL_ERROR_UNKNOWN_SCENE_ID
+	   RL_ERROR_UNKNOWN_LIGHT_ID
+      
+======================================================= */
+
+int rlSceneLightSetHidden(int sceneId,int lightId,bool hidden)
+{
+	int					idx;
+	ray_light_type		*light;
+	ray_scene_type		*scene;
+
+		// get scene
+
+	idx=ray_scene_get_index(sceneId);
+	if (idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
+
+	scene=ray_global.scene_list.scenes[idx];
+
+		// get the light
+
+	idx=ray_scene_light_get_index(scene,lightId);
+	if (idx==-1) return(RL_ERROR_UNKNOWN_LIGHT_ID);
+
+	light=scene->light_list.lights[idx];
+
+		// show or hide
+		
+	light->hidden=hidden;
+
 	return(RL_ERROR_OK);
 }
 

@@ -133,7 +133,8 @@ typedef struct		{
 						int								nvertex,npoly;
 						char							name[name_str_len];
 						bool							no_lighting,diffuse,
-														blend_add,never_cull,locked;
+														blend_add,never_cull,locked,
+														rt_non_light_blocking;
 						d3pnt							import_move,org_import_move;
  						model_vertex_type				*vertexes;
                         model_poly_type					*polys;

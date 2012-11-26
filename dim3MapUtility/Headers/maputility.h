@@ -874,6 +874,7 @@ extern bool map_mesh_set_poly_count(map_type *map,int mesh_idx,int npoly);
 extern int map_mesh_duplicate(map_type *map,int mesh_idx);
 extern int map_mesh_count_total_poly(map_type *map);
 extern int map_mesh_add_poly(map_type *map,int mesh_idx,int ptsz,int *x,int *y,int *z,float *gx,float *gy,int txt_idx);
+extern int map_mesh_add_duplicate_internal_poly(map_type *map,int mesh_idx,int poly_idx,d3pnt *mov_pnt);
 extern bool map_mesh_delete_poly(map_type *map,int mesh_idx,int poly_idx);
 extern bool map_mesh_delete_unused_vertexes(map_type *map,int mesh_idx);
 extern void map_mesh_calculate_extent(map_type *map,int mesh_idx,d3pnt *min,d3pnt *max);
