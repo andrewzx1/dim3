@@ -1116,39 +1116,24 @@ int list_palette_get_scroll_offset_max(list_palette_pane_type *pane,d3rect *box)
 
 void list_palette_get_scroll_thumb_position(list_palette_pane_type *pane,d3rect *box,int *thumb_ty,int *thumb_by)
 {
-	int				ty,scroll_max,high,div,thumb_size;
-
-	scroll_max=list_palette_get_scroll_offset_max(pane,box);
+	int				ty,high;
 
 	ty=box->ty+list_palette_pane_get_title_high(pane);
 	high=box->by-ty;
-
-	thumb_size=0;
-
-	div=pane->total_high/high;
-	if ((pane->total_high%high)!=0) div++;
-	if (div!=0) thumb_size=high/div;
-
-	*thumb_ty=ty+((thumb_size*pane->scroll_offset)/scroll_max);
+	
+	*thumb_ty=ty+((pane->scroll_offset*high)/pane->total_high);
 	if (*thumb_ty<ty) *thumb_ty=ty;
-		
-	*thumb_by=(*thumb_ty)+thumb_size;
+	
+	*thumb_by=ty+(((pane->scroll_offset+high)*high)/pane->total_high);
 	if (*thumb_by>box->by) *thumb_by=box->by;
 }
 
 int list_palette_pane_get_scroll_thumb_page_offset(list_palette_pane_type *pane,d3rect *box)
 {
-	int				ty,scroll_max,high,div;
-
-	scroll_max=list_palette_get_scroll_offset_max(pane,box);
+	int				ty;
 
 	ty=box->ty+list_palette_pane_get_title_high(pane);
-	high=box->by-ty;
-
-	div=pane->total_high/high;
-	if ((pane->total_high%high)!=0) div++;
-
-	return(scroll_max/div);
+	return(box->by-ty);
 }
 
 /* =======================================================
@@ -2163,11 +2148,10 @@ bool list_palette_pane_click_back(list_palette_pane_type *pane,d3rect *box)
 
 void list_palette_pane_click_scroll_bar(list_palette_pane_type *pane,d3rect *box)
 {
-	int						scroll_offset,old_scroll_offset,
-							scroll_max,thumb_page_offset,
-							thumb_size,thumb_y,
+	int						y,scroll_view_pixel_sz,
+							scroll_offset,old_scroll_offset,
+							scroll_max,
 							thumb_ty,thumb_by;
-	bool					first_drag;
 	d3pnt					pt,org_pt;
 	
 		// scrolling sizes
@@ -2176,14 +2160,32 @@ void list_palette_pane_click_scroll_bar(list_palette_pane_type *pane,d3rect *box
 	if (scroll_max==0) return;
 	
 	list_palette_get_scroll_thumb_position(pane,box,&thumb_ty,&thumb_by);
-	thumb_size=thumb_by-thumb_ty;
+	
+		// clicking point
+		
+	os_get_cursor(&org_pt);
 
-		// scrolling
+		// are we clicking above the thumb?
+		
+	if (org_pt.y<thumb_ty) {
+		pane->scroll_offset-=list_palette_pane_get_scroll_thumb_page_offset(pane,box);
+		if (pane->scroll_offset<0) pane->scroll_offset=0;
+		main_wind_draw();
+		return;
+	}
+	
+	if (org_pt.y>thumb_by) {
+		pane->scroll_offset+=list_palette_pane_get_scroll_thumb_page_offset(pane,box);
+		if (pane->scroll_offset>scroll_max) pane->scroll_offset=scroll_max;
+		main_wind_draw();
+		return;
+	}
+	
+		// otherwise we are dragging the thumb
 
-	first_drag=FALSE;
+	scroll_view_pixel_sz=(box->by-box->ty)-list_palette_pane_get_title_high(pane);
 		
 	old_scroll_offset=pane->scroll_offset;
-	os_get_cursor(&org_pt);
 	
 	while (!os_track_mouse_location(&pt,NULL)) {
 
@@ -2192,40 +2194,19 @@ void list_palette_pane_click_scroll_bar(list_palette_pane_type *pane,d3rect *box
 		if (pt.y==org_pt.y) continue;
 		
 			// mark as first drag and move
+			
+		y=((pt.y-org_pt.y)*pane->total_high)/scroll_view_pixel_sz;
 
-		scroll_offset=old_scroll_offset+(pt.y-org_pt.y);
+		scroll_offset=old_scroll_offset+y;
 		if (scroll_offset<0) scroll_offset=0;
 		if (scroll_offset>scroll_max) scroll_offset=scroll_max;
 		
 		if (scroll_offset!=pane->scroll_offset) {
-			first_drag=TRUE;
 			pane->scroll_offset=scroll_offset;
 			main_wind_draw();
 		}
 		
 		usleep(10000);
-	}
-
-	if (first_drag) return;
-
-		// if no drag, then do up/down click
-
-	thumb_y=(thumb_ty+thumb_by)>>1;
-	thumb_page_offset=list_palette_pane_get_scroll_thumb_page_offset(pane,box);
-
-	if (org_pt.y<thumb_y) {
-		scroll_offset=old_scroll_offset-thumb_page_offset;
-		if (scroll_offset>=0) {
-			pane->scroll_offset=scroll_offset;
-			main_wind_draw();
-		}
-	}
-	else {
-		scroll_offset=old_scroll_offset+thumb_page_offset;
-		if (scroll_offset<=scroll_max) {
-			pane->scroll_offset=scroll_offset;
-			main_wind_draw();
-		}
 	}
 }
 

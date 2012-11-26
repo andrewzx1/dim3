@@ -266,6 +266,7 @@ bool model_read_xml(model_type *model)
 		mesh->blend_add=xml_get_attribute_boolean(mesh_tag,"additive");
 		mesh->never_cull=xml_get_attribute_boolean(mesh_tag,"never_cull");
 		mesh->locked=xml_get_attribute_boolean(mesh_tag,"locked");
+		mesh->rt_non_light_blocking=xml_get_attribute_boolean(mesh_tag,"rt_non_light_blocking");
 		xml_get_attribute_3_coord_int(mesh_tag,"import_move",&mesh->import_move.x,&mesh->import_move.y,&mesh->import_move.z);
 		memmove(&mesh->org_import_move,&mesh->import_move,sizeof(d3pnt));
 		
@@ -738,6 +739,7 @@ bool model_write_xml(model_type *model,char *err_str)
 		xml_add_attribute_boolean("additive",mesh->blend_add);
 		xml_add_attribute_boolean("never_cull",mesh->never_cull);
 		xml_add_attribute_boolean("locked",mesh->locked);
+		xml_add_attribute_boolean("rt_non_light_blocking",mesh->rt_non_light_blocking);
 		xml_add_attribute_3_coord_int("import_move",mesh->import_move.x,mesh->import_move.y,mesh->import_move.z);
 		xml_add_tagend(FALSE);
 	   

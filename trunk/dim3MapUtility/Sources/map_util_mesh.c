@@ -447,6 +447,38 @@ int map_mesh_add_poly(map_type *map,int mesh_idx,int ptsz,int *x,int *y,int *z,f
 	return(poly_idx);
 }
 
+int map_mesh_add_duplicate_internal_poly(map_type *map,int mesh_idx,int poly_idx,d3pnt *mov_pnt)
+{
+	int					n,dup_poly_idx;
+	d3pnt				pnt;
+	map_mesh_type		*mesh;
+	map_mesh_poly_type	*poly,*dup_poly;
+
+	mesh=&map->mesh.meshes[mesh_idx];
+	poly=&mesh->polys[poly_idx];
+	
+		// create new poly
+		
+	dup_poly_idx=mesh->npoly;
+	if (!map_mesh_set_poly_count(map,mesh_idx,(mesh->npoly+1))) return(-1);
+	
+		// duplicate it
+		
+	dup_poly=&mesh->polys[dup_poly_idx];
+	memmove(dup_poly,poly,sizeof(map_mesh_poly_type));
+	
+		// now create new vertexes
+		
+	for (n=0;n!=dup_poly->ptsz;n++) {
+		pnt.x=mesh->vertexes[poly->v[n]].x+mov_pnt->x;
+		pnt.y=mesh->vertexes[poly->v[n]].y+mov_pnt->y;
+		pnt.z=mesh->vertexes[poly->v[n]].z+mov_pnt->z;
+		dup_poly->v[n]=map_mesh_add_vertex(map,mesh_idx,&pnt);
+	}
+	
+	return(dup_poly_idx);
+}
+
 bool map_mesh_delete_poly(map_type *map,int mesh_idx,int poly_idx)
 {
 	int					n,k,t,sz,ptsz,v_idx,del_idx[8];

@@ -769,7 +769,7 @@ bool view_click_drag_vertex(editor_view_type *view,d3pnt *pt)
 			// grid and snap
 			
 		view_click_grid(dpt);
-		view_click_snap(mesh_idx,-1,dpt);
+		view_click_snap(mesh_idx,vertex_idx,-1,dpt);
 	
 		if ((state.map.auto_texture) && (!mesh->flag.lock_uv)) map_mesh_reset_uv(&map,mesh_idx);
 
@@ -1004,7 +1004,7 @@ bool view_click_drag_liquid_vertex(editor_view_type *view,d3pnt *pt)
 			// grid and snap
 		
 		view_click_grid(&dpt);
-		view_click_snap(-1,liquid_idx,&dpt);
+		view_click_snap(-1,-1,liquid_idx,&dpt);
 		
 			// move vertex
 			

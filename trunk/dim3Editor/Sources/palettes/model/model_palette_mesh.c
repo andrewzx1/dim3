@@ -38,7 +38,8 @@ and can be sold or given away.
 #define kMeshPropertyAdditive				3
 #define kMeshPropertyCull					4
 #define kMeshPropertyLocked					5
-#define kMeshPropertyMovement				6
+#define kMeshPropertyRTNonLightBlocking		6
+#define kMeshPropertyMovement				7
 
 extern model_type				model;
 extern file_path_setup_type		file_path_setup;
@@ -72,6 +73,7 @@ void model_palette_fill_mesh(int mesh_idx)
 	list_palette_add_checkbox(&model_palette,kMeshPropertyAdditive,"Alpha is Additive",&mesh->blend_add,FALSE);
 	list_palette_add_checkbox(&model_palette,kMeshPropertyCull,"Never Cull",&mesh->never_cull,FALSE);
 	list_palette_add_checkbox(&model_palette,kMeshPropertyLocked,"Locked",&mesh->locked,FALSE);
+	list_palette_add_checkbox(&model_palette,kMeshPropertyLocked,"RT Non-Light Blocking",&mesh->rt_non_light_blocking,FALSE);
 
 	list_palette_add_header(&model_palette,0,"Replace OBJ");
 	list_palette_add_point(&model_palette,kMeshPropertyMovement,"Movement",&mesh->import_move,FALSE);
