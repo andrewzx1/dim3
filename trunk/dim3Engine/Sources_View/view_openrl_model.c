@@ -167,24 +167,12 @@ void view_openrl_model_setup_single_model(model_draw *draw,bool hidden,bool no_r
 		draw->meshes[i].openrl_mesh_id=mesh_id;
 	}
 	
-		// model lights
+		// start with no lights
+		// in the model (they are dynamic)
 		
 	for (n=0;n!=max_model_light;n++) {
 		lit=&draw->lights[n];
-		if (!lit->on) continue;
-		
-		lit->openrl_light_id=rlSceneLightAdd(view_rl_scene_id);
-		rlSceneLightSetIntensity(view_rl_scene_id,lit->openrl_light_id,(float)lit->intensity,lit->exponent);
-	
-		lit_col.r=lit->col.r;
-		lit_col.g=lit->col.g;
-		lit_col.b=lit->col.b;
-		rlSceneLightSetColor(view_rl_scene_id,lit->openrl_light_id,&lit_col);
-
-		lit_pnt.x=(float)draw->pnt.x;
-		lit_pnt.y=(float)draw->pnt.y;
-		lit_pnt.z=(float)draw->pnt.z;
-		rlSceneLightSetPosition(view_rl_scene_id,lit->openrl_light_id,&lit_pnt);
+		lit->openrl_light_id=-1;
 	}
 }
 
@@ -196,6 +184,7 @@ void view_openrl_model_update_single_model(model_draw *draw,bool hidden)
 	model_mesh_type		*mesh;
 	model_draw_light	*lit;
 	rlPoint				lit_pnt;
+	rlColor				lit_col;
 
 		// get model
 
@@ -235,12 +224,30 @@ void view_openrl_model_update_single_model(model_draw *draw,bool hidden)
 	for (n=0;n!=max_model_light;n++) {
 	
 		lit=&draw->lights[n];
+		
+			// if light is off, delete it if
+			// it exists in scene
+			
 		if (!lit->on) {
-			if (lit->openrl_light_id!=-1) rlSceneLightSetHidden(view_rl_scene_id,lit->openrl_light_id,TRUE);
+			if (lit->openrl_light_id!=-1) {
+				rlSceneLightDelete(view_rl_scene_id,lit->openrl_light_id);
+				lit->openrl_light_id=-1;
+			}
 			continue;
 		}
 		
-		rlSceneLightSetHidden(view_rl_scene_id,lit->openrl_light_id,FALSE);
+			// otherwise we need to add it
+			
+		if (lit->openrl_light_id==-1) {
+			lit->openrl_light_id=rlSceneLightAdd(view_rl_scene_id);
+		
+			lit_col.r=lit->col.r;
+			lit_col.g=lit->col.g;
+			lit_col.b=lit->col.b;
+			rlSceneLightSetColor(view_rl_scene_id,lit->openrl_light_id,&lit_col);
+		}
+		
+			// change setup
 		
 		memmove(&pnt,&draw->pnt,sizeof(d3pnt));
 		model_get_light_position(mdl,&draw->setup,n,&pnt);
