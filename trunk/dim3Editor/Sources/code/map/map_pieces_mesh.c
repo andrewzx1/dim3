@@ -842,10 +842,21 @@ void map_mesh_move_all(int x,int y,int z)
 	pt.x=x;
 	pt.y=y;
 	pt.z=z;
+
+	map_move(&map,&pt);
 	
 	for (n=0;n!=map.mesh.nmesh;n++) {
-		map_mesh_move(&map,n,&pt);
-		view_force_grid(n,TRUE);
+		view_vbo_mesh_rebuild(n);
+	}
+}
+
+void map_mesh_center_all(void)
+{
+	int				n;
+
+	map_center(&map);
+
+	for (n=0;n!=map.mesh.nmesh;n++) {
 		view_vbo_mesh_rebuild(n);
 	}
 }

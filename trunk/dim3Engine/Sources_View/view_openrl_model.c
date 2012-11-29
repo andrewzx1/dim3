@@ -66,8 +66,6 @@ void view_openrl_model_setup_single_model(model_draw *draw,bool hidden,bool no_r
 	model_mesh_type		*mesh;
 	model_poly_type		*poly;
 	model_draw_light	*lit;
-	rlPoint				lit_pnt;
-	rlColor				lit_col;
 	
 		// clear openrl ids
 
@@ -258,7 +256,7 @@ void view_openrl_model_update_single_model(model_draw *draw,bool hidden)
 		rlSceneLightSetPosition(view_rl_scene_id,lit->openrl_light_id,&lit_pnt);
 		
 		intensity=gl_light_get_intensity(tick,lit->type,lit->intensity);
-		rlSceneLightSetIntensity(view_rl_scene_id,lit->openrl_light_id,intensity,lit->exponent);
+		rlSceneLightSetIntensity(view_rl_scene_id,lit->openrl_light_id,(float)intensity,lit->exponent);
 	}
 }
 

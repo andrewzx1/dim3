@@ -428,17 +428,17 @@ bool map_menu_event_run(int cmd)
 			// map menu
 
 		case map_menu_item_MapRaiseY:
-			map_mesh_move_all(0,-1440,0);
+			map_mesh_move_all(0,-2000,0);
 			main_wind_draw();
 			return(TRUE);
 			
 		case map_menu_item_MapLowerY:
-			map_mesh_move_all(0,1440,0);
+			map_mesh_move_all(0,2000,0);
 			main_wind_draw();
 			return(TRUE);
 			
 		case map_menu_item_MapCenter:
-			map_center(&map);
+			map_mesh_center_all(&map);
 			main_wind_draw();
 			return(TRUE);
 			

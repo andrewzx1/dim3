@@ -842,6 +842,7 @@ extern void map_refresh_textures(map_type *map);
 extern void map_prepare_mesh_poly(map_type *map,map_mesh_type *mesh,map_mesh_poly_type *poly);
 extern void map_prepare_mesh_box(map_mesh_type *mesh);
 extern void map_prepare(map_type *map);
+extern void map_move(map_type *map,d3pnt *mov_pnt);
 extern void map_center(map_type *map);
 
 extern int map_count_texture_frames(map_type *map,int txt);
