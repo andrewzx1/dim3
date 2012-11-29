@@ -59,11 +59,12 @@ static inline void object_move_get_turn_motion(obj_type *obj,d3pnt *mpt,float ro
 	turn_motion->z=(((int)fz)+mpt->z)-obj->pnt.z;
 }
 
-static inline void object_move_with_motion(obj_type *obj,d3pnt *motion,int crush_mesh_idx)
+static inline void object_move_with_motion(obj_type *obj,d3pnt *motion,int crush_mesh_idx,bool no_crush)
 {
 		// collide with map and crush if blocked
 		
 	if (collide_object_to_map(obj,motion)) {
+		if (no_crush) return;
 		if ((obj->contact.hit_poly.mesh_idx!=-1) && (obj->contact.hit_poly.mesh_idx!=crush_mesh_idx)) {
 			object_crush(obj,TRUE);
 			return;
@@ -103,7 +104,7 @@ void object_move_with_mesh(int mesh_idx,d3pnt *motion)
 			move_motion.y=0;
 			move_motion.z=motion->z;
 			
-			object_move_with_motion(obj,&move_motion,mesh_idx);
+			object_move_with_motion(obj,&move_motion,mesh_idx,FALSE);
 		}
 	}
 }
@@ -111,6 +112,7 @@ void object_move_with_mesh(int mesh_idx,d3pnt *motion)
 void object_rotate_with_mesh(int mesh_idx,float rot_y)
 {
 	int				n;
+	bool			no_crush;
 	d3pnt			mpt,turn_motion;
 	map_mesh_type	*mesh;
 	obj_type		*obj;
@@ -134,7 +136,8 @@ void object_rotate_with_mesh(int mesh_idx,float rot_y)
 			
 		if ((obj->contact.stand_poly.mesh_idx==mesh_idx) || (collide_object_to_mesh(obj,mesh_idx))) {
 			object_move_get_turn_motion(obj,&mpt,rot_y,&turn_motion);
-			object_move_with_motion(obj,&turn_motion,mesh_idx);
+			no_crush=(obj->contact.stand_poly.mesh_idx==mesh_idx);		// if we are being turned by a moving object, then no crush
+			object_move_with_motion(obj,&turn_motion,mesh_idx,no_crush);
 			obj->ang.y=angle_add(obj->ang.y,rot_y);
 		}
 	}
@@ -212,7 +215,7 @@ bool object_push_with_object(obj_type *obj,d3pnt *motion)
 	move_motion.y=0;
 	move_motion.z=(int)f_zmove;
 	
-	object_move_with_motion(pushed_obj,&move_motion,-1);
+	object_move_with_motion(pushed_obj,&move_motion,-1,FALSE);
 
 	obj->contact.object_on=contact_on;
 
@@ -243,7 +246,7 @@ void object_move_with_standing_object(obj_type *obj,d3pnt *motion,bool y_only)
 			move_motion.z=0;
 		}
 
-		object_move_with_motion(obj_check,&move_motion,-1);
+		object_move_with_motion(obj_check,&move_motion,-1,TRUE);
 	}
 }
 
@@ -269,7 +272,7 @@ void object_rotate_with_standing_object(obj_type *obj,float rot_y)
 		if (obj_check->suspend) continue;
 			
 		object_move_get_turn_motion(obj_check,&mpt,rot_y,&turn_motion);
-		object_move_with_motion(obj_check,&turn_motion,-1);
+		object_move_with_motion(obj_check,&turn_motion,-1,TRUE);
 		obj_check->ang.y=angle_add(obj_check->ang.y,rot_y);
 	}
 }
