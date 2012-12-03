@@ -70,7 +70,7 @@ void model_palette_fill_pose_bone_move(int pose_idx,int bone_move_idx)
 	list_palette_add_checkbox(&model_palette,kPoseBoneMovePropertySkipBlended,"Skip Blending",&bone_move->skip_blended,FALSE);
 
 	list_palette_add_header(&model_palette,0,"Pose Bone Move Constraint");
-	list_palette_add_picker_list_int(&model_palette,kPoseBoneMovePropertyConstraintBone,"Constraint Bone",(char*)model.bones,model.nbone,sizeof(model_bone_type),(int)offsetof(model_bone_type,name),TRUE,&bone_move->constraint.bone_idx,FALSE);
+	list_palette_add_picker_list_int(&model_palette,kPoseBoneMovePropertyConstraintBone,"Constraint Bone",(char*)model.bones,model.nbone,sizeof(model_bone_type),(int)offsetof(model_bone_type,name),TRUE,TRUE,&bone_move->constraint.bone_idx,FALSE);
 	list_palette_add_point(&model_palette,kPoseBoneMovePropertyConstraintOffset,"Constaint Offset",&bone_move->constraint.offset,FALSE);
 }
 

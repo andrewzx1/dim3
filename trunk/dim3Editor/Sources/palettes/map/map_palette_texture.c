@@ -81,12 +81,12 @@ void map_palette_fill_texture(int texture_idx)
 	list_palette_add_checkbox(&map_palette,-1,"Flip Normals",&texture->flip_normal,FALSE);
 
 	list_palette_add_header(&map_palette,0,"Texture Options");
-	list_palette_add_picker_list_string(&map_palette,kTexturePropertyShader,"Shader Override",(char*)iface.shader_list.shaders,iface.shader_list.nshader,sizeof(iface_shader_type),(int)offsetof(iface_shader_type,name),TRUE,texture->shader_name,FALSE);
+	list_palette_add_picker_list_string(&map_palette,kTexturePropertyShader,"Shader Override",(char*)iface.shader_list.shaders,iface.shader_list.nshader,sizeof(iface_shader_type),(int)offsetof(iface_shader_type,name),TRUE,TRUE,texture->shader_name,FALSE);
 	list_palette_add_int(&map_palette,kTexturePropertyGlowRate,"Glow Rate",&texture->glow.rate,FALSE);
 	list_palette_add_float(&map_palette,kTexturePropertyGlowMin,"Glow Min",&texture->glow.min,FALSE);
 	list_palette_add_float(&map_palette,kTexturePropertyGlowMax,"Glow Max",&texture->glow.max,FALSE);
 	list_palette_add_float(&map_palette,kTexturePropertyShineFactor,"Shine Factor",&texture->shine_factor,FALSE);
-	list_palette_add_picker_list_int(&map_palette,kTextPropertyAlphaType,"RL Alpha Type",(char*)texture_rl_alpha_type_str,-1,name_str_len,0,FALSE,&texture->rl_alpha_type,FALSE);
+	list_palette_add_picker_list_int(&map_palette,kTextPropertyAlphaType,"RL Alpha Type",(char*)texture_rl_alpha_type_str,-1,name_str_len,0,FALSE,FALSE,&texture->rl_alpha_type,FALSE);
 	list_palette_add_float(&map_palette,kTexturePropertyRefractFactor,"RL Refraction Factor",&texture->rl_refract_factor,FALSE);
 	list_palette_add_string(&map_palette,kTexturePropertyMaterialName,"Material Name",texture->material_name,name_str_len,FALSE);
 

@@ -407,13 +407,13 @@ void property_pick_file(char *title,char *search_path,char *extension,char *requ
 
 	switch (state.mode) {
 		case app_mode_project:
-			list_palette_start_picking_mode(&project_palette,title,(char*)property_file_list,count,file_str_len,0,TRUE,TRUE,NULL,file_name);
+			list_palette_start_picking_mode(&project_palette,title,(char*)property_file_list,count,file_str_len,0,TRUE,TRUE,FALSE,NULL,file_name);
 			break;
 		case app_mode_map:
-			list_palette_start_picking_mode(&map_palette,title,(char*)property_file_list,count,file_str_len,0,TRUE,TRUE,NULL,file_name);
+			list_palette_start_picking_mode(&map_palette,title,(char*)property_file_list,count,file_str_len,0,TRUE,TRUE,FALSE,NULL,file_name);
 			break;
 		case app_mode_model:
-			list_palette_start_picking_mode(&model_palette,title,(char*)property_file_list,count,file_str_len,0,TRUE,TRUE,NULL,file_name);
+			list_palette_start_picking_mode(&model_palette,title,(char*)property_file_list,count,file_str_len,0,TRUE,TRUE,FALSE,NULL,file_name);
 			break;
 	}
 }

@@ -161,13 +161,13 @@ extern void list_palette_add_angle(list_palette_type *list,int id,char *name,d3a
 extern void list_palette_add_vector(list_palette_type *list,int id,char *name,d3vct *vct_ptr,bool disabled);
 extern void list_palette_add_normal_vector(list_palette_type *list,int id,char *name,d3vct *vct_ptr,bool disabled);
 extern void list_palette_add_uv(list_palette_type *list,int id,char *name,d3uv *uv_ptr,bool disabled);
-extern void list_palette_add_picker_list_int(list_palette_type *list,int id,char *name,char *list_ptr,int list_count,int list_item_sz,int list_name_offset,bool include_none,int *int_ptr,bool disabled);
-extern void list_palette_add_picker_list_string(list_palette_type *list,int id,char *name,char *list_ptr,int list_count,int list_item_sz,int list_name_offset,bool include_none,char *str_ptr,bool disabled);
+extern void list_palette_add_picker_list_int(list_palette_type *list,int id,char *name,char *list_ptr,int list_count,int list_item_sz,int list_name_offset,bool include_none,bool sort,int *int_ptr,bool disabled);
+extern void list_palette_add_picker_list_string(list_palette_type *list,int id,char *name,char *list_ptr,int list_count,int list_item_sz,int list_name_offset,bool include_none,bool sort,char *str_ptr,bool disabled);
 extern void list_palette_add_picker_file(list_palette_type *list,int id,int button_type,int button_id,char *name,char *search_path,char *extension,char *required_file_name,char *str_ptr,bool disabled);
 extern void list_palette_delete_all_items(list_palette_type *list);
-extern void list_palette_start_picking_mode(list_palette_type *list,char *title,char *list_ptr,int list_count,int list_item_sz,int list_name_offset,bool include_none,bool file_list,int *idx_ptr,char *name_ptr);
-extern void list_palette_sort_mark_start(list_palette_type *list);
-extern void list_palette_sort(list_palette_type *list);
+extern void list_palette_start_picking_mode(list_palette_type *list,char *title,char *list_ptr,int list_count,int list_item_sz,int list_name_offset,bool include_none,bool file_list,bool sort,int *idx_ptr,char *name_ptr);
+extern void list_palette_sort_mark_start(list_palette_type *list,list_palette_pane_type *pane);
+extern void list_palette_sort(list_palette_type *list,list_palette_pane_type *pane);
 extern void list_palette_draw(list_palette_type *list);
 extern void list_palette_scroll_wheel(list_palette_type *list,d3pnt *pnt,int move);
 extern void list_palette_scroll_item_into_view(list_palette_type *list,int item_id,int item_idx);

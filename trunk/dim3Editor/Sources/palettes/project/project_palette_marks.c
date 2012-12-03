@@ -55,13 +55,13 @@ void project_palette_fill_marks(void)
 
 	list_palette_add_header_button(&project_palette,kMarkPropertyAdd,"Marks",list_button_plus);
 
-	list_palette_sort_mark_start(&project_palette);
+	list_palette_sort_mark_start(&project_palette,&project_palette.item_pane);
 	
 	for (n=0;n!=iface.mark_list.nmark;n++) {
 		list_palette_add_string_selectable_button(&project_palette,(kMarkProperyName+n),list_button_minus,(kMarkProperyDelete+n),iface.mark_list.marks[n].name,(state.proj.cur_mark_idx==n),FALSE);
 	}
 
-	list_palette_sort(&project_palette);
+	list_palette_sort(&project_palette,&project_palette.item_pane);
 }
 
 /* =======================================================

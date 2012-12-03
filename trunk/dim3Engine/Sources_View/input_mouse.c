@@ -226,3 +226,19 @@ bool input_mouse_gui_is_click_down(void)
 {
 	return(input_get_mouse_button(input_mouse_button_left));
 }
+
+bool input_mouse_gui_wheel_up(void)
+{
+	if (!input_get_mouse_button(input_mouse_button_wheel_up)) return(FALSE);
+	input_mouse_wheel_reset();
+	return(TRUE);
+}
+
+bool input_mouse_gui_wheel_down(void)
+{
+	if (!input_get_mouse_button(input_mouse_button_wheel_down)) return(FALSE);
+	input_mouse_wheel_reset();
+	return(TRUE);
+}
+
+

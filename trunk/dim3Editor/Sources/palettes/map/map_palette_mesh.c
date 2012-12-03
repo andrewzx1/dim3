@@ -151,12 +151,12 @@ void map_palette_fill_mesh(int mesh_idx,int poly_idx)
 		// options
 		
 	list_palette_add_header(&map_palette,0,"Mesh Options");
-	list_palette_add_picker_list_int(&map_palette,kMeshPropertyHideMode,"Hide",(char*)mesh_map_hide_list,-1,name_str_len,0,FALSE,&mesh->hide_mode,FALSE);
+	list_palette_add_picker_list_int(&map_palette,kMeshPropertyHideMode,"Hide",(char*)mesh_map_hide_list,-1,name_str_len,0,FALSE,FALSE,&mesh->hide_mode,FALSE);
 	list_palette_add_int(&map_palette,kMeshPropertyHarm,"Harm",&mesh->harm,FALSE);
 	list_palette_add_point(&map_palette,kMeshPropertyRot,"Rotational Center",&mesh->rot_off,FALSE);
 
 	list_palette_add_header(&map_palette,0,"Mesh Group");
-	list_palette_add_picker_list_int(&map_palette,kMeshPropertyGroup,"Group",(char*)map.group.groups,map.group.ngroup,sizeof(group_type),(int)offsetof(group_type,name),TRUE,&mesh->group_idx,FALSE);
+	list_palette_add_picker_list_int(&map_palette,kMeshPropertyGroup,"Group",(char*)map.group.groups,map.group.ngroup,sizeof(group_type),(int)offsetof(group_type,name),TRUE,TRUE,&mesh->group_idx,FALSE);
 
 		// messages
 		
@@ -173,7 +173,7 @@ void map_palette_fill_mesh(int mesh_idx,int poly_idx)
 		
 	list_palette_add_header(&map_palette,0,"Mesh Base");
 	list_palette_add_checkbox(&map_palette,kMeshPropertyBaseOn,"On",&mesh->msg.base_on,FALSE);
-	list_palette_add_picker_list_int(&map_palette,kMeshPropertyBaseTeam,"Team",(char*)mesh_map_team_list,-1,name_str_len,0,FALSE,&mesh->msg.base_team,FALSE);
+	list_palette_add_picker_list_int(&map_palette,kMeshPropertyBaseTeam,"Team",(char*)mesh_map_team_list,-1,name_str_len,0,FALSE,FALSE,&mesh->msg.base_team,FALSE);
 
 		// import
 		
@@ -227,7 +227,7 @@ void map_palette_fill_mesh(int mesh_idx,int poly_idx)
 		list_palette_add_normal_vector(&map_palette,kMeshPolyPropertyNormal,"Normal",&poly->tangent_space.normal,FALSE);
 
 		list_palette_add_header(&map_palette,0,"Poly Camera");
-		list_palette_add_picker_list_string(&map_palette,kMeshPolyPropertyCamera,"Node",(char*)map.nodes,map.nnode,sizeof(node_type),(int)offsetof(node_type,name),TRUE,poly->camera,FALSE);
+		list_palette_add_picker_list_string(&map_palette,kMeshPolyPropertyCamera,"Node",(char*)map.nodes,map.nnode,sizeof(node_type),(int)offsetof(node_type,name),TRUE,TRUE,poly->camera,FALSE);
 		
 		pal_poly_index=poly_idx;
 	}

@@ -731,7 +731,7 @@ void list_palette_add_uv(list_palette_type *list,int id,char *name,d3uv *uv_ptr,
 	item->value.uv_ptr=uv_ptr;
 }
 
-void list_palette_add_picker_list_int(list_palette_type *list,int id,char *name,char *list_ptr,int list_count,int list_item_sz,int list_name_offset,bool include_none,int *int_ptr,bool disabled)
+void list_palette_add_picker_list_int(list_palette_type *list,int id,char *name,char *list_ptr,int list_count,int list_item_sz,int list_name_offset,bool include_none,bool sort,int *int_ptr,bool disabled)
 {
 	list_palette_item_type		*item;
 
@@ -756,6 +756,7 @@ void list_palette_add_picker_list_int(list_palette_type *list,int id,char *name,
 	item->list.name_offset=list_name_offset;
 	item->list.file.file_list=FALSE;
 	item->list.include_none=include_none;
+	item->list.sort=sort;
 
 		// setup the value
 
@@ -764,7 +765,7 @@ void list_palette_add_picker_list_int(list_palette_type *list,int id,char *name,
 	item->value.int_ptr=int_ptr;
 }
 
-void list_palette_add_picker_list_string(list_palette_type *list,int id,char *name,char *list_ptr,int list_count,int list_item_sz,int list_name_offset,bool include_none,char *str_ptr,bool disabled)
+void list_palette_add_picker_list_string(list_palette_type *list,int id,char *name,char *list_ptr,int list_count,int list_item_sz,int list_name_offset,bool include_none,bool sort,char *str_ptr,bool disabled)
 {
 	list_palette_item_type		*item;
 
@@ -789,6 +790,7 @@ void list_palette_add_picker_list_string(list_palette_type *list,int id,char *na
 	item->list.name_offset=list_name_offset;
 	item->list.file.file_list=FALSE;
 	item->list.include_none=include_none;
+	item->list.sort=sort;
 
 		// setup the value
 
@@ -852,7 +854,7 @@ void list_palette_delete_all_items(list_palette_type *list)
       
 ======================================================= */
 
-void list_palette_start_picking_mode(list_palette_type *list,char *title,char *list_ptr,int list_count,int list_item_sz,int list_name_offset,bool include_none,bool file_list,int *idx_ptr,char *name_ptr)
+void list_palette_start_picking_mode(list_palette_type *list,char *title,char *list_ptr,int list_count,int list_item_sz,int list_name_offset,bool include_none,bool file_list,bool sort,int *idx_ptr,char *name_ptr)
 {
 	int						n;
 	char					*str_ptr;
@@ -906,6 +908,8 @@ void list_palette_start_picking_mode(list_palette_type *list,char *title,char *l
 
 		// other items
 
+	if (sort) list_palette_sort_mark_start(list,&list->picker_pane);
+
 	for (n=0;n!=list_count;n++) {
 		str_ptr=list_ptr+((list_item_sz*n)+list_name_offset);
 
@@ -935,6 +939,8 @@ void list_palette_start_picking_mode(list_palette_type *list,char *title,char *l
 
 		list_palette_add_picker_item(list,-1,n,str_ptr,sel,FALSE);
 	}
+
+	if (sort) list_palette_sort(list,&list->picker_pane);
 }
 
 void list_palette_start_picking_item_mode(list_palette_type *list,list_palette_item_type *item)
@@ -954,10 +960,10 @@ void list_palette_start_picking_item_mode(list_palette_type *list,list_palette_i
 	sprintf(title,"Pick %s",item->name);
 
 	if (item->list.is_index) {
-		list_palette_start_picking_mode(list,title,list_ptr,item->list.count,item->list.item_sz,item->list.name_offset,item->list.include_none,item->list.file.file_list,item->value.int_ptr,NULL);
+		list_palette_start_picking_mode(list,title,list_ptr,item->list.count,item->list.item_sz,item->list.name_offset,item->list.include_none,item->list.file.file_list,item->list.sort,item->value.int_ptr,NULL);
 	}
 	else {
-		list_palette_start_picking_mode(list,title,list_ptr,item->list.count,item->list.item_sz,item->list.name_offset,item->list.include_none,item->list.file.file_list,NULL,item->value.str_ptr);
+		list_palette_start_picking_mode(list,title,list_ptr,item->list.count,item->list.item_sz,item->list.name_offset,item->list.include_none,item->list.file.file_list,item->list.sort,NULL,item->value.str_ptr);
 	}
 }
 
@@ -1033,40 +1039,40 @@ void list_palette_click_picker(list_palette_type *list)
       
 ======================================================= */
 
-void list_palette_sort_mark_start(list_palette_type *list)
+void list_palette_sort_mark_start(list_palette_type *list,list_palette_pane_type *pane)
 {
-	list->item_pane.item_sort_start_idx=list->item_pane.item_count;
+	pane->item_sort_start_idx=pane->item_count;
 }
 
-void list_palette_sort(list_palette_type *list)
+void list_palette_sort(list_palette_type *list,list_palette_pane_type *pane)
 {
 	int						n,k,x,y;
 	bool					shuffle;
 	list_palette_item_type	temp_item;
 
-	if (list->item_pane.item_sort_start_idx>=(list->item_pane.item_count-1)) return;
+	if (pane->item_sort_start_idx>=(pane->item_count-1)) return;
 
 	while (TRUE) {
 
 		shuffle=FALSE;
 
-		for (n=list->item_pane.item_sort_start_idx;n<(list->item_pane.item_count-1);n++) {
+		for (n=pane->item_sort_start_idx;n<(pane->item_count-1);n++) {
 			k=n+1;
 
-			if (strcasecmp(list->item_pane.items[n].name,list->item_pane.items[k].name)>0) {
+			if (strcasecmp(pane->items[n].name,pane->items[k].name)>0) {
 				shuffle=TRUE;
 
-				memmove(&temp_item,&list->item_pane.items[n],sizeof(list_palette_item_type));
-				memmove(&list->item_pane.items[n],&list->item_pane.items[k],sizeof(list_palette_item_type));
-				memmove(&list->item_pane.items[k],&temp_item,sizeof(list_palette_item_type));
+				memmove(&temp_item,&pane->items[n],sizeof(list_palette_item_type));
+				memmove(&pane->items[n],&pane->items[k],sizeof(list_palette_item_type));
+				memmove(&pane->items[k],&temp_item,sizeof(list_palette_item_type));
 
-				x=list->item_pane.items[n].x;
-				list->item_pane.items[n].x=list->item_pane.items[k].x;
-				list->item_pane.items[k].x=x;
+				x=pane->items[n].x;
+				pane->items[n].x=pane->items[k].x;
+				pane->items[k].x=x;
 
-				y=list->item_pane.items[n].y;
-				list->item_pane.items[n].y=list->item_pane.items[k].y;
-				list->item_pane.items[k].y=y;
+				y=pane->items[n].y;
+				pane->items[n].y=pane->items[k].y;
+				pane->items[k].y=y;
 			}
 		}
 

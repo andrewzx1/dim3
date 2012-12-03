@@ -77,7 +77,7 @@ void project_palette_fill_chooser_piece(int chooser_idx,int chooser_piece_idx)
 		// settings
 
 	list_palette_add_header(&project_palette,0,"Settings");
-	list_palette_add_picker_list_int(&project_palette,kChooserPieceSettingsType,"Type",(char*)chooser_type_str,-1,name_str_len,0,FALSE,&piece->type,FALSE);
+	list_palette_add_picker_list_int(&project_palette,kChooserPieceSettingsType,"Type",(char*)chooser_type_str,-1,name_str_len,0,FALSE,FALSE,&piece->type,FALSE);
 	list_palette_add_int(&project_palette,kChooserPieceSettingsId,"Id",&piece->id,FALSE);
 	list_palette_add_checkbox(&project_palette,kChooserPieceSettingsClickable,"Clickable",&piece->clickable,FALSE);
 	list_palette_add_string(&project_palette,kChooserPieceSettingsGoto,"Goto Chooser",piece->goto_name,name_str_len,FALSE);
@@ -98,7 +98,7 @@ void project_palette_fill_chooser_piece(int chooser_idx,int chooser_piece_idx)
 			list_palette_add_header(&project_palette,0,"Text");
 			list_palette_add_string(&project_palette,kChooserPieceTextStr,"Text",piece->data.text.str,max_chooser_text_data_sz,FALSE);
 			list_palette_add_int(&project_palette,kChooserPieceTextSize,"Size",&piece->data.text.size,FALSE);
-			list_palette_add_picker_list_int(&project_palette,kChooserPieceTextJust,"Justification",(char*)hud_text_just_type_str,-1,name_str_len,0,FALSE,&piece->data.text.just,FALSE);
+			list_palette_add_picker_list_int(&project_palette,kChooserPieceTextJust,"Justification",(char*)hud_text_just_type_str,-1,name_str_len,0,FALSE,FALSE,&piece->data.text.just,FALSE);
 			break;
 
 		case chooser_piece_type_item:

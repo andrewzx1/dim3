@@ -2011,6 +2011,18 @@ void element_move_slider(element_type *element,int x,int y)
 	if (id==element->id) element_click_slider(element,x,y);
 }
 
+void element_scroll_slider(element_type *element,bool up)
+{
+	if (up) {
+		element->setup.slider.value-=0.1f;
+		if (element->setup.slider.value<0.0f) element->setup.slider.value=0.0f;
+	}
+	else {
+		element->setup.slider.value+=0.1f;
+		if (element->setup.slider.value>1.0f) element->setup.slider.value=1.0f;
+	}
+}
+
 void element_draw_slider(element_type *element,int sel_id)
 {
 	int				x,y,ky,lft,rgt,top,bot,mid;
@@ -2249,6 +2261,25 @@ void element_click_table(element_type *element,int x,int y)
 		element->setup.table.checks[element->value]^=0x1;
 		element->value=-1;
 	}
+}
+
+void element_scroll_table(element_type *element,bool up)
+{
+	int					high,row_high,scroll_cnt;
+
+	if (up) {
+		element->offset--;
+		if (element->offset<0) element->offset=0;
+		return;
+	}
+
+	high=gl_text_get_char_height(iface.font.text_size_medium)+2;
+	row_high=element_get_table_row_high(element);
+	scroll_cnt=element_get_table_row_count(element)-(((element->high-(high+4))/row_high)+1);
+	if (scroll_cnt<0) scroll_cnt=0;
+
+	element->offset++;
+	if (element->offset>scroll_cnt) element->offset=scroll_cnt;
 }
 
 void element_draw_table_row_column_lines(element_type *element,int ty,int by,float col_factor)
@@ -3526,6 +3557,41 @@ int element_click_up(int x,int y)
 	SDL_mutexV(element_thread_lock);
 
 	return(id);
+}
+
+/* =======================================================
+
+      Scroll Elements
+      
+======================================================= */
+
+void element_scroll_wheel_lock(int x,int y,bool up)
+{
+	int					id;
+	element_type		*element;
+
+	id=element_find_for_xy(x,y);
+	if (id==-1) return;
+
+	element=element_find(id);
+	
+	switch (element->type) {
+		case element_type_table:
+			element_scroll_table(element,up);
+			break;
+
+		case element_type_slider:
+			element_scroll_slider(element,up);
+			break;
+	
+	}
+}
+
+void element_scroll_wheel(int x,int y,bool up)
+{
+	SDL_mutexP(element_thread_lock);
+	element_scroll_wheel_lock(x,y,up);
+	SDL_mutexV(element_thread_lock);
 }
 
 /* =======================================================

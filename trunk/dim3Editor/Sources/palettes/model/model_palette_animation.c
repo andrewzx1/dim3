@@ -143,7 +143,7 @@ void model_palette_click_animation(int animate_idx,bool double_click)
 		
 	if (id==kAnimationPropertyPoseAdd) {
 		state.model.cur_animate_pose_move_idx=model_animate_pose_insert(&model,animate_idx,state.model.cur_animate_pose_move_idx,0);
-		list_palette_start_picking_mode(&model_palette,"Pick a Pose",(char*)model.poses,model.npose,sizeof(model_pose_type),(int)offsetof(model_pose_type,name),FALSE,FALSE,&model.animates[animate_idx].pose_moves[state.model.cur_animate_pose_move_idx].pose_idx,NULL);
+		list_palette_start_picking_mode(&model_palette,"Pick a Pose",(char*)model.poses,model.npose,sizeof(model_pose_type),(int)offsetof(model_pose_type,name),FALSE,FALSE,TRUE,&model.animates[animate_idx].pose_moves[state.model.cur_animate_pose_move_idx].pose_idx,NULL);
 		return;
 	}
 }

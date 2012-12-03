@@ -61,7 +61,7 @@ void map_palette_fill_sound(int sound_idx)
 	list_palette_add_checkbox(&map_palette,kSoundPropertyOn,"On",&sound->on,FALSE);
 
 	list_palette_add_header(&map_palette,0,"Sound Audio");
-	list_palette_add_picker_list_string(&map_palette,kSoundPropertyName,"Sound",(char*)iface.sound_list.sounds,iface.sound_list.nsound,sizeof(iface_sound_type),(int)offsetof(iface_sound_type,name),TRUE,sound->name,FALSE);
+	list_palette_add_picker_list_string(&map_palette,kSoundPropertyName,"Sound",(char*)iface.sound_list.sounds,iface.sound_list.nsound,sizeof(iface_sound_type),(int)offsetof(iface_sound_type,name),TRUE,TRUE,sound->name,FALSE);
 	list_palette_add_float(&map_palette,kSoundPropertyPitch,"Pitch",&sound->pitch,FALSE);
 	
 	pal_sound_index=sound_idx;

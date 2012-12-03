@@ -76,8 +76,8 @@ void map_palette_fill_movement(int movement_idx)
 	list_palette_add_int(&map_palette,kMovementPropertyAutoOpenDistance,"Auto-Open Distance",&movement->auto_open_distance,FALSE);
 
 	list_palette_add_header(&map_palette,0,"Movement Groups");
-	list_palette_add_picker_list_int(&map_palette,kMovementPropertyGroup,"Group",(char*)map.group.groups,map.group.ngroup,sizeof(group_type),(int)offsetof(group_type,name),TRUE,&movement->group_idx,FALSE);
-	list_palette_add_picker_list_int(&map_palette,kMovementPropertyReverseGroup,"Reverse Group",(char*)map.group.groups,map.group.ngroup,sizeof(group_type),(int)offsetof(group_type,name),TRUE,&movement->reverse_group_idx,FALSE);
+	list_palette_add_picker_list_int(&map_palette,kMovementPropertyGroup,"Group",(char*)map.group.groups,map.group.ngroup,sizeof(group_type),(int)offsetof(group_type,name),TRUE,TRUE,&movement->group_idx,FALSE);
+	list_palette_add_picker_list_int(&map_palette,kMovementPropertyReverseGroup,"Reverse Group",(char*)map.group.groups,map.group.ngroup,sizeof(group_type),(int)offsetof(group_type,name),TRUE,TRUE,&movement->reverse_group_idx,FALSE);
 
 	list_palette_add_header(&map_palette,0,"Movement Settings");
 	list_palette_add_checkbox(&map_palette,kMovementPropertyAutoStart,"Auto-Start",&movement->auto_start,FALSE);

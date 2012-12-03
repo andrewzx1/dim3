@@ -80,37 +80,37 @@ void project_palette_fill_hud(void)
 
 	list_palette_add_header_button(&project_palette,kHUDPropertyBitmapAdd,"Bitmaps",list_button_plus);
 
-	list_palette_sort_mark_start(&project_palette);
+	list_palette_sort_mark_start(&project_palette,&project_palette.item_pane);
 	
 	for (n=0;n!=iface.bitmap_list.nbitmap;n++) {
 		list_palette_add_string_selectable_button(&project_palette,(kHUDPropertyBitmapName+n),list_button_minus,(kHUDPropertyBitmapDelete+n),iface.bitmap_list.bitmaps[n].name,(state.proj.cur_hud_bitmap_idx==n),FALSE);
 	}
 
-	list_palette_sort(&project_palette);
+	list_palette_sort(&project_palette,&project_palette.item_pane);
 
 		// texts
 
 	list_palette_add_header_button(&project_palette,kHUDPropertyTextAdd,"Texts",list_button_plus);
 
-	list_palette_sort_mark_start(&project_palette);
+	list_palette_sort_mark_start(&project_palette,&project_palette.item_pane);
 	
 	for (n=0;n!=iface.text_list.ntext;n++) {
 		list_palette_add_string_selectable_button(&project_palette,(kHUDPropertyTextName+n),list_button_minus,(kHUDPropertyTextDelete+n),iface.text_list.texts[n].name,(state.proj.cur_hud_text_idx==n),FALSE);
 	}
 
-	list_palette_sort(&project_palette);
+	list_palette_sort(&project_palette,&project_palette.item_pane);
 
 		// bars
 
 	list_palette_add_header_button(&project_palette,kHUDPropertyBarAdd,"Bars",list_button_plus);
 
-	list_palette_sort_mark_start(&project_palette);
+	list_palette_sort_mark_start(&project_palette,&project_palette.item_pane);
 	
 	for (n=0;n!=iface.bar_list.nbar;n++) {
 		list_palette_add_string_selectable_button(&project_palette,(kHUDPropertyBarName+n),list_button_minus,(kHUDPropertyBarDelete+n),iface.bar_list.bars[n].name,(state.proj.cur_hud_bar_idx==n),FALSE);
 	}
 
-	list_palette_sort(&project_palette);
+	list_palette_sort(&project_palette,&project_palette.item_pane);
 	
 		// chat
 		

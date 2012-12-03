@@ -252,6 +252,19 @@ int gui_click(void)
 		// get click location
 
 	input_gui_get_position(&x,&y);
+
+		// check scroll wheel for
+		// tables and sliders
+
+	if (input_mouse_gui_wheel_up()) {
+		element_scroll_wheel(x,y,TRUE);
+		return(-1);
+	}
+
+	if (input_mouse_gui_wheel_down()) {
+		element_scroll_wheel(x,y,FALSE);
+		return(-1);
+	}
 	
 		// button down
 

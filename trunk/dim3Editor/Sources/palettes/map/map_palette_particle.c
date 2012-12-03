@@ -77,7 +77,7 @@ void map_palette_fill_particle(int particle_idx)
 	list_palette_add_checkbox(&map_palette,kParticleOn,"On",&particle->on,FALSE);
 
 	list_palette_add_header(&map_palette,0,"Particle Type");
-	list_palette_add_picker_list_string(&map_palette,kParticlePropertyName,"Name",(char*)iface.particle_list.particles,iface.particle_list.nparticle,sizeof(iface_particle_type),(int)offsetof(iface_particle_type,name),TRUE,particle->name,FALSE);
+	list_palette_add_picker_list_string(&map_palette,kParticlePropertyName,"Name",(char*)iface.particle_list.particles,iface.particle_list.nparticle,sizeof(iface_particle_type),(int)offsetof(iface_particle_type,name),TRUE,TRUE,particle->name,FALSE);
 	list_palette_add_int(&map_palette,kParticlePropertySpawnTick,"Spawn Tick",&particle->spawn_tick,FALSE);
 	list_palette_add_int(&map_palette,kParticlePropertySlopTick,"Slop Tick",&particle->slop_tick,FALSE);
 	list_palette_add_checkbox(&map_palette,kParticlePropertySingleSpawn,"Single Spawn",&particle->single_spawn,FALSE);
@@ -89,12 +89,12 @@ void map_palette_fill_particle(int particle_idx)
 	list_palette_add_checkbox(&map_palette,kLightPropertyLightMap,"Used in Light Map",&particle->light_setting.light_map,FALSE);
 
 	list_palette_add_header(&map_palette,0,"Particle Light Display");
-	list_palette_add_picker_list_int(&map_palette,kLightPropertyType,"Type",(char*)light_map_type_list,-1,name_str_len,0,FALSE,&particle->light_setting.type,FALSE);
-	list_palette_add_picker_list_int(&map_palette,kLightPropertyDirection,"Direction",(char*)light_map_direction_list,-1,name_str_len,0,FALSE,&particle->light_setting.direction,FALSE);
+	list_palette_add_picker_list_int(&map_palette,kLightPropertyType,"Type",(char*)light_map_type_list,-1,name_str_len,0,FALSE,FALSE,&particle->light_setting.type,FALSE);
+	list_palette_add_picker_list_int(&map_palette,kLightPropertyDirection,"Direction",(char*)light_map_direction_list,-1,name_str_len,0,FALSE,FALSE,&particle->light_setting.direction,FALSE);
 	list_palette_add_int(&map_palette,kLightPropertyIntensity,"Intensity",&particle->light_setting.intensity,FALSE);
 	list_palette_add_float(&map_palette,kLightPropertyExponent,"Exponent",&particle->light_setting.exponent,FALSE);
 	list_palette_add_pick_color(&map_palette,kLightPropertyColor,"Color",&particle->light_setting.col,FALSE);
-	list_palette_add_picker_list_string(&map_palette,kLightPropertyHalo,"Halo",(char*)iface.halo_list.halos,iface.halo_list.nhalo,sizeof(iface_halo_type),(int)offsetof(iface_halo_type,name),TRUE,particle->light_setting.halo_name,FALSE);
+	list_palette_add_picker_list_string(&map_palette,kLightPropertyHalo,"Halo",(char*)iface.halo_list.halos,iface.halo_list.nhalo,sizeof(iface_halo_type),(int)offsetof(iface_halo_type,name),TRUE,TRUE,particle->light_setting.halo_name,FALSE);
 	
 	pal_particle_index=particle_idx;
 	

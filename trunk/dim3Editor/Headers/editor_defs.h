@@ -326,7 +326,7 @@ typedef struct		{
 
 typedef struct		{
 						int									count,item_sz,name_offset;
-						bool								is_index,include_none;
+						bool								is_index,include_none,sort;
 						char								*ptr;
 						list_palette_item_file_type			file;
 					} list_palette_item_list_type;

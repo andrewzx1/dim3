@@ -61,13 +61,13 @@ void model_palette_fill_pose(int pose_idx)
 	list_palette_add_string(&model_palette,kPosePropertyName,"Name",pose->name,name_str_len,FALSE);
 
 	list_palette_add_header_count(&model_palette,0,"Pose Bone Moves",model.nbone);
-	list_palette_sort_mark_start(&model_palette);
+	list_palette_sort_mark_start(&model_palette,&model_palette.item_pane);
 
 	for (n=0;n!=model.nbone;n++) {
 		list_palette_add_string_selectable(&model_palette,(kPosePropertyBoneMove+n),model.bones[n].name,NULL,-1,((state.model.cur_pose_idx==pose_idx)&&(state.model.cur_pose_bone_move_idx==n)),FALSE);
 	}
 
-	list_palette_sort(&model_palette);
+	list_palette_sort(&model_palette,&model_palette.item_pane);
 }
 
 /* =======================================================

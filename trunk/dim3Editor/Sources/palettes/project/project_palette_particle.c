@@ -89,7 +89,7 @@ void project_palette_fill_particle(int particle_idx)
 	list_palette_add_header(&project_palette,0,"Settings");
 	list_palette_add_string(&project_palette,kParticleSettingsName,"Name",particle->name,name_str_len,FALSE);
 	list_palette_add_picker_file(&project_palette,kParticleSettingsBitmapName,list_button_none,0,"Bitmap","Bitmaps/Particles","png","",particle->bitmap_name,FALSE);
-	list_palette_add_picker_list_string(&project_palette,kParticleSettingsChainName,"Chain Particle",(char*)iface.particle_list.particles,iface.particle_list.nparticle,sizeof(iface_particle_type),(int)offsetof(iface_particle_type,name),FALSE,particle->chain_name,FALSE);
+	list_palette_add_picker_list_string(&project_palette,kParticleSettingsChainName,"Chain Particle",(char*)iface.particle_list.particles,iface.particle_list.nparticle,sizeof(iface_particle_type),(int)offsetof(iface_particle_type,name),FALSE,TRUE,particle->chain_name,FALSE);
 	list_palette_add_int(&project_palette,kParticleSettingsCount,"Count",&particle->count,FALSE);
 	list_palette_add_int(&project_palette,kParticleSettingsLife,"Life Milliseconds",&particle->life_msec,FALSE);
 

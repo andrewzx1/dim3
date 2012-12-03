@@ -72,49 +72,49 @@ void model_palette_fill_main(void)
 		// animations
 
 	list_palette_add_header_button(&model_palette,kModelPropertyAnimateAdd,"Animations",list_button_plus);
-	list_palette_sort_mark_start(&model_palette);
+	list_palette_sort_mark_start(&model_palette,&model_palette.item_pane);
 
 	for (n=0;n!=model.nanimate;n++) {
 		list_palette_add_item(&model_palette,item_model_animate,n,model.animates[n].name,((state.model.cur_item==item_model_animate)&&(state.model.cur_animate_idx==n)),FALSE);
 	}
 
-	list_palette_sort(&model_palette);
+	list_palette_sort(&model_palette,&model_palette.item_pane);
 
 		// poses
 
 	list_palette_add_header_button(&model_palette,kModelPropertyPoseAdd,"Poses",list_button_plus);
 	list_palette_add_item(&model_palette,item_model_neutral_pose,0,"[Neutral]",((state.model.cur_item==item_model_neutral_pose)&&(state.model.cur_pose_idx==-1)),FALSE);
 
-	list_palette_sort_mark_start(&model_palette);
+	list_palette_sort_mark_start(&model_palette,&model_palette.item_pane);
 
 	for (n=0;n!=model.npose;n++) {
 		list_palette_add_item(&model_palette,item_model_pose,n,model.poses[n].name,((state.model.cur_item==item_model_pose)&&(state.model.cur_pose_idx==n)),FALSE);
 	}
 
-	list_palette_sort(&model_palette);
+	list_palette_sort(&model_palette,&model_palette.item_pane);
 
 		// bones
 
 	list_palette_add_header_button(&model_palette,kModelPropertyBoneAdd,"Bones",list_button_plus);
 
-	list_palette_sort_mark_start(&model_palette);
+	list_palette_sort_mark_start(&model_palette,&model_palette.item_pane);
 
 	for (n=0;n!=model.nbone;n++) {
 		list_palette_add_item(&model_palette,item_model_bone,n,model.bones[n].name,((state.model.cur_item==item_model_bone)&&(state.model.cur_bone_idx==n)),FALSE);
 	}
 
-	list_palette_sort(&model_palette);
+	list_palette_sort(&model_palette,&model_palette.item_pane);
 
 		// hit boxes
 
 	list_palette_add_header_button(&model_palette,kModelPropertyHitBoxAdd,"Hit Boxes",list_button_plus);
-	list_palette_sort_mark_start(&model_palette);
+	list_palette_sort_mark_start(&model_palette,&model_palette.item_pane);
 
 	for (n=0;n!=model.nhit_box;n++) {
 		list_palette_add_item(&model_palette,item_model_hit_box,n,model.hit_boxes[n].name,((state.model.cur_item==item_model_hit_box)&&(state.model.cur_hit_box_idx==n)),FALSE);
 	}
 
-	list_palette_sort(&model_palette);
+	list_palette_sort(&model_palette,&model_palette.item_pane);
 }
 
 /* =======================================================

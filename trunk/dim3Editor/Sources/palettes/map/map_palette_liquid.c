@@ -114,7 +114,7 @@ void map_palette_fill_liquid(int liq_idx)
 	list_palette_add_pick_color(&map_palette,kLiquidPropertyColor,"Color",&liq->col,FALSE);
 	list_palette_add_float(&map_palette,kLiquidPropertyTintAlpha,"Tint Alpha",&liq->tint_alpha,FALSE);
 	list_palette_add_float(&map_palette,kLiquidPropertySpeedAlter,"Speed Alter",&liq->speed_alter,FALSE);
-	list_palette_add_picker_list_string(&map_palette,kLiquidPropertySoundName,"Sound",(char*)iface.sound_list.sounds,iface.sound_list.nsound,sizeof(iface_sound_type),(int)offsetof(iface_sound_type,name),TRUE,liq->ambient.sound_name,FALSE);
+	list_palette_add_picker_list_string(&map_palette,kLiquidPropertySoundName,"Sound",(char*)iface.sound_list.sounds,iface.sound_list.nsound,sizeof(iface_sound_type),(int)offsetof(iface_sound_type,name),TRUE,TRUE,liq->ambient.sound_name,FALSE);
 
 	list_palette_add_header(&map_palette,0,"Liquid Tides");
 	list_palette_add_int(&map_palette,kLiquidPropertyTideSize,"Size",&liq->tide.high,FALSE);
@@ -135,7 +135,7 @@ void map_palette_fill_liquid(int liq_idx)
 	list_palette_add_int(&map_palette,kLiquidPropertyDrownHarm,"Drowning Damage",&liq->harm.drown_harm,FALSE);
 
 	list_palette_add_header(&map_palette,0,"Liquid Reflection");
-	list_palette_add_picker_list_int(&map_palette,kLiquidPropertyReflectTextureSize,"Texture Size",(char*)map_map_light_map_size_list,-1,name_str_len,0,FALSE,&liq->reflect.texture_size,FALSE);
+	list_palette_add_picker_list_int(&map_palette,kLiquidPropertyReflectTextureSize,"Texture Size",(char*)map_map_light_map_size_list,-1,name_str_len,0,FALSE,FALSE,&liq->reflect.texture_size,FALSE);
 	list_palette_add_int(&map_palette,kLiquidPropertyReflectXRefract,"X Refraction Factor",&liq->reflect.x_refract_factor,FALSE);
 	list_palette_add_int(&map_palette,kLiquidPropertyReflectZRefract,"Z Refraction Factor",&liq->reflect.z_refract_factor,FALSE);
 	list_palette_add_pick_color(&map_palette,kLiquidPropertyReflectNoHitColor,"No Hit Color",&liq->reflect.no_hit_col,FALSE);
@@ -143,12 +143,12 @@ void map_palette_fill_liquid(int liq_idx)
 
 	list_palette_add_header(&map_palette,0,"Liquid Overlay");
 	list_palette_add_checkbox(&map_palette,kLiquidPropertyOverlayOn,"On",&liq->overlay.on,FALSE);
-	list_palette_add_picker_list_int(&map_palette,kLiquidPropertyOverlayTexture,"Texture",(char*)map.textures,max_map_texture,sizeof(texture_type),(int)offsetof(texture_type,frames[0].name),TRUE,&liq->overlay.txt_idx,FALSE);
+	list_palette_add_picker_list_int(&map_palette,kLiquidPropertyOverlayTexture,"Texture",(char*)map.textures,max_map_texture,sizeof(texture_type),(int)offsetof(texture_type,frames[0].name),TRUE,FALSE,&liq->overlay.txt_idx,FALSE);
 	list_palette_add_int(&map_palette,kLiquidPropertyOverlayStampSize,"Stamp Size",&liq->overlay.stamp_size,FALSE);
 	list_palette_add_uv(&map_palette,kLiquidPropertyOverlayShift,"Shift",&liq->overlay.shift,FALSE);
 
 	list_palette_add_header(&map_palette,0,"Liquid Group");
-	list_palette_add_picker_list_int(&map_palette,kLiquidPropertyGroup,"Group",(char*)map.group.groups,map.group.ngroup,sizeof(group_type),(int)offsetof(group_type,name),TRUE,&liq->group_idx,FALSE);
+	list_palette_add_picker_list_int(&map_palette,kLiquidPropertyGroup,"Group",(char*)map.group.groups,map.group.ngroup,sizeof(group_type),(int)offsetof(group_type,name),TRUE,TRUE,&liq->group_idx,FALSE);
 
 		// polygon like settings
 		
@@ -168,7 +168,7 @@ void map_palette_fill_liquid(int liq_idx)
 	list_palette_add_uv(&map_palette,kLiquidPropertyShift,"Shift",&liq->shift,FALSE);
 
 	list_palette_add_header(&map_palette,0,"Liquid Camera");
-	list_palette_add_picker_list_string(&map_palette,kLiquidPropertyCamera,"Attach Node",(char*)map.nodes,map.nnode,sizeof(node_type),(int)offsetof(node_type,name),TRUE,liq->camera,FALSE);
+	list_palette_add_picker_list_string(&map_palette,kLiquidPropertyCamera,"Attach Node",(char*)map.nodes,map.nnode,sizeof(node_type),(int)offsetof(node_type,name),TRUE,TRUE,liq->camera,FALSE);
 	
 		// info
 	
