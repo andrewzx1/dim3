@@ -55,13 +55,13 @@ void project_palette_fill_rings(void)
 
 	list_palette_add_header_button(&project_palette,kRingPropertyAdd,"Rings",list_button_plus);
 
-	list_palette_sort_mark_start(&project_palette);
+	list_palette_sort_mark_start(&project_palette,&project_palette.item_pane);
 	
 	for (n=0;n!=iface.ring_list.nring;n++) {
 		list_palette_add_string_selectable_button(&project_palette,(kRingProperyName+n),list_button_minus,(kRingProperyDelete+n),iface.ring_list.rings[n].name,(state.proj.cur_ring_idx==n),FALSE);
 	}
 
-	list_palette_sort(&project_palette);
+	list_palette_sort(&project_palette,&project_palette.item_pane);
 }
 
 /* =======================================================

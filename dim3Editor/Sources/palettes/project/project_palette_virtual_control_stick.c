@@ -72,7 +72,7 @@ void project_palette_fill_virtual_control_stick(int virtual_control_stick_idx)
 	list_palette_add_picker_file(&project_palette,kStickOuterBitmap,list_button_none,0,"Outer Bitmap","Bitmaps/Virtual","png","",stick->outer_bitmap_name,FALSE);
 	list_palette_add_picker_file(&project_palette,kStickInnerBitmap,list_button_none,0,"Inner Bitmap","Bitmaps/Virtual","png","",stick->inner_bitmap_name,FALSE);
 	list_palette_add_pick_color(&project_palette,kStickColor,"Color",&stick->color,FALSE);
-	list_palette_add_picker_list_int(&project_palette,kStickControl,"Click Action",(char*)control_name_str,-1,32,0,TRUE,&stick->click_control_idx,FALSE);
+	list_palette_add_picker_list_int(&project_palette,kStickControl,"Click Action",(char*)control_name_str,-1,32,0,TRUE,FALSE,&stick->click_control_idx,FALSE);
 
 	
 	list_palette_add_header(&project_palette,0,"Position");

@@ -74,7 +74,7 @@ void map_palette_fill_movement_move(int movement_idx,int move_idx)
 	list_palette_add_angle(&map_palette,kMovePropertyRot,"Rot",&move->rot,FALSE);
 	
 	list_palette_add_header(&map_palette,0,"Movement Move Sound");
-	list_palette_add_picker_list_string(&map_palette,kMovePropertySoundName,"Sound",(char*)iface.sound_list.sounds,iface.sound_list.nsound,sizeof(iface_sound_type),(int)offsetof(iface_sound_type,name),TRUE,move->sound_name,FALSE);
+	list_palette_add_picker_list_string(&map_palette,kMovePropertySoundName,"Sound",(char*)iface.sound_list.sounds,iface.sound_list.nsound,sizeof(iface_sound_type),(int)offsetof(iface_sound_type,name),TRUE,TRUE,move->sound_name,FALSE);
 	list_palette_add_float(&map_palette,kMovePropertySoundPitch,"Pitch",&move->sound_pitch,FALSE);
 }
 

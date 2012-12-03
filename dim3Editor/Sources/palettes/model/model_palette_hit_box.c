@@ -58,7 +58,7 @@ void model_palette_fill_hit_box(int hit_box_idx)
 
 	list_palette_add_header(&model_palette,0,"Hit Box Options");
 	list_palette_add_string(&model_palette,kHitBoxPropertyName,"Name",hit_box->name,name_str_len,FALSE);
-	list_palette_add_picker_list_int(&model_palette,kHitBoxPropertyBone,"Bone",(char*)model.bones,model.nbone,sizeof(model_bone_type),(int)offsetof(model_bone_type,name),TRUE,&hit_box->bone_idx,FALSE);
+	list_palette_add_picker_list_int(&model_palette,kHitBoxPropertyBone,"Bone",(char*)model.bones,model.nbone,sizeof(model_bone_type),(int)offsetof(model_bone_type,name),TRUE,TRUE,&hit_box->bone_idx,FALSE);
 	list_palette_add_point(&model_palette,kHitBoxPropertyOffset,"Offset",&hit_box->box.offset,FALSE);
 	list_palette_add_point(&model_palette,kHitBoxPropertySize,"Size",&hit_box->box.size,FALSE);
 }

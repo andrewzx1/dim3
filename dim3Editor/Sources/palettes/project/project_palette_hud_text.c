@@ -89,8 +89,8 @@ void project_palette_fill_hud_text(int hud_text_idx)
 	list_palette_add_header(&project_palette,0,"Options");
 	list_palette_add_int(&project_palette,kTextOptionSize,"Text Size",&text->size,FALSE);
 	list_palette_add_checkbox(&project_palette,kTextOptionMonospaced,"Monospaced",&text->monospaced,FALSE);
-	list_palette_add_picker_list_int(&project_palette,kTextOptionJust,"Justification",(char*)hud_text_just_type_str,-1,name_str_len,0,FALSE,&text->just,FALSE);
-	list_palette_add_picker_list_int(&project_palette,kTextOptionSpecial,"Special",(char*)hud_text_special_type_str,-1,name_str_len,0,FALSE,&text->special,FALSE);
+	list_palette_add_picker_list_int(&project_palette,kTextOptionJust,"Justification",(char*)hud_text_just_type_str,-1,name_str_len,0,FALSE,FALSE,&text->just,FALSE);
+	list_palette_add_picker_list_int(&project_palette,kTextOptionSpecial,"Special",(char*)hud_text_special_type_str,-1,name_str_len,0,FALSE,FALSE,&text->special,FALSE);
 	list_palette_add_float(&project_palette,kTextOptionAlpha,"Alpha",&text->alpha,FALSE);
 	list_palette_add_pick_color(&project_palette,kTextOptionColor,"Color",&text->color,FALSE);
 

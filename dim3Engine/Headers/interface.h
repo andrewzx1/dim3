@@ -265,6 +265,7 @@ extern int element_get_x_position(int id);
 extern void element_draw(bool cursor_hilite);
 extern void element_click_down(int x,int y);
 extern int element_click_up(int x,int y);
+extern void element_scroll_wheel(int x,int y,bool up);
 extern int element_key(char ch);
 
 //
@@ -606,6 +607,8 @@ extern void input_mouse_gui_set_position(int x,int y);
 extern void input_mouse_gui_get_position(int *x,int *y);
 extern void input_mouse_gui_get_hilite_position(int *x,int *y);
 extern bool input_mouse_gui_is_click_down(void);
+extern bool input_mouse_gui_wheel_up(void);
+extern bool input_mouse_gui_wheel_down(void);
 
 extern void input_gui_set_position(int x,int y);
 extern void input_gui_get_position(int *x,int *y);

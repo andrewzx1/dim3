@@ -76,7 +76,7 @@ void project_palette_fill_hud_bar(int hud_bar_idx)
 
 	list_palette_add_header(&project_palette,0,"Settings");
 	list_palette_add_string(&project_palette,kBarSettingsName,"Name",bar->name,name_str_len,FALSE);
-	list_palette_add_picker_list_int(&project_palette,kBarSettingsType,"Type",(char*)hud_bar_type_str,-1,name_str_len,0,FALSE,&bar->type,FALSE);
+	list_palette_add_picker_list_int(&project_palette,kBarSettingsType,"Type",(char*)hud_bar_type_str,-1,name_str_len,0,FALSE,FALSE,&bar->type,FALSE);
 	list_palette_add_checkbox(&project_palette,kBarSettingsShow,"Show",&bar->show,FALSE);
 
 		// position

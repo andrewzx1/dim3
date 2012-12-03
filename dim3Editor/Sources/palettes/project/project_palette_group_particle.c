@@ -57,7 +57,7 @@ void project_palette_fill_group_particle(int particle_idx,int group_particle_idx
 		// settings
 
 	list_palette_add_header(&project_palette,0,"Settings");
-	list_palette_add_picker_list_string(&project_palette,kGroupParticleSettingsName,"Particle",(char*)iface.particle_list.particles,iface.particle_list.nparticle,sizeof(iface_particle_type),(int)offsetof(iface_particle_type,name),FALSE,group_particle->name,FALSE);
+	list_palette_add_picker_list_string(&project_palette,kGroupParticleSettingsName,"Particle",(char*)iface.particle_list.particles,iface.particle_list.nparticle,sizeof(iface_particle_type),(int)offsetof(iface_particle_type,name),FALSE,TRUE,group_particle->name,FALSE);
 	list_palette_add_int(&project_palette,kGroupParticleSettingsShift,"Shift",&group_particle->shift,FALSE);
 }
 

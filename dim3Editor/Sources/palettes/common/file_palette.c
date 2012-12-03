@@ -96,7 +96,7 @@ void file_palette_fill(void)
 
 	list_palette_add_header_button(&file_palette,kPropertyMapAdd,"Maps",list_button_plus);
 
-	list_palette_sort_mark_start(&file_palette);
+	list_palette_sort_mark_start(&file_palette,&file_palette.item_pane);
 
 	fpd=file_paths_read_directory_data(&file_path_setup,"Maps","xml");
 
@@ -109,7 +109,7 @@ void file_palette_fill(void)
 		list_palette_add_item(&file_palette,kPropertyMap,n,fpd->files[n].file_name,sel,FALSE);
 	}
 
-	list_palette_sort(&file_palette);
+	list_palette_sort(&file_palette,&file_palette.item_pane);
 
 	file_paths_close_directory(fpd);
 
@@ -117,7 +117,7 @@ void file_palette_fill(void)
 
 	list_palette_add_header_button(&file_palette,kPropertyModelAdd,"Models",list_button_plus);
 
-	list_palette_sort_mark_start(&file_palette);
+	list_palette_sort_mark_start(&file_palette,&file_palette.item_pane);
 
 	fpd=file_paths_read_directory_data_dir(&file_path_setup,"Models","Mesh.xml;Model.xml");
 
@@ -130,7 +130,7 @@ void file_palette_fill(void)
 		list_palette_add_item(&file_palette,kPropertyModel,n,fpd->files[n].file_name,sel,FALSE);
 	}
 
-	list_palette_sort(&file_palette);
+	list_palette_sort(&file_palette,&file_palette.item_pane);
 
 	file_paths_close_directory(fpd);
 }

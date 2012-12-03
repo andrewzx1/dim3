@@ -70,7 +70,7 @@ void map_palette_fill_camera(void)
 		// camera settings
 
 	list_palette_add_header(&map_palette,0,"Map Camera Settings");
-	list_palette_add_picker_list_int(&map_palette,kMapPropertyCameraMode,"Mode",(char*)map_map_camera_mode_list,-1,name_str_len,0,FALSE,&map.camera.mode,FALSE);
+	list_palette_add_picker_list_int(&map_palette,kMapPropertyCameraMode,"Mode",(char*)map_map_camera_mode_list,-1,name_str_len,0,FALSE,FALSE,&map.camera.mode,FALSE);
 
 		// camera settings
 
@@ -99,7 +99,7 @@ void map_palette_fill_camera(void)
 
 	list_palette_add_header(&map_palette,0,"Map Camera Static");
 	list_palette_add_checkbox(&map_palette,kMapPropertyCameraStaticFollow,"Follow Player",&map.camera.c_static.follow,FALSE);
-	list_palette_add_picker_list_string(&map_palette,kMapPropertyCameraStaticAttachNode,"Attach Node",(char*)map.nodes,map.nnode,sizeof(node_type),(int)offsetof(node_type,name),TRUE,map.camera.c_static.attach_node,FALSE);
+	list_palette_add_picker_list_string(&map_palette,kMapPropertyCameraStaticAttachNode,"Attach Node",(char*)map.nodes,map.nnode,sizeof(node_type),(int)offsetof(node_type,name),TRUE,TRUE,map.camera.c_static.attach_node,FALSE);
 }
 
 /* =======================================================

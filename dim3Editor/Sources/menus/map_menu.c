@@ -438,7 +438,7 @@ bool map_menu_event_run(int cmd)
 			return(TRUE);
 			
 		case map_menu_item_MapCenter:
-			map_mesh_center_all(&map);
+			map_mesh_center_all();
 			main_wind_draw();
 			return(TRUE);
 			

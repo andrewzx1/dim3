@@ -102,7 +102,7 @@ void model_palette_fill_bone(int bone_idx,int pose_idx)
 	list_palette_add_point(&model_palette,kBonePropertyPosition,"Position",&bone->pnt,FALSE);
 
 	model_palette_fill_bone_create_circular_list(bone->parent_idx,bone_idx);
-	list_palette_add_picker_list_int(&model_palette,kBonePropertyParent,"Parent Bone",(char*)property_circular_bone_list,model.nbone,name_str_len,0,TRUE,&bone->parent_idx,FALSE);
+	list_palette_add_picker_list_int(&model_palette,kBonePropertyParent,"Parent Bone",(char*)property_circular_bone_list,model.nbone,name_str_len,0,TRUE,TRUE,&bone->parent_idx,FALSE);
 
 		// handles
 	
@@ -124,7 +124,7 @@ void model_palette_fill_bone(int bone_idx,int pose_idx)
 		list_palette_add_checkbox(&model_palette,kPoseBoneMovePropertySkipBlended,"Skip Blending",&bone_move->skip_blended,FALSE);
 
 		list_palette_add_header(&model_palette,0,"Current Pose Move Constraint");
-		list_palette_add_picker_list_int(&model_palette,kPoseBoneMovePropertyConstraintBone,"Constraint Bone",(char*)model.bones,model.nbone,sizeof(model_bone_type),(int)offsetof(model_bone_type,name),TRUE,&bone_move->constraint.bone_idx,FALSE);
+		list_palette_add_picker_list_int(&model_palette,kPoseBoneMovePropertyConstraintBone,"Constraint Bone",(char*)model.bones,model.nbone,sizeof(model_bone_type),(int)offsetof(model_bone_type,name),TRUE,TRUE,&bone_move->constraint.bone_idx,FALSE);
 		list_palette_add_point(&model_palette,kPoseBoneMovePropertyConstraintOffset,"Constaint Offset",&bone_move->constraint.offset,FALSE);
 	}
 }

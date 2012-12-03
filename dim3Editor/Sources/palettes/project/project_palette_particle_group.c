@@ -65,13 +65,13 @@ void project_palette_fill_particle_group(int particle_idx)
 
 	list_palette_add_header_button(&project_palette,kGroupParticlePropertyAdd,"Particles",list_button_plus);
 
-	list_palette_sort_mark_start(&project_palette);
+	list_palette_sort_mark_start(&project_palette,&project_palette.item_pane);
 	
 	for (n=0;n!=particle->group.count;n++) {
 		list_palette_add_string_selectable_button(&project_palette,(kGroupParticleProperyName+n),list_button_minus,(kGroupParticleProperyDelete+n),particle->group.particles[n].name,(state.proj.cur_group_particle_idx==n),FALSE);
 	}
 
-	list_palette_sort(&project_palette);
+	list_palette_sort(&project_palette,&project_palette.item_pane);
 }
 
 /* =======================================================
@@ -131,7 +131,7 @@ void project_palette_click_particle_group(int particle_idx,bool double_click)
 		particle->group.particles[idx].shift=0;
 
 		list_palette_set_level(&project_palette,3);
-		list_palette_start_picking_mode(&project_palette,"Pick a Particle",(char*)iface.particle_list.particles,iface.particle_list.nparticle,sizeof(iface_particle_type),(int)offsetof(iface_particle_type,name),FALSE,FALSE,NULL,particle->group.particles[idx].name);
+		list_palette_start_picking_mode(&project_palette,"Pick a Particle",(char*)iface.particle_list.particles,iface.particle_list.nparticle,sizeof(iface_particle_type),(int)offsetof(iface_particle_type,name),FALSE,FALSE,TRUE,NULL,particle->group.particles[idx].name);
 
 		return;
 	}

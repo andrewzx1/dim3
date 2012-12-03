@@ -56,7 +56,7 @@ void project_palette_fill_menus(void)
 
 	list_palette_add_header_button(&project_palette,kMenuPropertyMenuAdd,"Menus",list_button_plus);
 
-	list_palette_sort_mark_start(&project_palette);
+	list_palette_sort_mark_start(&project_palette,&project_palette.item_pane);
 	
 	for (n=0;n!=iface.menu_list.nmenu;n++) {
 		strcpy(str,iface.menu_list.menus[n].name);
@@ -64,7 +64,7 @@ void project_palette_fill_menus(void)
 		list_palette_add_string_selectable_button(&project_palette,(kMenuPropertyMenuName+n),list_button_minus,(kMenuPropertyMenuDelete+n),str,(state.proj.cur_menu_idx==n),FALSE);
 	}
 
-	list_palette_sort(&project_palette);
+	list_palette_sort(&project_palette,&project_palette.item_pane);
 }
 
 /* =======================================================

@@ -94,7 +94,7 @@ void project_palette_fill_title_page(void)
 		// sound
 		
 	list_palette_add_header(&project_palette,0,"Sound");
-	list_palette_add_picker_list_string(&project_palette,kIntroPropertyClickSound,"Click",(char*)iface.sound_list.sounds,iface.sound_list.nsound,sizeof(iface_sound_type),(int)offsetof(iface_sound_type,name),TRUE,iface.click_sound,FALSE);
+	list_palette_add_picker_list_string(&project_palette,kIntroPropertyClickSound,"Click",(char*)iface.sound_list.sounds,iface.sound_list.nsound,sizeof(iface_sound_type),(int)offsetof(iface_sound_type,name),TRUE,TRUE,iface.click_sound,FALSE);
 	list_palette_add_picker_file(&project_palette,kIntroPropertyMusic,list_button_none,0,"Music","Music","mp3","",iface.intro.music,FALSE);
 
 		// buttons
@@ -126,20 +126,20 @@ void project_palette_fill_title_page(void)
 	list_palette_add_int(&project_palette,kIntroPropertyScoreWid,"Width",&iface.intro.score.wid,FALSE);
 	list_palette_add_int(&project_palette,kIntroPropertyScoreHigh,"Height",&iface.intro.score.high,FALSE);
 	list_palette_add_int(&project_palette,kIntroPropertyScoreTextSize,"Text Size",&iface.intro.score.text_size,FALSE);
-	list_palette_add_picker_list_int(&project_palette,kIntroPropertyScoreFormat,"Format",(char*)score_format_str,-1,name_str_len,0,FALSE,&iface.intro.score.format,FALSE);
+	list_palette_add_picker_list_int(&project_palette,kIntroPropertyScoreFormat,"Format",(char*)score_format_str,-1,name_str_len,0,FALSE,FALSE,&iface.intro.score.format,FALSE);
 	list_palette_add_pick_color(&project_palette,kIntroPropertyScoreColor,"Color",&iface.intro.score.col,FALSE);
 
 		// models
 
 	list_palette_add_header_button(&project_palette,kIntroPropertyModelAdd,"Models",list_button_plus);
 
-	list_palette_sort_mark_start(&project_palette);
+	list_palette_sort_mark_start(&project_palette,&project_palette.item_pane);
 	
 	for (n=0;n!=iface.intro.model_list.nmodel;n++) {
 		list_palette_add_string_selectable_button(&project_palette,(kIntroPropertyModelName+n),list_button_minus,(kIntroPropertyModelDelete+n),iface.intro.model_list.models[n].model_name,(state.proj.cur_intro_model_idx==n),FALSE);
 	}
 
-	list_palette_sort(&project_palette);
+	list_palette_sort(&project_palette,&project_palette.item_pane);
 }
 
 /* =======================================================

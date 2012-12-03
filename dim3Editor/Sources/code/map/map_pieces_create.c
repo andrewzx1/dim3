@@ -288,7 +288,7 @@ void piece_create_sound(void)
 	
 		// pick sound
 
-	list_palette_start_picking_mode(&map_palette,"Pick a Sound",(char*)iface.sound_list.sounds,iface.sound_list.nsound,sizeof(iface_sound_type),(int)offsetof(iface_sound_type,name),FALSE,FALSE,NULL,snd->name);
+	list_palette_start_picking_mode(&map_palette,"Pick a Sound",(char*)iface.sound_list.sounds,iface.sound_list.nsound,sizeof(iface_sound_type),(int)offsetof(iface_sound_type,name),FALSE,FALSE,TRUE,NULL,snd->name);
 }
 
 /* =======================================================
@@ -338,7 +338,7 @@ void piece_create_particle(void)
 	
 		// pick particle
 
-	list_palette_start_picking_mode(&map_palette,"Pick a Particle",(char*)iface.particle_list.particles,iface.particle_list.nparticle,sizeof(iface_particle_type),(int)offsetof(iface_particle_type,name),FALSE,FALSE,NULL,prt->name);
+	list_palette_start_picking_mode(&map_palette,"Pick a Particle",(char*)iface.particle_list.particles,iface.particle_list.nparticle,sizeof(iface_particle_type),(int)offsetof(iface_particle_type,name),FALSE,FALSE,TRUE,NULL,prt->name);
 }
 
 /* =======================================================

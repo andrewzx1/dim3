@@ -92,21 +92,21 @@ void model_palette_fill_model(void)
 	list_palette_add_point(&model_palette,kModelPropertyViewBoxSize,"View Box Size",&model.view_box.size,FALSE);
 
 	list_palette_add_header(&model_palette,0,"Model Name-Label Bone");
-	list_palette_add_picker_list_int(&model_palette,kModelPropertyNameBone,"Name Bone",(char*)model.bones,model.nbone,sizeof(model_bone_type),(int)offsetof(model_bone_type,name),TRUE,&model.bone_connect.name_bone_idx,FALSE);
-	list_palette_add_picker_list_int(&model_palette,kModelPropertyLabelTextBone,"Label Text Bone",(char*)model.bones,model.nbone,sizeof(model_bone_type),(int)offsetof(model_bone_type,name),TRUE,&model.bone_connect.label_text_bone_idx,FALSE);
-	list_palette_add_picker_list_int(&model_palette,kModelPropertyLabelBitmapBone,"Label Bitmap Bone",(char*)model.bones,model.nbone,sizeof(model_bone_type),(int)offsetof(model_bone_type,name),TRUE,&model.bone_connect.label_bitmap_bone_idx,FALSE);
-	list_palette_add_picker_list_int(&model_palette,kModelPropertyLabelHealthBone,"Label Health Bone",(char*)model.bones,model.nbone,sizeof(model_bone_type),(int)offsetof(model_bone_type,name),TRUE,&model.bone_connect.label_health_bone_idx,FALSE);
+	list_palette_add_picker_list_int(&model_palette,kModelPropertyNameBone,"Name Bone",(char*)model.bones,model.nbone,sizeof(model_bone_type),(int)offsetof(model_bone_type,name),TRUE,TRUE,&model.bone_connect.name_bone_idx,FALSE);
+	list_palette_add_picker_list_int(&model_palette,kModelPropertyLabelTextBone,"Label Text Bone",(char*)model.bones,model.nbone,sizeof(model_bone_type),(int)offsetof(model_bone_type,name),TRUE,TRUE,&model.bone_connect.label_text_bone_idx,FALSE);
+	list_palette_add_picker_list_int(&model_palette,kModelPropertyLabelBitmapBone,"Label Bitmap Bone",(char*)model.bones,model.nbone,sizeof(model_bone_type),(int)offsetof(model_bone_type,name),TRUE,TRUE,&model.bone_connect.label_bitmap_bone_idx,FALSE);
+	list_palette_add_picker_list_int(&model_palette,kModelPropertyLabelHealthBone,"Label Health Bone",(char*)model.bones,model.nbone,sizeof(model_bone_type),(int)offsetof(model_bone_type,name),TRUE,TRUE,&model.bone_connect.label_health_bone_idx,FALSE);
 
 	list_palette_add_header(&model_palette,0,"Model Light Bones");
 	for (n=0;n!=max_model_light;n++) {
 		sprintf(name,"Bone %d",n);
-		list_palette_add_picker_list_int(&model_palette,(kModelPropertyLightBoneStart+n),name,(char*)model.bones,model.nbone,sizeof(model_bone_type),(int)offsetof(model_bone_type,name),TRUE,&model.bone_connect.light_bone_idx[n],FALSE);
+		list_palette_add_picker_list_int(&model_palette,(kModelPropertyLightBoneStart+n),name,(char*)model.bones,model.nbone,sizeof(model_bone_type),(int)offsetof(model_bone_type,name),TRUE,TRUE,&model.bone_connect.light_bone_idx[n],FALSE);
 	}
 
 	list_palette_add_header(&model_palette,0,"Model Halo Bones");
 	for (n=0;n!=max_model_halo;n++) {
 		sprintf(name,"Bone %d",n);
-		list_palette_add_picker_list_int(&model_palette,(kModelPropertyHaloBoneStart+n),name,(char*)model.bones,model.nbone,sizeof(model_bone_type),(int)offsetof(model_bone_type,name),TRUE,&model.bone_connect.halo_bone_idx[n],FALSE);
+		list_palette_add_picker_list_int(&model_palette,(kModelPropertyHaloBoneStart+n),name,(char*)model.bones,model.nbone,sizeof(model_bone_type),(int)offsetof(model_bone_type,name),TRUE,TRUE,&model.bone_connect.halo_bone_idx[n],FALSE);
 	}
 
 	list_palette_add_header(&model_palette,0,"Model Rigid Body");

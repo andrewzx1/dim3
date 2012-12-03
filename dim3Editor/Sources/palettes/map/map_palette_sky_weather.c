@@ -108,19 +108,19 @@ void map_palette_fill_sky_weather(void)
 
 	list_palette_add_header(&map_palette,0,"Map Sky");
 	list_palette_add_checkbox(&map_palette,kMapPropertySkyOn,"On",&map.sky.on,FALSE);
-	list_palette_add_picker_list_int(&map_palette,kMapPropertySkyType,"Type",(char*)map_map_sky_type_list,-1,name_str_len,0,FALSE,&map.sky.type,FALSE);
+	list_palette_add_picker_list_int(&map_palette,kMapPropertySkyType,"Type",(char*)map_map_sky_type_list,-1,name_str_len,0,FALSE,FALSE,&map.sky.type,FALSE);
 	list_palette_add_int(&map_palette,kMapPropertySkyRadius,"Radius",&map.sky.radius,FALSE);
 	list_palette_add_int(&map_palette,kMapPropertyDomeY,"Dome Height",&map.sky.dome_y,FALSE);
 	list_palette_add_checkbox(&map_palette,kMapPropertyDomeMirror,"Mirror Dome",&map.sky.dome_mirror,FALSE);
 	list_palette_add_float(&map_palette,kMapPropertyTextureRepeat,"Texture Repeat",&map.sky.txt_fact,FALSE);
 	
 	list_palette_add_header(&map_palette,0,"Map Sky Textures");
-	list_palette_add_picker_list_int(&map_palette,kMapPropertyTextureFill,"Fill/Cube Top Fill",(char*)map.textures,max_map_texture,sizeof(texture_type),(int)offsetof(texture_type,frames[0].name),TRUE,&map.sky.fill,FALSE);
-	list_palette_add_picker_list_int(&map_palette,kMapPropertyTextureBottomFill,"Cube Bottom Fill",(char*)map.textures,max_map_texture,sizeof(texture_type),(int)offsetof(texture_type,frames[0].name),TRUE,&map.sky.bottom_fill,FALSE);
-	list_palette_add_picker_list_int(&map_palette,kMapPropertyTextureNorthFill,"Cube North Fill",(char*)map.textures,max_map_texture,sizeof(texture_type),(int)offsetof(texture_type,frames[0].name),TRUE,&map.sky.north_fill,FALSE);
-	list_palette_add_picker_list_int(&map_palette,kMapPropertyTextureSouthFill,"Cube South Fill",(char*)map.textures,max_map_texture,sizeof(texture_type),(int)offsetof(texture_type,frames[0].name),TRUE,&map.sky.south_fill,FALSE);
-	list_palette_add_picker_list_int(&map_palette,kMapPropertyTextureEastFill,"Cube East Fill",(char*)map.textures,max_map_texture,sizeof(texture_type),(int)offsetof(texture_type,frames[0].name),TRUE,&map.sky.east_fill,FALSE);
-	list_palette_add_picker_list_int(&map_palette,kMapPropertyTextureWestFill,"Cube West Fill",(char*)map.textures,max_map_texture,sizeof(texture_type),(int)offsetof(texture_type,frames[0].name),TRUE,&map.sky.west_fill,FALSE);
+	list_palette_add_picker_list_int(&map_palette,kMapPropertyTextureFill,"Fill/Cube Top Fill",(char*)map.textures,max_map_texture,sizeof(texture_type),(int)offsetof(texture_type,frames[0].name),TRUE,FALSE,&map.sky.fill,FALSE);
+	list_palette_add_picker_list_int(&map_palette,kMapPropertyTextureBottomFill,"Cube Bottom Fill",(char*)map.textures,max_map_texture,sizeof(texture_type),(int)offsetof(texture_type,frames[0].name),TRUE,FALSE,&map.sky.bottom_fill,FALSE);
+	list_palette_add_picker_list_int(&map_palette,kMapPropertyTextureNorthFill,"Cube North Fill",(char*)map.textures,max_map_texture,sizeof(texture_type),(int)offsetof(texture_type,frames[0].name),TRUE,FALSE,&map.sky.north_fill,FALSE);
+	list_palette_add_picker_list_int(&map_palette,kMapPropertyTextureSouthFill,"Cube South Fill",(char*)map.textures,max_map_texture,sizeof(texture_type),(int)offsetof(texture_type,frames[0].name),TRUE,FALSE,&map.sky.south_fill,FALSE);
+	list_palette_add_picker_list_int(&map_palette,kMapPropertyTextureEastFill,"Cube East Fill",(char*)map.textures,max_map_texture,sizeof(texture_type),(int)offsetof(texture_type,frames[0].name),TRUE,FALSE,&map.sky.east_fill,FALSE);
+	list_palette_add_picker_list_int(&map_palette,kMapPropertyTextureWestFill,"Cube West Fill",(char*)map.textures,max_map_texture,sizeof(texture_type),(int)offsetof(texture_type,frames[0].name),TRUE,FALSE,&map.sky.west_fill,FALSE);
 
 		// background
 
@@ -131,15 +131,15 @@ void map_palette_fill_sky_weather(void)
 	list_palette_add_uv(&map_palette,kMapPropertyBackgroundFrontShift,"Front Scroll",&map.background.front.scroll_factor,FALSE);
 	list_palette_add_uv(&map_palette,kMapPropertyBackgroundFrontClip,"Front Y Clip",&map.background.front.clip,FALSE);
 
-	list_palette_add_picker_list_int(&map_palette,kMapPropertyBackgroundFrontFill,"Front Fill",(char*)map.textures,max_map_texture,sizeof(texture_type),(int)offsetof(texture_type,frames[0].name),TRUE,&map.background.front.fill,FALSE);
+	list_palette_add_picker_list_int(&map_palette,kMapPropertyBackgroundFrontFill,"Front Fill",(char*)map.textures,max_map_texture,sizeof(texture_type),(int)offsetof(texture_type,frames[0].name),TRUE,FALSE,&map.background.front.fill,FALSE);
 	list_palette_add_uv(&map_palette,kMapPropertyBackgroundMiddleStamp,"Middle Stamp",&map.background.middle.size,FALSE);
 	list_palette_add_uv(&map_palette,kMapPropertyBackgroundMiddleShift,"Middle Scroll",&map.background.middle.scroll_factor,FALSE);
 	list_palette_add_uv(&map_palette,kMapPropertyBackgroundMiddleClip,"Middle Y Clip",&map.background.middle.clip,FALSE);
 
-	list_palette_add_picker_list_int(&map_palette,kMapPropertyBackgroundMiddleFill,"Middle Fill",(char*)map.textures,max_map_texture,sizeof(texture_type),(int)offsetof(texture_type,frames[0].name),TRUE,&map.background.middle.fill,FALSE);
+	list_palette_add_picker_list_int(&map_palette,kMapPropertyBackgroundMiddleFill,"Middle Fill",(char*)map.textures,max_map_texture,sizeof(texture_type),(int)offsetof(texture_type,frames[0].name),TRUE,FALSE,&map.background.middle.fill,FALSE);
 	list_palette_add_uv(&map_palette,kMapPropertyBackgroundBackStamp,"Back Stamp",&map.background.back.size,FALSE);
 	list_palette_add_uv(&map_palette,kMapPropertyBackgroundBackShift,"Back Scroll",&map.background.back.scroll_factor,FALSE);
-	list_palette_add_picker_list_int(&map_palette,kMapPropertyBackgroundBackFill,"Back Fill",(char*)map.textures,max_map_texture,sizeof(texture_type),(int)offsetof(texture_type,frames[0].name),TRUE,&map.background.back.fill,FALSE);
+	list_palette_add_picker_list_int(&map_palette,kMapPropertyBackgroundBackFill,"Back Fill",(char*)map.textures,max_map_texture,sizeof(texture_type),(int)offsetof(texture_type,frames[0].name),TRUE,FALSE,&map.background.back.fill,FALSE);
 	list_palette_add_uv(&map_palette,kMapPropertyBackgroundBackClip,"Back Y Clip",&map.background.back.clip,FALSE);
 
 		// fog general
@@ -158,7 +158,7 @@ void map_palette_fill_sky_weather(void)
 		// fog textured
 
 	list_palette_add_header(&map_palette,0,"Map Fog Textured");
-	list_palette_add_picker_list_int(&map_palette,kMapPropertyFogTextureIndex,"Fill",(char*)map.textures,max_map_texture,sizeof(texture_type),(int)offsetof(texture_type,frames[0].name),TRUE,&map.fog.texture_idx,FALSE);
+	list_palette_add_picker_list_int(&map_palette,kMapPropertyFogTextureIndex,"Fill",(char*)map.textures,max_map_texture,sizeof(texture_type),(int)offsetof(texture_type,frames[0].name),TRUE,FALSE,&map.fog.texture_idx,FALSE);
 	list_palette_add_int(&map_palette,kMapPropertyFogCount,"Layer Count",&map.fog.count,FALSE);
 	list_palette_add_int(&map_palette,kMapPropertyFogHigh,"Height",&map.fog.high,FALSE);
 	list_palette_add_int(&map_palette,kMapPropertyFogDrop,"Y Drop",&map.fog.drop,FALSE);

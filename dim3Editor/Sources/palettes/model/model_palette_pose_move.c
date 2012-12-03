@@ -102,7 +102,7 @@ void model_palette_fill_animate_pose_move(int animate_idx,int pose_move_idx)
 		// options
 
 	list_palette_add_header(&model_palette,0,"Animate Pose Options");
-	list_palette_add_picker_list_int(&model_palette,kAnimatePoseMovePropertyPose,"Pose",(char*)model.poses,model.npose,sizeof(model_pose_type),(int)offsetof(model_pose_type,name),TRUE,&pose_move->pose_idx,FALSE);
+	list_palette_add_picker_list_int(&model_palette,kAnimatePoseMovePropertyPose,"Pose",(char*)model.poses,model.npose,sizeof(model_pose_type),(int)offsetof(model_pose_type,name),TRUE,TRUE,&pose_move->pose_idx,FALSE);
 	list_palette_add_int(&model_palette,kAnimatePoseMovePropertyMilliseconds,"Milliseconds",&pose_move->msec,FALSE);
 	list_palette_add_float(&model_palette,kAnimatePoseMovePropertyAcceleration,"Acceleration",&pose_move->acceleration,FALSE);
 
@@ -121,15 +121,15 @@ void model_palette_fill_animate_pose_move(int animate_idx,int pose_move_idx)
 		// sound
 
 	list_palette_add_header(&model_palette,0,"Animate Pose Sound");
-	list_palette_add_picker_list_string(&model_palette,kAnimationPoseMovePropertySoundName,"Sound",(char*)iface.sound_list.sounds,iface.sound_list.nsound,sizeof(iface_sound_type),(int)offsetof(iface_sound_type,name),TRUE,pose_move->sound.name,FALSE);
-	list_palette_add_picker_list_int(&model_palette,kAnimationPoseMovePropertySoundBone,"Bone",(char*)model.bones,model.nbone,sizeof(model_bone_type),(int)offsetof(model_bone_type,name),TRUE,&pose_move->sound.bone_idx,FALSE);
+	list_palette_add_picker_list_string(&model_palette,kAnimationPoseMovePropertySoundName,"Sound",(char*)iface.sound_list.sounds,iface.sound_list.nsound,sizeof(iface_sound_type),(int)offsetof(iface_sound_type,name),TRUE,TRUE,pose_move->sound.name,FALSE);
+	list_palette_add_picker_list_int(&model_palette,kAnimationPoseMovePropertySoundBone,"Bone",(char*)model.bones,model.nbone,sizeof(model_bone_type),(int)offsetof(model_bone_type,name),TRUE,TRUE,&pose_move->sound.bone_idx,FALSE);
 	list_palette_add_float(&model_palette,kAnimationPoseMovePropertySoundPitch,"Pitch",&pose_move->sound.pitch,FALSE);
 	list_palette_add_checkbox(&model_palette,kAnimationPoseMovePropertySoundGlobal,"Play Globally (Player Only)",&pose_move->sound.no_position,FALSE);
 
 		// mesh fades
 
 	list_palette_add_header(&model_palette,0,"Animate Pose Mesh Fade");
-	list_palette_add_picker_list_int(&model_palette,kAnimationPoseMovePropertyFadeMesh,"Mesh",(char*)model.meshes,model.nmesh,sizeof(model_mesh_type),(int)offsetof(model_mesh_type,name),TRUE,&pose_move->mesh_fade.mesh_idx,FALSE);
+	list_palette_add_picker_list_int(&model_palette,kAnimationPoseMovePropertyFadeMesh,"Mesh",(char*)model.meshes,model.nmesh,sizeof(model_mesh_type),(int)offsetof(model_mesh_type,name),TRUE,TRUE,&pose_move->mesh_fade.mesh_idx,FALSE);
 	list_palette_add_int(&model_palette,kAnimationPoseMovePropertyFadeIn,"Fade In Milliseconds",&pose_move->mesh_fade.fade_in_msec,FALSE);
 	list_palette_add_int(&model_palette,kAnimationPoseMovePropertyFadeLife,"Fade Life Milliseconds",&pose_move->mesh_fade.fade_life_msec,FALSE);
 	list_palette_add_int(&model_palette,kAnimationPoseMovePropertyFadeOut,"Fade Out Milliseconds",&pose_move->mesh_fade.fade_out_msec,FALSE);
@@ -137,7 +137,7 @@ void model_palette_fill_animate_pose_move(int animate_idx,int pose_move_idx)
 		// flash
 
 	list_palette_add_header(&model_palette,0,"Animate Pose Flash");
-	list_palette_add_picker_list_int(&model_palette,kAnimationPoseMovePropertyFlashBone,"Bone",(char*)model.bones,model.nbone,sizeof(model_bone_type),(int)offsetof(model_bone_type,name),TRUE,&pose_move->flash.bone_idx,FALSE);
+	list_palette_add_picker_list_int(&model_palette,kAnimationPoseMovePropertyFlashBone,"Bone",(char*)model.bones,model.nbone,sizeof(model_bone_type),(int)offsetof(model_bone_type,name),TRUE,TRUE,&pose_move->flash.bone_idx,FALSE);
 	list_palette_add_int(&model_palette,kAnimationPoseMovePropertyFlashIntensity,"Intensity",&pose_move->flash.intensity,FALSE);
 	list_palette_add_int(&model_palette,kAnimationPoseMovePropertyFlashFlash,"Flash Milliseconds",&pose_move->flash.flash_msec,FALSE);
 	list_palette_add_int(&model_palette,kAnimationPoseMovePropertyFlashFade,"Fade Milliseconds",&pose_move->flash.fade_msec,FALSE);

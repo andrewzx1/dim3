@@ -71,7 +71,7 @@ void project_palette_fill_virtual_control_button(int virtual_control_button_idx)
 	list_palette_add_checkbox(&project_palette,kButtonOn,"On",&button->on,FALSE);
 	list_palette_add_checkbox(&project_palette,kButtonSticky,"Sticky",&button->sticky,FALSE);
 	list_palette_add_checkbox(&project_palette,kButtonUseBitmap,"Use Bitmap",&button->use_bitmap,FALSE);
-	list_palette_add_picker_list_int(&project_palette,kButtonControl,"Action",(char*)control_name_str,-1,32,0,FALSE,&button->control_idx,FALSE);
+	list_palette_add_picker_list_int(&project_palette,kButtonControl,"Action",(char*)control_name_str,-1,32,0,FALSE,FALSE,&button->control_idx,FALSE);
 	list_palette_add_picker_file(&project_palette,kButtonUpBitmap,list_button_none,0,"Up Bitmap","Bitmaps/Virtual","png","",button->up_bitmap_name,FALSE);
 	list_palette_add_picker_file(&project_palette,kButtonDownBitmap,list_button_none,0,"Down Bitmap","Bitmaps/Virtual","png","",button->down_bitmap_name,FALSE);
 	list_palette_add_pick_color(&project_palette,kButtonColor,"Color",&button->color,FALSE);

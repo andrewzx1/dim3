@@ -53,7 +53,7 @@ void project_palette_fill_logo(void)
 
 	list_palette_add_header(&project_palette,0,"Logo");
 	list_palette_add_picker_file(&project_palette,kIntroPropertyTitleName,list_button_none,0,"Bitmap","Titles","png","",iface.logo.name,FALSE);
-	list_palette_add_picker_list_string(&project_palette,kIntroPropertyTitleSound,"Sound",(char*)iface.sound_list.sounds,iface.sound_list.nsound,sizeof(iface_sound_type),(int)offsetof(iface_sound_type,name),TRUE,iface.logo.sound,FALSE);
+	list_palette_add_picker_list_string(&project_palette,kIntroPropertyTitleSound,"Sound",(char*)iface.sound_list.sounds,iface.sound_list.nsound,sizeof(iface_sound_type),(int)offsetof(iface_sound_type,name),TRUE,TRUE,iface.logo.sound,FALSE);
 	list_palette_add_int(&project_palette,kIntroPropertyTitleLifeMsec,"Life Millsec",&iface.logo.life_msec,FALSE);
 }
 

@@ -65,8 +65,8 @@ void model_palette_fill_animate_pose_move_particle(int animate_idx,int pose_move
 	particle=&pose_move->particle.particles[particle_idx];
 
 	list_palette_set_title(&model_palette,"Animation",animate->name,"Pose Move",model.poses[pose_move->pose_idx].name,"Particle",particle->name);
-	list_palette_add_picker_list_string(&model_palette,kAnimationPoseMovePropertyParticleName,"Name",(char*)iface.particle_list.particles,iface.particle_list.nparticle,sizeof(iface_particle_type),(int)offsetof(iface_particle_type,name),TRUE,particle->name,FALSE);
-	list_palette_add_picker_list_int(&model_palette,kAnimationPoseMovePropertyParticleBone,"Bone",(char*)model.bones,model.nbone,sizeof(model_bone_type),(int)offsetof(model_bone_type,name),TRUE,&particle->bone_idx,FALSE);
+	list_palette_add_picker_list_string(&model_palette,kAnimationPoseMovePropertyParticleName,"Name",(char*)iface.particle_list.particles,iface.particle_list.nparticle,sizeof(iface_particle_type),(int)offsetof(iface_particle_type,name),TRUE,TRUE,particle->name,FALSE);
+	list_palette_add_picker_list_int(&model_palette,kAnimationPoseMovePropertyParticleBone,"Bone",(char*)model.bones,model.nbone,sizeof(model_bone_type),(int)offsetof(model_bone_type,name),TRUE,TRUE,&particle->bone_idx,FALSE);
 	list_palette_add_float(&model_palette,kAnimationPoseMovePropertyParticleMotionFactor,"Motion Factor",&particle->motion_factor,FALSE);
 	list_palette_add_checkbox(&model_palette,kAnimationPoseMovePropertyParticleMotion,"Follow Model Motion",&particle->motion,FALSE);
 	list_palette_add_checkbox(&model_palette,kAnimationPoseMovePropertyParticleRotate,"Follow Model Rotation",&particle->rotate,FALSE);

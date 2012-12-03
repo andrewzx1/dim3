@@ -98,7 +98,7 @@ void project_palette_fill_chooser(int chooser_idx)
 
 	list_palette_add_header_button(&project_palette,kChooserPropertyChooserItemAdd,"Items",list_button_plus);
 
-	list_palette_sort_mark_start(&project_palette);
+	list_palette_sort_mark_start(&project_palette,&project_palette.item_pane);
 	
 	for (n=0;n!=chooser->npiece;n++) {
 
@@ -130,7 +130,7 @@ void project_palette_fill_chooser(int chooser_idx)
 		list_palette_add_string_selectable_button(&project_palette,(kChooserPropertyChooserItemName+n),list_button_minus,(kChooserPropertyChooserItemDelete+n),str,(state.proj.cur_chooser_piece_idx==n),FALSE);
 	}
 
-	list_palette_sort(&project_palette);
+	list_palette_sort(&project_palette,&project_palette.item_pane);
 }
 
 /* =======================================================
@@ -202,7 +202,7 @@ void project_palette_click_chooser(int chooser_idx,bool double_click)
 
 		list_palette_set_level(&project_palette,3);
 
-		list_palette_start_picking_mode(&project_palette,"Pick a Chooser Piece Type",(char*)chooser_type_str,-1,name_str_len,0,FALSE,FALSE,&chooser->pieces[idx].type,NULL);
+		list_palette_start_picking_mode(&project_palette,"Pick a Chooser Piece Type",(char*)chooser_type_str,-1,name_str_len,0,FALSE,FALSE,FALSE,&chooser->pieces[idx].type,NULL);
 
 		return;
 	}

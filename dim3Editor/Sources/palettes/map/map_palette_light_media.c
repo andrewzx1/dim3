@@ -77,14 +77,14 @@ void map_palette_fill_light_media(void)
 
 	list_palette_add_header(&map_palette,0,"Map Ambient");
 	list_palette_add_pick_color(&map_palette,kMapPropertyAmbientColor,"Color",&map.ambient.light_color,FALSE);
-	list_palette_add_picker_list_string(&map_palette,kMapPropertyAmbientSound,"Sound",(char*)iface.sound_list.sounds,iface.sound_list.nsound,sizeof(iface_sound_type),(int)offsetof(iface_sound_type,name),TRUE,map.ambient.sound_name,FALSE);
+	list_palette_add_picker_list_string(&map_palette,kMapPropertyAmbientSound,"Sound",(char*)iface.sound_list.sounds,iface.sound_list.nsound,sizeof(iface_sound_type),(int)offsetof(iface_sound_type,name),TRUE,TRUE,map.ambient.sound_name,FALSE);
 	list_palette_add_float(&map_palette,kMapPropertyAmbientSoundPitch,"Sound Pitch",&map.ambient.sound_pitch,FALSE);
 
 		// light map
 
 	list_palette_add_header(&map_palette,0,"Map Light Map");
-	list_palette_add_picker_list_int(&map_palette,kMapPropertyLightMapQuality,"Quality",(char*)map_map_light_map_quality_list,-1,name_str_len,0,FALSE,&map.light_map.quality,FALSE);
-	list_palette_add_picker_list_int(&map_palette,kMapPropertyLightMapSize,"Texture Size",(char*)map_map_light_map_size_list,-1,name_str_len,0,FALSE,&map.light_map.size,FALSE);
+	list_palette_add_picker_list_int(&map_palette,kMapPropertyLightMapQuality,"Quality",(char*)map_map_light_map_quality_list,-1,name_str_len,0,FALSE,FALSE,&map.light_map.quality,FALSE);
+	list_palette_add_picker_list_int(&map_palette,kMapPropertyLightMapSize,"Texture Size",(char*)map_map_light_map_size_list,-1,name_str_len,0,FALSE,FALSE,&map.light_map.size,FALSE);
 	list_palette_add_checkbox(&map_palette,kMapPropertyLightMapUseNormals,"Use Normals (Hard Edges)",&map.light_map.use_normals,FALSE);
 	list_palette_add_checkbox(&map_palette,kMapPropertyLightMapSkipGlows,"Skip Glow Mapped Polys",&map.light_map.skip_glows,FALSE);
 	list_palette_add_float(&map_palette,kMapPropertyLightMapDiffuseBoost,"Diffuse Boost",&map.light_map.diffuse_boost,FALSE);
@@ -92,10 +92,10 @@ void map_palette_fill_light_media(void)
 		// media
 
 	list_palette_add_header(&map_palette,0,"Map Media");
-	list_palette_add_picker_list_int(&map_palette,kMapPropertyMediaType,"Startup Type",(char*)map_map_media_type_list,-1,name_str_len,0,FALSE,&map.media.type,FALSE);
+	list_palette_add_picker_list_int(&map_palette,kMapPropertyMediaType,"Startup Type",(char*)map_map_media_type_list,-1,name_str_len,0,FALSE,FALSE,&map.media.type,FALSE);
 	list_palette_add_int(&map_palette,kMapPropertyMediaEventId,"Event Id",&map.media.event_id,FALSE);
 	list_palette_add_string(&map_palette,kMapPropertyMediaName,"Startup Name",map.media.name,name_str_len,FALSE);
-	list_palette_add_picker_list_string(&map_palette,kMapPropertyMediaTitleSound,"Startup Title Sound",(char*)iface.sound_list.sounds,iface.sound_list.nsound,sizeof(iface_sound_type),(int)offsetof(iface_sound_type,name),TRUE,map.media.title_sound_name,FALSE);
+	list_palette_add_picker_list_string(&map_palette,kMapPropertyMediaTitleSound,"Startup Title Sound",(char*)iface.sound_list.sounds,iface.sound_list.nsound,sizeof(iface_sound_type),(int)offsetof(iface_sound_type,name),TRUE,TRUE,map.media.title_sound_name,FALSE);
 
 		// music
 

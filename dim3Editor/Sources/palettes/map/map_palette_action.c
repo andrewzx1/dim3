@@ -84,9 +84,9 @@ void map_palette_fill_cinema_action(int cinema_idx,int action_idx)
 	list_palette_add_int(&map_palette,kCinemaActionPropertyTimeEnd,"Time End",&action->end_msec,FALSE);
 
 	list_palette_add_header(&map_palette,0,"Cinema Action Actor");
-	list_palette_add_picker_list_int(&map_palette,kCinemaActionPropertyAction,"Action",(char*)action_action_type_str,-1,name_str_len,0,FALSE,&action->action,FALSE);
+	list_palette_add_picker_list_int(&map_palette,kCinemaActionPropertyAction,"Action",(char*)action_action_type_str,-1,name_str_len,0,FALSE,FALSE,&action->action,FALSE);
 	if (!is_fade) {
-		list_palette_add_picker_list_int(&map_palette,kCinemaActionPropertyActorType,"Type",(char*)action_actor_type_str,-1,name_str_len,0,FALSE,&action->actor_type,FALSE);
+		list_palette_add_picker_list_int(&map_palette,kCinemaActionPropertyActorType,"Type",(char*)action_actor_type_str,-1,name_str_len,0,FALSE,FALSE,&action->actor_type,FALSE);
 	}
 	else {
 		list_palette_add_na_blank(&map_palette,kCinemaActionPropertyActorName,"Type");
@@ -99,27 +99,27 @@ void map_palette_fill_cinema_action(int cinema_idx,int action_idx)
 		switch (action->actor_type) {
 
 			case cinema_actor_object:
-				list_palette_add_picker_list_string(&map_palette,kCinemaActionPropertyActorName,"Spot",(char*)map.spots,map.nspot,sizeof(spot_type),(int)offsetof(spot_type,name),TRUE,action->actor_name,FALSE);
+				list_palette_add_picker_list_string(&map_palette,kCinemaActionPropertyActorName,"Spot",(char*)map.spots,map.nspot,sizeof(spot_type),(int)offsetof(spot_type,name),TRUE,TRUE,action->actor_name,FALSE);
 				break;
 
 			case cinema_actor_movement:
-				list_palette_add_picker_list_string(&map_palette,kCinemaActionPropertyActorName,"Movement",(char*)map.movement.movements,map.movement.nmovement,sizeof(movement_type),(int)offsetof(movement_type,name),TRUE,action->actor_name,FALSE);
+				list_palette_add_picker_list_string(&map_palette,kCinemaActionPropertyActorName,"Movement",(char*)map.movement.movements,map.movement.nmovement,sizeof(movement_type),(int)offsetof(movement_type,name),TRUE,TRUE,action->actor_name,FALSE);
 				break;
 
 			case cinema_actor_particle:
-				list_palette_add_picker_list_string(&map_palette,kCinemaActionPropertyActorName,"Particle",(char*)iface.particle_list.particles,iface.particle_list.nparticle,sizeof(iface_particle_type),(int)offsetof(iface_particle_type,name),TRUE,action->actor_name,FALSE);
+				list_palette_add_picker_list_string(&map_palette,kCinemaActionPropertyActorName,"Particle",(char*)iface.particle_list.particles,iface.particle_list.nparticle,sizeof(iface_particle_type),(int)offsetof(iface_particle_type,name),TRUE,TRUE,action->actor_name,FALSE);
 				break;
 
 			case cinema_actor_sound:
-				list_palette_add_picker_list_string(&map_palette,kCinemaActionPropertyActorName,"Sound",(char*)iface.sound_list.sounds,iface.sound_list.nsound,sizeof(iface_sound_type),(int)offsetof(iface_sound_type,name),TRUE,action->actor_name,FALSE);
+				list_palette_add_picker_list_string(&map_palette,kCinemaActionPropertyActorName,"Sound",(char*)iface.sound_list.sounds,iface.sound_list.nsound,sizeof(iface_sound_type),(int)offsetof(iface_sound_type,name),TRUE,TRUE,action->actor_name,FALSE);
 				break;
 
 			case cinema_actor_hud_text:
-				list_palette_add_picker_list_string(&map_palette,kCinemaActionPropertyActorName,"HUD Text",(char*)iface.text_list.texts,iface.text_list.ntext,sizeof(iface_text_type),(int)offsetof(iface_text_type,name),TRUE,action->actor_name,FALSE);
+				list_palette_add_picker_list_string(&map_palette,kCinemaActionPropertyActorName,"HUD Text",(char*)iface.text_list.texts,iface.text_list.ntext,sizeof(iface_text_type),(int)offsetof(iface_text_type,name),TRUE,TRUE,action->actor_name,FALSE);
 				break;
 
 			case cinema_actor_hud_bitmap:
-				list_palette_add_picker_list_string(&map_palette,kCinemaActionPropertyActorName,"HUD Bitmap",(char*)iface.bitmap_list.bitmaps,iface.bitmap_list.nbitmap,sizeof(iface_bitmap_type),(int)offsetof(iface_bitmap_type,name),TRUE,action->actor_name,FALSE);
+				list_palette_add_picker_list_string(&map_palette,kCinemaActionPropertyActorName,"HUD Bitmap",(char*)iface.bitmap_list.bitmaps,iface.bitmap_list.nbitmap,sizeof(iface_bitmap_type),(int)offsetof(iface_bitmap_type,name),TRUE,TRUE,action->actor_name,FALSE);
 				break;
 
 		}
@@ -143,7 +143,7 @@ void map_palette_fill_cinema_action(int cinema_idx,int action_idx)
 		// nodes
 
 	if ((has_node) && (!is_fade)) {
-		list_palette_add_picker_list_string(&map_palette,kCinemaActionPropertyNode,"Node",(char*)map.nodes,map.nnode,sizeof(node_type),(int)offsetof(node_type,name),TRUE,action->node_name,FALSE);
+		list_palette_add_picker_list_string(&map_palette,kCinemaActionPropertyNode,"Node",(char*)map.nodes,map.nnode,sizeof(node_type),(int)offsetof(node_type,name),TRUE,TRUE,action->node_name,FALSE);
 	}
 	else {
 		list_palette_add_na_blank(&map_palette,kCinemaActionPropertyNode,"Node");

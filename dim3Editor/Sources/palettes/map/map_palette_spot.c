@@ -70,7 +70,7 @@ void map_palette_fill_spot(int spot_idx)
 
 	list_palette_add_header(&map_palette,0,"Spot Settings");
 	list_palette_add_string(&map_palette,kSpotPropertyName,"Name",spot->name,name_str_len,FALSE);
-	list_palette_add_picker_list_int(&map_palette,kSpotPropertyType,"Type",(char*)spot_map_type_list,-1,name_str_len,0,FALSE,&spot->type,FALSE);
+	list_palette_add_picker_list_int(&map_palette,kSpotPropertyType,"Type",(char*)spot_map_type_list,-1,name_str_len,0,FALSE,FALSE,&spot->type,FALSE);
 
 	if (spot->script[0]!=0x0) {
 		list_palette_add_picker_file(&map_palette,kSpotPropertyScript,list_button_edit,kSpotPropertyScriptEdit,"Script","Scripts/Objects","js","",spot->script,FALSE);
@@ -79,8 +79,8 @@ void map_palette_fill_spot(int spot_idx)
 		list_palette_add_picker_file(&map_palette,kSpotPropertyScript,list_button_none,0,"Script","Scripts/Objects","js","",spot->script,FALSE);
 	}
 
-	list_palette_add_picker_list_int(&map_palette,kSpotPropertySkill,"Skill",(char*)spot_map_skill_list,-1,name_str_len,0,FALSE,&spot->skill,FALSE);
-	list_palette_add_picker_list_int(&map_palette,kSpotPropertySpawn,"Spawn",(char*)spot_map_spawn_list,-1,name_str_len,0,FALSE,&spot->spawn,FALSE);
+	list_palette_add_picker_list_int(&map_palette,kSpotPropertySkill,"Skill",(char*)spot_map_skill_list,-1,name_str_len,0,FALSE,FALSE,&spot->skill,FALSE);
+	list_palette_add_picker_list_int(&map_palette,kSpotPropertySpawn,"Spawn",(char*)spot_map_spawn_list,-1,name_str_len,0,FALSE,FALSE,&spot->spawn,FALSE);
 	list_palette_add_picker_file(&map_palette,kSpotPropertyDisplayModel,list_button_none,0,"Model","Models","","Mesh.xml;Model.xml",spot->display_model,FALSE);
 
 	list_palette_add_header(&map_palette,0,"Spot Parameters");
