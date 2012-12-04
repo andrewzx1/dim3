@@ -60,10 +60,11 @@ void view_openrl_effect_mesh_setup(effect_type *effect)
 	int						quad_count;
 	iface_particle_type		*particle;
 
-		// only create meshes for particles
+		// only create meshes for
+		// particles or rings
 
 	effect->openrl_mesh_id=-1;
-	if (effect->effecttype!=ef_particle) return;
+	if ((effect->effecttype!=ef_particle) && (effect->effecttype!=ef_ring)) return;
 
 		// create mesh
 
@@ -72,21 +73,35 @@ void view_openrl_effect_mesh_setup(effect_type *effect)
 
 		// create vertexes and uvs
 
-	particle=&iface.particle_list.particles[effect->data.particle.particle_idx];
-	quad_count=particle->count*(particle->trail_count+1);
+	switch (effect->effecttype) {
 
-	rlSceneMeshSetVertex(view_rl_scene_id,effect->openrl_mesh_id,RL_MESH_FORMAT_VERTEX_3_FLOAT,(quad_count*4),NULL);
-	rlSceneMeshSetUV(view_rl_scene_id,effect->openrl_mesh_id,RL_MESH_FORMAT_UV_2_FLOAT,(quad_count*4),NULL);
+		case ef_particle:
+			particle=&iface.particle_list.particles[effect->data.particle.particle_idx];
+			quad_count=particle->count*(particle->trail_count+1);
+
+			rlSceneMeshSetVertex(view_rl_scene_id,effect->openrl_mesh_id,RL_MESH_FORMAT_VERTEX_3_FLOAT,(quad_count*4),NULL);
+			rlSceneMeshSetUV(view_rl_scene_id,effect->openrl_mesh_id,RL_MESH_FORMAT_UV_2_FLOAT,(quad_count*4),NULL);
+			break;
+
+		case ef_ring:
+			rlSceneMeshSetVertex(view_rl_scene_id,effect->openrl_mesh_id,RL_MESH_FORMAT_VERTEX_3_FLOAT,(36*2),NULL);
+			rlSceneMeshSetUV(view_rl_scene_id,effect->openrl_mesh_id,RL_MESH_FORMAT_UV_2_FLOAT,(36*2),NULL);
+			break;
+	}
+
 }
 
 void view_openrl_effect_mesh_close(effect_type *effect)
 {
-	if (effect->openrl_mesh_id!=-1) rlSceneMeshDelete(view_rl_scene_id,effect->openrl_mesh_id);
+	if (effect->openrl_mesh_id!=-1) {
+		rlSceneMeshDelete(view_rl_scene_id,effect->openrl_mesh_id);
+		effect->openrl_mesh_id=-1;
+	}
 }
 
 /* =======================================================
 
-      Update OpenRL Effect Meshes
+      Update OpenRL Particle Meshes
       
 ======================================================= */
 
@@ -183,17 +198,17 @@ void view_openrl_effect_mesh_particle_quad(float *vp,float *uv,d3pnt *pnt,d3ang 
 	}
 }
 
-void view_openrl_effect_mesh_particle_update(effect_type *effect,int image_offset)
+void view_openrl_effect_mesh_particle_update(effect_type *effect,int count,int image_offset)
 {
-	int						n,k,idx,count,particle_count,quad_count,
+	int						n,k,idx,particle_count,quad_count,
 							ntrail,pixel_dif,material_id;
 	short					*polys,*vk;
 	float					gravity,gx,gy,g_size,pixel_sz,f,trail_step,
-							alpha,alpha_dif,color_dif,f_count,f_tick;
+							alpha_dif,color_dif,f_count,f_tick;
 	float					*vp,*uv;
 	d3pnt					pnt;
 	d3ang					*rot_ang,rang;
-	ray_color_type			col;
+	rlColor					col;
 	iface_particle_type		*particle;
 	particle_effect_data	*eff_particle;
 	matrix_type				pixel_x_mat,pixel_y_mat;
@@ -207,7 +222,6 @@ void view_openrl_effect_mesh_particle_update(effect_type *effect,int image_offse
 	eff_particle=&effect->data.particle;
 	particle=&iface.particle_list.particles[eff_particle->particle_idx];
 
-	count=game_time_get()-effect->start_tick;
 	f_count=(float)count;
 
 		// position
@@ -258,32 +272,12 @@ void view_openrl_effect_mesh_particle_update(effect_type *effect,int image_offse
 		
 	if (particle->reverse) count=(effect->life_tick-count);
 
-		// setup alpha
-		
-	f_tick=(float)effect->life_tick;
-	
-	alpha_dif=particle->end_alpha-particle->start_alpha;
-    alpha=particle->start_alpha+((alpha_dif*f_count)/f_tick);
-	
 		// setup size
+
+	f_tick=(float)effect->life_tick;
 		
 	pixel_dif=particle->end_pixel_size-particle->start_pixel_size;
     pixel_sz=(float)(particle->start_pixel_size+((pixel_dif*count)/effect->life_tick));
-	
-		// setup color
-		
-	color_dif=particle->end_color.r-particle->start_color.r;
-    col.r=particle->start_color.r+((color_dif*f_count)/f_tick);
-	color_dif=particle->end_color.g-particle->start_color.g;
-    col.g=particle->start_color.g+((color_dif*f_count)/f_tick);
-	color_dif=particle->end_color.b-particle->start_color.b;
-    col.b=particle->start_color.b+((color_dif*f_count)/f_tick);
-
-	col.r*=eff_particle->tint.r;
-	col.g*=eff_particle->tint.g;
-	col.b*=eff_particle->tint.b;
-
-	rlSceneMeshSetTintColor(view_rl_scene_id,effect->openrl_mesh_id,&col);
 	
 		// setup images
 		
@@ -298,10 +292,7 @@ void view_openrl_effect_mesh_particle_update(effect_type *effect,int image_offse
 
 	quad_count=particle->count*(particle->trail_count+1);
 
-//	rlSceneMeshSetVertex(view_rl_scene_id,effect->openrl_mesh_id,RL_MESH_FORMAT_VERTEX_3_FLOAT,(quad_count*4),NULL);
 	rlSceneMeshMapVertexPointer(view_rl_scene_id,effect->openrl_mesh_id,(void**)&vp);
-	
-//	rlSceneMeshSetUV(view_rl_scene_id,effect->openrl_mesh_id,RL_MESH_FORMAT_UV_2_FLOAT,(quad_count*4),NULL);
 	rlSceneMeshMapUVPointer(view_rl_scene_id,effect->openrl_mesh_id,(void**)&uv);
 
 		// setup the vertexes
@@ -355,11 +346,205 @@ void view_openrl_effect_mesh_particle_update(effect_type *effect,int image_offse
 
 	rlSceneMeshSetPoly(view_rl_scene_id,effect->openrl_mesh_id,RL_MESH_FORMAT_POLY_SHORT_VERTEX_UV,quad_count,polys);
 	free(polys);
+	
+		// setup color and alpha
+		
+	color_dif=particle->end_color.r-particle->start_color.r;
+    col.r=particle->start_color.r+((color_dif*f_count)/f_tick);
+	color_dif=particle->end_color.g-particle->start_color.g;
+    col.g=particle->start_color.g+((color_dif*f_count)/f_tick);
+	color_dif=particle->end_color.b-particle->start_color.b;
+    col.b=particle->start_color.b+((color_dif*f_count)/f_tick);
+
+	col.r*=eff_particle->tint.r;
+	col.g*=eff_particle->tint.g;
+	col.b*=eff_particle->tint.b;
+
+	alpha_dif=particle->end_alpha-particle->start_alpha;
+    col.a=particle->start_alpha+((alpha_dif*f_count)/f_tick);
+
+	rlSceneMeshSetPolyColorAll(view_rl_scene_id,effect->openrl_mesh_id,&col);
 }
+
+/* =======================================================
+
+      Update OpenRL Ring Meshes
+      
+======================================================= */
+
+void view_openrl_effect_mesh_ring_update(effect_type *effect,int count,int image_offset)
+{
+	int						n,k,life_tick,idx,
+							material_id;
+	short					*polys,*vk;
+	float					mx,my,mz,fx,fy,fz,
+							outer_sz,inner_sz,rd,
+							color_dif,alpha,gx,gy,g_size,
+							f_count,f_tick;
+	float					*vp,*uv;
+	d3pnt					pnt;
+	rlColor					col;
+	iface_ring_type			*ring;
+	ring_effect_data		*eff_ring;
+	matrix_type				mat_x,mat_y,mat_z;
+	
+	eff_ring=&effect->data.ring;
+	ring=&iface.ring_list.rings[eff_ring->ring_idx];
+	
+		// get size
+		
+	life_tick=effect->life_tick;
+
+	f_tick=(float)life_tick;
+	f_count=(float)count;
+	
+	outer_sz=(float)(ring->end_outer_size-ring->start_outer_size);
+	outer_sz=((outer_sz*f_count)/f_tick)+(float)ring->start_outer_size;
+
+	inner_sz=(float)(ring->end_inner_size-ring->start_inner_size);
+	inner_sz=((inner_sz*f_count)/f_tick)+(float)ring->start_inner_size;
+
+		// setup images
+		
+	effect_image_animate_get_uv(count,image_offset,&ring->animate,&gx,&gy,&g_size);
+	
+		// position and ring rotation
+
+	ring_draw_position(effect,count,&pnt);
+
+	mx=(float)pnt.x;
+	my=(float)pnt.y;
+	mz=(float)pnt.z;
+
+	fx=f_count*ring->rot.x;
+	fx+=(fx*ring->rot_accel.x);
+	fx=angle_add(eff_ring->ang.x,fx);
+
+	fy=f_count*ring->rot.y;
+	fy+=(fy*ring->rot_accel.y);
+	fy=angle_add(eff_ring->ang.y,fy);
+
+	fz=f_count*ring->rot.z;
+	fz+=(fz*ring->rot_accel.z);
+	fz=angle_add(eff_ring->ang.z,fz);
+
+	matrix_rotate_x(&mat_x,-fx);
+	matrix_rotate_z(&mat_z,fz);
+	matrix_rotate_y(&mat_y,fy);
+
+		// create the ring vertexes
+
+	rlSceneMeshMapVertexPointer(view_rl_scene_id,effect->openrl_mesh_id,(void**)&vp);
+	rlSceneMeshMapUVPointer(view_rl_scene_id,effect->openrl_mesh_id,(void**)&uv);
+
+	for (n=0;n!=360;n+=10) {
+		rd=((float)n)*ANG_to_RAD;
+
+			// outer
+
+		fx=cosf(rd)*outer_sz;
+		fy=-(sinf(rd)*outer_sz);
+		fz=0.0f;
+
+		matrix_vertex_multiply(&mat_x,&fx,&fy,&fz);
+		matrix_vertex_multiply(&mat_z,&fx,&fy,&fz);
+		matrix_vertex_multiply(&mat_y,&fx,&fy,&fz);
+
+		*vp++=mx+fx;
+		*vp++=my+fy;
+		*vp++=mz+fz;
+
+		*uv++=gx+(g_size*((fx+outer_sz)/(outer_sz*2.0f)));
+		*uv++=gy+(g_size*((fy+outer_sz)/(outer_sz*2.0f)));
+
+			// inner
+
+		fx=cosf(rd)*inner_sz;
+		fy=-(sinf(rd)*inner_sz);
+		fz=0.0f;
+
+		matrix_vertex_multiply(&mat_x,&fx,&fy,&fz);
+		matrix_vertex_multiply(&mat_z,&fx,&fy,&fz);
+		matrix_vertex_multiply(&mat_y,&fx,&fy,&fz);
+
+		*vp++=mx+fx;
+		*vp++=my+fy;
+		*vp++=mz+fz;
+
+		*uv++=gx+(g_size*((fx+outer_sz)/(outer_sz*2.0f)));
+		*uv++=gy+(g_size*((fy+outer_sz)/(outer_sz*2.0f)));
+	}
+
+	rlSceneMeshUnMapVertexPointer(view_rl_scene_id,effect->openrl_mesh_id);
+	rlSceneMeshUnMapUVPointer(view_rl_scene_id,effect->openrl_mesh_id);
+
+		// create the polys
+		// last one needs to wrap around to beginning
+
+	material_id=ring->openrl_material_id;
+
+	polys=(short*)malloc(sizeof(short)*(36*10));
+	vk=polys;
+
+	idx=0;
+
+	for (n=0;n!=36;n++) {
+		*vk++=4;
+		*vk++=material_id;
+
+		*vk++=idx;
+		*vk++=idx;
+
+		*vk++=idx+1;
+		*vk++=idx+1;
+
+		if (n!=35) {
+			k=idx+2;
+		}
+		else {
+			k=0;
+		}
+
+		*vk++=k+1;
+		*vk++=k+1;
+
+		*vk++=k;
+		*vk++=k;
+		
+		idx+=2;
+	}
+
+	rlSceneMeshSetPoly(view_rl_scene_id,effect->openrl_mesh_id,RL_MESH_FORMAT_POLY_SHORT_VERTEX_UV,36,polys);
+	free(polys);
+
+		// set color and alpha
+
+	color_dif=ring->end_color.r-ring->start_color.r;
+    col.r=ring->start_color.r+((color_dif*f_count)/f_tick);
+	color_dif=ring->end_color.g-ring->start_color.g;
+    col.g=ring->start_color.g+((color_dif*f_count)/f_tick);
+	color_dif=ring->end_color.b-ring->start_color.b;
+    col.b=ring->start_color.b+((color_dif*f_count)/f_tick);
+
+	col.r*=eff_ring->tint.r;
+	col.g*=eff_ring->tint.g;
+	col.b*=eff_ring->tint.b;
+
+	alpha=ring->end_alpha-ring->start_alpha;
+	col.a=((alpha*f_count)/f_tick)+ring->start_alpha;
+
+	rlSceneMeshSetPolyColorAll(view_rl_scene_id,effect->openrl_mesh_id,&col);
+}
+
+/* =======================================================
+
+      Update OpenRL Effect Meshes
+      
+======================================================= */
 
 void view_openrl_effect_mesh_update(void)
 {
-	int					n;
+	int					n,count;
 	effect_type			*effect;
 
 	for (n=0;n!=max_effect_list;n++) {
@@ -367,10 +552,21 @@ void view_openrl_effect_mesh_update(void)
 		if (effect==NULL) continue;
 
 		if (!effect->on) continue;
-		if (effect->effecttype!=ef_particle) continue;
 		if (effect->openrl_mesh_id==-1) continue;
 
-		view_openrl_effect_mesh_particle_update(effect,n);
+		count=game_time_get()-effect->start_tick;
+
+		switch (effect->effecttype) {
+
+			case ef_particle:
+				view_openrl_effect_mesh_particle_update(effect,count,n);
+				break;
+
+			case ef_ring:
+				view_openrl_effect_mesh_ring_update(effect,count,n);
+				break;
+
+		}
 	}
 }
 

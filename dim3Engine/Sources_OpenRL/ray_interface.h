@@ -60,16 +60,17 @@
 #define RL_ERROR_UNKNOWN_MATERIAL_ID						-2
 #define RL_ERROR_UNKNOWN_LIGHT_ID							-3
 #define RL_ERROR_UNKNOWN_MESH_ID							-4
-#define RL_ERROR_UNKNOWN_OVERLAY_ID							-5
-#define RL_ERROR_OVERLAY_QUAD_INDEX_OUT_OF_BOUNDS			-6
-#define RL_ERROR_OUT_OF_MEMORY								-7
-#define RL_ERROR_UNKNOWN_TARGET								-8
-#define RL_ERROR_UNKNOWN_FORMAT								-9
-#define RL_ERROR_UNKNOWN_ALPHA_TYPE							-10
-#define RL_ERROR_SCENE_IN_USE								-11
-#define RL_ERROR_MATERIAL_ATTACHED_TO_MESH					-12
-#define RL_ERROR_MATERIAL_ATTACHED_TO_OVERLAY				-13
-#define RL_ERROR_THREADING_ERROR							-14
+#define RL_ERROR_MESH_POLY_INDEX_OUT_OF_BOUNDS				-5
+#define RL_ERROR_UNKNOWN_OVERLAY_ID							-6
+#define RL_ERROR_OVERLAY_QUAD_INDEX_OUT_OF_BOUNDS			-7
+#define RL_ERROR_OUT_OF_MEMORY								-8
+#define RL_ERROR_UNKNOWN_TARGET								-9
+#define RL_ERROR_UNKNOWN_FORMAT								-10
+#define RL_ERROR_UNKNOWN_ALPHA_TYPE							-11
+#define RL_ERROR_SCENE_IN_USE								-12
+#define RL_ERROR_MATERIAL_ATTACHED_TO_MESH					-13
+#define RL_ERROR_MATERIAL_ATTACHED_TO_OVERLAY				-14
+#define RL_ERROR_THREADING_ERROR							-15
 
 //
 // functions
@@ -126,7 +127,6 @@ extern int rlSceneMeshDelete(int sceneId,int meshId);
 extern int rlSceneMeshDeleteAll(int scenedId);
 
 extern int rlSceneMeshSetHidden(int sceneId,int meshId,bool hidden);
-extern int rlSceneMeshSetTintColor(int sceneId,int meshId,ray_color_type *col);
 
 extern int rlSceneMeshSetVertex(int sceneId,int meshId,int format,int count,void *vertex_data);
 extern int rlSceneMeshMapVertexPointer(int sceneId,int meshId,void **vertex_data);
@@ -145,6 +145,9 @@ extern int rlSceneMeshMapTangentPointer(int sceneId,int meshId,void **tangent_da
 extern int rlSceneMeshUnMapTangentPointer(int sceneId,int meshId);
 
 extern int rlSceneMeshSetPoly(int sceneId,int meshId,int format,int count,void *poly_data);
+
+extern int rlSceneMeshSetPolyColor(int sceneId,int meshId,int poly_idx,rlColor *col);
+extern int rlSceneMeshSetPolyColorAll(int sceneId,int meshId,rlColor *col);
 
 	// scene overlays
 	

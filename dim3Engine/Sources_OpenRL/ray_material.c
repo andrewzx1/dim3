@@ -176,11 +176,12 @@ void ray_get_material_rgb(ray_scene_type *scene,ray_point_type *eye_pnt,ray_poin
 	buf=*(((unsigned long*)mipmap->data.color)+offset);
 	ray_create_float_color_from_ulong(buf,&pixel->color.rgb);
 
-		// add in the tint
+		// add in the poly color
 
-	pixel->color.rgb.r*=mesh->tint_col.r;
-	pixel->color.rgb.g*=mesh->tint_col.g;
-	pixel->color.rgb.b*=mesh->tint_col.b;
+	pixel->color.rgb.r*=poly->col.r;
+	pixel->color.rgb.g*=poly->col.g;
+	pixel->color.rgb.b*=poly->col.b;
+	pixel->color.rgb.a*=poly->col.a;
 	
 		// get normal
 		
@@ -280,7 +281,7 @@ float ray_get_material_alpha(ray_scene_type *scene,ray_point_type *eye_pnt,ray_p
 	buf=*(((unsigned long*)mipmap->data.color)+offset);
 	ray_create_float_color_from_ulong(buf,&rgb);
 
-	return(rgb.a);
+	return(rgb.a*poly->col.a);
 }
 
 void ray_get_material_normal(ray_scene_type *scene,ray_point_type *eye_pnt,ray_point_type *trig_pnt,ray_collision_type *collision,ray_vector_type *normal)

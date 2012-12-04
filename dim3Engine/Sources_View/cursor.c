@@ -94,7 +94,7 @@ void cursor_draw(void)
 	top=y;
 	bot=top+sz;
 
-		// draw mouse
+		// draw cursor
 		
 	gl_id=view_images_get_gl_id(cursor_image_idx);
 	view_primitive_2D_texture_quad(gl_id,NULL,1.0f,lft,rgt,top,bot,0.0f,1.0f,0.0f,1.0f,TRUE);

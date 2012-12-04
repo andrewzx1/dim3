@@ -105,8 +105,6 @@ int rlSceneMeshAdd(int sceneId,unsigned long flags)
 	mesh->flags=flags;
 	mesh->hidden=FALSE;
 
-	mesh->tint_col.r=mesh->tint_col.g=mesh->tint_col.b=mesh->tint_col.a=1.0f;
-
 	mesh->vertex_block.count=0;
 	mesh->vertex_block.vertexes=NULL;
 		
@@ -267,44 +265,6 @@ int rlSceneMeshSetHidden(int sceneId,int meshId,bool hidden)
 	if (idx==-1) return(RL_ERROR_UNKNOWN_MESH_ID);
 
 	scene->mesh_list.meshes[idx]->hidden=hidden;
-	
-	return(RL_ERROR_OK);
-}
-
-/* =======================================================
-
-      Sets Tint Color For Mesh
-
-	  Returns:
-	   RL_ERROR_OK
-	   RL_ERROR_UNKNOWN_SCENE_ID
-	   RL_ERROR_UNKNOWN_MESH_ID
-	   RL_ERROR_SCENE_IN_USE
-      
-======================================================= */
-
-int rlSceneMeshSetTintColor(int sceneId,int meshId,ray_color_type *col)
-{
-	int				idx;
-	ray_scene_type	*scene;
-
-		// get scene
-
-	idx=ray_scene_get_index(sceneId);
-	if (idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
-
-	scene=ray_global.scene_list.scenes[idx];
-
-		// can't alter scenes in use
-
-	if (rlSceneRenderState(sceneId)==RL_SCENE_STATE_RENDERING) return(RL_ERROR_SCENE_IN_USE);
-
-		// get mesh
-
-	idx=ray_scene_mesh_get_index(scene,meshId);
-	if (idx==-1) return(RL_ERROR_UNKNOWN_MESH_ID);
-
-	memmove(&scene->mesh_list.meshes[idx]->tint_col,col,sizeof(ray_color_type));
 	
 	return(RL_ERROR_OK);
 }
@@ -816,6 +776,8 @@ int rlSceneMeshSetPoly(int sceneId,int meshId,int format,int count,void *poly_da
 
 		poly->nvertex=(int)*pp++;
 		poly->material_idx=ray_material_get_index((int)*pp++);		// supergumba -- look up errors here
+
+		poly->col.r=poly->col.g=poly->col.b=poly->col.a=1.0f;
 		
 			// load the vertexes
 
@@ -883,3 +845,99 @@ int rlSceneMeshSetPoly(int sceneId,int meshId,int format,int count,void *poly_da
 
 	return(RL_ERROR_OK);
 }
+
+/* =======================================================
+
+      Sets Color on Poly Mesh
+
+	  Returns:
+	   RL_ERROR_OK
+	   RL_ERROR_UNKNOWN_SCENE_ID
+	   RL_ERROR_UNKNOWN_MESH_ID
+	   RL_ERROR_MESH_POLY_INDEX_OUT_OF_BOUNDS
+	   RL_ERROR_SCENE_IN_USE
+      
+======================================================= */
+
+int rlSceneMeshSetPolyColor(int sceneId,int meshId,int poly_idx,rlColor *col)
+{
+	int						scene_idx,mesh_idx;
+	ray_mesh_type			*mesh;
+	ray_scene_type			*scene;
+
+		// get scene
+
+	scene_idx=ray_scene_get_index(sceneId);
+	if (scene_idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
+
+	scene=ray_global.scene_list.scenes[scene_idx];
+
+		// can't alter scenes in use
+
+	if (rlSceneRenderState(sceneId)==RL_SCENE_STATE_RENDERING) return(RL_ERROR_SCENE_IN_USE);
+
+		// get mesh
+
+	mesh_idx=ray_scene_mesh_get_index(scene,meshId);
+	if (mesh_idx==-1) return(RL_ERROR_UNKNOWN_MESH_ID);
+
+	mesh=scene->mesh_list.meshes[mesh_idx];
+
+		// update the poly
+
+	if ((poly_idx<0) || (poly_idx>=mesh->poly_block.count)) return(RL_ERROR_MESH_POLY_INDEX_OUT_OF_BOUNDS);
+
+	memmove(&mesh->poly_block.polys[poly_idx].col,col,sizeof(ray_color_type));
+
+	return(RL_ERROR_OK);
+}
+
+/* =======================================================
+
+      Sets Color on All Polys in a Mesh
+
+	  Returns:
+	   RL_ERROR_OK
+	   RL_ERROR_UNKNOWN_SCENE_ID
+	   RL_ERROR_UNKNOWN_MESH_ID
+	   RL_ERROR_SCENE_IN_USE
+      
+======================================================= */
+
+int rlSceneMeshSetPolyColorAll(int sceneId,int meshId,rlColor *col)
+{
+	int						n,scene_idx,mesh_idx;
+	ray_mesh_type			*mesh;
+	ray_poly_type			*poly;
+	ray_scene_type			*scene;
+
+		// get scene
+
+	scene_idx=ray_scene_get_index(sceneId);
+	if (scene_idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
+
+	scene=ray_global.scene_list.scenes[scene_idx];
+
+		// can't alter scenes in use
+
+	if (rlSceneRenderState(sceneId)==RL_SCENE_STATE_RENDERING) return(RL_ERROR_SCENE_IN_USE);
+
+		// get mesh
+
+	mesh_idx=ray_scene_mesh_get_index(scene,meshId);
+	if (mesh_idx==-1) return(RL_ERROR_UNKNOWN_MESH_ID);
+
+	mesh=scene->mesh_list.meshes[mesh_idx];
+
+		// update the poly
+
+	poly=mesh->poly_block.polys;
+
+	for (n=0;n!=mesh->poly_block.count;n++) {
+		memmove(&poly->col,col,sizeof(ray_color_type));
+		poly++;
+	}
+
+	return(RL_ERROR_OK);
+}
+
