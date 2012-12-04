@@ -419,7 +419,7 @@ char* gl_simple_bitmap_shader_build_frag(void)
 	
 	strcat(buf,"void main(void)\n");
 	strcat(buf,"{\n");
-	strcat(buf,"gl_FragColor=texture2D(dim3Tex,uv)*dim3SimpleColor;\n");
+	strcat(buf,"gl_FragColor=texture2D(dim3Tex,fract(uv))*dim3SimpleColor;\n");
 	strcat(buf,"}\n");
 
 	return(buf);

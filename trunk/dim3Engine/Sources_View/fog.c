@@ -67,7 +67,7 @@ void fog_draw_textured(void)
 	unsigned long		gl_id;
 	float				r_ang,r_ang_2,r_add,fx,fz,fx_1,fx_2,fz_1,fz_2,f_ty,f_by,
 						f_radius,gx,gx_add,gx_shift;
-	float				*vertex_ptr,*uv_ptr;
+	float				*vp;
 	d3col				col;
 	texture_type		*texture;
 	
@@ -85,7 +85,7 @@ void fog_draw_textured(void)
 	}
 
 		// drawing layers
-	
+		
 	count=map.fog.count;
 	outer_radius=map.fog.outer_radius;
 	inner_radius=map.fog.inner_radius;
@@ -96,13 +96,11 @@ void fog_draw_textured(void)
 		
 	view_bind_fog_vertex_object();
 
-	vertex_ptr=(float*)view_map_fog_vertex_object();
-	if (vertex_ptr==NULL) {
+	vp=(float*)view_map_fog_vertex_object();
+	if (vp==NULL) {
 		view_unbind_fog_vertex_object();
 		return;
 	}
-
-	uv_ptr=vertex_ptr+(((16*6)*count)*3);
 
 		// get drawing setup
 
@@ -142,49 +140,49 @@ void fog_draw_textured(void)
 
 				// triangle 1
 				
-			*vertex_ptr++=fx_1;
-			*vertex_ptr++=f_ty;
-			*vertex_ptr++=fz_1;
+			*vp++=fx_1;
+			*vp++=f_ty;
+			*vp++=fz_1;
 
-			*uv_ptr++=gx;
-			*uv_ptr++=0.0f;
+			*vp++=gx;
+			*vp++=0.0f;
 			
-			*vertex_ptr++=fx_2;
-			*vertex_ptr++=f_ty;
-			*vertex_ptr++=fz_2;
+			*vp++=fx_2;
+			*vp++=f_ty;
+			*vp++=fz_2;
 
-			*uv_ptr++=gx+gx_add;
-			*uv_ptr++=0.0f;
+			*vp++=gx+gx_add;
+			*vp++=0.0f;
 			
-			*vertex_ptr++=fx_1;
-			*vertex_ptr++=f_by;
-			*vertex_ptr++=fz_1;
+			*vp++=fx_1;
+			*vp++=f_by;
+			*vp++=fz_1;
 
-			*uv_ptr++=gx;
-			*uv_ptr++=map.fog.txt_fact.y;
+			*vp++=gx;
+			*vp++=map.fog.txt_fact.y;
 			
 				// triangle 2
 			
-			*vertex_ptr++=fx_2;
-			*vertex_ptr++=f_ty;
-			*vertex_ptr++=fz_2;
+			*vp++=fx_2;
+			*vp++=f_ty;
+			*vp++=fz_2;
 
-			*uv_ptr++=gx+gx_add;
-			*uv_ptr++=0.0f;
+			*vp++=gx+gx_add;
+			*vp++=0.0f;
 
-			*vertex_ptr++=fx_2;
-			*vertex_ptr++=f_by;
-			*vertex_ptr++=fz_2;
+			*vp++=fx_2;
+			*vp++=f_by;
+			*vp++=fz_2;
 
-			*uv_ptr++=gx+gx_add;
-			*uv_ptr++=map.fog.txt_fact.y;
+			*vp++=gx+gx_add;
+			*vp++=map.fog.txt_fact.y;
 			
-			*vertex_ptr++=fx_1;
-			*vertex_ptr++=f_by;
-			*vertex_ptr++=fz_1;
+			*vp++=fx_1;
+			*vp++=f_by;
+			*vp++=fz_1;
 
-			*uv_ptr++=gx;
-			*uv_ptr++=map.fog.txt_fact.y;
+			*vp++=gx;
+			*vp++=map.fog.txt_fact.y;
 
 			r_ang=r_ang_2;
 			gx+=gx_add;
@@ -212,8 +210,7 @@ void fog_draw_textured(void)
 		// draw the fog
 
 	gl_shader_draw_execute_simple_bitmap_set_texture(gl_id);
-	gl_shader_draw_execute_simple_bitmap_vbo_attribute(3,0,((((16*6)*count)*3)*sizeof(float)),0,&col,map.fog.alpha);
-
+	gl_shader_draw_execute_simple_bitmap_vbo_attribute(3,0,(3*sizeof(float)),((3+2)*sizeof(float)),&col,map.fog.alpha);
 	glDrawArrays(GL_TRIANGLES,0,((16*6)*count));
 	
 	glDepthMask(GL_TRUE);
