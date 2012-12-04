@@ -139,6 +139,12 @@ bool ring_spawn(int ring_idx,int obj_idx,d3pnt *pt,d3ang *ang)
 		obj=server.obj_list.objs[obj_idx];
 		if (obj!=NULL) object_get_tint(obj,&eff_ring->tint);
 	}
+
+		// openrl setup
+
+#ifdef D3_OPENRL
+	view_openrl_effect_mesh_setup(effect);
+#endif
 	
 	return(TRUE);
 }

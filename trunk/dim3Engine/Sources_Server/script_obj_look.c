@@ -32,6 +32,7 @@ and can be sold or given away.
 #include "scripts.h"
 #include "objects.h"
 
+extern server_type		server;
 extern js_type			js;
 
 JSValueRef js_obj_look_get_upAngle(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
@@ -191,7 +192,8 @@ JSValueRef js_obj_look_set_look_at_func(JSContextRef cx,JSObjectRef func,JSObjec
 	
 	if (ang>180.0f) ang-=360.0f;
 	
-	obj->view_ang.x=-ang;
+	if (obj->idx!=server.player_obj_idx) ang=-ang;
+	obj->view_ang.x=ang;
 
 	return(script_null_to_value(cx));
 }

@@ -120,6 +120,7 @@ typedef struct		{
 						int							material_idx,nvertex,
 													mm_level;
 						unsigned char				render_mask[ray_render_max_thread_count];
+						ray_color_type				col;
 						ray_polygon_index_type		idxs[8];
 						ray_trig_block				trig_block;
 						ray_bound_type				bound;
@@ -139,7 +140,6 @@ typedef struct		{
 						int							id;
 						bool						hidden;
 						unsigned long				flags;
-						ray_color_type				tint_col;
 						ray_vertex_block			vertex_block;
 						ray_uv_block				uv_block;
 						ray_normal_block			normal_block;
