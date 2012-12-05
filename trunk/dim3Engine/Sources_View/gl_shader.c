@@ -42,7 +42,8 @@ shader_type					*gl_shader_current;
 extern int					nuser_shader;
 extern shader_type			user_shaders[max_iface_user_shader],
 							core_shaders[max_shader_light+1][max_core_shader],
-							color_shader,gradient_shader,black_shader,bitmap_shader;
+							color_shader,gradient_shader,black_shader,
+							bitmap_shader,bitmap_wrap_shader;
 
 extern float				gl_proj_matrix[16],gl_model_view_matrix[16],
 							gl_normal_matrix[9],
@@ -948,6 +949,7 @@ void gl_shader_frame_start(void)
 	gl_shader_frame_start_per_shader(&gradient_shader);
 	gl_shader_frame_start_per_shader(&black_shader);
 	gl_shader_frame_start_per_shader(&bitmap_shader);
+	gl_shader_frame_start_per_shader(&bitmap_wrap_shader);
 
 		// user shaders
 		
@@ -978,6 +980,7 @@ void gl_shader_force_matrix_resets(void)
 	gradient_shader.need_matrix_reset=TRUE;
 	black_shader.need_matrix_reset=TRUE;
 	bitmap_shader.need_matrix_reset=TRUE;
+	bitmap_wrap_shader.need_matrix_reset=TRUE;
 
 		// user shaders
 		
