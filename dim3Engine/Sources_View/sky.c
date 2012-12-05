@@ -98,7 +98,7 @@ void sky_draw_background_single(map_background_layer_type *layer)
 
 		// draw the quad
 
-	gl_shader_draw_execute_simple_bitmap_ptr(bitmap->gl_id,2,vertexes,uvs,&col,1.0f);
+	gl_shader_draw_execute_simple_bitmap_wrap_ptr(bitmap->gl_id,2,vertexes,uvs,&col,1.0f);
 	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
 }
 
@@ -310,8 +310,8 @@ void sky_draw_dome_panoramic(void)
 	texture=&map.textures[map.sky.fill];
 	col.r=col.g=col.b=1.0f;
 
-	gl_shader_draw_execute_simple_bitmap_vbo_attribute(3,0,((pan_count*3)*sizeof(float)),0,&col,1.0f);
-	gl_shader_draw_execute_simple_bitmap_set_texture(texture->frames[texture->animate.current_frame].bitmap.gl_id);
+	gl_shader_draw_execute_simple_bitmap_wrap_vbo_attribute(3,0,((pan_count*3)*sizeof(float)),0,&col,1.0f);
+	gl_shader_draw_execute_simple_bitmap_wrap_set_texture(texture->frames[texture->animate.current_frame].bitmap.gl_id);
 	glDrawArrays(GL_TRIANGLES,0,pan_count);
 
 		// unbind the vbo
@@ -586,8 +586,8 @@ void sky_draw_dome_hemisphere(void)
 
 		// draw the dome
 	
-	gl_shader_draw_execute_simple_bitmap_vbo_attribute(3,0,((dome_cnt*3)*sizeof(float)),0,&col,1.0f);
-	gl_shader_draw_execute_simple_bitmap_set_texture(texture->frames[texture->animate.current_frame].bitmap.gl_id);
+	gl_shader_draw_execute_simple_bitmap_wrap_vbo_attribute(3,0,((dome_cnt*3)*sizeof(float)),0,&col,1.0f);
+	gl_shader_draw_execute_simple_bitmap_wrap_set_texture(texture->frames[texture->animate.current_frame].bitmap.gl_id);
 	glDrawArrays(GL_TRIANGLES,0,dome_cnt);
 
 		// unbind the vbo
@@ -845,13 +845,13 @@ void sky_draw_cube(void)
 
 		// draw cube sides
 
-	gl_shader_draw_execute_simple_bitmap_vbo_attribute(3,0,(((6*4)*3)*sizeof(float)),0,&col,1.0f);
+	gl_shader_draw_execute_simple_bitmap_wrap_vbo_attribute(3,0,(((6*4)*3)*sizeof(float)),0,&col,1.0f);
 
 	offset=0;
 
 	if (map.sky.fill!=-1) {
 		texture=&map.textures[map.sky.fill];
-		gl_shader_draw_execute_simple_bitmap_set_texture(texture->frames[texture->animate.current_frame].bitmap.gl_id);
+		gl_shader_draw_execute_simple_bitmap_wrap_set_texture(texture->frames[texture->animate.current_frame].bitmap.gl_id);
 		
 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE);
@@ -866,7 +866,7 @@ void sky_draw_cube(void)
 		
 	if (map.sky.bottom_fill!=-1) {
 		texture=&map.textures[map.sky.bottom_fill];
-		gl_shader_draw_execute_simple_bitmap_set_texture(texture->frames[texture->animate.current_frame].bitmap.gl_id);
+		gl_shader_draw_execute_simple_bitmap_wrap_set_texture(texture->frames[texture->animate.current_frame].bitmap.gl_id);
 		
 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE);
@@ -881,7 +881,7 @@ void sky_draw_cube(void)
 		
 	if (map.sky.north_fill!=-1) {
 		texture=&map.textures[map.sky.north_fill];
-		gl_shader_draw_execute_simple_bitmap_set_texture(texture->frames[texture->animate.current_frame].bitmap.gl_id);
+		gl_shader_draw_execute_simple_bitmap_wrap_set_texture(texture->frames[texture->animate.current_frame].bitmap.gl_id);
 		
 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE);
@@ -896,7 +896,7 @@ void sky_draw_cube(void)
 
 	if (map.sky.east_fill!=-1) {
 		texture=&map.textures[map.sky.east_fill];
-		gl_shader_draw_execute_simple_bitmap_set_texture(texture->frames[texture->animate.current_frame].bitmap.gl_id);
+		gl_shader_draw_execute_simple_bitmap_wrap_set_texture(texture->frames[texture->animate.current_frame].bitmap.gl_id);
 		
 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE);
@@ -911,7 +911,7 @@ void sky_draw_cube(void)
 
 	if (map.sky.south_fill!=-1) {
 		texture=&map.textures[map.sky.south_fill];
-		gl_shader_draw_execute_simple_bitmap_set_texture(texture->frames[texture->animate.current_frame].bitmap.gl_id);
+		gl_shader_draw_execute_simple_bitmap_wrap_set_texture(texture->frames[texture->animate.current_frame].bitmap.gl_id);
 		
 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE);
@@ -926,7 +926,7 @@ void sky_draw_cube(void)
 
 	if (map.sky.west_fill!=-1) {
 		texture=&map.textures[map.sky.west_fill];
-		gl_shader_draw_execute_simple_bitmap_set_texture(texture->frames[texture->animate.current_frame].bitmap.gl_id);
+		gl_shader_draw_execute_simple_bitmap_wrap_set_texture(texture->frames[texture->animate.current_frame].bitmap.gl_id);
 		
 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE);
