@@ -111,6 +111,7 @@ os_menu_item_type		map_menu_setup[]=
 									{"Mesh","Combine",map_menu_item_MeshCombine,os_menu_key_cmd,'P'},
 									{"Mesh","Split",map_menu_item_MeshSplit,os_menu_key_cmd_shift,'P'},
 									{"Mesh","Tesselate",map_menu_item_MeshTesselate,os_menu_key_none,0x0},
+									{"Mesh","Distort",map_menu_item_MeshDistort,os_menu_key_none,0x0},
 									{"Mesh","",0,os_menu_key_none,0x0},
 									{"Mesh","Scale...",map_menu_item_MeshResize,os_menu_key_none,0x0},
 									{"Mesh","Force Bounds to Grid",map_menu_item_MeshForceGrid,os_menu_key_none,0x0},
@@ -502,6 +503,10 @@ bool map_menu_event_run(int cmd)
 			
 		case map_menu_item_MeshTesselate:
 			piece_tesselate(TRUE);
+			return(TRUE);
+
+		case map_menu_item_MeshDistort:
+			piece_distort();
 			return(TRUE);
 			
 		case map_menu_item_MeshResize:

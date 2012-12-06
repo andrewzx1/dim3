@@ -457,6 +457,59 @@ void piece_tesselate(bool mesh)
 
 /* =======================================================
 
+      Piece Distor
+      
+======================================================= */
+
+void piece_distort(void)
+{
+	int				n,sel_count,type,
+					idx,sub_idx,mesh_idx;
+	d3pnt			mov_pnt;
+	d3pnt			*pnt;
+	map_mesh_type	*mesh;
+
+		// get mesh
+	
+	mesh_idx=-1;
+		
+	sel_count=select_count();
+
+	for (n=0;n!=sel_count;n++) {
+		select_get(n,&type,&idx,&sub_idx);
+		if (type==item_map_mesh) {
+			mesh_idx=idx;
+			break;
+		}
+	}
+
+	if (mesh_idx==-1) return;
+	
+		// run dialog
+		
+    if (!dialog_distort_run(&mov_pnt)) return;
+
+		// distort
+	
+	map_undo_push();
+/*
+	mesh=&map.mesh.meshes[mesh_idx];
+
+	pnt=mesh->vertexes;
+
+	for (n=0;mesh->nvertex;n++) {
+		if (mov_pnt.x>0) pnt->x+=(mov_pnt.x-((random()%mov_pnt.x)*2));
+		if (mov_pnt.y>0) pnt->y+=(mov_pnt.y-((random()%mov_pnt.y)*2));
+		if (mov_pnt.z>0) pnt->z+=(mov_pnt.z-((random()%mov_pnt.z)*2));
+		pnt++;
+	}
+*/
+	view_vbo_mesh_rebuild(mesh_idx);
+	main_wind_draw();
+}
+
+/* =======================================================
+
       Piece Resize and Reposition
       
 ======================================================= */
