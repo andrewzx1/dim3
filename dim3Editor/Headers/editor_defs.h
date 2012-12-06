@@ -108,7 +108,8 @@ and can be sold or given away.
 #define map_menu_item_MeshCombine				5500
 #define map_menu_item_MeshSplit					5501
 #define map_menu_item_MeshTesselate				5502
-#define map_menu_item_MeshResize				5503
+#define map_menu_item_MeshDistort				5503
+#define map_menu_item_MeshResize				5504
 #define map_menu_item_MeshForceGrid				5506
 #define map_menu_item_MeshFlipX					5508
 #define map_menu_item_MeshFlipY					5509

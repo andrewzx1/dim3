@@ -599,6 +599,7 @@ extern void piece_delete_face(void);
 extern void piece_delete(void);
 extern void piece_select_more(void);
 extern void piece_tesselate(bool mesh);
+extern void piece_distort(void);
 extern void piece_resize(void);
 extern void piece_force_grid(void);
 extern void piece_flip(bool flip_x,bool flip_y,bool flip_z);
@@ -816,6 +817,7 @@ extern void view_model_cube_vertexes(char *name,d3pnt *pnt,d3ang *ang,float resi
 extern bool dialog_new_map_run(char *file_name);
 extern bool dialog_file_open_run(char *title,char *search_path,char *extension,char *required_file_name,char *file_name);
 extern bool dialog_scale_run(d3fpnt *scale);
+extern bool dialog_distort_run(d3pnt *mov_pnt);
 extern bool dialog_reposition_run(d3pnt *min,d3pnt *max);
 extern bool dialog_free_rotate_run(d3ang *ang);
 extern bool dialog_grid_run(d3pnt *divs,bool *sides);
@@ -994,5 +996,4 @@ extern bool dialog_set_vertex_bone_run(int *major_bone_idx,int *minor_bone_idx,f
 extern bool dialog_bone_attach_duplicate_run(int *from_bone_idx,int *to_bone_idx,int *vertex_slop);
 extern bool dialog_animation_scale_time_run(int animate_idx);
 extern bool dialog_play_blend_animation_run(void);
-extern bool dialog_scale_run(d3fpnt *scale);
 extern bool dialog_set_normal_run(d3vct *normal);

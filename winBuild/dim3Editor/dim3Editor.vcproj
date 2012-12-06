@@ -797,6 +797,10 @@
 						Name="Map"
 						>
 						<File
+							RelativePath="..\..\dim3Editor\Sources\dialogs\map\dialog_distort.c"
+							>
+						</File>
+						<File
 							RelativePath="..\..\dim3Editor\Sources\dialogs\map\dialog_free_rotate.c"
 							>
 						</File>
