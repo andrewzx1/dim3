@@ -186,13 +186,11 @@ void iface_read_settings_particle(iface_type *iface)
 
 		particle->start_color.r=particle->start_color.g=particle->start_color.b=1.0f;
 		particle->end_color.r=particle->end_color.g=particle->end_color.b=1.0f;
-		particle->team_tint=FALSE;
 
         tag=xml_findfirstchild("Color",particle_tag);
         if (tag!=-1) {
 			xml_get_attribute_color(tag,"start",&particle->start_color);
 			xml_get_attribute_color(tag,"end",&particle->end_color);
-            particle->team_tint=xml_get_attribute_boolean(tag,"team");
         }
 		
         tag=xml_findfirstchild("Alpha",particle_tag);
@@ -351,7 +349,6 @@ bool iface_write_settings_particle(iface_type *iface,char *err_str)
 		xml_add_tagstart("Color");
 		xml_add_attribute_color("start",&particle->start_color);
 		xml_add_attribute_color("end",&particle->end_color);
-		xml_add_attribute_boolean("team",particle->team_tint);
 		xml_add_tagend(TRUE);
 
 		xml_add_tagstart("Alpha");

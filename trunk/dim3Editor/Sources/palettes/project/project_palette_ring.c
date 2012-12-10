@@ -51,7 +51,6 @@ and can be sold or given away.
 #define kRingMotionRotAccel						14
 
 #define kRingOptionBlendAdd						15
-#define kRingOptionTeamTint						16
 
 #define kRingImageCount							17
 #define kRingImageMillisecond					18
@@ -106,7 +105,6 @@ void project_palette_fill_ring(int ring_idx)
 
 	list_palette_add_header(&project_palette,0,"Options");
 	list_palette_add_checkbox(&project_palette,kRingOptionBlendAdd,"Additive Blend",&ring->blend_add,FALSE);
-	list_palette_add_checkbox(&project_palette,kRingOptionTeamTint,"Team Tint",&ring->team_tint,FALSE);
 
 		// animation
 

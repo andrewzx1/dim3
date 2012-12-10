@@ -212,7 +212,6 @@ int net_host_player_add(net_address_type *addr,bool local,char *name,char *draw_
 	strcpy(player->name,name);
 	strcpy(player->draw_name,draw_name);
 	player->team_idx=net_team_none;
-	player->tint_color_idx=tint_color_idx;
 	
 	player->pnt.x=player->pnt.y=player->pnt.z=0;
 	
@@ -260,7 +259,6 @@ int net_host_player_add_bot(obj_type *obj)
 	strcpy(player->draw_name,obj->draw.name);
 	
 	player->team_idx=obj->team_idx;
-	player->tint_color_idx=0;
 	
 	memmove(&player->pnt,&obj->pnt,sizeof(d3pnt));
 	

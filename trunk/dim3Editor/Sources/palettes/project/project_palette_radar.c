@@ -38,7 +38,6 @@ and can be sold or given away.
 #define kRadarPropertySettingsViewRadius		3
 #define kRadarPropertySettingsNoMotionFade		4
 #define kRadarPropertySettingsRot				5
-#define kRadarPropertySettingsTeamTint			6
 
 #define kRadarPropertyPositionX					7
 #define kRadarPropertyPositionY					8
@@ -72,7 +71,6 @@ void project_palette_fill_radar(void)
 	list_palette_add_int(&project_palette,kRadarPropertySettingsViewRadius,"View Radius",&iface.radar.view_radius,FALSE);
 	list_palette_add_int(&project_palette,kRadarPropertySettingsNoMotionFade,"No Motion Fade Milliseconds",&iface.radar.no_motion_fade,FALSE);
 	list_palette_add_checkbox(&project_palette,kRadarPropertySettingsRot,"Rotate",&iface.radar.rot,FALSE);
-	list_palette_add_checkbox(&project_palette,kRadarPropertySettingsTeamTint,"Team Tint",&iface.radar.team_tint,FALSE);
 
 		// position
 

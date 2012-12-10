@@ -457,17 +457,18 @@ void piece_tesselate(bool mesh)
 
 /* =======================================================
 
-      Piece Distor
+      Piece Distort
       
 ======================================================= */
 
 void piece_distort(void)
 {
-	int				n,sel_count,type,
+	int				n,k,t,sel_count,type,
 					idx,sub_idx,mesh_idx;
+	bool			distort_ok;
 	d3pnt			mov_pnt;
-	d3pnt			*pnt;
-	map_mesh_type	*mesh;
+	d3pnt			*pnt,*chk_pnt;
+	map_mesh_type	*mesh,*chk_mesh;
 
 		// get mesh
 	
@@ -492,18 +493,46 @@ void piece_distort(void)
 		// distort
 	
 	map_undo_push();
-/*
+
 	mesh=&map.mesh.meshes[mesh_idx];
 
 	pnt=mesh->vertexes;
 
-	for (n=0;mesh->nvertex;n++) {
-		if (mov_pnt.x>0) pnt->x+=(mov_pnt.x-((random()%mov_pnt.x)*2));
-		if (mov_pnt.y>0) pnt->y+=(mov_pnt.y-((random()%mov_pnt.y)*2));
-		if (mov_pnt.z>0) pnt->z+=(mov_pnt.z-((random()%mov_pnt.z)*2));
+	for (n=0;n!=mesh->nvertex;n++) {
+	
+			// don't distort if this point
+			// is shared by another mesh
+			
+		distort_ok=TRUE;
+			
+		for (k=0;k!=map.mesh.nmesh;k++) {
+			if (k==mesh_idx) continue;
+			
+			chk_mesh=&map.mesh.meshes[k];
+			chk_pnt=chk_mesh->vertexes;
+			
+			for (t=0;t!=chk_mesh->nvertex;t++) {
+				if ((chk_pnt->x==pnt->x) && (chk_pnt->y==pnt->y) && (chk_pnt->z==pnt->z)) {
+					distort_ok=FALSE;
+					break;
+				}
+				chk_pnt++;
+			}
+			
+			if (!distort_ok) break;
+		}
+		
+			// randomly distort the vertex
+			
+		if (distort_ok) {
+			if (mov_pnt.x>0) pnt->x+=(mov_pnt.x-((random()%mov_pnt.x)*2));
+			if (mov_pnt.y>0) pnt->y+=(mov_pnt.y-((random()%mov_pnt.y)*2));
+			if (mov_pnt.z>0) pnt->z+=(mov_pnt.z-((random()%mov_pnt.z)*2));
+		}
+		
 		pnt++;
 	}
-*/
+
 	view_vbo_mesh_rebuild(mesh_idx);
 	main_wind_draw();
 }

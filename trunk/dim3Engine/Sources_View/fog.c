@@ -65,8 +65,8 @@ void fog_draw_textured(void)
 	int					n,k,tick,count,outer_radius,inner_radius,
 						radius_add,radius,frame,mem_sz;
 	unsigned long		gl_id;
-	float				r_ang,r_ang_2,r_add,fx,fz,fx_1,fx_2,fz_1,fz_2,f_ty,f_by,
-						f_radius,gx,gx_add,gx_shift;
+	float				r_ang,r_shift,r_ang_2,r_add,fx,fz,fx_1,fx_2,fz_1,fz_2,f_ty,f_by,
+						f_radius,gx,gx2;
 	float				*vp;
 	d3col				col;
 	texture_type		*texture;
@@ -107,6 +107,7 @@ void fog_draw_textured(void)
 	tick=game_time_get();
 
 	r_add=ANG_to_RAD*(360.0f/16.0f);
+	r_shift=(ANG_to_RAD*360.0f)/((float)count);
 
 	radius=outer_radius;
 	
@@ -116,16 +117,13 @@ void fog_draw_textured(void)
 	f_ty=(float)(view.render->camera.pnt.y-map.fog.high);
 	f_by=(float)(view.render->camera.pnt.y+map.fog.drop);
 
-	gx_add=map.fog.txt_fact.x/16.0f;
-	gx_shift=1.0f/((float)count);
-
 		// create the fog triangle vertexes
-
+		
 	for (n=0;n!=count;n++) {
 	
-		gx=gx_shift*((float)n);
+		gx=0.0f;
 
-		r_ang=0.0f;
+		r_ang=r_shift*((float)n);
 		f_radius=(float)radius;
 
 		for (k=0;k!=16;k++) {
@@ -137,6 +135,8 @@ void fog_draw_textured(void)
 
 			fz_1=-(cosf(r_ang)*f_radius)+fz;
 			fz_2=-(cosf(r_ang_2)*f_radius)+fz;
+			
+			gx2=gx+0.5f;
 
 				// triangle 1
 				
@@ -151,7 +151,7 @@ void fog_draw_textured(void)
 			*vp++=f_ty;
 			*vp++=fz_2;
 
-			*vp++=gx+gx_add;
+			*vp++=gx2;
 			*vp++=0.0f;
 			
 			*vp++=fx_1;
@@ -159,7 +159,7 @@ void fog_draw_textured(void)
 			*vp++=fz_1;
 
 			*vp++=gx;
-			*vp++=map.fog.txt_fact.y;
+			*vp++=1.0f;
 			
 				// triangle 2
 			
@@ -167,25 +167,27 @@ void fog_draw_textured(void)
 			*vp++=f_ty;
 			*vp++=fz_2;
 
-			*vp++=gx+gx_add;
+			*vp++=gx2;
 			*vp++=0.0f;
 
 			*vp++=fx_2;
 			*vp++=f_by;
 			*vp++=fz_2;
 
-			*vp++=gx+gx_add;
-			*vp++=map.fog.txt_fact.y;
+			*vp++=gx2;
+			*vp++=1.0f;
 			
 			*vp++=fx_1;
 			*vp++=f_by;
 			*vp++=fz_1;
 
 			*vp++=gx;
-			*vp++=map.fog.txt_fact.y;
+			*vp++=1.0f;
 
 			r_ang=r_ang_2;
-			gx+=gx_add;
+			
+			gx+=0.5f;
+			if (gx==1.0f) gx=0.0f;
 		}
 
 		radius+=radius_add;
@@ -209,8 +211,8 @@ void fog_draw_textured(void)
 
 		// draw the fog
 
-	gl_shader_draw_execute_simple_bitmap_wrap_set_texture(gl_id);
-	gl_shader_draw_execute_simple_bitmap_wrap_vbo_attribute(3,0,(3*sizeof(float)),((3+2)*sizeof(float)),&col,map.fog.alpha);
+	gl_shader_draw_execute_simple_bitmap_set_texture(gl_id);
+	gl_shader_draw_execute_simple_bitmap_vbo_attribute(3,0,(3*sizeof(float)),((3+2)*sizeof(float)),&col,map.fog.alpha);
 	glDrawArrays(GL_TRIANGLES,0,((16*6)*count));
 	
 	glDepthMask(GL_TRUE);

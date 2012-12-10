@@ -81,24 +81,10 @@ void radar_draw(void)
 	rx=lx+(radar_sz<<1);
 	by=ty+(radar_sz<<1);
 
-		// draw radar background
-
-	if (!iface.radar.team_tint) {
-		tint.r=tint.g=tint.b=1.0f;
-	}
-	else {
-		if (net_setup.mode==net_mode_none) {
-			memmove(&tint,&iface.color.default_tint,sizeof(d3col));
-		}
-		else {
-			object_get_tint(player_obj,&tint);
-		}
-	}
-
 		// draw background
 		
 	gl_id=view_images_get_gl_id(iface.radar.background_image_idx);
-	view_primitive_2D_texture_quad(gl_id,&tint,1.0f,lx,rx,ty,by,0.0f,1.0f,0.0f,1.0f,TRUE);
+	view_primitive_2D_texture_quad(gl_id,NULL,1.0f,lx,rx,ty,by,0.0f,1.0f,0.0f,1.0f,TRUE);
 
 		// ticks for fades
 

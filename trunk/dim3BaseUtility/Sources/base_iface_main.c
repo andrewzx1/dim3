@@ -29,8 +29,6 @@ and can be sold or given away.
 	#include "dim3baseutility.h"
 #endif
 
-d3col							default_tint_cols[8]={{1.0f,1.0f,1.0f},{1.0f,1.0f,0.0f},{1.0f,0.6f,0.0f},{1.0f,0.0f,0.0f},{0.0f,1.0f,0.0f},{0.0f,0.0f,1.0f},{1.0f,0.0f,1.0f},{0.6f,0.4f,0.0f}};
-
 extern file_path_setup_type		file_path_setup;
 
 #ifdef D3_OS_IPHONE
@@ -304,12 +302,6 @@ void iface_default_settings(iface_type *iface)
 	iface->color.picker.outline.r=iface->color.picker.outline.g=iface->color.picker.outline.b=0.0f;
 
 	iface->color.system.metric.r=iface->color.system.metric.g=iface->color.system.metric.b=1.0f;
-	
-	iface->color.default_tint.r=iface->color.default_tint.g=iface->color.default_tint.b=1.0f;
-
-	for (n=0;n!=8;n++) {
-		memmove(&iface->color.tints[n],&default_tint_cols[n],sizeof(d3col));
-	}
 	
 		// fonts
 

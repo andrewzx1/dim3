@@ -122,15 +122,13 @@ void decal_render_mark(int stencil_idx,decal_type *decal)
 		// get lighting
 		
 	if (mark->hilite) {
-		col.r=decal->tint.r;
-		col.g=decal->tint.g;
-		col.b=decal->tint.b;
+		col.r=col.g=col.b=1.0f;
 	}
 	else {
 		gl_lights_calc_color((float)decal->x[0],(float)decal->y[0],(float)decal->z[0],cf);
-		col.r=cf[0]*decal->tint.r;
-		col.g=cf[1]*decal->tint.g;
-		col.b=cf[2]*decal->tint.b;
+		col.r=cf[0];
+		col.g=cf[1];
+		col.b=cf[2];
 	}
 
 		// setup vertex ptr

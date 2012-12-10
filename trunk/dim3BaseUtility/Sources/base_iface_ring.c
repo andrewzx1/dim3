@@ -142,13 +142,11 @@ void iface_read_settings_ring(iface_type *iface)
 		
 		ring->start_color.r=ring->start_color.g=ring->start_color.b=1.0f;
 		ring->end_color.r=ring->end_color.g=ring->end_color.b=1.0f;
-		ring->team_tint=FALSE;
 
         tag=xml_findfirstchild("Color",ring_tag);
         if (tag!=-1) {
 			xml_get_attribute_color(tag,"start",&ring->start_color);
 			xml_get_attribute_color(tag,"end",&ring->end_color);
-			ring->team_tint=xml_get_attribute_boolean(tag,"team");
        }
 		
         tag=xml_findfirstchild("Alpha",ring_tag);
@@ -237,7 +235,6 @@ bool iface_write_settings_ring(iface_type *iface,char *err_str)
         xml_add_tagstart("Color");
 		xml_add_attribute_color("start",&ring->start_color);
 		xml_add_attribute_color("end",&ring->end_color);
-		xml_add_attribute_boolean("team",ring->team_tint);
 		xml_add_tagend(TRUE);
 
         xml_add_tagstart("Alpha");

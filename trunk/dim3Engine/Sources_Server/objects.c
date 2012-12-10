@@ -426,8 +426,6 @@ void object_team_get_tint(int team_idx,d3col *tint)
 
 void object_get_tint(obj_type *obj,d3col *tint)
 {
-	d3col		*col;
-
 		// if in multiplayer and using teams,
 		// then get team tint
 
@@ -438,13 +436,9 @@ void object_get_tint(obj_type *obj,d3col *tint)
 		}
 	}
 
-		// otherwise use set interface color
+		// otherwise use white
 
-	col=&iface.color.tints[obj->tint_color_idx];
-
-	tint->r=col->r;
-	tint->g=col->g;
-	tint->b=col->b;
+	tint->r=tint->g=tint->b=1.0f;
 }
 
 /* =======================================================

@@ -356,10 +356,6 @@ void view_openrl_effect_mesh_particle_update(effect_type *effect,int count,int i
 	color_dif=particle->end_color.b-particle->start_color.b;
     col.b=particle->start_color.b+((color_dif*f_count)/f_tick);
 
-	col.r*=eff_particle->tint.r;
-	col.g*=eff_particle->tint.g;
-	col.b*=eff_particle->tint.b;
-
 	alpha_dif=particle->end_alpha-particle->start_alpha;
     col.a=particle->start_alpha+((alpha_dif*f_count)/f_tick);
 
@@ -525,10 +521,6 @@ void view_openrl_effect_mesh_ring_update(effect_type *effect,int count,int image
     col.g=ring->start_color.g+((color_dif*f_count)/f_tick);
 	color_dif=ring->end_color.b-ring->start_color.b;
     col.b=ring->start_color.b+((color_dif*f_count)/f_tick);
-
-	col.r*=eff_ring->tint.r;
-	col.g*=eff_ring->tint.g;
-	col.b*=eff_ring->tint.b;
 
 	alpha=ring->end_alpha-ring->start_alpha;
 	col.a=((alpha*f_count)/f_tick)+ring->start_alpha;

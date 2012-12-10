@@ -325,10 +325,6 @@ void particle_draw(effect_type *effect,int count,int image_offset)
 	color_dif=particle->end_color.b-particle->start_color.b;
     col.b=particle->start_color.b+((color_dif*f_count)/f_tick);
 
-	col.r*=eff_particle->tint.r;
-	col.g*=eff_particle->tint.g;
-	col.b*=eff_particle->tint.b;
-
 	if (particle->ambient_factor!=1.0f) {
 		col.r=(col.r*particle->ambient_factor)+((1.0f-particle->ambient_factor)*ambient_col.r);
 		if (col.r>1.0f) col.r=1.0f;

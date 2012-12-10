@@ -805,35 +805,6 @@ void element_tab_add(char *tab_list,int value,int id,int ntab)
 	SDL_mutexV(element_thread_lock);
 }
 
-void element_color_add(char *str,int value,int id,int x,int y,bool selectable)
-{
-	element_type	*element;
-
-	SDL_mutexP(element_thread_lock);
-
-	element=&elements[nelement];
-	nelement++;
-	
-	element->id=id;
-	element->type=element_type_color;
-	
-	element->x=x;
-	element->y=y;
-	
-	element->selectable=selectable;
-	element->enabled=TRUE;
-	element->hidden=FALSE;
-
-	element->wid=element_get_control_long_wid();
-	element->high=element_get_control_high();
-
-	strcpy(element->str,str);
-
-	element->value=value;
-
-	SDL_mutexV(element_thread_lock);
-}
-
 void element_text_box_add(char *data,int id,int x,int y,int wid,int high,bool error_display)
 {
 	int				sz;
@@ -1096,7 +1067,6 @@ void element_get_box(element_type *element,int *lft,int *rgt,int *top,int *bot)
 		case element_type_number:
 		case element_type_combo:
 		case element_type_slider:
-		case element_type_color:
 		case element_type_info_field:
 			*lft=element->x+5;
 			*rgt=(element->x+10)+element->wid;
@@ -2876,93 +2846,6 @@ void element_draw_tab(element_type *element,int sel_id,int x,int y)
 
 /* =======================================================
 
-      Color Element
-      
-======================================================= */
-
-void element_click_color(element_type *element,int x)
-{
-	int				idx;
-
-	idx=(x-element->x)/(element->wid/max_tint_color);
-	if (idx<0) idx=0;
-	if (idx>=max_tint_color) idx=max_tint_color-1;
-
-	element->value=idx;
-}
-
-void element_draw_color(element_type *element,int sel_id)
-{
-	int				n,x,y,ky,lft,rgt,top,bot,lx,rx,xadd,s_lx,s_rx;
-	float			alpha;
-	d3col			col;
-	
-	x=element->x;
-	y=element->y;
-	
-		// label
-	
-	ky=y-(element->high>>1);
-
-	gl_text_start(font_interface_index,iface.font.text_size_medium,FALSE);
-	gl_text_draw((x-5),(ky-2),element->str,tx_right,TRUE,&iface.color.control.label,1.0f);
-	gl_text_draw(x,(ky-3),":",tx_center,TRUE,&iface.color.control.label,1.0f);
-	gl_text_end();
-
-		// color size
-		
-	lft=x+10;
-	rgt=lft+element->wid;
-	top=ky-(element->high>>1);
-	bot=top+element->high;
-
-	alpha=(element->enabled?1.0f:0.3f);
-
-		// colors
-
-	lx=lft;
-	xadd=(rgt-lft)/max_tint_color;
-
-	for (n=0;n!=max_tint_color;n++) {
-		if (n==(max_tint_color-1)) {
-			rx=rgt;
-		}
-		else {
-			rx=lx+xadd;
-		}
-
-		if (n==element->value) {
-			s_lx=lx;
-			s_rx=rx;
-		}
-
-		col.r=iface.color.tints[n].r*element_gradient_factor_foreground;
-		col.g=iface.color.tints[n].g*element_gradient_factor_foreground;
-		col.b=iface.color.tints[n].b*element_gradient_factor_foreground;
-
-		view_primitive_2D_color_poly(lx,top,&iface.color.tints[n],rx,top,&iface.color.tints[n],rx,bot,&col,lx,bot,&col,alpha);
-
-		lx=rx;
-	}
-
-		// outline and selection
-
-	if ((element->id==sel_id) && (element->enabled)) {
-		view_primitive_2D_line_quad(&iface.color.control.mouse_over,alpha,lft,rgt,top,bot);
-	}
-	else {
-		view_primitive_2D_line_quad(&iface.color.control.outline,alpha,lft,rgt,top,bot);
-	}
-
-	col.r=col.g=col.b=0.0f;
-	view_primitive_2D_line_quad(&col,1.0f,(s_lx+2),(s_rx-2),(top+2),(bot-2));
-
-	col.r=col.g=col.b=1.0f;
-	view_primitive_2D_line_quad(&col,0.5f,(s_lx+3),(s_rx-3),(top+3),(bot-3));
-}
-
-/* =======================================================
-
       Text Box Element
       
 ======================================================= */
@@ -3375,9 +3258,6 @@ void element_draw_lock(bool cursor_hilite)
 			case element_type_tab:
 				element_draw_tab(element,id,x,y);
 				break;
-			case element_type_color:
-				element_draw_color(element,id);
-				break;
 			case element_type_text_box:
 				element_draw_text_box(element);
 				break;
@@ -3524,9 +3404,6 @@ int element_click_up_lock(int x,int y)
 				element_click_down_id=-1;
 				return(-1);
 			}
-			break;
-		case element_type_color:
-			element_click_color(element,x);
 			break;
 		case element_type_text_box:
 			element_click_text_box(element,x,y);
