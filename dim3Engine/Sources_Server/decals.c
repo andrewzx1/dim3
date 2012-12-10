@@ -257,7 +257,6 @@ void decal_add(int obj_idx,d3pnt *pnt,poly_pointer_type *poly_ptr,int mark_idx,i
 	decal_type			*decal;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
-	obj_type			*obj;
 
 		// can decal this poly?
 
@@ -297,15 +296,6 @@ void decal_add(int obj_idx,d3pnt *pnt,poly_pointer_type *poly_ptr,int mark_idx,i
 
 	else {
 		decal_add_floor_like(pnt,decal,mesh,poly,mark_idx,sz);
-	}
-
-		// tinting
-
-	decal->tint.r=decal->tint.g=decal->tint.b=1.0f;
-
-	if ((iface.mark_list.marks[mark_idx].team_tint) && (obj_idx!=-1)) {
-		obj=server.obj_list.objs[obj_idx];
-		if (obj!=NULL) object_get_tint(obj,&decal->tint);
 	}
 
 		// finish decal setup

@@ -129,7 +129,7 @@ typedef struct		{
 					} net_host_player_connect_type;
 
 typedef struct		{
-						int								team_idx,tint_color_idx,score;
+						int								team_idx,score;
 						char							name[name_str_len],
 														draw_name[name_str_len];
 						d3pnt							pnt;

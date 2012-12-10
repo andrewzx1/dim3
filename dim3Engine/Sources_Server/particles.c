@@ -263,7 +263,6 @@ int particle_get_effect_size(iface_particle_type *particle)
 bool particle_spawn_single(int particle_idx,int obj_idx,d3pnt *pt,particle_rotate *rot,particle_motion *motion)
 {
 	int						effect_idx;
-	obj_type				*obj;
 	effect_type				*effect;
 	particle_effect_data	*eff_particle;
 	iface_particle_type		*particle;
@@ -312,15 +311,6 @@ bool particle_spawn_single(int particle_idx,int obj_idx,d3pnt *pt,particle_rotat
 		// setup size
 
 	effect->size=particle_get_effect_size(particle);
-
-		// any tinting
-
-	eff_particle->tint.r=eff_particle->tint.g=eff_particle->tint.b=1.0f;
-
-	if ((particle->team_tint) && (obj_idx!=-1)) {
-		obj=server.obj_list.objs[obj_idx];
-		if (obj!=NULL) object_get_tint(obj,&eff_particle->tint);
-	}
 	
 		// openrl setup
 

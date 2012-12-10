@@ -126,7 +126,6 @@ void project_palette_click_marks(bool double_click)
 		iface.mark_list.marks[idx].no_opaque=FALSE;
 		iface.mark_list.marks[idx].hilite=FALSE;
 		iface.mark_list.marks[idx].blend_add=FALSE;
-		iface.mark_list.marks[idx].team_tint=FALSE;
 
 		iface.mark_list.marks[idx].animate.image_count=1;
 		iface.mark_list.marks[idx].animate.msec=0;

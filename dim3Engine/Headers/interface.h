@@ -234,7 +234,6 @@ extern void element_combo_add(char *str,char *combo_data,int value,int id,int x,
 extern void element_slider_add(char *str,float value,float value_min,float value_max,int id,int x,int y,bool selectable);
 extern void element_table_add(element_column_type* cols,char *row_data,int id,int ncolumn,int x,int y,int wid,int high,bool checkbox,int bitmap_mode);
 extern void element_tab_add(char *tab_list,int value,int id,int ntab);
-extern void element_color_add(char *str,int value,int id,int x,int y,bool selectable);
 extern void element_text_box_add(char *data,int id,int x,int y,int wid,int high,bool error_display);
 extern void element_info_field_add(char *str,char *value_str,int id,int x,int y);
 extern void element_model_add(char *name,char *animate,float resize,d3pnt *offset,d3ang *rot,int id,int x,int y);
@@ -810,11 +809,6 @@ extern inline void gl_shader_draw_execute_simple_bitmap_set_color(d3col *col,flo
 extern inline void gl_shader_draw_execute_simple_bitmap_set_texture(unsigned long gl_id);
 extern inline void gl_shader_draw_execute_simple_bitmap_ptr(unsigned long gl_id,int vertex_size,float *vertexes,float *uvs,d3col *col,float alpha);
 extern inline void gl_shader_draw_execute_simple_bitmap_vbo_attribute(int vertex_size,int vertex_offset,int uv_offset,int stride,d3col *col,float alpha);
-
-extern inline void gl_shader_draw_execute_simple_bitmap_wrap_set_color(d3col *col,float alpha);
-extern inline void gl_shader_draw_execute_simple_bitmap_wrap_set_texture(unsigned long gl_id);
-extern inline void gl_shader_draw_execute_simple_bitmap_wrap_ptr(unsigned long gl_id,int vertex_size,float *vertexes,float *uvs,d3col *col,float alpha);
-extern inline void gl_shader_draw_execute_simple_bitmap_wrap_vbo_attribute(int vertex_size,int vertex_offset,int uv_offset,int stride,d3col *col,float alpha);
 
 extern void gl_shader_draw_execute_reset_cached_offsets(void);
 extern void gl_shader_draw_execute_map(texture_type *texture,int txt_idx,int frame,int lmap_txt_idx,float alpha,int vertex_offset,int uv_offset,int lmap_uv_offset,int tangent_offset,int normal_offset,int stride,view_glsl_light_list_type *light_list);

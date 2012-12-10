@@ -63,9 +63,8 @@ and can be sold or given away.
 
 #define ctrl_network_name_id				60
 #define ctrl_network_show_names_id			61
-#define ctrl_color_id						62
-#define ctrl_character_id					63
-#define ctrl_character_model_id				64
+#define ctrl_character_id					62
+#define ctrl_character_model_id				63
 
 #define ctrl_debug_engine_windowed_id		70
 #define ctrl_debug_editor_windowed_id		71
@@ -375,7 +374,7 @@ void setup_game_player_pane(void)
 	padding=element_get_padding();
 
 	control_y_add=element_get_control_separation_high();
-	control_y_sz=control_y_add*3;
+	control_y_sz=control_y_add*2;
 	
 	if (iface.multiplayer.character_list.ncharacter!=0) {
 		x=(int)(((float)iface.scale_x)*0.24f);
@@ -391,8 +390,6 @@ void setup_game_player_pane(void)
 	element_text_field_add("Name",setup.network.name,name_str_len,ctrl_network_name_id,x,y,TRUE);
 	y+=control_y_add;
 	element_checkbox_add("Show Names",setup.network.show_names,ctrl_network_show_names_id,x,y,TRUE);
-	y+=control_y_add;
-	element_color_add("Color",setup.network.tint_color_idx,ctrl_color_id,x,y,TRUE);
 	
 		// is there a character control?
 
@@ -916,10 +913,6 @@ void setup_game_handle_click(int id)
 			setup.network.show_names=element_get_value(ctrl_network_show_names_id);
 			break;
 
-		case ctrl_color_id:
-			setup.network.tint_color_idx=element_get_value(ctrl_color_id);
-			break;
-			
 		case ctrl_character_id:
 			setup.network.character_idx=element_get_value(ctrl_character_id);
 			mp_character=&iface.multiplayer.character_list.characters[setup.network.character_idx];

@@ -99,7 +99,6 @@ int ring_get_effect_size(iface_ring_type *ring)
 bool ring_spawn(int ring_idx,int obj_idx,d3pnt *pt,d3ang *ang)
 {
 	int						effect_idx;
-	obj_type				*obj;
 	effect_type				*effect;
 	ring_effect_data		*eff_ring;
 	iface_ring_type			*ring;
@@ -130,15 +129,6 @@ bool ring_spawn(int ring_idx,int obj_idx,d3pnt *pt,d3ang *ang)
 		// setup size
 
 	effect->size=ring_get_effect_size(ring);
-
-		// any tinting
-
-	eff_ring->tint.r=eff_ring->tint.g=eff_ring->tint.b=1.0f;
-
-	if ((ring->team_tint) && (obj_idx!=-1)) {
-		obj=server.obj_list.objs[obj_idx];
-		if (obj!=NULL) object_get_tint(obj,&eff_ring->tint);
-	}
 
 		// openrl setup
 

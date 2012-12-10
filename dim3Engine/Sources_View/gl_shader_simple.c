@@ -37,7 +37,7 @@ extern view_type			view;
 extern render_info_type		render_info;
 
 shader_type					color_shader,gradient_shader,black_shader,
-							bitmap_shader,bitmap_wrap_shader;
+							bitmap_shader;
 
 /* =======================================================
 
@@ -471,117 +471,6 @@ bool gl_simple_bitmap_shader_create(shader_type *shader,char *err_str)
 
 /* =======================================================
 
-      Build Simple Bitmap Wrap Shader
-      
-======================================================= */
-
-char* gl_simple_bitmap_wrap_shader_build_vert(void)
-{
-	char			*buf;
-
-		// memory for shader
-
-	buf=(char*)malloc(max_core_shader_data_sz);
-	if (buf==NULL) return(NULL);
-
-	bzero(buf,max_core_shader_data_sz);
-
-		// need to define out lowp/mediump/highp
-		// for non ES2 shaders
-
-	gl_core_shader_build_generic_precision_defines(buf);
-
-		// build vert shader
-
-	strcat(buf,"uniform highp mat4 dim3ProjectionMatrix,dim3ModelViewMatrix;\n");
-	strcat(buf,"attribute highp vec3 dim3Vertex;\n");
-	strcat(buf,"attribute mediump vec2 dim3VertexUV;\n");
-	strcat(buf,"varying mediump vec2 uv;\n");
-	
-	strcat(buf,"void main(void)\n");
-	strcat(buf,"{\n");
-	strcat(buf,"gl_Position=dim3ProjectionMatrix*dim3ModelViewMatrix*vec4(dim3Vertex,1.0);\n");
-	strcat(buf,"uv=dim3VertexUV;\n");
-	strcat(buf,"}\n");
-
-	return(buf);
-}
-
-char* gl_simple_bitmap_wrap_shader_build_frag(void)
-{
-	char			*buf;
-
-		// memory for shader
-
-	buf=(char*)malloc(max_core_shader_data_sz);
-	if (buf==NULL) return(NULL);
-
-	bzero(buf,max_core_shader_data_sz);
-
-		// need to define out lowp/mediump/highp
-		// for non ES2 shaders
-
-	gl_core_shader_build_generic_precision_defines(buf);
-
-		// build frag shader
-		
-	strcat(buf,"uniform lowp sampler2D dim3Tex;\n");
-	strcat(buf,"uniform lowp vec4 dim3SimpleColor;\n");
-	strcat(buf,"varying mediump vec2 uv;\n");
-	
-	strcat(buf,"void main(void)\n");
-	strcat(buf,"{\n");
-	strcat(buf,"gl_FragColor=texture2D(dim3Tex,fract(uv))*dim3SimpleColor;\n");
-	strcat(buf,"}\n");
-
-	return(buf);
-}
-
-bool gl_simple_bitmap_wrap_shader_create(shader_type *shader,char *err_str)
-{
-	char				*vertex_data,*fragment_data;
-	bool				ok;
-	
-		// create the shader code
-
-	vertex_data=gl_simple_bitmap_wrap_shader_build_vert();
-	if (vertex_data==NULL) {
-		strcpy(err_str,"Out of Memory");
-		return(FALSE);
-	}
-
-	fragment_data=gl_simple_bitmap_wrap_shader_build_frag();
-	if (fragment_data==NULL) {
-		free(vertex_data);
-		strcpy(err_str,"Out of Memory");
-		return(FALSE);
-	}
-	
-		// create the name
-		
-	strcpy(shader->name,"simple_bitmap_wrap");
-	sprintf(shader->vertex_name,"%s_vert",shader->name);
-	sprintf(shader->fragment_name,"%s_frag",shader->name);
-	
-		// compile the code
-
-	ok=gl_shader_code_compile(shader,vertex_data,fragment_data,err_str);
-
-		// free the code
-
-	free(vertex_data);
-	free(fragment_data);
-	
-		// activate the required attributes
-		
-	glEnableVertexAttribArray(shader->var_locs.dim3Vertex);
-	glEnableVertexAttribArray(shader->var_locs.dim3VertexUV);
-
-	return(ok);
-}
-
-/* =======================================================
-
       Simple Shader Initialize/Shutdown
       
 ======================================================= */
@@ -594,7 +483,6 @@ bool gl_simple_shader_initialize(char *err_str)
 	gl_shader_code_clear(&gradient_shader);
 	gl_shader_code_clear(&black_shader);
 	gl_shader_code_clear(&bitmap_shader);
-	gl_shader_code_clear(&bitmap_wrap_shader);
 
 		// initialize simple shaders	
 		
@@ -618,11 +506,6 @@ bool gl_simple_shader_initialize(char *err_str)
 		return(FALSE);
 	}
 	
-	if (!gl_simple_bitmap_wrap_shader_create(&bitmap_wrap_shader,err_str)) {
-		gl_simple_shader_shutdown();
-		return(FALSE);
-	}
-	
 	return(TRUE);
 }
 
@@ -634,6 +517,5 @@ void gl_simple_shader_shutdown(void)
 	gl_shader_code_shutdown(&gradient_shader);
 	gl_shader_code_shutdown(&black_shader);
 	gl_shader_code_shutdown(&bitmap_shader);
-	gl_shader_code_shutdown(&bitmap_wrap_shader);
 }
 

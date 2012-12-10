@@ -502,7 +502,6 @@ extern bool bitmap_copy(char *srce_path,char *dest_path);
 
 #define max_hud_text_str_sz						256
 #define max_hud_intro_model						16
-#define max_tint_color							8
 #define max_character							32
 
 #define max_net_bot								16
@@ -554,8 +553,7 @@ typedef struct		{
 					} iface_color_system_type;
 
 typedef struct		{
-						d3col							background,
-														default_tint,tints[max_tint_color];
+						d3col							background;
 						iface_color_menu_type			menu;
 						iface_color_dialog_type			dialog;
 						iface_color_tab_type			tab;
@@ -741,7 +739,7 @@ typedef struct		{
 typedef struct		{
 						int								display_radius,view_radius,
 														background_image_idx,nicon,no_motion_fade;
-						bool							on,rot,team_tint;
+						bool							on,rot;
 						char							background_bitmap_name[name_str_len];
 						d3pnt							pnt;
 						iface_radar_icon_type			icons[max_radar_icon];
@@ -973,7 +971,7 @@ typedef struct		{
 														trail_step,ambient_factor;
 						char							name[name_str_len],bitmap_name[name_str_len],
 														chain_name[name_str_len];
-						bool							reverse,blend_add,globe,team_tint;
+						bool							reverse,blend_add,globe;
 						d3pnt							pt;
 						d3ang							rot;
 						d3vct							vct,rot_accel;
@@ -999,7 +997,7 @@ typedef struct		{
 														start_inner_size,end_inner_size;
 						float							start_alpha,end_alpha;
 						char							name[name_str_len],bitmap_name[name_str_len];
-						bool							blend_add,team_tint;
+						bool							blend_add;
 						d3ang							ang,rot;
 						d3vct							vct,rot_accel;
 						d3col							start_color,end_color;
@@ -1019,7 +1017,7 @@ typedef struct		{
 						int								image_idx,openrl_material_id,
 														fade_in_msec,life_msec,fade_out_msec,total_msec;
 						char							name[name_str_len],bitmap_name[name_str_len];
-						bool							no_rotate,no_transparent,no_opaque,hilite,blend_add,team_tint;
+						bool							no_rotate,no_transparent,no_opaque,hilite,blend_add;
 						d3col							color;
 						iface_image_animation_type		animate;
 					} iface_mark_type;

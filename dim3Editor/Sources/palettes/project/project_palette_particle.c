@@ -41,7 +41,6 @@ and can be sold or given away.
 #define kParticleOptionReverse					5
 #define kParticleOptionBlendAdd					6
 #define kParticleOptionGlobe					7
-#define kParticleOptionTeamTint					8
 
 #define kParticleMotionOffset					9
 #define kParticleMotionMove						10
@@ -127,7 +126,6 @@ void project_palette_fill_particle(int particle_idx)
 	list_palette_add_checkbox(&project_palette,kParticleOptionReverse,"Reverse Motion",&particle->reverse,FALSE);
 	list_palette_add_checkbox(&project_palette,kParticleOptionBlendAdd,"Additive Blend",&particle->blend_add,FALSE);
 	list_palette_add_checkbox(&project_palette,kParticleOptionGlobe,"Globe",&particle->globe,FALSE);
-	list_palette_add_checkbox(&project_palette,kParticleOptionTeamTint,"Team Tint",&particle->team_tint,FALSE);
 
 		// animation
 

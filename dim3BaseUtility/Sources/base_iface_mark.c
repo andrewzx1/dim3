@@ -123,12 +123,10 @@ void iface_read_settings_mark(iface_type *iface)
 		}
 	
 		mark->color.r=mark->color.g=mark->color.b=1.0f;
-		mark->team_tint=FALSE;
 
         tag=xml_findfirstchild("Color",mark_tag);
         if (tag!=-1) {
 			xml_get_attribute_color(tag,"color",&mark->color);
-            mark->team_tint=xml_get_attribute_boolean(tag,"team");
         }
 
 			// move on to next mark
@@ -188,7 +186,6 @@ bool iface_write_settings_mark(iface_type *iface,char *err_str)
 	
 		xml_add_tagstart("Color");
 		xml_add_attribute_color("color",&mark->color);
-		xml_add_attribute_boolean("team",mark->team_tint);
         xml_add_tagend(TRUE);
 
 		xml_add_tagclose("Mark");

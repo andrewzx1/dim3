@@ -156,7 +156,6 @@ void project_palette_click_particles(bool double_click)
 		iface.particle_list.particles[idx].reverse=FALSE;
 		iface.particle_list.particles[idx].blend_add=TRUE;
 		iface.particle_list.particles[idx].globe=FALSE;
-		iface.particle_list.particles[idx].team_tint=FALSE;
 
 		iface.particle_list.particles[idx].start_color.r=1.0f;
 		iface.particle_list.particles[idx].start_color.g=1.0f;

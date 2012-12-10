@@ -374,7 +374,6 @@ void iface_read_settings_radar(iface_type *iface,int radar_tag)
 
 	iface->radar.on=TRUE;
 	iface->radar.rot=TRUE;
-	iface->radar.team_tint=FALSE;
 	iface->radar.no_motion_fade=0;
 	
 	iface->radar.pnt.x=iface->radar.pnt.y=0;
@@ -389,7 +388,6 @@ void iface_read_settings_radar(iface_type *iface,int radar_tag)
 	if (tag!=-1) {
 		iface->radar.on=xml_get_attribute_boolean(tag,"on");		// only use on switch if it exists
 		iface->radar.rot=!xml_get_attribute_boolean(tag,"no_rot");
-		iface->radar.team_tint=xml_get_attribute_boolean(tag,"team_tint");
 		iface->radar.no_motion_fade=xml_get_attribute_int(tag,"no_motion_fade");
 	}
 
@@ -787,12 +785,7 @@ void iface_read_settings_interface(iface_type *iface)
 		xml_get_attribute_color(color_tag,"picker_text",&iface->color.picker.text);
 		xml_get_attribute_color(color_tag,"picker_outline",&iface->color.picker.outline);
 		xml_get_attribute_color(color_tag,"system_metric",&iface->color.system.metric);
-		xml_get_attribute_color(color_tag,"default_tint",&iface->color.default_tint);
 	}
-
-		// first tint is always the default tint
-
-	memmove(&iface->color.tints[0],&iface->color.default_tint,sizeof(d3col));
 
 		// fonts
 
@@ -1354,7 +1347,6 @@ bool iface_write_settings_interface(iface_type *iface,char *err_str)
 	xml_add_tagstart("Setting");
 	xml_add_attribute_boolean("on",iface->radar.on);
 	xml_add_attribute_boolean("no_rot",!iface->radar.rot);
-	xml_add_attribute_boolean("team_tint",iface->radar.team_tint);
 	xml_add_attribute_int("no_motion_fade",iface->radar.no_motion_fade);
 	xml_add_tagend(TRUE);
 
@@ -1499,7 +1491,6 @@ bool iface_write_settings_interface(iface_type *iface,char *err_str)
 	xml_add_attribute_color("picker_text",&iface->color.picker.text);
 	xml_add_attribute_color("picker_outline",&iface->color.picker.outline);
 	xml_add_attribute_color("system_metric",&iface->color.system.metric);
-	xml_add_attribute_color("default_tint",&iface->color.default_tint);
 	xml_add_tagend(TRUE);
 
 		// fonts

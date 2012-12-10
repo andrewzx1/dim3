@@ -92,7 +92,6 @@ void project_palette_fill_color(void)
 		
 	list_palette_add_header(&project_palette,0,"Main Colors");
 	list_palette_add_pick_color(&project_palette,kSettingsColorBackground,"Background",&iface.color.background,FALSE);
-	list_palette_add_pick_color(&project_palette,kSettingsColorDefaultTint,"Default Tint",&iface.color.default_tint,FALSE);
 	
 		// menu color
 		

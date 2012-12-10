@@ -107,10 +107,6 @@ void ring_draw(effect_type *effect,int count,int image_offset)
 	color_dif=ring->end_color.b-ring->start_color.b;
     col.b=ring->start_color.b+((color_dif*f_count)/f_tick);
 
-	col.r*=eff_ring->tint.r;
-	col.g*=eff_ring->tint.g;
-	col.b*=eff_ring->tint.b;
-
 	alpha=ring->end_alpha-ring->start_alpha;
 	alpha=((alpha*f_count)/f_tick)+ring->start_alpha;
 	

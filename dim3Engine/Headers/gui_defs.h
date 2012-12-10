@@ -49,12 +49,11 @@ and can be sold or given away.
 #define element_type_slider						7
 #define element_type_table						8
 #define element_type_tab						9
-#define element_type_color						10
-#define element_type_text_box					11
-#define element_type_info_field					12
-#define element_type_model						13
-#define element_type_count						14
-#define element_type_frame						15
+#define element_type_text_box					10
+#define element_type_info_field					11
+#define element_type_model						12
+#define element_type_count						13
+#define element_type_frame						14
 
 //
 // GUI position mode

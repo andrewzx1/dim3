@@ -343,7 +343,7 @@ bool weapon_get_projectile_position_angle_object_model(obj_type *obj,weapon_type
 	
 		// angle from object
 		
-	fire_ang->x=angle_add(setup->ang.x,-obj->view_ang.x);
+	fire_ang->x=angle_add(setup->ang.x,obj->view_ang.x);
 	fire_ang->y=setup->ang.y;
 	fire_ang->z=setup->ang.z;
 

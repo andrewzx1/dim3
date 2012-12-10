@@ -127,7 +127,6 @@ void project_palette_click_rings(bool double_click)
 		iface.ring_list.rings[idx].bitmap_name[0]=0x0;
 
 		iface.ring_list.rings[idx].blend_add=TRUE;
-		iface.ring_list.rings[idx].team_tint=FALSE;
 
 		iface.ring_list.rings[idx].start_color.r=1.0f;
 		iface.ring_list.rings[idx].start_color.g=1.0f;

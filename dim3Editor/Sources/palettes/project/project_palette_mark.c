@@ -40,8 +40,7 @@ and can be sold or given away.
 #define kMarkOptionNoOpaque						4
 #define kMarkOptionHilite						5
 #define kMarkOptionBlendAdd						6
-#define kMarkOptionTeamTint						7
-#define kMarkOptionColor						8
+#define kMarkOptionColor						7
 
 #define kMarkFadeInTick							9
 #define kMarkFadeLifeTick						10
@@ -83,7 +82,6 @@ void project_palette_fill_mark(int mark_idx)
 	list_palette_add_checkbox(&project_palette,kMarkOptionNoOpaque,"Ignore Opaque Polys",&mark->no_opaque,FALSE);
 	list_palette_add_checkbox(&project_palette,kMarkOptionHilite,"High Light",&mark->hilite,FALSE);
 	list_palette_add_checkbox(&project_palette,kMarkOptionBlendAdd,"Additive Blending",&mark->blend_add,FALSE);
-	list_palette_add_checkbox(&project_palette,kMarkOptionTeamTint,"Team Tinting",&mark->team_tint,FALSE);
 	list_palette_add_pick_color(&project_palette,kMarkOptionColor,"Color",&mark->color,FALSE);
 
 		// fade

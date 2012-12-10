@@ -237,15 +237,14 @@ char* gl_core_map_shader_build_frag(int nlight,bool fog,bool bump,bool spec,bool
 	
 		// the texture map
 		
-	strcat(buf,"mediump vec2 fuv=fract(uv);\n");
-	strcat(buf,"lowp vec4 tex=texture2D(dim3Tex,fuv);\n");
+	strcat(buf,"lowp vec4 tex=texture2D(dim3Tex,uv);\n");
 		
 		// the bump map
 		// note we include an all over ambient (no directional) bump value first
 		
 	if (bump) {
 		strcat(buf,"highp vec3 bumpLightVertexVector;\n");
-		strcat(buf,"lowp vec3 bumpMap=normalize((texture2D(dim3TexBump,fuv).rgb*2.0)-1.0);\n");
+		strcat(buf,"lowp vec3 bumpMap=normalize((texture2D(dim3TexBump,uv).rgb*2.0)-1.0);\n");
 		strcat(buf,"lowp float bump=dot(vec3(0.33,0.33,0.33),bumpMap);\n");
 	}
 	
@@ -253,7 +252,7 @@ char* gl_core_map_shader_build_frag(int nlight,bool fog,bool bump,bool spec,bool
 		
 	if (spec) {
 		strcat(buf,"lowp vec3 spec=vec3(0.0,0.0,0.0),specHalfVector;\n");
-		strcat(buf,"lowp vec3 specMap=texture2D(dim3TexSpecular,fuv).rgb;\n");
+		strcat(buf,"lowp vec3 specMap=texture2D(dim3TexSpecular,uv).rgb;\n");
 		strcat(buf,"lowp float specFactor;\n");
 	}
 	
@@ -294,7 +293,7 @@ char* gl_core_map_shader_build_frag(int nlight,bool fog,bool bump,bool spec,bool
 		// if there's a glow, calculate the
 		// glow rgb
 
-	if (glow) strcat(buf,"lowp vec3 glow=texture2D(dim3TexGlow,fuv).rgb*dim3GlowFactor;\n");
+	if (glow) strcat(buf,"lowp vec3 glow=texture2D(dim3TexGlow,uv).rgb*dim3GlowFactor;\n");
 	
 		// if we have a bump, add it into
 		// the ambient and make sure it's never
@@ -484,8 +483,7 @@ char* gl_core_liquid_shader_build_frag(int nlight)
 	
 		// the texture map
 		
-	strcat(buf,"mediump vec2 fuv=fract(uv);\n");
-	strcat(buf,"lowp vec4 tex=texture2D(dim3Tex,fuv);\n");
+	strcat(buf,"lowp vec4 tex=texture2D(dim3Tex,uv);\n");
 	
 		// the texture lighting
 		
@@ -709,15 +707,14 @@ char* gl_core_model_shader_build_frag(int nlight,bool fog,bool bump,bool spec,bo
 	
 		// the texture map
 		
-	strcat(buf,"mediump vec2 fuv=fract(uv);\n");
-	strcat(buf,"lowp vec4 tex=texture2D(dim3Tex,fuv);\n");
+	strcat(buf,"lowp vec4 tex=texture2D(dim3Tex,uv);\n");
 	
 		// the bump map
 		// note we include an all over ambient (no directional) bump value first
 		
 	if (bump) {
 		strcat(buf,"highp vec3 bumpLightVertexVector;\n");
-		strcat(buf,"mediump vec3 bumpMap=normalize((texture2D(dim3TexBump,fuv).rgb*2.0)-1.0);\n");
+		strcat(buf,"mediump vec3 bumpMap=normalize((texture2D(dim3TexBump,uv).rgb*2.0)-1.0);\n");
 		strcat(buf,"mediump float bump=dot(vec3(0.33,0.33,0.33),bumpMap);\n");
 	}
 	
@@ -725,7 +722,7 @@ char* gl_core_model_shader_build_frag(int nlight,bool fog,bool bump,bool spec,bo
 		
 	if (spec) {
 		strcat(buf,"mediump vec3 spec=vec3(0.0,0.0,0.0),specHalfVector;\n");
-		strcat(buf,"lowp vec3 specMap=texture2D(dim3TexSpecular,fuv).rgb;\n");
+		strcat(buf,"lowp vec3 specMap=texture2D(dim3TexSpecular,uv).rgb;\n");
 		strcat(buf,"mediump float specFactor;\n");
 	}
 			
@@ -765,7 +762,7 @@ char* gl_core_model_shader_build_frag(int nlight,bool fog,bool bump,bool spec,bo
 		// if there's a glow, calculate the
 		// glow rgb
 
-	if (glow) strcat(buf,"lowp vec3 glow=texture2D(dim3TexGlow,fuv).rgb*dim3GlowFactor;\n");
+	if (glow) strcat(buf,"lowp vec3 glow=texture2D(dim3TexGlow,uv).rgb*dim3GlowFactor;\n");
 
 		// create the ambient with ambient*diffuse*bump
 		// and make sure it's never
