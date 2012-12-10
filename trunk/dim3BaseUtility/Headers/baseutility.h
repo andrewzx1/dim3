@@ -923,7 +923,8 @@ typedef struct		{
 typedef struct		{
 						bool							game_video,game_audio,game_control,
 														game_action,game_player,game_debug,
-														no_resolution_switch,allow_auto_aim;							
+														no_resolution_switch,allow_auto_aim,
+														allow_run;							
 					} iface_setup_type;
 
 //

@@ -168,14 +168,9 @@ void model_draw_normals(int mesh_idx)
 	int					n,nvertex;
 	float				fx,fy,fz,vertexes[6];
 	float				*pv,*pn,*pt;
-	bool				has_sel;
 	d3vct				tangent,normal,binormal;
 	model_mesh_type		*mesh;
 	model_vertex_type	*vertex;
-	
-		// is there a vertex selection?
-		
-	has_sel=model_vertex_mask_check_sel_any(mesh_idx);
 	
 		// draw normals
 	
@@ -191,13 +186,6 @@ void model_draw_normals(int mesh_idx)
 	pt=draw_setup.mesh_arrays[mesh_idx].gl_tangent_array;
 
 	for (n=0;n!=nvertex;n++) {
-
-		if (!model_vertex_mask_check_sel(mesh_idx,n)) {
-			pv+=3;
-			pn+=3;
-			pt+=3;
-			continue;
-		}
 
 			// vertex point
 

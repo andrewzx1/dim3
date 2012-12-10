@@ -221,6 +221,7 @@ extern inline int element_get_button_short_wid(void);
 extern inline int element_get_button_long_wid(void);
 extern inline int element_get_button_high(void);
 extern inline int element_get_control_scroll_size(void);
+extern inline int element_get_frame_title_high(void);
 
 extern void element_button_text_add(char *name,int id,int x,int y,int wid,int high,int x_pos,int y_pos);
 extern void element_button_bitmap_add(char *path,char *path2,int id,int x,int y,int wid,int high,int x_pos,int y_pos);
