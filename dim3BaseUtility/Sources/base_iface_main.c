@@ -257,6 +257,7 @@ void iface_default_settings(iface_type *iface)
 	iface->setup.game_debug=FALSE;
 	iface->setup.no_resolution_switch=FALSE;
 	iface->setup.allow_auto_aim=FALSE;
+	iface->setup.allow_run=TRUE;
 	
 		// colors
 		

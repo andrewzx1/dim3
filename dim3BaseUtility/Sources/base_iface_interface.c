@@ -924,6 +924,7 @@ void iface_read_settings_interface(iface_type *iface)
 		iface->setup.game_debug=xml_get_attribute_boolean(setup_tag,"game_debug");
 		iface->setup.no_resolution_switch=xml_get_attribute_boolean(setup_tag,"no_resolution_switch");
 		iface->setup.allow_auto_aim=xml_get_attribute_boolean(setup_tag,"allow_auto_aim");
+		iface->setup.allow_run=xml_get_attribute_boolean(setup_tag,"allow_run");
 	}
 	
 		// sound
@@ -1633,6 +1634,7 @@ bool iface_write_settings_interface(iface_type *iface,char *err_str)
 	xml_add_attribute_boolean("game_debug",iface->setup.game_debug);
 	xml_add_attribute_boolean("no_resolution_switch",iface->setup.no_resolution_switch);
 	xml_add_attribute_boolean("allow_auto_aim",iface->setup.allow_auto_aim);
+	xml_add_attribute_boolean("allow_run",iface->setup.allow_run);
 	xml_add_tagend(TRUE);
 
 		// sound

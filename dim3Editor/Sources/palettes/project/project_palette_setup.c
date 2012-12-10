@@ -34,6 +34,7 @@ and can be sold or given away.
 
 #define kSetupPropertyNoResSwitch			0
 #define kSetupPropertyAllowAutoAim			1
+#define kSetupPropertyAllowRun				2
 
 #define kSetupPropertyGameVideo				10
 #define kSetupPropertyGameAudio				11
@@ -60,6 +61,7 @@ void project_palette_fill_setup(void)
 	list_palette_add_header(&project_palette,0,"Options");
 	list_palette_add_checkbox(&project_palette,kSetupPropertyNoResSwitch,"No Resolution Switch",&iface.setup.no_resolution_switch,FALSE);
 	list_palette_add_checkbox(&project_palette,kSetupPropertyAllowAutoAim,"Allow Auto Aiming",&iface.setup.allow_auto_aim,FALSE);
+	list_palette_add_checkbox(&project_palette,kSetupPropertyAllowRun,"Allow Run",&iface.setup.allow_run,FALSE);
 
 		// game setup
 

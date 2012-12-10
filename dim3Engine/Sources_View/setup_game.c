@@ -253,39 +253,68 @@ void setup_game_audio_pane(void)
 	element_slider_add("Music Volume",setup.music_volume,0.0f,1.0f,ctrl_music_volume_id,x,y,TRUE);
 }
 
-void setup_game_mouse_pane(void)
+bool setup_game_control_pane_visible(void)
+{
+	if (iface.setup.allow_run) return(TRUE);
+	if (iface.setup.allow_auto_aim) (TRUE);
+	if (input_check_joystick_ok()) return(TRUE);
+#if !defined(D3_OS_IPHONE) && !defined(D3_OS_ANDRIOD)
+	return(TRUE);
+#else
+	return(FALSE);
+#endif
+}
+
+void setup_game_control_pane(void)
 {
 	int			x,y,control_y_add,control_y_sz;
 	
+		// get size of controls
+
 	control_y_add=element_get_control_separation_high();
-	control_y_sz=8*control_y_add;
+	control_y_sz=0;
+	if (iface.setup.allow_run) control_y_sz+=(control_y_add*2);
 	if (iface.setup.allow_auto_aim) control_y_sz+=control_y_add;
-	
+#if !defined(D3_OS_IPHONE) && !defined(D3_OS_ANDRIOD)
+	control_y_sz+=(control_y_add*4);
+#endif
+	if (input_check_joystick_ok()) control_y_sz+=(control_y_add*2);
+
+		// add the controls
+
 	x=(int)(((float)iface.scale_x)*0.4f);
 	y=((iface.scale_y>>1)+(element_get_button_high()>>1))-(control_y_sz>>1);
 	
-	element_checkbox_add("Always Run",setup.always_run,ctrl_always_run_id,x,y,TRUE);
-	y+=control_y_add;
-	element_checkbox_add("Toggle Run",setup.toggle_run,ctrl_toggle_run_id,x,y,TRUE);
-	y+=control_y_add;
-	
+	if (iface.setup.allow_run) {
+		element_checkbox_add("Always Run",setup.always_run,ctrl_always_run_id,x,y,TRUE);
+		y+=control_y_add;
+		element_checkbox_add("Toggle Run",setup.toggle_run,ctrl_toggle_run_id,x,y,TRUE);
+		y+=control_y_add;
+	}
+
+#if !defined(D3_OS_IPHONE) && !defined(D3_OS_ANDRIOD)
 	element_checkbox_add("Invert Look",setup.invert_look,ctrl_invert_look_id,x,y,TRUE);
 	y+=control_y_add;
+#endif
 	if (iface.setup.allow_auto_aim) {
 		element_checkbox_add("Auto Aim",setup.auto_aim,ctrl_auto_aim_id,x,y,TRUE);
 		y+=control_y_add;
 	}
+
+#if !defined(D3_OS_IPHONE) && !defined(D3_OS_ANDRIOD)
 	element_checkbox_add("Mouse Smoothing",setup.mouse_smooth,ctrl_mouse_smooth_id,x,y,TRUE);
 	y+=control_y_add;
-
 	element_slider_add("Mouse Speed",setup.mouse.speed,0.0f,0.1f,ctrl_mouse_speed_id,x,y,TRUE);
 	y+=control_y_add;
 	element_slider_add("Mouse Acceleration",setup.mouse.acceleration,0.0f,1.0f,ctrl_mouse_accel_id,x,y,TRUE);
 	y+=control_y_add;
+#endif
 
-	element_slider_add("Joystick Speed",setup.joystick.speed,0.0f,0.1f,ctrl_joystick_speed_id,x,y,TRUE);
-	y+=control_y_add;
-	element_slider_add("Joystick Acceleration",setup.joystick.acceleration,0.0f,1.0f,ctrl_joystick_accel_id,x,y,TRUE);
+	if (input_check_joystick_ok()) {
+		element_slider_add("Joystick Speed",setup.joystick.speed,0.0f,0.1f,ctrl_joystick_speed_id,x,y,TRUE);
+		y+=control_y_add;
+		element_slider_add("Joystick Acceleration",setup.joystick.acceleration,0.0f,1.0f,ctrl_joystick_accel_id,x,y,TRUE);
+	}
 }
 
 void setup_game_action_pane(void)
@@ -469,7 +498,7 @@ void setup_game_create_pane(void)
 		setup_tab_index[ntab]=setup_pane_audio;
 		ntab++;
 	}
-	if (iface.setup.game_control) {
+	if ((iface.setup.game_control) && (setup_game_control_pane_visible())) {
 		strcpy(setup_tab_list[ntab],"Control");
 		setup_tab_index[ntab]=setup_pane_control;
 		ntab++;
@@ -520,7 +549,7 @@ void setup_game_create_pane(void)
 			setup_game_audio_pane();
 			break;
 		case setup_pane_control:
-			setup_game_mouse_pane();
+			setup_game_control_pane();
 			break;
 		case setup_pane_action:
 			setup_game_action_pane();

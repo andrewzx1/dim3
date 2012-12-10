@@ -269,6 +269,14 @@ int element_get_control_scroll_size(void)
 	return((int)(((float)iface.scale_x)*iface.devices[view.device_type].scale.control_scroll_size));
 }
 
+int element_get_frame_title_high(void)
+{
+	int			high;
+
+	high=gl_text_get_char_height(iface.font.text_size_medium);
+	return(high+(high/2));
+}
+
 /* =======================================================
 
       Add Elements
