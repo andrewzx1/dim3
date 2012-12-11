@@ -1126,12 +1126,7 @@ void element_draw_button_text(element_type *element,int sel_id)
 	
 	if (element->enabled) {
 		alpha=1.0f;
-		if (element->id==sel_id) {
-			memmove(&outline_col,&iface.color.control.mouse_over,sizeof(d3col));
-		}
-		else {
-			memmove(&outline_col,&iface.color.button.outline,sizeof(d3col));
-		}
+		memmove(&outline_col,&iface.color.button.outline,sizeof(d3col));
 	}
 	else {
 		alpha=0.3f;
@@ -1144,6 +1139,8 @@ void element_draw_button_text(element_type *element,int sel_id)
 
 	view_primitive_2D_color_quad(&iface.color.button.fill,alpha,lft,rgt,top,bot);
 	view_primitive_2D_line_quad(&outline_col,alpha,lft,rgt,top,bot);
+
+	if (element->id==sel_id) view_primitive_2D_line_quad(&iface.color.control.mouse_over,alpha,(lft-1),(rgt+1),(top-1),(bot+1));
 	
 		// button text
 
@@ -1151,12 +1148,7 @@ void element_draw_button_text(element_type *element,int sel_id)
 	y=((top+bot)>>1)-(iface.font.text_size_medium/10);
 
 	gl_text_start(font_interface_index,iface.font.text_size_medium,FALSE);
-	if (element->id!=sel_id) {
-		gl_text_draw(x,y,element->setup.button.name,tx_center,TRUE,&iface.color.button.text,alpha);
-	}
-	else {
-		gl_text_draw(x,y,element->setup.button.name,tx_center,TRUE,&iface.color.control.mouse_over,alpha);
-	}
+	gl_text_draw(x,y,element->setup.button.name,tx_center,TRUE,&iface.color.button.text,alpha);
 	gl_text_end();
 }
 
@@ -1194,12 +1186,7 @@ void element_draw_button_box(element_type *element,int sel_id)
 
 	if (element->enabled) {
 		alpha=1.0f;
-		if (element->id==sel_id) {
-			memmove(&outline_col,&iface.color.control.mouse_over,sizeof(d3col));
-		}
-		else {
-			memmove(&outline_col,&iface.color.picker.outline,sizeof(d3col));
-		}
+		memmove(&outline_col,&iface.color.picker.outline,sizeof(d3col));
 	}
 	else {
 		alpha=0.3f;
@@ -1226,6 +1213,7 @@ void element_draw_button_box(element_type *element,int sel_id)
 	view_primitive_2D_color_poly(lft,y,&gradient_end,rgt,y,&gradient_end,rgt,bot,&gradient_start,lft,bot,&gradient_start,alpha);
 
 	view_primitive_2D_line_quad(&outline_col,alpha,lft,rgt,top,bot);
+	if (element->id==sel_id) view_primitive_2D_line_quad(&iface.color.control.mouse_over,alpha,(lft-1),(rgt+1),(top-1),(bot+1));
 }
 
 void element_draw_button(element_type *element,int sel_id)
@@ -1454,12 +1442,8 @@ void element_draw_text_field(element_type *element,int sel_id)
 
 		// outline
 
-	if ((element->id==sel_id) && (element->enabled)) {
-		view_primitive_2D_line_quad(&iface.color.control.mouse_over,alpha,lft,rgt,top,bot);
-	}
-	else {
-		view_primitive_2D_line_quad(&iface.color.control.outline,alpha,lft,rgt,top,bot);
-	}
+	view_primitive_2D_line_quad(&iface.color.control.outline,alpha,lft,rgt,top,bot);
+	if ((element->id==sel_id) && (element->enabled)) view_primitive_2D_line_quad(&iface.color.control.mouse_over,alpha,(lft-1),(rgt+1),(top-1),(bot+1));
 
 		// control text
 
@@ -1566,12 +1550,8 @@ void element_draw_number(element_type *element,int sel_id)
 
 		// outline
 
-	if ((element->id==sel_id) && (element->enabled)) {
-		view_primitive_2D_line_quad(&iface.color.control.mouse_over,alpha,lft,rgt,top,bot);
-	}
-	else {
-		view_primitive_2D_line_quad(&iface.color.control.outline,alpha,lft,rgt,top,bot);
-	}
+	view_primitive_2D_line_quad(&iface.color.control.outline,alpha,lft,rgt,top,bot);
+	if ((element->id==sel_id) && (element->enabled)) view_primitive_2D_line_quad(&iface.color.control.mouse_over,alpha,(lft-1),(rgt+1),(top-1),(bot+1));
 
 		// control text
 		
@@ -1700,14 +1680,10 @@ void element_draw_checkbox_control(int x,int y,int wid,bool checked,bool enabled
 
 		// outline
 
-	if ((hilite) && (enabled)) {
-		view_primitive_2D_line_quad(&iface.color.control.mouse_over,alpha,lft,rgt,top,bot);
-		view_primitive_2D_line_quad(&iface.color.control.mouse_over,alpha,chk_lft,chk_rgt,top,bot);
-	}
-	else {
-		view_primitive_2D_line_quad(&iface.color.control.outline,alpha,lft,rgt,top,bot);
-		view_primitive_2D_line_quad(&iface.color.control.outline,alpha,chk_lft,chk_rgt,top,bot);
-	}
+	view_primitive_2D_line_quad(&iface.color.control.outline,alpha,lft,rgt,top,bot);
+	view_primitive_2D_line_quad(&iface.color.control.outline,alpha,chk_lft,chk_rgt,top,bot);
+
+	if ((hilite) && (enabled)) view_primitive_2D_line_quad(&iface.color.control.mouse_over,alpha,(lft-1),(rgt+1),(top-1),(bot+1));
 }
 
 void element_draw_checkbox(element_type *element,int sel_id)
@@ -1845,12 +1821,8 @@ void element_draw_combo(element_type *element,int sel_id)
 
 		// outline
 
-	if ((element->id==sel_id) && (element->enabled)) {
-		view_primitive_2D_line_quad(&iface.color.control.mouse_over,alpha,lft,rgt,top,bot);
-	}
-	else {
-		view_primitive_2D_line_quad(&iface.color.control.outline,alpha,lft,rgt,top,bot);
-	}
+	view_primitive_2D_line_quad(&iface.color.control.outline,alpha,lft,rgt,top,bot);
+	if ((element->id==sel_id) && (element->enabled)) view_primitive_2D_line_quad(&iface.color.control.mouse_over,alpha,(lft-1),(rgt+1),(top-1),(bot+1));
 
 		// arrow
 
@@ -1861,13 +1833,7 @@ void element_draw_combo(element_type *element,int sel_id)
 
 	view_primitive_2D_color_trig(&iface.color.control.hilite,alpha,lft,rgt,top,bot,2);
 
-	if ((element->id==element_open_combo_id) || ((element->id==sel_id) && (element->enabled))) {
-		memmove(&col,&iface.color.control.mouse_over,sizeof(d3col));
-	}
-	else {
-		col.r=col.g=col.b=0.0f;
-	}
-	
+	col.r=col.g=col.b=0.0f;
 	view_primitive_2D_line_trig(&col,alpha,lft,rgt,top,bot,2);
 
 		// control text
@@ -2003,7 +1969,7 @@ void element_scroll_slider(element_type *element,bool up)
 
 void element_draw_slider(element_type *element,int sel_id)
 {
-	int				x,y,ky,lft,rgt,top,bot,mid;
+	int				x,y,ky,lft,rgt,top,bot,mid,lx,rx;
 	float			alpha;
 	char			str[32];
 	d3col			col2,gradient_start,gradient_end;
@@ -2045,25 +2011,37 @@ void element_draw_slider(element_type *element,int sel_id)
 
 		// slider value
 		
+	if (element->enabled) view_primitive_2D_color_quad(&iface.color.control.hilite,alpha,lft,mid,top,bot);
+
+		// handle
+
 	if (element->enabled) {
+		lx=mid-(element->wid/20);
+		rx=mid+(element->wid/20);
+
+		if (lx<lft) {
+			lx=lft;
+			rx=lx+(element->wid/10);
+		}
+		if (rx>rgt) {
+			lx=rgt-(element->wid/10);
+			rx=rgt;
+		}
+
 		col2.r=iface.color.control.hilite.r*element_gradient_factor_foreground;
 		col2.g=iface.color.control.hilite.g*element_gradient_factor_foreground;
 		col2.b=iface.color.control.hilite.b*element_gradient_factor_foreground;
-
-		view_primitive_2D_color_poly(lft,top,&iface.color.control.hilite,mid,top,&iface.color.control.hilite,mid,ky,&col2,lft,ky,&col2,alpha);
-		view_primitive_2D_color_poly(lft,ky,&col2,mid,ky,&col2,mid,bot,&iface.color.control.hilite,lft,bot,&iface.color.control.hilite,alpha);
+	
+		view_primitive_2D_color_poly(lx,top,&iface.color.control.hilite,rx,top,&iface.color.control.hilite,rx,ky,&col2,lx,ky,&col2,alpha);
+		view_primitive_2D_color_poly(lx,ky,&col2,rx,ky,&col2,rx,bot,&iface.color.control.hilite,lx,bot,&iface.color.control.hilite,alpha);
+		
+		view_primitive_2D_line_quad(&iface.color.control.outline,alpha,lx,rx,top,bot);
 	}
 
 		// outlines
 
-	if ((element->id==sel_id) && (element->enabled)) {
-		view_primitive_2D_line_quad(&iface.color.control.mouse_over,alpha,lft,rgt,top,bot);
-		view_primitive_2D_line_quad(&iface.color.control.mouse_over,alpha,lft,mid,top,bot);
-	}
-	else {
-		view_primitive_2D_line_quad(&iface.color.control.outline,alpha,lft,rgt,top,bot);
-		view_primitive_2D_line_quad(&iface.color.control.outline,alpha,lft,mid,top,bot);
-	}
+	view_primitive_2D_line_quad(&iface.color.control.outline,alpha,lft,rgt,top,bot);
+	if ((element->id==sel_id) && (element->enabled)) view_primitive_2D_line_quad(&iface.color.control.mouse_over,alpha,(lft-1),(rgt+1),(top-1),(bot+1));
 
 		// text
 
@@ -2600,6 +2578,8 @@ void element_draw_table(element_type *element,int sel_id)
 	top+=(high+4);
 
 	view_primitive_2D_line(&iface.color.control.outline,1.0f,lft,top,rgt,top);
+
+	if (element->id==sel_id) view_primitive_2D_line_quad(&iface.color.control.mouse_over,1.0f,(lft-1),(rgt+1),(top-(high+5)),(bot+2));
 
 		// text positions
 		
