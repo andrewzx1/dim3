@@ -234,6 +234,10 @@ script_define_type			script_dim3_defines[]={
 								{sd_event_animation_weapon_raise,				"",		"DIM3_EVENT_ANIMATION_WEAPON_RAISE"},
 								{sd_event_animation_weapon_lower,				"",		"DIM3_EVENT_ANIMATION_WEAPON_LOWER"},
 								{sd_event_animation_weapon_held,				"",		"DIM3_EVENT_ANIMATION_WEAPON_HELD"},
+								{sd_event_animation_weapon_add_ammo,			"",		"DIM3_EVENT_ANIMATION_WEAPON_ADD_AMMO"},
+								{sd_event_animation_weapon_add_clip,			"",		"DIM3_EVENT_ANIMATION_WEAPON_ADD_CLIP"},
+								{sd_event_animation_weapon_add_alt_ammo,		"",		"DIM3_EVENT_ANIMATION_WEAPON_ADD_ALT_AMMO"},
+								{sd_event_animation_weapon_add_alt_clip,		"",		"DIM3_EVENT_ANIMATION_WEAPON_ADD_ALT_CLIP"},
 								
 								{sd_event_path_node,							"",		"DIM3_EVENT_PATH_NODE"},
 								{sd_event_path_done,							"",		"DIM3_EVENT_PATH_DONE"},

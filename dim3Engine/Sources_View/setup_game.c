@@ -508,7 +508,7 @@ void setup_game_create_pane(void)
 		setup_tab_index[ntab]=setup_pane_action;
 		ntab++;
 	}
-	if (iface.multiplayer.on) {
+	if ((iface.setup.game_player) && (iface.multiplayer.on)) {
 		strcpy(setup_tab_list[ntab],"Multiplayer");
 		setup_tab_index[ntab]=setup_pane_player;
 		ntab++;

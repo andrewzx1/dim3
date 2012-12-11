@@ -182,6 +182,9 @@ bool item_add_ammo(obj_type *obj,weapon_type *weap,int add_count)
 	
     weap->ammo.count+=add_count;
     if (weap->ammo.count>weap->ammo.max_count) weap->ammo.count=weap->ammo.max_count;
+
+	scripts_post_event_console(weap->script_idx,-1,sd_event_animation_weapon,sd_event_animation_weapon_add_ammo,0);
+
 	return(TRUE);
 }
 
@@ -194,6 +197,9 @@ bool item_add_clip(obj_type *obj,weapon_type *weap,int add_count)
     
     weap->ammo.clip_count+=add_count;
 	if (weap->ammo.clip_count>weap->ammo.max_clip_count) weap->ammo.clip_count=weap->ammo.max_clip_count;
+
+	scripts_post_event_console(weap->script_idx,-1,sd_event_animation_weapon,sd_event_animation_weapon_add_clip,0);
+
 	return(TRUE);
 }
 
@@ -204,6 +210,9 @@ bool item_add_alt_ammo(obj_type *obj,weapon_type *weap,int add_count)
 
     weap->alt_ammo.count+=add_count;
     if (weap->alt_ammo.count>weap->alt_ammo.max_count) weap->alt_ammo.count=weap->alt_ammo.max_count;
+
+	scripts_post_event_console(weap->script_idx,-1,sd_event_animation_weapon,sd_event_animation_weapon_add_alt_ammo,0);
+
 	return(TRUE);
 }
 
@@ -215,6 +224,9 @@ bool item_add_alt_clip(obj_type *obj,weapon_type *weap,int add_count)
    
     weap->alt_ammo.clip_count+=add_count;
     if (weap->alt_ammo.clip_count>weap->alt_ammo.max_clip_count) weap->alt_ammo.clip_count=weap->alt_ammo.max_clip_count;
+
+	scripts_post_event_console(weap->script_idx,-1,sd_event_animation_weapon,sd_event_animation_weapon_add_alt_clip,0);
+
 	return(TRUE);
 }
 

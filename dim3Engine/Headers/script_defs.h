@@ -326,50 +326,54 @@ and can be sold or given away.
 #define sd_event_animation_weapon_raise					3049
 #define sd_event_animation_weapon_lower					3050
 #define sd_event_animation_weapon_held					3051
+#define sd_event_animation_weapon_add_ammo				3052
+#define sd_event_animation_weapon_add_clip				3053
+#define sd_event_animation_weapon_add_alt_ammo			3054
+#define sd_event_animation_weapon_add_alt_clip			3055
 
-#define sd_event_path_node								3052
-#define sd_event_path_done								3053
+#define sd_event_path_node								3056
+#define sd_event_path_done								3057
 
-#define sd_event_watch_object_near						3054
-#define sd_event_watch_object_far						3055
-#define sd_event_watch_object_death						3056
-#define sd_event_watch_object_enter_base				3057
-#define sd_event_watch_object_exit_base					3058
-#define sd_event_watch_object_sound						3059
-#define sd_event_watch_object_damage					3060
+#define sd_event_watch_object_near						3058
+#define sd_event_watch_object_far						3059
+#define sd_event_watch_object_death						3060
+#define sd_event_watch_object_enter_base				3061
+#define sd_event_watch_object_exit_base					3062
+#define sd_event_watch_object_sound						3063
+#define sd_event_watch_object_damage					3064
 
-#define sd_event_weapon_fire_single						3063
-#define sd_event_weapon_fire_up							3064
-#define sd_event_weapon_fire_down						3065
-#define sd_event_weapon_fire_repeat						3066
-#define sd_event_weapon_fire_clip_change				3067
-#define sd_event_weapon_fire_zoom_enter					3068
-#define sd_event_weapon_fire_zoom_exit					3069
+#define sd_event_weapon_fire_single						3065
+#define sd_event_weapon_fire_up							3066
+#define sd_event_weapon_fire_down						3067
+#define sd_event_weapon_fire_repeat						3068
+#define sd_event_weapon_fire_clip_change				3069
+#define sd_event_weapon_fire_zoom_enter					3070
+#define sd_event_weapon_fire_zoom_exit					3071
 
-#define sd_event_projectile_bounce						3070
-#define sd_event_projectile_reflect						3071
+#define sd_event_projectile_bounce						3072
+#define sd_event_projectile_reflect						3073
 
-#define sd_event_melee_hit								3072
+#define sd_event_melee_hit								3074
 
-#define sd_event_vehicle_enter							3073
-#define sd_event_vehicle_exit							3074
+#define sd_event_vehicle_enter							3075
+#define sd_event_vehicle_exit							3076
 
-#define sd_event_move_done								3075
-#define sd_event_move_loop								3076
+#define sd_event_move_done								3077
+#define sd_event_move_loop								3078
 
-#define sd_event_interface_title_done					3077
-#define sd_event_interface_story_done					3078
-#define sd_event_interface_cinema_done					3079
+#define sd_event_interface_title_done					3079
+#define sd_event_interface_story_done					3080
+#define sd_event_interface_cinema_done					3081
 
-#define sd_event_state_load								3080
-#define sd_event_state_save								3081
+#define sd_event_state_load								3082
+#define sd_event_state_save								3083
 
-#define sd_event_remote_join							3082
-#define sd_event_remote_leave							3083
-#define sd_event_remote_team							3084
-#define sd_event_remote_death							3085
-#define sd_event_remote_suicide							3086
-#define sd_event_remote_telefrag						3087
+#define sd_event_remote_join							3084
+#define sd_event_remote_leave							3085
+#define sd_event_remote_team							3086
+#define sd_event_remote_death							3087
+#define sd_event_remote_suicide							3088
+#define sd_event_remote_telefrag						3089
 
 //
 // script event messages

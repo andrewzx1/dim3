@@ -70,7 +70,7 @@ void project_palette_fill_setup(void)
 	list_palette_add_checkbox(&project_palette,kSetupPropertyGameAudio,"Audio Tab",&iface.setup.game_audio,FALSE);
 	list_palette_add_checkbox(&project_palette,kSetupPropertyGameControl,"Control Tab",&iface.setup.game_control,FALSE);
 	list_palette_add_checkbox(&project_palette,kSetupPropertyGameAction,"Action Tab",&iface.setup.game_action,FALSE);
-	list_palette_add_checkbox(&project_palette,kSetupPropertyGamePlayer,"Player Tab",&iface.setup.game_player,FALSE);
+	list_palette_add_checkbox(&project_palette,kSetupPropertyGamePlayer,"Multiplayer Tab",&iface.setup.game_player,FALSE);
 	list_palette_add_checkbox(&project_palette,kSetupPropertyGameDebug,"Debug Tab",&iface.setup.game_debug,FALSE);
 }
 
