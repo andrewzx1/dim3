@@ -256,7 +256,7 @@ void setup_game_audio_pane(void)
 bool setup_game_control_pane_visible(void)
 {
 	if (iface.setup.allow_run) return(TRUE);
-	if (iface.setup.allow_auto_aim) (TRUE);
+	if (iface.setup.allow_auto_aim) return(TRUE);
 	if (input_check_joystick_ok()) return(TRUE);
 #if !defined(D3_OS_IPHONE) && !defined(D3_OS_ANDRIOD)
 	return(TRUE);

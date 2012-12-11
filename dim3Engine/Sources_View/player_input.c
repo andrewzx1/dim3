@@ -570,11 +570,29 @@ bool player_message_input(obj_type *obj)
 
 float player_mouse_smooth(float mouse_ang,float turn_ang)
 {
+	float			dif;
+	
 	if (!setup.mouse_smooth) return(mouse_ang);
 	
+		// if there isn't any current
+		// movement, then always auto-start
+		// to deal with lag
+		
+	if (turn_ang==0.0f) return(mouse_ang);
+	
+		// get the difference, if
+		// 1.0 or less, just do it
+		
+	dif=turn_ang-mouse_ang;
+	if (fabsf(dif)<=1.0f) return(mouse_ang);
+	
+		// else go halfway there
+		
+	return(mouse_ang+(dif*0.5f));
+/*
 	if (mouse_ang>0) {
 		if ((mouse_ang<turn_ang) && (turn_ang>=0)) {
-			return(turn_ang/2.0f);
+			return(turn_ang-((turn_ang-mouse_ang)/2.0f));
 		}
 		
 		return(mouse_ang);
@@ -582,13 +600,14 @@ float player_mouse_smooth(float mouse_ang,float turn_ang)
 
 	if (mouse_ang<0) {
 		if ((mouse_ang>turn_ang) && (turn_ang<=0)) {
-			return(turn_ang/2.0f);
+			return(turn_ang+((mouse_ang-turn_ang)/2.0f));
 		}
 		
 		return(mouse_ang);
 	}
 	
 	return(mouse_ang);
+	*/
 }
 
 void player_get_6_way_input(obj_type *obj,float *mouse_x,float *mouse_y,bool *go_forward,bool *go_backward,bool *go_side_left,bool *go_side_right)

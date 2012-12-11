@@ -36,10 +36,6 @@ view_type					view;
 view_render_type			view_camera_render,view_node_render;
 render_info_type			render_info;
 
-#ifdef D3_OS_MAC
-double						view_mouse_acceleration,view_trackpad_acceleration;
-#endif
-
 extern map_type				map;
 extern server_type			server;
 extern iface_type			iface;
@@ -287,44 +283,6 @@ bool view_reset_display(char *err_str)
 
 /* =======================================================
 
-      View OS X Acceleration
-      
-======================================================= */
-
-#ifdef D3_OS_MAC
-
-void view_deactivate_mouse_acceleration(void)
-{
-	NXEventHandle			h;
-
-	view_mouse_acceleration=view_trackpad_acceleration=-1.0;
-
-	h=NXOpenEventStatus();
-	if (h==NULL) return;
-
-		// get old values
-
-	IOHIDGetAccelerationWithKey(h,CFSTR(kIOHIDMouseAccelerationType),&view_mouse_acceleration);
-	IOHIDGetAccelerationWithKey(h,CFSTR(kIOHIDTrackpadAccelerationType),&view_trackpad_acceleration);
-
-		// set new values
-
-	IOHIDSetAccelerationWithKey(h,CFSTR(kIOHIDMouseAccelerationType),0.0);
-	IOHIDSetAccelerationWithKey(h,CFSTR(kIOHIDTrackpadAccelerationType),0.0);
-}
-
-void view_restore_mouse_acceleration(void)
-{
-	if (view_mouse_acceleration==-1.0) return;
-
-	IOHIDSetAccelerationWithKey(h,CFSTR(kIOHIDMouseAccelerationType),view_mouse_acceleration);
-	IOHIDSetAccelerationWithKey(h,CFSTR(kIOHIDTrackpadAccelerationType),view_trackpad_acceleration);
-}
-
-#endif
-
-/* =======================================================
-
       View Initialize and Shutdown Main
       
 ======================================================= */
@@ -428,13 +386,6 @@ bool view_initialize(char *err_str)
 #if defined(D3_OS_IPHONE) || defined(D3_OS_ANDRIOD)
 	SDL_SetEventFilter(loop_event_callback,0);
 #endif
-
-		// on OS X, we need to disable
-		// mouse acceleration
-
-#ifdef D3_OS_MAC
-	view_deactivate_mouse_acceleration();
-#endif
 	
 		// intialize the view bitmap lists
 		
@@ -495,13 +446,6 @@ void view_shutdown(void)
 
 #ifdef D3_OPENRL
 	view_openrl_shutdown();
-#endif
-
-		// re-enable mouse acceleration
-		// on OS X
-
-#ifdef D3_OS_MAC
-	view_restore_mouse_acceleration();
 #endif
 
 		// shutdown SDL
