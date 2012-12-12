@@ -843,6 +843,10 @@ void ag_generate_position_room_connection(int *p_shape_idx,int *p_connect_idx,d3
 		if (connect_idx==-1) connect_idx=ag_get_room_position(shape_idx,pnt,size,ag_state.option.mirror,FALSE);
 		if (connect_idx!=-1) break;
 
+			// can ths connector be used?
+
+
+
 			// try again
 
 		try_count++;

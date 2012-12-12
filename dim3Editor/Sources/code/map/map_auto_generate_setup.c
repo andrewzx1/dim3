@@ -127,13 +127,13 @@ void ag_read_settings_setup_connector(ag_shape_type *shape,ag_shape_connector_ty
 
 bool ag_read_settings(char *path,char *err_str)
 {
-	int					n,k,t,
+	int					n,k,t,nshape,
 						head_tag,size_tag,option_tag,
 						shapes_tag,shape_tag,
 						vertexes_tag,vertex_tag,
 						polys_tag,poly_tag,
 						connectors_tag,connector_tag;
-	ag_shape_type		*shape;
+	ag_shape_type		*shape,*flip_shape;
 	ag_shape_poly_type	*shape_poly;
 
 		// decode the file
@@ -195,6 +195,7 @@ bool ag_read_settings(char *path,char *err_str)
 	for (n=0;n!=ag_state.nshape;n++) {
 		xml_get_attribute_text(shape_tag,"name",shape->name,256);
 		shape->single_floor=xml_get_attribute_boolean(shape_tag,"single_floor");
+		shape->flip=xml_get_attribute_boolean(shape_tag,"flip");
 		shape->spawn_spots=xml_get_attribute_boolean(shape_tag,"spawn_spots");
 
 			// shape vertexes
@@ -265,6 +266,64 @@ bool ag_read_settings(char *path,char *err_str)
 
 		shape++;
 		shape_tag=xml_findnextchild(shape_tag);
+	}
+
+		// create any flipped versions
+
+	nshape=ag_state.nshape;
+
+	for (n=0;n!=nshape;n++) {
+		flip_shape=&ag_state.shapes[n];
+		if (!flip_shape->flip) continue;
+
+			// flipped X
+
+		if (ag_state.nshape>=ag_max_shape) break;
+
+		memmove(shape,flip_shape,sizeof(ag_shape_type));
+
+		for (k=0;k!=shape->nvertex;k++) {
+			shape->vertexes[k].x=100-shape->vertexes[k].x;
+		}
+		for (k=0;k!=shape->nconnector;k++) {
+			ag_read_settings_setup_connector(shape,&shape->connectors[k]);
+		}
+
+		ag_state.nshape++;
+		shape++;
+
+			// flipped Z
+
+		if (ag_state.nshape>=ag_max_shape) break;
+
+		memmove(shape,flip_shape,sizeof(ag_shape_type));
+
+		for (k=0;k!=shape->nvertex;k++) {
+			shape->vertexes[k].z=100-shape->vertexes[k].z;
+		}
+		for (k=0;k!=shape->nconnector;k++) {
+			ag_read_settings_setup_connector(shape,&shape->connectors[k]);
+		}
+
+		ag_state.nshape++;
+		shape++;
+
+			// flipped XZ
+
+		if (ag_state.nshape>=ag_max_shape) break;
+
+		memmove(shape,flip_shape,sizeof(ag_shape_type));
+
+		for (k=0;k!=shape->nvertex;k++) {
+			shape->vertexes[k].x=100-shape->vertexes[k].x;
+			shape->vertexes[k].z=100-shape->vertexes[k].z;
+		}
+		for (k=0;k!=shape->nconnector;k++) {
+			ag_read_settings_setup_connector(shape,&shape->connectors[k]);
+		}
+
+		ag_state.nshape++;
+		shape++;
 	}
 
 		// finished
