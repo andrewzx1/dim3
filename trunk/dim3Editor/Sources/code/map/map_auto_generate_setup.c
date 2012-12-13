@@ -72,6 +72,18 @@ int ag_shape_get_connector_index(ag_shape_type *shape,int v1_idx,int v2_idx)
       
 ======================================================= */
 
+void ag_read_settings_setup_shape_poly(ag_shape_type *shape,ag_shape_poly_type *shape_poly)
+{
+	int				n;
+
+	shape_poly->top=shape_poly->bottom=TRUE;
+
+	for (n=0;n!=shape_poly->npt;n++) {
+		if (shape->vertexes[shape_poly->v[n]].z>=50) shape_poly->top=FALSE;
+		if (shape->vertexes[shape_poly->v[n]].z<=50) shape_poly->bottom=FALSE;
+	}
+}
+
 void ag_read_settings_setup_connector(ag_shape_type *shape,ag_shape_connector_type *connector)
 {
 		// connecting on X
@@ -161,6 +173,7 @@ bool ag_read_settings(char *path,char *err_str)
 
 	ag_state.size.room_min_count=xml_get_attribute_int(size_tag,"room_min_count");
 	ag_state.size.room_max_count=xml_get_attribute_int(size_tag,"room_max_count");
+	ag_state.size.room_stub_count=xml_get_attribute_int(size_tag,"room_stub_count");
 	ag_state.size.room_sz=xml_get_attribute_int(size_tag,"room_size");
 	ag_state.size.room_high=xml_get_attribute_int(size_tag,"room_high");
 	ag_state.size.story_count=xml_get_attribute_int(size_tag,"story_count");
@@ -195,7 +208,7 @@ bool ag_read_settings(char *path,char *err_str)
 	for (n=0;n!=ag_state.nshape;n++) {
 		xml_get_attribute_text(shape_tag,"name",shape->name,256);
 		shape->single_floor=xml_get_attribute_boolean(shape_tag,"single_floor");
-		shape->flip=xml_get_attribute_boolean(shape_tag,"flip");
+		shape->stub=xml_get_attribute_boolean(shape_tag,"stub");
 		shape->spawn_spots=xml_get_attribute_boolean(shape_tag,"spawn_spots");
 
 			// shape vertexes
@@ -228,17 +241,7 @@ bool ag_read_settings(char *path,char *err_str)
 
 			for (k=0;k!=shape->npoly;k++) {
 				shape_poly->npt=xml_get_attribute_int_array(poly_tag,"v",shape_poly->v,4);
-					
-					// determine top or bottom
-					// for polygon
-
-				shape_poly->top=shape_poly->bottom=TRUE;
-
-				for (t=0;t!=shape_poly->npt;t++) {
-					if (shape->vertexes[shape_poly->v[t]].z>=50) shape_poly->top=FALSE;
-					if (shape->vertexes[shape_poly->v[t]].z<=50) shape_poly->bottom=FALSE;
-				}
-
+				ag_read_settings_setup_shape_poly(shape,shape_poly);
 				shape_poly++;
 				poly_tag=xml_findnextchild(poly_tag);
 			}
@@ -268,13 +271,42 @@ bool ag_read_settings(char *path,char *err_str)
 		shape_tag=xml_findnextchild(shape_tag);
 	}
 
-		// create any flipped versions
+		// create x/z mirror versions
+		
+	nshape=ag_state.nshape;
+
+	for (n=0;n!=nshape;n++) {
+		flip_shape=&ag_state.shapes[n];
+
+		if (ag_state.nshape>=ag_max_shape) break;
+
+		memmove(shape,flip_shape,sizeof(ag_shape_type));
+
+		for (k=0;k!=shape->nvertex;k++) {
+			t=shape->vertexes[k].x;
+			shape->vertexes[k].x=shape->vertexes[k].z;
+			shape->vertexes[k].z=t;
+		}
+		for (k=0;k!=shape->npoly;k++) {
+			ag_read_settings_setup_shape_poly(shape,&shape->polys[k]);
+		}
+		for (k=0;k!=shape->nconnector;k++) {
+			ag_read_settings_setup_connector(shape,&shape->connectors[k]);
+		}
+
+		ag_state.nshape++;
+		shape++;
+	}
+
+		// create flipped versions
+		// we flip everything (even things that
+		// don't change if flipped) to
+		// keep the randomness even
 
 	nshape=ag_state.nshape;
 
 	for (n=0;n!=nshape;n++) {
 		flip_shape=&ag_state.shapes[n];
-		if (!flip_shape->flip) continue;
 
 			// flipped X
 
@@ -284,6 +316,9 @@ bool ag_read_settings(char *path,char *err_str)
 
 		for (k=0;k!=shape->nvertex;k++) {
 			shape->vertexes[k].x=100-shape->vertexes[k].x;
+		}
+		for (k=0;k!=shape->npoly;k++) {
+			ag_read_settings_setup_shape_poly(shape,&shape->polys[k]);
 		}
 		for (k=0;k!=shape->nconnector;k++) {
 			ag_read_settings_setup_connector(shape,&shape->connectors[k]);
@@ -301,6 +336,9 @@ bool ag_read_settings(char *path,char *err_str)
 		for (k=0;k!=shape->nvertex;k++) {
 			shape->vertexes[k].z=100-shape->vertexes[k].z;
 		}
+		for (k=0;k!=shape->npoly;k++) {
+			ag_read_settings_setup_shape_poly(shape,&shape->polys[k]);
+		}
 		for (k=0;k!=shape->nconnector;k++) {
 			ag_read_settings_setup_connector(shape,&shape->connectors[k]);
 		}
@@ -317,6 +355,9 @@ bool ag_read_settings(char *path,char *err_str)
 		for (k=0;k!=shape->nvertex;k++) {
 			shape->vertexes[k].x=100-shape->vertexes[k].x;
 			shape->vertexes[k].z=100-shape->vertexes[k].z;
+		}
+		for (k=0;k!=shape->npoly;k++) {
+			ag_read_settings_setup_shape_poly(shape,&shape->polys[k]);
 		}
 		for (k=0;k!=shape->nconnector;k++) {
 			ag_read_settings_setup_connector(shape,&shape->connectors[k]);

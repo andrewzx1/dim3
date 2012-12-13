@@ -103,7 +103,8 @@ and can be sold or given away.
 #define map_menu_item_BuildLightMaps			5407
 #define map_menu_item_BuildLiquidReflectionMaps	5408
 #define map_menu_item_AutoGenerate				5409
-#define map_menu_item_Run						5410
+#define map_menu_item_AutoGenerateAgain			5410
+#define map_menu_item_Run						5411
 
 #define map_menu_item_MeshCombine				5500
 #define map_menu_item_MeshSplit					5501

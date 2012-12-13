@@ -34,6 +34,7 @@ and can be sold or given away.
 
 extern map_type					map;
 
+char							ag_last_path[1024]={0x0};
 ag_state_type					ag_state;
 
 extern bool ag_initialize(char *path,char *err_str);
@@ -271,7 +272,8 @@ int ag_get_room_position(int shape_idx,d3pnt *pnt,d3vct *size,bool mirror,bool p
 
 		for (n=0;n!=ag_state.nroom;n++) {
 
-				// do we have the opposite type
+				// do we have a connector
+				// which is the opposite type
 
 			room2=&ag_state.rooms[n];
 			connect2_idx=ag_shape_has_connector_type(room2,opposite_cnt_type);
@@ -806,6 +808,60 @@ void ag_generate_ceilings(void)
 
 /* =======================================================
 
+      Get Random Shape
+      
+======================================================= */
+
+int ag_generate_random_non_stub_shape(void)
+{
+	int			n,count;
+
+	count=0;
+
+	for (n=0;n!=ag_state.nshape;n++) {
+		if (!ag_state.shapes[n].stub) count++;
+	}
+
+	if (count==0) return(-1);
+
+	count=ag_random_int(count);
+
+	for (n=0;n!=ag_state.nshape;n++) {
+		if (!ag_state.shapes[n].stub) {
+			if (count==0) return(n);
+			count--;
+		}
+	}
+
+	return(-1);
+}
+
+int ag_generate_random_stub_shape(void)
+{
+	int			n,count;
+
+	count=0;
+
+	for (n=0;n!=ag_state.nshape;n++) {
+		if (ag_state.shapes[n].stub) count++;
+	}
+
+	if (count==0) return(-1);
+
+	count=ag_random_int(count);
+
+	for (n=0;n!=ag_state.nshape;n++) {
+		if (ag_state.shapes[n].stub) {
+			if (count==0) return(n);
+			count--;
+		}
+	}
+
+	return(-1);
+}
+
+/* =======================================================
+
       Room Positioning
       
 ======================================================= */
@@ -814,7 +870,7 @@ int ag_generate_position_room_first(d3pnt *pnt)
 {
 	int			shape_idx;
 
-	shape_idx=ag_random_int(ag_state.nshape);
+	shape_idx=ag_generate_random_non_stub_shape();
 
 	pnt->x=map_max_size>>1;
 	pnt->z=map_max_size>>1;
@@ -823,7 +879,7 @@ int ag_generate_position_room_first(d3pnt *pnt)
 	return(shape_idx);
 }
 
-void ag_generate_position_room_connection(int *p_shape_idx,int *p_connect_idx,d3pnt *pnt,d3vct *size)
+bool ag_generate_position_room_connection(int *p_shape_idx,int *p_connect_idx,d3pnt *pnt,d3vct *size,bool stubs)
 {
 	int			shape_idx,connect_idx,try_count;
 
@@ -832,8 +888,16 @@ void ag_generate_position_room_connection(int *p_shape_idx,int *p_connect_idx,d3
 
 	try_count=0;
 
-	while (try_count!=4) {
-		shape_idx=ag_random_int(ag_state.nshape);
+	while (try_count!=ag_max_position_room_try) {
+
+		if (!stubs) {
+			shape_idx=ag_generate_random_non_stub_shape();
+		}
+		else {
+			shape_idx=ag_generate_random_stub_shape();
+		}
+		
+		if (shape_idx==-1) return(FALSE);
 
 			// get the connector
 			// we always try prefered connectors
@@ -843,24 +907,25 @@ void ag_generate_position_room_connection(int *p_shape_idx,int *p_connect_idx,d3
 		if (connect_idx==-1) connect_idx=ag_get_room_position(shape_idx,pnt,size,ag_state.option.mirror,FALSE);
 		if (connect_idx!=-1) break;
 
-			// can ths connector be used?
-
-
-
 			// try again
 
 		try_count++;
 	}
 
+	if (connect_idx==-1) return(FALSE);
+
 	*p_shape_idx=shape_idx;
 	*p_connect_idx=connect_idx;
+
+	return(TRUE);
 }
 
 int ag_generate_position_room_grid(int room_idx,int room_count,d3pnt *pnt,d3vct *size)
 {
 	int				x,z,x_start,z_start,shape_idx,grid_sz;
 
-	shape_idx=ag_random_int(ag_state.nshape);
+	shape_idx=ag_generate_random_non_stub_shape();
+	if (shape_idx==-1) return(-1);
 
 	grid_sz=(int)sqrtf((float)room_count);
 
@@ -883,7 +948,7 @@ int ag_generate_position_room_grid(int room_idx,int room_count,d3pnt *pnt,d3vct 
       
 ======================================================= */
 
-bool ag_generate_run(char *path,char *err_str)
+bool ag_generate_run(char *path,bool recenter,char *err_str)
 {
 	int				n,room_count,
 					shape_idx,connect_idx;
@@ -948,13 +1013,19 @@ bool ag_generate_run(char *path,char *err_str)
 				// connect it to an existing room
 
 			else {
-				ag_generate_position_room_connection(&shape_idx,&connect_idx,&pnt,&size);
-				if (connect_idx==-1) break;
+				if (!ag_generate_position_room_connection(&shape_idx,&connect_idx,&pnt,&size,FALSE)) break;
 			}
 		}
 
 			// add the room
 
+		ag_add_room(shape_idx,connect_idx,&pnt,&size);
+	}
+
+		// add any stubs
+
+	for (n=0;n!=ag_state.size.room_stub_count;n++) {
+		if (!ag_generate_position_room_connection(&shape_idx,&connect_idx,&pnt,&size,TRUE)) break;
 		ag_add_room(shape_idx,connect_idx,&pnt,&size);
 	}
 
@@ -1004,7 +1075,7 @@ bool ag_generate_run(char *path,char *err_str)
 
 	map_recalc_normals(&map,FALSE);
 	map_mesh_reset_uv_all();
-	view_goto_map_center_all();
+	if (recenter) view_goto_map_center_all();
 
 	main_wind_draw();
 
@@ -1013,18 +1084,35 @@ bool ag_generate_run(char *path,char *err_str)
 
 void auto_generate_map(void)
 {
-	char					path[1024],err_str[256];
+	char				path[1024],err_str[256];
 
 		// choose an auto generate XML file
 
 	if (!os_load_file("Select an Auto Generator XML File",path,"xml")) return;
+	strcpy(ag_last_path,path);
 
 		// run the auto generator
 
-	if (ag_generate_run(path,err_str)) return;
+	if (ag_generate_run(path,TRUE,err_str)) return;
 	
 		// report errors
 	
 	os_dialog_alert("Auto Generator",err_str);
 }
+
+void auto_generate_map_again(void)
+{
+	char				err_str[256];
+
+	if (ag_last_path[0]==0x0) return;
+
+		// run the auto generator
+
+	if (ag_generate_run(ag_last_path,FALSE,err_str)) return;
+	
+		// report errors
+	
+	os_dialog_alert("Auto Generator",err_str);
+}
+
 
