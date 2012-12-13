@@ -548,6 +548,7 @@ extern bool liquid_reflection_maps_create(void);
 //
 
 extern void auto_generate_map(void);
+extern void auto_generate_map_again(void);
 
 //
 // selection routines

@@ -880,10 +880,13 @@ void view_goto_select(void)
 
 void view_goto_map_center(void)
 {
-	int				n,k,count;
-	d3pnt			center,*pt;
-	map_mesh_type	*mesh;
+	int					n,k,count;
+	d3pnt				center,*pt;
+	map_mesh_type		*mesh;
+	editor_view_type	*view;
 	
+		// get center
+
 	count=0;
 	center.x=center.y=center.z=0;
 	
@@ -909,6 +912,21 @@ void view_goto_map_center(void)
 	center.y/=count;
 	center.z/=count;
 	
+		// if view is top or
+		// botton down, then
+		// move away from view
+		
+	view=view_get_current_view();
+
+	if ((view->ang.x<=315.0f) && (view->ang.x>180.0f)) {
+		center.y-=200000;
+	}
+	if ((view->ang.x>=45.0f) && (view->ang.x<180.0f)) {
+		center.y+=200000;
+	}
+
+		// set position
+
 	view_set_position(&center);
 }
 

@@ -29,12 +29,14 @@ and can be sold or given away.
 // constants
 //
 
-#define ag_max_shape							128
+#define ag_max_shape							256
 #define ag_max_shape_point						64
 #define ag_max_shape_connector					32
 #define ag_max_shape_poly						64
 
 #define ag_max_room								256
+
+#define ag_max_position_room_try				8
 
 #define ag_connector_type_min_x					0
 #define ag_connector_type_max_x					1
@@ -75,7 +77,7 @@ typedef struct		{
 typedef struct		{
 						int						nvertex,npoly,nconnector;
 						char					name[name_str_len];
-						bool					single_floor,flip,spawn_spots;
+						bool					single_floor,stub,spawn_spots;
 						d3pnt					vertexes[ag_max_shape_point];
 						ag_shape_poly_type		polys[ag_max_shape_poly];
 						ag_shape_connector_type	connectors[ag_max_shape_connector];
@@ -91,7 +93,7 @@ typedef struct		{
 
 typedef struct		{
 						int						room_min_count,room_max_count,
-												room_sz,room_high,
+												room_stub_count,room_sz,room_high,
 												story_count;
 					} ag_size_type;
 
