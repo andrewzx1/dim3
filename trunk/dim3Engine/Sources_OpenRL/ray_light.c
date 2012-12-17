@@ -25,6 +25,10 @@ int ray_scene_light_get_index(ray_scene_type *scene,int lightId)
 
       Sets the Scene Ambient Color
 
+	  Notes:
+	   If the scene is currently rendering, this API
+	   will stall until it's finished
+
 	  Returns:
 	   RL_ERROR_OK
 	   RL_ERROR_UNKNOWN_SCENE_ID
@@ -53,6 +57,10 @@ int rlSceneAmbient(int sceneId,ray_color_type *col)
 /* =======================================================
 
       Adds a New Light to a Scene
+	  
+	  Notes:
+	   If the scene is currently rendering, this API
+	   will stall until it's finished
 
 	  Returns:
 	   If >=0, then a light ID
@@ -73,6 +81,10 @@ int rlSceneLightAdd(int sceneId)
 	if (idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
 
 	scene=ray_global.scene_list.scenes[idx];
+	
+		// stall rendering so it finishes
+		
+	ray_render_stall(scene);
 
 		// create new light
 
@@ -115,11 +127,14 @@ int rlSceneLightAdd(int sceneId)
 
       Deletes a Light from a Scene
 
+	  Notes:
+	   If the scene is currently rendering, this API
+	   will stall until it's finished
+
 	  Returns:
 	   RL_ERROR_OK
 	   RL_ERROR_UNKNOWN_SCENE_ID
 	   RL_ERROR_UNKNOWN_LIGHT_ID
-	   RL_ERROR_SCENE_IN_USE
       
 ======================================================= */
 
@@ -135,10 +150,10 @@ int rlSceneLightDelete(int sceneId,int lightId)
 	if (idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
 
 	scene=ray_global.scene_list.scenes[idx];
-
-		// can't delete if scene in use
-
-	if (rlSceneRenderState(sceneId)==RL_SCENE_STATE_RENDERING) return(RL_ERROR_SCENE_IN_USE);
+	
+		// stall rendering so it finishes
+		
+	ray_render_stall(scene);
 
 		// get the light
 
@@ -165,6 +180,10 @@ int rlSceneLightDelete(int sceneId,int lightId)
 /* =======================================================
 
       Deletes all Lights from a Scene
+
+	  Notes:
+	   If the scene is currently rendering, this API
+	   will stall until it's finished
 
 	  Returns:
 	   RL_ERROR_OK
@@ -197,6 +216,10 @@ int rlSceneLightDeleteAll(int sceneId)
 /* =======================================================
 
       Shows or Hides Light in Scene
+	  
+	  Notes:
+	   If the scene is currently rendering, this API
+	   will stall until it's finished
 
 	  Returns:
 	   RL_ERROR_OK
@@ -217,6 +240,10 @@ int rlSceneLightSetHidden(int sceneId,int lightId,bool hidden)
 	if (idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
 
 	scene=ray_global.scene_list.scenes[idx];
+	
+		// stall rendering so it finishes
+		
+	ray_render_stall(scene);
 
 		// get the light
 
@@ -235,6 +262,10 @@ int rlSceneLightSetHidden(int sceneId,int lightId,bool hidden)
 /* =======================================================
 
       Changes Position of a Light Already in a Scene
+	  
+	  Notes:
+	   If the scene is currently rendering, this API
+	   will stall until it's finished
 
 	  Returns:
 	   RL_ERROR_OK
@@ -255,6 +286,10 @@ int rlSceneLightSetPosition(int sceneId,int lightId,ray_point_type *pnt)
 	if (idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
 
 	scene=ray_global.scene_list.scenes[idx];
+	
+		// stall rendering so it finishes
+		
+	ray_render_stall(scene);
 
 		// get the light
 
@@ -279,6 +314,10 @@ int rlSceneLightSetPosition(int sceneId,int lightId,ray_point_type *pnt)
 /* =======================================================
 
       Changes Color of a Light Already in a Scene
+	  
+	  Notes:
+	   If the scene is currently rendering, this API
+	   will stall until it's finished
 
 	  Returns:
 	   RL_ERROR_OK
@@ -299,6 +338,10 @@ int rlSceneLightSetColor(int sceneId,int lightId,ray_color_type *col)
 	if (idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
 
 	scene=ray_global.scene_list.scenes[idx];
+	
+		// stall rendering so it finishes
+		
+	ray_render_stall(scene);
 
 		// get the light
 
@@ -319,6 +362,10 @@ int rlSceneLightSetColor(int sceneId,int lightId,ray_color_type *col)
 /* =======================================================
 
       Changes Intensity of a Light Already in a Scene
+	  
+	  Notes:
+	   If the scene is currently rendering, this API
+	   will stall until it's finished
 
 	  Returns:
 	   RL_ERROR_OK
@@ -339,6 +386,10 @@ int rlSceneLightSetIntensity(int sceneId,int lightId,float intensity,float expon
 	if (idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
 
 	scene=ray_global.scene_list.scenes[idx];
+	
+		// stall rendering so it finishes
+		
+	ray_render_stall(scene);
 
 		// get the light
 
@@ -362,6 +413,10 @@ int rlSceneLightSetIntensity(int sceneId,int lightId,float intensity,float expon
 /* =======================================================
 
       Changes Direction of a Light Already in a Scene
+	  
+	  Notes:
+	   If the scene is currently rendering, this API
+	   will stall until it's finished
 
 	  Returns:
 	   RL_ERROR_OK
@@ -382,6 +437,10 @@ int rlSceneLightSetDirection(int sceneId,int lightId,rlVector *vector,float angl
 	if (idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
 
 	scene=ray_global.scene_list.scenes[idx];
+	
+		// stall rendering so it finishes
+		
+	ray_render_stall(scene);
 
 		// get the light
 

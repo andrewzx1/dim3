@@ -67,10 +67,9 @@
 #define RL_ERROR_UNKNOWN_TARGET								-9
 #define RL_ERROR_UNKNOWN_FORMAT								-10
 #define RL_ERROR_UNKNOWN_ALPHA_TYPE							-11
-#define RL_ERROR_SCENE_IN_USE								-12
-#define RL_ERROR_MATERIAL_ATTACHED_TO_MESH					-13
-#define RL_ERROR_MATERIAL_ATTACHED_TO_OVERLAY				-14
-#define RL_ERROR_THREADING_ERROR							-15
+#define RL_ERROR_MATERIAL_ATTACHED_TO_MESH					-12
+#define RL_ERROR_MATERIAL_ATTACHED_TO_OVERLAY				-13
+#define RL_ERROR_THREADING_ERROR							-14
 
 //
 // functions
@@ -101,6 +100,7 @@ extern int rlSceneClearBuffer(int sceneId,rlColor *col);
 extern int rlSceneGetBuffer(int sceneId,void **buffer);
 extern int rlSceneRender(int sceneId);
 extern int rlSceneRenderState(int sceneId);
+extern int rlSceneRenderFinish(int sceneId);
 
 	// scene eye position
 	

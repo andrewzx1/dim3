@@ -153,6 +153,10 @@ void ray_precalc_light_bounds(ray_light_type *light)
 	light->bound.max.x=light->pnt.x+light->intensity;
 	light->bound.max.y=light->pnt.y+light->intensity;
 	light->bound.max.z=light->pnt.z+light->intensity;
+	
+	light->bound.mid.x=(light->bound.min.x+light->bound.max.x)*0.5f;
+	light->bound.mid.y=(light->bound.min.y+light->bound.max.y)*0.5f;
+	light->bound.mid.z=(light->bound.min.z+light->bound.max.z)*0.5f;
 }
 
 /* =======================================================
@@ -305,8 +309,6 @@ void ray_precalc_build_frustum_planes(ray_scene_type *scene,ray_draw_scene_threa
 		// get the 6 frustum planes
 		// left, right, top, bottom, near, and far
 		
-		//fprintf(stdout,"center ray = %d,%d,%d\n",(int)center_vct.x,(int)center_vct.y,(int)center_vct.z);
-		
 	ray_precalc_build_frustum_plane_single(&planes[0],&bot_lft_near_pnt,&top_lft_near_pnt,&bot_lft_far_pnt);
 	ray_precalc_build_frustum_plane_single(&planes[1],&top_rgt_near_pnt,&bot_rgt_near_pnt,&top_rgt_far_pnt);
 	ray_precalc_build_frustum_plane_single(&planes[2],&top_lft_near_pnt,&top_rgt_near_pnt,&top_lft_far_pnt);
@@ -355,6 +357,7 @@ void ray_precalc_render_scene_setup(ray_scene_type *scene)
 		// create a list of meshes within
 		// the eye max_dist, centered around
 		// the eye point.  These are the drawing
+		// meshes
 		
 	scene->draw_mesh_index_block.count=0;
 
@@ -393,6 +396,7 @@ void ray_precalc_render_scene_setup(ray_scene_type *scene)
 	}
 	
 		// find the cross collisions
+		// between lights and meshes
 		// we do a quick elimination of
 		// non light trace blocking meshes
 		// and hidden meshes
@@ -412,6 +416,7 @@ void ray_precalc_render_scene_setup(ray_scene_type *scene)
 					// collision list
 
 				if ((mesh->flags&RL_MESH_FLAG_NON_LIGHT_TRACE_BLOCKING)==0x0) {
+				
 					if (light->collide_meshes_list.count<ray_max_mesh_per_light) {
 						light->collide_meshes_list.indexes[light->collide_meshes_list.count]=mesh_idx;
 						light->collide_meshes_list.count++;
@@ -483,11 +488,14 @@ void ray_precalc_render_scene_thread_setup(ray_scene_type *scene,ray_draw_scene_
 		thread_info->draw_mesh_index_block.count++;
 
 			// set up the poly rendering flags
+			// for this thread, which is a list of which
+			// polys can be seen from the frustum of
+			// this thread
 
 		poly=mesh->poly_block.polys;
 
 		for (k=0;k!=mesh->poly_block.count;k++) {
-			poly->render_mask[thread_info->idx]=ray_precalc_frustum_plane_bound_cull(planes,&poly->bound)?0x1:0x0;
+			poly->thread_render_mask[thread_info->idx]=ray_precalc_frustum_plane_bound_cull(planes,&poly->bound)?0x1:0x0;
 			poly++;
 		}
 

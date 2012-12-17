@@ -8,8 +8,15 @@ ray_global_type					ray_global;
 
       Setup Eye
 
-	  Note: Rotate matrix is in column major order
-      
+	  Note:
+	   Rotate matrix is in column major order
+	   If the scene is currently rendering, this API
+	   will stall until it's finished
+	   
+ 	  Returns:
+	   RL_ERROR_OK
+	   RL_ERROR_UNKNOWN_SCENE_ID
+     
 ======================================================= */
 
 int rlSceneEyePositionSet(int sceneId,ray_point_type *pnt,ray_matrix_type *rot_matrix,float eye_min_dist,float eye_max_dist)
@@ -21,14 +28,14 @@ int rlSceneEyePositionSet(int sceneId,ray_point_type *pnt,ray_matrix_type *rot_m
 
 	idx=ray_scene_get_index(sceneId);
 	if (idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
+	
+	scene=ray_global.scene_list.scenes[idx];
 
-		// can not set if in rendering
-
-	if (rlSceneRenderState(sceneId)==RL_SCENE_STATE_RENDERING) return(RL_ERROR_SCENE_IN_USE);
+		// stall rendering so it finishes
+		
+	ray_render_stall(scene);
 
 		// set eye position
-
-	scene=ray_global.scene_list.scenes[idx];
 
 	memmove(&scene->eye.pnt,pnt,sizeof(ray_point_type));
 	memmove(&scene->eye.matrix,rot_matrix,sizeof(ray_matrix_type));

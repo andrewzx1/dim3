@@ -74,6 +74,10 @@ void ray_scene_mesh_precalc(ray_scene_type *scene,ray_mesh_type *mesh)
 /* =======================================================
 
       Adds a New Mesh to a Scene
+	  
+	  Notes:
+	   If the scene is currently rendering, this API
+	   will stall until it's finished
 
 	  Returns:
 	   If >=0, then a mesh ID
@@ -94,6 +98,10 @@ int rlSceneMeshAdd(int sceneId,unsigned long flags)
 	if (idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
 
 	scene=ray_global.scene_list.scenes[idx];
+	
+		// stall rendering so it finishes
+		
+	ray_render_stall(scene);
 
 		// add mesh
 
@@ -136,12 +144,15 @@ int rlSceneMeshAdd(int sceneId,unsigned long flags)
 /* =======================================================
 
       Deletes a Mesh from a Scene
+	  
+	  Notes:
+	   If the scene is currently rendering, this API
+	   will stall until it's finished
 
 	  Returns:
 	   RL_ERROR_OK
 	   RL_ERROR_UNKNOWN_SCENE_ID
 	   RL_ERROR_UNKNOWN_MESH_ID
-	   RL_ERROR_SCENE_IN_USE
       
 ======================================================= */
 
@@ -157,10 +168,10 @@ int rlSceneMeshDelete(int sceneId,int meshId)
 	if (idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
 
 	scene=ray_global.scene_list.scenes[idx];
-
-		// can't delete if scene in use
-
-	if (rlSceneRenderState(sceneId)==RL_SCENE_STATE_RENDERING) return(RL_ERROR_SCENE_IN_USE);
+	
+		// stall rendering so it finishes
+		
+	ray_render_stall(scene);
 	
 		// get the mesh index
 		
@@ -202,6 +213,10 @@ int rlSceneMeshDelete(int sceneId,int meshId)
 /* =======================================================
 
       Deletes all Meshes from a Scene
+	  
+	  Notes:
+	   If the scene is currently rendering, this API
+	   will stall until it's finished
 
 	  Returns:
 	   RL_ERROR_OK
@@ -234,12 +249,15 @@ int rlSceneMeshDeleteAll(int sceneId)
 /* =======================================================
 
       Sets Hidden State For Mesh
+	  
+	  Notes:
+	   If the scene is currently rendering, this API
+	   will stall until it's finished
 
 	  Returns:
 	   RL_ERROR_OK
 	   RL_ERROR_UNKNOWN_SCENE_ID
 	   RL_ERROR_UNKNOWN_MESH_ID
-	   RL_ERROR_SCENE_IN_USE
       
 ======================================================= */
 
@@ -254,10 +272,10 @@ int rlSceneMeshSetHidden(int sceneId,int meshId,bool hidden)
 	if (idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
 
 	scene=ray_global.scene_list.scenes[idx];
-
-		// can't alter scenes in use
-
-	if (rlSceneRenderState(sceneId)==RL_SCENE_STATE_RENDERING) return(RL_ERROR_SCENE_IN_USE);
+	
+		// stall rendering so it finishes
+		
+	ray_render_stall(scene);
 
 		// get mesh
 
@@ -274,12 +292,15 @@ int rlSceneMeshSetHidden(int sceneId,int meshId,bool hidden)
       Sets Vertexes for a Mesh
 	  If vertex_data is NULL, no data is copied and
 	  the pointer can be retrieved for writing later
+	  
+	  Notes:
+	   If the scene is currently rendering, this API
+	   will stall until it's finished
 
 	  Returns:
 	   RL_ERROR_OK
 	   RL_ERROR_UNKNOWN_SCENE_ID
 	   RL_ERROR_UNKNOWN_MESH_ID
-	   RL_ERROR_SCENE_IN_USE
 	   RL_ERROR_OUT_OF_MEMORY
       
 ======================================================= */
@@ -298,10 +319,10 @@ int rlSceneMeshSetVertex(int sceneId,int meshId,int format,int count,void *verte
 	if (idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
 
 	scene=ray_global.scene_list.scenes[idx];
-
-		// can't alter scenes in use
-
-	if (rlSceneRenderState(sceneId)==RL_SCENE_STATE_RENDERING) return(RL_ERROR_SCENE_IN_USE);
+	
+		// stall rendering so it finishes
+		
+	ray_render_stall(scene);
 
 		// get mesh
 
@@ -353,7 +374,10 @@ int rlSceneMeshMapVertexPointer(int sceneId,int meshId,void **vertex_data)
 	if (idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
 
 	scene=ray_global.scene_list.scenes[idx];
-	if (rlSceneRenderState(sceneId)==RL_SCENE_STATE_RENDERING) return(RL_ERROR_SCENE_IN_USE);
+	
+		// stall rendering so it finishes
+		
+	ray_render_stall(scene);
 
 		// get mesh
 
@@ -378,7 +402,10 @@ int rlSceneMeshUnMapVertexPointer(int sceneId,int meshId)
 	if (idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
 
 	scene=ray_global.scene_list.scenes[idx];
-	if (rlSceneRenderState(sceneId)==RL_SCENE_STATE_RENDERING) return(RL_ERROR_SCENE_IN_USE);
+	
+		// stall rendering so it finishes
+		
+	ray_render_stall(scene);
 
 		// get mesh
 
@@ -397,12 +424,15 @@ int rlSceneMeshUnMapVertexPointer(int sceneId,int meshId)
       Sets UVs for a Mesh
 	  If uv_data is NULL, no data is copied and
 	  the pointer can be retrieved for writing later
+	  
+	  Notes:
+	   If the scene is currently rendering, this API
+	   will stall until it's finished
 
 	  Returns:
 	   RL_ERROR_OK
 	   RL_ERROR_UNKNOWN_SCENE_ID
 	   RL_ERROR_UNKNOWN_MESH_ID
-	   RL_ERROR_SCENE_IN_USE
 	   RL_ERROR_OUT_OF_MEMORY
       
 ======================================================= */
@@ -421,10 +451,10 @@ int rlSceneMeshSetUV(int sceneId,int meshId,int format,int count,void *uv_data)
 	if (idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
 
 	scene=ray_global.scene_list.scenes[idx];
-
-		// can't alter scenes in use
-
-	if (rlSceneRenderState(sceneId)==RL_SCENE_STATE_RENDERING) return(RL_ERROR_SCENE_IN_USE);
+	
+		// stall rendering so it finishes
+		
+	ray_render_stall(scene);
 
 		// get mesh
 
@@ -470,7 +500,10 @@ int rlSceneMeshMapUVPointer(int sceneId,int meshId,void **uv_data)
 	if (idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
 
 	scene=ray_global.scene_list.scenes[idx];
-	if (rlSceneRenderState(sceneId)==RL_SCENE_STATE_RENDERING) return(RL_ERROR_SCENE_IN_USE);
+	
+		// stall rendering so it finishes
+		
+	ray_render_stall(scene);
 
 		// get mesh
 
@@ -494,13 +527,16 @@ int rlSceneMeshUnMapUVPointer(int sceneId,int meshId)
       Sets Normals for a Mesh
 	  If normal_data is NULL, no data is copied and
 	  the pointer can be retrieved for writing later
+	  
+	  Notes:
+	   If the scene is currently rendering, this API
+	   will stall until it's finished
 
 	  Returns:
 	   RL_ERROR_OK
 	   RL_ERROR_UNKNOWN_SCENE_ID
 	   RL_ERROR_UNKNOWN_MESH_ID
 	   RL_ERROR_UNKNOWN_FORMAT
-	   RL_ERROR_SCENE_IN_USE
 	   RL_ERROR_OUT_OF_MEMORY
       
 ======================================================= */
@@ -519,10 +555,10 @@ int rlSceneMeshSetNormal(int sceneId,int meshId,int format,int count,void *norma
 	if (idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
 
 	scene=ray_global.scene_list.scenes[idx];
-
-		// can't alter scenes in use
-
-	if (rlSceneRenderState(sceneId)==RL_SCENE_STATE_RENDERING) return(RL_ERROR_SCENE_IN_USE);
+	
+		// stall rendering so it finishes
+		
+	ray_render_stall(scene);
 
 		// get mesh
 
@@ -573,7 +609,10 @@ int rlSceneMeshMapNormalPointer(int sceneId,int meshId,void **normal_data)
 	if (idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
 
 	scene=ray_global.scene_list.scenes[idx];
-	if (rlSceneRenderState(sceneId)==RL_SCENE_STATE_RENDERING) return(RL_ERROR_SCENE_IN_USE);
+	
+		// stall rendering so it finishes
+		
+	ray_render_stall(scene);
 
 		// get mesh
 
@@ -597,13 +636,16 @@ int rlSceneMeshUnMapNormalPointer(int sceneId,int meshId)
       Sets Tangents for a Mesh
 	  If tangent_data is NULL, no data is copied and
 	  the pointer can be retrieved for writing later
+	  
+	  Notes:
+	   If the scene is currently rendering, this API
+	   will stall until it's finished
 
 	  Returns:
 	   RL_ERROR_OK
 	   RL_ERROR_UNKNOWN_SCENE_ID
 	   RL_ERROR_UNKNOWN_MESH_ID
 	   RL_ERROR_UNKNOWN_FORMAT
-	   RL_ERROR_SCENE_IN_USE
 	   RL_ERROR_OUT_OF_MEMORY
       
 ======================================================= */
@@ -622,10 +664,10 @@ int rlSceneMeshSetTangent(int sceneId,int meshId,int format,int count,void *tang
 	if (idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
 
 	scene=ray_global.scene_list.scenes[idx];
-
-		// can't alter scenes in use
-
-	if (rlSceneRenderState(sceneId)==RL_SCENE_STATE_RENDERING) return(RL_ERROR_SCENE_IN_USE);
+	
+		// stall rendering so it finishes
+		
+	ray_render_stall(scene);
 
 		// get mesh
 
@@ -676,7 +718,10 @@ int rlSceneMeshMapTangentPointer(int sceneId,int meshId,void **tangent_data)
 	if (idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
 
 	scene=ray_global.scene_list.scenes[idx];
-	if (rlSceneRenderState(sceneId)==RL_SCENE_STATE_RENDERING) return(RL_ERROR_SCENE_IN_USE);
+	
+		// stall rendering so it finishes
+		
+	ray_render_stall(scene);
 
 		// get mesh
 
@@ -702,13 +747,16 @@ int rlSceneMeshUnMapTangentPointer(int sceneId,int meshId)
 	  The current format is first short = vertexes count
 	  The next shorts are count of a pair of vertex offset
 	  followed by a uv offset
+	  
+	  Notes:
+	   If the scene is currently rendering, this API
+	   will stall until it's finished
 
 	  Returns:
 	   RL_ERROR_OK
 	   RL_ERROR_UNKNOWN_SCENE_ID
 	   RL_ERROR_UNKNOWN_MESH_ID
 	   RL_ERROR_UNKNOWN_FORMAT
-	   RL_ERROR_SCENE_IN_USE
 	   RL_ERROR_OUT_OF_MEMORY
       
 ======================================================= */
@@ -729,10 +777,10 @@ int rlSceneMeshSetPoly(int sceneId,int meshId,int format,int count,void *poly_da
 	if (scene_idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
 
 	scene=ray_global.scene_list.scenes[scene_idx];
-
-		// can't alter scenes in use
-
-	if (rlSceneRenderState(sceneId)==RL_SCENE_STATE_RENDERING) return(RL_ERROR_SCENE_IN_USE);
+	
+		// stall rendering so it finishes
+		
+	ray_render_stall(scene);
 
 		// get mesh
 
@@ -849,13 +897,16 @@ int rlSceneMeshSetPoly(int sceneId,int meshId,int format,int count,void *poly_da
 /* =======================================================
 
       Sets Color on Poly Mesh
+	  
+	  Notes:
+	   If the scene is currently rendering, this API
+	   will stall until it's finished
 
 	  Returns:
 	   RL_ERROR_OK
 	   RL_ERROR_UNKNOWN_SCENE_ID
 	   RL_ERROR_UNKNOWN_MESH_ID
 	   RL_ERROR_MESH_POLY_INDEX_OUT_OF_BOUNDS
-	   RL_ERROR_SCENE_IN_USE
       
 ======================================================= */
 
@@ -871,10 +922,10 @@ int rlSceneMeshSetPolyColor(int sceneId,int meshId,int poly_idx,rlColor *col)
 	if (scene_idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
 
 	scene=ray_global.scene_list.scenes[scene_idx];
-
-		// can't alter scenes in use
-
-	if (rlSceneRenderState(sceneId)==RL_SCENE_STATE_RENDERING) return(RL_ERROR_SCENE_IN_USE);
+	
+		// stall rendering so it finishes
+		
+	ray_render_stall(scene);
 
 		// get mesh
 
@@ -895,12 +946,15 @@ int rlSceneMeshSetPolyColor(int sceneId,int meshId,int poly_idx,rlColor *col)
 /* =======================================================
 
       Sets Color on All Polys in a Mesh
+	  
+	  Notes:
+	   If the scene is currently rendering, this API
+	   will stall until it's finished
 
 	  Returns:
 	   RL_ERROR_OK
 	   RL_ERROR_UNKNOWN_SCENE_ID
 	   RL_ERROR_UNKNOWN_MESH_ID
-	   RL_ERROR_SCENE_IN_USE
       
 ======================================================= */
 
@@ -917,10 +971,10 @@ int rlSceneMeshSetPolyColorAll(int sceneId,int meshId,rlColor *col)
 	if (scene_idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
 
 	scene=ray_global.scene_list.scenes[scene_idx];
-
-		// can't alter scenes in use
-
-	if (rlSceneRenderState(sceneId)==RL_SCENE_STATE_RENDERING) return(RL_ERROR_SCENE_IN_USE);
+	
+		// stall rendering so it finishes
+		
+	ray_render_stall(scene);
 
 		// get mesh
 

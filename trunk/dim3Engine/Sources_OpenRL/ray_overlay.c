@@ -202,6 +202,10 @@ void ray_overlay_setup_all(ray_scene_type *scene)
 /* =======================================================
 
       Adds a New Overlay to a Scene
+	  
+	  Notes:
+	   If the scene is currently rendering, this API
+	   will stall until it's finished
 
 	  Returns:
 	   If >=0, then a overlay ID
@@ -223,6 +227,10 @@ int rlSceneOverlayAdd(int sceneId,int materialId,unsigned long flags)
 	if (idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
 
 	scene=ray_global.scene_list.scenes[idx];
+	
+		// stall rendering so it finishes
+		
+	ray_render_stall(scene);
 	
 		// lookup material
 		
@@ -270,12 +278,15 @@ int rlSceneOverlayAdd(int sceneId,int materialId,unsigned long flags)
 /* =======================================================
 
       Deletes a Overlay from a Scene
+	  
+	  Notes:
+	   If the scene is currently rendering, this API
+	   will stall until it's finished
 
 	  Returns:
 	   RL_ERROR_OK
 	   RL_ERROR_UNKNOWN_SCENE_ID
 	   RL_ERROR_UNKNOWN_OVERLAY_ID
-	   RL_ERROR_SCENE_IN_USE
       
 ======================================================= */
 
@@ -291,10 +302,10 @@ int rlSceneOverlayDelete(int sceneId,int overlayId)
 	if (idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
 
 	scene=ray_global.scene_list.scenes[idx];
-
-		// can't delete if scene in use
-
-	if (rlSceneRenderState(sceneId)==RL_SCENE_STATE_RENDERING) return(RL_ERROR_SCENE_IN_USE);
+	
+		// stall rendering so it finishes
+		
+	ray_render_stall(scene);
 
 		// get the overlay
 
@@ -327,6 +338,10 @@ int rlSceneOverlayDelete(int sceneId,int overlayId)
 /* =======================================================
 
       Deletes all Overlays from a Scene
+	  
+	  Notes:
+	   If the scene is currently rendering, this API
+	   will stall until it's finished
 
 	  Returns:
 	   RL_ERROR_OK
@@ -359,6 +374,10 @@ int rlSceneOverlayDeleteAll(int sceneId)
 /* =======================================================
 
       Sets Number of Quads in an Overlay
+	  
+	  Notes:
+	   If the scene is currently rendering, this API
+	   will stall until it's finished
 
 	  Returns:
 	   RL_ERROR_OK
@@ -385,6 +404,10 @@ int rlSceneOverlaySetQuadCount(int sceneId,int overlayId,int count)
 	if (idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
 
 	scene=ray_global.scene_list.scenes[idx];
+	
+		// stall rendering so it finishes
+		
+	ray_render_stall(scene);
 
 		// get the overlay
 
@@ -444,6 +467,10 @@ int rlSceneOverlaySetQuadCount(int sceneId,int overlayId,int count)
 /* =======================================================
 
       Changes Material of Overlay Already in a Scene
+	  
+	  Notes:
+	   If the scene is currently rendering, this API
+	   will stall until it's finished
 
 	  Returns:
 	   RL_ERROR_OK
@@ -465,6 +492,10 @@ int rlSceneOverlaySetMaterial(int sceneId,int overlayId,int materialId)
 	if (idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
 
 	scene=ray_global.scene_list.scenes[idx];
+	
+		// stall rendering so it finishes
+		
+	ray_render_stall(scene);
 
 		// get the overlay
 
@@ -486,6 +517,10 @@ int rlSceneOverlaySetMaterial(int sceneId,int overlayId,int materialId)
 /* =======================================================
 
       Sets an Overlay to Show or Hide
+	  
+	  Notes:
+	   If the scene is currently rendering, this API
+	   will stall until it's finished
 
 	  Returns:
 	   RL_ERROR_OK
@@ -506,6 +541,10 @@ int rlSceneOverlaySetHidden(int sceneId,int overlayId,bool hidden)
 	if (idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
 
 	scene=ray_global.scene_list.scenes[idx];
+	
+		// stall rendering so it finishes
+		
+	ray_render_stall(scene);
 
 		// get the overlay
 
@@ -524,6 +563,10 @@ int rlSceneOverlaySetHidden(int sceneId,int overlayId,bool hidden)
 /* =======================================================
 
       Changes Position of Overlay Already in a Scene
+	  
+	  Notes:
+	   If the scene is currently rendering, this API
+	   will stall until it's finished
 
 	  Returns:
 	   RL_ERROR_OK
@@ -544,6 +587,10 @@ int rlSceneOverlaySetPosition(int sceneId,int overlayId,ray_2d_point_type *pnt)
 	if (idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
 
 	scene=ray_global.scene_list.scenes[idx];
+	
+		// stall rendering so it finishes
+		
+	ray_render_stall(scene);
 
 		// get the overlay
 
@@ -563,6 +610,10 @@ int rlSceneOverlaySetPosition(int sceneId,int overlayId,ray_2d_point_type *pnt)
 /* =======================================================
 
       Changes Size of Overlay Already in a Scene
+	  
+	  Notes:
+	   If the scene is currently rendering, this API
+	   will stall until it's finished
 
 	  Returns:
 	   RL_ERROR_OK
@@ -583,6 +634,10 @@ int rlSceneOverlaySetSize(int sceneId,int overlayId,ray_2d_point_type *pnt)
 	if (idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
 
 	scene=ray_global.scene_list.scenes[idx];
+	
+		// stall rendering so it finishes
+		
+	ray_render_stall(scene);
 
 		// get the overlay
 
@@ -602,6 +657,10 @@ int rlSceneOverlaySetSize(int sceneId,int overlayId,ray_2d_point_type *pnt)
 /* =======================================================
 
       Changes Offset Position of a Quad in an Overlay
+	  
+	  Notes:
+	   If the scene is currently rendering, this API
+	   will stall until it's finished
 
 	  Returns:
 	   RL_ERROR_OK
@@ -624,6 +683,10 @@ int rlSceneOverlaySetQuadPosition(int sceneId,int overlayId,int quadIndex,ray_2d
 	if (idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
 
 	scene=ray_global.scene_list.scenes[idx];
+	
+		// stall rendering so it finishes
+		
+	ray_render_stall(scene);
 
 		// get the overlay
 
@@ -648,6 +711,10 @@ int rlSceneOverlaySetQuadPosition(int sceneId,int overlayId,int quadIndex,ray_2d
 /* =======================================================
 
       Changes Size of a Quad in an Overlay
+	  
+	  Notes:
+	   If the scene is currently rendering, this API
+	   will stall until it's finished
 
 	  Returns:
 	   RL_ERROR_OK
@@ -670,6 +737,10 @@ int rlSceneOverlaySetQuadSize(int sceneId,int overlayId,int quadIndex,ray_2d_poi
 	if (idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
 
 	scene=ray_global.scene_list.scenes[idx];
+	
+		// stall rendering so it finishes
+		
+	ray_render_stall(scene);
 
 		// get the overlay
 
@@ -694,6 +765,10 @@ int rlSceneOverlaySetQuadSize(int sceneId,int overlayId,int quadIndex,ray_2d_poi
 /* =======================================================
 
       Changes UV of a Quad in an Overlay
+	  
+	  Notes:
+	   If the scene is currently rendering, this API
+	   will stall until it's finished
 
 	  Returns:
 	   RL_ERROR_OK
@@ -716,6 +791,10 @@ int rlSceneOverlaySetQuadUV(int sceneId,int overlayId,int quadIndex,ray_uv_type 
 	if (idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
 
 	scene=ray_global.scene_list.scenes[idx];
+	
+		// stall rendering so it finishes
+		
+	ray_render_stall(scene);
 
 		// get the overlay
 
@@ -740,6 +819,10 @@ int rlSceneOverlaySetQuadUV(int sceneId,int overlayId,int quadIndex,ray_uv_type 
 /* =======================================================
 
       Changes UV Stamp of a Quad in an Overlay
+	  
+	  Notes:
+	   If the scene is currently rendering, this API
+	   will stall until it's finished
 
 	  Returns:
 	   RL_ERROR_OK
@@ -762,6 +845,10 @@ int rlSceneOverlaySetQuadUVStamp(int sceneId,int overlayId,int quadIndex,ray_uv_
 	if (idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
 
 	scene=ray_global.scene_list.scenes[idx];
+	
+		// stall rendering so it finishes
+		
+	ray_render_stall(scene);
 
 		// get the overlay
 
@@ -787,6 +874,10 @@ int rlSceneOverlaySetQuadUVStamp(int sceneId,int overlayId,int quadIndex,ray_uv_
 /* =======================================================
 
       Changes Color Tint of a Quad in an Overlay
+	  
+	  Notes:
+	   If the scene is currently rendering, this API
+	   will stall until it's finished
 
 	  Returns:
 	   RL_ERROR_OK
@@ -809,6 +900,10 @@ int rlSceneOverlaySetQuadColor(int sceneId,int overlayId,int quadIndex,ray_color
 	if (idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
 
 	scene=ray_global.scene_list.scenes[idx];
+	
+		// stall rendering so it finishes
+		
+	ray_render_stall(scene);
 
 		// get the overlay
 

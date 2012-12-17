@@ -139,18 +139,6 @@ int rlSceneAdd(ray_2d_point_type *size,int target,int format,void *attachment,un
 	scene->overlay_list.count=0;
 	scene->overlay_list.next_id=1;
 
-		// clear threads
-
-	ray_scene_clear_threads(scene);
-
-		// create the scene lock mutex
-
-	if (!ray_scene_create_mutexes(scene)) {
-		free(scene->buffer.data);
-		free(scene);
-		return(RL_ERROR_THREADING_ERROR);
-	}
-
 		// set the id
 		
 	scene->id=ray_global.scene_list.next_id;
@@ -167,6 +155,10 @@ int rlSceneAdd(ray_2d_point_type *size,int target,int format,void *attachment,un
 		rlSceneDelete(scene->id);
 		return(RL_ERROR_THREADING_ERROR);
 	}
+
+		// clear threads
+
+	ray_scene_clear_threads(scene);
 	
 	return(scene->id);
 }
@@ -174,11 +166,14 @@ int rlSceneAdd(ray_2d_point_type *size,int target,int format,void *attachment,un
 /* =======================================================
 
       Deletes a Scene
+	  
+	  Notes:
+	   If the scene is currently rendering, this API
+	   will stall until it's finished
 
  	  Returns:
 	   RL_ERROR_OK
 	   RL_ERROR_UNKNOWN_SCENE_ID
-	   RL_ERROR_SCENE_IN_USE
      
 ======================================================= */
 
@@ -192,18 +187,17 @@ int rlSceneDelete(int sceneId)
 	idx=ray_scene_get_index(sceneId);
 	if (idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
 
-		// can not delete if in rendering
-
-	if (rlSceneRenderState(sceneId)==RL_SCENE_STATE_RENDERING) return(RL_ERROR_SCENE_IN_USE);
-
 	scene=ray_global.scene_list.scenes[idx];
+	
+		// stall rendering so it finishes
+		
+	ray_render_stall(scene);
 
 		// exit the threads
 		// release mutexes
 		// clear scene memory
 
 	ray_scene_release_threads(scene);
-	ray_scene_release_mutexes(scene);
 	free(scene->buffer.data);
 
 		// clear lights and meshes
@@ -230,11 +224,14 @@ int rlSceneDelete(int sceneId)
 /* =======================================================
 
       Clears a Scene
+	  
+	  Notes:
+	   If the scene is currently rendering, this API
+	   will stall until it's finished
 
  	  Returns:
 	   RL_ERROR_OK
 	   RL_ERROR_UNKNOWN_SCENE_ID
-	   RL_ERROR_SCENE_IN_USE
      
 ======================================================= */
 
@@ -250,10 +247,10 @@ int rlSceneClearBuffer(int sceneId,ray_color_type *col)
 	if (idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
 
 	scene=ray_global.scene_list.scenes[idx];
-
-		// can not clear if in rendering
-
-	if (rlSceneRenderState(sceneId)==RL_SCENE_STATE_RENDERING) return(RL_ERROR_SCENE_IN_USE);
+	
+		// stall rendering so it finishes
+		
+	ray_render_stall(scene);
 	
 		// buffer clear color
 
@@ -274,6 +271,10 @@ int rlSceneClearBuffer(int sceneId,ray_color_type *col)
 /* =======================================================
 
       Gets the Buffer Attached to a Scene if Possible
+	  
+	  Notes:
+	   If the scene is currently rendering, this API
+	   will stall until it's finished
 
  	  Returns:
 	   RL_ERROR_OK
@@ -283,12 +284,21 @@ int rlSceneClearBuffer(int sceneId,ray_color_type *col)
 
 int rlSceneGetBuffer(int sceneId,void **buffer)
 {
-	int			idx;
+	int					idx;
+	ray_scene_type		*scene;
 	
 	idx=ray_scene_get_index(sceneId);
 	if (idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
+	
+	scene=ray_global.scene_list.scenes[idx];
+	
+		// stall rendering so it finishes
+		
+	ray_render_stall(scene);
+	
+		// get buffer
 
-	*buffer=ray_global.scene_list.scenes[idx]->buffer.data;
+	*buffer=scene->buffer.data;
 	return(RL_ERROR_OK);
 }
 
