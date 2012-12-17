@@ -256,7 +256,7 @@ bool ray_bound_bound_collision(ray_bound_type *bnd_1,ray_bound_type *bnd_2)
 
 bool ray_bound_ray_collision(ray_point_type *p,ray_vector_type *v,ray_bound_type *bnd)
 {
-	float			f;
+	float			f,f1,f2;
 	ray_point_type	p1,p2;
 	
 		// start with simple bounding
@@ -286,59 +286,59 @@ bool ray_bound_ray_collision(ray_point_type *p,ray_vector_type *v,ray_bound_type
 		// find set of two X points on line,
 		// and compare them with Y and Z to
 		// see if the vector passes these bounds
-		
-	f=(bnd->min.x-p->x)/v->x;
-	
-	p1.y=p->y+(v->y*f);
-	p1.z=p->z+(v->z*f);
-		
-	f=(bnd->max.x-p->x)/v->x;
-	
-	p2.y=p->y+(v->y*f);
-	p2.z=p->z+(v->z*f);
+
+	f=1.0f/v->x;
+	f1=(bnd->min.x-p->x)*f;
+	f2=(bnd->max.x-p->x)*f;
+
+	p1.y=p->y+(v->y*f1);
+	p2.y=p->y+(v->y*f2);
 	
 	if ((p1.y<bnd->min.y) && (p2.y<bnd->min.y)) return(FALSE);
 	if ((p1.y>bnd->max.y) && (p2.y>bnd->max.y)) return(FALSE);
 	
+	p1.z=p->z+(v->z*f1);
+	p2.z=p->z+(v->z*f2);
+	
 	if ((p1.z<bnd->min.z) && (p2.z<bnd->min.z)) return(FALSE);
 	if ((p1.z>bnd->max.z) && (p2.z>bnd->max.z)) return(FALSE);
-	
+
 		// repeat for Y
 		
-	f=(bnd->min.y-p->y)/v->y;
+	f=1.0f/v->y;
+	f1=(bnd->min.y-p->y)*f;
+	f2=(bnd->max.y-p->y)*f;
 	
-	p1.x=p->x+(v->x*f);
-	p1.z=p->z+(v->z*f);
-		
-	f=(bnd->max.y-p->y)/v->y;
-	
-	p2.x=p->x+(v->x*f);
-	p2.z=p->z+(v->z*f);
-	
+	p1.x=p->x+(v->x*f1);
+	p2.x=p->x+(v->x*f2);
+
 	if ((p1.x<bnd->min.x) && (p2.x<bnd->min.x)) return(FALSE);
 	if ((p1.x>bnd->max.x) && (p2.x>bnd->max.x)) return(FALSE);
+
+	p1.z=p->z+(v->z*f1);
+	p2.z=p->z+(v->z*f2);
 	
 	if ((p1.z<bnd->min.z) && (p2.z<bnd->min.z)) return(FALSE);
 	if ((p1.z>bnd->max.z) && (p2.z>bnd->max.z)) return(FALSE);
 	
 		// repeat for Z
 		
-	f=(bnd->min.z-p->z)/v->z;
+	f=1.0f/v->z;
+	f1=(bnd->min.z-p->z)*f;
+	f2=(bnd->max.z-p->z)*f;
 	
-	p1.x=p->x+(v->x*f);
-	p1.y=p->y+(v->y*f);
-		
-	f=(bnd->max.z-p->z)/v->z;
-	
-	p2.x=p->x+(v->x*f);
-	p2.y=p->y+(v->y*f);
-	
+	p1.x=p->x+(v->x*f1);
+	p2.x=p->x+(v->x*f2);
+
 	if ((p1.x<bnd->min.x) && (p2.x<bnd->min.x)) return(FALSE);
 	if ((p1.x>bnd->max.x) && (p2.x>bnd->max.x)) return(FALSE);
-	
+
+	p1.y=p->y+(v->y*f1);
+	p2.y=p->y+(v->y*f2);
+
 	if ((p1.y<bnd->min.y) && (p2.y<bnd->min.y)) return(FALSE);
 	if ((p1.y>bnd->max.y) && (p2.y>bnd->max.y)) return(FALSE);
-	
+
 	return(TRUE);
 }
 

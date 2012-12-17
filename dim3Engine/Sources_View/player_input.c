@@ -589,25 +589,6 @@ float player_mouse_smooth(float mouse_ang,float turn_ang)
 		// else go halfway there
 		
 	return(mouse_ang+(dif*0.5f));
-/*
-	if (mouse_ang>0) {
-		if ((mouse_ang<turn_ang) && (turn_ang>=0)) {
-			return(turn_ang-((turn_ang-mouse_ang)/2.0f));
-		}
-		
-		return(mouse_ang);
-	}
-
-	if (mouse_ang<0) {
-		if ((mouse_ang>turn_ang) && (turn_ang<=0)) {
-			return(turn_ang+((mouse_ang-turn_ang)/2.0f));
-		}
-		
-		return(mouse_ang);
-	}
-	
-	return(mouse_ang);
-	*/
 }
 
 void player_get_6_way_input(obj_type *obj,float *mouse_x,float *mouse_y,bool *go_forward,bool *go_backward,bool *go_side_left,bool *go_side_right)

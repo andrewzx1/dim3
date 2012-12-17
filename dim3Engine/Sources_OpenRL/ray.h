@@ -119,7 +119,7 @@ typedef struct		{
 typedef struct		{
 						int							material_idx,nvertex,
 													mm_level;
-						unsigned char				render_mask[ray_render_max_thread_count];
+						unsigned char				thread_render_mask[ray_render_max_thread_count];
 						ray_color_type				col;
 						ray_polygon_index_type		idxs[8];
 						ray_trig_block				trig_block;
@@ -236,7 +236,7 @@ typedef struct		{
 
 typedef struct		{
 						int								idx;
-						bool							render_done,shutdown_done;
+						bool							shutdown_done;
 						void							*parent_scene;			// this is a pointer back to the parent structure, need by threading
 						ray_thread						thread;
 						ray_2d_point_type				pixel_start,pixel_end;
@@ -244,7 +244,8 @@ typedef struct		{
 					} ray_draw_scene_thread_info;
 
 typedef struct		{
-						ray_mutex						scene_lock,thread_lock;	// thread_lock only needed for pthread con waits
+						int								thread_done_count;
+						ray_mutex						thread_lock;			// thread_lock only needed for pthread con waits
 						ray_cond						thread_cond;			// thread_cond only needed for pthread con waits
 						ray_draw_scene_thread_info		thread_info[ray_render_max_thread_count];
 					} ray_scene_render_type;
@@ -391,8 +392,6 @@ extern void ray_scene_wait_shutdown_threads(ray_scene_type *scene);
 extern void ray_scene_resume_threads(ray_scene_type *scene,int mode);
 extern void ray_scene_release_threads(ray_scene_type *scene);
 extern bool ray_scene_create_threads(ray_scene_type *scene);
-extern bool ray_scene_create_mutexes(ray_scene_type *scene);
-extern void ray_scene_release_mutexes(ray_scene_type *scene);
 
 extern void ray_precalc_mesh_bounds(ray_mesh_type *mesh);
 extern void ray_precalc_polygon_bounds(ray_mesh_type *mesh,ray_poly_type *poly);
@@ -412,6 +411,7 @@ extern int ray_scene_get_index(int sceneId);
 extern int ray_material_get_index(int materialId);
 
 extern void ray_render_clear_threads(ray_scene_type *scene);
+extern void ray_render_stall(ray_scene_type *scene);
 
 #ifndef WIN32
 	extern void* ray_render_thread(void *arg);

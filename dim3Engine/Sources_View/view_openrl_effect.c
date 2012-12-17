@@ -67,7 +67,7 @@ void view_openrl_effect_mesh_setup(effect_type *effect)
 	if ((effect->effecttype!=ef_particle) && (effect->effecttype!=ef_ring)) return;
 
 		// create mesh
-
+		
 	effect->openrl_mesh_id=rlSceneMeshAdd(view_rl_scene_id,(RL_MESH_FLAG_NON_LIGHT_TRACE_BLOCKING|RL_MESH_FLAG_HIGHLIGHT));
 	if (effect->openrl_mesh_id==-1) return;
 
@@ -78,7 +78,6 @@ void view_openrl_effect_mesh_setup(effect_type *effect)
 		case ef_particle:
 			particle=&iface.particle_list.particles[effect->data.particle.particle_idx];
 			quad_count=particle->count*(particle->trail_count+1);
-
 			rlSceneMeshSetVertex(view_rl_scene_id,effect->openrl_mesh_id,RL_MESH_FORMAT_VERTEX_3_FLOAT,(quad_count*4),NULL);
 			rlSceneMeshSetUV(view_rl_scene_id,effect->openrl_mesh_id,RL_MESH_FORMAT_UV_2_FLOAT,(quad_count*4),NULL);
 			break;
@@ -310,7 +309,7 @@ void view_openrl_effect_mesh_particle_update(effect_type *effect,int count,int i
 		gravity=particle_get_gravity(particle,count);
 
 			// create mesh quads
-
+			
 		view_openrl_effect_mesh_particle_quad(vp,uv,&pnt,rot_ang,pixel_sz,&pixel_x_mat,&pixel_y_mat,gravity,f_count,particle_count,particle->pieces[eff_particle->variation_idx],gx,gy,g_size);
 
 		vp+=((particle->count*3)*4);

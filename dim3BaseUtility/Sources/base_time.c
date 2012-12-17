@@ -69,7 +69,6 @@ int time_now(void)
 
 void time_start(void)
 {
-	
 	host_get_clock_service(mach_host_self(),SYSTEM_CLOCK,&sys_clock);
 	
 	start_time=time_now();

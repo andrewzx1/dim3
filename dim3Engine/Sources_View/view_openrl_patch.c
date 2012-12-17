@@ -47,6 +47,7 @@ extern file_path_setup_type	file_path_setup;
 int								view_rl_scene_id,
 								view_rl_lx,view_rl_rx,
 								view_rl_ty,view_rl_by;
+bool							view_rl_has_render;
 GLuint							view_rl_gl_id;
 
 int								view_rl_screen_sizes[][2]={{240,150},{280,175},{320,200},{400,250},{480,300},{0,0}};
@@ -82,6 +83,8 @@ bool view_openrl_initialize(char *err_str)
 		strcpy(err_str,"Unable to initialize OpenRL");
 		return(FALSE);
 	}
+	
+	view_rl_has_render=FALSE;
 
 	return(TRUE);
 }
@@ -313,8 +316,7 @@ void view_openrl_render_scene(void)
 	rlPoint			pnt;
 	rlVector		scale;
 	rlMatrix		mat,x_mat,scale_mat;
-	rlColor			col;
-
+	
 		// build the eye point
 
 	pnt.x=(float)view.render->camera.pnt.x;
@@ -325,7 +327,7 @@ void view_openrl_render_scene(void)
 		// dim3 always had a backwards look, so
 		// we need to fix that with the matrix
 		// normally it wouldn't be this complex
-
+		
 	ang_y=angle_add(view.render->camera.ang.y,180.0f);
 	rlMatrixRotateY(&mat,ang_y);
 
@@ -339,7 +341,7 @@ void view_openrl_render_scene(void)
 	rlMatrixMultiply(&mat,&scale_mat);
 
 		// set the eye position
-
+		
 	rlSceneEyePositionSet(view_rl_scene_id,&pnt,&mat,200.0f,300000.0f);
 
 		// update the scene
@@ -349,35 +351,35 @@ void view_openrl_render_scene(void)
 	view_openrl_map_model_update();
 	view_openrl_projectile_model_update();
 	view_openrl_effect_mesh_update();
-
 	view_openrl_overlay_update();
 
 		// render
 
-	col.r=0.0f;
-	col.g=0.0f;
-	col.b=0.0f;
-	col.a=1.0f;
-	rlSceneClearBuffer(view_rl_scene_id,&col);
-
 	if (rlSceneRender(view_rl_scene_id)!=RL_ERROR_OK) return;
-
-		// wait for render to end
-
-	while (rlSceneRenderState(view_rl_scene_id)==RL_SCENE_STATE_RENDERING) {
-		usleep(10);
-	}
 }
 
 void view_openrl_render(void)
 {
+		// if we started a render last
+		// time, then make sure it's finished
+		// before transfering to screen
+		
+	if (view_rl_has_render) {
+		rlSceneRenderFinish(view_rl_scene_id);
+		view_openrl_transfer_to_opengl();
+		view_rl_has_render=FALSE;
+	}
+	
 		// render the scene
+		// if in menu, just transfer the last drawing
 
-	if (!view.menu.active) view_openrl_render_scene();
-
-		// transfer to OpenGL
-
-	view_openrl_transfer_to_opengl();
+	if (!view.menu.active) {
+		view_openrl_render_scene();
+		view_rl_has_render=TRUE;
+	}
+	else {
+		view_openrl_transfer_to_opengl();
+	}	
 }
 
 #endif

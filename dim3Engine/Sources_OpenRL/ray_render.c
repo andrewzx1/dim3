@@ -110,7 +110,7 @@ void ray_intersect_mesh_list_initial(ray_scene_type *scene,ray_draw_scene_thread
 				// in them
 				
 			poly=&mesh->poly_block.polys[poly_idx];
-			if (poly->render_mask[thread_info->idx]==0x0) continue;
+			if (poly->thread_render_mask[thread_info->idx]==0x0) continue;
 
 			if (!ray_bound_ray_collision(eye_point,eye_vector,&poly->bound)) continue;
 			
@@ -282,7 +282,7 @@ void ray_intersect_mesh_list_bounce(ray_scene_type *scene,ray_draw_scene_thread_
       
 ======================================================= */
 
-bool ray_block_mesh_list(ray_scene_type *scene,ray_point_type *pnt,ray_vector_type *vct,ray_collision_type *collision,ray_collide_meshes_list *collision_meshes_list)
+bool ray_block_light(ray_scene_type *scene,ray_point_type *pnt,ray_vector_type *vct,ray_collision_type *collision,int light_idx)
 {
 	int					n,mesh_idx,poly_idx,trig_idx;
 	float				t,u,v;
@@ -290,7 +290,12 @@ bool ray_block_mesh_list(ray_scene_type *scene,ray_point_type *pnt,ray_vector_ty
 	ray_mesh_type		*mesh;
 	ray_poly_type		*poly;
 	ray_trig_type		*trig;
+	ray_light_type		*light;
 	ray_collision_type	lit_collision;
+	
+	light=scene->light_list.lights[light_idx];
+	
+	if (light->collide_meshes_list.count==0) return(FALSE);
 	
 			// check the list of possible
 			// light to mesh collision
@@ -298,10 +303,11 @@ bool ray_block_mesh_list(ray_scene_type *scene,ray_point_type *pnt,ray_vector_ty
 			// indexes in this mesh list have
 			// already been pared down non-render,
 			// non-hidden, and non-light blocking
+			// and only things within the light cone
 	
-	for (n=0;n!=collision_meshes_list->count;n++) {
+	for (n=0;n!=light->collide_meshes_list.count;n++) {
 
-		mesh_idx=collision_meshes_list->indexes[n];
+		mesh_idx=light->collide_meshes_list.indexes[n];
 		mesh=scene->mesh_list.meshes[mesh_idx];
 
 			// mesh bounds check
@@ -393,7 +399,7 @@ bool ray_mesh_special_lighting_conditions(ray_scene_type *scene,ray_point_type *
 
 void ray_trace_lights(ray_scene_type *scene,ray_point_type *eye_pnt,ray_point_type *trig_pnt,ray_collision_type *collision,ray_color_type *col)
 {
-	int							n;
+	int							n,light_idx;
 	float						dist,cone_diffuse,att,
 								diffuse,spec_factor;
 	bool						hit;
@@ -440,7 +446,8 @@ void ray_trace_lights(ray_scene_type *scene,ray_point_type *eye_pnt,ray_point_ty
 	
 	for (n=0;n!=mesh->collide_lights_list.count;n++) {
 		
-		light=scene->light_list.lights[mesh->collide_lights_list.indexes[n]];
+		light_idx=mesh->collide_lights_list.indexes[n];
+		light=scene->light_list.lights[light_idx];
 
 			// outside of intensity globe?
 
@@ -477,7 +484,7 @@ void ray_trace_lights(ray_scene_type *scene,ray_point_type *eye_pnt,ray_point_ty
 			// check for mesh collides
 			// blocking light
 
-		if (ray_block_mesh_list(scene,trig_pnt,&light_vector,collision,&light->collide_meshes_list)) continue;
+		if (ray_block_light(scene,trig_pnt,&light_vector,collision,light_idx)) continue;
 
 			// attenuate the light for distance
 
@@ -922,10 +929,9 @@ void ray_render_thread_run(ray_draw_scene_thread_info *thread_info)
 		}
 	}
 
-		// mark this thread as
-		// finished with rendering
-
-	thread_info->render_done=TRUE;
+		// add to the render done count
+		
+	scene->render.thread_done_count++;
 }
 
 /* =======================================================
@@ -948,7 +954,6 @@ void* ray_render_thread(void *arg)
 
 		// set some flags
 
-	thread_info->render_done=TRUE;
 	thread_info->shutdown_done=FALSE;
 
 		// these are worker threads so
@@ -996,7 +1001,6 @@ unsigned __stdcall ray_render_thread(void *arg)
 
 		// set some flags
 
-	thread_info->render_done=TRUE;
 	thread_info->shutdown_done=FALSE;
 
 		// these are worker threads so
@@ -1034,27 +1038,26 @@ unsigned __stdcall ray_render_thread(void *arg)
 
 void ray_render_clear_threads(ray_scene_type *scene)
 {
-	int				n;
-
-	for (n=0;n!=ray_global.settings.thread_count;n++) {
-		scene->render.thread_info[n].render_done=TRUE;
-	}
+	scene->render.thread_done_count=ray_global.settings.thread_count;
 }
 
-bool ray_render_check_threads_done(ray_scene_type *scene)
+void ray_render_stall(ray_scene_type *scene)
 {
-	int				n;
-
-	for (n=0;n!=ray_global.settings.thread_count;n++) {
-		if (!scene->render.thread_info[n].render_done) return(FALSE);
+	while (scene->render.thread_done_count<ray_global.settings.thread_count) {
+		usleep(1);
 	}
-
-	return(TRUE);
 }
 
 /* =======================================================
 
       Render a Scene
+	  
+	  Notes:
+	   If there is a current render going on for this
+	   scene, this new render will stall until the old
+	   one is finished
+	   All rendering functions (including checking or
+	   stalling functions) must be called on the same thread
 
  	  Returns:
 	   RL_ERROR_OK
@@ -1065,7 +1068,7 @@ bool ray_render_check_threads_done(ray_scene_type *scene)
 
 int rlSceneRender(int sceneId)
 {
-	int						n,idx;
+	int						idx;
 	ray_scene_type			*scene;
 
 		// get the scene
@@ -1074,45 +1077,10 @@ int rlSceneRender(int sceneId)
 	if (idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
 
 	scene=ray_global.scene_list.scenes[idx];
-
-		// we need to keep this next
-		// section locked so the in use flags
-		// don't stomp on each other
-
-#ifndef WIN32
-	pthread_mutex_lock(&scene->render.scene_lock);
-#else
-	WaitForSingleObject(scene->render.scene_lock,INFINITE);
-#endif
-
-		// can not render if we are already rendering
-
-	if (!ray_render_check_threads_done(scene)) {
-
-		#ifndef WIN32
-			pthread_mutex_unlock(&scene->render.scene_lock);
-		#else
-			ReleaseMutex(scene->render.scene_lock);
-		#endif
-
-		return(RL_ERROR_SCENE_IN_USE);
-	}
-
-		// setup the render info
-		// do this here so mutex isn't
-		// held as long
-
-	for (n=0;n!=ray_global.settings.thread_count;n++) {
-		scene->render.thread_info[n].render_done=FALSE;
-	}
-
-		// unlock rendering lock
-
-#ifndef WIN32
-	pthread_mutex_unlock(&scene->render.scene_lock);
-#else
-	ReleaseMutex(scene->render.scene_lock);
-#endif
+	
+		// need to stall if already processing
+		
+	ray_render_stall(scene);
 
 		// setup some precalcs for meshes
 		// and lights, including collision
@@ -1125,6 +1093,10 @@ int rlSceneRender(int sceneId)
 
 	ray_overlay_setup_all(scene);
 
+		// we are now rendering
+
+	scene->render.thread_done_count=0;
+
 		// resume the worker threads
 
 	ray_scene_resume_threads(scene,ray_thread_mode_rendering);
@@ -1135,6 +1107,10 @@ int rlSceneRender(int sceneId)
 /* =======================================================
 
       Check Rendering State
+	  
+	  Notes:
+	   All rendering functions (including checking or
+	   stalling functions) must be called on the same thread
 
  	  Returns:
 	   RL_SCENE_STATE_IDLE
@@ -1145,16 +1121,52 @@ int rlSceneRender(int sceneId)
 
 int rlSceneRenderState(int sceneId)
 {
-	int						idx;
+	int					idx;
+	ray_scene_type		*scene;
 
 		// get the scene
 
 	idx=ray_scene_get_index(sceneId);
 	if (idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
+	
+	scene=ray_global.scene_list.scenes[idx];
 
 		// check rendering state
 
-	if (ray_render_check_threads_done(ray_global.scene_list.scenes[idx])) return(RL_SCENE_STATE_IDLE);
+	if (scene->render.thread_done_count==ray_global.settings.thread_count) return(RL_SCENE_STATE_IDLE);
 
 	return(RL_SCENE_STATE_RENDERING);
+}
+
+/* =======================================================
+
+      Finish all Rendering
+	  
+	  Notes:
+	   Will stall until rendering is finished
+	   All rendering functions (including checking or
+	   stalling functions) must be called on the same thread
+
+ 	  Returns:
+	   RL_ERROR_UNKNOWN_SCENE_ID
+     
+======================================================= */
+
+int rlSceneRenderFinish(int sceneId)
+{
+	int					idx;
+	ray_scene_type		*scene;
+
+		// get the scene
+
+	idx=ray_scene_get_index(sceneId);
+	if (idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
+	
+	scene=ray_global.scene_list.scenes[idx];
+	
+		// stall
+		
+	ray_render_stall(scene);
+	
+	return(RL_ERROR_OK);
 }
