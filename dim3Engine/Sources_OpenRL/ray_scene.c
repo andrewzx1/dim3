@@ -138,6 +138,14 @@ int rlSceneAdd(ray_2d_point_type *size,int target,int format,void *attachment,un
 	
 	scene->overlay_list.count=0;
 	scene->overlay_list.next_id=1;
+	
+		// create the scene lock mutex
+
+	if (!ray_scene_create_mutexes(scene)) {
+		free(scene->buffer.data);
+		free(scene);
+		return(RL_ERROR_THREADING_ERROR);
+	}
 
 		// set the id
 		
@@ -198,6 +206,7 @@ int rlSceneDelete(int sceneId)
 		// clear scene memory
 
 	ray_scene_release_threads(scene);
+	ray_scene_release_mutexes(scene);
 	free(scene->buffer.data);
 
 		// clear lights and meshes

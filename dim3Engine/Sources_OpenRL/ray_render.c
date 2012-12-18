@@ -928,10 +928,6 @@ void ray_render_thread_run(ray_draw_scene_thread_info *thread_info)
 			if (!no_hit) ray_set_buffer(buf,&pixel_col,&overlay_col);
 		}
 	}
-
-		// add to the render done count
-		
-	scene->render.thread_done_count++;
 }
 
 /* =======================================================
@@ -984,6 +980,12 @@ void* ray_render_thread(void *arg)
 			// run the thread
 
 		ray_render_thread_run(thread_info);
+		
+			// add up thread done count
+			
+		pthread_mutex_lock(&scene->render.scene_lock);
+		scene->render.thread_done_count++;
+		pthread_mutex_unlock(&scene->render.scene_lock);
 	}
 }
 
@@ -1025,6 +1027,12 @@ unsigned __stdcall ray_render_thread(void *arg)
 			// run the thread
 
 		ray_render_thread_run(thread_info);
+		
+			// add up thread done count
+			
+		WaitForSingleObject(scene->render.scene_lock,INFINITE);
+		scene->render.thread_done_count++;
+		ReleaseMutex(scene->render.scene_lock);
 	}
 }
 
