@@ -245,8 +245,8 @@ typedef struct		{
 
 typedef struct		{
 						int								thread_done_count;
-						ray_mutex						thread_lock;			// thread_lock only needed for pthread con waits
-						ray_cond						thread_cond;			// thread_cond only needed for pthread con waits
+						ray_mutex						scene_lock,thread_lock;			// thread_lock only needed for pthread con waits
+						ray_cond						thread_cond;					// thread_cond only needed for pthread con waits
 						ray_draw_scene_thread_info		thread_info[ray_render_max_thread_count];
 					} ray_scene_render_type;
 
@@ -392,6 +392,8 @@ extern void ray_scene_wait_shutdown_threads(ray_scene_type *scene);
 extern void ray_scene_resume_threads(ray_scene_type *scene,int mode);
 extern void ray_scene_release_threads(ray_scene_type *scene);
 extern bool ray_scene_create_threads(ray_scene_type *scene);
+extern bool ray_scene_create_mutexes(ray_scene_type *scene);
+extern void ray_scene_release_mutexes(ray_scene_type *scene);
 
 extern void ray_precalc_mesh_bounds(ray_mesh_type *mesh);
 extern void ray_precalc_polygon_bounds(ray_mesh_type *mesh,ray_poly_type *poly);
