@@ -42,7 +42,7 @@ extern app_pref_type			pref;
       
 ======================================================= */
 
-void view_draw_select_mesh_get_grow_handles(int mesh_idx,d3pnt *pts)
+void map_view_draw_select_mesh_get_grow_handles(int mesh_idx,d3pnt *pts)
 {
 	d3pnt			min,max;
 	
@@ -82,7 +82,7 @@ void view_draw_select_mesh_get_grow_handles(int mesh_idx,d3pnt *pts)
 	pts[16].y=pts[17].y=pts[18].y=pts[19].y=(min.y+max.y)>>1;
 }
 
-void view_draw_select_mesh(int mesh_idx)
+void map_view_draw_select_mesh(int mesh_idx)
 {
 	int						n,k;
 	float					vertexes[12*3];
@@ -115,7 +115,7 @@ void view_draw_select_mesh(int mesh_idx)
 		
 	if (state.map.select_mode==select_mode_mesh) {
 		
-		view_draw_select_mesh_get_grow_handles(mesh_idx,pts);
+		map_view_draw_select_mesh_get_grow_handles(mesh_idx,pts);
 
 			// draw the resize handles
 
@@ -167,7 +167,7 @@ void view_draw_select_mesh(int mesh_idx)
 	}
 }
 
-void view_draw_select_mesh_vertex(int mesh_idx)
+void map_view_draw_select_mesh_vertex(int mesh_idx)
 {
 	int						n;
 	float					vertexes[8];
@@ -201,7 +201,7 @@ void view_draw_select_mesh_vertex(int mesh_idx)
 	}
 }
 
-void view_draw_select_mesh_poly(int mesh_idx,int poly_idx)
+void map_view_draw_select_mesh_poly(int mesh_idx,int poly_idx)
 {
 	int						n;
 	float					vertexes[8*3];
@@ -240,7 +240,7 @@ void view_draw_select_mesh_poly(int mesh_idx,int poly_idx)
       
 ======================================================= */
 
-void view_draw_select_liquid_get_grow_handles(int liquid_idx,d3pnt *pts)
+void map_view_draw_select_liquid_get_grow_handles(int liquid_idx,d3pnt *pts)
 {
 	map_liquid_type			*liq;
 	
@@ -254,7 +254,7 @@ void view_draw_select_liquid_get_grow_handles(int liquid_idx,d3pnt *pts)
 	pts[4].y=pts[5].y=pts[6].y=pts[7].y=liq->y+liq->depth;
 }
 
-void view_draw_select_liquid(int liquid_idx)
+void map_view_draw_select_liquid(int liquid_idx)
 {
 	int						n;
 	float					vertexes[8*3];
@@ -292,7 +292,7 @@ void view_draw_select_liquid(int liquid_idx)
 
 	glPointSize(view_handle_size);
 		
-	view_draw_select_liquid_get_grow_handles(liquid_idx,pts);
+	map_view_draw_select_liquid_get_grow_handles(liquid_idx,pts);
 		
 	pv=vertexes;
 
@@ -319,7 +319,7 @@ void view_draw_select_liquid(int liquid_idx)
       
 ======================================================= */
 
-void view_draw_select_cube(d3pnt *v_pnts)
+void map_view_draw_select_cube(d3pnt *v_pnts)
 {
 	int				n,k,line_indexes[8]={0,4,1,5,2,6,3,7};
 	float			vertexes[8*3];
@@ -374,7 +374,7 @@ void view_draw_select_cube(d3pnt *v_pnts)
       
 ======================================================= */
 
-void view_draw_select_2D_rot_handle(d3pnt *pnt,d3pnt *hand_pnt,d3col *col)
+void map_view_draw_select_2D_rot_handle(d3pnt *pnt,d3pnt *hand_pnt,d3col *col)
 {
 	float			vertexes[2*2];
 	
@@ -397,7 +397,7 @@ void view_draw_select_2D_rot_handle(d3pnt *pnt,d3pnt *hand_pnt,d3col *col)
 	glPointSize(1.0f);
 }
 
-void view_draw_select_rot_handles(editor_view_type *view,d3pnt *pnt,d3ang *ang)
+void map_view_draw_select_rot_handles(editor_view_type *view,d3pnt *pnt,d3ang *ang)
 {
 	d3pnt			center_pnt,hand_pnt[3];
 	d3col			col;
@@ -416,19 +416,19 @@ void view_draw_select_rot_handles(editor_view_type *view,d3pnt *pnt,d3ang *ang)
 	col.g=0.0f;
 	col.b=0.0f;
 	
-	view_draw_select_2D_rot_handle(&center_pnt,&hand_pnt[0],&col);
+	map_view_draw_select_2D_rot_handle(&center_pnt,&hand_pnt[0],&col);
 	
 	col.r=0.0f;
 	col.g=1.0f;
 	col.b=0.0f;
 	
-	view_draw_select_2D_rot_handle(&center_pnt,&hand_pnt[1],&col);
+	map_view_draw_select_2D_rot_handle(&center_pnt,&hand_pnt[1],&col);
 	
 	col.r=0.0f;
 	col.g=0.0f;
 	col.b=1.0f;
 	
-	view_draw_select_2D_rot_handle(&center_pnt,&hand_pnt[2],&col);
+	map_view_draw_select_2D_rot_handle(&center_pnt,&hand_pnt[2],&col);
 	
 		// put back projection
 		
@@ -441,7 +441,7 @@ void view_draw_select_rot_handles(editor_view_type *view,d3pnt *pnt,d3ang *ang)
       
 ======================================================= */
 
-void view_draw_select_box(editor_view_type *view)
+void map_view_draw_select_box(editor_view_type *view)
 {
 	int				lx,rx,ty,by;
 	float			vertexes[4*2];
@@ -484,7 +484,7 @@ void view_draw_select_box(editor_view_type *view)
       
 ======================================================= */
 
-void view_draw_select(editor_view_type *view)
+void map_view_draw_select(editor_view_type *view)
 {
 	int						n,sel_count,
 							type,main_idx,sub_idx;
@@ -501,7 +501,7 @@ void view_draw_select(editor_view_type *view)
 
 	sel_count=select_count();
 	if (sel_count==0) {
-		view_draw_select_box(view);
+		map_view_draw_select_box(view);
 		return;
 	}
 
@@ -526,47 +526,47 @@ void view_draw_select(editor_view_type *view)
 			case item_map_mesh:
 				if (draw_mesh_once[main_idx]==0x0) {
 					draw_mesh_once[main_idx]=0x1;
-					view_draw_select_mesh(main_idx);
+					map_view_draw_select_mesh(main_idx);
 					map_mesh_calculate_center(&map,main_idx,&pnt);
-					view_draw_select_rot_handles(view,&pnt,NULL);
+					map_view_draw_select_rot_handles(view,&pnt,NULL);
 				}
 				break;
 				
 			case item_map_liquid:
-				view_draw_select_liquid(main_idx);
+				map_view_draw_select_liquid(main_idx);
 				break;
 				
 			case item_map_node:
 				view_get_sprite_vertexes(&map.nodes[main_idx].pnt,NULL,v_pnts);
-				view_draw_select_cube(v_pnts);
-				view_draw_select_rot_handles(view,&map.nodes[main_idx].pnt,&map.nodes[main_idx].ang);
+				map_view_draw_select_cube(v_pnts);
+				map_view_draw_select_rot_handles(view,&map.nodes[main_idx].pnt,&map.nodes[main_idx].ang);
 				break;
 				
 			case item_map_spot:
 				view_model_cube_vertexes(map.spots[main_idx].display_model,&map.spots[main_idx].pnt,&map.spots[main_idx].ang,1.0f,v_pnts);
-				view_draw_select_cube(v_pnts);
-				view_draw_select_rot_handles(view,&map.spots[main_idx].pnt,&map.spots[main_idx].ang);
+				map_view_draw_select_cube(v_pnts);
+				map_view_draw_select_rot_handles(view,&map.spots[main_idx].pnt,&map.spots[main_idx].ang);
 				break;
 				
 			case item_map_scenery:
 				view_model_cube_vertexes(map.sceneries[main_idx].model_name,&map.sceneries[main_idx].pnt,&map.sceneries[main_idx].ang,map.sceneries[main_idx].resize,v_pnts);
-				view_draw_select_cube(v_pnts);
-				view_draw_select_rot_handles(view,&map.sceneries[main_idx].pnt,&map.sceneries[main_idx].ang);
+				map_view_draw_select_cube(v_pnts);
+				map_view_draw_select_rot_handles(view,&map.sceneries[main_idx].pnt,&map.sceneries[main_idx].ang);
 				break;
 				
 			case item_map_light:
 				view_get_sprite_vertexes(&map.lights[main_idx].pnt,NULL,v_pnts);
-				view_draw_select_cube(v_pnts);
+				map_view_draw_select_cube(v_pnts);
 				break;
 				
 			case item_map_sound:
 				view_get_sprite_vertexes(&map.sounds[main_idx].pnt,NULL,v_pnts);
-				view_draw_select_cube(v_pnts);
+				map_view_draw_select_cube(v_pnts);
 				break;
 				
 			case item_map_particle:
 				view_get_sprite_vertexes(&map.particles[main_idx].pnt,NULL,v_pnts);
-				view_draw_select_cube(v_pnts);
+				map_view_draw_select_cube(v_pnts);
 				break;
 
 		}
@@ -583,7 +583,7 @@ void view_draw_select(editor_view_type *view)
 			select_get(n,&type,&main_idx,&sub_idx);
 			if (type!=item_map_mesh) continue;
 			
-			view_draw_select_mesh_poly(main_idx,sub_idx);
+			map_view_draw_select_mesh_poly(main_idx,sub_idx);
 		}
 		
 	}
@@ -601,13 +601,13 @@ void view_draw_select(editor_view_type *view)
 			
 			if (draw_mesh_once[main_idx]==0x0) {
 				draw_mesh_once[main_idx]=0x1;
-				view_draw_select_mesh_vertex(main_idx);
+				map_view_draw_select_mesh_vertex(main_idx);
 			}
 		}
 	}
 
 		// draw box selection
 
-	view_draw_select_box(view);
+	map_view_draw_select_box(view);
 }
 			

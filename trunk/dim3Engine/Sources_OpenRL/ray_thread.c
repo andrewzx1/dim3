@@ -181,13 +181,13 @@ void ray_scene_release_mutexes(ray_scene_type *scene)
 
 bool ray_scene_create_mutexes(ray_scene_type *scene)
 {
-	scene->render.scene_lock=CreateMutex(NULL,FALSE,NULL);
-	return(scene->render.scene_lock!=NULL);
+	InitializeCriticalSection(&scene->render.scene_lock);
+	return(TRUE);
 }
 
 void ray_scene_release_mutexes(ray_scene_type *scene)
 {
-	CloseHandle(scene->render.scene_lock);
+	DeleteCriticalSection(&scene->render.scene_lock);
 }
 
 #endif

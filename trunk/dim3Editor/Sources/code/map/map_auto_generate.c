@@ -1099,20 +1099,3 @@ void auto_generate_map(void)
 	
 	os_dialog_alert("Auto Generator",err_str);
 }
-
-void auto_generate_map_again(void)
-{
-	char				err_str[256];
-
-	if (ag_last_path[0]==0x0) return;
-
-		// run the auto generator
-
-	if (ag_generate_run(ag_last_path,FALSE,err_str)) return;
-	
-		// report errors
-	
-	os_dialog_alert("Auto Generator",err_str);
-}
-
-

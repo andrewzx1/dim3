@@ -192,7 +192,9 @@ void file_palette_click(d3pnt *pnt,bool double_click)
 		// add map
 
 	if (file_palette.item_pane.click.id==kPropertyMapAdd) {
-		if (main_wind_switch_mode(app_mode_map)) file_new_map();
+		if (main_wind_switch_mode(app_mode_map)) {
+			if (!file_new_map()) main_wind_switch_mode(app_mode_project);
+		}
 		main_wind_set_title();
 		file_palette_fill();
 		main_wind_draw();
@@ -207,7 +209,7 @@ void file_palette_click(d3pnt *pnt,bool double_click)
 			strncpy(file_name,file_palette.item_pane.click.item->name,file_str_len);
 			file_name[file_str_len-1]=0x0;
 
-			file_open_map(file_name);
+			if (!file_open_map(file_name)) main_wind_switch_mode(app_mode_project);
 		}
 
 		main_wind_set_title();

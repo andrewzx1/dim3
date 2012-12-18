@@ -1081,7 +1081,7 @@ void view_draw_lights_sounds_particles(editor_view_type *view)
       
 ======================================================= */
 
-void view_draw_view(editor_view_type *view)
+void map_view_draw_view(editor_view_type *view)
 {
        // 3D view
         
@@ -1138,6 +1138,6 @@ void view_draw_view(editor_view_type *view)
 		
 		// draw selection
 		
-	view_draw_select(view);
+	map_view_draw_select(view);
 }
 

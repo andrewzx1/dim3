@@ -665,7 +665,7 @@ bool view_point_in_view(editor_view_type *view,d3pnt *pnt)
       
 ======================================================= */
 
-bool view_cursor(d3pnt *pnt)
+bool map_view_cursor(d3pnt *pnt)
 {
  	int					n,view_idx;
 	
@@ -1034,7 +1034,7 @@ void view_face_bottom(void)
       
 ======================================================= */
 
-void view_select_view(d3pnt *pnt)
+void map_view_select_view(d3pnt *pnt)
 {
 	int					n,old_idx;
 	
@@ -1063,7 +1063,7 @@ void view_select_view(d3pnt *pnt)
       
 ======================================================= */
 
-void view_scroll_wheel(d3pnt *pnt,int delta)
+void map_view_scroll_wheel(d3pnt *pnt,int delta)
 {
 	int					mv;
 	d3vct				move_vct;
@@ -1072,7 +1072,7 @@ void view_scroll_wheel(d3pnt *pnt,int delta)
 	
 		// select clicking view
 		
-	view_select_view(pnt);
+	map_view_select_view(pnt);
 	
 		// handle click
 
@@ -1117,13 +1117,13 @@ void view_scroll_wheel(d3pnt *pnt,int delta)
       
 ======================================================= */
 
-bool view_click(d3pnt *pnt,bool double_click)
+bool map_view_click(d3pnt *pnt,bool double_click)
 {
 	editor_view_type	*view;
 	
 		// select clicking view
 		
-	view_select_view(pnt);
+	map_view_select_view(pnt);
 	
 		// handle click
 
@@ -1159,7 +1159,7 @@ bool view_click(d3pnt *pnt,bool double_click)
       
 ======================================================= */
 
-void view_draw(void)
+void map_view_draw(void)
 {
 	int					n;
 	float				vertexes[8];
@@ -1173,7 +1173,7 @@ void view_draw(void)
 		// draw the views
 		
 	for (n=0;n!=map.editor_views.count;n++) {
-		view_draw_view(&map.editor_views.views[n]);
+		map_view_draw_view(&map.editor_views.views[n]);
 	}
 
 		// view box outlines

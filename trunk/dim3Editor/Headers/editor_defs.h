@@ -103,8 +103,7 @@ and can be sold or given away.
 #define map_menu_item_BuildLightMaps			5407
 #define map_menu_item_BuildLiquidReflectionMaps	5408
 #define map_menu_item_AutoGenerate				5409
-#define map_menu_item_AutoGenerateAgain			5410
-#define map_menu_item_Run						5411
+#define map_menu_item_Run						5410
 
 #define map_menu_item_MeshCombine				5500
 #define map_menu_item_MeshSplit					5501
@@ -801,7 +800,7 @@ typedef struct		{
 												cur_no_sel_piece_type,cur_group_idx,
 												cur_cinema_idx,cur_cinema_action_idx,
 												cur_movement_idx,cur_movement_move_idx;
-						bool					map_open,
+						bool					map_open,auto_generate_on,
 												free_look,select_add,auto_texture,select_box_on,
 												show_liquid,show_normals,show_movements,
 												show_node,show_object,show_lightsoundparticle;

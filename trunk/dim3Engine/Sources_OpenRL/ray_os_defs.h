@@ -44,7 +44,7 @@
 	#define inline					__inline
 
 	typedef unsigned char			bool;
-	typedef HANDLE					ray_mutex;
+	typedef CRITICAL_SECTION		ray_mutex;
 	typedef HANDLE					ray_thread;
 	typedef int						ray_cond;
 
