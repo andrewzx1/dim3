@@ -58,13 +58,12 @@ void map_file_reset_state(void)
 		// settings
 
 	state.map.texture_edit_idx=-1;
+	state.map.auto_generate_on=FALSE;
 
         // no selection
         
 	select_clear();
 	map_undo_clear();
-	
- 	state.map.texture_edit_idx=-1;
 
 		// reset the UI
 

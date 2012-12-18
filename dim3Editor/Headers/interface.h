@@ -548,7 +548,6 @@ extern bool liquid_reflection_maps_create(void);
 //
 
 extern void auto_generate_map(void);
-extern void auto_generate_map_again(void);
 
 //
 // selection routines
@@ -668,7 +667,7 @@ extern int node_duplicate_and_drag(int org_node_idx);
 extern void node_path_rebuild(void);
 
 //
-// view general
+// map view general
 //
 
 extern bool view_initialize(void);
@@ -689,7 +688,7 @@ extern void view_project_point(editor_view_type *view,d3pnt *pnt);
 extern bool view_project_point_in_z(d3pnt *pnt);
 extern editor_view_type* view_get_current_view(void);
 extern bool view_point_in_view(editor_view_type *view,d3pnt *pnt);
-extern bool view_cursor(d3pnt *pnt);
+extern bool map_view_cursor(d3pnt *pnt);
 extern void view_key(char ch);
 extern void view_get_position(d3pnt *pnt);
 extern void view_set_position(d3pnt *pnt);
@@ -714,10 +713,20 @@ extern void view_face_right(void);
 extern void view_face_back(void);
 extern void view_face_top(void);
 extern void view_face_bottom(void);
-extern void view_select_view(d3pnt *pnt);
-extern void view_scroll_wheel(d3pnt *pnt,int delta);
-extern bool view_click(d3pnt *pnt,bool double_click);
-extern void view_draw(void);
+extern void map_view_select_view(d3pnt *pnt);
+extern void map_view_scroll_wheel(d3pnt *pnt,int delta);
+extern bool map_view_click(d3pnt *pnt,bool double_click);
+extern void map_view_draw(void);
+
+//
+// map view auto-generate
+//
+
+extern void view_map_auto_generate_start(void);
+extern bool map_view_auto_generate_cursor(d3pnt *pnt);
+extern void map_view_auto_generate_scroll_wheel(d3pnt *pnt,int delta);
+extern bool map_view_auto_generate_click(d3pnt *pnt,bool double_click);
+extern void map_view_auto_generate_draw(void);
 
 //
 // view VBO
@@ -737,10 +746,10 @@ extern void view_cull_setup_frustum_clipping_planes(void);
 extern bool view_cull_boundbox_in_frustum(d3pnt *min,d3pnt *max);
 extern bool view_clip_poly(editor_view_type *view,map_mesh_poly_type *poly);
 extern bool view_clip_liquid(editor_view_type *view,map_liquid_type *liq);
-extern void view_draw_select_mesh_get_grow_handles(int mesh_idx,d3pnt *pts);
-extern void view_draw_select_liquid_get_grow_handles(int liquid_idx,d3pnt *pts);
-extern void view_draw_view(editor_view_type *view);
-extern void view_draw_select(editor_view_type *view);
+extern void map_view_draw_select_mesh_get_grow_handles(int mesh_idx,d3pnt *pts);
+extern void map_view_draw_select_liquid_get_grow_handles(int liquid_idx,d3pnt *pts);
+extern void map_view_draw_view(editor_view_type *view);
+extern void map_view_draw_select(editor_view_type *view);
 
 //
 // view picking

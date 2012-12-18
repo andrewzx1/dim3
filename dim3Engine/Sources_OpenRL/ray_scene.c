@@ -124,6 +124,13 @@ int rlSceneAdd(ray_2d_point_type *size,int target,int format,void *attachment,un
 		scene->render.thread_info[n].parent_scene=scene;
 	}
 
+		// make sure thread done list is set
+		// high so we don't stall if a scene is never
+		// drawn
+
+	ray_scene_clear_threads(scene);
+	scene->render.thread_done_count=ray_global.settings.thread_count;
+
 		// setup
 
 	scene->ambient_col.r=scene->ambient_col.g=scene->ambient_col.b=0.0f;
@@ -163,10 +170,6 @@ int rlSceneAdd(ray_2d_point_type *size,int target,int format,void *attachment,un
 		rlSceneDelete(scene->id);
 		return(RL_ERROR_THREADING_ERROR);
 	}
-
-		// clear threads
-
-	ray_scene_clear_threads(scene);
 	
 	return(scene->id);
 }

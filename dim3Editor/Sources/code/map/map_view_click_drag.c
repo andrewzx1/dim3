@@ -238,7 +238,7 @@ bool view_click_drag_mesh_handle(editor_view_type *view,d3pnt *pt)
 	
 		// are we clicking in the grow handles?
 		
-	view_draw_select_mesh_get_grow_handles(mesh_idx,pts);
+	map_view_draw_select_mesh_get_grow_handles(mesh_idx,pts);
 		
 	view_pick_list_start(view,FALSE,20);
 	
@@ -895,7 +895,7 @@ bool view_click_drag_liquid_vertex(editor_view_type *view,d3pnt *pt)
 
 	liq=&map.liquid.liquids[liquid_idx];
 	
-	view_draw_select_liquid_get_grow_handles(liquid_idx,pts);
+	map_view_draw_select_liquid_get_grow_handles(liquid_idx,pts);
 		
 	view_pick_list_start(view,FALSE,8);
 	

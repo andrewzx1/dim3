@@ -351,11 +351,16 @@ void main_wind_draw_project(void)
 void main_wind_draw_map(void)
 {
 	if (state.map.map_open) {
-		if (state.map.texture_edit_idx==-1) {
-			view_draw();
+		if (state.map.texture_edit_idx!=-1) {
+			texture_edit_draw();
 		}
 		else {
-			texture_edit_draw();
+			if (state.map.auto_generate_on) {
+				map_view_auto_generate_draw();
+			}
+			else {
+				map_view_draw();
+			}
 		}
 	}
 	
@@ -369,11 +374,11 @@ void main_wind_draw_map(void)
 
 void main_wind_draw_model(void)
 {
-	if (state.model.texture_edit_idx==-1) {
-		model_view_draw();
+	if (state.model.texture_edit_idx!=-1) {
+		texture_edit_draw();
 	}
 	else {
-		texture_edit_draw();
+		model_view_draw();
 	}
 
 	model_tool_palette_set_state();
@@ -473,11 +478,13 @@ void main_wind_click_map(d3pnt *pnt,bool double_click)
 
 		// texture palette
 		
-	map_texture_palette_box(&tbox);
+	if (!state.map.auto_generate_on) {
+		map_texture_palette_box(&tbox);
 
-	if ((pnt->x>=tbox.lx) && (pnt->x<=tbox.rx) && (pnt->y>=tbox.ty) && (pnt->y<tbox.by)) {
-		texture_palette_click(pnt,double_click);
-		return;
+		if ((pnt->x>=tbox.lx) && (pnt->x<=tbox.rx) && (pnt->y>=tbox.ty) && (pnt->y<tbox.by)) {
+			texture_palette_click(pnt,double_click);
+			return;
+		}
 	}
 
 		// property palette
@@ -493,11 +500,16 @@ void main_wind_click_map(d3pnt *pnt,bool double_click)
 
 	if (!state.map.map_open) return;
 
-	if (state.map.texture_edit_idx==-1) {
-		view_click(pnt,double_click);
+	if (state.map.texture_edit_idx!=-1) {
+		texture_edit_click(pnt,double_click);
 	}
 	else {
-		texture_edit_click(pnt,double_click);
+		if (state.map.auto_generate_on) {
+			map_view_auto_generate_click(pnt,double_click);
+		}
+		else {
+			map_view_click(pnt,double_click);
+		}
 	}
 }
 
@@ -544,11 +556,11 @@ void main_wind_click_model(d3pnt *pnt,bool double_click)
 	old_play_mode=state.model.play_mode;
 	state.model.play_mode=model_play_mode_stop;
 
-	if (state.model.texture_edit_idx==-1) {
-		model_wind_click(pnt,double_click);
+	if (state.model.texture_edit_idx!=-1) {
+		texture_edit_click(pnt,double_click);
 	}
 	else {
-		texture_edit_click(pnt,double_click);
+		model_wind_click(pnt,double_click);
 	}
 
 	state.model.play_mode=old_play_mode;
@@ -617,11 +629,16 @@ void main_wind_scroll_wheel_map(d3pnt *pnt,int delta)
 
 		// scroll wheel in view
 
-	if (state.map.texture_edit_idx==-1) {
-		view_scroll_wheel(pnt,delta);
+	if (state.map.texture_edit_idx!=-1) {
+		texture_edit_scroll_wheel(delta);
 	}
 	else {
-		texture_edit_scroll_wheel(delta);
+		if (state.map.auto_generate_on) {
+			map_view_auto_generate_scroll_wheel(pnt,delta);
+		}
+		else {
+			map_view_scroll_wheel(pnt,delta);
+		}
 	}
 }
 
@@ -640,12 +657,12 @@ void main_wind_scroll_wheel_model(d3pnt *pnt,int delta)
 
 		// scroll wheel in model
 
-	if (state.model.texture_edit_idx==-1) {
-		state.model.magnify_z+=(delta*20);
-		main_wind_draw();
+	if (state.model.texture_edit_idx!=-1) {
+		texture_edit_scroll_wheel(delta);
 	}
 	else {
-		texture_edit_scroll_wheel(delta);
+		state.model.magnify_z+=(delta*20);
+		main_wind_draw();
 	}
 }
 
@@ -713,8 +730,9 @@ bool main_wind_cursor_map(void)
 	
 	os_get_cursor(&pnt);
 
-	if (state.map.texture_edit_idx==-1) return(view_cursor(&pnt));
-	return(texture_edit_cursor());
+	if (state.map.texture_edit_idx!=-1) return(texture_edit_cursor());
+	if (state.map.auto_generate_on) return(map_view_auto_generate_cursor(&pnt));
+	return(map_view_cursor(&pnt));
 }
 
 bool main_wind_cursor_model(void)

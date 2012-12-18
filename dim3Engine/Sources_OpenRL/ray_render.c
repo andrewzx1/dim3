@@ -1030,9 +1030,9 @@ unsigned __stdcall ray_render_thread(void *arg)
 		
 			// add up thread done count
 			
-		WaitForSingleObject(scene->render.scene_lock,INFINITE);
+		EnterCriticalSection(&scene->render.scene_lock);
 		scene->render.thread_done_count++;
-		ReleaseMutex(scene->render.scene_lock);
+		LeaveCriticalSection(&scene->render.scene_lock);
 	}
 }
 

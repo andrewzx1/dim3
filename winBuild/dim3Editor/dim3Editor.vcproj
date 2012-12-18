@@ -1005,6 +1005,10 @@
 							>
 						</File>
 						<File
+							RelativePath="..\..\dim3Editor\Sources\code\map\map_view_auto_generator.c"
+							>
+						</File>
+						<File
 							RelativePath="..\..\dim3Editor\Sources\code\map\map_view_click_drag.c"
 							>
 						</File>
