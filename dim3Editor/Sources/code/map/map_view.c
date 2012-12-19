@@ -851,7 +851,7 @@ void view_no_rot(bool on)
       
 ======================================================= */
 
-void view_goto_select(void)
+void map_view_goto_select(void)
 {
 	float			fx,fy,fz;
 	d3ang			ang;
@@ -878,70 +878,104 @@ void view_goto_select(void)
 	view_set_position(&pnt);
 }
 
-void view_goto_map_center(void)
+void map_view_calculate_bounds(d3pnt *min_pnt,d3pnt *max_pnt)
 {
-	int					n,k,count;
-	d3pnt				center,*pt;
+	int					n,k;
+	d3pnt				*pnt;
 	map_mesh_type		*mesh;
-	editor_view_type	*view;
 	
-		// get center
+	min_pnt->x=map_max_size;
+	min_pnt->y=map_max_size;
+	min_pnt->z=map_max_size;
 
-	count=0;
-	center.x=center.y=center.z=0;
+	max_pnt->x=-map_max_size;
+	max_pnt->y=-map_max_size;
+	max_pnt->z=-map_max_size;
 	
 	mesh=map.mesh.meshes;
 	
 	for (n=0;n!=map.mesh.nmesh;n++) {
 	
-		pt=mesh->vertexes;
+		pnt=mesh->vertexes;
+
 		for (k=0;k!=mesh->nvertex;k++) {
-			center.x+=pt->x;
-			center.y+=pt->y;
-			center.z+=pt->z;
-			pt++;
+			if (pnt->x<min_pnt->x) min_pnt->x=pnt->x;
+			if (pnt->y<min_pnt->y) min_pnt->y=pnt->y;
+			if (pnt->z<min_pnt->z) min_pnt->z=pnt->z;
+
+			if (pnt->x>max_pnt->x) max_pnt->x=pnt->x;
+			if (pnt->y>max_pnt->y) max_pnt->y=pnt->y;
+			if (pnt->z>max_pnt->z) max_pnt->z=pnt->z;
+
+			pnt++;
+		}
+		
+		mesh++;
+	}
+}
+
+void map_view_calculate_center(d3pnt *center_pnt)
+{
+	int					n,k,count;
+	d3pnt				*pnt;
+	map_mesh_type		*mesh;
+	
+	count=0;
+	center_pnt->x=center_pnt->y=center_pnt->z=0;
+	
+	mesh=map.mesh.meshes;
+	
+	for (n=0;n!=map.mesh.nmesh;n++) {
+	
+		pnt=mesh->vertexes;
+		for (k=0;k!=mesh->nvertex;k++) {
+			center_pnt->x+=pnt->x;
+			center_pnt->y+=pnt->y;
+			center_pnt->z+=pnt->z;
+			pnt++;
 			count++;
 		}
 		
 		mesh++;
 	}
 	
-	if (count==0) return;
-	
-	center.x/=count;
-	center.y/=count;
-	center.z/=count;
+	if (count==0) {
+		center_pnt->x=map_max_size/2;
+		center_pnt->y=map_max_size/2;
+		center_pnt->z=map_max_size/2;
+		return;
+	}
+
+	center_pnt->x/=count;
+	center_pnt->y/=count;
+	center_pnt->z/=count;
+}
+
+void map_view_goto_map_center(editor_view_type *view)
+{
+		// get the center
+
+	map_view_calculate_center(&view->pnt);
 	
 		// if view is top or
 		// botton down, then
 		// move away from view
 		
-	view=view_get_current_view();
-
 	if ((view->ang.x<=315.0f) && (view->ang.x>180.0f)) {
-		center.y-=200000;
+		view->pnt.y-=200000;
 	}
 	if ((view->ang.x>=45.0f) && (view->ang.x<180.0f)) {
-		center.y+=200000;
+		view->pnt.y+=200000;
 	}
-
-		// set position
-
-	view_set_position(&center);
 }
 
-void view_goto_map_center_all(void)
+void map_view_goto_map_center_all(void)
 {
-	int			n,old_idx;
-
-	old_idx=state.map.view_select_idx;
+	int			n;
 
 	for (n=0;n!=map.editor_views.count;n++) {
-		state.map.view_select_idx=n;
-		view_goto_map_center();
+		map_view_goto_map_center(&map.editor_views.views[n]);
 	}
-
-	state.map.view_select_idx=old_idx;
 }
 
 /* =======================================================

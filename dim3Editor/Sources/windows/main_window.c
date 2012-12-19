@@ -367,7 +367,7 @@ void main_wind_draw_map(void)
 	map_tool_palette_set_state();
 	tool_palette_draw(&map_tool_palette);
 
-	texture_palette_draw();
+	if (!state.map.auto_generate_on) texture_palette_draw();
 	
 	map_palette_draw();
 }

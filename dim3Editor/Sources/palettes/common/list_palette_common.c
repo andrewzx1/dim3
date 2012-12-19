@@ -102,6 +102,7 @@ void list_palette_list_initialize(list_palette_type *list,char *title,bool left,
 	list->item_pane.titles[1][0]=list->item_pane.titles[2][0]=0x0;
 	
 	list->open=TRUE;
+	list->hide=FALSE;
 
 	list->flag.left=left;
 	list->flag.never_hide_picker=never_hide_picker;
@@ -1869,6 +1870,10 @@ void list_palette_draw(list_palette_type *list)
 {
 	d3rect				box;
 
+		// hidden?
+
+	if (list->hide) return;
+
 		// item pane
 
 	list_palette_item_box(list,&box);
@@ -2299,6 +2304,10 @@ bool list_palette_click(list_palette_type *list,d3pnt *pnt,bool double_click)
 	d3rect					box;
 	d3fpnt					uv_ptr;
 	list_palette_item_type	*item;
+
+		// hidden?
+
+	if (list->hide) return(FALSE);
 
 		// click in close border
 

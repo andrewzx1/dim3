@@ -373,7 +373,7 @@ typedef struct		{
 					} list_palette_flag_type;
 
 typedef struct		{
-						bool								open;
+						bool								open,hide;
 						list_palette_flag_type				flag;
 						list_palette_pane_type				item_pane,picker_pane;
 						list_palette_picker_type			picker;
@@ -677,6 +677,14 @@ typedef struct		{
 #define import_mode_replace_all					2
 
 //
+// auto generate mode buttons
+//
+
+#define map_auto_generate_button_previous		0
+#define map_auto_generate_button_next			1
+#define map_auto_generate_button_done			2
+
+//
 // map undos
 //
 
@@ -796,7 +804,7 @@ typedef struct		{
 typedef struct		{
 						int						vertex_mode,select_mode,grid_mode,node_mode,
 												handle_mode,view_select_idx,drag_handle_idx,
-												texture_edit_idx,
+												texture_edit_idx,auto_generate_button_idx,
 												cur_no_sel_piece_type,cur_group_idx,
 												cur_cinema_idx,cur_cinema_action_idx,
 												cur_movement_idx,cur_movement_move_idx;

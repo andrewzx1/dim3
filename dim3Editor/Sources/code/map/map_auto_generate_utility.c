@@ -45,17 +45,25 @@ extern ag_state_type			ag_state;
 
 void ag_random_seed(void)
 {
-	int				seed;
-
 #ifdef D3_OS_WINDOWS
-	seed=GetTickCount();
+	ag_state.seed=GetTickCount();
 #else
-	seed=TickCount();
+	ag_state.seed=TickCount();
 #endif
 
-//	seed=102;		// supergumba -- for testing
+	srandom(ag_state.seed);
+}
 
-	srandom(seed);
+void ag_random_previous_seed(void)
+{
+	ag_state.seed--;
+	srandom(ag_state.seed);
+}
+
+void ag_random_next_seed(void)
+{
+	ag_state.seed++;
+	srandom(ag_state.seed);
 }
 
 int ag_random_int(int max)
