@@ -41,13 +41,46 @@ extern app_pref_type			pref;
 
 /* =======================================================
 
-      Enter Map Auto-Generate View
+      Enter/Exit Map Auto-Generate View
       
 ======================================================= */
 
 void view_map_auto_generate_start(void)
 {
+	char			err_str[256];
+
+		// run auto generator first time
+
+	if (!auto_generate_map(err_str)) {
+		os_dialog_alert("Auto Generator",err_str);
+		return;
+	}
+
+		// switch to auto-generated mode
+
 	state.map.auto_generate_on=TRUE;
+	state.map.auto_generate_button_idx=-1;
+
+	file_palette.hide=TRUE;
+	file_palette.open=FALSE;
+	map_palette.hide=TRUE;
+	map_palette.open=FALSE;
+
+	map_menu_update();
+
+	main_wind_draw();
+}
+
+void view_map_auto_generate_end(void)
+{
+	state.map.auto_generate_on=FALSE;
+
+	file_palette.hide=FALSE;
+	map_palette.hide=FALSE;
+	map_palette.open=TRUE;
+
+	map_menu_update();
+
 	main_wind_draw();
 }
 
@@ -59,7 +92,7 @@ void view_map_auto_generate_start(void)
 
 bool map_view_auto_generate_cursor(d3pnt *pnt)
 {
-	os_set_hand_cursor();
+	os_set_arrow_cursor();
 	return(TRUE);
 }
 
@@ -71,52 +104,6 @@ bool map_view_auto_generate_cursor(d3pnt *pnt)
 
 void map_view_auto_generate_scroll_wheel(d3pnt *pnt,int delta)
 {
-	/*
-	int					mv;
-	d3vct				move_vct;
-	d3pnt				view_pnt,move_pnt,look_pnt;
-	editor_view_type	*view;
-	
-		// select clicking view
-		
-	view_select_view(pnt);
-	
-		// handle click
-
-	view=view_get_current_view();
-
-		// get movement
-
-	move_pnt.x=move_pnt.y=move_pnt.z=0;
-
-	mv=delta*move_scroll_wheel_scale;
-	if (pref.flip_forward_movement) mv=-mv;
-
-		// free look
-
-	if ((select_count()!=1) || (state.map.free_look)) {
-		view_mouse_get_forward_axis(view,&move_pnt,-mv);
-	}
-	
-		// look at
-
-	else {
-		view_get_position(&view_pnt);
-		
-		select_get_center(&look_pnt);
-
-		vector_create(&move_vct,look_pnt.x,look_pnt.y,look_pnt.z,view_pnt.x,view_pnt.y,view_pnt.z);
-		vector_normalize(&move_vct);
-
-		move_pnt.x=(int)(move_vct.x*((float)mv));
-		move_pnt.y=(int)(move_vct.y*((float)mv));
-		move_pnt.z=(int)(move_vct.z*((float)mv));
-	}
-
-	view_move_position(&move_pnt);
-	
-	main_wind_draw();
-	*/
 }
 
 /* =======================================================
@@ -125,42 +112,124 @@ void map_view_auto_generate_scroll_wheel(d3pnt *pnt,int delta)
       
 ======================================================= */
 
+void map_view_auto_generate_previous_button_box(d3rect *box)
+{
+	int				high;
+	d3rect			wbox;
+
+	os_get_window_box(&wbox);
+
+	high=(wbox.by-wbox.ty)-tool_button_size;
+
+	box->lx=5;
+	box->rx=205;
+	box->ty=high-55;
+	box->by=high-5;
+}
+
+void map_view_auto_generate_next_button_box(d3rect *box)
+{
+	int				high;
+	d3rect			wbox;
+
+	os_get_window_box(&wbox);
+
+	high=(wbox.by-wbox.ty)-tool_button_size;
+
+	box->lx=215;
+	box->rx=415;
+	box->ty=high-55;
+	box->by=high-5;
+}
+
+void map_view_auto_generate_done_button_box(d3rect *box)
+{
+	int				wid,high;
+	d3rect			wbox;
+
+	os_get_window_box(&wbox);
+
+	wid=wbox.rx-wbox.lx;
+	high=(wbox.by-wbox.ty)-tool_button_size;
+
+	box->lx=wid-205;
+	box->rx=wid-5;
+	box->ty=high-55;
+	box->by=high-5;
+}
+
+bool map_view_auto_generate_click_button(d3pnt *pnt,d3rect *wbox,d3rect *bbox,int button_idx)
+{
+	bool			out_box;
+
+	if ((pnt->x<bbox->lx) || (pnt->x>bbox->rx) || (pnt->y<bbox->ty) || (pnt->y>bbox->by)) return(FALSE);
+
+	state.map.auto_generate_button_idx=button_idx;
+	main_wind_draw();
+
+	while (!os_track_mouse_location(pnt,wbox)) {
+
+		out_box=((pnt->x<bbox->lx) || (pnt->x>bbox->rx) || (pnt->y<bbox->ty) || (pnt->y>bbox->by));
+		if ((out_box) && (state.map.auto_generate_button_idx==-1)) {
+			usleep(10000);
+			continue;
+		}
+
+		if (out_box) {
+			state.map.auto_generate_button_idx=-1;
+		}
+		else {
+			state.map.auto_generate_button_idx=button_idx;
+		}
+
+		main_wind_draw();
+		usleep(1000);
+	}
+
+	if (state.map.auto_generate_button_idx!=-1) {
+		state.map.auto_generate_button_idx=-1;
+		return(TRUE);
+	}
+
+	return(FALSE);
+}
+
 bool map_view_auto_generate_click(d3pnt *pnt,bool double_click)
 {
-	/*
-	editor_view_type	*view;
-	
-		// select clicking view
-		
-	view_select_view(pnt);
-	
-		// handle click
+	char			err_str[256];
+	d3rect			wbox,bbox;
 
-	view=view_get_current_view();
-	if (!view_point_in_view(view,pnt)) return(FALSE);
-		
-		// scrolling and movement clicks
-		
-	if (os_key_space_down()) {
-		view_mouse_scroll_movement(view,pnt);
+		// move within the view
+
+	os_get_window_box(&wbox);
+	wbox.ty+=tool_button_size;
+
+	pnt->x-=wbox.lx;
+	pnt->y-=wbox.ty;
+
+		// check for button clicks
+
+	map_view_auto_generate_previous_button_box(&bbox);
+	if (map_view_auto_generate_click_button(pnt,&wbox,&bbox,map_auto_generate_button_previous)) {
+		if (!auto_generate_previous_map(err_str)) os_dialog_alert("Auto Generator",err_str);
+		main_wind_draw();
 		return(TRUE);
 	}
 
-	if (os_key_option_down()) {
-		view_mouse_forward_movement(view,pnt);
+	map_view_auto_generate_next_button_box(&bbox);
+	if (map_view_auto_generate_click_button(pnt,&wbox,&bbox,map_auto_generate_button_next)) {
+		if (!auto_generate_next_map(err_str)) os_dialog_alert("Auto Generator",err_str);
+		main_wind_draw();
 		return(TRUE);
 	}
 
-	if (os_key_command_down()) {
-		view_mouse_turn(view,pnt);
+	map_view_auto_generate_done_button_box(&bbox);
+	if (map_view_auto_generate_click_button(pnt,&wbox,&bbox,map_auto_generate_button_done)) {
+		view_map_auto_generate_end();
 		return(TRUE);
 	}
 
-		// click the view pieces
-
-	view_click_piece(view,pnt,double_click);
-	*/
-	return(TRUE);
+	return(FALSE);
 }
 
 /* =======================================================
@@ -169,37 +238,151 @@ bool map_view_auto_generate_click(d3pnt *pnt,bool double_click)
       
 ======================================================= */
 
+void map_view_auto_generate_draw_button(d3rect *box,char *title,bool pushed)
+{
+	float			col_rg,vertexes[8],colors[16];
+	
+		// the button box
+
+	col_rg=0.7f;
+	if (pushed) col_rg=0.5f;
+
+	vertexes[0]=vertexes[6]=(float)box->lx;
+	vertexes[2]=vertexes[4]=(float)box->rx;
+	vertexes[1]=vertexes[3]=(float)box->ty;
+	vertexes[5]=vertexes[7]=(float)box->by;
+
+	colors[0]=colors[1]=colors[4]=colors[5]=col_rg;
+	colors[2]=colors[6]=1.0f;
+	colors[8]=colors[9]=colors[12]=colors[13]=col_rg-0.2f;
+	colors[10]=colors[14]=0.8f;
+	colors[3]=colors[7]=colors[11]=colors[15]=1.0f;
+
+	glVertexPointer(2,GL_FLOAT,0,vertexes);
+
+	glEnableClientState(GL_COLOR_ARRAY);
+	glColorPointer(4,GL_FLOAT,0,colors);
+
+	glDrawArrays(GL_QUADS,0,4);
+
+	glDisableClientState(GL_COLOR_ARRAY);
+
+		// the outline
+
+	glColor4f(0.0f,0.0f,0.0f,1.0f);
+	glDrawArrays(GL_LINE_LOOP,0,4);
+
+		// the button text
+
+	text_draw_center(((box->lx+box->rx)>>1),(box->by-8),30.0f,NULL,title);
+}
+
 void map_view_auto_generate_draw(void)
 {
-	editor_view_type	view;
+	int					n,k,t,wid,high;
+	float				xf,zf,x_off;
+	float				*vp,vertexes[8*2];
+	d3pnt				*pnt,min,max;
+	d3rect				wbox,box,bbox;
+	map_mesh_type		*mesh;
+	map_mesh_poly_type	*poly;
+
+		// setup 2D projection
+
+	os_get_window_box(&wbox);
+
+	box.lx=wbox.lx;
+	box.rx=wbox.rx;
+	box.ty=wbox.ty+tool_button_size;
+	box.by=wbox.by;
+
+	wid=box.rx-box.lx;
+	high=box.by-box.ty;
+
+	glEnable(GL_SCISSOR_TEST);
+	glScissor(box.lx,(wbox.by-box.by),wid,high);
+
+	glViewport(box.lx,(wbox.by-box.by),wid,high);
+
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glOrtho((GLdouble)0,(GLdouble)wid,(GLdouble)high,(GLdouble)0,-1.0,1.0);
 	
-		// make the view
-		// special top-down center
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
 
-	view.box.lft=0.0f;
-	view.box.rgt=1.0f;
-	view.box.top=0.0f;
-	view.box.bot=1.0f;
+		// erase
 
-	view.pnt.x=map_max_size/2;
-	view.pnt.y=(map_max_size/2)-200000;
-	view.pnt.z=map_max_size/2;
+	vertexes[0]=vertexes[6]=(float)0;
+	vertexes[2]=vertexes[4]=(float)wid-100;
+	vertexes[1]=vertexes[3]=(float)0;
+	vertexes[5]=vertexes[7]=(float)high-100;
+	
+	glVertexPointer(2,GL_FLOAT,0,vertexes);
+	glColor4f(pref.col.background.r,pref.col.background.g,pref.col.background.b,1.0f);
+	glDrawArrays(GL_QUADS,0,4);
 
-	view.ang.x=270.0f;
-	view.ang.y=0.0f;
-	view.ang.z=0.0f;
+		// get bounds
 
-	view.uv_layer=0;
+	map_view_calculate_bounds(&min,&max);
 
-	view.cull=FALSE;
-	view.ortho=FALSE;
-	view.clip=FALSE;
-	view.no_rot=TRUE;
+		// the draw factor uses the
+		// height so there's no stretching
 
-		// draw the view
-		
-	map_view_draw_view(&view);
+	xf=((float)high)/((float)(max.x-min.x));
+	zf=((float)high)/((float)(max.z-min.z));
 
+	x_off=((float)(wid-high))*0.5f;
+
+		// redraw map into bounds
+
+	glDisable(GL_TEXTURE_2D);
+	glEnable(GL_BLEND);
+
+	glDisable(GL_DEPTH_TEST);
+	
+	glLineWidth(1.0f);
+	glColor4f(pref.col.mesh_line.r,pref.col.mesh_line.g,pref.col.mesh_line.b,1.0f);
+
+	mesh=map.mesh.meshes;
+
+	for (n=0;n!=map.mesh.nmesh;n++) {
+
+			// draw polys
+
+		poly=mesh->polys;
+	
+		for (k=0;k!=mesh->npoly;k++) {			
+
+			vp=vertexes;
+
+			for (t=0;t!=poly->ptsz;t++) {
+				pnt=&mesh->vertexes[poly->v[t]];
+				*vp++=(((float)(pnt->x-min.x))*xf)+x_off;
+				*vp++=((float)(pnt->z-min.z))*zf;
+			}
+	
+			glVertexPointer(2,GL_FLOAT,0,vertexes);
+			glDrawArrays(GL_POLYGON,0,poly->ptsz);
+
+			poly++;
+		}
+
+		mesh++;
+	}
+
+		// buttons
+
+	map_view_auto_generate_previous_button_box(&bbox);
+	map_view_auto_generate_draw_button(&bbox,"Previous Map",(state.map.auto_generate_button_idx==map_auto_generate_button_previous));
+
+	map_view_auto_generate_next_button_box(&bbox);
+	map_view_auto_generate_draw_button(&bbox,"Next Map",(state.map.auto_generate_button_idx==map_auto_generate_button_next));
+
+	map_view_auto_generate_done_button_box(&bbox);
+	map_view_auto_generate_draw_button(&bbox,"Done",(state.map.auto_generate_button_idx==map_auto_generate_button_done));
+
+	glDepthMask(GL_TRUE);
 }
 
 

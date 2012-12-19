@@ -111,7 +111,7 @@ void map_tool_palette_set_state(void)
 	editor_view_type	*view;
 
 	view=view_get_current_view();
-	disabled=!state.map.map_open;
+	disabled=(!state.map.map_open)||(state.map.auto_generate_on);
 
 	tool_palette_set_state(&map_tool_palette,0,(state.map.vertex_mode==vertex_mode_none),disabled);
 	tool_palette_set_state(&map_tool_palette,1,(state.map.vertex_mode==vertex_mode_lock),disabled);

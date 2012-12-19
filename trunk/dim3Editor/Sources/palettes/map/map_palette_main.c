@@ -278,7 +278,7 @@ void map_palette_click_main(bool double_click)
 
 	}
 
-	if (double_click) view_goto_select();
+	if (double_click) map_view_goto_select();
 
 		// turn on any hidden items
 

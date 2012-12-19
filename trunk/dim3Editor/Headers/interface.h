@@ -547,7 +547,9 @@ extern bool liquid_reflection_maps_create(void);
 // auto-generate
 //
 
-extern void auto_generate_map(void);
+extern bool auto_generate_map(char *err_str);
+extern bool auto_generate_previous_map(char *err_str);
+extern bool auto_generate_next_map(char *err_str);
 
 //
 // selection routines
@@ -700,9 +702,11 @@ extern void view_turn_angle(d3ang *ang);
 extern void view_perspective_ortho(bool on);
 extern void view_cull(bool on);
 extern void view_clip(bool on);
-extern void view_goto_select(void);
-extern void view_goto_map_center(void);
-extern void view_goto_map_center_all(void);
+extern void map_view_goto_select(void);
+extern void map_view_calculate_bounds(d3pnt *min_pnt,d3pnt *max_pnt);
+extern void map_view_calculate_center(d3pnt *center_pnt);
+extern void map_view_goto_map_center(editor_view_type *view);
+extern void map_view_goto_map_center_all(void);
 extern void view_flip_clip(void);
 extern int view_get_uv_layer(void);
 extern void view_set_uv_layer(int uv_layer);

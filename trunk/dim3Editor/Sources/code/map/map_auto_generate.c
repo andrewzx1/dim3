@@ -34,14 +34,15 @@ and can be sold or given away.
 
 extern map_type					map;
 
-char							ag_last_path[1024]={0x0};
 ag_state_type					ag_state;
 
-extern bool ag_initialize(char *path,char *err_str);
+extern bool ag_initialize(char *err_str);
 extern void ag_release(void);
 extern int ag_shape_find(char *name);
 extern int ag_shape_get_connector_index(ag_shape_type *shape,int v1_idx,int v2_idx);
 extern void ag_random_seed(void);
+extern void ag_random_previous_seed(void);
+extern void ag_random_next_seed(void);
 extern int ag_random_int(int max);
 extern void ag_generate_mirror_meshes(void);
 extern bool ag_generate_is_poly_straight_wall(int mesh_idx,int poly_idx);
@@ -948,7 +949,7 @@ int ag_generate_position_room_grid(int room_idx,int room_count,d3pnt *pnt,d3vct 
       
 ======================================================= */
 
-bool ag_generate_run(char *path,bool recenter,char *err_str)
+bool ag_generate_run(char *err_str)
 {
 	int				n,room_count,
 					shape_idx,connect_idx;
@@ -957,12 +958,10 @@ bool ag_generate_run(char *path,bool recenter,char *err_str)
 
 		// initialize auto generate structures
 
-	if (!ag_initialize(path,err_str)) {
+	if (!ag_initialize(err_str)) {
 		ag_release();
 		return(FALSE);
 	}
-
-	ag_random_seed();
 
 		// clear the VBOs
 		// and map data
@@ -1075,27 +1074,35 @@ bool ag_generate_run(char *path,bool recenter,char *err_str)
 
 	map_recalc_normals(&map,FALSE);
 	map_mesh_reset_uv_all();
-	if (recenter) view_goto_map_center_all();
+	map_view_goto_map_center_all();
 
 	main_wind_draw();
 
 	return(TRUE);
 }
 
-void auto_generate_map(void)
+bool auto_generate_map(char *err_str)
 {
-	char				path[1024],err_str[256];
-
 		// choose an auto generate XML file
 
-	if (!os_load_file("Select an Auto Generator XML File",path,"xml")) return;
-	strcpy(ag_last_path,path);
+	if (!os_load_file("Select an Auto Generator XML File",ag_state.xml_path,"xml")) return(FALSE);
 
 		// run the auto generator
+		// with a new unique seed
 
-	if (ag_generate_run(path,TRUE,err_str)) return;
-	
-		// report errors
-	
-	os_dialog_alert("Auto Generator",err_str);
+	ag_random_seed();
+	return(ag_generate_run(err_str));
 }
+
+bool auto_generate_previous_map(char *err_str)
+{
+	ag_random_previous_seed();
+	return(ag_generate_run(err_str));
+}
+
+bool auto_generate_next_map(char *err_str)
+{
+	ag_random_next_seed();
+	return(ag_generate_run(err_str));
+}
+

@@ -137,7 +137,7 @@ void ag_read_settings_setup_connector(ag_shape_type *shape,ag_shape_connector_ty
       
 ======================================================= */
 
-bool ag_read_settings(char *path,char *err_str)
+bool ag_read_settings(char *err_str)
 {
 	int					n,k,t,nshape,
 						head_tag,size_tag,option_tag,
@@ -150,7 +150,7 @@ bool ag_read_settings(char *path,char *err_str)
 
 		// decode the file
 
-	if (!xml_open_file(path)) {
+	if (!xml_open_file(ag_state.xml_path)) {
 		strcpy(err_str,"Missing XML file");
 		return(FALSE);
 	}
@@ -380,7 +380,7 @@ bool ag_read_settings(char *path,char *err_str)
       
 ======================================================= */
 
-bool ag_initialize(char *path,char *err_str)
+bool ag_initialize(char *err_str)
 {
 	ag_state.shapes=NULL;
 	ag_state.rooms=NULL;
@@ -404,7 +404,7 @@ bool ag_initialize(char *path,char *err_str)
 
 		// read settings file
 
-	return(ag_read_settings(path,err_str));
+	return(ag_read_settings(err_str));
 }
 
 void ag_release(void)

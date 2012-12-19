@@ -184,7 +184,7 @@ void map_menu_update(void)
 {
 	editor_view_type			*view;
 
-	if (!state.map.map_open) {
+	if ((!state.map.map_open) || (state.map.auto_generate_on)) {
 		os_menu_enable_item(map_menu_file,1,FALSE);
 	
 		os_menu_enable_item(map_menu_edit,0,FALSE);
@@ -356,12 +356,12 @@ bool map_menu_event_run(int cmd)
 			return(TRUE);
 			
 		case map_menu_item_ViewGotoSelect:
-			view_goto_select();
+			map_view_goto_select();
 			main_wind_draw();
 			return(TRUE);
 			
 		case map_menu_item_ViewGotoMapCenter:
-			view_goto_map_center();
+			map_view_goto_map_center(view_get_current_view());
 			main_wind_draw();
 			return(TRUE);
 			

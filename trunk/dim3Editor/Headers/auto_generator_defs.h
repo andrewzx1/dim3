@@ -102,7 +102,9 @@ typedef struct		{
 					} ag_option_type;
 
 typedef struct		{
-						int						nshape,nroom;
+						int						nshape,nroom,
+												seed;
+						char					xml_path[1024];
 						ag_size_type			size;
 						ag_option_type			option;
 						ag_shape_type			*shapes;
