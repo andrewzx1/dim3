@@ -61,6 +61,17 @@ bool ray_intersect_triangle(ray_scene_type *scene,ray_point_type *eye_point,ray_
 /* =======================================================
 
       Ray Intersects Mesh List
+
+	  There are three functions here.  The initial
+	  function is for the first cast of the ray.
+
+	  The second function is for bounces that don't
+	  change direction (i.e., pass through.)  We can
+	  stick with the reduced mesh list here.
+
+	  The third is for bounces that change direction.
+	  We have to move onto the larger scene list for
+	  these.
       
 ======================================================= */
 
@@ -161,7 +172,117 @@ void ray_intersect_mesh_list_initial(ray_scene_type *scene,ray_draw_scene_thread
 	}
 }
 
-void ray_intersect_mesh_list_bounce(ray_scene_type *scene,ray_draw_scene_thread_info *thread_info,ray_point_type *eye_point,ray_vector_type *eye_vector,ray_collision_type *collision)
+void ray_intersect_mesh_list_pass_through_bounce(ray_scene_type *scene,ray_draw_scene_thread_info *thread_info,ray_point_type *eye_point,ray_vector_type *eye_vector,ray_collision_type *collision)
+{
+	int								n,k,mesh_idx,poly_idx,trig_idx;
+	float							it,iu,iv;
+	bool							skip;
+	ray_point_type					trig_pnt;
+	ray_mesh_type					*mesh;
+	ray_poly_type					*poly;
+	ray_trig_type					*trig;
+	ray_collision_type				alpha_collision;
+	
+		// clear collision
+		// anything > 1.0f is outside
+		// the max eye distance
+	
+	collision->mesh_idx=-1;
+	collision->poly_idx=-1;
+	collision->trig_idx=-1;
+
+	collision->t=1.0f;
+	
+		// run through the meshes
+
+		// these bounces have only hit
+		// materials that are pass through,
+		// so we can remain on the thread list
+
+	for (n=0;n!=thread_info->draw_mesh_index_block.count;n++) {
+
+		mesh_idx=thread_info->draw_mesh_index_block.indexes[n];
+		mesh=scene->mesh_list.meshes[mesh_idx];
+
+			// mesh bounds check
+
+		if (!ray_bound_ray_collision(eye_point,eye_vector,&mesh->bound)) continue;
+
+			// run through the polys
+
+		for (poly_idx=0;poly_idx!=mesh->poly_block.count;poly_idx++) {
+			
+				// bounds check
+				
+			poly=&mesh->poly_block.polys[poly_idx];
+			if (!ray_bound_ray_collision(eye_point,eye_vector,&poly->bound)) continue;
+				
+				// skiping polys, this is used
+				// so reflections or pass throughs
+				// so we don't re-hit any polys we've
+				// already hit.  note this means we will
+				// only bounce off a surface once but we
+				// won't have problems with overlayed polygons
+				
+			skip=FALSE;
+			
+			for (k=0;k!=collision->skip_block.count;k++) {
+				if ((mesh_idx==collision->skip_block.skips[k].mesh_idx) && (poly_idx==collision->skip_block.skips[k].poly_idx)) {
+					skip=TRUE;
+					break;
+				}
+			}
+			
+			if (skip) continue;
+			
+				// check triangle/ray intersection
+				// we don't do bound checking as it's
+				// about as fast as the intersection test
+				// first hit exits out of polygons as you
+				// can only hit one triangle of a polygon
+				
+			for (trig_idx=0;trig_idx!=poly->trig_block.count;trig_idx++) {
+			
+				trig=&poly->trig_block.trigs[trig_idx];
+				
+					// have we intersected this triangle
+					// closer to the last hit?
+					
+				if (!ray_intersect_triangle(scene,eye_point,eye_vector,mesh,trig,&it,&iu,&iv)) continue;
+				if (it>collision->t) continue;
+				
+					// special check for
+					// alpha==0.0f, which is a skip
+
+				if (!ray_global.material_list.materials[poly->material_idx]->no_alpha) {
+					alpha_collision.t=it;
+					alpha_collision.u=iu;
+					alpha_collision.v=iv;
+					alpha_collision.mesh_idx=mesh_idx;
+					alpha_collision.poly_idx=poly_idx;
+					alpha_collision.trig_idx=trig_idx;
+
+					ray_vector_find_line_point_for_T(eye_point,eye_vector,it,&trig_pnt);
+					if (ray_get_material_alpha(scene,eye_point,&trig_pnt,&alpha_collision)==0.0f) break;
+				}
+
+					// set the hit and exit out
+					// of the loop
+				
+				collision->t=it;
+				collision->u=iu;
+				collision->v=iv;
+				collision->mesh_idx=mesh_idx;
+				collision->poly_idx=poly_idx;
+				collision->trig_idx=trig_idx;
+
+				break;
+			}
+		}
+	}
+}
+
+void ray_intersect_mesh_list_other_bounce(ray_scene_type *scene,ray_draw_scene_thread_info *thread_info,ray_point_type *eye_point,ray_vector_type *eye_vector,ray_collision_type *collision)
 {
 	int								n,k,mesh_idx,poly_idx,trig_idx;
 	float							it,iu,iv;
@@ -759,10 +880,10 @@ void ray_build_alpha_vector(ray_scene_type *scene,ray_point_type *ray_origin,ray
 
 	collision->skip_block.skips[collision->skip_block.count].mesh_idx=collision->mesh_idx;
 	collision->skip_block.skips[collision->skip_block.count].poly_idx=collision->poly_idx;
-	
 	collision->skip_block.count++;
 
 	collision->in_bounce=TRUE;
+	collision->only_pass_through=(collision->only_pass_through)&&(material->alpha_type==RL_MATERIAL_ALPHA_PASS_THROUGH);
 }
 
 /* =======================================================
@@ -773,7 +894,7 @@ void ray_build_alpha_vector(ray_scene_type *scene,ray_point_type *ray_origin,ray
 
 void ray_render_thread_run(ray_draw_scene_thread_info *thread_info)
 {
-	int							x,y,repeat_count;
+	int							x,y;
 	float						f,xadd,yadd,zadd;
 	unsigned long				*buf;
 	bool						no_hit;
@@ -827,7 +948,6 @@ void ray_render_thread_run(ray_draw_scene_thread_info *thread_info)
 				// alpha pass-throughs
 
 			no_hit=TRUE;
-			repeat_count=0;
 
 			pixel_col.r=pixel_col.g=pixel_col.b=0.0f;
 			
@@ -857,6 +977,7 @@ void ray_render_thread_run(ray_draw_scene_thread_info *thread_info)
 			collision.max_t=scene->eye.max_dist;
 			collision.skip_block.count=0;
 			collision.in_bounce=FALSE;
+			collision.only_pass_through=TRUE;
 		
 				// run the ray
 
@@ -868,7 +989,12 @@ void ray_render_thread_run(ray_draw_scene_thread_info *thread_info)
 					ray_intersect_mesh_list_initial(scene,thread_info,&ray_origin,&ray_vector,&collision);
 				}
 				else {
-					ray_intersect_mesh_list_bounce(scene,thread_info,&ray_origin,&ray_vector,&collision);
+					if (collision.only_pass_through) {
+						ray_intersect_mesh_list_pass_through_bounce(scene,thread_info,&ray_origin,&ray_vector,&collision);
+					}
+					else {
+						ray_intersect_mesh_list_other_bounce(scene,thread_info,&ray_origin,&ray_vector,&collision);
+					}
 				}
 
 				if (collision.trig_idx==-1) break;
@@ -912,10 +1038,9 @@ void ray_render_thread_run(ray_draw_scene_thread_info *thread_info)
 
 				if (mat_col.a==1.0f) break;
 
-					// repeat the array
+					// minimum ray trace bounce
 
-				repeat_count++;
-				if (repeat_count==ray_max_bounce) break;
+				if (collision.skip_block.count==ray_max_bounce) break;
 
 					// we have an alpha, need to rebuild
 					// the vector and trace again

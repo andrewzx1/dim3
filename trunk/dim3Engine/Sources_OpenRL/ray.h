@@ -356,7 +356,7 @@ typedef struct		{
 typedef struct		{
 						int							mesh_idx,poly_idx,trig_idx;
 						float						max_t,t,u,v;
-						bool						in_bounce;
+						bool						in_bounce,only_pass_through;
 						ray_collision_skip_block	skip_block;
 					} ray_collision_type;
 

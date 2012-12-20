@@ -76,50 +76,6 @@ int ag_random_int(int max)
 
 /* =======================================================
 
-      Mirror Meshes
-      
-======================================================= */
-
-void ag_generate_mirror_meshes(void)
-{
-	int				n,nmesh,mesh_idx;
-	d3pnt			pnt;
-	map_mesh_type	*mesh,*center_mesh;
-
-		// get center mesh
-
-	center_mesh=&map.mesh.meshes[0];
-	map_prepare_mesh_box(center_mesh);
-
-		// skip first mesh as it's
-		// the middle ground
-
-	nmesh=map.mesh.nmesh;
-
-	for (n=1;n!=nmesh;n++) {
-		mesh_idx=map_mesh_duplicate(&map,n);
-		if (mesh_idx==-1) break;
-
-			// create mesh box so we
-			// can find extents to move by
-
-		mesh=&map.mesh.meshes[mesh_idx];
-		map_prepare_mesh_box(mesh);
-
-			// flip and move
-
-		map_mesh_flip(&map,mesh_idx,TRUE,FALSE,TRUE);
-
-		pnt.x=(center_mesh->box.mid.x-mesh->box.mid.x)*2;
-		pnt.y=0;
-		pnt.z=(center_mesh->box.mid.z-mesh->box.mid.z)*2;
-
-		map_mesh_move(&map,mesh_idx,&pnt);
-	}
-}
-
-/* =======================================================
-
       Polygon Utilies
       
 ======================================================= */
