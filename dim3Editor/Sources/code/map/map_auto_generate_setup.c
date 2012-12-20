@@ -187,7 +187,6 @@ bool ag_read_settings(char *err_str)
 		return(FALSE);
 	}
 
-	ag_state.option.mirror=xml_get_attribute_boolean(option_tag,"mirror");
 	ag_state.option.auto_connect=xml_get_attribute_boolean(option_tag,"auto_connect");
 	ag_state.option.grid=xml_get_attribute_boolean(option_tag,"grid");
 

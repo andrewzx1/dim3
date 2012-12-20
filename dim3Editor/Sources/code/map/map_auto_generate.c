@@ -44,7 +44,6 @@ extern void ag_random_seed(void);
 extern void ag_random_previous_seed(void);
 extern void ag_random_next_seed(void);
 extern int ag_random_int(int max);
-extern void ag_generate_mirror_meshes(void);
 extern bool ag_generate_is_poly_straight_wall(int mesh_idx,int poly_idx);
 extern void ag_generate_delete_shared_polygons(void);
 extern void ag_generate_spots_add(void);
@@ -145,19 +144,6 @@ bool ag_room_space_blocked(d3pnt *min,d3pnt *max)
 	return(FALSE);
 }
 
-bool ag_room_mirror_blocked(d3pnt *min,d3pnt *max)
-{
-	ag_room_type	*room;
-
-		// mirrors can't be below
-		// or to the right of original room
-
-	room=&ag_state.rooms[0];
-
-	if (min->x<room->min.x) return(TRUE);
-	return(max->z>room->max.z);
-}
-
 /* =======================================================
 
       Auto Generate Connection Utilities
@@ -209,7 +195,7 @@ int ag_shape_has_connector_type(ag_room_type *room,int connect_type)
       
 ======================================================= */
 
-int ag_get_room_position(int shape_idx,d3pnt *pnt,d3vct *size,bool mirror,bool prefered)
+int ag_get_room_position(int shape_idx,d3pnt *pnt,d3vct *size,bool prefered)
 {
 	int						n,connect_idx,connect2_idx,nhit,opposite_cnt_type;
 	float					dist_fact;
@@ -228,22 +214,7 @@ int ag_get_room_position(int shape_idx,d3pnt *pnt,d3vct *size,bool mirror,bool p
 		connect_hit[n]=FALSE;
 	}
 
-		// if it's a mirror, then only build
-		// on left-bottom connectors
-
 	nhit=0;
-
-	if (mirror) {
-
-		for (n=0;n!=shape->nconnector;n++) {
-			if ((shape->connectors[n].type==ag_connector_type_max_x) || (shape->connectors[n].type==ag_connector_type_min_z)) {
-				connect_hit[n]=TRUE;
-				nhit++;
-			}
-		}
-
-		if (nhit==0) return(-1);
-	}
 
 		// start at a random corridor
 
@@ -331,13 +302,6 @@ int ag_get_room_position(int shape_idx,d3pnt *pnt,d3vct *size,bool mirror,bool p
 			max.z=min.z+(int)(100.0f*size->z);
 
 			if (ag_room_space_blocked(&min,&max)) continue;
-
-				// if it's a mirror, it can never be
-				// past the left or bottom or original room
-
-			if (mirror) {
-				if (ag_room_mirror_blocked(&min,&max)) continue;
-			}
 
 				// mark room connector as used
 
@@ -904,8 +868,8 @@ bool ag_generate_position_room_connection(int *p_shape_idx,int *p_connect_idx,d3
 			// we always try prefered connectors
 			// first, then move on to non-prefered
 
-		connect_idx=ag_get_room_position(shape_idx,pnt,size,ag_state.option.mirror,TRUE);
-		if (connect_idx==-1) connect_idx=ag_get_room_position(shape_idx,pnt,size,ag_state.option.mirror,FALSE);
+		connect_idx=ag_get_room_position(shape_idx,pnt,size,TRUE);
+		if (connect_idx==-1) connect_idx=ag_get_room_position(shape_idx,pnt,size,FALSE);
 		if (connect_idx!=-1) break;
 
 			// try again
@@ -970,11 +934,8 @@ bool ag_generate_run(char *err_str)
 	ag_map_clear();
 
 		// get room count
-		// cut room count in half if mirroring
-		// but add one extra for center room
 
 	room_count=ag_state.size.room_min_count+ag_random_int(ag_state.size.room_max_count-ag_state.size.room_min_count);
-	if (ag_state.option.mirror) room_count=(room_count>>1)+1;
 
 		// create the rooms
 
@@ -1048,10 +1009,6 @@ bool ag_generate_run(char *err_str)
 		// add ceilings
 
 	ag_generate_ceilings();
-
-		// mirroring
-
-	if (ag_state.option.mirror) ag_generate_mirror_meshes();
 
 		// delete any polygons that share the
 		// same space
