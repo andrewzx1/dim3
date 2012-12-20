@@ -279,7 +279,7 @@ void map_view_auto_generate_draw_button(d3rect *box,char *title,bool pushed)
 
 void map_view_auto_generate_draw(void)
 {
-	int					n,k,t,wid,high;
+	int					n,k,t,sz,wid,high;
 	float				xf,zf,x_off;
 	float				*vp,vertexes[8*2];
 	d3pnt				*pnt,min,max;
@@ -328,9 +328,12 @@ void map_view_auto_generate_draw(void)
 
 		// the draw factor uses the
 		// height so there's no stretching
+		
+	sz=max.x-min.x;
+	if ((max.z-min.z)>sz) sz=max.z-min.z;
 
-	xf=((float)high)/((float)(max.x-min.x));
-	zf=((float)high)/((float)(max.z-min.z));
+	xf=((float)high)/((float)sz);
+	zf=((float)high)/((float)sz);
 
 	x_off=((float)(wid-high))*0.5f;
 

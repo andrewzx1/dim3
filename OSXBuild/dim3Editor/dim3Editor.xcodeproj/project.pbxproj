@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2620AFD71682B68E00A3C76F /* map_view_auto_generator.c in Sources */ = {isa = PBXBuildFile; fileRef = 2620AFD61682B68E00A3C76F /* map_view_auto_generator.c */; };
 		2621459A1605086A00F18538 /* Back.png in Copy List Icons */ = {isa = PBXBuildFile; fileRef = 26214575160503FA00F18538 /* Back.png */; };
 		2621459B1605086A00F18538 /* Edit.png in Copy List Icons */ = {isa = PBXBuildFile; fileRef = 26214576160503FA00F18538 /* Edit.png */; };
 		2621459C1605086A00F18538 /* Minus.png in Copy List Icons */ = {isa = PBXBuildFile; fileRef = 26214577160503FA00F18538 /* Minus.png */; };
@@ -476,6 +477,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		2620AFD61682B68E00A3C76F /* map_view_auto_generator.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = map_view_auto_generator.c; path = Sources/code/map/map_view_auto_generator.c; sourceTree = "<group>"; };
 		262144FD160503F200F18538 /* Tool Auto-Texture Mesh.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Tool Auto-Texture Mesh.png"; sourceTree = "<group>"; };
 		262144FE160503F200F18538 /* Tool Combine Meshes.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Tool Combine Meshes.png"; sourceTree = "<group>"; };
 		262144FF160503F200F18538 /* Tool Cull.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Tool Cull.png"; sourceTree = "<group>"; };
@@ -1315,6 +1317,7 @@
 				26F7E06B160045BA00E739C4 /* map_view_picker.c */,
 				26F7E06C160045BA00E739C4 /* map_view_vbo.c */,
 				26F7E06D160045BA00E739C4 /* map_view.c */,
+				2620AFD61682B68E00A3C76F /* map_view_auto_generator.c */,
 			);
 			name = Map;
 			sourceTree = "<group>";
@@ -1860,6 +1863,7 @@
 				2653B6D2160D76A300EE0CD7 /* DialogOutlineDataSource.m in Sources */,
 				26E5DA461611552B003D7755 /* dialog_bone_attach_duplicate.c in Sources */,
 				26F7D34F167175D400E51363 /* dialog_distort.c in Sources */,
+				2620AFD71682B68E00A3C76F /* map_view_auto_generator.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
