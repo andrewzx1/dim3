@@ -57,12 +57,14 @@ void input_touch_initialize(void)
 	
 	for (n=0;n!=max_virtual_button;n++) {
 		button->down=FALSE;
+		button->show=TRUE;
 		button++;
 	}
 
 	stick=&iface.virtual_control.sticks[n];
 
 	for (n=0;n!=max_virtual_stick;n++) {
+		stick->show=TRUE;
 		stick->touch_x=0.0f;
 		stick->touch_y=0.0f;
 
@@ -128,7 +130,7 @@ int input_touch_to_virtual_button_start(d3pnt *pt)
 	
 	for (n=0;n!=max_virtual_button;n++) {
 		button=&iface.virtual_control.buttons[n];
-		if (!button->on) continue;
+		if ((!button->on) || (!button->show)) continue;
 
 		if ((pt->x<button->pnt.x) || (pt->x>(button->pnt.x+button->size.x)) || (pt->y<button->pnt.y) || (pt->y>(button->pnt.y+button->size.y))) continue;
 		
@@ -212,7 +214,7 @@ int input_touch_to_virtual_stick_start(touch_state_type *state)
 	
 	for (n=0;n!=max_virtual_stick;n++) {
 		stick=&iface.virtual_control.sticks[n];
-		if (!stick->on) continue;
+		if ((!stick->on) || (!stick->show)) continue;
 
 			// in this stick?
 			

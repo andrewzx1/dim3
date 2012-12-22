@@ -96,7 +96,7 @@ obj_type* object_find_name(char *name)
       
 ======================================================= */
 
-obj_type* object_find_nearest(d3pnt *pt,char *name,int type,int team_idx,float ang,float ang_sweep,int min_dist,int max_dist,bool player,int skip_obj_idx)
+obj_type* object_find_nearest(d3pnt *pnt,char *name,int type,int team_idx,float ang,float ang_sweep,int min_dist,int max_dist,bool player,int skip_obj_idx)
 {
 	int				n,i,d,dist;
 	float			fang;
@@ -140,14 +140,14 @@ obj_type* object_find_nearest(d3pnt *pt,char *name,int type,int team_idx,float a
 		
 			// check distance
 			
-		d=distance_get(pt->x,pt->y,pt->z,obj->pnt.x,obj->pnt.y,obj->pnt.z);
+		d=distance_get(pnt->x,pnt->y,pnt->z,obj->pnt.x,obj->pnt.y,obj->pnt.z);
 		if (d<min_dist) continue;
 		if (d>dist) continue;
 		
 			// check angle
 			
 		if (ang!=-1) {
-			fang=angle_find(pt->x,pt->z,obj->pnt.x,obj->pnt.z);
+			fang=angle_find(pnt->x,pnt->z,obj->pnt.x,obj->pnt.z);
 			if (angle_dif(fang,ang,NULL)>ang_sweep) continue;
 		}
 		
@@ -158,6 +158,32 @@ obj_type* object_find_nearest(d3pnt *pt,char *name,int type,int team_idx,float a
 	if (i==-1) return(NULL);
 	
 	return(server.obj_list.objs[i]);
+}
+
+int object_find_nearest_list(d3pnt *pnt,int min_dist,int max_dist,int *ids)
+{
+	int				n,cnt,dist;
+	obj_type		*obj;
+
+	cnt=0;
+	
+	for (n=0;n!=max_obj_list;n++) {
+		obj=server.obj_list.objs[n];
+		if (obj==NULL) continue;
+		
+		if (obj->hidden) continue;
+		if (!obj->find_on) continue;
+				
+			// check distance
+			
+		dist=distance_get(pnt->x,pnt->y,pnt->z,obj->pnt.x,obj->pnt.y,obj->pnt.z);
+		if (dist<min_dist) continue;
+		if (dist>max_dist) continue;
+		
+		ids[cnt++]=n;
+	}
+	
+	return(cnt);
 }
 
 /* =======================================================

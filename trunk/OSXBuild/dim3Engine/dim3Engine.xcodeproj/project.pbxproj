@@ -486,6 +486,7 @@
 		26A45D081489AD6C00C02936 /* script_color.c in Sources */ = {isa = PBXBuildFile; fileRef = 26A45D061489AD6C00C02936 /* script_color.c */; };
 		26A45D091489AD6C00C02936 /* script_point_angle_vector.c in Sources */ = {isa = PBXBuildFile; fileRef = 26A45D071489AD6C00C02936 /* script_point_angle_vector.c */; };
 		26B9EB7216320DC900E3FFFB /* view_openrl_overlay.c in Sources */ = {isa = PBXBuildFile; fileRef = 26B9EB7116320DC900E3FFFB /* view_openrl_overlay.c */; };
+		26BB48F41685067E00825030 /* script_interface_virtual_control.c in Sources */ = {isa = PBXBuildFile; fileRef = 26BB48F31685067E00825030 /* script_interface_virtual_control.c */; };
 		26C816A516530D4300D2E12A /* ray_thread.c in Sources */ = {isa = PBXBuildFile; fileRef = 26C816A416530D4300D2E12A /* ray_thread.c */; };
 		26CBE2041581AD1E00093D7C /* simple_save_pick.c in Sources */ = {isa = PBXBuildFile; fileRef = 26CBE2031581AD1E00093D7C /* simple_save_pick.c */; };
 		26E1844513CEA27800812348 /* dim3 Engine.app in Copy Application */ = {isa = PBXBuildFile; fileRef = F5CD87F70557721D0023AD9B /* dim3 Engine.app */; };
@@ -1008,6 +1009,7 @@
 		26A45D061489AD6C00C02936 /* script_color.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_color.c; sourceTree = "<group>"; };
 		26A45D071489AD6C00C02936 /* script_point_angle_vector.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_point_angle_vector.c; sourceTree = "<group>"; };
 		26B9EB7116320DC900E3FFFB /* view_openrl_overlay.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = view_openrl_overlay.c; sourceTree = "<group>"; };
+		26BB48F31685067E00825030 /* script_interface_virtual_control.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_interface_virtual_control.c; sourceTree = "<group>"; };
 		26C816A416530D4300D2E12A /* ray_thread.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ray_thread.c; path = ../Sources_OpenRL/ray_thread.c; sourceTree = "<group>"; };
 		26CBE2031581AD1E00093D7C /* simple_save_pick.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = simple_save_pick.c; sourceTree = "<group>"; };
 		26EE3E1613DA7F78000ABAF1 /* AudioUnit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioUnit.framework; path = ../../../../System/Library/Frameworks/AudioUnit.framework; sourceTree = "<group>"; };
@@ -1701,6 +1703,7 @@
 				260B3ECD1411F781006ED023 /* script_interface_radar.c */,
 				260B3ECE1411F781006ED023 /* script_interface_screen.c */,
 				260B3ECF1411F781006ED023 /* script_interface_text.c */,
+				26BB48F31685067E00825030 /* script_interface_virtual_control.c */,
 				260B3ED01411F781006ED023 /* script_map.c */,
 				260B3ED11411F781006ED023 /* script_map_action.c */,
 				260B3ED21411F781006ED023 /* script_map_fog.c */,
@@ -2479,6 +2482,7 @@
 				26B9EB7216320DC900E3FFFB /* view_openrl_overlay.c in Sources */,
 				2664B63716408CC2001D92CA /* view_openrl_liquid.c in Sources */,
 				26C816A516530D4300D2E12A /* ray_thread.c in Sources */,
+				26BB48F41685067E00825030 /* script_interface_virtual_control.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2523,10 +2527,7 @@
 				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/../../dim3Engine/Headers/dim3engine.h";
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					D3_ENGINE,
-					D3_OPENRL,
-				);
+				GCC_PREPROCESSOR_DEFINITIONS = D3_ENGINE;
 				GCC_REUSE_STRINGS = YES;
 				GCC_STRICT_ALIASING = YES;
 				GCC_UNROLL_LOOPS = YES;

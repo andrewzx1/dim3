@@ -142,11 +142,11 @@ void virtual_control_draw(void)
 		// draw the virtual controls
 	
 	for (n=0;n!=max_virtual_stick;n++) {
-		if (iface.virtual_control.sticks[n].on) virtual_stick_draw(&iface.virtual_control.sticks[n]);
+		if ((iface.virtual_control.sticks[n].on) && (iface.virtual_control.sticks[n].show)) virtual_stick_draw(&iface.virtual_control.sticks[n]);
 	}
 	
 	for (n=0;n!=max_virtual_button;n++) {
-		if (iface.virtual_control.buttons[n].on) virtual_button_draw(&iface.virtual_control.buttons[n]);
+		if ((iface.virtual_control.buttons[n].on) && (iface.virtual_control.buttons[n].show)) virtual_button_draw(&iface.virtual_control.buttons[n]);
 	}
 }
 

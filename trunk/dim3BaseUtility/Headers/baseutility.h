@@ -702,7 +702,7 @@ typedef struct		{
 						int								click_control_idx,
 														outer_image_idx,inner_image_idx;
 						float							touch_x,touch_y;
-						bool							on,flip_x,flip_y,use_bitmap;
+						bool							on,show,flip_x,flip_y,use_bitmap;
 						char							outer_bitmap_name[file_str_len],
 														inner_bitmap_name[file_str_len];
 						d3pnt							pnt,size;
@@ -712,7 +712,7 @@ typedef struct		{
 typedef struct		{
 						int								control_idx,
 														up_image_idx,down_image_idx;
-						bool							on,sticky,down,use_bitmap;
+						bool							on,show,sticky,down,use_bitmap;
 						char							up_bitmap_name[file_str_len],
 														down_bitmap_name[file_str_len];
 						d3pnt							pnt,size;

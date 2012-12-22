@@ -157,6 +157,7 @@ extern void script_init_interface_interaction_object(void);
 extern void script_init_interface_radar_object(void);
 extern void script_init_interface_screen_object(void);
 extern void script_init_interface_text_object(void);
+extern void script_init_interface_virtual_control_object(void);
 
 extern void script_init_global_data_object(void);
 extern void script_init_global_sound_object(void);
@@ -307,6 +308,7 @@ extern void script_free_interface_interaction_object(void);
 extern void script_free_interface_radar_object(void);
 extern void script_free_interface_screen_object(void);
 extern void script_free_interface_text_object(void);
+extern void script_free_interface_virtual_control_object(void);
 
 extern void script_free_global_data_object(void);
 extern void script_free_global_sound_object(void);
@@ -457,6 +459,7 @@ extern JSObjectRef script_add_interface_interaction_object(JSContextRef cx,JSObj
 extern JSObjectRef script_add_interface_radar_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx);
 extern JSObjectRef script_add_interface_screen_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx);
 extern JSObjectRef script_add_interface_text_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx);
+extern JSObjectRef script_add_interface_virtual_control_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx);
 
 extern JSObjectRef script_add_global_data_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx);
 extern JSObjectRef script_add_global_sound_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx);
