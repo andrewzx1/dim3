@@ -136,6 +136,7 @@ void script_initialize_classes(void)
 	script_init_interface_radar_object();
 	script_init_interface_screen_object();
 	script_init_interface_text_object();
+	script_init_interface_virtual_control_object();
 
 	script_init_global_data_object();
 	script_init_global_sound_object();
@@ -295,6 +296,7 @@ void script_release_classes(void)
 	script_free_interface_radar_object();
 	script_free_interface_screen_object();
 	script_free_interface_text_object();
+	script_free_interface_virtual_control_object();
 
 	script_free_global_data_object();
 	script_free_global_sound_object();
@@ -472,6 +474,7 @@ bool script_add_global_object(script_type *script,char *err_str)
 	script_add_interface_bar_object(script->cx,j_sub_obj,script->idx);
 	script_add_interface_radar_object(script->cx,j_sub_obj,script->idx);
 	script_add_interface_interaction_object(script->cx,j_sub_obj,script->idx);
+	script_add_interface_virtual_control_object(script->cx,j_sub_obj,script->idx);
 
 		// data, sound, and spawn objects
 		

@@ -144,11 +144,11 @@ JSValueRef script_string_to_value(JSContextRef cx,char *str)
 JSValueRef script_int_array_to_value(JSContextRef cx,int cnt,int *values)
 {
 	int				n;
-	JSValueRef		js_vals[64];
+	JSValueRef		js_vals[256];
 
-		// 64 is the longest array
+		// 256 is the longest array
 
-	if (cnt>64) cnt=64;
+	if (cnt>256) cnt=256;
 
 		// create the values
 

@@ -48,6 +48,8 @@ JSValueRef js_map_object_nearest_player_skip_object_id_func(JSContextRef cx,JSOb
 JSValueRef js_map_object_nearest_player_skip_self_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_map_object_nearest_player_skip_team_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_map_object_nearest_team_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_map_object_getAllIds_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_map_object_getAllNearIds_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_map_object_get_object_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_map_object_get_name_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_map_object_get_type_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
@@ -95,6 +97,8 @@ JSStaticFunction	map_object_functions[]={
 							{"nearestPlayerSkipSelf",		js_map_object_nearest_player_skip_self_func,		kJSPropertyAttributeDontDelete},
 							{"nearestPlayerSkipTeam",		js_map_object_nearest_player_skip_team_func,		kJSPropertyAttributeDontDelete},
 							{"nearestTeam",					js_map_object_nearest_team_func,					kJSPropertyAttributeDontDelete},
+							{"getAllIds",					js_map_object_getAllIds_func,						kJSPropertyAttributeDontDelete},
+							{"getAllNearIds",				js_map_object_getAllNearIds_func,					kJSPropertyAttributeDontDelete},
 							{"getObject",					js_map_object_get_object_func,						kJSPropertyAttributeDontDelete},
 							{"getName",						js_map_object_get_name_func,						kJSPropertyAttributeDontDelete},
 							{"getType",						js_map_object_get_type_func,						kJSPropertyAttributeDontDelete},
@@ -640,6 +644,47 @@ JSValueRef js_map_object_nearest_team_func(JSContextRef cx,JSObjectRef func,JSOb
 	
 	return(script_int_to_value(cx,obj->idx));
 }
+
+/* =======================================================
+
+      ID Lists
+      
+======================================================= */
+
+JSValueRef js_map_object_getAllIds_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+{
+	int				n,cnt,ids[max_obj_list];
+	
+	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
+	
+	cnt=0;
+	
+	for (n=0;n!=max_obj_list;n++) {
+		if (server.obj_list.objs[n]!=NULL) {
+			ids[cnt++]=server.obj_list.objs[n]->idx;
+		}
+	}
+	
+	return(script_int_array_to_value(cx,cnt,ids));
+}
+
+JSValueRef js_map_object_getAllNearIds_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+{
+	int				min_dist,max_dist,
+					cnt,ids[max_obj_list];
+	d3pnt			pnt;
+	
+	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
+	
+	script_value_to_point(cx,argv[0],&pnt);
+	min_dist=script_value_to_int(cx,argv[1]);
+	max_dist=script_value_to_int(cx,argv[2]);
+	
+	cnt=object_find_nearest_list(&pnt,min_dist,max_dist,ids);
+	
+	return(script_int_array_to_value(cx,cnt,ids));
+}
+
 
 /* =======================================================
 
