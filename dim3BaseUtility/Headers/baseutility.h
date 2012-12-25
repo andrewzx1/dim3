@@ -846,10 +846,9 @@ typedef struct		{
 //
 
 typedef struct		{
-						int								lx,rx,ty,by;
-						bool							outline,overlay;
-						d3col							background_color,hilite_color,
-														outline_color;
+						int								x,y,wid,high;
+						char							bitmap_name[file_str_len];
+						iface_image_animation_type		animate;
 					} iface_progress_type;
 
 //

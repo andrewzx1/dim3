@@ -391,6 +391,8 @@
 		26A6844913DE4213007513D1 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26A6844813DE4213007513D1 /* OpenGLES.framework */; };
 		26AE7E65154DD17200D9E56A /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 26AE7E64154DD17200D9E56A /* Default.png */; };
 		26AE7E76154DFB9A00D9E56A /* Default-Portrait~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 26AE7E75154DFB9A00D9E56A /* Default-Portrait~ipad.png */; };
+		26D1D15E168A32D7004F92DE /* script_interface_virtual_control.c in Sources */ = {isa = PBXBuildFile; fileRef = 26D1D15D168A32D7004F92DE /* script_interface_virtual_control.c */; };
+		26D1D161168A3B45004F92DE /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 26D1D160168A3B45004F92DE /* Default-568h@2x.png */; };
 		26D6C0E013E2442D0087FFD4 /* libstdc++.6.0.9.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 26D6C0DF13E2442D0087FFD4 /* libstdc++.6.0.9.dylib */; };
 		26D6C0E213E244400087FFD4 /* libicucore.A.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 26D6C0E113E244400087FFD4 /* libicucore.A.dylib */; };
 		26FF68AA1523D5B800FACC3B /* base_iface_singleplayer.c in Sources */ = {isa = PBXBuildFile; fileRef = 26FF68A91523D5B800FACC3B /* base_iface_singleplayer.c */; };
@@ -873,6 +875,8 @@
 		26A6846813DE446E007513D1 /* view_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = view_defs.h; path = ../../dim3Engine/Headers/view_defs.h; sourceTree = "<group>"; };
 		26AE7E64154DD17200D9E56A /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Default.png; path = Resources/Default.png; sourceTree = "<group>"; };
 		26AE7E75154DFB9A00D9E56A /* Default-Portrait~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-Portrait~ipad.png"; path = "Resources/Default-Portrait~ipad.png"; sourceTree = "<group>"; };
+		26D1D15D168A32D7004F92DE /* script_interface_virtual_control.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_interface_virtual_control.c; sourceTree = "<group>"; };
+		26D1D160168A3B45004F92DE /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-568h@2x.png"; path = "Resources/Default-568h@2x.png"; sourceTree = "<group>"; };
 		26D6C0DF13E2442D0087FFD4 /* libstdc++.6.0.9.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libstdc++.6.0.9.dylib"; path = "usr/lib/libstdc++.6.0.9.dylib"; sourceTree = SDKROOT; };
 		26D6C0E113E244400087FFD4 /* libicucore.A.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libicucore.A.dylib; path = usr/lib/libicucore.A.dylib; sourceTree = SDKROOT; };
 		26F0C44415632CEA00AFE368 /* app_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = app_defs.h; path = ../../dim3Engine/Headers/app_defs.h; sourceTree = "<group>"; };
@@ -1377,6 +1381,7 @@
 				260B41031411F812006ED023 /* script_interface_radar.c */,
 				260B41041411F812006ED023 /* script_interface_screen.c */,
 				260B41051411F812006ED023 /* script_interface_text.c */,
+				26D1D15D168A32D7004F92DE /* script_interface_virtual_control.c */,
 				260B41061411F812006ED023 /* script_map.c */,
 				260B41071411F812006ED023 /* script_map_action.c */,
 				260B41081411F812006ED023 /* script_map_fog.c */,
@@ -1536,6 +1541,7 @@
 				26A6843313DE40BD007513D1 /* Default-Landscape~ipad.png */,
 				26107D06154DFFBA00791918 /* Default-Portrait@2x~ipad.png */,
 				26107D0A154DFFF300791918 /* Default-Landscape@2x~ipad.png */,
+				26D1D160168A3B45004F92DE /* Default-568h@2x.png */,
 				26107CFC154DFF5600791918 /* icon-ipad.png */,
 				26107CFD154DFF5600791918 /* icon-ipad@2x.png */,
 				26107CFE154DFF5600791918 /* icon-iphone.png */,
@@ -1669,6 +1675,7 @@
 				26107D03154DFF5600791918 /* icon-iphone@2x.png in Resources */,
 				26107D07154DFFBA00791918 /* Default-Portrait@2x~ipad.png in Resources */,
 				26107D0B154DFFF300791918 /* Default-Landscape@2x~ipad.png in Resources */,
+				26D1D161168A3B45004F92DE /* Default-568h@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2061,6 +2068,7 @@
 				2682E456159D1F95001CE3DB /* gl_shader_simple.c in Sources */,
 				26A3156215B787490055A01C /* gl_shader_execute.c in Sources */,
 				267A28DC15CA31160024FD7C /* label.c in Sources */,
+				26D1D15E168A32D7004F92DE /* script_interface_virtual_control.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2092,6 +2100,7 @@
 		269F18D91434154D0050DF4A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
@@ -2134,6 +2143,7 @@
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = NO;
+				VALID_ARCHS = armv7;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -2163,6 +2173,7 @@
 		26A6843113DE405E007513D1 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -2203,6 +2214,7 @@
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				VALID_ARCHS = armv7;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

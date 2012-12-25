@@ -313,6 +313,7 @@ void iface_read_settings_virtual_control(iface_type *iface,int virtual_head_tag)
 			if (tag==-1) break;
 
 			stick->on=xml_get_attribute_boolean(tag,"on");
+			stick->show=TRUE;
 			stick->click_control_idx=xml_get_attribute_int_default(tag,"click_control",-1);
 			stick->use_bitmap=xml_get_attribute_boolean(tag,"use_bitmap");
 			stick->pnt.x=xml_get_attribute_int(tag,"x");
@@ -343,6 +344,7 @@ void iface_read_settings_virtual_control(iface_type *iface,int virtual_head_tag)
 			if (tag==-1) break;
 
 			button->on=xml_get_attribute_boolean(tag,"on");
+			button->show=TRUE;
 			button->sticky=xml_get_attribute_boolean(tag,"sticky");
 			button->use_bitmap=xml_get_attribute_boolean(tag,"use_bitmap");
 			button->control_idx=xml_get_attribute_int_default(tag,"control",0);
@@ -814,15 +816,16 @@ void iface_read_settings_interface(iface_type *iface)
 
 	progress_tag=xml_findfirstchild("Progress",interface_head_tag);
 	if (progress_tag!=-1) {
-		iface->progress.lx=xml_get_attribute_int(progress_tag,"left_x");
-		iface->progress.rx=xml_get_attribute_int(progress_tag,"right_x");
-		iface->progress.ty=xml_get_attribute_int(progress_tag,"top_y");
-		iface->progress.by=xml_get_attribute_int(progress_tag,"bottom_y");
-		iface->progress.outline=xml_get_attribute_boolean(progress_tag,"outline");
-		iface->progress.overlay=xml_get_attribute_boolean(progress_tag,"overlay");
-		xml_get_attribute_color(progress_tag,"background_color",&iface->progress.background_color);
-		xml_get_attribute_color(progress_tag,"hilite_color",&iface->progress.hilite_color);
-		xml_get_attribute_color(progress_tag,"outline_color",&iface->progress.outline_color);
+		iface->progress.x=xml_get_attribute_int(progress_tag,"x");
+		iface->progress.y=xml_get_attribute_int(progress_tag,"y");
+		iface->progress.wid=xml_get_attribute_int(progress_tag,"wid");
+		iface->progress.high=xml_get_attribute_int(progress_tag,"high");
+		xml_get_attribute_text(progress_tag,"file",iface->progress.bitmap_name,file_str_len);
+		iface->progress.animate.image_count=xml_get_attribute_int(progress_tag,"count");
+		iface->progress.animate.image_per_row=(int)sqrtf((float)iface->progress.animate.image_count);
+		iface->progress.animate.msec=xml_get_attribute_int(progress_tag,"time");
+		iface->progress.animate.loop=xml_get_attribute_boolean(progress_tag,"loop");
+		iface->progress.animate.loop_back=xml_get_attribute_boolean(progress_tag,"loop_back");
 	}
 	
 		// chat
@@ -1520,15 +1523,15 @@ bool iface_write_settings_interface(iface_type *iface,char *err_str)
 		// progress
 
 	xml_add_tagstart("Progress");
-	xml_add_attribute_int("left_x",iface->progress.lx);
-	xml_add_attribute_int("right_x",iface->progress.rx);
-	xml_add_attribute_int("top_y",iface->progress.ty);
-	xml_add_attribute_int("bottom_y",iface->progress.by);
-	xml_add_attribute_boolean("outline",iface->progress.outline);
-	xml_add_attribute_boolean("overlay",iface->progress.overlay);
-	xml_add_attribute_color("background_color",&iface->progress.background_color);
-	xml_add_attribute_color("hilite_color",&iface->progress.hilite_color);
-	xml_add_attribute_color("outline_color",&iface->progress.outline_color);
+	xml_add_attribute_int("x",iface->progress.x);
+	xml_add_attribute_int("y",iface->progress.y);
+	xml_add_attribute_int("wid",iface->progress.wid);
+	xml_add_attribute_int("high",iface->progress.high);
+	xml_add_attribute_text("file",iface->progress.bitmap_name);
+	xml_add_attribute_int("count",iface->progress.animate.image_count);
+	xml_add_attribute_int("time",iface->progress.animate.msec);
+	xml_add_attribute_boolean("loop",iface->progress.animate.loop);
+	xml_add_attribute_boolean("loop_back",iface->progress.animate.loop_back);
 	xml_add_tagend(TRUE);
 
 		// chat

@@ -32,15 +32,18 @@ and can be sold or given away.
 #include "glue.h"
 #include "interface.h"
 
-#define kSettingsProgressLeft					0
-#define kSettingsProgressRight					1
-#define kSettingsProgressTop					2
-#define kSettingsProgressBottom					3
-#define kSettingsProgressOutline				4
-#define kSettingsProgressOverlay				5
-#define kSettingsProgressBackgroundColor		6
-#define kSettingsProgressHiliteColor			7
-#define kSettingsProgressOutlineColor			8
+
+#define kSettingsProgressX						0
+#define kSettingsProgressY						1
+#define kSettingsProgressWid					2
+#define kSettingsProgressHigh					3
+	
+#define kSettingsProgressBitmapName				4
+
+#define kSettingsProgressImageCount				5
+#define kSettingsProgressImageMillisecond		6
+#define kSettingsProgressImageLoop				7
+#define kSettingsProgressImageLoopBack			8
 
 extern iface_type				iface;
 extern list_palette_type		project_palette;
@@ -58,19 +61,23 @@ void project_palette_fill_progress(void)
 		// progress
 		
 	list_palette_add_header(&project_palette,0,"Position");
-	list_palette_add_int(&project_palette,kSettingsProgressLeft,"Left X",&iface.progress.lx,FALSE);
-	list_palette_add_int(&project_palette,kSettingsProgressRight,"Right X",&iface.progress.rx,FALSE);
-	list_palette_add_int(&project_palette,kSettingsProgressTop,"Top Y",&iface.progress.ty,FALSE);
-	list_palette_add_int(&project_palette,kSettingsProgressBottom,"Bottom Y",&iface.progress.by,FALSE);
+	list_palette_add_int(&project_palette,kSettingsProgressX,"X",&iface.progress.x,FALSE);
+	list_palette_add_int(&project_palette,kSettingsProgressY,"Y",&iface.progress.y,FALSE);
+	list_palette_add_int(&project_palette,kSettingsProgressWid,"Width",&iface.progress.wid,FALSE);
+	list_palette_add_int(&project_palette,kSettingsProgressHigh,"Height",&iface.progress.high,FALSE);
+	
+		// settings
 
-	list_palette_add_header(&project_palette,0,"Display");
-	list_palette_add_checkbox(&project_palette,kSettingsProgressOutline,"Outline",&iface.progress.outline,FALSE);
-	list_palette_add_checkbox(&project_palette,kSettingsProgressOverlay,"Overlay",&iface.progress.overlay,FALSE);
+	list_palette_add_header(&project_palette,0,"Settings");
+	list_palette_add_picker_file(&project_palette,kSettingsProgressBitmapName,list_button_none,0,"Bitmap","Bitmaps/Interface","png","",iface.progress.bitmap_name,FALSE);
 
-	list_palette_add_header(&project_palette,0,"Colors");
-	list_palette_add_pick_color(&project_palette,kSettingsProgressBackgroundColor,"Background",&iface.progress.background_color,FALSE);
-	list_palette_add_pick_color(&project_palette,kSettingsProgressHiliteColor,"Highlight Color",&iface.progress.hilite_color,FALSE);
-	list_palette_add_pick_color(&project_palette,kSettingsProgressOutlineColor,"Outline Color",&iface.progress.outline_color,FALSE);
+		// animation
+
+	list_palette_add_header(&project_palette,0,"Animation");
+	list_palette_add_int(&project_palette,kSettingsProgressImageCount,"Count",&iface.progress.animate.image_count,FALSE);
+	list_palette_add_int(&project_palette,kSettingsProgressImageMillisecond,"Display Milliseconds",&iface.progress.animate.msec,FALSE);
+	list_palette_add_checkbox(&project_palette,kSettingsProgressImageLoop,"Loop",&iface.progress.animate.loop,FALSE);
+	list_palette_add_checkbox(&project_palette,kSettingsProgressImageLoopBack,"Loop Back",&iface.progress.animate.loop_back,FALSE);
 }
 
 /* =======================================================

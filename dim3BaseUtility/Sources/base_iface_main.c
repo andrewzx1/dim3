@@ -354,17 +354,15 @@ void iface_default_settings(iface_type *iface)
 
 		// progress
 		
-	iface->progress.lx=0;
-	iface->progress.rx=640;
-	iface->progress.ty=450;
-	iface->progress.by=470;
-	iface->progress.outline=TRUE;
-	iface->progress.overlay=FALSE;
-	iface->progress.background_color.r=0.4f;
-	iface->progress.background_color.g=iface->progress.background_color.b=0.0f;
-	iface->progress.hilite_color.g=0.4f;
-	iface->progress.hilite_color.r=iface->progress.hilite_color.b=0.0f;
-	iface->progress.outline_color.r=iface->progress.outline_color.g=iface->progress.outline_color.b=1.0f;
+	iface->progress.x=0;
+	iface->progress.y=0;
+	iface->progress.wid=100;
+	iface->progress.high=100;
+	iface->progress.bitmap_name[0]=0x0;
+	iface->progress.animate.image_count=1;
+	iface->progress.animate.msec=200;
+	iface->progress.animate.loop=FALSE;
+	iface->progress.animate.loop_back=FALSE;
 	
 		// chat
 		
