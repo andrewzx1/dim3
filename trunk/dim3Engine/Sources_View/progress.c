@@ -38,8 +38,9 @@ extern iface_type			iface;
 extern setup_type			setup;
 extern file_path_setup_type	file_path_setup;
 
-int							progress_current,progress_max;
-bitmap_type					progress_background_bitmap,progress_overlay_bitmap;
+int							progress_start_tick;
+bool						progress_on;
+bitmap_type					progress_background_bitmap,progress_bitmap;
 
 /* =======================================================
 
@@ -71,17 +72,18 @@ void progress_initialize(char *map_name,int max)
 		bitmap_open(&progress_background_bitmap,path,FALSE,FALSE,FALSE,gl_check_npot_textures_ok(),FALSE,FALSE);
 	}
 
-		// overlay bitmap
+		// progress bitmap
+		
+	progress_on=TRUE;
 
-	if (iface.progress.overlay) {
-		file_paths_data(&file_path_setup,path,"Bitmaps/UI_Elements","progress_overlay","png");
-		bitmap_open(&progress_overlay_bitmap,path,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE);
+	if (iface.progress.bitmap_name[0]!=0x0) {
+		file_paths_data(&file_path_setup,path,"Bitmaps/Interface",iface.progress.bitmap_name,"png");
+		progress_on=bitmap_open(&progress_bitmap,path,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE);
 	}
 	
 		// current progress
 		
-	progress_current=-1;
-	progress_max=max;
+	progress_start_tick=-1;
 }
 
 void progress_shutdown(void)
@@ -93,7 +95,7 @@ void progress_shutdown(void)
 		// close bitmaps
 
 	bitmap_close(&progress_background_bitmap);
-	if (iface.progress.overlay) bitmap_close(&progress_overlay_bitmap);
+	if (progress_on) bitmap_close(&progress_bitmap);
 }
 
 /* =======================================================
@@ -104,16 +106,12 @@ void progress_shutdown(void)
 
 void progress_next(void)
 {
-	int				lft,rgt,top,bot,mid,rgt2;
-	d3col			col;
+	int				lft,rgt,top,bot;
+	float			gx,gy,g_size;
 
 		// ignore if dedicated host
 
 	if (app.dedicated_host) return;
-
-		// next progress
-
-	progress_current++;
 	
 		// start the frame
 	
@@ -130,47 +128,26 @@ void progress_next(void)
 	gl_texture_clear(0);
 	view_primitive_2D_texture_quad(progress_background_bitmap.gl_id,NULL,1.0f,0,iface.scale_x,0,iface.scale_y,0.0f,1.0f,0.0f,1.0f,TRUE);
 	
-		// draw the progress background
+		// draw the progress bitmap
 		
-	lft=iface.progress.lx;
-	rgt=iface.progress.rx;
-	top=iface.progress.ty;
-	bot=iface.progress.by;
+	if (progress_on) {
+	
+			// first time, get timing info
+			// using direct timer as game is paused
+			
+		if (progress_start_tick==-1) progress_start_tick=time_get();
 
-	mid=(top+bot)>>1;
+			// draw the graphic
+			
+		lft=iface.progress.x;
+		rgt=lft+iface.progress.wid;
+		top=iface.progress.y;
+		bot=top+iface.progress.high;
 	
-	col.r=iface.progress.background_color.r*element_gradient_factor_foreground;
-	col.g=iface.progress.background_color.g*element_gradient_factor_foreground;
-	col.b=iface.progress.background_color.b*element_gradient_factor_foreground;
-
-	view_primitive_2D_color_poly(lft,top,&col,rgt,top,&col,rgt,mid,&iface.progress.background_color,lft,mid,&iface.progress.background_color,1.0f);
-	view_primitive_2D_color_poly(lft,mid,&iface.progress.background_color,rgt,mid,&iface.progress.background_color,rgt,bot,&col,lft,bot,&col,1.0f);
-	
-		// draw the progress foreground
-	
-	if (progress_current!=-1) {
-		if (progress_current>=progress_max) {
-			rgt2=rgt;
-		}
-		else {
-			rgt2=lft+(((rgt-lft)*progress_current)/progress_max);
-		}
+		effect_image_animate_get_uv((time_get()-progress_start_tick),0,&iface.progress.animate,&gx,&gy,&g_size);
 		
-		col.r=iface.progress.hilite_color.r*element_gradient_factor_foreground;
-		col.g=iface.progress.hilite_color.g*element_gradient_factor_foreground;
-		col.b=iface.progress.hilite_color.b*element_gradient_factor_foreground;
-
-		view_primitive_2D_color_poly(lft,top,&iface.progress.hilite_color,rgt2,top,&iface.progress.hilite_color,rgt2,mid,&col,lft,mid,&col,1.0f);
-		view_primitive_2D_color_poly(lft,mid,&col,rgt2,mid,&col,rgt2,bot,&iface.progress.hilite_color,lft,bot,&iface.progress.hilite_color,1.0f);
+		view_primitive_2D_texture_quad(progress_bitmap.gl_id,NULL,1.0f,lft,rgt,top,bot,gx,(gx+g_size),gy,(gy+g_size),TRUE);
 	}
-
-		// progress outline
-
-	if (iface.progress.outline) view_primitive_2D_line_quad(&iface.progress.outline_color,1.0f,lft,rgt,top,bot);
-
-		// progress overlay
-
-	if (iface.progress.overlay) view_primitive_2D_texture_quad(progress_overlay_bitmap.gl_id,NULL,1.0f,lft,rgt,top,bot,0.0f,1.0f,0.0f,1.0f,TRUE);
 
 	gl_frame_swap();
 }
