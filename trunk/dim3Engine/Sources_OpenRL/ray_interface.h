@@ -1,3 +1,9 @@
+//
+// OpenRL
+// by Brian Barnes (bbarnes@klinksoftware.com)
+// free software offered as is for any use
+//
+
 	// types
 
 #ifndef _ray_types

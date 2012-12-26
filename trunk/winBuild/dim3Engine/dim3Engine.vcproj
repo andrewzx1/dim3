@@ -684,6 +684,10 @@
 						</FileConfiguration>
 					</File>
 					<File
+						RelativePath="..\..\dim3Engine\Sources_Server\script_interface_virtual_control.c"
+						>
+					</File>
+					<File
 						RelativePath="..\..\dim3Engine\Sources_Server\script_map.c"
 						>
 						<FileConfiguration

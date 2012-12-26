@@ -1,3 +1,9 @@
+//
+// OpenRL
+// by Brian Barnes (bbarnes@klinksoftware.com)
+// free software offered as is for any use
+//
+
 	// force ray.h/ray_interface.h to compile correctly
 	// when they are used together
 

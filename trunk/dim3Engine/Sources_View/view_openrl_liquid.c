@@ -319,6 +319,8 @@ void view_openrl_map_liquid_mesh_start(void)
 
 		rlSceneMeshSetPoly(view_rl_scene_id,mesh_id,RL_MESH_FORMAT_POLY_SHORT_VERTEX_UV_NORMAL_TANGENT,div_count,ray_polys);
 		free(ray_polys);
+
+		progress_update();
 	}
 }
 
@@ -332,6 +334,8 @@ void view_openrl_map_liquid_mesh_stop(void)
 	for (n=0;n!=map.liquid.nliquid;n++) {
 		liq=&map.liquid.liquids[n];
 		rlSceneMeshDelete(view_rl_scene_id,liq->openrl_mesh_id);
+
+		progress_update();
 	}
 }
 

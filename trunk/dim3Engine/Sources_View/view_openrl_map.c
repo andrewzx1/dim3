@@ -77,6 +77,8 @@ void view_openrl_map_mesh_start(void)
 		if (frame->name[0]==0x0) continue;
 		
 		frame->bitmap.rl_material_id=view_openrl_create_material_from_texture("Bitmaps/Textures",texture,frame);
+
+		progress_update();
 	}
 		
 		// build the meshes
@@ -196,6 +198,8 @@ void view_openrl_map_mesh_start(void)
 
 		rlSceneMeshSetPoly(view_rl_scene_id,mesh_id,RL_MESH_FORMAT_POLY_SHORT_VERTEX_UV_NORMAL_TANGENT,mesh->npoly,ray_polys);
 		free(ray_polys);
+
+		progress_update();
 	}
 
 		// the ambient
@@ -224,6 +228,8 @@ void view_openrl_map_mesh_start(void)
 		rlSceneLightSetPosition(view_rl_scene_id,light_id,&lit_pnt);
 
 		lit->openrl_light_id=light_id;
+
+		progress_update();
 	}
 }
 
@@ -238,13 +244,17 @@ void view_openrl_map_mesh_stop(void)
 
 	for (n=0;n!=map.mesh.nmesh;n++) {
 		mesh=&map.mesh.meshes[n];
-		if (mesh->flag.on) rlSceneMeshDelete(view_rl_scene_id,mesh->openrl_mesh_id);
+		if (!mesh->flag.on) continue;
+		
+		rlSceneMeshDelete(view_rl_scene_id,mesh->openrl_mesh_id);
+		progress_update();
 	}
 
 		// delete lights
 
 	for (n=0;n!=map.nlight;n++) {
 		rlSceneLightDelete(view_rl_scene_id,map.lights[n].openrl_light_id);
+		progress_update();
 	}
 
 		// delete materials
@@ -257,7 +267,10 @@ void view_openrl_map_mesh_stop(void)
 		frame=&texture->frames[0];
 		if (frame->name[0]==0x0) continue;
 		
-		if (frame->bitmap.rl_material_id!=-1) rlMaterialDelete(frame->bitmap.rl_material_id);
+		if (frame->bitmap.rl_material_id==-1) continue;
+		
+		rlMaterialDelete(frame->bitmap.rl_material_id);
+		progress_update();
 	}
 }
 

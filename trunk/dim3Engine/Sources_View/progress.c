@@ -48,7 +48,7 @@ bitmap_type					progress_background_bitmap,progress_bitmap;
       
 ======================================================= */
 
-void progress_initialize(char *map_name,int max)
+void progress_initialize(char *map_name)
 {
 	char			path[1024];
 	bool			bitmap_ok;
@@ -104,7 +104,7 @@ void progress_shutdown(void)
       
 ======================================================= */
 
-void progress_next(void)
+void progress_update(void)
 {
 	int				lft,rgt,top,bot;
 	float			gx,gy,g_size;

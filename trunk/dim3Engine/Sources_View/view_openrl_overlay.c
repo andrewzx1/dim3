@@ -91,8 +91,9 @@ void view_openrl_overlay_start(void)
 		rlSceneOverlaySetQuadCount(view_rl_scene_id,bitmap->openrl_overlay_id,1);
 		rlSceneOverlaySetQuadPosition(view_rl_scene_id,bitmap->openrl_overlay_id,0,&p_pnt);
 		rlSceneOverlaySetQuadSize(view_rl_scene_id,bitmap->openrl_overlay_id,0,&s_pnt);
-
 		bitmap++;
+
+		progress_update();
 	}
 
 		// hud texts
@@ -115,6 +116,8 @@ void view_openrl_overlay_start(void)
 		rlSceneOverlaySetSize(view_rl_scene_id,text->openrl_overlay_id,&s_pnt);
 		rlSceneOverlaySetHidden(view_rl_scene_id,text->openrl_overlay_id,TRUE);
 		text++;
+
+		progress_update();
 	}
 
 		// crosshair
@@ -133,11 +136,36 @@ void view_openrl_overlay_start(void)
 	rlSceneOverlaySetQuadSize(view_rl_scene_id,view_rl_overlay_crosshair_id,0,&s_pnt);
 
 	rlSceneOverlaySetHidden(view_rl_scene_id,view_rl_overlay_crosshair_id,TRUE);
+
+	progress_update();
 }
 
 void view_openrl_overlay_stop(void)
 {
+	int						n;
+	iface_bitmap_type		*bitmap;
+	iface_text_type			*text;
+
+	bitmap=iface.bitmap_list.bitmaps;
+	
+	for (n=0;n!=iface.bitmap_list.nbitmap;n++) {
+		rlSceneOverlayDelete(view_rl_scene_id,bitmap->openrl_overlay_id);
+		bitmap++;
+
+		progress_update();
+	}
+	
+	text=iface.text_list.texts;
+	
+	for (n=0;n!=iface.text_list.ntext;n++) {
+		rlSceneOverlayDelete(view_rl_scene_id,text->openrl_overlay_id);
+		text++;
+
+		progress_update();
+	}
+
 	rlSceneOverlayDelete(view_rl_scene_id,view_rl_overlay_crosshair_id);
+	progress_update();
 }
 
 /* =======================================================
