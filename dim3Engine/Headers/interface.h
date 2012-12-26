@@ -272,9 +272,9 @@ extern int element_key(char ch);
 // progress
 //
 
-extern void progress_initialize(char *map_name,int max);
+extern void progress_initialize(char *map_name);
 extern void progress_shutdown(void);
-extern void progress_next(void);
+extern void progress_update(void);
 
 //
 // hud

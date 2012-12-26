@@ -1,3 +1,9 @@
+//
+// OpenRL
+// by Brian Barnes (bbarnes@klinksoftware.com)
+// free software offered as is for any use
+//
+
 #ifdef __APPLE__
 
 	#include <stdio.h>

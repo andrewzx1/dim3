@@ -157,6 +157,8 @@ void host_map_list_initialize(void)
 	bool						singleplayer_map_picker;
 	file_path_directory_type	*map_pick_fpd;
 
+	progress_initialize(NULL);
+
 		// initial setup
 
 	host_file_map_count=0;
@@ -177,6 +179,8 @@ void host_map_list_initialize(void)
 
 		// data for maps
 
+	progress_update();
+
 	sz=nfile*(file_str_len+name_str_len+256);
 	host_file_map_list=malloc(sz);
 	bzero(host_file_map_list,sz);
@@ -185,15 +189,13 @@ void host_map_list_initialize(void)
 	host_table_map_list=malloc(sz);
 	bzero(host_table_map_list,sz);
 
-	progress_initialize(NULL,nfile);
-
 		// load the maps
 
 	c=host_file_map_list;
 	
 	for (n=0;n!=nfile;n++) {
 
-		progress_next();
+		progress_update();
 
 			// get the map info
 

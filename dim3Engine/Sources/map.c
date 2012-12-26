@@ -265,7 +265,7 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 
 		// start progress
 		
-	progress_initialize(map.info.name,(20+max_map_texture));
+	progress_initialize(map.info.name);
 	
 	strcpy(current_map_name,map.info.name);		// remember for close
 	
@@ -274,7 +274,7 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 	sprintf(txt,"Opening %s",map.info.name);
 	console_add_system(txt);
 	
-	progress_next();
+	progress_update();
 
 	if (!map_open(&map,map.info.name)) {
 		progress_shutdown();
@@ -288,7 +288,7 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 		map_textures_read_setup(&map);
 		
 		for (n=0;n!=max_map_texture;n++) {
-			progress_next();
+			progress_update();
 			map_textures_read_texture(&map,n);
 		}
 	}
@@ -307,7 +307,7 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 		// shaders and node-based back renders
 		// finally, pre-calc any map music
 
-	progress_next();
+	progress_update();
 
 	camera_map_setup();
 	
@@ -320,14 +320,14 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 
 		// prepare map surfaces
 	
-	progress_next();
+	progress_update();
 
 	map_prepare(&map);
 	map_multiplayer_show_hide_meshes();
 
 		// map lists
 
-	progress_next();
+	progress_update();
 
 	if (!app.dedicated_host) {
 		if (!render_transparent_create_sort_list()) {
@@ -337,7 +337,7 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 		}
 	}
 
-	progress_next();
+	progress_update();
 
 	if (!map_group_create_unit_list(&map)) {
 		progress_shutdown();
@@ -345,7 +345,7 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 		return(FALSE);
 	}
 
-	progress_next();
+	progress_update();
 
 	if (!app.dedicated_host) {
 		if (!view_map_vbo_initialize()) {
@@ -357,7 +357,7 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 	
 		// sky, fog, rain
 
-	progress_next();
+	progress_update();
 
 	if (!app.dedicated_host) {
 		sky_draw_init();
@@ -370,14 +370,14 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 		// start map ambients
 		// and clear all proj, effects, decals, etc
 		
-	progress_next();
+	progress_update();
 
 	if (!app.dedicated_host) {
 		map_start_ambient();
 		if (map.ambient.sound_name[0]!=0x0) map_set_ambient(map.ambient.sound_name,map.ambient.sound_pitch);
 	}
 
-	progress_next();
+	progress_update();
 
 	if (!projectile_initialize_list()) {
 		progress_shutdown();
@@ -391,7 +391,7 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 		return(FALSE);
 	}
 
-	progress_next();
+	progress_update();
 
 	if (!decal_initialize_list()) {
 		progress_shutdown();
@@ -399,14 +399,14 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 		return(FALSE);
 	}
 
-	progress_next();
+	progress_update();
 
 	particle_map_initialize();
 	group_move_clear_all();
 
 		// setup obscuring
 
-	progress_next();
+	progress_update();
 
 	if (!app.dedicated_host) {
 		if (!view_obscure_initialize()) {
@@ -421,7 +421,7 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 		// scripts which are NOT required
 		// so check to see if file exists
 
-	progress_next();
+	progress_update();
 
 	js.course_script_idx=-1;
 
@@ -437,7 +437,7 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 			
 		// send the construct event
 	
-	progress_next();
+	progress_update();
 
 	if (!scripts_post_event(js.course_script_idx,-1,sd_event_construct,0,0,err_str)) {
 		progress_shutdown();
@@ -447,7 +447,7 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 		// if not restoring an existing game,
 		// create object and scenery
 
-	progress_next();
+	progress_update();
 	
 	map_find_random_spot_clear(&map,NULL,-1);
 
@@ -458,7 +458,7 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 		}
 	}
 
-	progress_next();
+	progress_update();
 
 	if (!in_file_load) {
 		scenery_create();
@@ -477,7 +477,7 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 	
 		// attach player to map
 
-	progress_next();
+	progress_update();
 
 	if (!app.dedicated_host) {
 
@@ -495,7 +495,7 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 	
 		// initialize movements and lookups
 
-	progress_next();
+	progress_update();
 	
 	map_movements_initialize();
 	map_lookups_setup();
@@ -505,7 +505,7 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 		// skip if we are reloading this map
 		// to restore a saved game
 		
-	progress_next();
+	progress_update();
 
 	if (!in_file_load) {
 		scripts_post_event_console(js.game_script_idx,-1,sd_event_map,sd_event_map_open,0);
@@ -516,7 +516,7 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 	
 		// openrl setup
 
-	progress_next();
+	progress_update();
 
 #ifdef D3_OPENRL
 	view_openrl_map_start();

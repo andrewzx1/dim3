@@ -316,6 +316,8 @@ void view_openrl_map_model_mesh_start(void)
 			if (frame->name[0]==0x0) continue;
 			
 			frame->bitmap.rl_material_id=view_openrl_create_material_from_texture(sub_path,texture,frame,RL_MATERIAL_ALPHA_PASS_THROUGH);
+
+			progress_update();
 		}
 	}
 		
@@ -327,6 +329,8 @@ void view_openrl_map_model_mesh_start(void)
 		
 		no_ray_trace_block=((map.camera.mode==cv_fpp) && (obj->idx==camera.obj_idx));
 		view_openrl_model_setup_single_model(&obj->draw,TRUE,no_ray_trace_block,FALSE,FALSE);
+
+		progress_update();
 	}
 
 		// player weapon models
@@ -335,7 +339,10 @@ void view_openrl_map_model_mesh_start(void)
 
 	for (n=0;n!=max_weap_list;n++) {
 		weap=obj->weap_list.weaps[n];
-		if (weap!=NULL) view_openrl_model_setup_single_model(&weap->draw,TRUE,FALSE,TRUE,TRUE);
+		if (weap==NULL) continue;
+		
+		view_openrl_model_setup_single_model(&weap->draw,TRUE,FALSE,TRUE,TRUE);
+		progress_update();
 	}
 }
 
@@ -352,7 +359,10 @@ void view_openrl_map_model_mesh_stop(void)
 	
 	for (n=0;n!=max_obj_list;n++) {
 		obj=server.obj_list.objs[n];
-		if (obj!=NULL) view_openrl_model_close_single_model(&obj->draw);
+		if (obj==NULL) continue;
+		
+		view_openrl_model_close_single_model(&obj->draw);
+		progress_update();
 	}
 
 		// delete player weapon models
@@ -361,7 +371,10 @@ void view_openrl_map_model_mesh_stop(void)
 
 	for (n=0;n!=max_weap_list;n++) {
 		weap=obj->weap_list.weaps[n];
-		if (weap!=NULL) view_openrl_model_close_single_model(&weap->draw);
+		if (weap==NULL) continue;
+		
+		view_openrl_model_close_single_model(&weap->draw);
+		progress_update();
 	}
 
 		// delete materials
@@ -379,7 +392,10 @@ void view_openrl_map_model_mesh_stop(void)
 			frame=&texture->frames[0];
 			if (frame->name[0]==0x0) continue;
 
-			if (frame->bitmap.rl_material_id!=-1) rlMaterialDelete(frame->bitmap.rl_material_id);
+			if (frame->bitmap.rl_material_id==-1) continue;
+			
+			rlMaterialDelete(frame->bitmap.rl_material_id);
+			progress_update();
 		}
 	}	
 }
