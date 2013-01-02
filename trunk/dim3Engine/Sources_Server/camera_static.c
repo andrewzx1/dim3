@@ -57,6 +57,7 @@ void camera_static_connect(void)
 
 void camera_static_calc_position(void)
 {
+	int				y;
 	obj_type		*obj;
     
 		// get position
@@ -69,9 +70,18 @@ void camera_static_calc_position(void)
 
     if (map.camera.c_static.follow) {
 		obj=server.obj_list.objs[camera.obj_idx];
-		camera.cur_pos.ang.x=-(180.0f-angle_find(camera.cur_pos.pnt.y,camera.cur_pos.pnt.z,obj->pnt.y,obj->pnt.z));
+		
+			// if bumping, need to add in the bump
+			
+		y=obj->pnt.y;
+		if (obj->bump.on) y+=obj->bump.smooth_offset;
+		
+			// point camera towards object
+			
+		camera.cur_pos.ang.x=-(180.0f-angle_find(camera.cur_pos.pnt.y,camera.cur_pos.pnt.z,y,obj->pnt.z));
         camera.cur_pos.ang.y=angle_find(camera.cur_pos.pnt.x,camera.cur_pos.pnt.z,obj->pnt.x,obj->pnt.z);
 		camera.cur_pos.ang.z=0.0f;
+		
 		return;
 	}
 

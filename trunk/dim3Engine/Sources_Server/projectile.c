@@ -33,6 +33,7 @@ and can be sold or given away.
 #include "scripts.h"
 #include "objects.h"
 
+extern iface_type			iface;
 extern map_type				map;
 extern server_type			server;
 extern js_type				js;
@@ -165,9 +166,9 @@ proj_type* projectile_create(obj_type *obj,weapon_type *weap,proj_setup_type *pr
 
 		// OpenRL meshes
 
-#ifdef D3_OPENRL
-	if (!hit_scan) view_openrl_projectile_model_setup(proj);
-#endif
+	if (iface.project.ray_trace) {
+		if (!hit_scan) view_openrl_projectile_model_setup(proj);
+	}
 
     return(proj);
 }
@@ -265,11 +266,9 @@ void projectile_dispose(proj_type *proj)
 		
 	effect_projectile_bone_attach_particle_dispose(proj->idx);
 
-		// fix any OpenRL meshes
+		// remove any OpenRL meshes
 
-#ifdef D3_OPENRL
-	view_openrl_projectile_model_close(proj);
-#endif
+	if (iface.project.ray_trace) view_openrl_projectile_model_close(proj);
 
 		// mark as unused
 

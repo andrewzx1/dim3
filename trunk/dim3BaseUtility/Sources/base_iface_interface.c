@@ -961,6 +961,7 @@ void iface_read_settings_interface(iface_type *iface)
 	proj_tag=xml_findfirstchild("Project",interface_head_tag);
 	if (proj_tag!=-1) {
 		xml_get_attribute_text(proj_tag,"name",iface->project.name,name_str_len);
+		iface->project.ray_trace=xml_get_attribute_boolean(proj_tag,"ray_trace");
 		iface->project.modernize=xml_get_attribute_boolean(proj_tag,"modernize");
 		iface->project.simple_save=xml_get_attribute_boolean(proj_tag,"simple_save");
 		iface->project.load_requires_click=xml_get_attribute_boolean(proj_tag,"load_requires_click");
@@ -1668,6 +1669,7 @@ bool iface_write_settings_interface(iface_type *iface,char *err_str)
 		
 	xml_add_tagstart("Project");
 	xml_add_attribute_text("name",iface->project.name);
+	xml_add_attribute_boolean("ray_trace",iface->project.ray_trace);
 	xml_add_attribute_boolean("modernize",iface->project.modernize);
 	xml_add_attribute_boolean("simple_save",iface->project.simple_save);
 	xml_add_attribute_boolean("load_requires_click",iface->project.load_requires_click);

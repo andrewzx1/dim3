@@ -31,8 +31,9 @@ and can be sold or given away.
 
 #include "interface.h"
 
-extern map_type		map;
-extern server_type  server;
+extern iface_type			iface;
+extern map_type				map;
+extern server_type			server;
 
 /* =======================================================
 
@@ -163,14 +164,14 @@ inline void effect_dispose_single(effect_type *effect)
 	effect->on=FALSE;
 
 		// dispose any active VBOs
-
-	view_dispose_effect_vertex_object(effect);
-
-		// dispose any openrl meshes
-
-#ifdef D3_OPENRL
-	view_openrl_effect_mesh_close(effect);
-#endif
+		// or openrl meshes
+		
+	if (!iface.project.ray_trace) {
+		view_dispose_effect_vertex_object(effect);
+	}
+	else {
+		view_openrl_effect_mesh_close(effect);
+	}
 }
 
 void effect_dispose(void)

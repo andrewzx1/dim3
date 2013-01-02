@@ -47,7 +47,8 @@ extern void game_file_initialize(void);
 extern void menu_input(void);
 extern void file_input(void);
 extern void debug_input(void);
-extern void view_draw(void);
+extern void view_draw_opengl(void);
+extern void view_draw_openrl(void);
 extern void chat_clear_messages(void);
 extern bool shadow_initialize(void);
 extern void shadow_shutdown(void);
@@ -179,36 +180,35 @@ void view_create_screen_size_list(void)
 
 bool view_initialize_display(char *err_str)
 {
+	int				n;
+	bool			ok;
+
 		// supergumba -- for now
 		// openrl has hard coded window
 		// screen size
 
-#ifdef D3_OPENRL
-
-	setup.screen_wid=960;
-	setup.screen_high=600;
-
-#else
-	int				n;
-	bool			ok;
-
-		// is screen size legal?
-		// if not, go back to default
-		
-	if (setup.screen_wid!=-1) {
-		ok=FALSE;
-			
-		for (n=0;n!=render_info.nscreen_size;n++) {
-			if ((render_info.screen_sizes[n].wid==setup.screen_wid) && (render_info.screen_sizes[n].high==setup.screen_high)) {
-				ok=TRUE;
-				break;
-			}
-		}
-		
-		if (!ok) setup.screen_wid=setup.screen_high=-1;
+	if (iface.project.ray_trace) {
+		setup.screen_wid=960;
+		setup.screen_high=600;
 	}
+	else {
 
-#endif
+			// is screen size legal?
+			// if not, go back to default
+			
+		if (setup.screen_wid!=-1) {
+			ok=FALSE;
+				
+			for (n=0;n!=render_info.nscreen_size;n++) {
+				if ((render_info.screen_sizes[n].wid==setup.screen_wid) && (render_info.screen_sizes[n].high==setup.screen_high)) {
+					ok=TRUE;
+					break;
+				}
+			}
+			
+			if (!ok) setup.screen_wid=setup.screen_high=-1;
+		}
+	}
 
 		// start openGL
 		
@@ -357,14 +357,14 @@ bool view_initialize(char *err_str)
 
 		// rl initialize
 
-#ifdef D3_OPENRL
-	if (!view_openrl_initialize(err_str)) {
-		view_shutdown_display();
-		view_memory_release();
-		SDL_Quit();
-		return(FALSE);
+	if (iface.project.ray_trace) {
+		if (!view_openrl_initialize(err_str)) {
+			view_shutdown_display();
+			view_memory_release();
+			SDL_Quit();
+			return(FALSE);
+		}
 	}
-#endif
 
 		// sound initialize
 	
@@ -444,9 +444,7 @@ void view_shutdown(void)
 	view_images_shutdown();
 	view_shutdown_display();
 
-#ifdef D3_OPENRL
-	view_openrl_shutdown();
-#endif
+	if (iface.project.ray_trace) view_openrl_shutdown();
 
 		// shutdown SDL
 		
@@ -473,12 +471,13 @@ bool view_game_start(char *err_str)
 		// load images for hud bitmaps, radar, particles,
 		// rings, halos, marks, crosshairs and remote icons
 	
-#ifndef D3_OPENRL
-	view_images_cached_load();
-#else
-	if (!view_openrl_scene_start(err_str)) return(FALSE);
-	view_openrl_image_cache();
-#endif
+	if (!iface.project.ray_trace) {
+		view_images_cached_load();
+	}
+	else {
+		if (!view_openrl_scene_start(err_str)) return(FALSE);
+		view_openrl_image_cache();
+	}
 
 		// precalculate particles
 
@@ -500,11 +499,12 @@ void view_game_stop(void)
 		// free images for hud bitmaps, radar, particles,
 		// rings, halos, marks, crosshairs and remote icons
 	
-#ifndef D3_OPENRL
-	view_images_cached_free();
-#else
-	view_openrl_scene_stop();
-#endif
+	if (!iface.project.ray_trace) {
+		view_images_cached_free();
+	}
+	else {
+		view_openrl_scene_stop();
+	}
 }
 
 /* =======================================================
@@ -622,16 +622,16 @@ void view_loop_draw(void)
 	
 		// draw view
 
-	view_draw();
-
-		// draw hud and interface elements
-
-#ifndef D3_OPENRL
-	hud_draw();
-	radar_draw();
-	network_draw();
-	metrics_draw();
-#endif
+	if (!iface.project.ray_trace) {
+		view_draw_opengl();
+		hud_draw();
+		radar_draw();
+		network_draw();
+		metrics_draw();
+	}
+	else {
+		view_draw_openrl();
+	}
 
 		// virtual controls
 		
@@ -675,7 +675,12 @@ void view_capture_draw(char *path)
 
 		// draw view
 	
-	view_draw();
+	if (!iface.project.ray_trace) {
+		view_draw_opengl();
+	}
+	else {
+		view_draw_openrl();
+	}
 	
 		// make screenshot
 

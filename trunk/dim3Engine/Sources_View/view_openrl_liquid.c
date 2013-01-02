@@ -30,9 +30,6 @@ and can be sold or given away.
 #endif
 
 #include "interface.h"
-
-#ifdef D3_OPENRL
-
 #include "ray_interface.h"
 
 extern map_type				map;
@@ -356,5 +353,3 @@ void view_openrl_map_liquid_mesh_update(void)
 		view_openrl_map_liquid_create_draw_data(&map.liquid.liquids[n]);
 	}
 }
-
-#endif

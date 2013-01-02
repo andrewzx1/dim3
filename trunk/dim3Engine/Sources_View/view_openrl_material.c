@@ -30,9 +30,6 @@ and can be sold or given away.
 #endif
 
 #include "interface.h"
-
-#ifdef D3_OPENRL
-
 #include "ray_interface.h"
 
 extern map_type				map;
@@ -229,5 +226,3 @@ texture_font_size_type* view_openrl_material_text_get_font(int text_font,int tex
 	if (text_size<=24) return(&view_rl_fonts[text_font].size_24);
 	return(&view_rl_fonts[text_font].size_48);
 }
-
-#endif

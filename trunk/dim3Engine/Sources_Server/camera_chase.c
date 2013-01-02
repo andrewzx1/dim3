@@ -182,6 +182,8 @@ void camera_chase_calc_position(void)
     camera.cur_pos.pnt.y=contact.hpt.y+map.camera.pnt_offset.y;
     camera.cur_pos.pnt.z=contact.hpt.z+map.camera.pnt_offset.z;
 	
+	if (obj->bump.on) camera.cur_pos.pnt.y+=obj->bump.smooth_offset;
+	
 		// looking angles
 		// need to reverse X looking angle so it
 		// behaves opposite track X angle

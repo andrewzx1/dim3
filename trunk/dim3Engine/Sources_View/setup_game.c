@@ -38,12 +38,13 @@ and can be sold or given away.
 #define setup_pane_player					4
 #define setup_pane_debug					5
 
-#define ctrl_screen_size_id					0
-#define ctrl_screen_openrl_pixel_double_id	1
-#define ctrl_fsaa_id						2
-#define ctrl_decal_on_id					3
-#define ctrl_shadow_on_id					4
-#define ctrl_gamma_id						5
+#define ctrl_screen_gl_size_id				0
+#define ctrl_screen_rl_size_id				1
+#define ctrl_screen_openrl_pixel_double_id	2
+#define ctrl_fsaa_id						3
+#define ctrl_decal_on_id					4
+#define ctrl_shadow_on_id					5
+#define ctrl_gamma_id						6
 
 #define ctrl_sound_volume_id				30
 #define ctrl_music_on_id					31
@@ -139,9 +140,7 @@ void setup_network_fill_character_table(void)
       
 ======================================================= */
 
-#ifndef D3_OPENRL
-
-void setup_game_video_pane(void)
+void setup_game_video_pane_opengl(void)
 {
 	int			n,idx,wid,high,
 				x,y,control_y_add,control_y_sz;
@@ -184,7 +183,7 @@ void setup_game_video_pane(void)
 		// build the controls
 		
 	if (!no_res_combo) {
-		element_combo_add("Screen Size",(char*)setup_screen_size_list,idx,ctrl_screen_size_id,x,y,TRUE);
+		element_combo_add("Screen Size",(char*)setup_screen_size_list,idx,ctrl_screen_gl_size_id,x,y,TRUE);
 		y+=control_y_add;
 	}
 
@@ -201,9 +200,7 @@ void setup_game_video_pane(void)
 	element_slider_add("Gamma",setup.gamma,-0.5f,0.5f,ctrl_gamma_id,x,y,TRUE);
 }
 
-#else
-
-void setup_game_video_pane(void)
+void setup_game_video_pane_openrl(void)
 {
 	int			n,idx,
 				x,y,control_y_add,control_y_sz;
@@ -227,13 +224,11 @@ void setup_game_video_pane(void)
 
 	setup_screen_size_list[n][0]=0x0;
 	
-	element_combo_add("Screen Size",(char*)setup_screen_size_list,idx,ctrl_screen_size_id,x,y,TRUE);
+	element_combo_add("Screen Size",(char*)setup_screen_size_list,idx,ctrl_screen_rl_size_id,x,y,TRUE);
 	y+=control_y_add;
 
 	element_checkbox_add("Pixel Double",setup.screen_openrl_pixel_double,ctrl_screen_openrl_pixel_double_id,x,y,TRUE);
 }
-
-#endif
 
 void setup_game_audio_pane(void)
 {
@@ -543,7 +538,12 @@ void setup_game_create_pane(void)
 		
 	switch (pane) {
 		case setup_pane_video:
-			setup_game_video_pane();
+			if (!iface.project.ray_trace) {
+				setup_game_video_pane_opengl();
+			}
+			else {
+				setup_game_video_pane_openrl();
+			}
 			break;
 		case setup_pane_audio:
 			setup_game_audio_pane();
@@ -836,22 +836,21 @@ void setup_game_handle_click(int id)
 	
 			// video pane
 			
-		case ctrl_screen_size_id:
-			idx=element_get_value(ctrl_screen_size_id);
-
-			#ifndef D3_OPENRL
-				if (idx==0) {
-					setup.screen_wid=setup.screen_high=-1;
-				}
-				else {
-					setup.screen_wid=render_info.screen_sizes[idx-1].wid;
-					setup.screen_high=render_info.screen_sizes[idx-1].high;
-				}
-			#else
-				setup.screen_openrl_wid=view_rl_screen_sizes[idx][0];
-				setup.screen_openrl_high=view_rl_screen_sizes[idx][1];
-			#endif
-
+		case ctrl_screen_gl_size_id:
+			idx=element_get_value(ctrl_screen_gl_size_id);
+			if (idx==0) {
+				setup.screen_wid=setup.screen_high=-1;
+			}
+			else {
+				setup.screen_wid=render_info.screen_sizes[idx-1].wid;
+				setup.screen_high=render_info.screen_sizes[idx-1].high;
+			}
+			break;
+			
+		case ctrl_screen_rl_size_id:
+			idx=element_get_value(ctrl_screen_rl_size_id);
+			setup.screen_openrl_wid=view_rl_screen_sizes[idx][0];
+			setup.screen_openrl_high=view_rl_screen_sizes[idx][1];
 			break;
 
 		case ctrl_screen_openrl_pixel_double_id:

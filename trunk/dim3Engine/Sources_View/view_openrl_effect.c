@@ -31,9 +31,6 @@ and can be sold or given away.
 
 #include "interface.h"
 #include "objects.h"
-
-#ifdef D3_OPENRL
-
 #include "ray_interface.h"
 
 extern map_type				map;
@@ -560,5 +557,3 @@ void view_openrl_effect_mesh_update(void)
 		}
 	}
 }
-
-#endif
