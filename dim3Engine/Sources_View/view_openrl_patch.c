@@ -30,9 +30,6 @@ and can be sold or given away.
 #endif
 
 #include "interface.h"
-
-#ifdef D3_OPENRL
-
 #include "ray_interface.h"
 
 extern map_type				map;
@@ -56,19 +53,11 @@ texture_font_type				view_rl_fonts[2];
 extern int view_openrl_create_material_from_path(char *path);
 extern void view_openrl_material_text_start(void);
 extern void view_openrl_material_text_stop(void);
-extern void view_openrl_map_mesh_start(void);
-extern void view_openrl_map_mesh_stop(void);
 extern void view_openrl_map_mesh_update(void);
-extern void view_openrl_map_liquid_mesh_start(void);
-extern void view_openrl_map_liquid_mesh_stop(void);
 extern void view_openrl_map_liquid_mesh_update(void);
-extern void view_openrl_map_model_mesh_start(void);
-extern void view_openrl_map_model_mesh_stop(void);
 extern void view_openrl_map_model_update(void);
 extern void view_openrl_projectile_model_update(void);
 extern void view_openrl_effect_mesh_update(void);
-extern void view_openrl_overlay_start(void);
-extern void view_openrl_overlay_stop(void);
 extern void view_openrl_overlay_update(void);
 
 /* =======================================================
@@ -259,28 +248,6 @@ void view_openrl_image_cache(void)
 
 /* =======================================================
 
-      OpenRL Map Starts and Stops
-      
-======================================================= */
-
-void view_openrl_map_start(void)
-{
-	view_openrl_map_mesh_start();
-	view_openrl_map_liquid_mesh_start();
-	view_openrl_map_model_mesh_start();
-	view_openrl_overlay_start();
-}
-
-void view_openrl_map_stop(void)
-{
-	view_openrl_map_mesh_stop();
-	view_openrl_map_liquid_mesh_stop();
-	view_openrl_map_model_mesh_stop();
-	view_openrl_overlay_stop();
-}
-
-/* =======================================================
-
       OpenRL Rendering
       
 ======================================================= */
@@ -381,5 +348,3 @@ void view_openrl_render(void)
 		view_openrl_transfer_to_opengl();
 	}	
 }
-
-#endif

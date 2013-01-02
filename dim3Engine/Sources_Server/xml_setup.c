@@ -168,11 +168,9 @@ bool setup_xml_read_path(char *path)
 	xml_key_read_boolean(setup_tag,"Metrics_On",&setup.metrics_on);
 	xml_key_read_boolean(setup_tag,"Debug_On",&setup.debug_on);
 	xml_key_read_boolean(setup_tag,"Ignore_FPS_Lock",&setup.ignore_fps_lock);
-#ifdef D3_OPENRL
 	xml_key_read_int(setup_tag,"Screen_OpenRL_Width",&setup.screen_openrl_wid);
 	xml_key_read_int(setup_tag,"Screen_OpenRL_Height",&setup.screen_openrl_high);
 	xml_key_read_boolean(setup_tag,"Screen_OpenRL_Pixel_Double",&setup.screen_openrl_pixel_double);
-#endif
 
 		// actions
 
@@ -317,11 +315,9 @@ bool setup_xml_write(void)
 	xml_key_write_boolean("Metrics_On",setup.metrics_on);
 	xml_key_write_boolean("Debug_On",setup.debug_on);
 	xml_key_write_boolean("Ignore_FPS_Lock",setup.ignore_fps_lock);
-#ifdef D3_OPENRL	
     xml_key_write_int("Screen_OpenRL_Width",setup.screen_openrl_wid);
     xml_key_write_int("Screen_OpenRL_Height",setup.screen_openrl_high);
 	xml_key_write_boolean("Screen_OpenRL_Pixel_Double",setup.screen_openrl_pixel_double);
-#endif
 
 		// actions
 

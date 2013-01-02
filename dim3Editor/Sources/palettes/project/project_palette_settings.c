@@ -39,11 +39,13 @@ and can be sold or given away.
 #define kSettingsProjectLoadRequiresClick		5
 #define kSettingsProjectSkill					6
 
-#define kSettingsScaleX							7
-#define kSettingsScaleY							8
+#define kSettingsProjectRayTrace				10
 
-#define kSettingsFaseTitleMilliseconds			9
-#define kSettingsFaseMapMilliseconds			10
+#define kSettingsScaleX							20
+#define kSettingsScaleY							21
+
+#define kSettingsFaseTitleMilliseconds			30
+#define kSettingsFaseMapMilliseconds			31
 
 extern iface_type				iface;
 extern list_palette_type		project_palette;
@@ -65,6 +67,11 @@ void project_palette_fill_project(void)
 	list_palette_add_checkbox(&project_palette,kSettingsProjectModernize,"Modernize",&iface.project.modernize,FALSE);
 	list_palette_add_checkbox(&project_palette,kSettingsProjectSimpleSave,"Use Simple Saves",&iface.project.simple_save,FALSE);
 	list_palette_add_checkbox(&project_palette,kSettingsProjectLoadRequiresClick,"Loads Require Click to Continue",&iface.project.load_requires_click,FALSE);
+
+		// rendering
+		
+	list_palette_add_header(&project_palette,0,"Rendering");
+	list_palette_add_checkbox(&project_palette,kSettingsProjectRayTrace,"Ray Trace",&iface.project.ray_trace,FALSE);
 
 		// scale
 		

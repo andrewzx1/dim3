@@ -132,9 +132,7 @@ bool ring_spawn(int ring_idx,int obj_idx,d3pnt *pt,d3ang *ang)
 
 		// openrl setup
 
-#ifdef D3_OPENRL
-	view_openrl_effect_mesh_setup(effect);
-#endif
+	if (iface.project.ray_trace) view_openrl_effect_mesh_setup(effect);
 	
 	return(TRUE);
 }

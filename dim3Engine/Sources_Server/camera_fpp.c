@@ -52,6 +52,8 @@ void camera_fpp_calc_position(void)
     camera.cur_pos.pnt.x=obj->pnt.x+map.camera.pnt_offset.x;
     camera.cur_pos.pnt.y=((obj->pnt.y+obj->duck.y_move+obj->liquid.bob_y_move)+obj->size.eye_offset)+map.camera.pnt_offset.y;
     camera.cur_pos.pnt.z=obj->pnt.z+map.camera.pnt_offset.z;
+	
+	if (obj->bump.on) camera.cur_pos.pnt.y+=obj->bump.smooth_offset;
 
 	camera.cur_pos.ang.x=map.camera.ang_offset.x-obj->view_ang.x;
 	camera.cur_pos.ang.y=angle_add(obj->ang.y,map.camera.ang_offset.y);

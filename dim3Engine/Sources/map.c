@@ -516,11 +516,12 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 	
 		// openrl setup
 
-	progress_update();
-
-#ifdef D3_OPENRL
-	view_openrl_map_start();
-#endif
+	if (iface.project.ray_trace) {
+		view_openrl_map_mesh_start();
+		view_openrl_map_liquid_mesh_start();
+		view_openrl_map_model_mesh_start();
+		view_openrl_overlay_start();
+	}
 
 		// finish up
 	
@@ -595,21 +596,29 @@ void map_end(void)
 		// pause timing
 		
 	game_time_pause_start();
+	progress_initialize(map.info.name);
 	
 	console_add_system("Closing Map");
 	
 		// openrl cleanup
 	
-#ifdef D3_OPENRL
-	view_openrl_map_stop();
-#endif
-
+	if (iface.project.ray_trace) {
+		view_openrl_map_mesh_stop();
+		view_openrl_map_liquid_mesh_stop();
+		view_openrl_map_model_mesh_stop();
+		view_openrl_overlay_stop();
+	}
+	
 		// detach objects
 		
+	progress_update();
+	
 	map_object_detach_all();
 	
 		// map close event
-		
+	
+	progress_update();
+	
 	scripts_post_event_console(js.game_script_idx,-1,sd_event_map,sd_event_map_close,0);
 	scripts_post_event_console(js.course_script_idx,-1,sd_event_map,sd_event_map_close,0);
 
@@ -620,10 +629,12 @@ void map_end(void)
 
 		// remove all projectiles
 	
+	progress_update();
 	projectile_dispose_all();
 
 		// free map bound items
 		
+	progress_update();
 	object_dispose_2(bt_map);
 
 		// clear all back buffers
@@ -631,6 +642,7 @@ void map_end(void)
 		// and shutdown weather and skies
 
 	if (!app.dedicated_host) {
+		progress_update();
 		gl_fs_shader_map_end();
 		gl_back_render_map_end();
 		view_obscure_release();
@@ -641,6 +653,7 @@ void map_end(void)
 
 		// free some map lists
 
+	progress_update();
 	projectile_free_list();
 	effect_free_list();
 	decal_free_list();
@@ -652,6 +665,7 @@ void map_end(void)
 		// free group, portal segment, vertex and light lists
 		
 	if (!app.dedicated_host) {
+		progress_update();
 		view_map_vbo_release();
 		render_transparent_dispose_sort_list();
 	}
@@ -660,11 +674,14 @@ void map_end(void)
 	
 		// close map
 	
+	progress_update();
 	map_close(&map);
 		
 		// map closed
 		
 	server.map_open=FALSE;
+	
+	progress_shutdown();
 	
 	game_time_pause_end();
 }

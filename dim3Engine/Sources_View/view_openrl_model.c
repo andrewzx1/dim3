@@ -31,9 +31,6 @@ and can be sold or given away.
 
 #include "interface.h"
 #include "objects.h"
-
-#ifdef D3_OPENRL
-
 #include "ray_interface.h"
 
 extern map_type				map;
@@ -456,5 +453,3 @@ void view_openrl_projectile_model_update(void)
 		view_openrl_model_update_single_model(&proj->draw,FALSE);
 	}
 }
-
-#endif

@@ -54,7 +54,6 @@ extern void view_calculate_scope(obj_type *obj,obj_type *camera_obj);
 extern void view_calculate_recoil(obj_type *obj);
 extern void view_calculate_shakes(obj_type *obj);
 extern void view_calculate_sways(obj_type *obj);
-extern void view_calculate_bump(obj_type *obj);
 extern void view_draw_debug_object(obj_type *obj);
 extern void view_draw_debug_projectile(proj_type *proj);
 
@@ -335,9 +334,7 @@ void view_draw_scene_render(obj_type *obj,weapon_type *weap)
 	}
 }
 
-#ifndef D3_OPENRL
-
-void view_draw(void)
+void view_draw_opengl(void)
 {
 	obj_type		*obj,*camera_obj;
 	weapon_type		*weap;
@@ -374,7 +371,6 @@ void view_draw(void)
 	
 	view_calculate_shakes(obj);
 	view_calculate_sways(obj);
-	view_calculate_bump(obj);
 	
 		// reset view counts
 	
@@ -409,8 +405,6 @@ void view_draw(void)
 	view_draw_effect_tint();
 	view_fade_draw();
 }
-
-#endif
 
 bool view_draw_node(node_type *node)
 {
@@ -464,9 +458,7 @@ bool view_draw_node(node_type *node)
       
 ======================================================= */
 
-#ifdef D3_OPENRL
-
-void view_draw(void)
+void view_draw_openrl(void)
 {
 	int				n;
 	obj_type		*obj,*camera_obj;
@@ -504,7 +496,6 @@ void view_draw(void)
 	
 	view_calculate_shakes(obj);
 	view_calculate_sways(obj);
-	view_calculate_bump(obj);
 	
 		// reset view counts
 	
@@ -536,5 +527,3 @@ void view_draw(void)
 
 	view_fade_draw();
 }
-
-#endif

@@ -717,11 +717,6 @@ void view_calculate_sways(obj_type *obj)
 
 }
 
-void view_calculate_bump(obj_type *obj)
-{
-	if (obj->bump.on) view.render->camera.pnt.y+=obj->bump.smooth_offset;
-}
-
 /* =======================================================
 
       View Script 3D to 2D transform

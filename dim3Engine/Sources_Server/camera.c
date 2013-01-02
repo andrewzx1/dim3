@@ -66,7 +66,7 @@ void camera_map_setup(void)
 {
 	int				node_idx;
 	char			err_str[256];
-		
+	
 		// if static, attach from node
 		
 	if (map.camera.mode!=cv_static) return;

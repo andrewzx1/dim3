@@ -478,6 +478,8 @@ void list_palette_add_picker_item(list_palette_type *list,int id,int idx,char *n
 	item->disabled=disabled;
 
 	strcpy(item->name,name);
+	
+	if (item->name[0]==0x0) strcpy(item->name,"(no name)");
 }
 
 void list_palette_add_color(list_palette_type *list,int id,int idx,d3col *col_ptr,bool selected,bool disabled)
@@ -929,13 +931,14 @@ void list_palette_start_picking_mode(list_palette_type *list,char *title,char *l
 		}
 
 			// regular clickable items
+			// ignore blanks as they can only select nones
 
 		sel=FALSE;
 		if (idx_ptr!=NULL) {
 			sel=(*idx_ptr==n);
 		}
 		if (name_ptr!=NULL) {
-			sel=(strcasecmp(name_ptr,str_ptr)==0);
+			if (*name_ptr!=0x0) sel=(strcasecmp(name_ptr,str_ptr)==0);
 		}
 
 		list_palette_add_picker_item(list,-1,n,str_ptr,sel,FALSE);
