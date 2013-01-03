@@ -751,6 +751,21 @@ extern inline unsigned short* view_map_effect_index_object(void);
 extern inline void view_unmap_effect_index_object(void);
 extern inline void view_unbind_effect_index_object(void);
 
+extern void view_create_text_vertex_object(int vertex_mem_sz);
+extern void view_dispose_text_vertex_object(void);
+extern inline void view_bind_text_vertex_object(void);
+extern inline unsigned char* view_map_text_vertex_object(void);
+extern inline void view_unmap_text_vertex_object(void);
+extern inline void view_unbind_text_vertex_object(void);
+
+extern void view_initialize_utility_vertex_object(void);
+extern void view_create_utility_vertex_object(void);
+extern void view_dispose_utility_vertex_object(void);
+extern inline void view_bind_utility_vertex_object(void);
+extern inline unsigned char* view_map_utility_vertex_object(void);
+extern inline void view_unmap_utility_vertex_object(void);
+extern inline void view_unbind_utility_vertex_object(void);
+
 extern void view_primitive_2D_tint_screen(d3col *col,float alpha);
 extern void view_primitive_2D_color_poly(int x0,int y0,d3col *col0,int x1,int y1,d3col *col1,int x2,int y2,d3col *col2,int x3,int y3,d3col *col3,float alpha);
 extern void view_primitive_2D_color_quad(d3col *col,float alpha,int lft,int rgt,int top,int bot);
@@ -799,7 +814,6 @@ extern inline void gl_shader_draw_execute_simple_color_set_color(d3col *col,floa
 extern inline void gl_shader_draw_execute_simple_color_ptr(int vertex_size,float *vertexes,d3col *col,float alpha);
 extern inline void gl_shader_draw_execute_simple_color_vbo(int vertex_size,int vertex_offset,d3col *col,float alpha);
 
-extern inline void gl_shader_draw_execute_simple_gradient_ptr(int vertex_size,float *vertexes,unsigned char *colors);
 extern inline void gl_shader_draw_execute_simple_gradient_vbo(int vertex_size,int vertex_offset,int color_offset);
 
 extern inline void gl_shader_draw_execute_simple_black_set_alpha(float alpha);

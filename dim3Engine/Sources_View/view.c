@@ -92,6 +92,10 @@ bool view_memory_allocate(void)
 	bzero(view.rain_draws,(max_rain_density*sizeof(rain_draw_type)));
 	bzero(view.chat.lines,(max_view_chat_lines*sizeof(view_chat_line_type)));
 	bzero(view.console.lines,(max_view_console_lines*sizeof(view_console_line_type)));
+
+		// no utility VBOs yet
+
+	view_initialize_utility_vertex_object();
 			
 	return(TRUE);
 }
@@ -222,6 +226,11 @@ bool view_initialize_display(char *err_str)
 
 	if (!gl_check_fsaa_ok()) setup.fsaa_mode=fsaa_mode_none;
 
+		// utility vbo for a couple things
+		// like primitives and bitmaps
+
+	view_create_utility_vertex_object();
+
 		// shadows
 
 	if (!shadow_initialize()) {
@@ -266,6 +275,8 @@ bool view_initialize_display(char *err_str)
 
 void view_shutdown_display(void)
 {
+	view_dispose_utility_vertex_object();
+
 	shadow_shutdown();
 	gl_simple_shader_shutdown();
 	gl_core_shader_shutdown();

@@ -31,6 +31,7 @@ and can be sold or given away.
 
 #include "interface.h"
 #include "objects.h"
+#include "scripts.h"
 
 extern map_type				map;
 extern camera_type			camera;
@@ -39,6 +40,7 @@ extern server_type			server;
 extern iface_type			iface;
 extern setup_type			setup;
 extern render_info_type		render_info;
+extern js_type				js;
 
 /* =======================================================
 
@@ -101,10 +103,9 @@ void view_draw_debug_bounding_box(d3pnt *pnt,d3ang *ang,d3pnt *size)
 	glLineWidth(1.0f);
 }
 
-void view_draw_debug_info(char *name,char *info,d3pnt *pnt,d3pnt *size,d3ang *ang)
+void view_draw_debug_info(d3pnt *pnt,d3pnt *size,int count,char *strs)
 {
-	int						x,y,dist,font_size;
-	char					str[256];
+	int						n,x,y,dist,font_size;
 	d3col					col;
 	d3pnt					spt,ept,win_pnt;
 	ray_trace_contact_type	contact;
@@ -152,8 +153,7 @@ void view_draw_debug_info(char *name,char *info,d3pnt *pnt,d3pnt *size,d3ang *an
 	x=(win_pnt.x*iface.scale_x)/view.screen.x_sz;
 	y=((view.screen.y_sz-win_pnt.y)*iface.scale_y)/view.screen.y_sz;
 
-	y-=(font_size*2);
-	if (info!=NULL) y-=font_size;
+	y-=(font_size*count);
 
 		// draw text
 
@@ -162,15 +162,9 @@ void view_draw_debug_info(char *name,char *info,d3pnt *pnt,d3pnt *size,d3ang *an
 	
 	gl_text_start(font_hud_index,font_size,FALSE);
 
-	gl_text_draw(x,y,name,tx_center,FALSE,&col,1.0f);
-
-	y+=font_size;
-	sprintf(str,"%d,%d,%d @ %.2f,%.2f,%.2f",pnt->x,pnt->y,pnt->z,ang->x,ang->y,ang->z);
-	gl_text_draw(x,y,str,tx_center,FALSE,&col,1.0f);
-
-	if (info!=NULL) {
+	for (n=0;n!=count;n++) {
 		y+=font_size;
-		gl_text_draw(x,y,info,tx_center,FALSE,&col,1.0f);
+//		gl_text_draw(x,y,(char*)strs[n*128],tx_left,FALSE,&col,1.0f);
 	}
 
 	gl_text_end();
@@ -213,8 +207,30 @@ void view_draw_debug_object_path(obj_type *obj)
       
 ======================================================= */
 
+void view_draw_debug_timer(int script_idx,int mode,char *name,bool has_chain,char *str)
+{
+	int				timer_idx;
+	timer_type		*timer;
+
+	timer_idx=timers_find(script_idx,timer_mode_repeat);
+	if (timer_idx==-1) {
+		sprintf(str,"%s: *",name);
+		return;
+	}
+
+	timer=js.timer_list.timers[timer_idx];
+
+	if (!has_chain) {
+		sprintf(str,"%s: %d",name,timer->count);
+	}
+	else {
+		sprintf(str,"%s: %d [%s]",name,timer->count,timer->chain_func_name);
+	}
+}
+
 void view_draw_debug_object(obj_type *obj)
 {
+	char			strs[9][128];
 	d3pnt			size;
 
 	size.x=obj->size.x;
@@ -226,7 +242,25 @@ void view_draw_debug_object(obj_type *obj)
 
 	view_draw_debug_bounding_box(&obj->draw.pnt,&obj->draw.setup.ang,&size);
 	view_draw_debug_object_path(obj);
-	view_draw_debug_info(obj->name,obj->debug.str,&obj->draw.pnt,&size,&obj->ang);
+
+	// supergumba -- add if watch is on
+
+	sprintf(strs[0],"  Name: %s",obj->name);
+	sprintf(strs[1]," Debug: %s",obj->debug.str);
+	sprintf(strs[2],"   Pos: %d,%d,%d",obj->draw.pnt.x,obj->draw.pnt.y,obj->draw.pnt.z);
+	sprintf(strs[3]," Angle: %.2f,%.2f,%.2f",obj->ang.x,obj->ang.y,obj->ang.z);
+	sprintf(strs[4],"Health: %d %d",obj->status.health.value,obj->status.armor.value);
+	if (obj->watch.on) {
+		sprintf(strs[5]," Watch: on");
+	}
+	else {
+		sprintf(strs[5]," Watch: off");
+	}
+	view_draw_debug_timer(obj->script_idx,timer_mode_repeat,"Timer",FALSE,(char*)strs[6]);
+	view_draw_debug_timer(obj->script_idx,timer_mode_single,"Wait",FALSE,(char*)strs[7]);
+	view_draw_debug_timer(obj->script_idx,timer_mode_chain,"Chain",TRUE,(char*)strs[8]);
+
+	view_draw_debug_info(&obj->draw.pnt,&size,9,(char*)strs);
 }
 
 void view_draw_debug_projectile(proj_type *proj)
@@ -241,6 +275,7 @@ void view_draw_debug_projectile(proj_type *proj)
 	view_draw_debug_bounding_box(&proj->draw.pnt,&proj->draw.setup.ang,&size);
 
 	proj_setup=server.obj_list.objs[proj->obj_idx]->weap_list.weaps[proj->weap_idx]->proj_setup_list.proj_setups[proj->proj_setup_idx];
-	view_draw_debug_info(proj_setup->name,NULL,&proj->draw.pnt,&size,&proj->ang);
+	//view_draw_debug_info(proj_setup->name,NULL,&proj->draw.pnt,&size,&proj->ang);
+	// supergumba
 }
 

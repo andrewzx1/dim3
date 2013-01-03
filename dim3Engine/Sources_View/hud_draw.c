@@ -592,11 +592,9 @@ void hud_bars_draw_pie(iface_bar_type *bar)
 	unsigned char	*cp;
 	unsigned char	sf_uc_r,sf_uc_g,sf_uc_b,f_uc_alpha,
 					ef_uc_r,ef_uc_g,ef_uc_b,
-					b_uc_r,b_uc_g,b_uc_b,b_uc_alpha,
-					colors[72*3*4];
+					b_uc_r,b_uc_g,b_uc_b,b_uc_alpha;
 	float			fx,fy,r_add,rad,radius;
 	float			*vp;
-	float			vertexes[72*3*2];
 	
 		// get center and radius
 		
@@ -627,9 +625,11 @@ void hud_bars_draw_pie(iface_bar_type *bar)
 		// draw the pie
 		
 	r_add=(TRIG_PI*2.0f)/72.0f;
-	
-	vp=vertexes;
-	cp=colors;
+
+	view_bind_utility_vertex_object();
+
+	vp=(float*)view_map_utility_vertex_object();
+	cp=(unsigned char*)(vp+(6*72));
 	
 	for (n=0;n!=72;n++) {
 
@@ -684,6 +684,8 @@ void hud_bars_draw_pie(iface_bar_type *bar)
 		}
 	}
 
+	view_unmap_utility_vertex_object();
+
 		// draw
 
 	glEnable(GL_BLEND);
@@ -691,10 +693,12 @@ void hud_bars_draw_pie(iface_bar_type *bar)
 
 	glDisable(GL_DEPTH_TEST);
 
-	gl_shader_draw_execute_simple_gradient_ptr(2,vertexes,colors);
+	gl_shader_draw_execute_simple_gradient_vbo(2,0,((6*72)*sizeof(float)));
 	glDrawArrays(GL_TRIANGLES,0,(72*3));
 
 	glDisable(GL_BLEND);
+
+	view_unbind_utility_vertex_object();
 }
 
 void hud_bars_draw(void)
@@ -712,7 +716,7 @@ void hud_bars_draw(void)
 		if (!bar->show) continue;
 		
 			// draw bar
-		
+
 		switch (bar->type) {
 		
 			case bar_type_horizontal:

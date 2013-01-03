@@ -60,7 +60,7 @@ bool loop_view_input()
 	if (server.next_state==gs_intro) {
 		map_end();
 		game_end();
-		return(false);
+		return(FALSE);
 	}
 	
 		// any other state change
