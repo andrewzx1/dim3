@@ -47,6 +47,28 @@ extern network_setup_type	net_setup;
       
 ======================================================= */
 
+bool loop_view_input()
+{
+		// view input
+
+	view_loop_input();
+
+		// if state has changed to intro,
+		// then we must be exiting a running
+		// game
+			
+	if (server.next_state==gs_intro) {
+		map_end();
+		game_end();
+		return(false);
+	}
+	
+		// any other state change
+		// means an early exit
+		
+	return(server.next_state==gs_running);
+}
+
 void loop_server_run(void)
 {
 		// networking
@@ -91,24 +113,6 @@ void loop_server_run(void)
 
 void loop_view_run()
 {
-		// view input
-
-	view_loop_input();
-
-		// if state has changed to intro,
-		// then we must be exiting a running
-		// game
-			
-	if (server.next_state==gs_intro) {
-		map_end();
-		game_end();
-		return;
-	}
-	
-		// any other state change early exists
-		
-	if (server.next_state!=gs_running) return;
-
 		// draw the view
 
 	view_run();
@@ -275,8 +279,10 @@ void loop_state_run(void)
 	switch (server.state) {
 	
 		case gs_running:
-			loop_server_run();
-			loop_view_run();
+			if (loop_view_input()) {
+				loop_server_run();
+				loop_view_run();
+			}
 			return;
 
 		case gs_intro:
