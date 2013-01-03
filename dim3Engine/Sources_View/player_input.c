@@ -747,7 +747,7 @@ void player_fpp_input(obj_type *obj)
 	player_get_6_way_input(obj,&mouse_x,&mouse_y,&go_forward,&go_backward,&go_side_left,&go_side_right);
 
 		// turning and looking
-
+		
 	obj->turn.ang_add.y=player_mouse_smooth(mouse_x,obj->turn.ang_add.y);
 	obj->look.ang_add=player_mouse_smooth(mouse_y,obj->look.ang_add);
 	

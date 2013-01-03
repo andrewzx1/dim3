@@ -29,6 +29,13 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
+#ifdef D3_OS_MAC
+	#include <IOKit/IOKitLib.h>
+	#include <IOKit/hidsystem/IOHIDLib.h>
+	#include <IOKit/hidsystem/IOHIDParameter.h>
+	#include <IOKit/hidsystem/event_status_driver.h>
+#endif
+
 #include "interface.h"
 
 int							key_define_code[input_max_keyboard]=key_codes,
@@ -37,6 +44,10 @@ char						key_define_str[input_max_keyboard][32]=key_names,
 							mouse_button_define_str[input_max_mouse_button][32]=mouse_button_names,
 							joystick_button_define_str[input_max_joystick_button][32]=joystick_button_names;
 bool						input_app_active_flag,input_key_set_skip_flag[input_max_keyboard];
+
+#ifdef D3_OS_MAC
+	double					os_x_mouse_speed,os_x_trackpad_speed;
+#endif
 
 d3pnt						input_gui_pnt;
 input_action_type			input_actions[256];
@@ -56,6 +67,22 @@ extern setup_type			setup;
 
 void input_initialize(bool in_window)
 {
+/*
+#ifdef D3_OS_MAC
+	NXEventHandle		nxe;
+
+		// turn off mouse acceleration
+		// we aren't using this right now
+	
+	nxe=NXOpenEventStatus();
+	IOHIDGetAccelerationWithKey(nxe,CFSTR(kIOHIDMouseAccelerationType),&os_x_mouse_speed);
+	IOHIDSetAccelerationWithKey(nxe,CFSTR(kIOHIDMouseAccelerationType),0.0);
+	IOHIDGetAccelerationWithKey(nxe,CFSTR(kIOHIDTrackpadAccelerationType),&os_x_trackpad_speed);
+	IOHIDSetAccelerationWithKey(nxe,CFSTR(kIOHIDTrackpadAccelerationType),0.0);
+	NXCloseEventStatus(nxe);
+#endif
+*/
+
 		// app starts activated
 		
 	input_app_active_flag=TRUE;
@@ -82,6 +109,17 @@ void input_initialize(bool in_window)
 
 void input_shutdown(void)
 {
+/*
+#ifdef D3_OS_MAC
+	NXEventHandle		nxe;
+	
+	nxe=NXOpenEventStatus();
+	IOHIDSetAccelerationWithKey(nxe,CFSTR(kIOHIDMouseAccelerationType),os_x_mouse_speed);
+	IOHIDSetAccelerationWithKey(nxe,CFSTR(kIOHIDTrackpadAccelerationType),os_x_trackpad_speed);
+	NXCloseEventStatus(nxe);
+#endif
+*/
+
 	input_touch_shutdown();
 	input_joystick_shutdown();
 	input_mouse_shutdown();
