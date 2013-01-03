@@ -43,19 +43,26 @@ extern setup_type			setup;
 
 void view_primitive_2D_tint_screen(d3col *col,float alpha)
 {
-	float			vertexes[8];
+	float			*vp;
 	
-	vertexes[0]=0.0f;
-	vertexes[1]=0.0f;
-	vertexes[2]=0.0f;
-	vertexes[3]=(float)view.screen.y_sz;
-	vertexes[4]=(float)view.screen.x_sz;
-	vertexes[5]=0.0f;
-	vertexes[6]=(float)view.screen.x_sz;
-	vertexes[7]=(float)view.screen.y_sz;
+	view_bind_utility_vertex_object();
+	vp=(float*)view_map_utility_vertex_object();
 
-	gl_shader_draw_execute_simple_color_ptr(2,vertexes,col,alpha);
+	*vp++=0.0f;
+	*vp++=0.0f;
+	*vp++=0.0f;
+	*vp++=(float)view.screen.y_sz;
+	*vp++=(float)view.screen.x_sz;
+	*vp++=0.0f;
+	*vp++=(float)view.screen.x_sz;
+	*vp++=(float)view.screen.y_sz;
+
+	view_unmap_utility_vertex_object();
+
+	gl_shader_draw_execute_simple_color_vbo(2,0,col,alpha);
 	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
+
+	view_unbind_utility_vertex_object();
 }
 
 /* =======================================================
@@ -66,36 +73,42 @@ void view_primitive_2D_tint_screen(d3col *col,float alpha)
 
 void view_primitive_2D_color_poly(int x0,int y0,d3col *col0,int x1,int y1,d3col *col1,int x2,int y2,d3col *col2,int x3,int y3,d3col *col3,float alpha)
 {
-	float			vertexes[8];
-	unsigned char	uc_alpha,colors[16];
-								
-	vertexes[0]=(float)x0;
-	vertexes[1]=(float)y0;
-	vertexes[2]=(float)x3;
-	vertexes[3]=(float)y3;
-	vertexes[4]=(float)x1;
-	vertexes[5]=(float)y1;
-	vertexes[6]=(float)x2;
-	vertexes[7]=(float)y2;
-	
+	float			*vp;
+	unsigned char	*cp,uc_alpha;
+
+	view_bind_utility_vertex_object();
+	vp=(float*)view_map_utility_vertex_object();
+
 	uc_alpha=(unsigned char)(alpha*255.0f);
-	
-	colors[0]=(unsigned char)(col0->r*255.0f);
-	colors[1]=(unsigned char)(col0->g*255.0f);
-	colors[2]=(unsigned char)(col0->b*255.0f);
-	colors[3]=uc_alpha;
-	colors[4]=(unsigned char)(col3->r*255.0f);
-	colors[5]=(unsigned char)(col3->g*255.0f);
-	colors[6]=(unsigned char)(col3->b*255.0f);
-	colors[7]=uc_alpha;
-	colors[8]=(unsigned char)(col1->r*255.0f);
-	colors[9]=(unsigned char)(col1->g*255.0f);
-	colors[10]=(unsigned char)(col1->b*255.0f);
-	colors[11]=uc_alpha;
-	colors[12]=(unsigned char)(col2->r*255.0f);
-	colors[13]=(unsigned char)(col2->g*255.0f);
-	colors[14]=(unsigned char)(col2->b*255.0f);
-	colors[15]=uc_alpha;
+								
+	*vp++=(float)x0;
+	*vp++=(float)y0;
+	*vp++=(float)x3;
+	*vp++=(float)y3;
+	*vp++=(float)x1;
+	*vp++=(float)y1;
+	*vp++=(float)x2;
+	*vp++=(float)y2;
+
+	cp=(unsigned char*)vp;
+	*cp++=(unsigned char)(col0->r*255.0f);
+	*cp++=(unsigned char)(col0->g*255.0f);
+	*cp++=(unsigned char)(col0->b*255.0f);
+	*cp++=uc_alpha;
+	*cp++=(unsigned char)(col3->r*255.0f);
+	*cp++=(unsigned char)(col3->g*255.0f);
+	*cp++=(unsigned char)(col3->b*255.0f);
+	*cp++=uc_alpha;
+	*cp++=(unsigned char)(col1->r*255.0f);
+	*cp++=(unsigned char)(col1->g*255.0f);
+	*cp++=(unsigned char)(col1->b*255.0f);
+	*cp++=uc_alpha;
+	*cp++=(unsigned char)(col2->r*255.0f);
+	*cp++=(unsigned char)(col2->g*255.0f);
+	*cp++=(unsigned char)(col2->b*255.0f);
+	*cp++=uc_alpha;
+
+	view_unmap_utility_vertex_object();
 		
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
@@ -104,12 +117,14 @@ void view_primitive_2D_color_poly(int x0,int y0,d3col *col0,int x1,int y1,d3col 
 
 		// draw the polygon
 
-	gl_shader_draw_execute_simple_gradient_ptr(2,vertexes,colors);
+	gl_shader_draw_execute_simple_gradient_vbo(2,0,((4*2)*sizeof(float)));
 	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
 		
 		// finish draw
 
 	glDisable(GL_BLEND);
+
+	view_unbind_utility_vertex_object();
 }
 
 void view_primitive_2D_color_quad(d3col *col,float alpha,int lft,int rgt,int top,int bot)
@@ -119,46 +134,51 @@ void view_primitive_2D_color_quad(d3col *col,float alpha,int lft,int rgt,int top
 
 void view_primitive_2D_color_trig(d3col *col,float alpha,int lft,int rgt,int top,int bot,int dir)
 {
-	float			vertexes[6];
+	float			*vp;
+
+	view_bind_utility_vertex_object();
+	vp=(float*)view_map_utility_vertex_object();
 
 	switch (dir) {
 
 		case 0:
-			vertexes[0]=(float)lft;
-			vertexes[1]=(float)bot;
-			vertexes[2]=(float)rgt;
-			vertexes[3]=(float)bot;
-			vertexes[4]=((float)(lft+rgt))*0.5f;
-			vertexes[5]=(float)top;
+			*vp++=(float)lft;
+			*vp++=(float)bot;
+			*vp++=(float)rgt;
+			*vp++=(float)bot;
+			*vp++=((float)(lft+rgt))*0.5f;
+			*vp++=(float)top;
 			break;
 
 		case 1:
-			vertexes[0]=(float)lft;
-			vertexes[1]=(float)top;
-			vertexes[2]=(float)rgt;
-			vertexes[3]=((float)(top+bot))*0.5f;
-			vertexes[4]=(float)lft;
-			vertexes[5]=(float)bot;
+			*vp++=(float)lft;
+			*vp++=(float)top;
+			*vp++=(float)rgt;
+			*vp++=((float)(top+bot))*0.5f;
+			*vp++=(float)lft;
+			*vp++=(float)bot;
 			break;
 
 		case 2:
-			vertexes[0]=(float)lft;
-			vertexes[1]=(float)top;
-			vertexes[2]=(float)rgt;
-			vertexes[3]=(float)top;
-			vertexes[4]=((float)(lft+rgt))*0.5f;
-			vertexes[5]=(float)bot;
+			*vp++=(float)lft;
+			*vp++=(float)top;
+			*vp++=(float)rgt;
+			*vp++=(float)top;
+			*vp++=((float)(lft+rgt))*0.5f;
+			*vp++=(float)bot;
 			break;
 
 		case 3:
-			vertexes[0]=(float)rgt;
-			vertexes[1]=(float)top;
-			vertexes[2]=(float)lft;
-			vertexes[3]=((float)(top+bot))*0.5f;
-			vertexes[4]=(float)rgt;
-			vertexes[5]=(float)bot;
+			*vp++=(float)rgt;
+			*vp++=(float)top;
+			*vp++=(float)lft;
+			*vp++=((float)(top+bot))*0.5f;
+			*vp++=(float)rgt;
+			*vp++=(float)bot;
 			break;
 	}
+
+	view_unmap_utility_vertex_object();
 
 		// setup draw
 		
@@ -169,19 +189,21 @@ void view_primitive_2D_color_trig(d3col *col,float alpha,int lft,int rgt,int top
 
 		// draw the trig
 		
-	gl_shader_draw_execute_simple_color_ptr(2,vertexes,col,alpha);
+	gl_shader_draw_execute_simple_color_vbo(2,0,col,alpha);
 	glDrawArrays(GL_TRIANGLES,0,3);
 	
 		// finish draw
 
 	glDisable(GL_BLEND);
+
+	view_unbind_utility_vertex_object();
 }
 
 void view_primitive_2D_color_arc(d3col *out_col,d3col *in_col,float alpha,int lft,int rgt,int top,int bot,float start_perc,float end_perc)
 {
 	float			mx,my,fx,fy,start_rad,end_rad;
-	float			vertexes[6];
-	unsigned char	uc_alpha,colors[12];
+	float			*vp;
+	unsigned char	*cp,uc_alpha;
 
 		// get angles
 
@@ -195,30 +217,34 @@ void view_primitive_2D_color_arc(d3col *out_col,d3col *in_col,float alpha,int lf
 	end_rad=(TRIG_PI*2.0f)*end_perc;
 
 		// vertexes and colors
-		
-	vertexes[0]=mx;
-	vertexes[1]=my;
 
-	vertexes[2]=mx+(fx*sinf(start_rad));
-	vertexes[3]=my-(fy*cosf(start_rad));
+	view_bind_utility_vertex_object();
+	vp=(float*)view_map_utility_vertex_object();
 
-	vertexes[4]=mx+(fx*sinf(end_rad));
-	vertexes[5]=my-(fy*cosf(end_rad));
-	
 	uc_alpha=(unsigned char)(alpha*255.0f);
 
-	colors[0]=(unsigned char)(in_col->r*255.0f);
-	colors[1]=(unsigned char)(in_col->g*255.0f);
-	colors[2]=(unsigned char)(in_col->b*255.0f);
-	colors[3]=uc_alpha;
-	colors[4]=(unsigned char)(out_col->r*255.0f);
-	colors[5]=(unsigned char)(out_col->g*255.0f);
-	colors[6]=(unsigned char)(out_col->b*255.0f);
-	colors[7]=uc_alpha;
-	colors[8]=(unsigned char)(out_col->r*255.0f);
-	colors[9]=(unsigned char)(out_col->g*255.0f);
-	colors[10]=(unsigned char)(out_col->b*255.0f);
-	colors[11]=uc_alpha;
+	*vp++=mx;
+	*vp++=my;
+	*vp++=mx+(fx*sinf(start_rad));
+	*vp++=my-(fy*cosf(start_rad));
+	*vp++=mx+(fx*sinf(end_rad));
+	*vp++=my-(fy*cosf(end_rad));
+
+	cp=(unsigned char*)vp;
+	*cp++=(unsigned char)(in_col->r*255.0f);
+	*cp++=(unsigned char)(in_col->g*255.0f);
+	*cp++=(unsigned char)(in_col->b*255.0f);
+	*cp++=uc_alpha;
+	*cp++=(unsigned char)(out_col->r*255.0f);
+	*cp++=(unsigned char)(out_col->g*255.0f);
+	*cp++=(unsigned char)(out_col->b*255.0f);
+	*cp++=uc_alpha;
+	*cp++=(unsigned char)(out_col->r*255.0f);
+	*cp++=(unsigned char)(out_col->g*255.0f);
+	*cp++=(unsigned char)(out_col->b*255.0f);
+	*cp++=uc_alpha;
+
+	view_unmap_utility_vertex_object();
 
 		// setup draw
 		
@@ -229,12 +255,14 @@ void view_primitive_2D_color_arc(d3col *out_col,d3col *in_col,float alpha,int lf
 
 		// draw the trig
 		
-	gl_shader_draw_execute_simple_gradient_ptr(2,vertexes,colors);
+	gl_shader_draw_execute_simple_gradient_vbo(2,0,((3*2)*sizeof(float)));
 	glDrawArrays(GL_TRIANGLES,0,3);
 	
 		// finish draw
 
 	glDisable(GL_BLEND);
+
+	view_unbind_utility_vertex_object();
 }
 
 /* =======================================================
@@ -434,28 +462,33 @@ void view_primitive_3D_line_cube(d3col *col,float alpha,int *px,int *py,int *pz)
 
 void view_primitive_2D_texture_quad(GLuint gl_id,d3col *col,float alpha,int lft,int rgt,int top,int bot,float gx,float gx2,float gy,float gy2,bool clamp)
 {
-	float			vertexes[8],uvs[8];
+	float			*vp;
 	d3col			col2,*col_ptr;
 
 		// setup the data
 
-	vertexes[0]=(float)lft;
-	vertexes[1]=(float)top;
-	vertexes[2]=(float)lft;
-	vertexes[3]=(float)bot;
-	vertexes[4]=(float)rgt;
-	vertexes[5]=(float)top;
-	vertexes[6]=(float)rgt;
-	vertexes[7]=(float)bot;
-	
-	uvs[0]=gx;
-	uvs[1]=gy;
-	uvs[2]=gx;
-	uvs[3]=gy2;
-	uvs[4]=gx2;
-	uvs[5]=gy;
-	uvs[6]=gx2;
-	uvs[7]=gy2;
+	view_bind_utility_vertex_object();
+	vp=(float*)view_map_utility_vertex_object();
+
+	*vp++=(float)lft;
+	*vp++=(float)top;
+	*vp++=gx;
+	*vp++=gy;
+
+	*vp++=(float)lft;
+	*vp++=(float)bot;
+	*vp++=gx;
+	*vp++=gy2;
+
+	*vp++=(float)rgt;
+	*vp++=(float)top;
+	*vp++=gx2;
+	*vp++=gy;
+
+	*vp++=(float)rgt;
+	*vp++=(float)bot;
+	*vp++=gx2;
+	*vp++=gy2;
 
 	if (col==NULL) {
 		col2.r=col2.g=col2.b=1.0f;
@@ -464,6 +497,8 @@ void view_primitive_2D_texture_quad(GLuint gl_id,d3col *col,float alpha,int lft,
 	else {
 		col_ptr=col;
 	}
+
+	view_unmap_utility_vertex_object();
 
 		// setup texture draw
 
@@ -479,7 +514,8 @@ void view_primitive_2D_texture_quad(GLuint gl_id,d3col *col,float alpha,int lft,
 
 		// draw the quad
 
-	gl_shader_draw_execute_simple_bitmap_ptr(gl_id,2,vertexes,uvs,col_ptr,alpha);
+	gl_shader_draw_execute_simple_bitmap_set_texture(gl_id);
+	gl_shader_draw_execute_simple_bitmap_vbo_attribute(2,0,(2*sizeof(float)),((2+2)*sizeof(float)),col_ptr,alpha);
 	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
 
 		// finish texture draw
@@ -490,12 +526,14 @@ void view_primitive_2D_texture_quad(GLuint gl_id,d3col *col,float alpha,int lft,
 	}
 
 	glDisable(GL_BLEND);
+
+	view_unbind_utility_vertex_object();
 }
 
 void view_primitive_2D_texture_quad_rot(GLuint gl_id,d3col *col,float alpha,int lft,int rgt,int top,int bot,float ang,float gx,float gx2,float gy,float gy2)
 {
 	int				px[4],py[4];
-	float			vertexes[8],uvs[8];
+	float			*vp;
 	d3col			col2,*col_ptr;
 	
 	px[0]=px[3]=lft;
@@ -507,23 +545,28 @@ void view_primitive_2D_texture_quad_rot(GLuint gl_id,d3col *col,float alpha,int 
 
 		// setup the data
 
-	vertexes[0]=(float)px[0];
-	vertexes[1]=(float)py[0];
-	vertexes[2]=(float)px[3];
-	vertexes[3]=(float)py[3];
-	vertexes[4]=(float)px[1];
-	vertexes[5]=(float)py[1];
-	vertexes[6]=(float)px[2];
-	vertexes[7]=(float)py[2];
-	
-	uvs[0]=gx;
-	uvs[1]=gy;
-	uvs[2]=gx;
-	uvs[3]=gy2;
-	uvs[4]=gx2;
-	uvs[5]=gy;
-	uvs[6]=gx2;
-	uvs[7]=gy2;
+	view_bind_utility_vertex_object();
+	vp=(float*)view_map_utility_vertex_object();
+
+	*vp++=(float)px[0];
+	*vp++=(float)py[0];
+	*vp++=gx;
+	*vp++=gy;
+
+	*vp++=(float)px[3];
+	*vp++=(float)py[3];
+	*vp++=gx;
+	*vp++=gy2;
+
+	*vp++=(float)px[1];
+	*vp++=(float)py[1];
+	*vp++=gx2;
+	*vp++=gy;
+
+	*vp++=(float)px[2];
+	*vp++=(float)py[2];
+	*vp++=gx2;
+	*vp++=gy2;
 
 	if (col==NULL) {
 		col2.r=col2.g=col2.b=1.0f;
@@ -532,6 +575,8 @@ void view_primitive_2D_texture_quad_rot(GLuint gl_id,d3col *col,float alpha,int 
 	else {
 		col_ptr=col;
 	}
+
+	view_unmap_utility_vertex_object();
 
 		// setup texture draw
 
@@ -542,11 +587,14 @@ void view_primitive_2D_texture_quad_rot(GLuint gl_id,d3col *col,float alpha,int 
 
 		// draw the quad
 
-	gl_shader_draw_execute_simple_bitmap_ptr(gl_id,2,vertexes,uvs,col_ptr,alpha);
+	gl_shader_draw_execute_simple_bitmap_set_texture(gl_id);
+	gl_shader_draw_execute_simple_bitmap_vbo_attribute(2,0,(2*sizeof(float)),((2+2)*sizeof(float)),col_ptr,alpha);
 	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
 
 		// finish texture draw
 
 	glDisable(GL_BLEND);
+
+	view_unbind_utility_vertex_object();
 }
 

@@ -36,7 +36,8 @@ extern view_type			view;
 extern server_type			server;
 extern setup_type			setup;
 
-GLuint						vbo_sky,vbo_fog,vbo_rain;
+GLuint						vbo_sky,vbo_fog,vbo_rain,
+							vbo_text,vbo_utility;
 
 /* =======================================================
 
@@ -479,4 +480,93 @@ void view_unmap_effect_index_object(void)
 void view_unbind_effect_index_object(void)
 {
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0);
+}
+
+/* =======================================================
+
+      Text VBOs
+      
+======================================================= */
+
+void view_create_text_vertex_object(int vertex_mem_sz)
+{
+	glGenBuffers(1,&vbo_text);
+
+	glBindBuffer(GL_ARRAY_BUFFER,vbo_text);
+	glBufferData(GL_ARRAY_BUFFER,vertex_mem_sz,NULL,GL_DYNAMIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER,0);
+}
+
+void view_dispose_text_vertex_object(void)
+{
+	glDeleteBuffers(1,&vbo_text);
+}
+
+void view_bind_text_vertex_object(void)
+{
+	glBindBuffer(GL_ARRAY_BUFFER,vbo_text);
+}
+
+unsigned char* view_map_text_vertex_object(void)
+{
+	return((unsigned char*)glMapBuffer(GL_ARRAY_BUFFER,GL_WRITE_ONLY));
+}
+
+void view_unmap_text_vertex_object(void)
+{
+	glUnmapBuffer(GL_ARRAY_BUFFER);
+}
+
+void view_unbind_text_vertex_object(void)
+{
+	glBindBuffer(GL_ARRAY_BUFFER,0);
+}
+
+/* =======================================================
+
+      Utility VBOs
+      
+======================================================= */
+
+void view_initialize_utility_vertex_object(void)
+{
+	vbo_utility=-1;
+}
+
+void view_create_utility_vertex_object(void)
+{
+	int				vertex_mem_sz;
+
+	glGenBuffers(1,&vbo_utility);
+
+	vertex_mem_sz=((128*(3+4))*sizeof(float))+((128*4)*sizeof(unsigned char));		// possibly up to 128 vertexes, uvs, colors
+
+	glBindBuffer(GL_ARRAY_BUFFER,vbo_utility);
+	glBufferData(GL_ARRAY_BUFFER,vertex_mem_sz,NULL,GL_DYNAMIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER,0);
+}
+
+void view_dispose_utility_vertex_object(void)
+{
+	if (vbo_utility!=-1) glDeleteBuffers(1,&vbo_utility);
+}
+
+void view_bind_utility_vertex_object(void)
+{
+	glBindBuffer(GL_ARRAY_BUFFER,vbo_utility);
+}
+
+unsigned char* view_map_utility_vertex_object(void)
+{
+	return((unsigned char*)glMapBuffer(GL_ARRAY_BUFFER,GL_WRITE_ONLY));
+}
+
+void view_unmap_utility_vertex_object(void)
+{
+	glUnmapBuffer(GL_ARRAY_BUFFER);
+}
+
+void view_unbind_utility_vertex_object(void)
+{
+	glBindBuffer(GL_ARRAY_BUFFER,0);
 }

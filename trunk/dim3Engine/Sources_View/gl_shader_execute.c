@@ -98,15 +98,6 @@ void gl_shader_draw_execute_simple_color_vbo(int vertex_size,int vertex_offset,d
       
 ======================================================= */
 
-void gl_shader_draw_execute_simple_gradient_ptr(int vertex_size,float *vertexes,unsigned char *colors)
-{
-	gl_shader_draw_execute_set_program(&gradient_shader);
-	gl_shader_set_draw_matrix_variables(&gradient_shader);
-		
-	glVertexAttribPointer(gradient_shader.var_locs.dim3Vertex,vertex_size,GL_FLOAT,GL_FALSE,0,(void*)vertexes);
-	glVertexAttribPointer(gradient_shader.var_locs.dim3VertexColor,4,GL_UNSIGNED_BYTE,GL_TRUE,0,(void*)colors);
-}
-
 void gl_shader_draw_execute_simple_gradient_vbo(int vertex_size,int vertex_offset,int color_offset)
 {
 	gl_shader_draw_execute_set_program(&gradient_shader);
