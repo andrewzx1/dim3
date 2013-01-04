@@ -59,7 +59,7 @@ void view_primitive_2D_tint_screen(d3col *col,float alpha)
 
 	view_unmap_utility_vertex_object();
 
-	gl_shader_draw_execute_simple_color_vbo(2,0,col,alpha);
+	gl_shader_draw_execute_simple_color(2,0,col,alpha);
 	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
 
 	view_unbind_utility_vertex_object();
@@ -117,7 +117,7 @@ void view_primitive_2D_color_poly(int x0,int y0,d3col *col0,int x1,int y1,d3col 
 
 		// draw the polygon
 
-	gl_shader_draw_execute_simple_gradient_vbo(2,0,((4*2)*sizeof(float)));
+	gl_shader_draw_execute_simple_gradient(2,0,((4*2)*sizeof(float)));
 	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
 		
 		// finish draw
@@ -189,7 +189,7 @@ void view_primitive_2D_color_trig(d3col *col,float alpha,int lft,int rgt,int top
 
 		// draw the trig
 		
-	gl_shader_draw_execute_simple_color_vbo(2,0,col,alpha);
+	gl_shader_draw_execute_simple_color(2,0,col,alpha);
 	glDrawArrays(GL_TRIANGLES,0,3);
 	
 		// finish draw
@@ -255,7 +255,7 @@ void view_primitive_2D_color_arc(d3col *out_col,d3col *in_col,float alpha,int lf
 
 		// draw the trig
 		
-	gl_shader_draw_execute_simple_gradient_vbo(2,0,((3*2)*sizeof(float)));
+	gl_shader_draw_execute_simple_gradient(2,0,((3*2)*sizeof(float)));
 	glDrawArrays(GL_TRIANGLES,0,3);
 	
 		// finish draw
@@ -273,54 +273,58 @@ void view_primitive_2D_color_arc(d3col *out_col,d3col *in_col,float alpha,int lf
 
 void view_primitive_2D_line(d3col *col,float alpha,int x0,int y0,int x1,int y1)
 {
-	float			vertexes[4];
+	float			*vp;
 
-	vertexes[0]=(float)x0;
-	vertexes[1]=(float)y0;
-	vertexes[2]=(float)x1;
-	vertexes[3]=(float)y1;
+	view_bind_utility_vertex_object();
+	vp=(float*)view_map_utility_vertex_object();
+
+	*vp++=(float)x0;
+	*vp++=(float)y0;
+	*vp++=(float)x1;
+	*vp++=(float)y1;
+
+	view_unmap_utility_vertex_object();
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-
 	glDisable(GL_DEPTH_TEST);
-
-		// draw the quad
 		
-	gl_shader_draw_execute_simple_color_ptr(2,vertexes,col,alpha);
+	gl_shader_draw_execute_simple_color(2,0,col,alpha);
 	glDrawArrays(GL_LINES,0,2);
 
-		// finish draw
-
 	glDisable(GL_BLEND);
+
+	view_unbind_utility_vertex_object();
 }
 
 void view_primitive_2D_line_poly(d3col *col,float alpha,int x0,int y0,int x1,int y1,int x2,int y2,int x3,int y3)
 {
-	float			vertexes[8];
+	float			*vp;
 
-	vertexes[0]=(float)x0;
-	vertexes[1]=(float)y0;
-	vertexes[2]=(float)x1;
-	vertexes[3]=(float)y1;
-	vertexes[4]=(float)x2;
-	vertexes[5]=(float)y2;
-	vertexes[6]=(float)x3;
-	vertexes[7]=(float)y3;
+	view_bind_utility_vertex_object();
+	vp=(float*)view_map_utility_vertex_object();
+
+	*vp++=(float)x0;
+	*vp++=(float)y0;
+	*vp++=(float)x1;
+	*vp++=(float)y1;
+	*vp++=(float)x2;
+	*vp++=(float)y2;
+	*vp++=(float)x3;
+	*vp++=(float)y3;
+
+	view_unmap_utility_vertex_object();
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-
 	glDisable(GL_DEPTH_TEST);
 
-		// draw the quad
-
-	gl_shader_draw_execute_simple_color_ptr(2,vertexes,col,alpha);
+	gl_shader_draw_execute_simple_color(2,0,col,alpha);
 	glDrawArrays(GL_LINE_LOOP,0,4);
 
-		// finish draw
-
 	glDisable(GL_BLEND);
+
+	view_unbind_utility_vertex_object();
 }
 
 void view_primitive_2D_line_quad(d3col *col,float alpha,int lft,int rgt,int top,int bot)
@@ -330,64 +334,64 @@ void view_primitive_2D_line_quad(d3col *col,float alpha,int lft,int rgt,int top,
 
 void view_primitive_2D_line_trig(d3col *col,float alpha,int lft,int rgt,int top,int bot,int dir)
 {
-	float			vertexes[6];
+	float			*vp;
 	
 		// get the vertexes
+
+	view_bind_utility_vertex_object();
+	vp=(float*)view_map_utility_vertex_object();
 
 	switch (dir) {
 
 		case 0:
-			vertexes[0]=(float)lft;
-			vertexes[1]=(float)bot;
-			vertexes[2]=(float)rgt;
-			vertexes[3]=(float)bot;
-			vertexes[4]=((float)(lft+rgt))*0.5f;
-			vertexes[5]=(float)top;
+			*vp++=(float)lft;
+			*vp++=(float)bot;
+			*vp++=(float)rgt;
+			*vp++=(float)bot;
+			*vp++=((float)(lft+rgt))*0.5f;
+			*vp++=(float)top;
 			break;
 
 		case 1:
-			vertexes[0]=(float)lft;
-			vertexes[1]=(float)top;
-			vertexes[2]=(float)rgt;
-			vertexes[3]=((float)(top+bot))*0.5f;
-			vertexes[4]=(float)lft;
-			vertexes[5]=(float)bot;
+			*vp++=(float)lft;
+			*vp++=(float)top;
+			*vp++=(float)rgt;
+			*vp++=((float)(top+bot))*0.5f;
+			*vp++=(float)lft;
+			*vp++=(float)bot;
 			break;
 
 		case 2:
-			vertexes[0]=(float)lft;
-			vertexes[1]=(float)top;
-			vertexes[2]=(float)rgt;
-			vertexes[3]=(float)top;
-			vertexes[4]=((float)(lft+rgt))*0.5f;
-			vertexes[5]=(float)bot;
+			*vp++=(float)lft;
+			*vp++=(float)top;
+			*vp++=(float)rgt;
+			*vp++=(float)top;
+			*vp++=((float)(lft+rgt))*0.5f;
+			*vp++=(float)bot;
 			break;
 
 		case 3:
-			vertexes[0]=(float)rgt;
-			vertexes[1]=(float)top;
-			vertexes[2]=(float)lft;
-			vertexes[3]=((float)(top+bot))*0.5f;
-			vertexes[4]=(float)rgt;
-			vertexes[5]=(float)bot;
+			*vp++=(float)rgt;
+			*vp++=(float)top;
+			*vp++=(float)lft;
+			*vp++=((float)(top+bot))*0.5f;
+			*vp++=(float)rgt;
+			*vp++=(float)bot;
 			break;
 	}
 
-		// setup draw
+	view_unmap_utility_vertex_object();
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-
 	glDisable(GL_DEPTH_TEST);
-
-		// draw the quad
 		
-	gl_shader_draw_execute_simple_color_ptr(2,vertexes,col,alpha);
+	gl_shader_draw_execute_simple_color(2,0,col,alpha);
 	glDrawArrays(GL_LINE_LOOP,0,3);
 
-		// finish draw
-
 	glDisable(GL_BLEND);
+
+	view_unbind_utility_vertex_object();
 }
 
 /* =======================================================
@@ -398,60 +402,59 @@ void view_primitive_2D_line_trig(d3col *col,float alpha,int lft,int rgt,int top,
 
 void view_primitive_3D_line(d3col *col,float alpha,int x0,int y0,int z0,int x1,int y1,int z1)
 {
-	float			vertexes[6];
+	float			*vp;
 
-	vertexes[0]=(float)x0;
-	vertexes[1]=(float)y0;
-	vertexes[2]=(float)z0;
-	vertexes[3]=(float)x1;
-	vertexes[4]=(float)y1;
-	vertexes[5]=(float)z1;
+	view_bind_utility_vertex_object();
+	vp=(float*)view_map_utility_vertex_object();
 
-		// setup draw
+	*vp++=(float)x0;
+	*vp++=(float)y0;
+	*vp++=(float)z0;
+	*vp++=(float)x1;
+	*vp++=(float)y1;
+	*vp++=(float)z1;
+
+	view_unmap_utility_vertex_object();
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-
-		// draw the quad
 		
-	gl_shader_draw_execute_simple_color_ptr(3,vertexes,col,alpha);
+	gl_shader_draw_execute_simple_color(3,0,col,alpha);
 	glDrawArrays(GL_LINES,0,2);
 
-		// finish draw
-
 	glDisable(GL_BLEND);
+
+	view_unbind_utility_vertex_object();
 }
 
 void view_primitive_3D_line_cube(d3col *col,float alpha,int *px,int *py,int *pz)
 {
 	int				n;
 	unsigned short	cube_indexes[24]={0,1,1,2,2,3,3,0,4,5,5,6,6,7,7,4,0,4,1,5,2,6,3,7};
-	float			vertexes[24];
-	float			*vptr;
+	float			*vp;
 
 		// get the vertexes
-		
-	vptr=vertexes;
+
+	view_bind_utility_vertex_object();
+	vp=(float*)view_map_utility_vertex_object();
 	
 	for (n=0;n!=8;n++) {
-		*vptr++=(float)px[n];
-		*vptr++=(float)py[n];
-		*vptr++=(float)pz[n];
+		*vp++=(float)px[n];
+		*vp++=(float)py[n];
+		*vp++=(float)pz[n];
 	}
-	
-		// setup draw
 
+	view_unmap_utility_vertex_object();
+	
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-
-		// draw the quad
 		
-	gl_shader_draw_execute_simple_color_ptr(3,vertexes,col,alpha);
+	gl_shader_draw_execute_simple_color(3,0,col,alpha);
 	glDrawElements(GL_LINES,24,GL_UNSIGNED_SHORT,(GLvoid*)cube_indexes);
 
-		// finish draw
-
 	glDisable(GL_BLEND);
+
+	view_unbind_utility_vertex_object();
 }
 
 /* =======================================================
@@ -515,7 +518,7 @@ void view_primitive_2D_texture_quad(GLuint gl_id,d3col *col,float alpha,int lft,
 		// draw the quad
 
 	gl_shader_draw_execute_simple_bitmap_set_texture(gl_id);
-	gl_shader_draw_execute_simple_bitmap_vbo_attribute(2,0,(2*sizeof(float)),((2+2)*sizeof(float)),col_ptr,alpha);
+	gl_shader_draw_execute_simple_bitmap(2,0,(2*sizeof(float)),((2+2)*sizeof(float)),col_ptr,alpha);
 	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
 
 		// finish texture draw
@@ -588,7 +591,7 @@ void view_primitive_2D_texture_quad_rot(GLuint gl_id,d3col *col,float alpha,int 
 		// draw the quad
 
 	gl_shader_draw_execute_simple_bitmap_set_texture(gl_id);
-	gl_shader_draw_execute_simple_bitmap_vbo_attribute(2,0,(2*sizeof(float)),((2+2)*sizeof(float)),col_ptr,alpha);
+	gl_shader_draw_execute_simple_bitmap(2,0,(2*sizeof(float)),((2+2)*sizeof(float)),col_ptr,alpha);
 	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
 
 		// finish texture draw

@@ -811,16 +811,13 @@ extern void gl_shader_force_matrix_resets(void);
 //
 
 extern inline void gl_shader_draw_execute_simple_color_set_color(d3col *col,float alpha);
-extern inline void gl_shader_draw_execute_simple_color_ptr(int vertex_size,float *vertexes,d3col *col,float alpha);
-extern inline void gl_shader_draw_execute_simple_color_vbo(int vertex_size,int vertex_offset,d3col *col,float alpha);
-
-extern inline void gl_shader_draw_execute_simple_gradient_vbo(int vertex_size,int vertex_offset,int color_offset);
-extern inline void gl_shader_draw_execute_simple_black_vbo(int vertex_size,int vertex_offset,float alpha);
+extern inline void gl_shader_draw_execute_simple_color(int vertex_size,int vertex_offset,d3col *col,float alpha);
+extern inline void gl_shader_draw_execute_simple_gradient(int vertex_size,int vertex_offset,int color_offset);
+extern inline void gl_shader_draw_execute_simple_black(int vertex_size,int vertex_offset,float alpha);
 
 extern inline void gl_shader_draw_execute_simple_bitmap_set_color(d3col *col,float alpha);
 extern inline void gl_shader_draw_execute_simple_bitmap_set_texture(unsigned long gl_id);
-extern inline void gl_shader_draw_execute_simple_bitmap_ptr(unsigned long gl_id,int vertex_size,float *vertexes,float *uvs,d3col *col,float alpha);
-extern inline void gl_shader_draw_execute_simple_bitmap_vbo_attribute(int vertex_size,int vertex_offset,int uv_offset,int stride,d3col *col,float alpha);
+extern inline void gl_shader_draw_execute_simple_bitmap(int vertex_size,int vertex_offset,int uv_offset,int stride,d3col *col,float alpha);
 
 extern void gl_shader_draw_execute_reset_cached_offsets(void);
 extern void gl_shader_draw_execute_map(texture_type *texture,int txt_idx,int frame,int lmap_txt_idx,float alpha,int vertex_offset,int uv_offset,int lmap_uv_offset,int tangent_offset,int normal_offset,int stride,view_glsl_light_list_type *light_list);

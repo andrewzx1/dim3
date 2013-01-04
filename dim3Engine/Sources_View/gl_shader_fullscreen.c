@@ -236,8 +236,9 @@ void gl_fs_shader_render_begin(void)
 
 void gl_fs_shader_render_finish(void)
 {
-	float					vertexes[8],uvs[8];
-	shader_type				*shader;
+	int					stride;
+	float				*vp;
+	shader_type			*shader;
 	
 	if ((!fs_shader_on) || (!fs_shader_active)) return;
 
@@ -248,26 +249,6 @@ void gl_fs_shader_render_finish(void)
 		// turn off the fbo
 
 	glBindFramebuffer(GL_FRAMEBUFFER,fs_shader_old_fbo);
-
-		// create the vertexes and uv
-
-	vertexes[0]=0.0f;
-	vertexes[1]=0.0f;
-	vertexes[2]=0.0f;
-	vertexes[3]=(float)view.screen.y_sz;
-	vertexes[4]=(float)view.screen.x_sz;
-	vertexes[5]=0.0f;
-	vertexes[6]=(float)view.screen.x_sz;
-	vertexes[7]=(float)view.screen.y_sz;
-
-	uvs[0]=0.0f;
-	uvs[1]=1.0f;
-	uvs[2]=0.0f;
-	uvs[3]=0.0f;
-	uvs[4]=1.0f;
-	uvs[5]=1.0f;
-	uvs[6]=1.0f;
-	uvs[7]=0.0f;
 
 		// setup fbo texture draw
 
@@ -292,15 +273,46 @@ void gl_fs_shader_render_finish(void)
 	shader->start_tick=fs_shader_start_tick;			// make sure frequency matches start of shader
 	shader->need_matrix_reset=TRUE;
 
+		// create the vertexes and uv
+
+	view_bind_utility_vertex_object();
+	vp=(float*)view_map_utility_vertex_object();
+
+	*vp++=0.0f;
+	*vp++=0.0f;
+	*vp++=0.0f;
+	*vp++=1.0f;
+
+	*vp++=0.0f;
+	*vp++=(float)view.screen.y_sz;
+	*vp++=0.0f;
+	*vp++=0.0f;
+
+	*vp++=(float)view.screen.x_sz;
+	*vp++=0.0f;
+	*vp++=1.0f;
+	*vp++=1.0f;
+
+	*vp++=(float)view.screen.x_sz;
+	*vp++=(float)view.screen.y_sz;
+	*vp++=1.0f;
+	*vp++=0.0f;
+	
+	view_unmap_utility_vertex_object();
+
 		// required uniforms and attributes
 	
 	gl_shader_set_scene_variables(shader);
 	gl_shader_set_draw_matrix_variables(shader);
 
-	glVertexAttribPointer(shader->var_locs.dim3Vertex,2,GL_FLOAT,GL_FALSE,0,(void*)vertexes);
-	glVertexAttribPointer(shader->var_locs.dim3VertexUV,2,GL_FLOAT,GL_FALSE,0,(void*)uvs);
+	stride=(2+2)*sizeof(float);
+
+	glVertexAttribPointer(shader->var_locs.dim3Vertex,2,GL_FLOAT,GL_FALSE,stride,(void*)0);
+	glVertexAttribPointer(shader->var_locs.dim3VertexUV,2,GL_FLOAT,GL_FALSE,stride,(void*)(2*sizeof(float)));
 
 		// draw the quad
 
 	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
+
+	view_unbind_utility_vertex_object();
 }

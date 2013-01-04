@@ -86,8 +86,11 @@ void camera_static_calc_position(void)
 	}
 
 		// else just use camera offset
+		// x needs to be positive/negative numbers
 
 	camera.cur_pos.ang.x=camera.cur_pos.static_ang.x+map.camera.ang_offset.x;
+	if (camera.cur_pos.ang.x>180) camera.cur_pos.ang.x-=360.0f;
+
 	camera.cur_pos.ang.y=angle_add(camera.cur_pos.static_ang.y,map.camera.ang_offset.y);
 	camera.cur_pos.ang.z=camera.cur_pos.static_ang.z+map.camera.ang_offset.z;
 }

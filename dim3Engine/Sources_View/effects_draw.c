@@ -263,7 +263,7 @@ void effect_draw_lightning(effect_type *effect)
 	glEnable(GL_DEPTH_TEST);
 	glDepthMask(GL_FALSE);
 
-	gl_shader_draw_execute_simple_color_vbo(3,0,&lightning->col,0.1f);
+	gl_shader_draw_execute_simple_color(3,0,&lightning->col,0.1f);
 	
 	glLineWidth((float)(wid*5));
 	glDrawArrays(GL_LINES,0,(nline*2));
@@ -295,7 +295,7 @@ void effect_draw_lightning(effect_type *effect)
 void effect_draw_ray(effect_type *effect,int count)
 {
 	int						wid,sx,sz,sy,ex,ez,ey,life_tick;
-	float					vertexes[3*2];
+	float					*vp;
 	ray_effect_data			*ray;
 	
 	ray=&effect->data.ray;
@@ -328,13 +328,18 @@ void effect_draw_ray(effect_type *effect,int count)
 
 		// setup vertexes
 
-	vertexes[0]=(float)sx;
-	vertexes[1]=(float)sy;
-	vertexes[2]=(float)sz;
+	view_bind_utility_vertex_object();
+	vp=(float*)view_map_utility_vertex_object();
 
-	vertexes[3]=(float)ex;
-	vertexes[4]=(float)ey;
-	vertexes[5]=(float)ez;
+	*vp++=(float)sx;
+	*vp++=(float)sy;
+	*vp++=(float)sz;
+
+	*vp++=(float)ex;
+	*vp++=(float)ey;
+	*vp++=(float)ez;
+
+	view_unmap_utility_vertex_object();
 
         // draw lines
 		
@@ -346,7 +351,7 @@ void effect_draw_ray(effect_type *effect,int count)
 	glEnable(GL_DEPTH_TEST);
 	glDepthMask(GL_FALSE);
 
-	gl_shader_draw_execute_simple_color_ptr(3,vertexes,&ray->col,0.1f);
+	gl_shader_draw_execute_simple_color(3,0,&ray->col,1.0f);
 	
 	while (wid>0) {
 	
@@ -357,6 +362,8 @@ void effect_draw_ray(effect_type *effect,int count)
 	}
 	
 	glDepthMask(GL_TRUE);
+
+	view_unbind_utility_vertex_object();
 }
 
 /* =======================================================

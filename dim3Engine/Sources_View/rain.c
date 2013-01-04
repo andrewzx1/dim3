@@ -288,7 +288,7 @@ void rain_draw(void)
 
 	glLineWidth((float)map.rain.line_width);
 	
-	gl_shader_draw_execute_simple_gradient_vbo(3,0,(((density*2)*3)*sizeof(float)));
+	gl_shader_draw_execute_simple_gradient(3,0,(((density*2)*3)*sizeof(float)));
 	glDrawArrays(GL_LINES,0,(density*2));
 
 	glLineWidth(1.0f);

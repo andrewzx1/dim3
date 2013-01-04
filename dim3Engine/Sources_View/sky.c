@@ -45,7 +45,7 @@ void sky_draw_background_single(map_background_layer_type *layer)
 {
 	float				f_screen_x_sz,f_screen_y_sz,ratio,
 						f_ty,f_by,gx_lft,gx_rgt,gy_top,gy_bot;
-	float				vertexes[8],uvs[8];
+	float				*vp;
 	d3col				col;
 	texture_type		*texture;
 	bitmap_type			*bitmap;
@@ -84,22 +84,40 @@ void sky_draw_background_single(map_background_layer_type *layer)
 	texture=&map.textures[layer->fill];
 	bitmap=&texture->frames[texture->animate.current_frame].bitmap;
 	
-	vertexes[0]=vertexes[2]=0.0f;
-	vertexes[4]=vertexes[6]=(float)view.screen.x_sz;
-	vertexes[1]=vertexes[5]=f_ty;
-	vertexes[3]=vertexes[7]=f_by;
-	
-	uvs[0]=uvs[2]=gx_lft;
-	uvs[4]=uvs[6]=gx_rgt;
-	uvs[1]=uvs[5]=gy_top;
-	uvs[3]=uvs[7]=gy_bot;
+	view_bind_utility_vertex_object();
+	vp=(float*)view_map_utility_vertex_object();
+
+	*vp++=0.0f;
+	*vp++=f_ty;
+	*vp++=gx_lft;
+	*vp++=gy_top;
+
+	*vp++=0.0f;
+	*vp++=f_by;
+	*vp++=gx_lft;
+	*vp++=gy_bot;
+
+	*vp++=(float)view.screen.x_sz;
+	*vp++=f_ty;
+	*vp++=gx_rgt;
+	*vp++=gy_top;
+
+	*vp++=(float)view.screen.x_sz;
+	*vp++=f_by;
+	*vp++=gx_rgt;
+	*vp++=gy_bot;
+
+	view_unmap_utility_vertex_object();
 
 	col.r=col.g=col.b=1.0f;
 
 		// draw the quad
 
-	gl_shader_draw_execute_simple_bitmap_ptr(bitmap->gl_id,2,vertexes,uvs,&col,1.0f);
+	gl_shader_draw_execute_simple_bitmap_set_texture(bitmap->gl_id);
+	gl_shader_draw_execute_simple_bitmap(2,0,(2*sizeof(float)),((2+2)*sizeof(float)),&col,1.0f);
 	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
+
+	view_unbind_utility_vertex_object();
 }
 
 void sky_draw_background(void)
@@ -310,8 +328,8 @@ void sky_draw_dome_panoramic(void)
 	texture=&map.textures[map.sky.fill];
 	col.r=col.g=col.b=1.0f;
 
-	gl_shader_draw_execute_simple_bitmap_vbo_attribute(3,0,((pan_count*3)*sizeof(float)),0,&col,1.0f);
 	gl_shader_draw_execute_simple_bitmap_set_texture(texture->frames[texture->animate.current_frame].bitmap.gl_id);
+	gl_shader_draw_execute_simple_bitmap(3,0,((pan_count*3)*sizeof(float)),0,&col,1.0f);
 	glDrawArrays(GL_TRIANGLES,0,pan_count);
 
 		// unbind the vbo
@@ -586,8 +604,8 @@ void sky_draw_dome_hemisphere(void)
 
 		// draw the dome
 	
-	gl_shader_draw_execute_simple_bitmap_vbo_attribute(3,0,((dome_cnt*3)*sizeof(float)),0,&col,1.0f);
 	gl_shader_draw_execute_simple_bitmap_set_texture(texture->frames[texture->animate.current_frame].bitmap.gl_id);
+	gl_shader_draw_execute_simple_bitmap(3,0,((dome_cnt*3)*sizeof(float)),0,&col,1.0f);
 	glDrawArrays(GL_TRIANGLES,0,dome_cnt);
 
 		// unbind the vbo
@@ -845,7 +863,7 @@ void sky_draw_cube(void)
 
 		// draw cube sides
 
-	gl_shader_draw_execute_simple_bitmap_vbo_attribute(3,0,(((6*4)*3)*sizeof(float)),0,&col,1.0f);
+	gl_shader_draw_execute_simple_bitmap(3,0,(((6*4)*3)*sizeof(float)),0,&col,1.0f);
 
 	offset=0;
 
