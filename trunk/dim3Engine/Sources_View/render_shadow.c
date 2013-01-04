@@ -495,6 +495,15 @@ int shadow_render_stencil_poly_setup(map_mesh_type *mesh,map_mesh_poly_type *pol
 
 void shadow_render_stencil_poly_draw(int ptsz,float *vertexes,int stencil_idx)
 {
+	float			*vp;
+	
+	view_bind_utility_vertex_object();
+	vp=(float*)view_map_utility_vertex_object();
+
+	memmove(vp,vertexes,((ptsz*3)*sizeof(float)));
+	
+	view_unmap_utility_vertex_object();
+
 	glDisable(GL_BLEND);
 	
 	glEnable(GL_DEPTH_TEST);
@@ -503,10 +512,12 @@ void shadow_render_stencil_poly_draw(int ptsz,float *vertexes,int stencil_idx)
 	glStencilOp(GL_KEEP,GL_KEEP,GL_REPLACE);
 	glStencilFunc(GL_ALWAYS,stencil_idx,0xFF);
 
-	gl_shader_draw_execute_simple_black_ptr(3,vertexes,1.0f);
+	gl_shader_draw_execute_simple_black_vbo(3,0,1.0f);
 	glDrawArrays(GL_TRIANGLE_FAN,0,ptsz);
 		
 	glColorMask(GL_TRUE,GL_TRUE,GL_TRUE,GL_TRUE);
+
+	view_unbind_utility_vertex_object();
 }
 
 /* =======================================================

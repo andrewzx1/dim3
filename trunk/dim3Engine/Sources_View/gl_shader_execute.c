@@ -113,28 +113,15 @@ void gl_shader_draw_execute_simple_gradient_vbo(int vertex_size,int vertex_offse
       
 ======================================================= */
 
-void gl_shader_draw_execute_simple_black_set_alpha(float alpha)
-{
-	if (black_shader.var_values.alpha!=alpha) {
-		black_shader.var_values.alpha=alpha;
-		glUniform1f(black_shader.var_locs.dim3Alpha,alpha);
-	}
-}
-
-void gl_shader_draw_execute_simple_black_ptr(int vertex_size,float *vertexes,float alpha)
-{
-	gl_shader_draw_execute_set_program(&black_shader);
-	gl_shader_set_draw_matrix_variables(&black_shader);
-	gl_shader_draw_execute_simple_black_set_alpha(alpha);
-		
-	glVertexAttribPointer(black_shader.var_locs.dim3Vertex,vertex_size,GL_FLOAT,GL_FALSE,0,(void*)vertexes);
-}
-
 void gl_shader_draw_execute_simple_black_vbo(int vertex_size,int vertex_offset,float alpha)
 {
 	gl_shader_draw_execute_set_program(&black_shader);
 	gl_shader_set_draw_matrix_variables(&black_shader);
-	gl_shader_draw_execute_simple_black_set_alpha(alpha);
+
+	if (black_shader.var_values.alpha!=alpha) {
+		black_shader.var_values.alpha=alpha;
+		glUniform1f(black_shader.var_locs.dim3Alpha,alpha);
+	}
 		
 	glVertexAttribPointer(black_shader.var_locs.dim3Vertex,vertex_size,GL_FLOAT,GL_FALSE,0,(void*)vertex_offset);
 }

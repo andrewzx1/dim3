@@ -633,7 +633,7 @@ void object_health_remove(obj_type *obj,int value)
 	if (value==0) return;
 	
     health->value-=value;
-    if (health->value<0) {
+    if (health->value<=0) {
 		health->value=0;
 		obj->death_trigger=TRUE;
 	}

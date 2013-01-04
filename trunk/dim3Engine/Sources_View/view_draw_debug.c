@@ -105,17 +105,15 @@ void view_draw_debug_bounding_box(d3pnt *pnt,d3ang *ang,d3pnt *size)
 
 void view_draw_debug_info(d3pnt *pnt,d3pnt *size,int count,char *strs)
 {
-	int						n,x,y,dist,font_size;
+	int						n,x,y,dist;
 	d3col					col;
 	d3pnt					spt,ept,win_pnt;
 	ray_trace_contact_type	contact;
 
-		// get size and fade
+		// only show closer objects
 
 	dist=distance_get(pnt->x,pnt->y,pnt->z,view.render->camera.pnt.x,view.render->camera.pnt.y,view.render->camera.pnt.z);
-		
-	font_size=iface.font.text_size_medium-((iface.font.text_size_medium*dist)/75000);
-	if (font_size<1) return;
+	if (dist>25000) return;
 
 		// ray trace check
 
@@ -153,18 +151,18 @@ void view_draw_debug_info(d3pnt *pnt,d3pnt *size,int count,char *strs)
 	x=(win_pnt.x*iface.scale_x)/view.screen.x_sz;
 	y=((view.screen.y_sz-win_pnt.y)*iface.scale_y)/view.screen.y_sz;
 
-	y-=(font_size*count);
+	y-=(iface.font.text_size_small*count);
 
 		// draw text
 
 	col.r=col.b=1.0f;
 	col.g=0.0f;
 	
-	gl_text_start(font_hud_index,font_size,FALSE);
+	gl_text_start(font_hud_index,iface.font.text_size_small,FALSE);
 
 	for (n=0;n!=count;n++) {
-		y+=font_size;
-//		gl_text_draw(x,y,(char*)strs[n*128],tx_left,FALSE,&col,1.0f);
+		y+=iface.font.text_size_small;
+		gl_text_draw(x,y,(char*)&strs[n*128],tx_center,FALSE,&col,1.0f);
 	}
 
 	gl_text_end();
@@ -212,7 +210,7 @@ void view_draw_debug_timer(int script_idx,int mode,char *name,bool has_chain,cha
 	int				timer_idx;
 	timer_type		*timer;
 
-	timer_idx=timers_find(script_idx,timer_mode_repeat);
+	timer_idx=timers_find(script_idx,mode);
 	if (timer_idx==-1) {
 		sprintf(str,"%s: *",name);
 		return;
@@ -243,18 +241,16 @@ void view_draw_debug_object(obj_type *obj)
 	view_draw_debug_bounding_box(&obj->draw.pnt,&obj->draw.setup.ang,&size);
 	view_draw_debug_object_path(obj);
 
-	// supergumba -- add if watch is on
-
-	sprintf(strs[0],"  Name: %s",obj->name);
-	sprintf(strs[1]," Debug: %s",obj->debug.str);
-	sprintf(strs[2],"   Pos: %d,%d,%d",obj->draw.pnt.x,obj->draw.pnt.y,obj->draw.pnt.z);
-	sprintf(strs[3]," Angle: %.2f,%.2f,%.2f",obj->ang.x,obj->ang.y,obj->ang.z);
+	sprintf(strs[0],"Name: %s",obj->name);
+	sprintf(strs[1],"Debug: %s",obj->debug.str);
+	sprintf(strs[2],"Position: %d,%d,%d",obj->draw.pnt.x,obj->draw.pnt.y,obj->draw.pnt.z);
+	sprintf(strs[3],"Angle: %.2f,%.2f,%.2f",obj->ang.x,obj->ang.y,obj->ang.z);
 	sprintf(strs[4],"Health: %d %d",obj->status.health.value,obj->status.armor.value);
 	if (obj->watch.on) {
-		sprintf(strs[5]," Watch: on");
+		sprintf(strs[5],"Watch: on");
 	}
 	else {
-		sprintf(strs[5]," Watch: off");
+		sprintf(strs[5],"Watch: off");
 	}
 	view_draw_debug_timer(obj->script_idx,timer_mode_repeat,"Timer",FALSE,(char*)strs[6]);
 	view_draw_debug_timer(obj->script_idx,timer_mode_single,"Wait",FALSE,(char*)strs[7]);
@@ -265,6 +261,7 @@ void view_draw_debug_object(obj_type *obj)
 
 void view_draw_debug_projectile(proj_type *proj)
 {
+	char			strs[3][128];
 	d3pnt			size;
 	proj_setup_type	*proj_setup;
 
@@ -275,7 +272,11 @@ void view_draw_debug_projectile(proj_type *proj)
 	view_draw_debug_bounding_box(&proj->draw.pnt,&proj->draw.setup.ang,&size);
 
 	proj_setup=server.obj_list.objs[proj->obj_idx]->weap_list.weaps[proj->weap_idx]->proj_setup_list.proj_setups[proj->proj_setup_idx];
-	//view_draw_debug_info(proj_setup->name,NULL,&proj->draw.pnt,&size,&proj->ang);
-	// supergumba
+	
+	sprintf(strs[0],"Name: %s",proj_setup->name);
+	sprintf(strs[1],"Position: %d,%d,%d",proj->draw.pnt.x,proj->draw.pnt.y,proj->draw.pnt.z);
+	sprintf(strs[2],"Angle: %.2f,%.2f,%.2f",proj->ang.x,proj->ang.y,proj->ang.z);
+
+	view_draw_debug_info(&proj->draw.pnt,&size,3,(char*)strs);
 }
 
