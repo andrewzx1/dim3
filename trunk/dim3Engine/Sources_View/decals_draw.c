@@ -71,7 +71,7 @@ void decal_render_stencil(map_mesh_type *mesh,map_mesh_poly_type *poly,int stenc
 	
 		// stencil
 
-	gl_shader_draw_execute_simple_black_vbo(3,0,1.0f);
+	gl_shader_draw_execute_simple_black(3,0,1.0f);
 
 	glStencilFunc(GL_ALWAYS,stencil_idx,0xFF);
 	glDrawArrays(GL_TRIANGLE_FAN,0,poly->ptsz);
@@ -173,7 +173,7 @@ void decal_render_mark(int stencil_idx,decal_type *decal)
          // draw the polygon
 
 	gl_shader_draw_execute_simple_bitmap_set_texture(view_images_get_gl_id(mark->image_idx));
-	gl_shader_draw_execute_simple_bitmap_vbo_attribute(3,0,(3*sizeof(float)),((3+2)*sizeof(float)),&col,alpha);
+	gl_shader_draw_execute_simple_bitmap(3,0,(3*sizeof(float)),((3+2)*sizeof(float)),&col,alpha);
 			
 	glStencilFunc(GL_EQUAL,stencil_idx,0xFF);
 	glDrawArrays(GL_TRIANGLE_STRIP,0,4);

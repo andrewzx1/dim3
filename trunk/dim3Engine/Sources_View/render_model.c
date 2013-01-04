@@ -714,7 +714,8 @@ void render_model_transparent(model_draw *draw)
 void render_model_target(model_draw *draw,d3col *col)
 {
 	int				ty,by,lx,rx,lz,rz,wid,xadd,zadd;
-	float			rang,vertexes[12];
+	float			rang;
+	float			*vp;
 	model_type		*mdl;
 	
 		// get model
@@ -761,30 +762,34 @@ void render_model_target(model_draw *draw,d3col *col)
 
 		// get the vertexes
 
-	vertexes[0]=(float)lx;
-	vertexes[1]=(float)ty;
-	vertexes[2]=(float)lz;
+	view_bind_utility_vertex_object();
+	vp=(float*)view_map_utility_vertex_object();
 
-	vertexes[3]=(float)rx;
-	vertexes[4]=(float)ty;
-	vertexes[5]=(float)rz;
+	*vp++=(float)lx;
+	*vp++=(float)ty;
+	*vp++=(float)lz;
 
-	vertexes[6]=(float)rx;
-	vertexes[7]=(float)by;
-	vertexes[8]=(float)rz;
+	*vp++=(float)rx;
+	*vp++=(float)ty;
+	*vp++=(float)rz;
 
-	vertexes[9]=(float)lx;
-	vertexes[10]=(float)by;
-	vertexes[11]=(float)lz;
+	*vp++=(float)rx;
+	*vp++=(float)by;
+	*vp++=(float)rz;
 
-		// setup draw
+	*vp++=(float)lx;
+	*vp++=(float)by;
+	*vp++=(float)lz;
+
+	view_unmap_utility_vertex_object();
+
+		// draw target box
 
 	glDisable(GL_BLEND);
-			
 	glEnable(GL_DEPTH_TEST);
-
-		// draw target
 		
-	gl_shader_draw_execute_simple_color_ptr(3,vertexes,col,1.0f);
+	gl_shader_draw_execute_simple_color(3,0,col,0.1f);
 	glDrawArrays(GL_LINE_LOOP,0,4);
+
+	view_unbind_utility_vertex_object();
 }

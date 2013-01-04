@@ -960,8 +960,14 @@ void view_draw_nodes(editor_view_type *view)
 		fx=0.0f;
 		fy=0.0f;
 		fz=-(float)1000.0f;
-	
-		matrix_rotate_xyz(&mat,node->ang.x,node->ang.y,node->ang.z);
+
+		matrix_rotate_x(&mat,node->ang.x);
+		matrix_vertex_multiply(&mat,&fx,&fy,&fz);
+		
+		matrix_rotate_y(&mat,node->ang.y);
+		matrix_vertex_multiply(&mat,&fx,&fy,&fz);
+
+		matrix_rotate_z(&mat,node->ang.z);
 		matrix_vertex_multiply(&mat,&fx,&fy,&fz);
 			
 		vertexes[0]=(float)node->pnt.x;

@@ -237,7 +237,7 @@ void ring_draw(effect_type *effect,int count,int image_offset)
 		// draw ring
 		
 	gl_shader_draw_execute_simple_bitmap_set_texture(view_images_get_gl_id(ring->image_idx));
-	gl_shader_draw_execute_simple_bitmap_vbo_attribute(3,0,(3*sizeof(float)),((3+2)*sizeof(float)),&col,alpha);
+	gl_shader_draw_execute_simple_bitmap(3,0,(3*sizeof(float)),((3+2)*sizeof(float)),&col,alpha);
 	
 	glEnable(GL_BLEND);
 	

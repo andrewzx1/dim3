@@ -219,7 +219,7 @@ void halo_draw_setup(void)
 void halo_draw_render(void)
 {
 	int						n,x,y,psz;
-	float					vertexes[8],uvs[8];
+	float					*vp;
 	d3col					col;
 	halo_draw_type			*halo_draw;
 	
@@ -255,30 +255,38 @@ void halo_draw_render(void)
 
 			// setup vertex
 
-		vertexes[0]=(float)(x-psz);
-		vertexes[1]=(float)(y-psz);
-		uvs[0]=0.0f;
-		uvs[1]=0.0f;
+		view_bind_utility_vertex_object();
+		vp=(float*)view_map_utility_vertex_object();
 
-		vertexes[2]=(float)(x-psz);
-		vertexes[3]=(float)(y+psz);
-		uvs[2]=0.0f;
-		uvs[3]=1.0f;
+		*vp++=(float)(x-psz);
+		*vp++=(float)(y-psz);
+		*vp++=0.0f;
+		*vp++=0.0f;
 
-		vertexes[4]=(float)(x+psz);
-		vertexes[5]=(float)(y-psz);
-		uvs[4]=1.0f;
-		uvs[5]=0.0f;
+		*vp++=(float)(x-psz);
+		*vp++=(float)(y+psz);
+		*vp++=0.0f;
+		*vp++=1.0f;
 
-		vertexes[6]=(float)(x+psz);
-		vertexes[7]=(float)(y+psz);
-		uvs[6]=1.0f;
-		uvs[7]=1.0f;
+		*vp++=(float)(x+psz);
+		*vp++=(float)(y-psz);
+		*vp++=1.0f;
+		*vp++=0.0f;
+
+		*vp++=(float)(x+psz);
+		*vp++=(float)(y+psz);
+		*vp++=1.0f;
+		*vp++=1.0f;
+
+		view_unmap_utility_vertex_object();
 
 			// draw halo
-	
-		gl_shader_draw_execute_simple_bitmap_ptr(view_images_get_gl_id(iface.halo_list.halos[halo_draw->idx].image_idx),2,vertexes,uvs,&col,halo_draw->alpha);
+
+		gl_shader_draw_execute_simple_bitmap_set_texture(view_images_get_gl_id(iface.halo_list.halos[halo_draw->idx].image_idx));
+		gl_shader_draw_execute_simple_bitmap(2,0,(2*sizeof(float)),((2+2)*sizeof(float)),&col,halo_draw->alpha);
 		glDrawArrays(GL_TRIANGLE_STRIP,0,4);
+
+		view_unbind_utility_vertex_object();
 	}
 
 		// reset repeat

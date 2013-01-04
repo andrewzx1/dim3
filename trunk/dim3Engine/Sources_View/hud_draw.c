@@ -93,7 +93,7 @@ void hud_bitmaps_draw(void)
 								px[4],py[4],sx,sy,rx,ry,
 								wid,high,repeat_count;
 	float						gx,gy,gx2,gy2,g_size,alpha;
-	float						vertexes[8],uvs[8];
+	float						*vp;
 	d3col						col,team_tint;
 	iface_bitmap_type			*bitmap;
 	obj_type					*obj;
@@ -211,26 +211,31 @@ void hud_bitmaps_draw(void)
 
 				// quad
 
-			vertexes[0]=(float)px[0];
-			vertexes[1]=(float)py[0];
-			uvs[0]=gx;
-			uvs[1]=gy;
+			view_bind_utility_vertex_object();
+			vp=(float*)view_map_utility_vertex_object();
 
-			vertexes[2]=(float)px[3];
-			vertexes[3]=(float)py[3];
-			uvs[2]=gx;
-			uvs[3]=gy2;
+			*vp++=(float)px[0];
+			*vp++=(float)py[0];
+			*vp++=gx;
+			*vp++=gy;
 
-			vertexes[4]=(float)px[1];
-			vertexes[5]=(float)py[1];
-			uvs[4]=gx2;
-			uvs[5]=gy;
+			*vp++=(float)px[3];
+			*vp++=(float)py[3];
+			*vp++=gx;
+			*vp++=gy2;
 
-			vertexes[6]=(float)px[2];
-			vertexes[7]=(float)py[2];
-			uvs[6]=gx2;
-			uvs[7]=gy2;
+			*vp++=(float)px[1];
+			*vp++=(float)py[1];
+			*vp++=gx2;
+			*vp++=gy;
+
+			*vp++=(float)px[2];
+			*vp++=(float)py[2];
+			*vp++=gx2;
+			*vp++=gy2;
 			
+			view_unmap_utility_vertex_object();
+		
 				// column wrapping repeats
 				
 			if (bitmap->repeat.col!=0) {
@@ -293,8 +298,11 @@ void hud_bitmaps_draw(void)
 
 				// draw the quad
 
-			gl_shader_draw_execute_simple_bitmap_ptr(bitmap_data->gl_id,2,vertexes,uvs,&col,alpha);
+			gl_shader_draw_execute_simple_bitmap_set_texture(bitmap_data->gl_id);
+			gl_shader_draw_execute_simple_bitmap(2,0,(2*sizeof(float)),((2+2)*sizeof(float)),&col,alpha);
 			glDrawArrays(GL_TRIANGLE_STRIP,0,4);
+
+			view_unbind_utility_vertex_object();
 		}
 	}
 }
@@ -693,7 +701,7 @@ void hud_bars_draw_pie(iface_bar_type *bar)
 
 	glDisable(GL_DEPTH_TEST);
 
-	gl_shader_draw_execute_simple_gradient_vbo(2,0,((6*72)*sizeof(float)));
+	gl_shader_draw_execute_simple_gradient(2,0,((6*72)*sizeof(float)));
 	glDrawArrays(GL_TRIANGLES,0,(72*3));
 
 	glDisable(GL_BLEND);
