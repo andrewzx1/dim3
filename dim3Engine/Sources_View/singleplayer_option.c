@@ -158,7 +158,7 @@ bool singleplayer_option_on(int simple_save_idx,int idx)
 	return(iface.singleplayer.option_list.options[idx].ss_reveal_id<=iface.simple_save_list.saves[simple_save_idx].save_id);
 }
 
-bool singleplayer_option_count(int simple_save_idx)
+int singleplayer_option_count(int simple_save_idx)
 {
 	int				n,count;
 

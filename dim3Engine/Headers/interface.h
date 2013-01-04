@@ -450,7 +450,7 @@ extern void intro_run(void);
 
 extern bool singleplayer_map_pick_on(int simple_save_idx);
 extern bool singleplayer_option_on(int simple_save_idx,int idx);
-extern bool singleplayer_option_count(int simple_save_idx);
+extern int singleplayer_option_count(int simple_save_idx);
 extern void singleplayer_option_open(void);
 extern void singleplayer_option_close(void);
 extern void singleplayer_option_run(void);
@@ -815,9 +815,6 @@ extern inline void gl_shader_draw_execute_simple_color_ptr(int vertex_size,float
 extern inline void gl_shader_draw_execute_simple_color_vbo(int vertex_size,int vertex_offset,d3col *col,float alpha);
 
 extern inline void gl_shader_draw_execute_simple_gradient_vbo(int vertex_size,int vertex_offset,int color_offset);
-
-extern inline void gl_shader_draw_execute_simple_black_set_alpha(float alpha);
-extern inline void gl_shader_draw_execute_simple_black_ptr(int vertex_size,float *vertexes,float alpha);
 extern inline void gl_shader_draw_execute_simple_black_vbo(int vertex_size,int vertex_offset,float alpha);
 
 extern inline void gl_shader_draw_execute_simple_bitmap_set_color(d3col *col,float alpha);
