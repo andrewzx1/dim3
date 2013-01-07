@@ -80,8 +80,6 @@ void gl_shader_draw_execute_simple_color_set_color(d3col *col,float alpha)
 
 void gl_shader_draw_execute_simple_color(int vertex_size,int vertex_offset,d3col *col,float alpha)
 {
-	fprintf(stdout,"color\n");
-
 	gl_shader_draw_execute_set_program(&color_shader);
 	gl_shader_set_draw_matrix_variables(&color_shader);
 	gl_shader_draw_execute_simple_color_set_color(col,alpha);
@@ -97,7 +95,6 @@ void gl_shader_draw_execute_simple_color(int vertex_size,int vertex_offset,d3col
 
 void gl_shader_draw_execute_simple_gradient(int vertex_size,int vertex_offset,int color_offset)
 {
-	fprintf(stdout,"gradient\n");
 	gl_shader_draw_execute_set_program(&gradient_shader);
 	gl_shader_set_draw_matrix_variables(&gradient_shader);
 		
@@ -113,7 +110,6 @@ void gl_shader_draw_execute_simple_gradient(int vertex_size,int vertex_offset,in
 
 void gl_shader_draw_execute_simple_black(int vertex_size,int vertex_offset,float alpha)
 {
-	fprintf(stdout,"black\n");
 	gl_shader_draw_execute_set_program(&black_shader);
 	gl_shader_set_draw_matrix_variables(&black_shader);
 
