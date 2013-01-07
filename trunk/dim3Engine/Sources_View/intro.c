@@ -55,6 +55,8 @@ int							intro_simple_save_idx;
 bool						intro_esc_down;
 bitmap_type					intro_bitmap;
 
+bool test=FALSE;
+
 /* =======================================================
 
       Intro UI Utilities
