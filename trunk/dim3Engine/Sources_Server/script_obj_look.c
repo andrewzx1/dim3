@@ -41,6 +41,7 @@ JSValueRef js_obj_look_get_effectWeapons(JSContextRef cx,JSObjectRef j_obj,JSStr
 bool js_obj_look_set_upAngle(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 bool js_obj_look_set_downAngle(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 bool js_obj_look_set_effectWeapons(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+JSValueRef js_obj_look_get_look_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_look_set_look_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_look_set_look_at_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
@@ -51,6 +52,7 @@ JSStaticValue 		obj_look_props[]={
 							{0,0,0,0}};
 							
 JSStaticFunction	obj_look_functions[]={
+							{"getLook",					js_obj_look_get_look_func,				kJSPropertyAttributeDontDelete},
 							{"setLook",					js_obj_look_set_look_func,				kJSPropertyAttributeDontDelete},
 							{"setLookAt",				js_obj_look_set_look_at_func,			kJSPropertyAttributeDontDelete},
 							{0,0,0}};
@@ -149,6 +151,16 @@ bool js_obj_look_set_effectWeapons(JSContextRef cx,JSObjectRef j_obj,JSStringRef
       Functions
       
 ======================================================= */
+
+JSValueRef js_obj_look_get_look_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+{
+	obj_type		*obj;
+	
+	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
+	
+	obj=object_get_attach(j_obj);
+	return(script_float_to_value(cx,obj->view_ang.x));
+}
 
 JSValueRef js_obj_look_set_look_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {

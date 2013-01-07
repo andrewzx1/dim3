@@ -46,7 +46,7 @@ texture_font_type			fonts[2];
 
 void gl_text_initialize(void)
 {
-	int			n,vertex_mem_sz;
+	int			n;
 
 		// load the fonts
 		
@@ -60,8 +60,7 @@ void gl_text_initialize(void)
 
 		// text VBO
 
-	vertex_mem_sz=(1024*(2+2+4))*sizeof(float);
-	view_create_text_vertex_object(vertex_mem_sz);
+	view_create_text_vertex_object();
 }
 
 void gl_text_shutdown(void)
@@ -162,10 +161,8 @@ void gl_text_start(int text_font,int text_size,bool monospaced)
 		
 	col.r=col.g=col.b=1.0f;
 	
-		// start text VBO
-		// and texture
+		// start texture
 
-	view_bind_text_vertex_object();
 	gl_shader_draw_execute_simple_bitmap_set_texture(font->bitmap.gl_id);
 
 		// no wrapping
@@ -181,10 +178,6 @@ void gl_text_start(int text_font,int text_size,bool monospaced)
 
 void gl_text_end(void)
 {
-		// unbind text object
-
-	view_unbind_text_vertex_object();
-
 		// restore wrapping
 		
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT);
@@ -244,7 +237,7 @@ void gl_text_draw_internal(int x,int y,char *txt,int just,bool vcenter,d3col *co
 
 		// construct vertexes
 
-	
+	view_bind_text_vertex_object();
 	vp=(float*)view_map_text_vertex_object();
 
 		// create the quads
@@ -330,6 +323,10 @@ void gl_text_draw_internal(int x,int y,char *txt,int just,bool vcenter,d3col *co
 	for (n=0;n!=cnt;n++) {
 		glDrawArrays(GL_TRIANGLE_STRIP,(n*4),4);
 	}
+	
+		// unbind text object
+
+	view_unbind_text_vertex_object();
 }
 
 void gl_text_draw(int x,int y,char *txt,int just,bool vcenter,d3col *col,float alpha)

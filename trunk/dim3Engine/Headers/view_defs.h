@@ -29,7 +29,8 @@ and can be sold or given away.
 // vertex objects
 //
 
-#define view_vertex_object_count							32
+#define view_vbo_text_count									64
+#define view_vbo_utility_count								128
 
 //
 // back renderers
