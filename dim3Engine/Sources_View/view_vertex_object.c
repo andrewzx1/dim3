@@ -36,8 +36,11 @@ extern view_type			view;
 extern server_type			server;
 extern setup_type			setup;
 
+int							vbo_text_index,vbo_utility_index;
+bool						vbo_utility_init;
 GLuint						vbo_sky,vbo_fog,vbo_rain,
-							vbo_text,vbo_utility;
+							vbo_text[view_vbo_text_count],
+							vbo_utility[view_vbo_utility_count];
 
 /* =======================================================
 
@@ -488,23 +491,34 @@ void view_unbind_effect_index_object(void)
       
 ======================================================= */
 
-void view_create_text_vertex_object(int vertex_mem_sz)
+void view_create_text_vertex_object(void)
 {
-	glGenBuffers(1,&vbo_text);
+	int			n,vertex_mem_sz;
+	
+	glGenBuffers(view_vbo_text_count,vbo_text);
+	
+	vertex_mem_sz=(1024*(2+2))*sizeof(float);
 
-	glBindBuffer(GL_ARRAY_BUFFER,vbo_text);
-	glBufferData(GL_ARRAY_BUFFER,vertex_mem_sz,NULL,GL_DYNAMIC_DRAW);
-	glBindBuffer(GL_ARRAY_BUFFER,0);
+	for (n=0;n!=view_vbo_text_count;n++) {
+		glBindBuffer(GL_ARRAY_BUFFER,vbo_text[n]);
+		glBufferData(GL_ARRAY_BUFFER,vertex_mem_sz,NULL,GL_DYNAMIC_DRAW);
+		glBindBuffer(GL_ARRAY_BUFFER,0);
+	}
+	
+	vbo_text_index=0;
 }
 
 void view_dispose_text_vertex_object(void)
 {
-	glDeleteBuffers(1,&vbo_text);
+	glDeleteBuffers(view_vbo_text_count,vbo_text);
 }
 
 void view_bind_text_vertex_object(void)
 {
-	glBindBuffer(GL_ARRAY_BUFFER,vbo_text);
+	glBindBuffer(GL_ARRAY_BUFFER,vbo_text[vbo_text_index]);
+	
+	vbo_text_index++;
+	if (vbo_text_index==view_vbo_text_count) vbo_text_index=0;
 }
 
 unsigned char* view_map_text_vertex_object(void)
@@ -530,30 +544,39 @@ void view_unbind_text_vertex_object(void)
 
 void view_initialize_utility_vertex_object(void)
 {
-	vbo_utility=-1;
+	vbo_utility_init=FALSE;
 }
 
 void view_create_utility_vertex_object(void)
 {
-	int				vertex_mem_sz;
+	int			n,vertex_mem_sz;
+	
+	glGenBuffers(view_vbo_utility_count,vbo_utility);
+	
+	vertex_mem_sz=((128*(3+2))*sizeof(float))+((128*4)*sizeof(unsigned char));		// possibly up to 128 vertexes, uvs, colors
 
-	glGenBuffers(1,&vbo_utility);
-
-	vertex_mem_sz=((128*(3+4))*sizeof(float))+((128*4)*sizeof(unsigned char));		// possibly up to 128 vertexes, uvs, colors
-
-	glBindBuffer(GL_ARRAY_BUFFER,vbo_utility);
-	glBufferData(GL_ARRAY_BUFFER,vertex_mem_sz,NULL,GL_DYNAMIC_DRAW);
-	glBindBuffer(GL_ARRAY_BUFFER,0);
+	for (n=0;n!=view_vbo_utility_count;n++) {
+		glBindBuffer(GL_ARRAY_BUFFER,vbo_utility[n]);
+		glBufferData(GL_ARRAY_BUFFER,vertex_mem_sz,NULL,GL_DYNAMIC_DRAW);
+		glBindBuffer(GL_ARRAY_BUFFER,0);
+	}
+	
+	vbo_utility_index=0;
+	
+	vbo_utility_init=TRUE;
 }
 
 void view_dispose_utility_vertex_object(void)
 {
-	if (vbo_utility!=-1) glDeleteBuffers(1,&vbo_utility);
+	if (vbo_utility_init) glDeleteBuffers(view_vbo_utility_count,vbo_utility);
 }
 
 void view_bind_utility_vertex_object(void)
 {
-	glBindBuffer(GL_ARRAY_BUFFER,vbo_utility);
+	glBindBuffer(GL_ARRAY_BUFFER,vbo_utility[vbo_utility_index]);
+	
+	vbo_utility_index++;
+	if (vbo_utility_index==view_vbo_utility_count) vbo_utility_index=0;
 }
 
 unsigned char* view_map_utility_vertex_object(void)

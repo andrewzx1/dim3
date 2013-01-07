@@ -751,7 +751,7 @@ extern inline unsigned short* view_map_effect_index_object(void);
 extern inline void view_unmap_effect_index_object(void);
 extern inline void view_unbind_effect_index_object(void);
 
-extern void view_create_text_vertex_object(int vertex_mem_sz);
+extern void view_create_text_vertex_object(void);
 extern void view_dispose_text_vertex_object(void);
 extern inline void view_bind_text_vertex_object(void);
 extern inline unsigned char* view_map_text_vertex_object(void);
