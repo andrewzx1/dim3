@@ -43,6 +43,10 @@ extern shader_type			*gl_shader_current,
 							color_shader,gradient_shader,black_shader,
 							bitmap_shader;
 
+extern float				gl_proj_matrix[16],gl_model_view_matrix[16],
+							gl_normal_matrix[9];		// supergumba -- test
+
+
 /* =======================================================
 
       Shader Generic Set Program and Variables
@@ -76,6 +80,8 @@ void gl_shader_draw_execute_simple_color_set_color(d3col *col,float alpha)
 
 void gl_shader_draw_execute_simple_color(int vertex_size,int vertex_offset,d3col *col,float alpha)
 {
+	fprintf(stdout,"color\n");
+
 	gl_shader_draw_execute_set_program(&color_shader);
 	gl_shader_set_draw_matrix_variables(&color_shader);
 	gl_shader_draw_execute_simple_color_set_color(col,alpha);
@@ -91,6 +97,7 @@ void gl_shader_draw_execute_simple_color(int vertex_size,int vertex_offset,d3col
 
 void gl_shader_draw_execute_simple_gradient(int vertex_size,int vertex_offset,int color_offset)
 {
+	fprintf(stdout,"gradient\n");
 	gl_shader_draw_execute_set_program(&gradient_shader);
 	gl_shader_set_draw_matrix_variables(&gradient_shader);
 		
@@ -106,6 +113,7 @@ void gl_shader_draw_execute_simple_gradient(int vertex_size,int vertex_offset,in
 
 void gl_shader_draw_execute_simple_black(int vertex_size,int vertex_offset,float alpha)
 {
+	fprintf(stdout,"black\n");
 	gl_shader_draw_execute_set_program(&black_shader);
 	gl_shader_set_draw_matrix_variables(&black_shader);
 
@@ -141,6 +149,51 @@ void gl_shader_draw_execute_simple_bitmap_set_texture(unsigned long gl_id)
 
 void gl_shader_draw_execute_simple_bitmap(int vertex_size,int vertex_offset,int uv_offset,int stride,d3col *col,float alpha)
 {
+/* supergumba -- testing
+	char		log[1024];
+
+	fprintf(stdout,"IN EXECUTE\n");
+	fflush(stdout);
+	fprintf(stdout,"glIsProgram=%d [%d]\n",glIsProgram(bitmap_shader.program_obj),GL_TRUE);
+	fflush(stdout);
+
+	glGetProgramInfoLog(bitmap_shader.program_obj,1024,NULL,(GLchar*)log);
+	log[1023]=0x0;
+	fprintf(stdout,"Log=%s\n",log);
+	fflush(stdout);
+
+	fprintf(stdout,"projmatrix=%d\n",bitmap_shader.var_locs.dim3ProjectionMatrix);
+	fflush(stdout);
+	fprintf(stdout,"viewmatrix=%d\n",bitmap_shader.var_locs.dim3ModelViewMatrix);
+	fflush(stdout);
+	fprintf(stdout,"normalmatrix=%d\n",bitmap_shader.var_locs.dim3NormalMatrix);
+	fflush(stdout);
+	fprintf(stdout,"color=%d\n",bitmap_shader.var_locs.dim3SimpleColor);
+	fflush(stdout);
+
+	fprintf(stdout,"v=%d\n",bitmap_shader.var_locs.dim3Vertex);
+	fflush(stdout);
+	fprintf(stdout,"uv=%d\n",bitmap_shader.var_locs.dim3VertexUV);
+	fflush(stdout);
+
+	fprintf(stdout,"matrix 0 = %.2f,%.2f,%.2f,%.2f\n",gl_proj_matrix[0],gl_proj_matrix[1],gl_proj_matrix[2],gl_proj_matrix[3]);
+	fflush(stdout);
+	fprintf(stdout,"matrix 1 = %.2f,%.2f,%.2f,%.2f\n",gl_proj_matrix[4],gl_proj_matrix[5],gl_proj_matrix[6],gl_proj_matrix[7]);
+	fflush(stdout);
+	fprintf(stdout,"matrix 2 = %.2f,%.2f,%.2f,%.2f\n",gl_proj_matrix[8],gl_proj_matrix[9],gl_proj_matrix[10],gl_proj_matrix[11]);
+	fflush(stdout);
+	fprintf(stdout,"matrix 3 = %.2f,%.2f,%.2f,%.2f\n",gl_proj_matrix[12],gl_proj_matrix[13],gl_proj_matrix[14],gl_proj_matrix[15]);
+	fflush(stdout);
+
+
+	gl_shader_current=&bitmap_shader;
+	glUseProgram(bitmap_shader.program_obj);
+	if (bitmap_shader.var_locs.dim3ProjectionMatrix!=-1) glUniformMatrix4fv(bitmap_shader.var_locs.dim3ProjectionMatrix,1,GL_FALSE,gl_proj_matrix);
+	if (bitmap_shader.var_locs.dim3ModelViewMatrix!=-1) glUniformMatrix4fv(bitmap_shader.var_locs.dim3ModelViewMatrix,1,GL_FALSE,gl_model_view_matrix);
+	if (bitmap_shader.var_locs.dim3NormalMatrix!=-1) glUniformMatrix3fv(bitmap_shader.var_locs.dim3NormalMatrix,1,GL_FALSE,gl_normal_matrix);
+	glUniform4f(bitmap_shader.var_locs.dim3SimpleColor,col->r,col->g,col->b,alpha);
+*/
+
 	gl_shader_draw_execute_set_program(&bitmap_shader);
 	gl_shader_set_draw_matrix_variables(&bitmap_shader);
 	gl_shader_draw_execute_simple_bitmap_set_color(col,alpha);

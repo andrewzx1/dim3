@@ -39,7 +39,7 @@ extern render_info_type		render_info;
 bitmap_type					lmap_black_bitmap,lmap_white_bitmap;
 
 int							gl_texture_current_active;
-GLuint						gl_texture_current_binds[4];
+GLuint						gl_texture_current_binds[5];
 
 /* =======================================================
 
@@ -70,7 +70,7 @@ void gl_texture_initialize(void)
 	glActiveTexture(GL_TEXTURE0);
 	gl_texture_current_active=0;
 
-	for (n=0;n!=4;n++) {
+	for (n=0;n!=5;n++) {
 		gl_texture_current_binds[n]=-1;
 	}
 }
