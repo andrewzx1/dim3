@@ -283,8 +283,9 @@ void halo_draw_render(void)
 			// draw halo
 
 		gl_shader_draw_execute_simple_bitmap_set_texture(view_images_get_gl_id(iface.halo_list.halos[halo_draw->idx].image_idx));
-		gl_shader_draw_execute_simple_bitmap(2,0,(2*sizeof(float)),((2+2)*sizeof(float)),&col,halo_draw->alpha);
+		gl_shader_draw_execute_simple_bitmap_start(2,0,(2*sizeof(float)),((2+2)*sizeof(float)),&col,halo_draw->alpha);
 		glDrawArrays(GL_TRIANGLE_STRIP,0,4);
+		gl_shader_draw_execute_simple_bitmap_end();
 
 		view_unbind_utility_vertex_object();
 	}

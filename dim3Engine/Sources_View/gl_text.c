@@ -318,11 +318,13 @@ void gl_text_draw_internal(int x,int y,char *txt,int just,bool vcenter,d3col *co
 
 		// draw text
 		
-	gl_shader_draw_execute_simple_bitmap(2,0,(2*sizeof(float)),((2+2)*sizeof(float)),col,alpha);
+	gl_shader_draw_execute_simple_bitmap_start(2,0,(2*sizeof(float)),((2+2)*sizeof(float)),col,alpha);
 
 	for (n=0;n!=cnt;n++) {
 		glDrawArrays(GL_TRIANGLE_STRIP,(n*4),4);
 	}
+
+	gl_shader_draw_execute_simple_bitmap_end();
 	
 		// unbind text object
 

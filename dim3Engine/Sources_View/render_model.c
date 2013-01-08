@@ -231,8 +231,9 @@ void render_model_opaque_mesh(model_type *mdl,int mesh_idx,model_draw *draw,view
 
 			// run the shader
 			
-		gl_shader_draw_execute_model(texture,txt_idx,frame,1.0f,0,(3*sizeof(float)),(5*sizeof(float)),(8*sizeof(float)),stride,light_list);
+		gl_shader_draw_execute_model_start(texture,txt_idx,frame,1.0f,0,(3*sizeof(float)),(5*sizeof(float)),(8*sizeof(float)),stride,light_list);
 		glDrawArrays(GL_TRIANGLE_FAN,v_idx,poly->ptsz);
+		gl_shader_draw_execute_model_end(texture,light_list);
 		
 		v_idx+=poly->ptsz;
 		poly++;
@@ -300,8 +301,9 @@ void render_model_transparent_mesh(model_type *mdl,int mesh_idx,model_draw *draw
 
 			// draw poly
 			
-		gl_shader_draw_execute_model(texture,txt_idx,frame,draw_mesh->alpha,0,(3*sizeof(float)),(5*sizeof(float)),(8*sizeof(float)),stride,light_list);
+		gl_shader_draw_execute_model_start(texture,txt_idx,frame,draw_mesh->alpha,0,(3*sizeof(float)),(5*sizeof(float)),(8*sizeof(float)),stride,light_list);
 		glDrawArrays(GL_TRIANGLE_FAN,v_idx,poly->ptsz);
+		gl_shader_draw_execute_model_end(texture,light_list);
 		
 		v_idx+=poly->ptsz;
 		poly++;
@@ -788,8 +790,9 @@ void render_model_target(model_draw *draw,d3col *col)
 	glDisable(GL_BLEND);
 	glEnable(GL_DEPTH_TEST);
 		
-	gl_shader_draw_execute_simple_color(3,0,col,0.1f);
+	gl_shader_draw_execute_simple_color_start(3,0,col,0.1f);
 	glDrawArrays(GL_LINE_LOOP,0,4);
+	gl_shader_draw_execute_simple_color_end();
 
 	view_unbind_utility_vertex_object();
 }

@@ -54,10 +54,6 @@ bool app_start(char *err_str)
 
 	game_time_initialize();
 	
-		// ray tracing structures
-		
-	if (!ray_trace_initialize(err_str)) return(FALSE);
-	
 		// OS network initialization
 		
 	net_initialize();
@@ -78,6 +74,15 @@ bool app_start(char *err_str)
 		// if not running in dedicated host mode
 	
 	if (!app.dedicated_host) {
+	
+		// ray tracing structures
+		
+		if (iface.project.ray_trace) { 
+			if (!ray_trace_initialize(err_str)) {
+				server_shutdown();
+				return(FALSE);
+			}
+		}
 
 		if (!view_initialize(err_str)) {
 			server_shutdown();
@@ -100,16 +105,16 @@ void app_end(void)
 	console_add_system("Closing App");
 	
 		// shutdown view
+		// and ray tracing
 		
-	if (!app.dedicated_host) view_shutdown();
-	
+	if (!app.dedicated_host) {
+		view_shutdown();
+		if (iface.project.ray_trace) ray_trace_shutdown();
+	}
+
 		// shutdown server
 		
 	server_shutdown();
-	
-		// ray trace cleanup
-		
-	ray_trace_shutdown();
 	
 		// OS network shutdown
 		

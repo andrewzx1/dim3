@@ -212,8 +212,9 @@ void fog_draw_textured(void)
 		// draw the fog
 
 	gl_shader_draw_execute_simple_bitmap_set_texture(gl_id);
-	gl_shader_draw_execute_simple_bitmap(3,0,(3*sizeof(float)),((3+2)*sizeof(float)),&col,map.fog.alpha);
+	gl_shader_draw_execute_simple_bitmap_start(3,0,(3*sizeof(float)),((3+2)*sizeof(float)),&col,map.fog.alpha);
 	glDrawArrays(GL_TRIANGLES,0,((16*6)*count));
+	gl_shader_draw_execute_simple_bitmap_end();
 	
 	glDepthMask(GL_TRUE);
 

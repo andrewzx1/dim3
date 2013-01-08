@@ -299,8 +299,9 @@ void hud_bitmaps_draw(void)
 				// draw the quad
 
 			gl_shader_draw_execute_simple_bitmap_set_texture(bitmap_data->gl_id);
-			gl_shader_draw_execute_simple_bitmap(2,0,(2*sizeof(float)),((2+2)*sizeof(float)),&col,alpha);
+			gl_shader_draw_execute_simple_bitmap_start(2,0,(2*sizeof(float)),((2+2)*sizeof(float)),&col,alpha);
 			glDrawArrays(GL_TRIANGLE_STRIP,0,4);
+			gl_shader_draw_execute_simple_bitmap_end();
 
 			view_unbind_utility_vertex_object();
 		}
@@ -701,8 +702,9 @@ void hud_bars_draw_pie(iface_bar_type *bar)
 
 	glDisable(GL_DEPTH_TEST);
 
-	gl_shader_draw_execute_simple_gradient(2,0,((6*72)*sizeof(float)));
+	gl_shader_draw_execute_simple_gradient_start(2,0,((6*72)*sizeof(float)));
 	glDrawArrays(GL_TRIANGLES,0,(72*3));
+	gl_shader_draw_execute_simple_gradient_end();
 
 	glDisable(GL_BLEND);
 
