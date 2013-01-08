@@ -367,14 +367,6 @@ bool gl_core_map_shader_create(shader_type *shader,int nlight,bool fog,bool bump
 	free(vertex_data);
 	free(fragment_data);
 	
-		// activate the required attributes
-		
-	glEnableVertexAttribArray(shader->var_locs.dim3Vertex);
-	glEnableVertexAttribArray(shader->var_locs.dim3VertexUV);
-	glEnableVertexAttribArray(shader->var_locs.dim3VertexLightMapUV);
-	glEnableVertexAttribArray(shader->var_locs.dim3VertexNormal);
-	if ((bump) || (spec)) glEnableVertexAttribArray(shader->var_locs.dim3VertexTangent);
-
 	return(ok);
 }
 
@@ -541,13 +533,6 @@ bool gl_core_liquid_shader_create(shader_type *shader,int nlight,char *err_str)
 
 	free(vertex_data);
 	free(fragment_data);
-	
-		// activate the required attributes
-		
-	glEnableVertexAttribArray(shader->var_locs.dim3Vertex);
-	glEnableVertexAttribArray(shader->var_locs.dim3VertexUV);
-	glEnableVertexAttribArray(shader->var_locs.dim3VertexLightMapUV);
-	glEnableVertexAttribArray(shader->var_locs.dim3VertexNormal);
 
 	return(ok);
 }
@@ -836,13 +821,6 @@ bool gl_core_model_shader_create(shader_type *shader,int nlight,bool fog,bool bu
 
 	free(vertex_data);
 	free(fragment_data);
-	
-		// activate the required attributes
-		
-	glEnableVertexAttribArray(shader->var_locs.dim3Vertex);
-	glEnableVertexAttribArray(shader->var_locs.dim3VertexUV);
-	glEnableVertexAttribArray(shader->var_locs.dim3VertexNormal);
-	if ((bump) || (spec)) glEnableVertexAttribArray(shader->var_locs.dim3VertexTangent);
 
 	return(ok);
 }

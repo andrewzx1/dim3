@@ -242,9 +242,11 @@ void render_map_mesh_transparent(void)
 			// draw the polygon
 
 		if (!lighting_small) gl_lights_build_poly_glsl_light_list(mesh,poly,&light_list);
-		gl_shader_draw_execute_map(texture,poly->txt_idx,frame,poly->lmap_txt_idx,1.0f,0,(3*sizeof(float)),(5*sizeof(float)),(7*sizeof(float)),(10*sizeof(float)),mesh->vbo.vertex_stride,&light_list);
+		gl_shader_draw_execute_map_start(texture,poly->txt_idx,frame,poly->lmap_txt_idx,1.0f,0,(3*sizeof(float)),(5*sizeof(float)),(7*sizeof(float)),(10*sizeof(float)),mesh->vbo.vertex_stride,&light_list);
 
 		glDrawElements(GL_TRIANGLE_FAN,poly->ptsz,GL_UNSIGNED_SHORT,(GLvoid*)poly->vbo.index_offset);
+
+		gl_shader_draw_execute_map_end(texture,&light_list);
 		
 		view.count.mesh_poly++;
 	}

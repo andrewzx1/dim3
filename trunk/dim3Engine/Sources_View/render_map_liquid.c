@@ -538,7 +538,7 @@ void liquid_render_liquid_layer(map_liquid_type *liq,int txt_idx,int lmap_txt_id
 
 	gl_lights_build_liquid_glsl_light_list(liq,&light_list);
 
-	gl_shader_draw_execute_liquid(texture,txt_idx,frame,lmap_txt_idx,1.0f,0,(3*sizeof(float)),(5*sizeof(float)),(7*sizeof(float)),(10*sizeof(float)),liq->vbo.vertex_stride,&light_list);
+	gl_shader_draw_execute_liquid_start(texture,txt_idx,frame,lmap_txt_idx,1.0f,0,(3*sizeof(float)),(5*sizeof(float)),(7*sizeof(float)),(10*sizeof(float)),liq->vbo.vertex_stride,&light_list);
 			
 		// fix texture if any back rendering
 		
@@ -555,6 +555,8 @@ void liquid_render_liquid_layer(map_liquid_type *liq,int txt_idx,int lmap_txt_id
 
 	glDrawElements(GL_TRIANGLE_STRIP,liq->vbo.index_count,GL_UNSIGNED_SHORT,(GLvoid*)0);
 	
+	gl_shader_draw_execute_liquid_end(texture,&light_list);
+
 	view_unbind_mesh_liquid_vertex_object();
 	view_unbind_mesh_liquid_index_object();
 }

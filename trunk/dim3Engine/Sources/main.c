@@ -40,13 +40,6 @@ extern SDL_Window					*sdl_wind;
 
 extern bool dim3_osx_appstore_main(void);
 
-void test_loop(void *v)
-{
-	char		err_str[256];
-	
-	loop_main(err_str);
-}
-
 /* =======================================================
 
       Check for Editor Launch

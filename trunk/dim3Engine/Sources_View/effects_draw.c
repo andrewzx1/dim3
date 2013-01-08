@@ -263,7 +263,7 @@ void effect_draw_lightning(effect_type *effect)
 	glEnable(GL_DEPTH_TEST);
 	glDepthMask(GL_FALSE);
 
-	gl_shader_draw_execute_simple_color(3,0,&lightning->col,0.1f);
+	gl_shader_draw_execute_simple_color_start(3,0,&lightning->col,0.1f);
 	
 	glLineWidth((float)(wid*5));
 	glDrawArrays(GL_LINES,0,(nline*2));
@@ -276,6 +276,8 @@ void effect_draw_lightning(effect_type *effect)
 	glLineWidth((float)wid);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 	glDrawArrays(GL_LINES,0,(nline*2));
+
+	gl_shader_draw_execute_simple_color_end();
 
 	glLineWidth(1.0f);
 	
@@ -351,7 +353,7 @@ void effect_draw_ray(effect_type *effect,int count)
 	glEnable(GL_DEPTH_TEST);
 	glDepthMask(GL_FALSE);
 
-	gl_shader_draw_execute_simple_color(3,0,&ray->col,1.0f);
+	gl_shader_draw_execute_simple_color_start(3,0,&ray->col,1.0f);
 	
 	while (wid>0) {
 	
@@ -360,6 +362,8 @@ void effect_draw_ray(effect_type *effect,int count)
 		
 		wid-=2;
 	}
+
+	gl_shader_draw_execute_simple_color_end();
 	
 	glDepthMask(GL_TRUE);
 

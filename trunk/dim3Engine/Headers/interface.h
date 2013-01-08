@@ -811,18 +811,30 @@ extern void gl_shader_force_matrix_resets(void);
 //
 
 extern inline void gl_shader_draw_execute_simple_color_set_color(d3col *col,float alpha);
-extern inline void gl_shader_draw_execute_simple_color(int vertex_size,int vertex_offset,d3col *col,float alpha);
-extern inline void gl_shader_draw_execute_simple_gradient(int vertex_size,int vertex_offset,int color_offset);
-extern inline void gl_shader_draw_execute_simple_black(int vertex_size,int vertex_offset,float alpha);
+extern inline void gl_shader_draw_execute_simple_color_start(int vertex_size,int vertex_offset,d3col *col,float alpha);
+extern inline void gl_shader_draw_execute_simple_color_end(void);
+
+extern inline void gl_shader_draw_execute_simple_gradient_start(int vertex_size,int vertex_offset,int color_offset);
+extern inline void gl_shader_draw_execute_simple_gradient_end(void);
+
+extern inline void gl_shader_draw_execute_simple_black_start(int vertex_size,int vertex_offset,float alpha);
+extern inline void gl_shader_draw_execute_simple_black_end(void);
 
 extern inline void gl_shader_draw_execute_simple_bitmap_set_color(d3col *col,float alpha);
 extern inline void gl_shader_draw_execute_simple_bitmap_set_texture(unsigned long gl_id);
-extern inline void gl_shader_draw_execute_simple_bitmap(int vertex_size,int vertex_offset,int uv_offset,int stride,d3col *col,float alpha);
+extern inline void gl_shader_draw_execute_simple_bitmap_start(int vertex_size,int vertex_offset,int uv_offset,int stride,d3col *col,float alpha);
+extern inline void gl_shader_draw_execute_simple_bitmap_end(void);
 
 extern void gl_shader_draw_execute_reset_cached_offsets(void);
-extern void gl_shader_draw_execute_map(texture_type *texture,int txt_idx,int frame,int lmap_txt_idx,float alpha,int vertex_offset,int uv_offset,int lmap_uv_offset,int tangent_offset,int normal_offset,int stride,view_glsl_light_list_type *light_list);
-extern void gl_shader_draw_execute_liquid(texture_type *texture,int txt_idx,int frame,int lmap_txt_idx,float alpha,int vertex_offset,int uv_offset,int lmap_uv_offset,int tangent_offset,int normal_offset,int stride,view_glsl_light_list_type *light_list);
-extern void gl_shader_draw_execute_model(texture_type *texture,int txt_idx,int frame,float alpha,int vertex_offset,int uv_offset,int tangent_offset,int normal_offset,int stride,view_glsl_light_list_type *light_list);
+
+extern void gl_shader_draw_execute_map_start(texture_type *texture,int txt_idx,int frame,int lmap_txt_idx,float alpha,int vertex_offset,int uv_offset,int lmap_uv_offset,int tangent_offset,int normal_offset,int stride,view_glsl_light_list_type *light_list);
+extern void gl_shader_draw_execute_map_end(texture_type *texture,view_glsl_light_list_type *light_list);
+
+extern void gl_shader_draw_execute_liquid_start(texture_type *texture,int txt_idx,int frame,int lmap_txt_idx,float alpha,int vertex_offset,int uv_offset,int lmap_uv_offset,int tangent_offset,int normal_offset,int stride,view_glsl_light_list_type *light_list);
+extern void gl_shader_draw_execute_liquid_end(texture_type *texture,view_glsl_light_list_type *light_list);
+
+extern void gl_shader_draw_execute_model_start(texture_type *texture,int txt_idx,int frame,float alpha,int vertex_offset,int uv_offset,int tangent_offset,int normal_offset,int stride,view_glsl_light_list_type *light_list);
+extern void gl_shader_draw_execute_model_end(texture_type *texture,view_glsl_light_list_type *light_list);
 
 //
 // core shaders

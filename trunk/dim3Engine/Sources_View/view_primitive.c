@@ -59,8 +59,9 @@ void view_primitive_2D_tint_screen(d3col *col,float alpha)
 
 	view_unmap_utility_vertex_object();
 
-	gl_shader_draw_execute_simple_color(2,0,col,alpha);
+	gl_shader_draw_execute_simple_color_start(2,0,col,alpha);
 	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
+	gl_shader_draw_execute_simple_color_end();
 
 	view_unbind_utility_vertex_object();
 }
@@ -117,8 +118,9 @@ void view_primitive_2D_color_poly(int x0,int y0,d3col *col0,int x1,int y1,d3col 
 
 		// draw the polygon
 
-	gl_shader_draw_execute_simple_gradient(2,0,((4*2)*sizeof(float)));
+	gl_shader_draw_execute_simple_gradient_start(2,0,((4*2)*sizeof(float)));
 	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
+	gl_shader_draw_execute_simple_gradient_end();
 		
 		// finish draw
 
@@ -189,8 +191,9 @@ void view_primitive_2D_color_trig(d3col *col,float alpha,int lft,int rgt,int top
 
 		// draw the trig
 		
-	gl_shader_draw_execute_simple_color(2,0,col,alpha);
+	gl_shader_draw_execute_simple_color_start(2,0,col,alpha);
 	glDrawArrays(GL_TRIANGLES,0,3);
+	gl_shader_draw_execute_simple_color_end();
 	
 		// finish draw
 
@@ -255,8 +258,9 @@ void view_primitive_2D_color_arc(d3col *out_col,d3col *in_col,float alpha,int lf
 
 		// draw the trig
 		
-	gl_shader_draw_execute_simple_gradient(2,0,((3*2)*sizeof(float)));
+	gl_shader_draw_execute_simple_gradient_start(2,0,((3*2)*sizeof(float)));
 	glDrawArrays(GL_TRIANGLES,0,3);
+	gl_shader_draw_execute_simple_gradient_end();
 	
 		// finish draw
 
@@ -289,8 +293,9 @@ void view_primitive_2D_line(d3col *col,float alpha,int x0,int y0,int x1,int y1)
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 	glDisable(GL_DEPTH_TEST);
 		
-	gl_shader_draw_execute_simple_color(2,0,col,alpha);
+	gl_shader_draw_execute_simple_color_start(2,0,col,alpha);
 	glDrawArrays(GL_LINES,0,2);
+	gl_shader_draw_execute_simple_color_end();
 
 	glDisable(GL_BLEND);
 
@@ -319,8 +324,9 @@ void view_primitive_2D_line_poly(d3col *col,float alpha,int x0,int y0,int x1,int
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 	glDisable(GL_DEPTH_TEST);
 
-	gl_shader_draw_execute_simple_color(2,0,col,alpha);
+	gl_shader_draw_execute_simple_color_start(2,0,col,alpha);
 	glDrawArrays(GL_LINE_LOOP,0,4);
+	gl_shader_draw_execute_simple_color_end();
 
 	glDisable(GL_BLEND);
 
@@ -386,8 +392,9 @@ void view_primitive_2D_line_trig(d3col *col,float alpha,int lft,int rgt,int top,
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 	glDisable(GL_DEPTH_TEST);
 		
-	gl_shader_draw_execute_simple_color(2,0,col,alpha);
+	gl_shader_draw_execute_simple_color_start(2,0,col,alpha);
 	glDrawArrays(GL_LINE_LOOP,0,3);
+	gl_shader_draw_execute_simple_color_end();
 
 	glDisable(GL_BLEND);
 
@@ -419,8 +426,9 @@ void view_primitive_3D_line(d3col *col,float alpha,int x0,int y0,int z0,int x1,i
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 		
-	gl_shader_draw_execute_simple_color(3,0,col,alpha);
+	gl_shader_draw_execute_simple_color_start(3,0,col,alpha);
 	glDrawArrays(GL_LINES,0,2);
+	gl_shader_draw_execute_simple_color_end();
 
 	glDisable(GL_BLEND);
 
@@ -449,8 +457,9 @@ void view_primitive_3D_line_cube(d3col *col,float alpha,int *px,int *py,int *pz)
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 		
-	gl_shader_draw_execute_simple_color(3,0,col,alpha);
+	gl_shader_draw_execute_simple_color_start(3,0,col,alpha);
 	glDrawElements(GL_LINES,24,GL_UNSIGNED_SHORT,(GLvoid*)cube_indexes);
+	gl_shader_draw_execute_simple_color_end();
 
 	glDisable(GL_BLEND);
 
@@ -518,8 +527,9 @@ void view_primitive_2D_texture_quad(GLuint gl_id,d3col *col,float alpha,int lft,
 		// draw the quad
 
 	gl_shader_draw_execute_simple_bitmap_set_texture(gl_id);
-	gl_shader_draw_execute_simple_bitmap(2,0,(2*sizeof(float)),((2+2)*sizeof(float)),col_ptr,alpha);
+	gl_shader_draw_execute_simple_bitmap_start(2,0,(2*sizeof(float)),((2+2)*sizeof(float)),col_ptr,alpha);
 	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
+	gl_shader_draw_execute_simple_bitmap_end();
 
 		// finish texture draw
 		
@@ -591,8 +601,9 @@ void view_primitive_2D_texture_quad_rot(GLuint gl_id,d3col *col,float alpha,int 
 		// draw the quad
 
 	gl_shader_draw_execute_simple_bitmap_set_texture(gl_id);
-	gl_shader_draw_execute_simple_bitmap(2,0,(2*sizeof(float)),((2+2)*sizeof(float)),col_ptr,alpha);
+	gl_shader_draw_execute_simple_bitmap_start(2,0,(2*sizeof(float)),((2+2)*sizeof(float)),col_ptr,alpha);
 	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
+	gl_shader_draw_execute_simple_bitmap_end();
 
 		// finish texture draw
 

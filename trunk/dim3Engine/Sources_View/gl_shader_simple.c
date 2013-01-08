@@ -136,10 +136,6 @@ bool gl_simple_color_shader_create(shader_type *shader,char *err_str)
 
 	free(vertex_data);
 	free(fragment_data);
-	
-		// activate the required attributes
-		
-	glEnableVertexAttribArray(shader->var_locs.dim3Vertex);
 
 	return(ok);
 }
@@ -244,11 +240,6 @@ bool gl_simple_gradient_shader_create(shader_type *shader,char *err_str)
 
 	free(vertex_data);
 	free(fragment_data);
-	
-		// activate the required attributes
-		
-	glEnableVertexAttribArray(shader->var_locs.dim3Vertex);
-	glEnableVertexAttribArray(shader->var_locs.dim3VertexColor);
 
 	return(ok);
 }
@@ -350,10 +341,6 @@ bool gl_simple_black_shader_create(shader_type *shader,char *err_str)
 
 	free(vertex_data);
 	free(fragment_data);
-	
-		// activate the required attributes
-		
-	glEnableVertexAttribArray(shader->var_locs.dim3Vertex);
 
 	return(ok);
 }
@@ -460,11 +447,6 @@ bool gl_simple_bitmap_shader_create(shader_type *shader,char *err_str)
 
 	free(vertex_data);
 	free(fragment_data);
-	
-		// activate the required attributes
-		
-	glEnableVertexAttribArray(shader->var_locs.dim3Vertex);
-	glEnableVertexAttribArray(shader->var_locs.dim3VertexUV);
 
 	return(ok);
 }

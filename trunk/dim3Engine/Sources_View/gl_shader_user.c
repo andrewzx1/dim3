@@ -153,18 +153,6 @@ bool gl_user_shader_initialize(char *err_str)
 			return(FALSE);
 		}
 
-			// activate the required attributes
-			// we need at least vertex and UVs
-			// there will be all sorts of problems
-			// if user shaders don't properly set 
-			// the others but they aren't required
-			
-		glEnableVertexAttribArray(shader->var_locs.dim3Vertex);
-		glEnableVertexAttribArray(shader->var_locs.dim3VertexUV);
-		if (shader->var_locs.dim3VertexLightMapUV!=-1) glEnableVertexAttribArray(shader->var_locs.dim3VertexLightMapUV);
-		if (shader->var_locs.dim3VertexNormal!=-1) glEnableVertexAttribArray(shader->var_locs.dim3VertexNormal);
-		if (shader->var_locs.dim3VertexTangent!=-1) glEnableVertexAttribArray(shader->var_locs.dim3VertexTangent);
-
 		shader++;
 	}
 

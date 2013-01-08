@@ -78,13 +78,19 @@ void gl_shader_draw_execute_simple_color_set_color(d3col *col,float alpha)
 	}
 }
 
-void gl_shader_draw_execute_simple_color(int vertex_size,int vertex_offset,d3col *col,float alpha)
+void gl_shader_draw_execute_simple_color_start(int vertex_size,int vertex_offset,d3col *col,float alpha)
 {
 	gl_shader_draw_execute_set_program(&color_shader);
 	gl_shader_set_draw_matrix_variables(&color_shader);
 	gl_shader_draw_execute_simple_color_set_color(col,alpha);
 		
+	glEnableVertexAttribArray(color_shader.var_locs.dim3Vertex);
 	glVertexAttribPointer(color_shader.var_locs.dim3Vertex,vertex_size,GL_FLOAT,GL_FALSE,0,(void*)vertex_offset);
+}
+
+void gl_shader_draw_execute_simple_color_end(void)
+{
+	glDisableVertexAttribArray(color_shader.var_locs.dim3Vertex);
 }
 
 /* =======================================================
@@ -93,13 +99,22 @@ void gl_shader_draw_execute_simple_color(int vertex_size,int vertex_offset,d3col
       
 ======================================================= */
 
-void gl_shader_draw_execute_simple_gradient(int vertex_size,int vertex_offset,int color_offset)
+void gl_shader_draw_execute_simple_gradient_start(int vertex_size,int vertex_offset,int color_offset)
 {
 	gl_shader_draw_execute_set_program(&gradient_shader);
 	gl_shader_set_draw_matrix_variables(&gradient_shader);
 		
+	glEnableVertexAttribArray(gradient_shader.var_locs.dim3Vertex);
 	glVertexAttribPointer(gradient_shader.var_locs.dim3Vertex,vertex_size,GL_FLOAT,GL_FALSE,0,(void*)vertex_offset);
+
+	glEnableVertexAttribArray(gradient_shader.var_locs.dim3VertexColor);
 	glVertexAttribPointer(gradient_shader.var_locs.dim3VertexColor,4,GL_UNSIGNED_BYTE,GL_TRUE,0,(void*)color_offset);
+}
+
+void gl_shader_draw_execute_simple_gradient_end(void)
+{
+	glDisableVertexAttribArray(gradient_shader.var_locs.dim3Vertex);
+	glDisableVertexAttribArray(gradient_shader.var_locs.dim3VertexColor);
 }
 
 /* =======================================================
@@ -108,7 +123,7 @@ void gl_shader_draw_execute_simple_gradient(int vertex_size,int vertex_offset,in
       
 ======================================================= */
 
-void gl_shader_draw_execute_simple_black(int vertex_size,int vertex_offset,float alpha)
+void gl_shader_draw_execute_simple_black_start(int vertex_size,int vertex_offset,float alpha)
 {
 	gl_shader_draw_execute_set_program(&black_shader);
 	gl_shader_set_draw_matrix_variables(&black_shader);
@@ -118,7 +133,13 @@ void gl_shader_draw_execute_simple_black(int vertex_size,int vertex_offset,float
 		glUniform1f(black_shader.var_locs.dim3Alpha,alpha);
 	}
 		
+	glEnableVertexAttribArray(black_shader.var_locs.dim3Vertex);
 	glVertexAttribPointer(black_shader.var_locs.dim3Vertex,vertex_size,GL_FLOAT,GL_FALSE,0,(void*)vertex_offset);
+}
+
+void gl_shader_draw_execute_simple_black_end(void)
+{
+	glDisableVertexAttribArray(black_shader.var_locs.dim3Vertex);
 }
 
 /* =======================================================
@@ -143,59 +164,23 @@ void gl_shader_draw_execute_simple_bitmap_set_texture(unsigned long gl_id)
 	gl_texture_bind(0,gl_id);
 }
 
-void gl_shader_draw_execute_simple_bitmap(int vertex_size,int vertex_offset,int uv_offset,int stride,d3col *col,float alpha)
+void gl_shader_draw_execute_simple_bitmap_start(int vertex_size,int vertex_offset,int uv_offset,int stride,d3col *col,float alpha)
 {
-/* supergumba -- testing
-	char		log[1024];
-
-	fprintf(stdout,"IN EXECUTE\n");
-	fflush(stdout);
-	fprintf(stdout,"glIsProgram=%d [%d]\n",glIsProgram(bitmap_shader.program_obj),GL_TRUE);
-	fflush(stdout);
-
-	glGetProgramInfoLog(bitmap_shader.program_obj,1024,NULL,(GLchar*)log);
-	log[1023]=0x0;
-	fprintf(stdout,"Log=%s\n",log);
-	fflush(stdout);
-
-	fprintf(stdout,"projmatrix=%d\n",bitmap_shader.var_locs.dim3ProjectionMatrix);
-	fflush(stdout);
-	fprintf(stdout,"viewmatrix=%d\n",bitmap_shader.var_locs.dim3ModelViewMatrix);
-	fflush(stdout);
-	fprintf(stdout,"normalmatrix=%d\n",bitmap_shader.var_locs.dim3NormalMatrix);
-	fflush(stdout);
-	fprintf(stdout,"color=%d\n",bitmap_shader.var_locs.dim3SimpleColor);
-	fflush(stdout);
-
-	fprintf(stdout,"v=%d\n",bitmap_shader.var_locs.dim3Vertex);
-	fflush(stdout);
-	fprintf(stdout,"uv=%d\n",bitmap_shader.var_locs.dim3VertexUV);
-	fflush(stdout);
-
-	fprintf(stdout,"matrix 0 = %.2f,%.2f,%.2f,%.2f\n",gl_proj_matrix[0],gl_proj_matrix[1],gl_proj_matrix[2],gl_proj_matrix[3]);
-	fflush(stdout);
-	fprintf(stdout,"matrix 1 = %.2f,%.2f,%.2f,%.2f\n",gl_proj_matrix[4],gl_proj_matrix[5],gl_proj_matrix[6],gl_proj_matrix[7]);
-	fflush(stdout);
-	fprintf(stdout,"matrix 2 = %.2f,%.2f,%.2f,%.2f\n",gl_proj_matrix[8],gl_proj_matrix[9],gl_proj_matrix[10],gl_proj_matrix[11]);
-	fflush(stdout);
-	fprintf(stdout,"matrix 3 = %.2f,%.2f,%.2f,%.2f\n",gl_proj_matrix[12],gl_proj_matrix[13],gl_proj_matrix[14],gl_proj_matrix[15]);
-	fflush(stdout);
-
-
-	gl_shader_current=&bitmap_shader;
-	glUseProgram(bitmap_shader.program_obj);
-	if (bitmap_shader.var_locs.dim3ProjectionMatrix!=-1) glUniformMatrix4fv(bitmap_shader.var_locs.dim3ProjectionMatrix,1,GL_FALSE,gl_proj_matrix);
-	if (bitmap_shader.var_locs.dim3ModelViewMatrix!=-1) glUniformMatrix4fv(bitmap_shader.var_locs.dim3ModelViewMatrix,1,GL_FALSE,gl_model_view_matrix);
-	if (bitmap_shader.var_locs.dim3NormalMatrix!=-1) glUniformMatrix3fv(bitmap_shader.var_locs.dim3NormalMatrix,1,GL_FALSE,gl_normal_matrix);
-	glUniform4f(bitmap_shader.var_locs.dim3SimpleColor,col->r,col->g,col->b,alpha);
-*/
-
 	gl_shader_draw_execute_set_program(&bitmap_shader);
 	gl_shader_set_draw_matrix_variables(&bitmap_shader);
 	gl_shader_draw_execute_simple_bitmap_set_color(col,alpha);
 	
+	glEnableVertexAttribArray(bitmap_shader.var_locs.dim3Vertex);
 	glVertexAttribPointer(bitmap_shader.var_locs.dim3Vertex,vertex_size,GL_FLOAT,GL_FALSE,stride,(void*)vertex_offset);
+
+	glEnableVertexAttribArray(bitmap_shader.var_locs.dim3VertexUV);
 	glVertexAttribPointer(bitmap_shader.var_locs.dim3VertexUV,2,GL_FLOAT,GL_FALSE,stride,(void*)uv_offset);
+}
+
+void gl_shader_draw_execute_simple_bitmap_end(void)
+{
+	glDisableVertexAttribArray(bitmap_shader.var_locs.dim3Vertex);
+	glDisableVertexAttribArray(bitmap_shader.var_locs.dim3VertexUV);
 }
 
 /* =======================================================
@@ -241,6 +226,26 @@ void gl_shader_draw_execute_reset_cached_offsets(void)
 		gl_shader_draw_execute_reset_cached_offsets_shader(shader);
 		shader++;
 	}
+}
+
+void gl_shader_draw_execute_enable_attributes(shader_type *shader)
+{
+	if (shader->var_locs.dim3Vertex!=-1) glEnableVertexAttribArray(shader->var_locs.dim3Vertex);
+	if (shader->var_locs.dim3VertexColor!=-1) glEnableVertexAttribArray(shader->var_locs.dim3VertexColor);
+	if (shader->var_locs.dim3VertexUV!=-1) glEnableVertexAttribArray(shader->var_locs.dim3VertexUV);
+	if (shader->var_locs.dim3VertexLightMapUV!=-1) glEnableVertexAttribArray(shader->var_locs.dim3VertexLightMapUV);
+	if (shader->var_locs.dim3VertexNormal!=-1) glEnableVertexAttribArray(shader->var_locs.dim3VertexNormal);
+	if (shader->var_locs.dim3VertexTangent!=-1) glEnableVertexAttribArray(shader->var_locs.dim3VertexTangent);
+}
+
+void gl_shader_draw_execute_disable_attributes(shader_type *shader)
+{
+	if (shader->var_locs.dim3Vertex!=-1) glDisableVertexAttribArray(shader->var_locs.dim3Vertex);
+	if (shader->var_locs.dim3VertexColor!=-1) glDisableVertexAttribArray(shader->var_locs.dim3VertexColor);
+	if (shader->var_locs.dim3VertexUV!=-1) glDisableVertexAttribArray(shader->var_locs.dim3VertexUV);
+	if (shader->var_locs.dim3VertexLightMapUV!=-1) glDisableVertexAttribArray(shader->var_locs.dim3VertexLightMapUV);
+	if (shader->var_locs.dim3VertexNormal!=-1) glDisableVertexAttribArray(shader->var_locs.dim3VertexNormal);
+	if (shader->var_locs.dim3VertexTangent!=-1) glDisableVertexAttribArray(shader->var_locs.dim3VertexTangent);
 }
 
 inline void gl_shader_draw_execute_set_vertex_offset(shader_type *shader,int vertex_offset,int stride)
@@ -291,7 +296,7 @@ inline void gl_shader_draw_execute_set_tangent_offset(shader_type *shader,int ta
       
 ======================================================= */
 
-void gl_shader_draw_execute_map(texture_type *texture,int txt_idx,int frame,int lmap_txt_idx,float alpha,int vertex_offset,int uv_offset,int lmap_uv_offset,int tangent_offset,int normal_offset,int stride,view_glsl_light_list_type *light_list)
+void gl_shader_draw_execute_map_start(texture_type *texture,int txt_idx,int frame,int lmap_txt_idx,float alpha,int vertex_offset,int uv_offset,int lmap_uv_offset,int tangent_offset,int normal_offset,int stride,view_glsl_light_list_type *light_list)
 {
 	bool						is_core;
 	shader_type					*shader;
@@ -332,6 +337,8 @@ void gl_shader_draw_execute_map(texture_type *texture,int txt_idx,int frame,int 
 	
 		// bind the required attributes
 
+	gl_shader_draw_execute_enable_attributes(shader);
+
 	gl_shader_draw_execute_set_vertex_offset(shader,vertex_offset,stride);
 	gl_shader_draw_execute_set_uv_offset(shader,uv_offset,stride);
 	gl_shader_draw_execute_set_lmap_uv_offset(shader,lmap_uv_offset,stride);
@@ -346,13 +353,31 @@ void gl_shader_draw_execute_map(texture_type *texture,int txt_idx,int frame,int 
 	gl_shader_set_light_variables(shader,core_shader_group_map,is_core,light_list);
 }
 
+void gl_shader_draw_execute_map_end(texture_type *texture,view_glsl_light_list_type *light_list)
+{
+	shader_type					*shader;
+
+		// get shader based on number of lights
+		
+	if (texture->shader_idx==gl_shader_core_index) {
+		shader=gl_core_shader_find_ptr(light_list->nlight,core_shader_group_map,texture);
+	}
+	else {
+		shader=&user_shaders[texture->shader_idx];
+	}
+
+		// disable attributes
+
+	gl_shader_draw_execute_disable_attributes(shader);
+}
+
 /* =======================================================
 
       Execute Liquid Shaders
       
 ======================================================= */
 
-void gl_shader_draw_execute_liquid(texture_type *texture,int txt_idx,int frame,int lmap_txt_idx,float alpha,int vertex_offset,int uv_offset,int lmap_uv_offset,int tangent_offset,int normal_offset,int stride,view_glsl_light_list_type *light_list)
+void gl_shader_draw_execute_liquid_start(texture_type *texture,int txt_idx,int frame,int lmap_txt_idx,float alpha,int vertex_offset,int uv_offset,int lmap_uv_offset,int tangent_offset,int normal_offset,int stride,view_glsl_light_list_type *light_list)
 {
 	bool						is_core;
 	shader_type					*shader;
@@ -393,6 +418,8 @@ void gl_shader_draw_execute_liquid(texture_type *texture,int txt_idx,int frame,i
 
 		// bind the required attributes
 
+	gl_shader_draw_execute_enable_attributes(shader);
+
 	gl_shader_draw_execute_set_vertex_offset(shader,vertex_offset,stride);
 	gl_shader_draw_execute_set_uv_offset(shader,uv_offset,stride);
 	gl_shader_draw_execute_set_lmap_uv_offset(shader,lmap_uv_offset,stride);
@@ -407,13 +434,31 @@ void gl_shader_draw_execute_liquid(texture_type *texture,int txt_idx,int frame,i
 	gl_shader_set_light_variables(shader,core_shader_group_liquid,is_core,light_list);
 }
 
+void gl_shader_draw_execute_liquid_end(texture_type *texture,view_glsl_light_list_type *light_list)
+{
+	shader_type					*shader;
+
+		// get shader based on number of lights
+		
+	if (texture->shader_idx==gl_shader_core_index) {
+		shader=gl_core_shader_find_ptr(light_list->nlight,core_shader_group_liquid,texture);
+	}
+	else {
+		shader=&user_shaders[texture->shader_idx];
+	}
+
+		// disable attributes
+
+	gl_shader_draw_execute_disable_attributes(shader);
+}
+
 /* =======================================================
 
       Execute Model Shaders
       
 ======================================================= */
 
-void gl_shader_draw_execute_model(texture_type *texture,int txt_idx,int frame,float alpha,int vertex_offset,int uv_offset,int tangent_offset,int normal_offset,int stride,view_glsl_light_list_type *light_list)
+void gl_shader_draw_execute_model_start(texture_type *texture,int txt_idx,int frame,float alpha,int vertex_offset,int uv_offset,int tangent_offset,int normal_offset,int stride,view_glsl_light_list_type *light_list)
 {
 	bool						is_core;
 	shader_type					*shader;
@@ -454,6 +499,8 @@ void gl_shader_draw_execute_model(texture_type *texture,int txt_idx,int frame,fl
 	
 		// bind the required attributes
 
+	gl_shader_draw_execute_enable_attributes(shader);
+
 	gl_shader_draw_execute_set_vertex_offset(shader,vertex_offset,stride);
 	gl_shader_draw_execute_set_uv_offset(shader,uv_offset,stride);
 	gl_shader_draw_execute_set_normal_offset(shader,normal_offset,stride);
@@ -468,3 +515,20 @@ void gl_shader_draw_execute_model(texture_type *texture,int txt_idx,int frame,fl
 	gl_shader_set_light_variables(shader,core_shader_group_model,is_core,light_list);
 }
 
+void gl_shader_draw_execute_model_end(texture_type *texture,view_glsl_light_list_type *light_list)
+{
+	shader_type					*shader;
+
+		// get shader based on number of lights
+		
+	if (texture->shader_idx==gl_shader_core_index) {
+		shader=gl_core_shader_find_ptr(light_list->nlight,core_shader_group_model,texture);
+	}
+	else {
+		shader=&user_shaders[texture->shader_idx];
+	}
+
+		// disable attributes
+
+	gl_shader_draw_execute_disable_attributes(shader);
+}
