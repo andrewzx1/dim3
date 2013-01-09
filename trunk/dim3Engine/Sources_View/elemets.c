@@ -3636,7 +3636,54 @@ void element_set_value_string(int id,char *str)
       
 ======================================================= */
 
-void element_set_table_data(int id,char *row_data)
+void element_sort_table_data(element_type *element)
+{
+	int				n,idx,cnt,sz,m_sz;
+	char			*c,*c2,*data;
+
+	return;	// supergumba
+
+	sz=element_table_add_get_data_size(element->data);
+
+	data=malloc(sz);
+	bzero(data,sz);
+
+	cnt=0;
+	c=data;
+
+	while (TRUE) {
+		if (*c==0x0) continue;
+
+		idx=-1;
+		c2=data;
+
+		for (n=0;n!=cnt;n++) {
+			if (strcmp(c,c2)<=0) {
+				idx=n;
+				break;
+			}
+		}
+
+		if (idx==-1) {
+			c2=data+(cnt*128);
+			memmove(c2,c,128);
+		}
+		else {
+			c2=data+(idx*128);
+			m_sz=(sz-(idx*128))-128;
+			memmove((c2+128),c2,m_sz);
+			memmove(c2,c,128);
+		}
+
+		c+=128;
+		cnt++;
+	}
+
+	free(element->data);
+	element->data=data;
+}
+
+void element_set_table_data(int id,bool sort,char *row_data)
 {
 	int				idx,sz;
 	element_type	*element;
@@ -3657,6 +3704,7 @@ void element_set_table_data(int id,char *row_data)
 			sz=element_table_add_get_data_size(row_data);
 			element->data=malloc(sz);
 			memmove(element->data,row_data,sz);
+			if (sort) element_sort_table_data(element);
 		}
 	}
 	

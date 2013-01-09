@@ -109,7 +109,7 @@ void join_create_list(join_server_host_list_type *list,int table_id)
 		host++;
 	}
 
-	element_set_table_data(table_id,row_data);
+	element_set_table_data(table_id,FALSE,row_data);
 
 	free(row_data);
 }
@@ -380,7 +380,7 @@ void join_ping_thread_start(void)
 
 	join_host_lan_list->count=0;
 
-	element_set_table_data(join_lan_table_id,NULL);
+	element_set_table_data(join_lan_table_id,FALSE,NULL);
 	element_table_busy(join_lan_table_id,TRUE);
 
 	if (join_run_wan) element_table_busy(join_wan_table_id,TRUE);

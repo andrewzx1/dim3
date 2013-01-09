@@ -131,7 +131,7 @@ void setup_network_fill_character_table(void)
 	
 	*c=0x0;
 
-	element_set_table_data(ctrl_character_id,(char*)setup_character_list);
+	element_set_table_data(ctrl_character_id,FALSE,(char*)setup_character_list);
 }
 
 /* =======================================================
