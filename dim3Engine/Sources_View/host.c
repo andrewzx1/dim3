@@ -146,7 +146,8 @@ void host_fill_map_table(char *game_type)
 	}
 
 	*c2=0x0;
-	element_set_table_data(host_table_id,host_table_map_list);
+
+	element_set_table_data(host_table_id,TRUE,host_table_map_list);
 }
 
 void host_map_list_initialize(void)

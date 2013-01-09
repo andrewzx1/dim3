@@ -101,7 +101,8 @@ void singleplayer_option_map_list_fill(void)
 	}
 
 	*c=0x0;
-	element_set_table_data(singleplayer_option_map_table_id,singleplayer_option_table_map_list);
+
+	element_set_table_data(singleplayer_option_map_table_id,TRUE,singleplayer_option_table_map_list);
 
 		// close the directory scan
 

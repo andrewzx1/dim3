@@ -266,7 +266,7 @@ void file_save_delete(void)
 	file_close_list();
 	file_build_list();
 	
-	element_set_table_data(file_directory_id,file_table_data);
+	element_set_table_data(file_directory_id,TRUE,file_table_data);
 	
 	element_set_value(file_directory_id,-1);
 	file_save_selected();
