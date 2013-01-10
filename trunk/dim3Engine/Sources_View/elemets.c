@@ -3638,45 +3638,48 @@ void element_set_value_string(int id,char *str)
 
 void element_sort_table_data(element_type *element)
 {
-	int				n,idx,cnt,sz,m_sz;
-	char			*c,*c2,*data;
+	int				n,k,idx,row_count,sz,m_sz;
+	char			*c,*c_cmp,*c2,*c2_cmp,*data;
 
-	return;	// supergumba
+	row_count=element_get_table_row_count(element);
+	if (row_count==0) return;
 
-	sz=element_table_add_get_data_size(element->data);
+	sz=(row_count+1)*128;
 
 	data=malloc(sz);
 	bzero(data,sz);
 
-	cnt=0;
-	c=data;
+	for (n=0;n!=row_count;n++) {
+		c=element->data+(n*128);
 
-	while (TRUE) {
-		if (*c==0x0) continue;
+		c_cmp=strrchr(c,';');
+		if (c_cmp==NULL) c_cmp=c;
 
 		idx=-1;
-		c2=data;
 
-		for (n=0;n!=cnt;n++) {
-			if (strcmp(c,c2)<=0) {
-				idx=n;
+		for (k=0;k!=n;k++) {
+
+			c2=data+(k*128);
+
+			c2_cmp=strrchr(c2,';');
+			if (c2_cmp==NULL) c2_cmp=c;
+
+			if (strcasecmp(c_cmp,c2_cmp)<=0) {
+				idx=k;
 				break;
 			}
 		}
 
 		if (idx==-1) {
-			c2=data+(cnt*128);
+			c2=data+(n*128);
 			memmove(c2,c,128);
 		}
 		else {
 			c2=data+(idx*128);
-			m_sz=(sz-(idx*128))-128;
+			m_sz=(row_count-idx)*128;
 			memmove((c2+128),c2,m_sz);
 			memmove(c2,c,128);
 		}
-
-		c+=128;
-		cnt++;
 	}
 
 	free(element->data);
