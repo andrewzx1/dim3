@@ -364,8 +364,9 @@ extern void xml_key_write_color(char *name,d3col *value);
 #define rtl_alpha_pass_through					0
 #define rtl_alpha_reflect						1
 #define rtl_alpha_refract						2
+#define rtl_alpha_additive						3
 
-#define rtl_alpha_list_def						{"pass","reflect","refract",""}
+#define rtl_alpha_list_def						{"pass","reflect","refract","additive",""}
 
 //
 // tangent space

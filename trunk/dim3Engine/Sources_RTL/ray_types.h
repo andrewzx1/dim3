@@ -41,11 +41,11 @@ typedef struct		{
 					
 	// external types
 
-typedef ray_vector_type rlVector;
-typedef ray_point_type rlPoint;
-typedef ray_2d_point_type rl2DPoint;
-typedef ray_uv_type rlUV;
-typedef ray_color_type rlColor;
-typedef ray_matrix_type rlMatrix;
+typedef ray_vector_type rtlVector;
+typedef ray_point_type rtlPoint;
+typedef ray_2d_point_type rtl2DPoint;
+typedef ray_uv_type rtlUV;
+typedef ray_color_type rtlColor;
+typedef ray_matrix_type rtlMatrix;
 
 					

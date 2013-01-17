@@ -80,7 +80,7 @@ inline int ray_get_material_find_mipmap_level(ray_scene_type *scene,ray_point_ty
 	return(mm_level);
 }
 
-void ray_get_material_rgb(ray_scene_type *scene,ray_point_type *eye_pnt,ray_point_type *trig_pnt,ray_collision_type *collision,ray_material_pixel_type *pixel)
+void ray_get_material_pixel(ray_scene_type *scene,ray_point_type *eye_pnt,ray_point_type *trig_pnt,ray_collision_type *collision,ray_material_pixel_type *pixel)
 {
 	int							x,y,offset,mm_level;
 	unsigned long				buf;
@@ -228,6 +228,71 @@ void ray_get_material_rgb(ray_scene_type *scene,ray_point_type *eye_pnt,ray_poin
 	}
 }
 
+void ray_get_material_color(ray_scene_type *scene,ray_point_type *eye_pnt,ray_point_type *trig_pnt,ray_collision_type *collision,ray_color_type *col)
+{
+	int							x,y,offset,mm_level;
+	unsigned long				buf;
+	float						inv,fx,fy;
+	ray_mesh_type				*mesh;
+	ray_poly_type				*poly;
+	ray_trig_type				*trig;
+	ray_uv_type					*uv0,*uv1,*uv2;
+	ray_material_type			*material;
+	ray_material_mipmap_type	*mipmap;
+	
+		// get mesh/poly/trig and materials
+		
+	mesh=scene->mesh_list.meshes[collision->mesh_idx];
+	poly=&mesh->poly_block.polys[collision->poly_idx];
+	trig=&poly->trig_block.trigs[collision->trig_idx];
+	material=ray_global.material_list.materials[poly->material_idx];
+
+		// get the mipmap level
+
+	mm_level=ray_get_material_find_mipmap_level(scene,eye_pnt,poly,trig_pnt,material);
+	mipmap=&material->mipmap_list.mipmaps[mm_level];
+	
+		// sanity check for bad materials
+		
+	if (mipmap->data.color==NULL) {
+		col->r=col->g=col->b=1.0f;
+		col->a=0.0f;
+		return;
+	}
+	
+		// calculate the uv
+		
+	uv0=&mesh->uv_block.uvs[trig->idxs[0].uv];
+	uv1=&mesh->uv_block.uvs[trig->idxs[1].uv];
+	uv2=&mesh->uv_block.uvs[trig->idxs[2].uv];
+		
+	inv=(1-collision->u)-collision->v;
+	fx=(inv*uv0->x)+(collision->u*uv1->x)+(collision->v*uv2->x);
+	fy=(inv*uv0->y)+(collision->u*uv1->y)+(collision->v*uv2->y);
+
+		// change to texture coordinate
+		
+	fx-=floorf(fx);
+	x=(int)(fx*mipmap->wid_scale);
+
+	fy-=floorf(fy);
+	y=(int)(fy*mipmap->high_scale);
+	
+	offset=(mipmap->wid*y)+x;
+	
+		// get color
+
+	buf=*(((unsigned long*)mipmap->data.color)+offset);
+	ray_create_float_color_from_ulong(buf,col);
+
+		// add in the poly color
+
+	col->r*=poly->col.r;
+	col->g*=poly->col.g;
+	col->b*=poly->col.b;
+	col->a*=poly->col.a;
+}
+
 float ray_get_material_alpha(ray_scene_type *scene,ray_point_type *eye_pnt,ray_point_type *trig_pnt,ray_collision_type *collision)
 {
 	int							x,y,offset;
@@ -282,7 +347,7 @@ float ray_get_material_alpha(ray_scene_type *scene,ray_point_type *eye_pnt,ray_p
 	
 	offset=(mipmap->wid*y)+x;
 	
-		// get color
+		// get alpha
 
 	buf=*(((unsigned long*)mipmap->data.color)+offset);
 	ray_create_float_color_from_ulong(buf,&rgb);
@@ -345,7 +410,7 @@ void ray_get_material_normal(ray_scene_type *scene,ray_point_type *eye_pnt,ray_p
       
 ======================================================= */
 
-int rlMaterialAdd(int wid,int high,int alphaType,unsigned long flags)
+int rtlMaterialAdd(int wid,int high,int alphaType,unsigned long flags)
 {
 	int							n;
 	ray_material_type			*material;
@@ -353,7 +418,7 @@ int rlMaterialAdd(int wid,int high,int alphaType,unsigned long flags)
 
 		// validate alpha type
 
-	if ((alphaType!=RL_MATERIAL_ALPHA_PASS_THROUGH) && (alphaType!=RL_MATERIAL_ALPHA_REFLECT) && (alphaType!=RL_MATERIAL_ALPHA_REFRACT)) return(RL_ERROR_UNKNOWN_ALPHA_TYPE);
+	if ((alphaType!=RL_MATERIAL_ALPHA_PASS_THROUGH) && (alphaType!=RL_MATERIAL_ALPHA_REFLECT) && (alphaType!=RL_MATERIAL_ALPHA_REFRACT) && (alphaType!=RL_MATERIAL_ALPHA_ADDITIVE)) return(RL_ERROR_UNKNOWN_ALPHA_TYPE);
 	
 		// add material
 
@@ -413,7 +478,7 @@ int rlMaterialAdd(int wid,int high,int alphaType,unsigned long flags)
       
 ======================================================= */
 
-int rlMaterialDelete(int materialId)
+int rtlMaterialDelete(int materialId)
 {
 	int							n,k,t,idx,count;
 	ray_mesh_type				*mesh;
@@ -489,12 +554,12 @@ int rlMaterialDelete(int materialId)
       
 ======================================================= */
 
-int rlMaterialDeleteAll(void)
+int rtlMaterialDeleteAll(void)
 {
 	int				err;
 
 	while (ray_global.material_list.count!=0) {
-		err=rlMaterialDelete(ray_global.material_list.materials[0]->id);
+		err=rtlMaterialDelete(ray_global.material_list.materials[0]->id);
 		if (err!=RL_ERROR_OK) return(err);
 	}
 	
@@ -514,7 +579,7 @@ int rlMaterialDeleteAll(void)
       
 ======================================================= */
 
-int rlMaterialAttachBufferData(int materialId,int target,int format,unsigned char* data)
+int rtlMaterialAttachBufferData(int materialId,int target,int format,unsigned char* data)
 {
 	int							n,pixel_cnt,idx,sz;
 	unsigned char				*rgba_data,*rptr,*dptr;
@@ -641,7 +706,7 @@ int rlMaterialAttachBufferData(int materialId,int target,int format,unsigned cha
       
 ======================================================= */
 
-int rlMaterialAttachBufferColor(int materialId,int target,ray_color_type *col)
+int rtlMaterialAttachBufferColor(int materialId,int target,ray_color_type *col)
 {
 	int						n,sz,idx,err;
 	unsigned long			pixel;
@@ -672,7 +737,7 @@ int rlMaterialAttachBufferColor(int materialId,int target,ray_color_type *col)
 
 		// attach to material
 
-	err=rlMaterialAttachBufferData(materialId,target,RL_MATERIAL_FORMAT_32_RGBA,(unsigned char*)pixel_data);
+	err=rtlMaterialAttachBufferData(materialId,target,RL_MATERIAL_FORMAT_32_RGBA,(unsigned char*)pixel_data);
 
 	free(pixel_data);
 
@@ -689,7 +754,7 @@ int rlMaterialAttachBufferColor(int materialId,int target,ray_color_type *col)
       
 ======================================================= */
 
-int rlMaterialSetShineFactor(int materialId,float shineFactor)
+int rtlMaterialSetShineFactor(int materialId,float shineFactor)
 {
 	int						idx;
 	ray_material_type		*material;
@@ -718,7 +783,7 @@ int rlMaterialSetShineFactor(int materialId,float shineFactor)
       
 ======================================================= */
 
-int rlMaterialSetGlowFactor(int materialId,float glowFactor)
+int rtlMaterialSetGlowFactor(int materialId,float glowFactor)
 {
 	int						idx;
 	ray_material_type		*material;
@@ -747,7 +812,7 @@ int rlMaterialSetGlowFactor(int materialId,float glowFactor)
       
 ======================================================= */
 
-int rlMaterialSetRefractionFactor(int materialId,float refractionFactor)
+int rtlMaterialSetRefractionFactor(int materialId,float refractionFactor)
 {
 	int						idx;
 	ray_material_type		*material;
@@ -777,7 +842,7 @@ int rlMaterialSetRefractionFactor(int materialId,float refractionFactor)
       
 ======================================================= */
 
-int rlMaterialBuildMipMaps(int materialId)
+int rtlMaterialBuildMipMaps(int materialId)
 {
 	int							idx,factor;
 	ray_material_type			*material;

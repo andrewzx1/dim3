@@ -68,12 +68,12 @@ int view_dim3rtl_create_material_from_texture(char *sub_path,texture_type *textu
 	png_data=png_utility_read(path,&wid,&high,&alpha_channel);
 	if (png_data==NULL) return(-1);
 	
-	material_id=rlMaterialAdd(wid,high,texture->rl_alpha_type,0);
-	rlMaterialAttachBufferData(material_id,RL_MATERIAL_TARGET_COLOR,(alpha_channel?RL_MATERIAL_FORMAT_32_RGBA:RL_MATERIAL_FORMAT_24_RGB),png_data);
+	material_id=rtlMaterialAdd(wid,high,texture->rl_alpha_type,0);
+	rtlMaterialAttachBufferData(material_id,RL_MATERIAL_TARGET_COLOR,(alpha_channel?RL_MATERIAL_FORMAT_32_RGBA:RL_MATERIAL_FORMAT_24_RGB),png_data);
 	
 	free(png_data);
 
-	rlMaterialSetRefractionFactor(material_id,texture->rl_refract_factor);
+	rtlMaterialSetRefractionFactor(material_id,texture->rl_refract_factor);
 	
 		// normal map
 		
@@ -86,7 +86,7 @@ int view_dim3rtl_create_material_from_texture(char *sub_path,texture_type *textu
 			fprintf(stdout,"%s: Not correct size for material\n",path);
 		}
 		else {
-			rlMaterialAttachBufferData(material_id,RL_MATERIAL_TARGET_NORMAL,(alpha_channel?RL_MATERIAL_FORMAT_32_RGBA:RL_MATERIAL_FORMAT_24_RGB),png_data);
+			rtlMaterialAttachBufferData(material_id,RL_MATERIAL_TARGET_NORMAL,(alpha_channel?RL_MATERIAL_FORMAT_32_RGBA:RL_MATERIAL_FORMAT_24_RGB),png_data);
 		}
 		free(png_data);
 	}
@@ -102,12 +102,12 @@ int view_dim3rtl_create_material_from_texture(char *sub_path,texture_type *textu
 			fprintf(stdout,"%s: Not correct size for material\n",path);
 		}
 		else {
-			rlMaterialAttachBufferData(material_id,RL_MATERIAL_TARGET_SPECULAR,(alpha_channel?RL_MATERIAL_FORMAT_32_RGBA:RL_MATERIAL_FORMAT_24_RGB),png_data);
+			rtlMaterialAttachBufferData(material_id,RL_MATERIAL_TARGET_SPECULAR,(alpha_channel?RL_MATERIAL_FORMAT_32_RGBA:RL_MATERIAL_FORMAT_24_RGB),png_data);
 		}
 		free(png_data);
 	}
 
-	rlMaterialSetShineFactor(material_id,texture->shine_factor);
+	rtlMaterialSetShineFactor(material_id,texture->shine_factor);
 	
 		// glow map
 		
@@ -120,16 +120,16 @@ int view_dim3rtl_create_material_from_texture(char *sub_path,texture_type *textu
 			fprintf(stdout,"%s: Not correct size for material\n",path);
 		}
 		else {
-			rlMaterialAttachBufferData(material_id,RL_MATERIAL_TARGET_GLOW,(alpha_channel?RL_MATERIAL_FORMAT_32_RGBA:RL_MATERIAL_FORMAT_24_RGB),png_data);
+			rtlMaterialAttachBufferData(material_id,RL_MATERIAL_TARGET_GLOW,(alpha_channel?RL_MATERIAL_FORMAT_32_RGBA:RL_MATERIAL_FORMAT_24_RGB),png_data);
 		}
 		free(png_data);
 	}
 
-	rlMaterialSetGlowFactor(material_id,texture->glow.min);
+	rtlMaterialSetGlowFactor(material_id,texture->glow.min);
 
 		// mipmaps
 
-	rlMaterialBuildMipMaps(material_id);
+	rtlMaterialBuildMipMaps(material_id);
 	
 	return(material_id);
 }
@@ -140,7 +140,7 @@ int view_dim3rtl_create_material_from_texture(char *sub_path,texture_type *textu
       
 ======================================================= */
 
-int view_dim3rtl_create_material_from_path(char *path)
+int view_dim3rtl_create_material_from_path(char *path,int alpha_type)
 {
 	int					material_id,wid,high;
 	bool				alpha_channel;
@@ -152,8 +152,8 @@ int view_dim3rtl_create_material_from_path(char *path)
 	png_data=png_utility_read(path,&wid,&high,&alpha_channel);
 	if (png_data==NULL) return(-1);
 	
-	material_id=rlMaterialAdd(wid,high,RL_MATERIAL_ALPHA_PASS_THROUGH,0);
-	rlMaterialAttachBufferData(material_id,RL_MATERIAL_TARGET_COLOR,(alpha_channel?RL_MATERIAL_FORMAT_32_RGBA:RL_MATERIAL_FORMAT_24_RGB),png_data);
+	material_id=rtlMaterialAdd(wid,high,alpha_type,0);
+	rtlMaterialAttachBufferData(material_id,RL_MATERIAL_TARGET_COLOR,(alpha_channel?RL_MATERIAL_FORMAT_32_RGBA:RL_MATERIAL_FORMAT_24_RGB),png_data);
 	
 	free(png_data);
 
@@ -172,11 +172,11 @@ void view_dim3rtl_material_text_start_single_font_size(texture_font_size_type *f
 
 	data=bitmap_text_size_data(font_size,name,txt_size,wid,high);
 
-	font_size->rtl_material_id=rlMaterialAdd(wid,high,RL_MATERIAL_ALPHA_PASS_THROUGH,0);
-	rlMaterialAttachBufferData(font_size->rtl_material_id,RL_MATERIAL_TARGET_COLOR,RL_MATERIAL_FORMAT_32_RGBA,data);
+	font_size->rtl_material_id=rtlMaterialAdd(wid,high,RL_MATERIAL_ALPHA_PASS_THROUGH,0);
+	rtlMaterialAttachBufferData(font_size->rtl_material_id,RL_MATERIAL_TARGET_COLOR,RL_MATERIAL_FORMAT_32_RGBA,data);
 	free(data);
 
-	rlMaterialBuildMipMaps(font_size->rtl_material_id);
+	rtlMaterialBuildMipMaps(font_size->rtl_material_id);
 }
 
 void view_dim3rtl_material_text_start_single_font(texture_font_type *d3_font)
@@ -215,10 +215,10 @@ void view_dim3rtl_material_text_start(void)
 
 void view_dim3rtl_material_text_stop(void)
 {
-	rlMaterialDelete(view_rtl_fonts[font_interface_index].size_24.rtl_material_id);
-	rlMaterialDelete(view_rtl_fonts[font_interface_index].size_48.rtl_material_id);
-	rlMaterialDelete(view_rtl_fonts[font_hud_index].size_24.rtl_material_id);
-	rlMaterialDelete(view_rtl_fonts[font_hud_index].size_48.rtl_material_id);
+	rtlMaterialDelete(view_rtl_fonts[font_interface_index].size_24.rtl_material_id);
+	rtlMaterialDelete(view_rtl_fonts[font_interface_index].size_48.rtl_material_id);
+	rtlMaterialDelete(view_rtl_fonts[font_hud_index].size_24.rtl_material_id);
+	rtlMaterialDelete(view_rtl_fonts[font_hud_index].size_48.rtl_material_id);
 }
 
 texture_font_size_type* view_dim3rtl_material_text_get_font(int text_font,int text_size)

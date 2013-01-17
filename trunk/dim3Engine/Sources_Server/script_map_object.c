@@ -248,7 +248,7 @@ JSValueRef js_map_object_nearest_func(JSContextRef cx,JSObjectRef func,JSObjectR
 			script_value_to_string(cx,argv[1],name,name_str_len);
 			name_ptr=name;
 		}
-		if (!script_is_value_null(cx,argv[2])) type=script_value_to_int(cx,argv[2]);
+		if (!script_is_value_null(cx,argv[2])) type=script_value_to_int(cx,argv[2])-sd_object_type_player;
 		if (!script_is_value_null(cx,argv[3])) ang=script_value_to_float(cx,argv[3]);
 		if (!script_is_value_null(cx,argv[4])) ang_sweep=script_value_to_float(cx,argv[4]);
 		min_dist=script_value_to_int(cx,argv[5]);
@@ -281,7 +281,7 @@ JSValueRef js_map_object_nearest_func(JSContextRef cx,JSObjectRef func,JSObjectR
 	
 		// type
 		
-	if (!script_is_value_null(cx,argv[4])) type=script_value_to_int(cx,argv[4]);
+	if (!script_is_value_null(cx,argv[4])) type=script_value_to_int(cx,argv[4])-sd_object_type_player;
 
 		// angle and sweep
 	
@@ -322,7 +322,7 @@ JSValueRef js_map_object_nearest_skip_object_id_func(JSContextRef cx,JSObjectRef
 			script_value_to_string(cx,argv[1],name,name_str_len);
 			name_ptr=name;
 		}
-		if (!script_is_value_null(cx,argv[2])) type=script_value_to_int(cx,argv[2]);
+		if (!script_is_value_null(cx,argv[2])) type=script_value_to_int(cx,argv[2])-sd_object_type_player;
 		if (!script_is_value_null(cx,argv[3])) ang=script_value_to_float(cx,argv[3]);
 		if (!script_is_value_null(cx,argv[4])) ang_sweep=script_value_to_float(cx,argv[4]);
 		min_dist=script_value_to_int(cx,argv[5]);
@@ -355,7 +355,7 @@ JSValueRef js_map_object_nearest_skip_object_id_func(JSContextRef cx,JSObjectRef
 	
 		// type
 		
-	if (!script_is_value_null(cx,argv[4])) type=script_value_to_int(cx,argv[4]);
+	if (!script_is_value_null(cx,argv[4])) type=script_value_to_int(cx,argv[4])-sd_object_type_player;
 
 		// angle and sweep
 	

@@ -50,7 +50,7 @@ GLuint							view_rtl_gl_id;
 int								view_rtl_screen_sizes[][2]={{240,150},{280,175},{320,200},{400,250},{480,300},{0,0}};
 texture_font_type				view_rtl_fonts[2];
 
-extern int view_dim3rtl_create_material_from_path(char *path);
+extern int view_dim3rtl_create_material_from_path(char *path,int alpha_type);
 extern void view_dim3rtl_material_text_start(void);
 extern void view_dim3rtl_material_text_stop(void);
 extern void view_dim3rtl_map_mesh_update(void);
@@ -68,7 +68,7 @@ extern void view_dim3rtl_overlay_update(void);
 
 bool view_dim3rtl_initialize(char *err_str)
 {
-	if (rlInitialize()!=RL_ERROR_OK) {
+	if (rtlInitialize()!=RL_ERROR_OK) {
 		strcpy(err_str,"Unable to initialize dim3RTL");
 		return(FALSE);
 	}
@@ -80,7 +80,7 @@ bool view_dim3rtl_initialize(char *err_str)
 
 void view_dim3rtl_shutdown(void)
 {
-	rlShutdown();
+	rtlShutdown();
 }
 
 /* =======================================================
@@ -94,17 +94,17 @@ bool view_dim3rtl_scene_start(char *err_str)
 	int					n,sz,wid,high;
 	float				f;
 	unsigned char		*data,*dptr;
-	rl2DPoint			s_pnt;
+	rtl2DPoint			s_pnt;
 
 		// make the scene
 
 	s_pnt.x=setup.screen_rtl_wid;
 	s_pnt.y=setup.screen_rtl_high;
 
-	view_rtl_scene_id=rlSceneAdd(&s_pnt,RL_SCENE_TARGET_MEMORY,RL_SCENE_FORMAT_32_RGBA,NULL,0);
+	view_rtl_scene_id=rtlSceneAdd(&s_pnt,RL_SCENE_TARGET_MEMORY,RL_SCENE_FORMAT_32_RGBA,NULL,0);
 	if (view_rtl_scene_id<0) {
 		strcpy(err_str,"Unable to create dim3RTL scene");
-		rlShutdown();
+		rtlShutdown();
 		return(FALSE);
 	}
 
@@ -126,7 +126,7 @@ bool view_dim3rtl_scene_start(char *err_str)
 	data=malloc(sz);
 	if (data==NULL) {
 		strcpy(err_str,"Out of memory");
-		rlShutdown();
+		rtlShutdown();
 		return(FALSE);
 	}
 	bzero(data,sz);
@@ -165,7 +165,7 @@ void view_dim3rtl_scene_stop(void)
 	glDeleteTextures(1,&view_rtl_gl_id);
 
 	view_dim3rtl_material_text_stop();
-	rlSceneDelete(view_rtl_scene_id);
+	rtlSceneDelete(view_rtl_scene_id);
 }
 
 /* =======================================================
@@ -191,7 +191,7 @@ void view_dim3rtl_image_cache(void)
 	
 	for (n=0;n!=iface.bitmap_list.nbitmap;n++) {
 		file_paths_data(&file_path_setup,path,"Bitmaps/Interface",iface_bitmap->filename,"png");
-		iface_bitmap->rtl_material_id=view_dim3rtl_create_material_from_path(path);
+		iface_bitmap->rtl_material_id=view_dim3rtl_create_material_from_path(path,RL_MATERIAL_ALPHA_PASS_THROUGH);
 		iface_bitmap++;
 	}
 
@@ -201,7 +201,7 @@ void view_dim3rtl_image_cache(void)
 
 	for (n=0;n!=iface.particle_list.nparticle;n++) {
 		file_paths_data(&file_path_setup,path,"Bitmaps/Particles",particle->bitmap_name,"png");
-		particle->rtl_material_id=view_dim3rtl_create_material_from_path(path);
+		particle->rtl_material_id=view_dim3rtl_create_material_from_path(path,RL_MATERIAL_ALPHA_ADDITIVE);
 		particle++;
 	}
 	
@@ -211,7 +211,7 @@ void view_dim3rtl_image_cache(void)
 
 	for (n=0;n!=iface.ring_list.nring;n++) {
 		file_paths_data(&file_path_setup,path,"Bitmaps/Rings",ring->bitmap_name,"png");
-		ring->rtl_material_id=view_dim3rtl_create_material_from_path(path);
+		ring->rtl_material_id=view_dim3rtl_create_material_from_path(path,RL_MATERIAL_ALPHA_ADDITIVE);
 		ring++;
 	}
 
@@ -221,7 +221,7 @@ void view_dim3rtl_image_cache(void)
 
 	for (n=0;n!=iface.mark_list.nmark;n++) {
 		file_paths_data(&file_path_setup,path,"Bitmaps/Marks",mark->bitmap_name,"png");
-		mark->rtl_material_id=view_dim3rtl_create_material_from_path(path);
+		mark->rtl_material_id=view_dim3rtl_create_material_from_path(path,RL_MATERIAL_ALPHA_PASS_THROUGH);
 		mark++;
 	}
 
@@ -231,7 +231,7 @@ void view_dim3rtl_image_cache(void)
 
 	for (n=0;n!=iface.halo_list.nhalo;n++) {
 		file_paths_data(&file_path_setup,path,"Bitmaps/Halos",halo->bitmap_name,"png");
-		halo->rtl_material_id=view_dim3rtl_create_material_from_path(path);
+		halo->rtl_material_id=view_dim3rtl_create_material_from_path(path,RL_MATERIAL_ALPHA_ADDITIVE);
 		halo++;
 	}
 
@@ -241,7 +241,7 @@ void view_dim3rtl_image_cache(void)
 
 	for (n=0;n!=iface.crosshair_list.ncrosshair;n++) {
 		file_paths_data(&file_path_setup,path,"Bitmaps/Crosshairs",crosshair->bitmap_name,"png");
-		crosshair->rtl_material_id=view_dim3rtl_create_material_from_path(path);
+		crosshair->rtl_material_id=view_dim3rtl_create_material_from_path(path,RL_MATERIAL_ALPHA_PASS_THROUGH);
 		crosshair++;
 	}
 }
@@ -266,7 +266,7 @@ void view_dim3rtl_transfer_to_opengl(void)
 		// scene memory buffers was set
 		// to RL_SCENE_FORMAT_32_RGBA
 
-	err=rlSceneGetBuffer(view_rtl_scene_id,(void**)&data);
+	err=rtlSceneGetBuffer(view_rtl_scene_id,(void**)&data);
 	if (err!=RL_ERROR_OK) return;
 
 	gl_texture_bind(0,view_rtl_gl_id);
@@ -280,9 +280,9 @@ void view_dim3rtl_transfer_to_opengl(void)
 void view_dim3rtl_render_scene(void)
 {
 	float			ang_y;
-	rlPoint			pnt;
-	rlVector		scale;
-	rlMatrix		mat,x_mat,scale_mat;
+	rtlPoint		pnt;
+	rtlVector		scale;
+	rtlMatrix		mat,x_mat,scale_mat;
 	
 		// build the eye point
 
@@ -296,20 +296,20 @@ void view_dim3rtl_render_scene(void)
 		// normally it wouldn't be this complex
 		
 	ang_y=angle_add(view.render->camera.ang.y,180.0f);
-	rlMatrixRotateY(&mat,ang_y);
+	rtlMatrixRotateY(&mat,ang_y);
 
-	rlMatrixRotateX(&x_mat,-view.render->camera.ang.x);
-	rlMatrixMultiply(&mat,&x_mat);
+	rtlMatrixRotateX(&x_mat,-view.render->camera.ang.x);
+	rtlMatrixMultiply(&mat,&x_mat);
 
 	scale.x=-1.0f;
 	scale.y=1.0f;
 	scale.z=1.0f;
-	rlMatrixScale(&scale_mat,&scale);
-	rlMatrixMultiply(&mat,&scale_mat);
+	rtlMatrixScale(&scale_mat,&scale);
+	rtlMatrixMultiply(&mat,&scale_mat);
 
 		// set the eye position
 		
-	rlSceneEyePositionSet(view_rtl_scene_id,&pnt,&mat,200.0f,300000.0f);
+	rtlSceneEyePositionSet(view_rtl_scene_id,&pnt,&mat,200.0f,300000.0f);
 
 		// update the scene
 		
@@ -322,7 +322,7 @@ void view_dim3rtl_render_scene(void)
 
 		// render
 
-	if (rlSceneRender(view_rtl_scene_id)!=RL_ERROR_OK) return;
+	if (rtlSceneRender(view_rtl_scene_id)!=RL_ERROR_OK) return;
 }
 
 void view_dim3rtl_render(void)
@@ -332,7 +332,7 @@ void view_dim3rtl_render(void)
 		// before transfering to screen
 		
 	if (view_rtl_has_render) {
-		rlSceneRenderFinish(view_rtl_scene_id);
+		rtlSceneRenderFinish(view_rtl_scene_id);
 		view_dim3rtl_transfer_to_opengl();
 		view_rtl_has_render=FALSE;
 	}

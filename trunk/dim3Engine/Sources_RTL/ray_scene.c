@@ -42,7 +42,7 @@ void ray_scene_3D_to_2D_point(ray_scene_type *scene,ray_point_type *pnt_3d,ray_2
 		// and turn it to face the eye plane
 
 	ray_vector_create_from_points(&vct,pnt_3d,&scene->eye.pnt);
-	rlMatrixVectorMultiply(&scene->eye.matrix,&vct);
+	rtlMatrixVectorMultiply(&scene->eye.matrix,&vct);
 
 		// solve for z=eye min distance
 
@@ -70,7 +70,7 @@ void ray_scene_3D_to_2D_point(ray_scene_type *scene,ray_point_type *pnt_3d,ray_2
      
 ======================================================= */
 
-int rlSceneAdd(ray_2d_point_type *size,int target,int format,void *attachment,unsigned long flags)
+int rtlSceneAdd(ray_2d_point_type *size,int target,int format,void *attachment,unsigned long flags)
 {
 	int					n,k,split,x_add,y_add;
 	ray_scene_type		*scene;
@@ -173,7 +173,7 @@ int rlSceneAdd(ray_2d_point_type *size,int target,int format,void *attachment,un
 		// build the threads
 
 	if (!ray_scene_create_threads(scene)) {
-		rlSceneDelete(scene->id);
+		rtlSceneDelete(scene->id);
 		return(RL_ERROR_THREADING_ERROR);
 	}
 	
@@ -194,7 +194,7 @@ int rlSceneAdd(ray_2d_point_type *size,int target,int format,void *attachment,un
      
 ======================================================= */
 
-int rlSceneDelete(int sceneId)
+int rtlSceneDelete(int sceneId)
 {
 	int				n,idx,count;
 	ray_scene_type	*scene;
@@ -220,9 +220,9 @@ int rlSceneDelete(int sceneId)
 
 		// clear lights and meshes
 
-	rlSceneLightDeleteAll(sceneId);
-	rlSceneMeshDeleteAll(sceneId);
-	rlSceneOverlayDeleteAll(sceneId);
+	rtlSceneLightDeleteAll(sceneId);
+	rtlSceneMeshDeleteAll(sceneId);
+	rtlSceneOverlayDeleteAll(sceneId);
 
 		// delete scene
 
@@ -253,7 +253,7 @@ int rlSceneDelete(int sceneId)
      
 ======================================================= */
 
-int rlSceneClearBuffer(int sceneId,ray_color_type *col)
+int rtlSceneClearBuffer(int sceneId,ray_color_type *col)
 {
 	int					n,idx,sz;
 	unsigned long		*data,ul;
@@ -300,7 +300,7 @@ int rlSceneClearBuffer(int sceneId,ray_color_type *col)
      
 ======================================================= */
 
-int rlSceneGetBuffer(int sceneId,void **buffer)
+int rtlSceneGetBuffer(int sceneId,void **buffer)
 {
 	int					idx;
 	ray_scene_type		*scene;

@@ -20,7 +20,7 @@ extern ray_global_type				ray_global;
       
 ======================================================= */
 
-int rlInitialize(void)
+int rtlInitialize(void)
 {
 	int					thread_count;
 #ifdef __APPLE__
@@ -102,7 +102,7 @@ int rlInitialize(void)
       
 ======================================================= */
 
-int rlShutdown(void)
+int rtlShutdown(void)
 {
 	int				id,err;
 
@@ -114,20 +114,20 @@ int rlShutdown(void)
 
 			// need to wait out any rendering
 
-		while (rlSceneRenderState(id)==RL_SCENE_STATE_RENDERING) {
+		while (rtlSceneRenderState(id)==RL_SCENE_STATE_RENDERING) {
 			usleep(100);
 		}
 
 			// delete scene
 
-		err=rlSceneDelete(id);
+		err=rtlSceneDelete(id);
 		if (err!=RL_ERROR_OK) return(err);
 	}
 
 		// free materials
 
 	while (ray_global.material_list.count!=0) {
-		err=rlMaterialDelete(ray_global.material_list.materials[0]->id);
+		err=rtlMaterialDelete(ray_global.material_list.materials[0]->id);
 		if (err!=RL_ERROR_OK) return(err);
 	}
 	

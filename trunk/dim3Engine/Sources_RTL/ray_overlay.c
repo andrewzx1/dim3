@@ -221,7 +221,7 @@ void ray_overlay_setup_all(ray_scene_type *scene)
       
 ======================================================= */
 
-int rlSceneOverlayAdd(int sceneId,int materialId,unsigned long flags)
+int rtlSceneOverlayAdd(int sceneId,int materialId,unsigned long flags)
 {
 	int					n,idx,material_idx;
 	ray_overlay_type	*overlay;
@@ -296,7 +296,7 @@ int rlSceneOverlayAdd(int sceneId,int materialId,unsigned long flags)
       
 ======================================================= */
 
-int rlSceneOverlayDelete(int sceneId,int overlayId)
+int rtlSceneOverlayDelete(int sceneId,int overlayId)
 {
 	int					n,idx,count;
 	ray_overlay_type	*overlay;
@@ -355,7 +355,7 @@ int rlSceneOverlayDelete(int sceneId,int overlayId)
       
 ======================================================= */
 
-int rlSceneOverlayDeleteAll(int sceneId)
+int rtlSceneOverlayDeleteAll(int sceneId)
 {
 	int				idx,err;
 	ray_scene_type	*scene;
@@ -370,7 +370,7 @@ int rlSceneOverlayDeleteAll(int sceneId)
 		// clear the overlays
 
 	while (scene->overlay_list.count!=0) {
-		err=rlSceneOverlayDelete(sceneId,scene->overlay_list.overlays[0]->id);
+		err=rtlSceneOverlayDelete(sceneId,scene->overlay_list.overlays[0]->id);
 		if (err!=RL_ERROR_OK) return(err);
 	}
 	
@@ -393,7 +393,7 @@ int rlSceneOverlayDeleteAll(int sceneId)
       
 ======================================================= */
 
-int rlSceneOverlaySetQuadCount(int sceneId,int overlayId,int count)
+int rtlSceneOverlaySetQuadCount(int sceneId,int overlayId,int count)
 {
 	int						n,idx;
 	ray_overlay_type		*overlay;
@@ -486,7 +486,7 @@ int rlSceneOverlaySetQuadCount(int sceneId,int overlayId,int count)
       
 ======================================================= */
 
-int rlSceneOverlaySetMaterial(int sceneId,int overlayId,int materialId)
+int rtlSceneOverlaySetMaterial(int sceneId,int overlayId,int materialId)
 {
 	int					idx,material_idx;
 	ray_overlay_type	*overlay;
@@ -535,7 +535,7 @@ int rlSceneOverlaySetMaterial(int sceneId,int overlayId,int materialId)
       
 ======================================================= */
 
-int rlSceneOverlaySetHidden(int sceneId,int overlayId,bool hidden)
+int rtlSceneOverlaySetHidden(int sceneId,int overlayId,bool hidden)
 {
 	int					idx;
 	ray_overlay_type	*overlay;
@@ -581,7 +581,7 @@ int rlSceneOverlaySetHidden(int sceneId,int overlayId,bool hidden)
       
 ======================================================= */
 
-int rlSceneOverlaySetPosition(int sceneId,int overlayId,ray_2d_point_type *pnt)
+int rtlSceneOverlaySetPosition(int sceneId,int overlayId,ray_2d_point_type *pnt)
 {
 	int					idx;
 	ray_overlay_type	*overlay;
@@ -628,7 +628,7 @@ int rlSceneOverlaySetPosition(int sceneId,int overlayId,ray_2d_point_type *pnt)
       
 ======================================================= */
 
-int rlSceneOverlaySetSize(int sceneId,int overlayId,ray_2d_point_type *pnt)
+int rtlSceneOverlaySetSize(int sceneId,int overlayId,ray_2d_point_type *pnt)
 {
 	int					idx;
 	ray_overlay_type	*overlay;
@@ -676,7 +676,7 @@ int rlSceneOverlaySetSize(int sceneId,int overlayId,ray_2d_point_type *pnt)
       
 ======================================================= */
 
-int rlSceneOverlaySetQuadPosition(int sceneId,int overlayId,int quadIndex,ray_2d_point_type *pnt)
+int rtlSceneOverlaySetQuadPosition(int sceneId,int overlayId,int quadIndex,ray_2d_point_type *pnt)
 {
 	int						idx;
 	ray_overlay_type		*overlay;
@@ -730,7 +730,7 @@ int rlSceneOverlaySetQuadPosition(int sceneId,int overlayId,int quadIndex,ray_2d
       
 ======================================================= */
 
-int rlSceneOverlaySetQuadSize(int sceneId,int overlayId,int quadIndex,ray_2d_point_type *pnt)
+int rtlSceneOverlaySetQuadSize(int sceneId,int overlayId,int quadIndex,ray_2d_point_type *pnt)
 {
 	int						idx;
 	ray_overlay_type		*overlay;
@@ -784,7 +784,7 @@ int rlSceneOverlaySetQuadSize(int sceneId,int overlayId,int quadIndex,ray_2d_poi
       
 ======================================================= */
 
-int rlSceneOverlaySetQuadUV(int sceneId,int overlayId,int quadIndex,ray_uv_type *uv)
+int rtlSceneOverlaySetQuadUV(int sceneId,int overlayId,int quadIndex,ray_uv_type *uv)
 {
 	int						idx;
 	ray_overlay_type		*overlay;
@@ -838,7 +838,7 @@ int rlSceneOverlaySetQuadUV(int sceneId,int overlayId,int quadIndex,ray_uv_type 
       
 ======================================================= */
 
-int rlSceneOverlaySetQuadUVStamp(int sceneId,int overlayId,int quadIndex,ray_uv_type *uv)
+int rtlSceneOverlaySetQuadUVStamp(int sceneId,int overlayId,int quadIndex,ray_uv_type *uv)
 {
 	int						idx;
 	ray_overlay_type		*overlay;
@@ -893,7 +893,7 @@ int rlSceneOverlaySetQuadUVStamp(int sceneId,int overlayId,int quadIndex,ray_uv_
       
 ======================================================= */
 
-int rlSceneOverlaySetQuadColor(int sceneId,int overlayId,int quadIndex,ray_color_type *col)
+int rtlSceneOverlaySetQuadColor(int sceneId,int overlayId,int quadIndex,ray_color_type *col)
 {
 	int						idx;
 	ray_overlay_type		*overlay;
