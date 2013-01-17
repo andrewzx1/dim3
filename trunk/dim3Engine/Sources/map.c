@@ -514,13 +514,13 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 		if (!app.dedicated_host) scripts_post_event_console(obj->script_idx,-1,sd_event_map,sd_event_map_open,0);
 	}
 	
-		// openrl setup
+		// dim3rtl setup
 
 	if (iface.project.ray_trace) {
-		view_openrl_map_mesh_start();
-		view_openrl_map_liquid_mesh_start();
-		view_openrl_map_model_mesh_start();
-		view_openrl_overlay_start();
+		view_dim3rtl_map_mesh_start();
+		view_dim3rtl_map_liquid_mesh_start();
+		view_dim3rtl_map_model_mesh_start();
+		view_dim3rtl_overlay_start();
 	}
 
 		// finish up
@@ -600,13 +600,13 @@ void map_end(void)
 	
 	console_add_system("Closing Map");
 	
-		// openrl cleanup
+		// dim3rtl cleanup
 	
 	if (iface.project.ray_trace) {
-		view_openrl_map_mesh_stop();
-		view_openrl_map_liquid_mesh_stop();
-		view_openrl_map_model_mesh_stop();
-		view_openrl_overlay_stop();
+		view_dim3rtl_map_mesh_stop();
+		view_dim3rtl_map_liquid_mesh_stop();
+		view_dim3rtl_map_model_mesh_stop();
+		view_dim3rtl_overlay_stop();
 	}
 	
 		// detach objects

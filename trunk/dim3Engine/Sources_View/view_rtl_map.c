@@ -2,7 +2,7 @@
 
 Module: dim3 Engine
 Author: Brian Barnes
- Usage: View OpenRL Map
+ Usage: View dim3RTL Map
 
 ***************************** License ********************************
 
@@ -41,17 +41,17 @@ extern setup_type			setup;
 extern network_setup_type	net_setup;
 extern file_path_setup_type	file_path_setup;
 
-extern int						view_rl_scene_id;
+extern int					view_rtl_scene_id;
 
-extern int view_openrl_create_material_from_texture(char *sub_path,texture_type *texture,texture_frame_type *frame);
+extern int view_dim3rtl_create_material_from_texture(char *sub_path,texture_type *texture,texture_frame_type *frame);
 
 /* =======================================================
 
-      OpenRL Map Mesh Setup
+      dim3RTL Map Mesh Setup
       
 ======================================================= */
 
-void view_openrl_map_mesh_start(void)
+void view_dim3rtl_map_mesh_start(void)
 {
 	int					n,k,i,t,uv_count,mesh_id,light_id;
 	float				*vp,*vu,*vn;
@@ -73,7 +73,7 @@ void view_openrl_map_mesh_start(void)
 		frame=&texture->frames[0];
 		if (frame->name[0]==0x0) continue;
 		
-		frame->bitmap.rl_material_id=view_openrl_create_material_from_texture("Bitmaps/Textures",texture,frame);
+		frame->bitmap.rl_material_id=view_dim3rtl_create_material_from_texture("Bitmaps/Textures",texture,frame);
 
 		progress_update();
 	}
@@ -92,15 +92,15 @@ void view_openrl_map_mesh_start(void)
 			
 			// add the mesh
 
-		mesh_id=rlSceneMeshAdd(view_rl_scene_id,0);
+		mesh_id=rlSceneMeshAdd(view_rtl_scene_id,0);
 		if (mesh_id<0) return;
 
-		mesh->openrl_mesh_id=mesh_id;
+		mesh->rtl_mesh_id=mesh_id;
 
 			// the vertexes
 		
-		rlSceneMeshSetVertex(view_rl_scene_id,mesh_id,RL_MESH_FORMAT_VERTEX_3_FLOAT,mesh->nvertex,NULL);
-		k=rlSceneMeshMapVertexPointer(view_rl_scene_id,mesh_id,(void**)&vp);
+		rlSceneMeshSetVertex(view_rtl_scene_id,mesh_id,RL_MESH_FORMAT_VERTEX_3_FLOAT,mesh->nvertex,NULL);
+		k=rlSceneMeshMapVertexPointer(view_rtl_scene_id,mesh_id,(void**)&vp);
 
 		pnt=mesh->vertexes;
 
@@ -111,7 +111,7 @@ void view_openrl_map_mesh_start(void)
 			pnt++;
 		}
 
-		rlSceneMeshUnMapVertexPointer(view_rl_scene_id,mesh_id);
+		rlSceneMeshUnMapVertexPointer(view_rtl_scene_id,mesh_id);
 
 			// the UVs
 
@@ -123,8 +123,8 @@ void view_openrl_map_mesh_start(void)
 			poly++;
 		}
 
-		rlSceneMeshSetUV(view_rl_scene_id,mesh_id,RL_MESH_FORMAT_UV_2_FLOAT,uv_count,NULL);
-		rlSceneMeshMapUVPointer(view_rl_scene_id,mesh_id,(void**)&vu);
+		rlSceneMeshSetUV(view_rtl_scene_id,mesh_id,RL_MESH_FORMAT_UV_2_FLOAT,uv_count,NULL);
+		rlSceneMeshMapUVPointer(view_rtl_scene_id,mesh_id,(void**)&vu);
 
 		poly=mesh->polys;
 	
@@ -136,12 +136,12 @@ void view_openrl_map_mesh_start(void)
 			poly++;
 		}
 
-		rlSceneMeshUnMapUVPointer(view_rl_scene_id,mesh_id);
+		rlSceneMeshUnMapUVPointer(view_rtl_scene_id,mesh_id);
 
 			// the normals
 
-		rlSceneMeshSetNormal(view_rl_scene_id,mesh_id,RL_MESH_FORMAT_NORMAL_3_FLOAT,mesh->npoly,NULL);
-		rlSceneMeshMapNormalPointer(view_rl_scene_id,mesh_id,(void**)&vn);
+		rlSceneMeshSetNormal(view_rtl_scene_id,mesh_id,RL_MESH_FORMAT_NORMAL_3_FLOAT,mesh->npoly,NULL);
+		rlSceneMeshMapNormalPointer(view_rtl_scene_id,mesh_id,(void**)&vn);
 
 		poly=mesh->polys;
 	
@@ -152,12 +152,12 @@ void view_openrl_map_mesh_start(void)
 			poly++;
 		}
 
-		rlSceneMeshUnMapNormalPointer(view_rl_scene_id,mesh_id);
+		rlSceneMeshUnMapNormalPointer(view_rtl_scene_id,mesh_id);
 
 			// the tangents
 
-		rlSceneMeshSetTangent(view_rl_scene_id,mesh_id,RL_MESH_FORMAT_TANGENT_3_FLOAT,mesh->npoly,NULL);
-		rlSceneMeshMapTangentPointer(view_rl_scene_id,mesh_id,(void**)&vn);
+		rlSceneMeshSetTangent(view_rtl_scene_id,mesh_id,RL_MESH_FORMAT_TANGENT_3_FLOAT,mesh->npoly,NULL);
+		rlSceneMeshMapTangentPointer(view_rtl_scene_id,mesh_id,(void**)&vn);
 
 		poly=mesh->polys;
 	
@@ -168,7 +168,7 @@ void view_openrl_map_mesh_start(void)
 			poly++;
 		}
 
-		rlSceneMeshUnMapTangentPointer(view_rl_scene_id,mesh_id);
+		rlSceneMeshUnMapTangentPointer(view_rtl_scene_id,mesh_id);
 
 			// polygons
 
@@ -193,7 +193,7 @@ void view_openrl_map_mesh_start(void)
 			poly++;
 		}
 
-		rlSceneMeshSetPoly(view_rl_scene_id,mesh_id,RL_MESH_FORMAT_POLY_SHORT_VERTEX_UV_NORMAL_TANGENT,mesh->npoly,ray_polys);
+		rlSceneMeshSetPoly(view_rtl_scene_id,mesh_id,RL_MESH_FORMAT_POLY_SHORT_VERTEX_UV_NORMAL_TANGENT,mesh->npoly,ray_polys);
 		free(ray_polys);
 
 		progress_update();
@@ -204,33 +204,33 @@ void view_openrl_map_mesh_start(void)
 	lit_col.r=map.ambient.light_color.r;
 	lit_col.g=map.ambient.light_color.g;
 	lit_col.b=map.ambient.light_color.b;
-	rlSceneAmbient(view_rl_scene_id,&lit_col);
+	rlSceneAmbient(view_rtl_scene_id,&lit_col);
 	
 		// build the lights
 		
 	for (n=0;n!=map.nlight;n++) {
 		lit=&map.lights[n];
 		
-		light_id=rlSceneLightAdd(view_rl_scene_id);
-		rlSceneLightSetIntensity(view_rl_scene_id,light_id,(float)lit->setting.intensity,lit->setting.exponent);
+		light_id=rlSceneLightAdd(view_rtl_scene_id);
+		rlSceneLightSetIntensity(view_rtl_scene_id,light_id,(float)lit->setting.intensity,lit->setting.exponent);
 	
 		lit_col.r=lit->setting.col.r;
 		lit_col.g=lit->setting.col.g;
 		lit_col.b=lit->setting.col.b;
-		rlSceneLightSetColor(view_rl_scene_id,light_id,&lit_col);
+		rlSceneLightSetColor(view_rtl_scene_id,light_id,&lit_col);
 
 		lit_pnt.x=(float)lit->pnt.x;
 		lit_pnt.y=(float)lit->pnt.y;
 		lit_pnt.z=(float)lit->pnt.z;
-		rlSceneLightSetPosition(view_rl_scene_id,light_id,&lit_pnt);
+		rlSceneLightSetPosition(view_rtl_scene_id,light_id,&lit_pnt);
 
-		lit->openrl_light_id=light_id;
+		lit->rtl_light_id=light_id;
 
 		progress_update();
 	}
 }
 
-void view_openrl_map_mesh_stop(void)
+void view_dim3rtl_map_mesh_stop(void)
 {
 	int					n;
 	map_mesh_type		*mesh;
@@ -243,14 +243,14 @@ void view_openrl_map_mesh_stop(void)
 		mesh=&map.mesh.meshes[n];
 		if (!mesh->flag.on) continue;
 		
-		rlSceneMeshDelete(view_rl_scene_id,mesh->openrl_mesh_id);
+		rlSceneMeshDelete(view_rtl_scene_id,mesh->rtl_mesh_id);
 		progress_update();
 	}
 
 		// delete lights
 
 	for (n=0;n!=map.nlight;n++) {
-		rlSceneLightDelete(view_rl_scene_id,map.lights[n].openrl_light_id);
+		rlSceneLightDelete(view_rtl_scene_id,map.lights[n].rtl_light_id);
 		progress_update();
 	}
 
@@ -273,11 +273,11 @@ void view_openrl_map_mesh_stop(void)
 
 /* =======================================================
 
-      OpenRL Map Mesh Update
+      dim3RTL Map Mesh Update
       
 ======================================================= */
 
-void view_openrl_map_mesh_update(void)
+void view_dim3rtl_map_mesh_update(void)
 {
 	int					n,k;
 	float				*vp,*vn;
@@ -299,7 +299,7 @@ void view_openrl_map_mesh_update(void)
 
 			// reset vertexes
 
-		rlSceneMeshMapVertexPointer(view_rl_scene_id,mesh->openrl_mesh_id,(void**)&vp);
+		rlSceneMeshMapVertexPointer(view_rtl_scene_id,mesh->rtl_mesh_id,(void**)&vp);
 
 		pnt=mesh->vertexes;
 
@@ -310,11 +310,11 @@ void view_openrl_map_mesh_update(void)
 			pnt++;
 		}
 
-		rlSceneMeshUnMapVertexPointer(view_rl_scene_id,mesh->openrl_mesh_id);
+		rlSceneMeshUnMapVertexPointer(view_rtl_scene_id,mesh->rtl_mesh_id);
 
 			// the normals
 
-		rlSceneMeshMapNormalPointer(view_rl_scene_id,mesh->openrl_mesh_id,(void**)&vn);
+		rlSceneMeshMapNormalPointer(view_rtl_scene_id,mesh->rtl_mesh_id,(void**)&vn);
 
 		poly=mesh->polys;
 	
@@ -325,11 +325,11 @@ void view_openrl_map_mesh_update(void)
 			poly++;
 		}
 
-		rlSceneMeshUnMapNormalPointer(view_rl_scene_id,mesh->openrl_mesh_id);
+		rlSceneMeshUnMapNormalPointer(view_rtl_scene_id,mesh->rtl_mesh_id);
 
 			// the tangents
 
-		rlSceneMeshMapTangentPointer(view_rl_scene_id,mesh->openrl_mesh_id,(void**)&vn);
+		rlSceneMeshMapTangentPointer(view_rtl_scene_id,mesh->rtl_mesh_id,(void**)&vn);
 
 		poly=mesh->polys;
 	
@@ -340,7 +340,7 @@ void view_openrl_map_mesh_update(void)
 			poly++;
 		}
 
-		rlSceneMeshUnMapTangentPointer(view_rl_scene_id,mesh->openrl_mesh_id);
+		rlSceneMeshUnMapTangentPointer(view_rtl_scene_id,mesh->rtl_mesh_id);
 
 			// reset moved flag
 

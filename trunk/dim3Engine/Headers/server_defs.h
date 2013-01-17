@@ -248,7 +248,7 @@ typedef struct		{
 
 typedef struct		{
 						int								type,direction,intensity,
-														openrl_light_id;
+														rtl_light_id;
 						float							exponent;
 						bool							on;
 						d3col							col;
@@ -290,7 +290,7 @@ typedef struct		{
 					} model_draw_texture_type;
 
 typedef struct		{
-						int								openrl_mesh_id;
+						int								rtl_mesh_id;
 						bool							has_opaque,has_transparent,has_glow;
 						float							alpha;
 						model_draw_mesh_fade			fade;
@@ -1068,7 +1068,7 @@ typedef union		{
 typedef struct		{
 						int						effecttype,mesh_idx,size,
 												start_tick,life_tick,
-												openrl_mesh_id;
+												rtl_mesh_id;
 						bool					on;
 						d3pnt					pnt;
 						effect_data				data;

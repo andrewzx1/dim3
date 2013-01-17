@@ -2,7 +2,7 @@
 
 Module: dim3 Engine
 Author: Brian Barnes
- Usage: View OpenRL Overlays
+ Usage: View dim3RTL Overlays
 
 ***************************** License ********************************
 
@@ -42,23 +42,23 @@ extern setup_type			setup;
 extern network_setup_type	net_setup;
 extern file_path_setup_type	file_path_setup;
 
-extern int						view_rl_scene_id;
+extern int						view_rtl_scene_id;
 
-extern texture_font_type		view_rl_fonts[2];
+extern texture_font_type		view_rtl_fonts[2];
 
-int								view_rl_overlay_crosshair_id;
+int								view_rtl_overlay_crosshair_id;
 
-extern texture_font_size_type* view_openrl_material_text_get_font(int text_font,int text_size);
+extern texture_font_size_type* view_dim3rtl_material_text_get_font(int text_font,int text_size);
 extern int gl_text_get_monospace_width(texture_font_size_type *font,int text_size);
 extern bool hud_item_fade_run(iface_item_fade_type *fade,float *alpha);
 
 /* =======================================================
 
-      View OpenRL Init/Shutdown
+      View dim3RTL Init/Shutdown
       
 ======================================================= */
 
-void view_openrl_overlay_start(void)
+void view_dim3rtl_overlay_start(void)
 {
 	int						n;
 	rl2DPoint				p_pnt,s_pnt;
@@ -72,22 +72,22 @@ void view_openrl_overlay_start(void)
 	bitmap=iface.bitmap_list.bitmaps;
 	
 	for (n=0;n!=iface.bitmap_list.nbitmap;n++) {
-		p_pnt.x=(bitmap->pnt.x*setup.screen_openrl_wid)/iface.scale_x;
-		p_pnt.y=(bitmap->pnt.y*setup.screen_openrl_high)/iface.scale_y;
-		s_pnt.x=(bitmap->size.x*setup.screen_openrl_wid)/iface.scale_x;
-		s_pnt.y=(bitmap->size.y*setup.screen_openrl_high)/iface.scale_y;
+		p_pnt.x=(bitmap->pnt.x*setup.screen_rtl_wid)/iface.scale_x;
+		p_pnt.y=(bitmap->pnt.y*setup.screen_rtl_high)/iface.scale_y;
+		s_pnt.x=(bitmap->size.x*setup.screen_rtl_wid)/iface.scale_x;
+		s_pnt.y=(bitmap->size.y*setup.screen_rtl_high)/iface.scale_y;
 
-		bitmap->openrl_overlay_id=rlSceneOverlayAdd(view_rl_scene_id,bitmap->openrl_material_id,0);
-		rlSceneOverlaySetPosition(view_rl_scene_id,bitmap->openrl_overlay_id,&p_pnt);
-		rlSceneOverlaySetSize(view_rl_scene_id,bitmap->openrl_overlay_id,&s_pnt);
-		rlSceneOverlaySetHidden(view_rl_scene_id,bitmap->openrl_overlay_id,(!bitmap->show));
+		bitmap->rtl_overlay_id=rlSceneOverlayAdd(view_rtl_scene_id,bitmap->rtl_material_id,0);
+		rlSceneOverlaySetPosition(view_rtl_scene_id,bitmap->rtl_overlay_id,&p_pnt);
+		rlSceneOverlaySetSize(view_rtl_scene_id,bitmap->rtl_overlay_id,&s_pnt);
+		rlSceneOverlaySetHidden(view_rtl_scene_id,bitmap->rtl_overlay_id,(!bitmap->show));
 
 		p_pnt.x=0;
 		p_pnt.y=0;
 
-		rlSceneOverlaySetQuadCount(view_rl_scene_id,bitmap->openrl_overlay_id,1);
-		rlSceneOverlaySetQuadPosition(view_rl_scene_id,bitmap->openrl_overlay_id,0,&p_pnt);
-		rlSceneOverlaySetQuadSize(view_rl_scene_id,bitmap->openrl_overlay_id,0,&s_pnt);
+		rlSceneOverlaySetQuadCount(view_rtl_scene_id,bitmap->rtl_overlay_id,1);
+		rlSceneOverlaySetQuadPosition(view_rtl_scene_id,bitmap->rtl_overlay_id,0,&p_pnt);
+		rlSceneOverlaySetQuadSize(view_rtl_scene_id,bitmap->rtl_overlay_id,0,&s_pnt);
 		bitmap++;
 
 		progress_update();
@@ -106,12 +106,12 @@ void view_openrl_overlay_start(void)
 	text=iface.text_list.texts;
 	
 	for (n=0;n!=iface.text_list.ntext;n++) {
-		font_size=view_openrl_material_text_get_font(font_hud_index,text->size);
+		font_size=view_dim3rtl_material_text_get_font(font_hud_index,text->size);
 
-		text->openrl_overlay_id=rlSceneOverlayAdd(view_rl_scene_id,font_size->openrl_material_id,0);
-		rlSceneOverlaySetPosition(view_rl_scene_id,text->openrl_overlay_id,&p_pnt);
-		rlSceneOverlaySetSize(view_rl_scene_id,text->openrl_overlay_id,&s_pnt);
-		rlSceneOverlaySetHidden(view_rl_scene_id,text->openrl_overlay_id,TRUE);
+		text->rtl_overlay_id=rlSceneOverlayAdd(view_rtl_scene_id,font_size->rtl_material_id,0);
+		rlSceneOverlaySetPosition(view_rtl_scene_id,text->rtl_overlay_id,&p_pnt);
+		rlSceneOverlaySetSize(view_rtl_scene_id,text->rtl_overlay_id,&s_pnt);
+		rlSceneOverlaySetHidden(view_rtl_scene_id,text->rtl_overlay_id,TRUE);
 		text++;
 
 		progress_update();
@@ -124,20 +124,20 @@ void view_openrl_overlay_start(void)
 	p_pnt.x=p_pnt.y=0;
 	s_pnt.x=s_pnt.y=10;
 
-	view_rl_overlay_crosshair_id=rlSceneOverlayAdd(view_rl_scene_id,crosshair->openrl_material_id,0);
-	rlSceneOverlaySetPosition(view_rl_scene_id,view_rl_overlay_crosshair_id,&p_pnt);
-	rlSceneOverlaySetSize(view_rl_scene_id,view_rl_overlay_crosshair_id,&s_pnt);
+	view_rtl_overlay_crosshair_id=rlSceneOverlayAdd(view_rtl_scene_id,crosshair->rtl_material_id,0);
+	rlSceneOverlaySetPosition(view_rtl_scene_id,view_rtl_overlay_crosshair_id,&p_pnt);
+	rlSceneOverlaySetSize(view_rtl_scene_id,view_rtl_overlay_crosshair_id,&s_pnt);
 
-	rlSceneOverlaySetQuadCount(view_rl_scene_id,view_rl_overlay_crosshair_id,1);
-	rlSceneOverlaySetQuadPosition(view_rl_scene_id,view_rl_overlay_crosshair_id,0,&p_pnt);
-	rlSceneOverlaySetQuadSize(view_rl_scene_id,view_rl_overlay_crosshair_id,0,&s_pnt);
+	rlSceneOverlaySetQuadCount(view_rtl_scene_id,view_rtl_overlay_crosshair_id,1);
+	rlSceneOverlaySetQuadPosition(view_rtl_scene_id,view_rtl_overlay_crosshair_id,0,&p_pnt);
+	rlSceneOverlaySetQuadSize(view_rtl_scene_id,view_rtl_overlay_crosshair_id,0,&s_pnt);
 
-	rlSceneOverlaySetHidden(view_rl_scene_id,view_rl_overlay_crosshair_id,TRUE);
+	rlSceneOverlaySetHidden(view_rtl_scene_id,view_rtl_overlay_crosshair_id,TRUE);
 
 	progress_update();
 }
 
-void view_openrl_overlay_stop(void)
+void view_dim3rtl_overlay_stop(void)
 {
 	int						n;
 	iface_bitmap_type		*bitmap;
@@ -146,7 +146,7 @@ void view_openrl_overlay_stop(void)
 	bitmap=iface.bitmap_list.bitmaps;
 	
 	for (n=0;n!=iface.bitmap_list.nbitmap;n++) {
-		rlSceneOverlayDelete(view_rl_scene_id,bitmap->openrl_overlay_id);
+		rlSceneOverlayDelete(view_rtl_scene_id,bitmap->rtl_overlay_id);
 		bitmap++;
 
 		progress_update();
@@ -155,23 +155,23 @@ void view_openrl_overlay_stop(void)
 	text=iface.text_list.texts;
 	
 	for (n=0;n!=iface.text_list.ntext;n++) {
-		rlSceneOverlayDelete(view_rl_scene_id,text->openrl_overlay_id);
+		rlSceneOverlayDelete(view_rtl_scene_id,text->rtl_overlay_id);
 		text++;
 
 		progress_update();
 	}
 
-	rlSceneOverlayDelete(view_rl_scene_id,view_rl_overlay_crosshair_id);
+	rlSceneOverlayDelete(view_rtl_scene_id,view_rtl_overlay_crosshair_id);
 	progress_update();
 }
 
 /* =======================================================
 
-      OpenRL Overlay Bitmap Update
+      dim3RTL Overlay Bitmap Update
       
 ======================================================= */
 
-void view_openrl_overlay_bitmap_to_overlay(iface_bitmap_type *bitmap)
+void view_dim3rtl_overlay_bitmap_to_overlay(iface_bitmap_type *bitmap)
 {
 	float				alpha;
 	d3col				team_tint;
@@ -202,16 +202,16 @@ void view_openrl_overlay_bitmap_to_overlay(iface_bitmap_type *bitmap)
 	
 		// set quad color
 
-	rlSceneOverlaySetQuadColor(view_rl_scene_id,bitmap->openrl_overlay_id,0,&col);
+	rlSceneOverlaySetQuadColor(view_rtl_scene_id,bitmap->rtl_overlay_id,0,&col);
 }
 
 /* =======================================================
 
-      OpenRL Overlay Text Update
+      dim3RTL Overlay Text Update
       
 ======================================================= */
 
-void view_openrl_overlay_set_to_char(texture_font_size_type *font_size,int overlay_id,int index,int ch)
+void view_dim3rtl_overlay_set_to_char(texture_font_size_type *font_size,int overlay_id,int index,int ch)
 {
 	int				xoff,yoff;
 	rlUV			uv,uv_size;
@@ -241,11 +241,11 @@ void view_openrl_overlay_set_to_char(texture_font_size_type *font_size,int overl
 		uv_size.y=font_size->gl_yadd;
 	}
 
-	rlSceneOverlaySetQuadUV(view_rl_scene_id,overlay_id,index,&uv);
-	rlSceneOverlaySetQuadUVStamp(view_rl_scene_id,overlay_id,index,&uv_size);
+	rlSceneOverlaySetQuadUV(view_rtl_scene_id,overlay_id,index,&uv);
+	rlSceneOverlaySetQuadUVStamp(view_rtl_scene_id,overlay_id,index,&uv_size);
 }
 
-bool view_openrl_overlay_text_to_overlay(iface_text_type *text)
+bool view_dim3rtl_overlay_text_to_overlay(iface_text_type *text)
 {
 	int						n,x,y,txt_len,txt_wid,ch,
 							lft,wid,high;
@@ -270,11 +270,11 @@ bool view_openrl_overlay_text_to_overlay(iface_text_type *text)
 
 		// reset overlay quads
 
-	rlSceneOverlaySetQuadCount(view_rl_scene_id,text->openrl_overlay_id,txt_len);
+	rlSceneOverlaySetQuadCount(view_rtl_scene_id,text->rtl_overlay_id,txt_len);
 	
 		// get font
 		
-	font_size=view_openrl_material_text_get_font(font_hud_index,text->size);
+	font_size=view_dim3rtl_material_text_get_font(font_hud_index,text->size);
 
         // font justification
 
@@ -305,13 +305,13 @@ bool view_openrl_overlay_text_to_overlay(iface_text_type *text)
 
 		// reset size of overlay
 
-	p_pnt.x=(x*setup.screen_openrl_wid)/iface.scale_x;
-	p_pnt.y=((y-high)*setup.screen_openrl_high)/iface.scale_y;
-	rlSceneOverlaySetPosition(view_rl_scene_id,text->openrl_overlay_id,&p_pnt);
+	p_pnt.x=(x*setup.screen_rtl_wid)/iface.scale_x;
+	p_pnt.y=((y-high)*setup.screen_rtl_high)/iface.scale_y;
+	rlSceneOverlaySetPosition(view_rtl_scene_id,text->rtl_overlay_id,&p_pnt);
 
-	s_pnt.x=(txt_wid*setup.screen_openrl_wid)/iface.scale_x;
-	s_pnt.y=(high*setup.screen_openrl_high)/iface.scale_y;
-	rlSceneOverlaySetSize(view_rl_scene_id,text->openrl_overlay_id,&s_pnt);
+	s_pnt.x=(txt_wid*setup.screen_rtl_wid)/iface.scale_x;
+	s_pnt.y=(high*setup.screen_rtl_high)/iface.scale_y;
+	rlSceneOverlaySetSize(view_rtl_scene_id,text->rtl_overlay_id,&s_pnt);
 
 		// get the color
 		// and alpha
@@ -329,8 +329,8 @@ bool view_openrl_overlay_text_to_overlay(iface_text_type *text)
 
 		// main quad size
 
-	s_pnt.x=(wid*setup.screen_openrl_wid)/iface.scale_x;
-	s_pnt.y=(high*setup.screen_openrl_high)/iface.scale_y;
+	s_pnt.x=(wid*setup.screen_rtl_wid)/iface.scale_x;
+	s_pnt.y=(high*setup.screen_rtl_high)/iface.scale_y;
 
 		// create the quads
 		// quads are offsets into overlays
@@ -345,13 +345,13 @@ bool view_openrl_overlay_text_to_overlay(iface_text_type *text)
 
 			// the overlay quad
 
-		p_pnt.x=(lft*setup.screen_openrl_wid)/iface.scale_x;
+		p_pnt.x=(lft*setup.screen_rtl_wid)/iface.scale_x;
 		p_pnt.y=0;
 
-		rlSceneOverlaySetQuadPosition(view_rl_scene_id,text->openrl_overlay_id,n,&p_pnt);
-		rlSceneOverlaySetQuadSize(view_rl_scene_id,text->openrl_overlay_id,n,&s_pnt);
-		view_openrl_overlay_set_to_char(font_size,text->openrl_overlay_id,n,ch);
-		rlSceneOverlaySetQuadColor(view_rl_scene_id,text->openrl_overlay_id,n,&col);
+		rlSceneOverlaySetQuadPosition(view_rtl_scene_id,text->rtl_overlay_id,n,&p_pnt);
+		rlSceneOverlaySetQuadSize(view_rtl_scene_id,text->rtl_overlay_id,n,&s_pnt);
+		view_dim3rtl_overlay_set_to_char(font_size,text->rtl_overlay_id,n,ch);
+		rlSceneOverlaySetQuadColor(view_rtl_scene_id,text->rtl_overlay_id,n,&col);
 
 			// next character
 
@@ -373,18 +373,18 @@ bool view_openrl_overlay_text_to_overlay(iface_text_type *text)
 
 /* =======================================================
 
-      OpenRL Overlay CrossHair Update
+      dim3RTL Overlay CrossHair Update
       
 ======================================================= */
 
-int view_openrl_overlay_crosshair_setup_click(obj_type *obj,rl2DPoint *p_pnt,rl2DPoint *s_pnt,rlColor *col)
+int view_dim3rtl_overlay_crosshair_setup_click(obj_type *obj,rl2DPoint *p_pnt,rl2DPoint *s_pnt,rlColor *col)
 {
 	int				sz,idx;
 
-	sz=setup.screen_openrl_wid/20;
+	sz=setup.screen_rtl_wid/20;
 
-	p_pnt->x=(setup.screen_openrl_wid>>1)-sz;
-	p_pnt->y=(setup.screen_openrl_high>>1)-sz;
+	p_pnt->x=(setup.screen_rtl_wid>>1)-sz;
+	p_pnt->y=(setup.screen_rtl_high>>1)-sz;
 	s_pnt->x=s_pnt->y=sz*2;
 
 	col->r=col->g=col->b=col->a=1.0f;
@@ -398,10 +398,10 @@ int view_openrl_overlay_crosshair_setup_click(obj_type *obj,rl2DPoint *p_pnt,rl2
 
 	if (idx==-1) return(-1);
 
-	return(iface.crosshair_list.crosshairs[idx].openrl_material_id);
+	return(iface.crosshair_list.crosshairs[idx].rtl_material_id);
 }
 
-int view_openrl_overlay_crosshair_setup_weapon(obj_type *obj,weapon_type *weap,rl2DPoint *p_pnt,rl2DPoint *s_pnt,rlColor *col)
+int view_dim3rtl_overlay_crosshair_setup_weapon(obj_type *obj,weapon_type *weap,rl2DPoint *p_pnt,rl2DPoint *s_pnt,rlColor *col)
 {
 	int				x,y,sz,dist,obj_idx,
 					item_count,weap_mode,move_tick,swap_tick;
@@ -422,10 +422,10 @@ int view_openrl_overlay_crosshair_setup_weapon(obj_type *obj,weapon_type *weap,r
 		// tied to the OpenGL portion, so lets
 		// just pretend everything is centered
 		
-	sz=(weap->crosshair.min_size*setup.screen_openrl_wid)/iface.scale_x;
+	sz=(weap->crosshair.min_size*setup.screen_rtl_wid)/iface.scale_x;
 	
-	p_pnt->x=(setup.screen_openrl_wid>>1)-sz;
-	p_pnt->y=(setup.screen_openrl_high>>1)-sz;
+	p_pnt->x=(setup.screen_rtl_wid>>1)-sz;
+	p_pnt->y=(setup.screen_rtl_high>>1)-sz;
 
 	s_pnt->x=s_pnt->y=sz*2;
 	
@@ -470,10 +470,10 @@ int view_openrl_overlay_crosshair_setup_weapon(obj_type *obj,weapon_type *weap,r
 	
 		// regular weapon crosshair
 		
-	return(iface.crosshair_list.crosshairs[weap->crosshair.fire_idx].openrl_material_id);
+	return(iface.crosshair_list.crosshairs[weap->crosshair.fire_idx].rtl_material_id);
 }
 
-void view_openrl_overlay_crosshair_setup(void)
+void view_dim3rtl_overlay_crosshair_setup(void)
 {
 	int				material_id;
 	obj_type		*obj;
@@ -489,36 +489,36 @@ void view_openrl_overlay_crosshair_setup(void)
 		// get cursor
 
 	if (obj->click.current_click_obj_idx!=-1) {
-		material_id=view_openrl_overlay_crosshair_setup_click(obj,&p_pnt,&s_pnt,&col);
+		material_id=view_dim3rtl_overlay_crosshair_setup_click(obj,&p_pnt,&s_pnt,&col);
 	}
 	else {
-		material_id=view_openrl_overlay_crosshair_setup_weapon(obj,weap,&p_pnt,&s_pnt,&col);
+		material_id=view_dim3rtl_overlay_crosshair_setup_weapon(obj,weap,&p_pnt,&s_pnt,&col);
 	}
 
 	if (material_id==-1) {
-		rlSceneOverlaySetHidden(view_rl_scene_id,view_rl_overlay_crosshair_id,TRUE);
+		rlSceneOverlaySetHidden(view_rtl_scene_id,view_rtl_overlay_crosshair_id,TRUE);
 		return;
 	}
 
 		// set cursor overlay
 
-	rlSceneOverlaySetMaterial(view_rl_scene_id,view_rl_overlay_crosshair_id,material_id);
-	rlSceneOverlaySetHidden(view_rl_scene_id,view_rl_overlay_crosshair_id,FALSE);
+	rlSceneOverlaySetMaterial(view_rtl_scene_id,view_rtl_overlay_crosshair_id,material_id);
+	rlSceneOverlaySetHidden(view_rtl_scene_id,view_rtl_overlay_crosshair_id,FALSE);
 
-	rlSceneOverlaySetPosition(view_rl_scene_id,view_rl_overlay_crosshair_id,&p_pnt);
-	rlSceneOverlaySetSize(view_rl_scene_id,view_rl_overlay_crosshair_id,&s_pnt);
+	rlSceneOverlaySetPosition(view_rtl_scene_id,view_rtl_overlay_crosshair_id,&p_pnt);
+	rlSceneOverlaySetSize(view_rtl_scene_id,view_rtl_overlay_crosshair_id,&s_pnt);
 
-	rlSceneOverlaySetQuadSize(view_rl_scene_id,view_rl_overlay_crosshair_id,0,&s_pnt);
-	rlSceneOverlaySetQuadColor(view_rl_scene_id,view_rl_overlay_crosshair_id,0,&col);
+	rlSceneOverlaySetQuadSize(view_rtl_scene_id,view_rtl_overlay_crosshair_id,0,&s_pnt);
+	rlSceneOverlaySetQuadColor(view_rtl_scene_id,view_rtl_overlay_crosshair_id,0,&col);
 }
 
 /* =======================================================
 
-      OpenRL Overlay Update
+      dim3RTL Overlay Update
       
 ======================================================= */
 
-void view_openrl_overlay_update(void)
+void view_dim3rtl_overlay_update(void)
 {
 	int						n;
 	iface_bitmap_type		*bitmap;
@@ -529,8 +529,8 @@ void view_openrl_overlay_update(void)
 	bitmap=iface.bitmap_list.bitmaps;
 	
 	for (n=0;n!=iface.bitmap_list.nbitmap;n++) {
-		view_openrl_overlay_bitmap_to_overlay(bitmap);
-		rlSceneOverlaySetHidden(view_rl_scene_id,bitmap->openrl_overlay_id,(!bitmap->show));
+		view_dim3rtl_overlay_bitmap_to_overlay(bitmap);
+		rlSceneOverlaySetHidden(view_rtl_scene_id,bitmap->rtl_overlay_id,(!bitmap->show));
 		bitmap++;
 	}
 
@@ -540,16 +540,16 @@ void view_openrl_overlay_update(void)
 	text=iface.text_list.texts;
 	
 	for (n=0;n!=iface.text_list.ntext;n++) {
-		if (!view_openrl_overlay_text_to_overlay(text)) {
-			rlSceneOverlaySetHidden(view_rl_scene_id,text->openrl_overlay_id,TRUE);
+		if (!view_dim3rtl_overlay_text_to_overlay(text)) {
+			rlSceneOverlaySetHidden(view_rtl_scene_id,text->rtl_overlay_id,TRUE);
 		}
 		else {
-			rlSceneOverlaySetHidden(view_rl_scene_id,text->openrl_overlay_id,(!text->show));
+			rlSceneOverlaySetHidden(view_rtl_scene_id,text->rtl_overlay_id,(!text->show));
 		}
 		text++;
 	}
 
 		// crosshair
 
-	view_openrl_overlay_crosshair_setup();
+	view_dim3rtl_overlay_crosshair_setup();
 }

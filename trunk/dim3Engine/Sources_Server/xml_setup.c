@@ -48,9 +48,9 @@ void setup_xml_default(void)
 	setup.screen_wid=-1;
 	setup.screen_high=-1;
 
-	setup.screen_openrl_wid=240;
-	setup.screen_openrl_high=150;
-	setup.screen_openrl_pixel_double=TRUE;
+	setup.screen_rtl_wid=240;
+	setup.screen_rtl_high=150;
+	setup.screen_rtl_pixel_double=TRUE;
 	
 	setup.fsaa_mode=fsaa_mode_none;
 	
@@ -168,9 +168,9 @@ bool setup_xml_read_path(char *path)
 	xml_key_read_boolean(setup_tag,"Metrics_On",&setup.metrics_on);
 	xml_key_read_boolean(setup_tag,"Debug_On",&setup.debug_on);
 	xml_key_read_boolean(setup_tag,"Ignore_FPS_Lock",&setup.ignore_fps_lock);
-	xml_key_read_int(setup_tag,"Screen_OpenRL_Width",&setup.screen_openrl_wid);
-	xml_key_read_int(setup_tag,"Screen_OpenRL_Height",&setup.screen_openrl_high);
-	xml_key_read_boolean(setup_tag,"Screen_OpenRL_Pixel_Double",&setup.screen_openrl_pixel_double);
+	xml_key_read_int(setup_tag,"Screen_dim3RTL_Width",&setup.screen_rtl_wid);
+	xml_key_read_int(setup_tag,"Screen_dim3RTL_Height",&setup.screen_rtl_high);
+	xml_key_read_boolean(setup_tag,"Screen_dim3RTL_Pixel_Double",&setup.screen_rtl_pixel_double);
 
 		// actions
 
@@ -315,9 +315,9 @@ bool setup_xml_write(void)
 	xml_key_write_boolean("Metrics_On",setup.metrics_on);
 	xml_key_write_boolean("Debug_On",setup.debug_on);
 	xml_key_write_boolean("Ignore_FPS_Lock",setup.ignore_fps_lock);
-    xml_key_write_int("Screen_OpenRL_Width",setup.screen_openrl_wid);
-    xml_key_write_int("Screen_OpenRL_Height",setup.screen_openrl_high);
-	xml_key_write_boolean("Screen_OpenRL_Pixel_Double",setup.screen_openrl_pixel_double);
+    xml_key_write_int("Screen_dim3RTL_Width",setup.screen_rtl_wid);
+    xml_key_write_int("Screen_dim3RTL_Height",setup.screen_rtl_high);
+	xml_key_write_boolean("Screen_dim3RTL_Pixel_Double",setup.screen_rtl_pixel_double);
 
 		// actions
 

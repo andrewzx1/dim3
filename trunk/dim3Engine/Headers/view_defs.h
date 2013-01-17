@@ -208,7 +208,7 @@ typedef struct		{
 #define max_view_image_bitmap								32
 
 typedef struct		{
-						int									msec,openrl_material_id;
+						int									msec,rtl_material_id;
 						bitmap_type							bitmap;
 					} view_image_bitmap_type;
 

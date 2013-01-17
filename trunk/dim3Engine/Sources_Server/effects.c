@@ -146,7 +146,7 @@ int effect_spawn(int effecttype,d3pnt *pt,int life_tick)
 	effect->start_tick=game_time_get();
 	effect->life_tick=life_tick;
 
-	effect->openrl_mesh_id=-1;
+	effect->rtl_mesh_id=-1;
 
 	return(idx);
 }
@@ -164,13 +164,13 @@ inline void effect_dispose_single(effect_type *effect)
 	effect->on=FALSE;
 
 		// dispose any active VBOs
-		// or openrl meshes
+		// or dim3rtl meshes
 		
 	if (!iface.project.ray_trace) {
 		view_dispose_effect_vertex_object(effect);
 	}
 	else {
-		view_openrl_effect_mesh_close(effect);
+		view_dim3rtl_effect_mesh_close(effect);
 	}
 }
 

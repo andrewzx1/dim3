@@ -312,9 +312,9 @@ bool particle_spawn_single(int particle_idx,int obj_idx,d3pnt *pt,particle_rotat
 
 	effect->size=particle_get_effect_size(particle);
 	
-		// openrl setup
+		// dim3rtl setup
 
-	if (iface.project.ray_trace) view_openrl_effect_mesh_setup(effect);
+	if (iface.project.ray_trace) view_dim3rtl_effect_mesh_setup(effect);
 	
 	return(TRUE);
 }

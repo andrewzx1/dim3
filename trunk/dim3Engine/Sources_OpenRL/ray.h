@@ -1,5 +1,5 @@
 //
-// OpenRL
+// dim3RTL
 // by Brian Barnes (bbarnes@klinksoftware.com)
 // free software offered as is for any use
 //
@@ -333,7 +333,7 @@ typedef struct		{
 // global ray
 //
 // this structure is the global structure that contains all the structures
-// within an OpenRL engine
+// within an dim3RTL engine
 //
 
 typedef struct		{
