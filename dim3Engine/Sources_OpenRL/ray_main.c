@@ -1,5 +1,5 @@
 //
-// OpenRL
+// dim3RTL
 // by Brian Barnes (bbarnes@klinksoftware.com)
 // free software offered as is for any use
 //
@@ -12,7 +12,7 @@ extern ray_global_type				ray_global;
 
 /* =======================================================
 
-      OpenRL Initialize
+      dim3RTL Initialize
 
 	  Returns:
 	   RL_ERROR_OK
@@ -95,7 +95,7 @@ int rlInitialize(void)
 
 /* =======================================================
 
-      OpenRL Shutdown
+      dim3RTL Shutdown
 
 	  Returns:
 	   RL_ERROR_OK

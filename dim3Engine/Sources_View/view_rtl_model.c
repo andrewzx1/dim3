@@ -2,7 +2,7 @@
 
 Module: dim3 Engine
 Author: Brian Barnes
- Usage: View OpenRL Models
+ Usage: View dim3RTL Models
 
 ***************************** License ********************************
 
@@ -42,18 +42,18 @@ extern setup_type			setup;
 extern network_setup_type	net_setup;
 extern file_path_setup_type	file_path_setup;
 
-extern int					view_rl_scene_id;
+extern int					view_rtl_scene_id;
 
-extern int view_openrl_create_material_from_texture(char *sub_path,texture_type *texture,texture_frame_type *frame,int alpha_type);
+extern int view_dim3rtl_create_material_from_texture(char *sub_path,texture_type *texture,texture_frame_type *frame,int alpha_type);
 extern int gl_light_get_intensity(int tick,int light_type,int intensity);
 
 /* =======================================================
 
-      OpenRL Single Model Mesh
+      dim3RTL Single Model Mesh
       
 ======================================================= */
 
-void view_openrl_model_setup_single_model(model_draw *draw,bool hidden,bool no_ray_trace_block,bool no_bounce_trace_block,bool no_light_trace_block)
+void view_dim3rtl_model_setup_single_model(model_draw *draw,bool hidden,bool no_ray_trace_block,bool no_bounce_trace_block,bool no_light_trace_block)
 {
 	int					n,k,i,mesh_id,uv_count;
 	unsigned long		flags,mesh_flags;
@@ -64,14 +64,14 @@ void view_openrl_model_setup_single_model(model_draw *draw,bool hidden,bool no_r
 	model_poly_type		*poly;
 	model_draw_light	*lit;
 	
-		// clear openrl ids
+		// clear dim3rtl ids
 
 	for (n=0;n!=max_model_mesh;n++) {
-		draw->meshes[n].openrl_mesh_id=-1;
+		draw->meshes[n].rtl_mesh_id=-1;
 	}
 	
 	for (n=0;n!=max_model_light;n++) {
-		draw->lights[n].openrl_light_id=-1;
+		draw->lights[n].rtl_light_id=-1;
 	}
 
 		// get the model
@@ -97,10 +97,10 @@ void view_openrl_model_setup_single_model(model_draw *draw,bool hidden,bool no_r
 		mesh_flags=flags;
 		if (mesh->rt_non_light_blocking) mesh_flags|=RL_MESH_FLAG_NON_LIGHT_TRACE_BLOCKING;
 
-		mesh_id=rlSceneMeshAdd(view_rl_scene_id,mesh_flags);
+		mesh_id=rlSceneMeshAdd(view_rtl_scene_id,mesh_flags);
 		if (mesh_id<0) return;
 		
-		if ((hidden) || ((draw->render_mesh_mask&(0x1<<n))==0)) rlSceneMeshSetHidden(view_rl_scene_id,mesh_id,TRUE);
+		if ((hidden) || ((draw->render_mesh_mask&(0x1<<n))==0)) rlSceneMeshSetHidden(view_rtl_scene_id,mesh_id,TRUE);
 		
 			// we set the UVs and polys at the beginning
 			// and only change the vertexes and normals
@@ -116,8 +116,8 @@ void view_openrl_model_setup_single_model(model_draw *draw,bool hidden,bool no_r
 			poly++;
 		}
 
-		rlSceneMeshSetUV(view_rl_scene_id,mesh_id,RL_MESH_FORMAT_UV_2_FLOAT,uv_count,NULL);
-		rlSceneMeshMapUVPointer(view_rl_scene_id,mesh_id,(void**)&uv);
+		rlSceneMeshSetUV(view_rtl_scene_id,mesh_id,RL_MESH_FORMAT_UV_2_FLOAT,uv_count,NULL);
+		rlSceneMeshMapUVPointer(view_rtl_scene_id,mesh_id,(void**)&uv);
 
 		poly=mesh->polys;
 
@@ -129,7 +129,7 @@ void view_openrl_model_setup_single_model(model_draw *draw,bool hidden,bool no_r
 			poly++;
 		}
 
-		rlSceneMeshUnMapUVPointer(view_rl_scene_id,mesh_id);
+		rlSceneMeshUnMapUVPointer(view_rtl_scene_id,mesh_id);
 
 			// polygons
 
@@ -154,12 +154,12 @@ void view_openrl_model_setup_single_model(model_draw *draw,bool hidden,bool no_r
 			poly++;
 		}
 
-		rlSceneMeshSetPoly(view_rl_scene_id,mesh_id,RL_MESH_FORMAT_POLY_SHORT_VERTEX_UV_NORMAL_TANGENT,mesh->npoly,ray_polys);
+		rlSceneMeshSetPoly(view_rtl_scene_id,mesh_id,RL_MESH_FORMAT_POLY_SHORT_VERTEX_UV_NORMAL_TANGENT,mesh->npoly,ray_polys);
 		free(ray_polys);
 
 			// set the draw's mesh id
 			
-		draw->meshes[i].openrl_mesh_id=mesh_id;
+		draw->meshes[i].rtl_mesh_id=mesh_id;
 	}
 	
 		// start with no lights
@@ -167,11 +167,11 @@ void view_openrl_model_setup_single_model(model_draw *draw,bool hidden,bool no_r
 		
 	for (n=0;n!=max_model_light;n++) {
 		lit=&draw->lights[n];
-		lit->openrl_light_id=-1;
+		lit->rtl_light_id=-1;
 	}
 }
 
-void view_openrl_model_update_single_model(model_draw *draw,bool hidden)
+void view_dim3rtl_model_update_single_model(model_draw *draw,bool hidden)
 {
 	int					n,mesh_id,tick,intensity;
 	d3pnt				pnt;
@@ -189,17 +189,17 @@ void view_openrl_model_update_single_model(model_draw *draw,bool hidden)
 		// update the meshes
 
 	for (n=0;n!=mdl->nmesh;n++) {
-		mesh_id=draw->meshes[n].openrl_mesh_id;
+		mesh_id=draw->meshes[n].rtl_mesh_id;
 		if (mesh_id==-1) continue;
 	
 			// hidden state
 
 		if ((hidden) || ((draw->render_mesh_mask&(0x1<<n))==0)) {
-			rlSceneMeshSetHidden(view_rl_scene_id,mesh_id,TRUE);
+			rlSceneMeshSetHidden(view_rtl_scene_id,mesh_id,TRUE);
 			continue;
 		}
 			
-		rlSceneMeshSetHidden(view_rl_scene_id,mesh_id,FALSE);
+		rlSceneMeshSetHidden(view_rtl_scene_id,mesh_id,FALSE);
 			
 			// the UVs and Polys are
 			// already set, we just need to
@@ -207,9 +207,9 @@ void view_openrl_model_update_single_model(model_draw *draw,bool hidden)
 
 		mesh=&mdl->meshes[n];
 
-		rlSceneMeshSetVertex(view_rl_scene_id,mesh_id,RL_MESH_FORMAT_VERTEX_3_FLOAT,mesh->nvertex,draw->setup.mesh_arrays[n].gl_vertex_array);
-		rlSceneMeshSetNormal(view_rl_scene_id,mesh_id,RL_MESH_FORMAT_NORMAL_3_FLOAT,mesh->nvertex,draw->setup.mesh_arrays[n].gl_normal_array);
-		rlSceneMeshSetTangent(view_rl_scene_id,mesh_id,RL_MESH_FORMAT_TANGENT_3_FLOAT,mesh->nvertex,draw->setup.mesh_arrays[n].gl_tangent_array);
+		rlSceneMeshSetVertex(view_rtl_scene_id,mesh_id,RL_MESH_FORMAT_VERTEX_3_FLOAT,mesh->nvertex,draw->setup.mesh_arrays[n].gl_vertex_array);
+		rlSceneMeshSetNormal(view_rtl_scene_id,mesh_id,RL_MESH_FORMAT_NORMAL_3_FLOAT,mesh->nvertex,draw->setup.mesh_arrays[n].gl_normal_array);
+		rlSceneMeshSetTangent(view_rtl_scene_id,mesh_id,RL_MESH_FORMAT_TANGENT_3_FLOAT,mesh->nvertex,draw->setup.mesh_arrays[n].gl_tangent_array);
 	}
 	
 		// update the lights
@@ -224,22 +224,22 @@ void view_openrl_model_update_single_model(model_draw *draw,bool hidden)
 			// it exists in scene
 			
 		if (!lit->on) {
-			if (lit->openrl_light_id!=-1) {
-				rlSceneLightDelete(view_rl_scene_id,lit->openrl_light_id);
-				lit->openrl_light_id=-1;
+			if (lit->rtl_light_id!=-1) {
+				rlSceneLightDelete(view_rtl_scene_id,lit->rtl_light_id);
+				lit->rtl_light_id=-1;
 			}
 			continue;
 		}
 		
 			// otherwise we need to add it
 			
-		if (lit->openrl_light_id==-1) {
-			lit->openrl_light_id=rlSceneLightAdd(view_rl_scene_id);
+		if (lit->rtl_light_id==-1) {
+			lit->rtl_light_id=rlSceneLightAdd(view_rtl_scene_id);
 		
 			lit_col.r=lit->col.r;
 			lit_col.g=lit->col.g;
 			lit_col.b=lit->col.b;
-			rlSceneLightSetColor(view_rl_scene_id,lit->openrl_light_id,&lit_col);
+			rlSceneLightSetColor(view_rtl_scene_id,lit->rtl_light_id,&lit_col);
 		}
 		
 			// change setup
@@ -250,14 +250,14 @@ void view_openrl_model_update_single_model(model_draw *draw,bool hidden)
 		lit_pnt.x=(float)pnt.x;
 		lit_pnt.y=(float)pnt.y;
 		lit_pnt.z=(float)pnt.z;
-		rlSceneLightSetPosition(view_rl_scene_id,lit->openrl_light_id,&lit_pnt);
+		rlSceneLightSetPosition(view_rtl_scene_id,lit->rtl_light_id,&lit_pnt);
 		
 		intensity=gl_light_get_intensity(tick,lit->type,lit->intensity);
-		rlSceneLightSetIntensity(view_rl_scene_id,lit->openrl_light_id,(float)intensity,lit->exponent);
+		rlSceneLightSetIntensity(view_rtl_scene_id,lit->rtl_light_id,(float)intensity,lit->exponent);
 	}
 }
 
-void view_openrl_model_close_single_model(model_draw *draw)
+void view_dim3rtl_model_close_single_model(model_draw *draw)
 {
 	int				n;
 	model_type		*mdl;
@@ -270,23 +270,23 @@ void view_openrl_model_close_single_model(model_draw *draw)
 		// delete the meshes
 
 	for (n=0;n!=mdl->nmesh;n++) {
-		if (draw->meshes[n].openrl_mesh_id!=-1) rlSceneMeshDelete(view_rl_scene_id,draw->meshes[n].openrl_mesh_id);
+		if (draw->meshes[n].rtl_mesh_id!=-1) rlSceneMeshDelete(view_rtl_scene_id,draw->meshes[n].rtl_mesh_id);
 	}
 	
 		// delete the lights
 		
 	for (n=0;n!=max_model_light;n++) {
-		if (draw->lights[n].openrl_light_id!=-1) rlSceneLightDelete(view_rl_scene_id,draw->lights[n].openrl_light_id);
+		if (draw->lights[n].rtl_light_id!=-1) rlSceneLightDelete(view_rtl_scene_id,draw->lights[n].rtl_light_id);
 	}
 }
 
 /* =======================================================
 
-      OpenRL Map Models
+      dim3RTL Map Models
       
 ======================================================= */
 
-void view_openrl_map_model_mesh_start(void)
+void view_dim3rtl_map_model_mesh_start(void)
 {
 	int					n,k;
 	char				sub_path[1024];
@@ -312,7 +312,7 @@ void view_openrl_map_model_mesh_start(void)
 			frame=&texture->frames[0];
 			if (frame->name[0]==0x0) continue;
 			
-			frame->bitmap.rl_material_id=view_openrl_create_material_from_texture(sub_path,texture,frame,RL_MATERIAL_ALPHA_PASS_THROUGH);
+			frame->bitmap.rl_material_id=view_dim3rtl_create_material_from_texture(sub_path,texture,frame,RL_MATERIAL_ALPHA_PASS_THROUGH);
 
 			progress_update();
 		}
@@ -325,7 +325,7 @@ void view_openrl_map_model_mesh_start(void)
 		if (obj==NULL) continue;
 		
 		no_ray_trace_block=((map.camera.mode==cv_fpp) && (obj->idx==camera.obj_idx));
-		view_openrl_model_setup_single_model(&obj->draw,TRUE,no_ray_trace_block,FALSE,FALSE);
+		view_dim3rtl_model_setup_single_model(&obj->draw,TRUE,no_ray_trace_block,FALSE,FALSE);
 
 		progress_update();
 	}
@@ -338,12 +338,12 @@ void view_openrl_map_model_mesh_start(void)
 		weap=obj->weap_list.weaps[n];
 		if (weap==NULL) continue;
 		
-		view_openrl_model_setup_single_model(&weap->draw,TRUE,FALSE,TRUE,TRUE);
+		view_dim3rtl_model_setup_single_model(&weap->draw,TRUE,FALSE,TRUE,TRUE);
 		progress_update();
 	}
 }
 
-void view_openrl_map_model_mesh_stop(void)
+void view_dim3rtl_map_model_mesh_stop(void)
 {
 	int					n,k;
 	obj_type			*obj;
@@ -358,7 +358,7 @@ void view_openrl_map_model_mesh_stop(void)
 		obj=server.obj_list.objs[n];
 		if (obj==NULL) continue;
 		
-		view_openrl_model_close_single_model(&obj->draw);
+		view_dim3rtl_model_close_single_model(&obj->draw);
 		progress_update();
 	}
 
@@ -370,7 +370,7 @@ void view_openrl_map_model_mesh_stop(void)
 		weap=obj->weap_list.weaps[n];
 		if (weap==NULL) continue;
 		
-		view_openrl_model_close_single_model(&weap->draw);
+		view_dim3rtl_model_close_single_model(&weap->draw);
 		progress_update();
 	}
 
@@ -397,7 +397,7 @@ void view_openrl_map_model_mesh_stop(void)
 	}	
 }
 
-void view_openrl_map_model_update(void)
+void view_dim3rtl_map_model_update(void)
 {
 	int					n;
 	obj_type			*obj;
@@ -405,7 +405,7 @@ void view_openrl_map_model_update(void)
 
 	for (n=0;n!=max_obj_list;n++) {
 		obj=server.obj_list.objs[n];
-		if (obj!=NULL) view_openrl_model_update_single_model(&obj->draw,obj->hidden);
+		if (obj!=NULL) view_dim3rtl_model_update_single_model(&obj->draw,obj->hidden);
 	}
 
 		// player weapon models
@@ -414,27 +414,27 @@ void view_openrl_map_model_update(void)
 
 	for (n=0;n!=max_weap_list;n++) {
 		weap=obj->weap_list.weaps[n];
-		if (weap!=NULL) view_openrl_model_update_single_model(&weap->draw,(n!=obj->held_weapon.current_idx));
+		if (weap!=NULL) view_dim3rtl_model_update_single_model(&weap->draw,(n!=obj->held_weapon.current_idx));
 	}
 }
 
 /* =======================================================
 
-      OpenRL Projectile Models
+      dim3RTL Projectile Models
       
 ======================================================= */
 
-void view_openrl_projectile_model_setup(proj_type *proj)
+void view_dim3rtl_projectile_model_setup(proj_type *proj)
 {
-	view_openrl_model_setup_single_model(&proj->draw,FALSE,FALSE,FALSE,FALSE);
+	view_dim3rtl_model_setup_single_model(&proj->draw,FALSE,FALSE,FALSE,FALSE);
 }
 
-void view_openrl_projectile_model_close(proj_type *proj)
+void view_dim3rtl_projectile_model_close(proj_type *proj)
 {
-	view_openrl_model_close_single_model(&proj->draw);
+	view_dim3rtl_model_close_single_model(&proj->draw);
 }
 
-void view_openrl_projectile_model_update(void)
+void view_dim3rtl_projectile_model_update(void)
 {
 	int					n;
 	proj_type			*proj;
@@ -450,6 +450,6 @@ void view_openrl_projectile_model_update(void)
 
 			// rebuild the mesh
 
-		view_openrl_model_update_single_model(&proj->draw,FALSE);
+		view_dim3rtl_model_update_single_model(&proj->draw,FALSE);
 	}
 }

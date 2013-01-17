@@ -33,10 +33,14 @@ and can be sold or given away.
 
 extern iface_type			iface;
 extern setup_type			setup;
+extern view_type			view;
+
+extern SDL_Window			*sdl_wind;
 
 int							mouse_tick;
 d3pnt						mouse_motion,mouse_gui_pnt;
-bool						mouse_button_state[input_max_mouse_button];
+bool						mouse_motion_skip_first,
+							mouse_button_state[input_max_mouse_button];
 
 /* =======================================================
 
@@ -47,6 +51,8 @@ bool						mouse_button_state[input_max_mouse_button];
 void input_mouse_initialize(void)
 {
 	SDL_SetRelativeMouseMode(TRUE);
+	
+	mouse_motion_skip_first=FALSE;
 }
 
 void input_mouse_shutdown(void)
@@ -69,6 +75,9 @@ void input_mouse_clear(void)
 	mouse_motion.x=0;
 	mouse_motion.y=0;
 	
+	mouse_gui_pnt.x=iface.scale_x>>1;
+	mouse_gui_pnt.y=iface.scale_y>>1;
+	
 	for (n=0;n!=input_max_mouse_button;n++) {
 		mouse_button_state[n]=FALSE;
 	}
@@ -87,14 +96,22 @@ void input_mouse_pause(void)
 
 void input_mouse_resume(void)
 {
-		// turn back off cursor
+		// reselect window
 		
+	SDL_RaiseWindow(sdl_wind);
+	SDL_WarpMouseInWindow(sdl_wind,(view.screen.x_sz>>1),(view.screen.y_sz>>1));
 	SDL_SetRelativeMouseMode(TRUE);
 
 		// pump out any changes
 
 	input_event_pump();
 	input_mouse_clear();
+	
+		// always skip first move
+		// as it'll be the warp mouse
+		// on OS X
+		
+	mouse_motion_skip_first=TRUE;
 }
 
 /* =======================================================
@@ -120,6 +137,11 @@ void input_event_mouse_button(int button,bool down)
 
 void input_event_mouse_motion(int x,int y)
 {
+	if (mouse_motion_skip_first) {
+		mouse_motion_skip_first=FALSE;
+		return;
+	}
+	
 	mouse_motion.x+=x;
 	mouse_motion.y+=y;
 }
@@ -195,8 +217,8 @@ void input_mouse_gui_set_position(int x,int y)
 	
 		// center to window
 		
-	mouse_gui_pnt.x=iface.scale_x>>1;
-	mouse_gui_pnt.y=iface.scale_y>>1;
+	mouse_gui_pnt.x=x;
+	mouse_gui_pnt.y=y;
 }
 
 void input_mouse_gui_get_position(int *x,int *y)

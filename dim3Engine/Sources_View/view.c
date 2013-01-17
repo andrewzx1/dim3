@@ -48,7 +48,7 @@ extern void menu_input(void);
 extern void file_input(void);
 extern void debug_input(void);
 extern void view_draw_opengl(void);
-extern void view_draw_openrl(void);
+extern void view_draw_dim3rtl(void);
 extern void chat_clear_messages(void);
 extern bool shadow_initialize(void);
 extern void shadow_shutdown(void);
@@ -188,7 +188,7 @@ bool view_initialize_display(char *err_str)
 	bool			ok;
 
 		// supergumba -- for now
-		// openrl has hard coded window
+		// dim3rtl has hard coded window
 		// screen size
 
 	if (iface.project.ray_trace) {
@@ -369,7 +369,7 @@ bool view_initialize(char *err_str)
 		// rl initialize
 
 	if (iface.project.ray_trace) {
-		if (!view_openrl_initialize(err_str)) {
+		if (!view_dim3rtl_initialize(err_str)) {
 			view_shutdown_display();
 			view_memory_release();
 			SDL_Quit();
@@ -455,7 +455,7 @@ void view_shutdown(void)
 	view_images_shutdown();
 	view_shutdown_display();
 
-	if (iface.project.ray_trace) view_openrl_shutdown();
+	if (iface.project.ray_trace) view_dim3rtl_shutdown();
 
 		// shutdown SDL
 		
@@ -486,8 +486,8 @@ bool view_game_start(char *err_str)
 		view_images_cached_load();
 	}
 	else {
-		if (!view_openrl_scene_start(err_str)) return(FALSE);
-		view_openrl_image_cache();
+		if (!view_dim3rtl_scene_start(err_str)) return(FALSE);
+		view_dim3rtl_image_cache();
 	}
 
 		// precalculate particles
@@ -514,7 +514,7 @@ void view_game_stop(void)
 		view_images_cached_free();
 	}
 	else {
-		view_openrl_scene_stop();
+		view_dim3rtl_scene_stop();
 	}
 }
 
@@ -641,7 +641,7 @@ void view_loop_draw(void)
 		metrics_draw();
 	}
 	else {
-		view_draw_openrl();
+		view_draw_dim3rtl();
 	}
 
 		// virtual controls
@@ -690,7 +690,7 @@ void view_capture_draw(char *path)
 		view_draw_opengl();
 	}
 	else {
-		view_draw_openrl();
+		view_draw_dim3rtl();
 	}
 	
 		// make screenshot

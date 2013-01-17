@@ -39,8 +39,8 @@ and can be sold or given away.
 #define setup_pane_debug					5
 
 #define ctrl_screen_gl_size_id				0
-#define ctrl_screen_rl_size_id				1
-#define ctrl_screen_openrl_pixel_double_id	2
+#define ctrl_screen_rtl_size_id				1
+#define ctrl_screen_rtl_pixel_double_id		2
 #define ctrl_fsaa_id						3
 #define ctrl_decal_on_id					4
 #define ctrl_shadow_on_id					5
@@ -94,7 +94,7 @@ extern server_type			server;
 extern iface_type			iface;
 extern setup_type			setup;
 
-extern int					view_rl_screen_sizes[][2];
+extern int					view_rtl_screen_sizes[][2];
 
 int							setup_tab_value,setup_action_scroll_pos,
 							setup_tab_index[6],
@@ -200,7 +200,7 @@ void setup_game_video_pane_opengl(void)
 	element_slider_add("Gamma",setup.gamma,-0.5f,0.5f,ctrl_gamma_id,x,y,TRUE);
 }
 
-void setup_game_video_pane_openrl(void)
+void setup_game_video_pane_dim3rtl(void)
 {
 	int			n,idx,
 				x,y,control_y_add,control_y_sz;
@@ -216,18 +216,18 @@ void setup_game_video_pane_openrl(void)
 	idx=0;
 	n=0;
 
-	while (view_rl_screen_sizes[n][0]!=0) {
-		if (setup.screen_openrl_wid==view_rl_screen_sizes[n][0]) idx=n;
-		sprintf(setup_screen_size_list[n],"%dx%d",view_rl_screen_sizes[n][0],view_rl_screen_sizes[n][1]);
+	while (view_rtl_screen_sizes[n][0]!=0) {
+		if (setup.screen_rtl_wid==view_rtl_screen_sizes[n][0]) idx=n;
+		sprintf(setup_screen_size_list[n],"%dx%d",view_rtl_screen_sizes[n][0],view_rtl_screen_sizes[n][1]);
 		n++;
 	}
 
 	setup_screen_size_list[n][0]=0x0;
 	
-	element_combo_add("Screen Size",(char*)setup_screen_size_list,idx,ctrl_screen_rl_size_id,x,y,TRUE);
+	element_combo_add("Screen Size",(char*)setup_screen_size_list,idx,ctrl_screen_rtl_size_id,x,y,TRUE);
 	y+=control_y_add;
 
-	element_checkbox_add("Pixel Double",setup.screen_openrl_pixel_double,ctrl_screen_openrl_pixel_double_id,x,y,TRUE);
+	element_checkbox_add("Pixel Double",setup.screen_rtl_pixel_double,ctrl_screen_rtl_pixel_double_id,x,y,TRUE);
 }
 
 void setup_game_audio_pane(void)
@@ -542,7 +542,7 @@ void setup_game_create_pane(void)
 				setup_game_video_pane_opengl();
 			}
 			else {
-				setup_game_video_pane_openrl();
+				setup_game_video_pane_dim3rtl();
 			}
 			break;
 		case setup_pane_audio:
@@ -847,14 +847,14 @@ void setup_game_handle_click(int id)
 			}
 			break;
 			
-		case ctrl_screen_rl_size_id:
-			idx=element_get_value(ctrl_screen_rl_size_id);
-			setup.screen_openrl_wid=view_rl_screen_sizes[idx][0];
-			setup.screen_openrl_high=view_rl_screen_sizes[idx][1];
+		case ctrl_screen_rtl_size_id:
+			idx=element_get_value(ctrl_screen_rtl_size_id);
+			setup.screen_rtl_wid=view_rtl_screen_sizes[idx][0];
+			setup.screen_rtl_high=view_rtl_screen_sizes[idx][1];
 			break;
 
-		case ctrl_screen_openrl_pixel_double_id:
-			setup.screen_openrl_pixel_double=element_get_value(ctrl_screen_openrl_pixel_double_id);
+		case ctrl_screen_rtl_pixel_double_id:
+			setup.screen_rtl_pixel_double=element_get_value(ctrl_screen_rtl_pixel_double_id);
 			break;
 			
 		case ctrl_decal_on_id:

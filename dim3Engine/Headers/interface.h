@@ -1027,27 +1027,27 @@ extern void particle_draw_position(effect_type *effect,int count,d3pnt *pnt);
 extern void ring_draw_position(effect_type *effect,int count,d3pnt *pnt);
 
 //
-// openrl
+// dim3rtl
 //
 
-extern bool view_openrl_initialize(char *err_str);
-extern void view_openrl_shutdown(void);
-extern bool view_openrl_scene_start(char *err_str);
-extern void view_openrl_scene_stop(void);
-extern void view_openrl_image_cache(void);
-extern void view_openrl_map_mesh_start(void);
-extern void view_openrl_map_mesh_stop(void);
-extern void view_openrl_map_liquid_mesh_start(void);
-extern void view_openrl_map_liquid_mesh_stop(void);
-extern void view_openrl_map_model_mesh_start(void);
-extern void view_openrl_map_model_mesh_stop(void);
-extern void view_openrl_overlay_start(void);
-extern void view_openrl_overlay_stop(void);
-extern void view_openrl_projectile_model_setup(proj_type *proj);
-extern void view_openrl_projectile_model_close(proj_type *proj);
-extern void view_openrl_effect_mesh_setup(effect_type *effect);
-extern void view_openrl_effect_mesh_close(effect_type *effect);
-extern void view_openrl_render(void);
+extern bool view_dim3rtl_initialize(char *err_str);
+extern void view_dim3rtl_shutdown(void);
+extern bool view_dim3rtl_scene_start(char *err_str);
+extern void view_dim3rtl_scene_stop(void);
+extern void view_dim3rtl_image_cache(void);
+extern void view_dim3rtl_map_mesh_start(void);
+extern void view_dim3rtl_map_mesh_stop(void);
+extern void view_dim3rtl_map_liquid_mesh_start(void);
+extern void view_dim3rtl_map_liquid_mesh_stop(void);
+extern void view_dim3rtl_map_model_mesh_start(void);
+extern void view_dim3rtl_map_model_mesh_stop(void);
+extern void view_dim3rtl_overlay_start(void);
+extern void view_dim3rtl_overlay_stop(void);
+extern void view_dim3rtl_projectile_model_setup(proj_type *proj);
+extern void view_dim3rtl_projectile_model_close(proj_type *proj);
+extern void view_dim3rtl_effect_mesh_setup(effect_type *effect);
+extern void view_dim3rtl_effect_mesh_close(effect_type *effect);
+extern void view_dim3rtl_render(void);
 
 //
 // chats

@@ -454,11 +454,11 @@ bool view_draw_node(node_type *node)
 
 /* =======================================================
 
-      Drawing Mainline OpenRL
+      Drawing Mainline dim3RTL
       
 ======================================================= */
 
-void view_draw_openrl(void)
+void view_draw_dim3rtl(void)
 {
 	int				n;
 	obj_type		*obj,*camera_obj;
@@ -519,9 +519,9 @@ void view_draw_openrl(void)
 		if (obj!=NULL) render_model_build_vertex_lists(&obj->draw,TRUE);
 	}
 
-		// openRL rendering
+		// dim3rtl rendering
 
-	view_openrl_render();
+	view_dim3rtl_render();
 		
 		// view fading
 

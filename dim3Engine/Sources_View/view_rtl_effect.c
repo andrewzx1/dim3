@@ -2,7 +2,7 @@
 
 Module: dim3 Engine
 Author: Brian Barnes
- Usage: View OpenRL Effects
+ Usage: View dim3RTL Effects
 
 ***************************** License ********************************
 
@@ -42,17 +42,15 @@ extern setup_type			setup;
 extern network_setup_type	net_setup;
 extern file_path_setup_type	file_path_setup;
 
-extern int						view_rl_scene_id;
-
-int test_id=-1;
+extern int					view_rtl_scene_id;
 
 /* =======================================================
 
-      OpenRL Effect Meshes
+      dim3RTL Effect Meshes
       
 ======================================================= */
 
-void view_openrl_effect_mesh_setup(effect_type *effect)
+void view_dim3rtl_effect_mesh_setup(effect_type *effect)
 {
 	int						quad_count;
 	iface_particle_type		*particle;
@@ -60,13 +58,13 @@ void view_openrl_effect_mesh_setup(effect_type *effect)
 		// only create meshes for
 		// particles or rings
 
-	effect->openrl_mesh_id=-1;
+	effect->rtl_mesh_id=-1;
 	if ((effect->effecttype!=ef_particle) && (effect->effecttype!=ef_ring)) return;
 
 		// create mesh
 		
-	effect->openrl_mesh_id=rlSceneMeshAdd(view_rl_scene_id,(RL_MESH_FLAG_NON_LIGHT_TRACE_BLOCKING|RL_MESH_FLAG_HIGHLIGHT));
-	if (effect->openrl_mesh_id==-1) return;
+	effect->rtl_mesh_id=rlSceneMeshAdd(view_rtl_scene_id,(RL_MESH_FLAG_NON_LIGHT_TRACE_BLOCKING|RL_MESH_FLAG_HIGHLIGHT));
+	if (effect->rtl_mesh_id==-1) return;
 
 		// create vertexes and uvs
 
@@ -75,33 +73,33 @@ void view_openrl_effect_mesh_setup(effect_type *effect)
 		case ef_particle:
 			particle=&iface.particle_list.particles[effect->data.particle.particle_idx];
 			quad_count=particle->count*(particle->trail_count+1);
-			rlSceneMeshSetVertex(view_rl_scene_id,effect->openrl_mesh_id,RL_MESH_FORMAT_VERTEX_3_FLOAT,(quad_count*4),NULL);
-			rlSceneMeshSetUV(view_rl_scene_id,effect->openrl_mesh_id,RL_MESH_FORMAT_UV_2_FLOAT,(quad_count*4),NULL);
+			rlSceneMeshSetVertex(view_rtl_scene_id,effect->rtl_mesh_id,RL_MESH_FORMAT_VERTEX_3_FLOAT,(quad_count*4),NULL);
+			rlSceneMeshSetUV(view_rtl_scene_id,effect->rtl_mesh_id,RL_MESH_FORMAT_UV_2_FLOAT,(quad_count*4),NULL);
 			break;
 
 		case ef_ring:
-			rlSceneMeshSetVertex(view_rl_scene_id,effect->openrl_mesh_id,RL_MESH_FORMAT_VERTEX_3_FLOAT,(36*2),NULL);
-			rlSceneMeshSetUV(view_rl_scene_id,effect->openrl_mesh_id,RL_MESH_FORMAT_UV_2_FLOAT,(36*2),NULL);
+			rlSceneMeshSetVertex(view_rtl_scene_id,effect->rtl_mesh_id,RL_MESH_FORMAT_VERTEX_3_FLOAT,(36*2),NULL);
+			rlSceneMeshSetUV(view_rtl_scene_id,effect->rtl_mesh_id,RL_MESH_FORMAT_UV_2_FLOAT,(36*2),NULL);
 			break;
 	}
 
 }
 
-void view_openrl_effect_mesh_close(effect_type *effect)
+void view_dim3rtl_effect_mesh_close(effect_type *effect)
 {
-	if (effect->openrl_mesh_id!=-1) {
-		rlSceneMeshDelete(view_rl_scene_id,effect->openrl_mesh_id);
-		effect->openrl_mesh_id=-1;
+	if (effect->rtl_mesh_id!=-1) {
+		rlSceneMeshDelete(view_rtl_scene_id,effect->rtl_mesh_id);
+		effect->rtl_mesh_id=-1;
 	}
 }
 
 /* =======================================================
 
-      Update OpenRL Particle Meshes
+      Update dim3RTL Particle Meshes
       
 ======================================================= */
 
-void view_openrl_effect_mesh_particle_quad(float *vp,float *uv,d3pnt *pnt,d3ang *rot_ang,float pixel_size,matrix_type *pixel_x_mat,matrix_type *pixel_y_mat,float gravity,float f_count,int particle_count,iface_particle_piece_type *pps,float gx,float gy,float g_size)
+void view_dim3rtl_effect_mesh_particle_quad(float *vp,float *uv,d3pnt *pnt,d3ang *rot_ang,float pixel_size,matrix_type *pixel_x_mat,matrix_type *pixel_y_mat,float gravity,float f_count,int particle_count,iface_particle_piece_type *pps,float gx,float gy,float g_size)
 {
 	int					n,k;
 	float				fx,fy,fz,px[4],py[4],pz[4];
@@ -194,7 +192,7 @@ void view_openrl_effect_mesh_particle_quad(float *vp,float *uv,d3pnt *pnt,d3ang 
 	}
 }
 
-void view_openrl_effect_mesh_particle_update(effect_type *effect,int count,int image_offset)
+void view_dim3rtl_effect_mesh_particle_update(effect_type *effect,int count,int image_offset)
 {
 	int						n,k,idx,particle_count,quad_count,
 							ntrail,pixel_dif,material_id;
@@ -211,7 +209,7 @@ void view_openrl_effect_mesh_particle_update(effect_type *effect,int count,int i
 
 		// have a mesh?
 
-	if (effect->openrl_mesh_id==-1) return;
+	if (effect->rtl_mesh_id==-1) return;
 
 		// get particle
 	
@@ -288,8 +286,8 @@ void view_openrl_effect_mesh_particle_update(effect_type *effect,int count,int i
 
 	quad_count=particle->count*(particle->trail_count+1);
 
-	rlSceneMeshMapVertexPointer(view_rl_scene_id,effect->openrl_mesh_id,(void**)&vp);
-	rlSceneMeshMapUVPointer(view_rl_scene_id,effect->openrl_mesh_id,(void**)&uv);
+	rlSceneMeshMapVertexPointer(view_rtl_scene_id,effect->rtl_mesh_id,(void**)&vp);
+	rlSceneMeshMapUVPointer(view_rtl_scene_id,effect->rtl_mesh_id,(void**)&uv);
 
 		// setup the vertexes
 
@@ -307,7 +305,7 @@ void view_openrl_effect_mesh_particle_update(effect_type *effect,int count,int i
 
 			// create mesh quads
 			
-		view_openrl_effect_mesh_particle_quad(vp,uv,&pnt,rot_ang,pixel_sz,&pixel_x_mat,&pixel_y_mat,gravity,f_count,particle_count,particle->pieces[eff_particle->variation_idx],gx,gy,g_size);
+		view_dim3rtl_effect_mesh_particle_quad(vp,uv,&pnt,rot_ang,pixel_sz,&pixel_x_mat,&pixel_y_mat,gravity,f_count,particle_count,particle->pieces[eff_particle->variation_idx],gx,gy,g_size);
 
 		vp+=((particle->count*3)*4);
 		uv+=((particle->count*2)*4);
@@ -318,12 +316,12 @@ void view_openrl_effect_mesh_particle_update(effect_type *effect,int count,int i
 		f_count-=trail_step;
 	}
 
-	rlSceneMeshUnMapVertexPointer(view_rl_scene_id,effect->openrl_mesh_id);
-	rlSceneMeshUnMapUVPointer(view_rl_scene_id,effect->openrl_mesh_id);
+	rlSceneMeshUnMapVertexPointer(view_rtl_scene_id,effect->rtl_mesh_id);
+	rlSceneMeshUnMapUVPointer(view_rtl_scene_id,effect->rtl_mesh_id);
 
 		// build the polygons
 
-	material_id=particle->openrl_material_id;
+	material_id=particle->rtl_material_id;
 
 	polys=(short*)malloc(sizeof(short)*(quad_count*10));
 	vk=polys;
@@ -340,7 +338,7 @@ void view_openrl_effect_mesh_particle_update(effect_type *effect,int count,int i
 		}
 	}
 
-	rlSceneMeshSetPoly(view_rl_scene_id,effect->openrl_mesh_id,RL_MESH_FORMAT_POLY_SHORT_VERTEX_UV,quad_count,polys);
+	rlSceneMeshSetPoly(view_rtl_scene_id,effect->rtl_mesh_id,RL_MESH_FORMAT_POLY_SHORT_VERTEX_UV,quad_count,polys);
 	free(polys);
 	
 		// setup color and alpha
@@ -355,16 +353,16 @@ void view_openrl_effect_mesh_particle_update(effect_type *effect,int count,int i
 	alpha_dif=particle->end_alpha-particle->start_alpha;
     col.a=particle->start_alpha+((alpha_dif*f_count)/f_tick);
 
-	rlSceneMeshSetPolyColorAll(view_rl_scene_id,effect->openrl_mesh_id,&col);
+	rlSceneMeshSetPolyColorAll(view_rtl_scene_id,effect->rtl_mesh_id,&col);
 }
 
 /* =======================================================
 
-      Update OpenRL Ring Meshes
+      Update dim3RTL Ring Meshes
       
 ======================================================= */
 
-void view_openrl_effect_mesh_ring_update(effect_type *effect,int count,int image_offset)
+void view_dim3rtl_effect_mesh_ring_update(effect_type *effect,int count,int image_offset)
 {
 	int						n,k,life_tick,idx,
 							material_id;
@@ -426,8 +424,8 @@ void view_openrl_effect_mesh_ring_update(effect_type *effect,int count,int image
 
 		// create the ring vertexes
 
-	rlSceneMeshMapVertexPointer(view_rl_scene_id,effect->openrl_mesh_id,(void**)&vp);
-	rlSceneMeshMapUVPointer(view_rl_scene_id,effect->openrl_mesh_id,(void**)&uv);
+	rlSceneMeshMapVertexPointer(view_rtl_scene_id,effect->rtl_mesh_id,(void**)&vp);
+	rlSceneMeshMapUVPointer(view_rtl_scene_id,effect->rtl_mesh_id,(void**)&uv);
 
 	for (n=0;n!=360;n+=10) {
 		rd=((float)n)*ANG_to_RAD;
@@ -467,13 +465,13 @@ void view_openrl_effect_mesh_ring_update(effect_type *effect,int count,int image
 		*uv++=gy+(g_size*((fy+outer_sz)/(outer_sz*2.0f)));
 	}
 
-	rlSceneMeshUnMapVertexPointer(view_rl_scene_id,effect->openrl_mesh_id);
-	rlSceneMeshUnMapUVPointer(view_rl_scene_id,effect->openrl_mesh_id);
+	rlSceneMeshUnMapVertexPointer(view_rtl_scene_id,effect->rtl_mesh_id);
+	rlSceneMeshUnMapUVPointer(view_rtl_scene_id,effect->rtl_mesh_id);
 
 		// create the polys
 		// last one needs to wrap around to beginning
 
-	material_id=ring->openrl_material_id;
+	material_id=ring->rtl_material_id;
 
 	polys=(short*)malloc(sizeof(short)*(36*10));
 	vk=polys;
@@ -506,7 +504,7 @@ void view_openrl_effect_mesh_ring_update(effect_type *effect,int count,int image
 		idx+=2;
 	}
 
-	rlSceneMeshSetPoly(view_rl_scene_id,effect->openrl_mesh_id,RL_MESH_FORMAT_POLY_SHORT_VERTEX_UV,36,polys);
+	rlSceneMeshSetPoly(view_rtl_scene_id,effect->rtl_mesh_id,RL_MESH_FORMAT_POLY_SHORT_VERTEX_UV,36,polys);
 	free(polys);
 
 		// set color and alpha
@@ -521,16 +519,16 @@ void view_openrl_effect_mesh_ring_update(effect_type *effect,int count,int image
 	alpha=ring->end_alpha-ring->start_alpha;
 	col.a=((alpha*f_count)/f_tick)+ring->start_alpha;
 
-	rlSceneMeshSetPolyColorAll(view_rl_scene_id,effect->openrl_mesh_id,&col);
+	rlSceneMeshSetPolyColorAll(view_rtl_scene_id,effect->rtl_mesh_id,&col);
 }
 
 /* =======================================================
 
-      Update OpenRL Effect Meshes
+      Update dim3RTL Effect Meshes
       
 ======================================================= */
 
-void view_openrl_effect_mesh_update(void)
+void view_dim3rtl_effect_mesh_update(void)
 {
 	int					n,count;
 	effect_type			*effect;
@@ -540,18 +538,18 @@ void view_openrl_effect_mesh_update(void)
 		if (effect==NULL) continue;
 
 		if (!effect->on) continue;
-		if (effect->openrl_mesh_id==-1) continue;
+		if (effect->rtl_mesh_id==-1) continue;
 
 		count=game_time_get()-effect->start_tick;
 
 		switch (effect->effecttype) {
 
 			case ef_particle:
-				view_openrl_effect_mesh_particle_update(effect,count,n);
+				view_dim3rtl_effect_mesh_particle_update(effect,count,n);
 				break;
 
 			case ef_ring:
-				view_openrl_effect_mesh_ring_update(effect,count,n);
+				view_dim3rtl_effect_mesh_ring_update(effect,count,n);
 				break;
 
 		}

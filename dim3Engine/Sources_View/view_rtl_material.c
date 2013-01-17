@@ -2,7 +2,7 @@
 
 Module: dim3 Engine
 Author: Brian Barnes
- Usage: View OpenRL Material
+ Usage: View dim3RTL Material
 
 ***************************** License ********************************
 
@@ -41,19 +41,19 @@ extern setup_type			setup;
 extern network_setup_type	net_setup;
 extern file_path_setup_type	file_path_setup;
 
-extern int					view_rl_scene_id;
+extern int					view_rtl_scene_id;
 
-extern texture_font_type	view_rl_fonts[2];
+extern texture_font_type	view_rtl_fonts[2];
 
 extern bool bitmap_text_font_exist(char *name);
 
 /* =======================================================
 
-      OpenRL Create Material from Texture
+      dim3RTL Create Material from Texture
       
 ======================================================= */
 
-int view_openrl_create_material_from_texture(char *sub_path,texture_type *texture,texture_frame_type *frame)
+int view_dim3rtl_create_material_from_texture(char *sub_path,texture_type *texture,texture_frame_type *frame)
 {
 	int					material_id,wid,high,png_wid,png_high;
 	bool				alpha_channel;
@@ -136,11 +136,11 @@ int view_openrl_create_material_from_texture(char *sub_path,texture_type *textur
 
 /* =======================================================
 
-      OpenRL Create Material from Path
+      dim3RTL Create Material from Path
       
 ======================================================= */
 
-int view_openrl_create_material_from_path(char *path)
+int view_dim3rtl_create_material_from_path(char *path)
 {
 	int					material_id,wid,high;
 	bool				alpha_channel;
@@ -162,24 +162,24 @@ int view_openrl_create_material_from_path(char *path)
 
 /* =======================================================
 
-      View OpenRL Text Materials
+      View dim3RTL Text Materials
       
 ======================================================= */
 
-void view_openrl_material_text_start_single_font_size(texture_font_size_type *font_size,char *name,int txt_size,int wid,int high)
+void view_dim3rtl_material_text_start_single_font_size(texture_font_size_type *font_size,char *name,int txt_size,int wid,int high)
 {
 	unsigned char		*data;
 
 	data=bitmap_text_size_data(font_size,name,txt_size,wid,high);
 
-	font_size->openrl_material_id=rlMaterialAdd(wid,high,RL_MATERIAL_ALPHA_PASS_THROUGH,0);
-	rlMaterialAttachBufferData(font_size->openrl_material_id,RL_MATERIAL_TARGET_COLOR,RL_MATERIAL_FORMAT_32_RGBA,data);
+	font_size->rtl_material_id=rlMaterialAdd(wid,high,RL_MATERIAL_ALPHA_PASS_THROUGH,0);
+	rlMaterialAttachBufferData(font_size->rtl_material_id,RL_MATERIAL_TARGET_COLOR,RL_MATERIAL_FORMAT_32_RGBA,data);
 	free(data);
 
-	rlMaterialBuildMipMaps(font_size->openrl_material_id);
+	rlMaterialBuildMipMaps(font_size->rtl_material_id);
 }
 
-void view_openrl_material_text_start_single_font(texture_font_type *d3_font)
+void view_dim3rtl_material_text_start_single_font(texture_font_type *d3_font)
 {
 	int				n,idx;
 
@@ -196,33 +196,33 @@ void view_openrl_material_text_start_single_font(texture_font_type *d3_font)
 
 		// load the font
 
-	view_openrl_material_text_start_single_font_size(&d3_font->size_24,d3_font->name[idx],24,512,256);
-	view_openrl_material_text_start_single_font_size(&d3_font->size_48,d3_font->name[idx],48,1024,512);
+	view_dim3rtl_material_text_start_single_font_size(&d3_font->size_24,d3_font->name[idx],24,512,256);
+	view_dim3rtl_material_text_start_single_font_size(&d3_font->size_48,d3_font->name[idx],48,1024,512);
 }
 
-void view_openrl_material_text_start(void)
+void view_dim3rtl_material_text_start(void)
 {
 	int				n;
 
 	for (n=0;n!=max_iface_font_variant;n++) {
-		strcpy(view_rl_fonts[font_interface_index].name[n],iface.font.interface_name[n]);
-		strcpy(view_rl_fonts[font_hud_index].name[n],iface.font.hud_name[n]);
+		strcpy(view_rtl_fonts[font_interface_index].name[n],iface.font.interface_name[n]);
+		strcpy(view_rtl_fonts[font_hud_index].name[n],iface.font.hud_name[n]);
 	}
 
-	view_openrl_material_text_start_single_font(&view_rl_fonts[font_interface_index]);
-	view_openrl_material_text_start_single_font(&view_rl_fonts[font_hud_index]);
+	view_dim3rtl_material_text_start_single_font(&view_rtl_fonts[font_interface_index]);
+	view_dim3rtl_material_text_start_single_font(&view_rtl_fonts[font_hud_index]);
 }
 
-void view_openrl_material_text_stop(void)
+void view_dim3rtl_material_text_stop(void)
 {
-	rlMaterialDelete(view_rl_fonts[font_interface_index].size_24.openrl_material_id);
-	rlMaterialDelete(view_rl_fonts[font_interface_index].size_48.openrl_material_id);
-	rlMaterialDelete(view_rl_fonts[font_hud_index].size_24.openrl_material_id);
-	rlMaterialDelete(view_rl_fonts[font_hud_index].size_48.openrl_material_id);
+	rlMaterialDelete(view_rtl_fonts[font_interface_index].size_24.rtl_material_id);
+	rlMaterialDelete(view_rtl_fonts[font_interface_index].size_48.rtl_material_id);
+	rlMaterialDelete(view_rtl_fonts[font_hud_index].size_24.rtl_material_id);
+	rlMaterialDelete(view_rtl_fonts[font_hud_index].size_48.rtl_material_id);
 }
 
-texture_font_size_type* view_openrl_material_text_get_font(int text_font,int text_size)
+texture_font_size_type* view_dim3rtl_material_text_get_font(int text_font,int text_size)
 {
-	if (text_size<=24) return(&view_rl_fonts[text_font].size_24);
-	return(&view_rl_fonts[text_font].size_48);
+	if (text_size<=24) return(&view_rtl_fonts[text_font].size_24);
+	return(&view_rtl_fonts[text_font].size_48);
 }

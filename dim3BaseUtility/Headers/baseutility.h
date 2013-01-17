@@ -31,7 +31,7 @@ and can be sold or given away.
       
 ======================================================= */
 
-#define dim3_version					"0019"
+#define dim3_version					"0020"
 
 /* =======================================================
 
@@ -358,14 +358,14 @@ extern void xml_key_write_color(char *name,d3col *value);
 #define max_texture_frame_mask					0x1F			// mask for maximum number of textures frames
 
 //
-// openrl alpha types
+// dim3rtl alpha types
 //
 
-#define rl_alpha_pass_through					0
-#define rl_alpha_reflect						1
-#define rl_alpha_refract						2
+#define rtl_alpha_pass_through					0
+#define rtl_alpha_reflect						1
+#define rtl_alpha_refract						2
 
-#define rl_alpha_list_def						{"pass","reflect","refract",""}
+#define rtl_alpha_list_def						{"pass","reflect","refract",""}
 
 //
 // tangent space
@@ -639,7 +639,7 @@ typedef struct		{
 					
 typedef struct		{
 						int								image_idx,show_tick,
-														openrl_material_id,openrl_overlay_id;
+														rtl_material_id,rtl_overlay_id;
 						float							alpha,rot;
 						char							name[name_str_len],filename[file_str_len];
 						bool							show,old_show,
@@ -656,7 +656,7 @@ typedef struct		{
 					} iface_bitmap_list;
 
 typedef struct		{
-						int								size,just,special,openrl_overlay_id;
+						int								size,just,special,rtl_overlay_id;
 						float							alpha;
 						char							name[name_str_len],data[max_hud_text_str_sz];
 						bool							show,old_show,monospaced,has_return;
@@ -961,7 +961,7 @@ typedef struct		{
 					} iface_particle_piece_type;
 
 typedef struct		{
-						int								image_idx,openrl_material_id,
+						int								image_idx,rtl_material_id,
 														chain_idx,count,trail_count,
 														spread_offset,life_msec,
 														start_pixel_size,end_pixel_size,
@@ -991,7 +991,7 @@ typedef struct		{
 //
 
 typedef struct		{
-						int								image_idx,openrl_material_id,
+						int								image_idx,rtl_material_id,
 														life_msec,
 														start_outer_size,end_outer_size,
 														start_inner_size,end_inner_size;
@@ -1014,7 +1014,7 @@ typedef struct		{
 //
 
 typedef struct		{
-						int								image_idx,openrl_material_id,
+						int								image_idx,rtl_material_id,
 														fade_in_msec,life_msec,fade_out_msec,total_msec;
 						char							name[name_str_len],bitmap_name[name_str_len];
 						bool							no_rotate,no_transparent,no_opaque,hilite,blend_add;
@@ -1032,7 +1032,7 @@ typedef struct		{
 //
 
 typedef struct		{
-						int								image_idx,openrl_material_id,
+						int								image_idx,rtl_material_id,
 														min_dist,max_dist,
 														min_size,max_size;
 						float							min_alpha,max_alpha;
@@ -1050,7 +1050,7 @@ typedef struct		{
 //
 
 typedef struct		{
-						int								image_idx,openrl_material_id;
+						int								image_idx,rtl_material_id;
 						char							name[name_str_len],bitmap_name[name_str_len];
 					} iface_crosshair_type;
 
@@ -1520,7 +1520,7 @@ extern int score_add(iface_type *iface,char *name,int score);
 
 typedef struct			{
 							int							char_box_wid,char_box_high,char_real_high,
-														char_baseline,char_per_line,openrl_material_id;
+														char_baseline,char_per_line,rtl_material_id;
 							float						gl_xoff,gl_xadd,gl_yoff,gl_yadd,char_size[90];
 							bitmap_type					bitmap;
 						} texture_font_size_type;

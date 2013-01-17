@@ -2,7 +2,7 @@
 
 Module: dim3 Engine
 Author: Brian Barnes
- Usage: View OpenRL Patches
+ Usage: View dim3RTL Patches
 
 ***************************** License ********************************
 
@@ -41,55 +41,55 @@ extern setup_type			setup;
 extern network_setup_type	net_setup;
 extern file_path_setup_type	file_path_setup;
 
-int								view_rl_scene_id,
-								view_rl_lx,view_rl_rx,
-								view_rl_ty,view_rl_by;
-bool							view_rl_has_render;
-GLuint							view_rl_gl_id;
+int								view_rtl_scene_id,
+								view_rtl_lx,view_rtl_rx,
+								view_rtl_ty,view_rtl_by;
+bool							view_rtl_has_render;
+GLuint							view_rtl_gl_id;
 
-int								view_rl_screen_sizes[][2]={{240,150},{280,175},{320,200},{400,250},{480,300},{0,0}};
-texture_font_type				view_rl_fonts[2];
+int								view_rtl_screen_sizes[][2]={{240,150},{280,175},{320,200},{400,250},{480,300},{0,0}};
+texture_font_type				view_rtl_fonts[2];
 
-extern int view_openrl_create_material_from_path(char *path);
-extern void view_openrl_material_text_start(void);
-extern void view_openrl_material_text_stop(void);
-extern void view_openrl_map_mesh_update(void);
-extern void view_openrl_map_liquid_mesh_update(void);
-extern void view_openrl_map_model_update(void);
-extern void view_openrl_projectile_model_update(void);
-extern void view_openrl_effect_mesh_update(void);
-extern void view_openrl_overlay_update(void);
+extern int view_dim3rtl_create_material_from_path(char *path);
+extern void view_dim3rtl_material_text_start(void);
+extern void view_dim3rtl_material_text_stop(void);
+extern void view_dim3rtl_map_mesh_update(void);
+extern void view_dim3rtl_map_liquid_mesh_update(void);
+extern void view_dim3rtl_map_model_update(void);
+extern void view_dim3rtl_projectile_model_update(void);
+extern void view_dim3rtl_effect_mesh_update(void);
+extern void view_dim3rtl_overlay_update(void);
 
 /* =======================================================
 
-      View OpenRL Init/Shutdown
+      View dim3RTL Init/Shutdown
       
 ======================================================= */
 
-bool view_openrl_initialize(char *err_str)
+bool view_dim3rtl_initialize(char *err_str)
 {
 	if (rlInitialize()!=RL_ERROR_OK) {
-		strcpy(err_str,"Unable to initialize OpenRL");
+		strcpy(err_str,"Unable to initialize dim3RTL");
 		return(FALSE);
 	}
 	
-	view_rl_has_render=FALSE;
+	view_rtl_has_render=FALSE;
 
 	return(TRUE);
 }
 
-void view_openrl_shutdown(void)
+void view_dim3rtl_shutdown(void)
 {
 	rlShutdown();
 }
 
 /* =======================================================
 
-      View OpenRL Scene
+      View dim3RTL Scene
       
 ======================================================= */
 
-bool view_openrl_scene_start(char *err_str)
+bool view_dim3rtl_scene_start(char *err_str)
 {
 	int					n,sz,wid,high;
 	float				f;
@@ -98,31 +98,31 @@ bool view_openrl_scene_start(char *err_str)
 
 		// make the scene
 
-	s_pnt.x=setup.screen_openrl_wid;
-	s_pnt.y=setup.screen_openrl_high;
+	s_pnt.x=setup.screen_rtl_wid;
+	s_pnt.y=setup.screen_rtl_high;
 
-	view_rl_scene_id=rlSceneAdd(&s_pnt,RL_SCENE_TARGET_MEMORY,RL_SCENE_FORMAT_32_RGBA,NULL,0);
-	if (view_rl_scene_id<0) {
-		strcpy(err_str,"Unable to create OpenRL scene");
+	view_rtl_scene_id=rlSceneAdd(&s_pnt,RL_SCENE_TARGET_MEMORY,RL_SCENE_FORMAT_32_RGBA,NULL,0);
+	if (view_rtl_scene_id<0) {
+		strcpy(err_str,"Unable to create dim3RTL scene");
 		rlShutdown();
 		return(FALSE);
 	}
 
 		// text materials
 
-	view_openrl_material_text_start();
+	view_dim3rtl_material_text_start();
 
 		// we need a texture to transfer
 		// the scene to opengl raster
 
 	glActiveTexture(GL_TEXTURE0);
-	glGenTextures(1,&view_rl_gl_id);
-	glBindTexture(GL_TEXTURE_2D,view_rl_gl_id);
+	glGenTextures(1,&view_rtl_gl_id);
+	glBindTexture(GL_TEXTURE_2D,view_rtl_gl_id);
 
 	glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
 	glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
 
-	sz=(setup.screen_openrl_wid*4)*setup.screen_openrl_high;
+	sz=(setup.screen_rtl_wid*4)*setup.screen_rtl_high;
 	data=malloc(sz);
 	if (data==NULL) {
 		strcpy(err_str,"Out of memory");
@@ -139,7 +139,7 @@ bool view_openrl_scene_start(char *err_str)
 		*dptr++=0xFF;
 	}
 
-	glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,setup.screen_openrl_wid,setup.screen_openrl_high,0,GL_RGBA,GL_UNSIGNED_BYTE,data);
+	glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,setup.screen_rtl_wid,setup.screen_rtl_high,0,GL_RGBA,GL_UNSIGNED_BYTE,data);
 
 	free(data);
 
@@ -147,34 +147,34 @@ bool view_openrl_scene_start(char *err_str)
 
 		// get drawing size
 
-	f=setup.screen_openrl_pixel_double?2.0f:1.0f;
+	f=setup.screen_rtl_pixel_double?2.0f:1.0f;
 
-	wid=(int)(((float)setup.screen_openrl_wid)*f);
-	view_rl_lx=(view.screen.x_sz-wid)>>1;
-	view_rl_rx=view_rl_lx+wid;
+	wid=(int)(((float)setup.screen_rtl_wid)*f);
+	view_rtl_lx=(view.screen.x_sz-wid)>>1;
+	view_rtl_rx=view_rtl_lx+wid;
 
-	high=(int)(((float)setup.screen_openrl_high)*f);
-	view_rl_ty=(view.screen.y_sz-high)>>1;
-	view_rl_by=view_rl_ty+high;
+	high=(int)(((float)setup.screen_rtl_high)*f);
+	view_rtl_ty=(view.screen.y_sz-high)>>1;
+	view_rtl_by=view_rtl_ty+high;
 
 	return(TRUE);
 }
 
-void view_openrl_scene_stop(void)
+void view_dim3rtl_scene_stop(void)
 {
-	glDeleteTextures(1,&view_rl_gl_id);
+	glDeleteTextures(1,&view_rtl_gl_id);
 
-	view_openrl_material_text_stop();
-	rlSceneDelete(view_rl_scene_id);
+	view_dim3rtl_material_text_stop();
+	rlSceneDelete(view_rtl_scene_id);
 }
 
 /* =======================================================
 
-      OpenRL Image Cache
+      dim3RTL Image Cache
       
 ======================================================= */
 
-void view_openrl_image_cache(void)
+void view_dim3rtl_image_cache(void)
 {
 	int							n;
 	char						path[1024];
@@ -191,7 +191,7 @@ void view_openrl_image_cache(void)
 	
 	for (n=0;n!=iface.bitmap_list.nbitmap;n++) {
 		file_paths_data(&file_path_setup,path,"Bitmaps/Interface",iface_bitmap->filename,"png");
-		iface_bitmap->openrl_material_id=view_openrl_create_material_from_path(path);
+		iface_bitmap->rtl_material_id=view_dim3rtl_create_material_from_path(path);
 		iface_bitmap++;
 	}
 
@@ -201,7 +201,7 @@ void view_openrl_image_cache(void)
 
 	for (n=0;n!=iface.particle_list.nparticle;n++) {
 		file_paths_data(&file_path_setup,path,"Bitmaps/Particles",particle->bitmap_name,"png");
-		particle->openrl_material_id=view_openrl_create_material_from_path(path);
+		particle->rtl_material_id=view_dim3rtl_create_material_from_path(path);
 		particle++;
 	}
 	
@@ -211,7 +211,7 @@ void view_openrl_image_cache(void)
 
 	for (n=0;n!=iface.ring_list.nring;n++) {
 		file_paths_data(&file_path_setup,path,"Bitmaps/Rings",ring->bitmap_name,"png");
-		ring->openrl_material_id=view_openrl_create_material_from_path(path);
+		ring->rtl_material_id=view_dim3rtl_create_material_from_path(path);
 		ring++;
 	}
 
@@ -221,7 +221,7 @@ void view_openrl_image_cache(void)
 
 	for (n=0;n!=iface.mark_list.nmark;n++) {
 		file_paths_data(&file_path_setup,path,"Bitmaps/Marks",mark->bitmap_name,"png");
-		mark->openrl_material_id=view_openrl_create_material_from_path(path);
+		mark->rtl_material_id=view_dim3rtl_create_material_from_path(path);
 		mark++;
 	}
 
@@ -231,7 +231,7 @@ void view_openrl_image_cache(void)
 
 	for (n=0;n!=iface.halo_list.nhalo;n++) {
 		file_paths_data(&file_path_setup,path,"Bitmaps/Halos",halo->bitmap_name,"png");
-		halo->openrl_material_id=view_openrl_create_material_from_path(path);
+		halo->rtl_material_id=view_dim3rtl_create_material_from_path(path);
 		halo++;
 	}
 
@@ -241,18 +241,18 @@ void view_openrl_image_cache(void)
 
 	for (n=0;n!=iface.crosshair_list.ncrosshair;n++) {
 		file_paths_data(&file_path_setup,path,"Bitmaps/Crosshairs",crosshair->bitmap_name,"png");
-		crosshair->openrl_material_id=view_openrl_create_material_from_path(path);
+		crosshair->rtl_material_id=view_dim3rtl_create_material_from_path(path);
 		crosshair++;
 	}
 }
 
 /* =======================================================
 
-      OpenRL Rendering
+      dim3RTL Rendering
       
 ======================================================= */
 
-void view_openrl_transfer_to_opengl(void)
+void view_dim3rtl_transfer_to_opengl(void)
 {
 	int				err;
 	unsigned char	*data;
@@ -266,18 +266,18 @@ void view_openrl_transfer_to_opengl(void)
 		// scene memory buffers was set
 		// to RL_SCENE_FORMAT_32_RGBA
 
-	err=rlSceneGetBuffer(view_rl_scene_id,(void**)&data);
+	err=rlSceneGetBuffer(view_rtl_scene_id,(void**)&data);
 	if (err!=RL_ERROR_OK) return;
 
-	gl_texture_bind(0,view_rl_gl_id);
-	glTexSubImage2D(GL_TEXTURE_2D,0,0,0,setup.screen_openrl_wid,setup.screen_openrl_high,GL_RGBA,GL_UNSIGNED_BYTE,data);
+	gl_texture_bind(0,view_rtl_gl_id);
+	glTexSubImage2D(GL_TEXTURE_2D,0,0,0,setup.screen_rtl_wid,setup.screen_rtl_high,GL_RGBA,GL_UNSIGNED_BYTE,data);
 
 		// build the vertex and uv list
 
-	view_primitive_2D_texture_quad(view_rl_gl_id,NULL,1.0f,view_rl_lx,view_rl_rx,view_rl_ty,view_rl_by,0.0f,1.0f,0.0f,1.0f,TRUE);
+	view_primitive_2D_texture_quad(view_rtl_gl_id,NULL,1.0f,view_rtl_lx,view_rtl_rx,view_rtl_ty,view_rtl_by,0.0f,1.0f,0.0f,1.0f,TRUE);
 }
 
-void view_openrl_render_scene(void)
+void view_dim3rtl_render_scene(void)
 {
 	float			ang_y;
 	rlPoint			pnt;
@@ -309,42 +309,42 @@ void view_openrl_render_scene(void)
 
 		// set the eye position
 		
-	rlSceneEyePositionSet(view_rl_scene_id,&pnt,&mat,200.0f,300000.0f);
+	rlSceneEyePositionSet(view_rtl_scene_id,&pnt,&mat,200.0f,300000.0f);
 
 		// update the scene
 		
-	view_openrl_map_mesh_update();
-	view_openrl_map_liquid_mesh_update();
-	view_openrl_map_model_update();
-	view_openrl_projectile_model_update();
-	view_openrl_effect_mesh_update();
-	view_openrl_overlay_update();
+	view_dim3rtl_map_mesh_update();
+	view_dim3rtl_map_liquid_mesh_update();
+	view_dim3rtl_map_model_update();
+	view_dim3rtl_projectile_model_update();
+	view_dim3rtl_effect_mesh_update();
+	view_dim3rtl_overlay_update();
 
 		// render
 
-	if (rlSceneRender(view_rl_scene_id)!=RL_ERROR_OK) return;
+	if (rlSceneRender(view_rtl_scene_id)!=RL_ERROR_OK) return;
 }
 
-void view_openrl_render(void)
+void view_dim3rtl_render(void)
 {
 		// if we started a render last
 		// time, then make sure it's finished
 		// before transfering to screen
 		
-	if (view_rl_has_render) {
-		rlSceneRenderFinish(view_rl_scene_id);
-		view_openrl_transfer_to_opengl();
-		view_rl_has_render=FALSE;
+	if (view_rtl_has_render) {
+		rlSceneRenderFinish(view_rtl_scene_id);
+		view_dim3rtl_transfer_to_opengl();
+		view_rtl_has_render=FALSE;
 	}
 	
 		// render the scene
 		// if in menu, just transfer the last drawing
 
 	if (!view.menu.active) {
-		view_openrl_render_scene();
-		view_rl_has_render=TRUE;
+		view_dim3rtl_render_scene();
+		view_rtl_has_render=TRUE;
 	}
 	else {
-		view_openrl_transfer_to_opengl();
+		view_dim3rtl_transfer_to_opengl();
 	}	
 }
