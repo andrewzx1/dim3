@@ -75,7 +75,7 @@ void ray_vector_find_line_point_for_T(ray_point_type *p,ray_vector_type *v,float
       
 ======================================================= */
 
-void rlMatrixIdentity(ray_matrix_type *mat)
+void rtlMatrixIdentity(ray_matrix_type *mat)
 {
 	memset(mat,0x0,sizeof(ray_matrix_type));
 	mat->data[0][0]=mat->data[1][1]=mat->data[2][2]=mat->data[3][3]=1;
@@ -87,7 +87,7 @@ void rlMatrixIdentity(ray_matrix_type *mat)
       
 ======================================================= */
 
-void rlMatrixMultiply(ray_matrix_type *mat_1,ray_matrix_type *mat_2)
+void rtlMatrixMultiply(ray_matrix_type *mat_1,ray_matrix_type *mat_2)
 {
 	int					i;
 	ray_matrix_type		mat;
@@ -121,7 +121,7 @@ void rlMatrixMultiply(ray_matrix_type *mat_1,ray_matrix_type *mat_2)
 	memmove(mat_1,&mat,sizeof(ray_matrix_type));
 }
 
-void rlMatrixVectorMultiply(ray_matrix_type *mat,ray_vector_type *v)
+void rtlMatrixVectorMultiply(ray_matrix_type *mat,ray_vector_type *v)
 {
 	float		fx,fy,fz;
 	
@@ -140,7 +140,7 @@ void rlMatrixVectorMultiply(ray_matrix_type *mat,ray_vector_type *v)
       
 ======================================================= */
 
-void rlMatrixRotateX(ray_matrix_type *mat,float ang)
+void rtlMatrixRotateX(ray_matrix_type *mat,float ang)
 {
 	float		r_cos,r_sin,rad;
 	
@@ -148,7 +148,7 @@ void rlMatrixRotateX(ray_matrix_type *mat,float ang)
 	r_cos=cosf(rad);
 	r_sin=sinf(rad);
 	
-	rlMatrixIdentity(mat);
+	rtlMatrixIdentity(mat);
 
 	mat->data[1][1]=r_cos;
 	mat->data[1][2]=r_sin;
@@ -156,7 +156,7 @@ void rlMatrixRotateX(ray_matrix_type *mat,float ang)
 	mat->data[2][2]=r_cos;
 }
 
-void rlMatrixRotateY(ray_matrix_type *mat,float ang)
+void rtlMatrixRotateY(ray_matrix_type *mat,float ang)
 {
 	float		r_cos,r_sin,rad;
 	
@@ -164,7 +164,7 @@ void rlMatrixRotateY(ray_matrix_type *mat,float ang)
 	r_cos=cosf(rad);
 	r_sin=sinf(rad);
 	
-	rlMatrixIdentity(mat);
+	rtlMatrixIdentity(mat);
 	
 	mat->data[0][0]=r_cos;
 	mat->data[0][2]=-r_sin;
@@ -172,7 +172,7 @@ void rlMatrixRotateY(ray_matrix_type *mat,float ang)
 	mat->data[2][2]=r_cos;
 }
 
-void rlMatrixRotateZ(ray_matrix_type *mat,float ang)
+void rtlMatrixRotateZ(ray_matrix_type *mat,float ang)
 {
 	float		r_cos,r_sin,rad;
 	
@@ -180,7 +180,7 @@ void rlMatrixRotateZ(ray_matrix_type *mat,float ang)
 	r_cos=cosf(rad);
 	r_sin=sinf(rad);
 	
-	rlMatrixIdentity(mat);
+	rtlMatrixIdentity(mat);
 	
 	mat->data[0][0]=r_cos;
 	mat->data[0][1]=r_sin;
@@ -188,7 +188,7 @@ void rlMatrixRotateZ(ray_matrix_type *mat,float ang)
 	mat->data[1][1]=r_cos;
 }
 
-void rlMatrixScale(ray_matrix_type *mat,ray_vector_type *v)
+void rtlMatrixScale(ray_matrix_type *mat,ray_vector_type *v)
 {
 	mat->data[0][0]=v->x;
 	mat->data[0][1]=0.0f;

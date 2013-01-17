@@ -251,31 +251,31 @@ void ray_precalc_build_frustum_planes(ray_scene_type *scene,ray_draw_scene_threa
 	view_plane_point.x=eye_point->x;
 	view_plane_point.y=eye_point->y;
 	ray_vector_create_from_points(&center_vct,&view_plane_point,eye_point);
-	rlMatrixVectorMultiply(&scene->eye.matrix,&center_vct);
+	rtlMatrixVectorMultiply(&scene->eye.matrix,&center_vct);
 	ray_vector_normalize(&center_vct);
 
 	view_plane_point.x=(eye_point->x-wid)+lx;
 	view_plane_point.y=(eye_point->y-high)+ty;
 	ray_vector_create_from_points(&top_lft_vct,&view_plane_point,eye_point);
-	rlMatrixVectorMultiply(&scene->eye.matrix,&top_lft_vct);
+	rtlMatrixVectorMultiply(&scene->eye.matrix,&top_lft_vct);
 	ray_vector_normalize(&top_lft_vct);
 
 	view_plane_point.x=(eye_point->x-wid)+lx;
 	view_plane_point.y=(eye_point->y-high)+by;
 	ray_vector_create_from_points(&bot_lft_vct,&view_plane_point,eye_point);
-	rlMatrixVectorMultiply(&scene->eye.matrix,&bot_lft_vct);
+	rtlMatrixVectorMultiply(&scene->eye.matrix,&bot_lft_vct);
 	ray_vector_normalize(&bot_lft_vct);
 
 	view_plane_point.x=(eye_point->x-wid)+rx;
 	view_plane_point.y=(eye_point->y-high)+ty;
 	ray_vector_create_from_points(&top_rgt_vct,&view_plane_point,eye_point);
-	rlMatrixVectorMultiply(&scene->eye.matrix,&top_rgt_vct);
+	rtlMatrixVectorMultiply(&scene->eye.matrix,&top_rgt_vct);
 	ray_vector_normalize(&top_rgt_vct);
 
 	view_plane_point.x=(eye_point->x-wid)+rx;
 	view_plane_point.y=(eye_point->y-high)+by;
 	ray_vector_create_from_points(&bot_rgt_vct,&view_plane_point,eye_point);
-	rlMatrixVectorMultiply(&scene->eye.matrix,&bot_rgt_vct);
+	rtlMatrixVectorMultiply(&scene->eye.matrix,&bot_rgt_vct);
 	ray_vector_normalize(&bot_rgt_vct);
 	
 		// get the 8 plane points

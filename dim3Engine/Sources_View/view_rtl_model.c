@@ -97,10 +97,10 @@ void view_dim3rtl_model_setup_single_model(model_draw *draw,bool hidden,bool no_
 		mesh_flags=flags;
 		if (mesh->rt_non_light_blocking) mesh_flags|=RL_MESH_FLAG_NON_LIGHT_TRACE_BLOCKING;
 
-		mesh_id=rlSceneMeshAdd(view_rtl_scene_id,mesh_flags);
+		mesh_id=rtlSceneMeshAdd(view_rtl_scene_id,mesh_flags);
 		if (mesh_id<0) return;
 		
-		if ((hidden) || ((draw->render_mesh_mask&(0x1<<n))==0)) rlSceneMeshSetHidden(view_rtl_scene_id,mesh_id,TRUE);
+		if ((hidden) || ((draw->render_mesh_mask&(0x1<<n))==0)) rtlSceneMeshSetHidden(view_rtl_scene_id,mesh_id,TRUE);
 		
 			// we set the UVs and polys at the beginning
 			// and only change the vertexes and normals
@@ -116,8 +116,8 @@ void view_dim3rtl_model_setup_single_model(model_draw *draw,bool hidden,bool no_
 			poly++;
 		}
 
-		rlSceneMeshSetUV(view_rtl_scene_id,mesh_id,RL_MESH_FORMAT_UV_2_FLOAT,uv_count,NULL);
-		rlSceneMeshMapUVPointer(view_rtl_scene_id,mesh_id,(void**)&uv);
+		rtlSceneMeshSetUV(view_rtl_scene_id,mesh_id,RL_MESH_FORMAT_UV_2_FLOAT,uv_count,NULL);
+		rtlSceneMeshMapUVPointer(view_rtl_scene_id,mesh_id,(void**)&uv);
 
 		poly=mesh->polys;
 
@@ -129,7 +129,7 @@ void view_dim3rtl_model_setup_single_model(model_draw *draw,bool hidden,bool no_
 			poly++;
 		}
 
-		rlSceneMeshUnMapUVPointer(view_rtl_scene_id,mesh_id);
+		rtlSceneMeshUnMapUVPointer(view_rtl_scene_id,mesh_id);
 
 			// polygons
 
@@ -154,7 +154,7 @@ void view_dim3rtl_model_setup_single_model(model_draw *draw,bool hidden,bool no_
 			poly++;
 		}
 
-		rlSceneMeshSetPoly(view_rtl_scene_id,mesh_id,RL_MESH_FORMAT_POLY_SHORT_VERTEX_UV_NORMAL_TANGENT,mesh->npoly,ray_polys);
+		rtlSceneMeshSetPoly(view_rtl_scene_id,mesh_id,RL_MESH_FORMAT_POLY_SHORT_VERTEX_UV_NORMAL_TANGENT,mesh->npoly,ray_polys);
 		free(ray_polys);
 
 			// set the draw's mesh id
@@ -178,8 +178,8 @@ void view_dim3rtl_model_update_single_model(model_draw *draw,bool hidden)
 	model_type			*mdl;
 	model_mesh_type		*mesh;
 	model_draw_light	*lit;
-	rlPoint				lit_pnt;
-	rlColor				lit_col;
+	rtlPoint			lit_pnt;
+	rtlColor			lit_col;
 
 		// get model
 
@@ -195,11 +195,11 @@ void view_dim3rtl_model_update_single_model(model_draw *draw,bool hidden)
 			// hidden state
 
 		if ((hidden) || ((draw->render_mesh_mask&(0x1<<n))==0)) {
-			rlSceneMeshSetHidden(view_rtl_scene_id,mesh_id,TRUE);
+			rtlSceneMeshSetHidden(view_rtl_scene_id,mesh_id,TRUE);
 			continue;
 		}
 			
-		rlSceneMeshSetHidden(view_rtl_scene_id,mesh_id,FALSE);
+		rtlSceneMeshSetHidden(view_rtl_scene_id,mesh_id,FALSE);
 			
 			// the UVs and Polys are
 			// already set, we just need to
@@ -207,9 +207,9 @@ void view_dim3rtl_model_update_single_model(model_draw *draw,bool hidden)
 
 		mesh=&mdl->meshes[n];
 
-		rlSceneMeshSetVertex(view_rtl_scene_id,mesh_id,RL_MESH_FORMAT_VERTEX_3_FLOAT,mesh->nvertex,draw->setup.mesh_arrays[n].gl_vertex_array);
-		rlSceneMeshSetNormal(view_rtl_scene_id,mesh_id,RL_MESH_FORMAT_NORMAL_3_FLOAT,mesh->nvertex,draw->setup.mesh_arrays[n].gl_normal_array);
-		rlSceneMeshSetTangent(view_rtl_scene_id,mesh_id,RL_MESH_FORMAT_TANGENT_3_FLOAT,mesh->nvertex,draw->setup.mesh_arrays[n].gl_tangent_array);
+		rtlSceneMeshSetVertex(view_rtl_scene_id,mesh_id,RL_MESH_FORMAT_VERTEX_3_FLOAT,mesh->nvertex,draw->setup.mesh_arrays[n].gl_vertex_array);
+		rtlSceneMeshSetNormal(view_rtl_scene_id,mesh_id,RL_MESH_FORMAT_NORMAL_3_FLOAT,mesh->nvertex,draw->setup.mesh_arrays[n].gl_normal_array);
+		rtlSceneMeshSetTangent(view_rtl_scene_id,mesh_id,RL_MESH_FORMAT_TANGENT_3_FLOAT,mesh->nvertex,draw->setup.mesh_arrays[n].gl_tangent_array);
 	}
 	
 		// update the lights
@@ -225,7 +225,7 @@ void view_dim3rtl_model_update_single_model(model_draw *draw,bool hidden)
 			
 		if (!lit->on) {
 			if (lit->rtl_light_id!=-1) {
-				rlSceneLightDelete(view_rtl_scene_id,lit->rtl_light_id);
+				rtlSceneLightDelete(view_rtl_scene_id,lit->rtl_light_id);
 				lit->rtl_light_id=-1;
 			}
 			continue;
@@ -234,12 +234,12 @@ void view_dim3rtl_model_update_single_model(model_draw *draw,bool hidden)
 			// otherwise we need to add it
 			
 		if (lit->rtl_light_id==-1) {
-			lit->rtl_light_id=rlSceneLightAdd(view_rtl_scene_id);
+			lit->rtl_light_id=rtlSceneLightAdd(view_rtl_scene_id);
 		
 			lit_col.r=lit->col.r;
 			lit_col.g=lit->col.g;
 			lit_col.b=lit->col.b;
-			rlSceneLightSetColor(view_rtl_scene_id,lit->rtl_light_id,&lit_col);
+			rtlSceneLightSetColor(view_rtl_scene_id,lit->rtl_light_id,&lit_col);
 		}
 		
 			// change setup
@@ -250,10 +250,10 @@ void view_dim3rtl_model_update_single_model(model_draw *draw,bool hidden)
 		lit_pnt.x=(float)pnt.x;
 		lit_pnt.y=(float)pnt.y;
 		lit_pnt.z=(float)pnt.z;
-		rlSceneLightSetPosition(view_rtl_scene_id,lit->rtl_light_id,&lit_pnt);
+		rtlSceneLightSetPosition(view_rtl_scene_id,lit->rtl_light_id,&lit_pnt);
 		
 		intensity=gl_light_get_intensity(tick,lit->type,lit->intensity);
-		rlSceneLightSetIntensity(view_rtl_scene_id,lit->rtl_light_id,(float)intensity,lit->exponent);
+		rtlSceneLightSetIntensity(view_rtl_scene_id,lit->rtl_light_id,(float)intensity,lit->exponent);
 	}
 }
 
@@ -270,13 +270,13 @@ void view_dim3rtl_model_close_single_model(model_draw *draw)
 		// delete the meshes
 
 	for (n=0;n!=mdl->nmesh;n++) {
-		if (draw->meshes[n].rtl_mesh_id!=-1) rlSceneMeshDelete(view_rtl_scene_id,draw->meshes[n].rtl_mesh_id);
+		if (draw->meshes[n].rtl_mesh_id!=-1) rtlSceneMeshDelete(view_rtl_scene_id,draw->meshes[n].rtl_mesh_id);
 	}
 	
 		// delete the lights
 		
 	for (n=0;n!=max_model_light;n++) {
-		if (draw->lights[n].rtl_light_id!=-1) rlSceneLightDelete(view_rtl_scene_id,draw->lights[n].rtl_light_id);
+		if (draw->lights[n].rtl_light_id!=-1) rtlSceneLightDelete(view_rtl_scene_id,draw->lights[n].rtl_light_id);
 	}
 }
 
@@ -391,7 +391,7 @@ void view_dim3rtl_map_model_mesh_stop(void)
 
 			if (frame->bitmap.rl_material_id==-1) continue;
 			
-			rlMaterialDelete(frame->bitmap.rl_material_id);
+			rtlMaterialDelete(frame->bitmap.rl_material_id);
 			progress_update();
 		}
 	}	

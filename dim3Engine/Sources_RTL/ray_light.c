@@ -41,7 +41,7 @@ int ray_scene_light_get_index(ray_scene_type *scene,int lightId)
       
 ======================================================= */
 
-int rlSceneAmbient(int sceneId,ray_color_type *col)
+int rtlSceneAmbient(int sceneId,ray_color_type *col)
 {
 	int					idx;
 	ray_scene_type		*scene;
@@ -75,7 +75,7 @@ int rlSceneAmbient(int sceneId,ray_color_type *col)
       
 ======================================================= */
 
-int rlSceneLightAdd(int sceneId)
+int rtlSceneLightAdd(int sceneId)
 {
 	int					idx;
 	ray_light_type		*light;
@@ -144,7 +144,7 @@ int rlSceneLightAdd(int sceneId)
       
 ======================================================= */
 
-int rlSceneLightDelete(int sceneId,int lightId)
+int rtlSceneLightDelete(int sceneId,int lightId)
 {
 	int					n,idx,count;
 	ray_light_type		*light;
@@ -197,7 +197,7 @@ int rlSceneLightDelete(int sceneId,int lightId)
       
 ======================================================= */
 
-int rlSceneLightDeleteAll(int sceneId)
+int rtlSceneLightDeleteAll(int sceneId)
 {
 	int				idx,err;
 	ray_scene_type	*scene;
@@ -212,7 +212,7 @@ int rlSceneLightDeleteAll(int sceneId)
 		// clear the lights
 
 	while (scene->light_list.count!=0) {
-		err=rlSceneLightDelete(sceneId,scene->light_list.lights[0]->id);
+		err=rtlSceneLightDelete(sceneId,scene->light_list.lights[0]->id);
 		if (err!=RL_ERROR_OK) return(err);
 	}
 	
@@ -234,7 +234,7 @@ int rlSceneLightDeleteAll(int sceneId)
       
 ======================================================= */
 
-int rlSceneLightSetHidden(int sceneId,int lightId,bool hidden)
+int rtlSceneLightSetHidden(int sceneId,int lightId,bool hidden)
 {
 	int					idx;
 	ray_light_type		*light;
@@ -280,7 +280,7 @@ int rlSceneLightSetHidden(int sceneId,int lightId,bool hidden)
       
 ======================================================= */
 
-int rlSceneLightSetPosition(int sceneId,int lightId,ray_point_type *pnt)
+int rtlSceneLightSetPosition(int sceneId,int lightId,ray_point_type *pnt)
 {
 	int					idx;
 	ray_light_type		*light;
@@ -332,7 +332,7 @@ int rlSceneLightSetPosition(int sceneId,int lightId,ray_point_type *pnt)
       
 ======================================================= */
 
-int rlSceneLightSetColor(int sceneId,int lightId,ray_color_type *col)
+int rtlSceneLightSetColor(int sceneId,int lightId,ray_color_type *col)
 {
 	int					idx;
 	ray_light_type		*light;
@@ -380,7 +380,7 @@ int rlSceneLightSetColor(int sceneId,int lightId,ray_color_type *col)
       
 ======================================================= */
 
-int rlSceneLightSetIntensity(int sceneId,int lightId,float intensity,float exponent)
+int rtlSceneLightSetIntensity(int sceneId,int lightId,float intensity,float exponent)
 {
 	int					idx;
 	ray_light_type		*light;
@@ -431,7 +431,7 @@ int rlSceneLightSetIntensity(int sceneId,int lightId,float intensity,float expon
       
 ======================================================= */
 
-int rlSceneLightSetDirection(int sceneId,int lightId,rlVector *vector,float angle,bool active)
+int rtlSceneLightSetDirection(int sceneId,int lightId,rtlVector *vector,float angle,bool active)
 {
 	int					idx;
 	ray_light_type		*light;

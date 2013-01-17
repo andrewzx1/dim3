@@ -63,7 +63,7 @@ void view_dim3rtl_effect_mesh_setup(effect_type *effect)
 
 		// create mesh
 		
-	effect->rtl_mesh_id=rlSceneMeshAdd(view_rtl_scene_id,(RL_MESH_FLAG_NON_LIGHT_TRACE_BLOCKING|RL_MESH_FLAG_HIGHLIGHT));
+	effect->rtl_mesh_id=rtlSceneMeshAdd(view_rtl_scene_id,(RL_MESH_FLAG_NON_LIGHT_TRACE_BLOCKING|RL_MESH_FLAG_HIGHLIGHT));
 	if (effect->rtl_mesh_id==-1) return;
 
 		// create vertexes and uvs
@@ -73,13 +73,13 @@ void view_dim3rtl_effect_mesh_setup(effect_type *effect)
 		case ef_particle:
 			particle=&iface.particle_list.particles[effect->data.particle.particle_idx];
 			quad_count=particle->count*(particle->trail_count+1);
-			rlSceneMeshSetVertex(view_rtl_scene_id,effect->rtl_mesh_id,RL_MESH_FORMAT_VERTEX_3_FLOAT,(quad_count*4),NULL);
-			rlSceneMeshSetUV(view_rtl_scene_id,effect->rtl_mesh_id,RL_MESH_FORMAT_UV_2_FLOAT,(quad_count*4),NULL);
+			rtlSceneMeshSetVertex(view_rtl_scene_id,effect->rtl_mesh_id,RL_MESH_FORMAT_VERTEX_3_FLOAT,(quad_count*4),NULL);
+			rtlSceneMeshSetUV(view_rtl_scene_id,effect->rtl_mesh_id,RL_MESH_FORMAT_UV_2_FLOAT,(quad_count*4),NULL);
 			break;
 
 		case ef_ring:
-			rlSceneMeshSetVertex(view_rtl_scene_id,effect->rtl_mesh_id,RL_MESH_FORMAT_VERTEX_3_FLOAT,(36*2),NULL);
-			rlSceneMeshSetUV(view_rtl_scene_id,effect->rtl_mesh_id,RL_MESH_FORMAT_UV_2_FLOAT,(36*2),NULL);
+			rtlSceneMeshSetVertex(view_rtl_scene_id,effect->rtl_mesh_id,RL_MESH_FORMAT_VERTEX_3_FLOAT,(36*2),NULL);
+			rtlSceneMeshSetUV(view_rtl_scene_id,effect->rtl_mesh_id,RL_MESH_FORMAT_UV_2_FLOAT,(36*2),NULL);
 			break;
 	}
 
@@ -88,7 +88,7 @@ void view_dim3rtl_effect_mesh_setup(effect_type *effect)
 void view_dim3rtl_effect_mesh_close(effect_type *effect)
 {
 	if (effect->rtl_mesh_id!=-1) {
-		rlSceneMeshDelete(view_rtl_scene_id,effect->rtl_mesh_id);
+		rtlSceneMeshDelete(view_rtl_scene_id,effect->rtl_mesh_id);
 		effect->rtl_mesh_id=-1;
 	}
 }
@@ -202,7 +202,7 @@ void view_dim3rtl_effect_mesh_particle_update(effect_type *effect,int count,int 
 	float					*vp,*uv;
 	d3pnt					pnt;
 	d3ang					*rot_ang,rang;
-	rlColor					col;
+	rtlColor				col;
 	iface_particle_type		*particle;
 	particle_effect_data	*eff_particle;
 	matrix_type				pixel_x_mat,pixel_y_mat;
@@ -286,8 +286,8 @@ void view_dim3rtl_effect_mesh_particle_update(effect_type *effect,int count,int 
 
 	quad_count=particle->count*(particle->trail_count+1);
 
-	rlSceneMeshMapVertexPointer(view_rtl_scene_id,effect->rtl_mesh_id,(void**)&vp);
-	rlSceneMeshMapUVPointer(view_rtl_scene_id,effect->rtl_mesh_id,(void**)&uv);
+	rtlSceneMeshMapVertexPointer(view_rtl_scene_id,effect->rtl_mesh_id,(void**)&vp);
+	rtlSceneMeshMapUVPointer(view_rtl_scene_id,effect->rtl_mesh_id,(void**)&uv);
 
 		// setup the vertexes
 
@@ -316,8 +316,8 @@ void view_dim3rtl_effect_mesh_particle_update(effect_type *effect,int count,int 
 		f_count-=trail_step;
 	}
 
-	rlSceneMeshUnMapVertexPointer(view_rtl_scene_id,effect->rtl_mesh_id);
-	rlSceneMeshUnMapUVPointer(view_rtl_scene_id,effect->rtl_mesh_id);
+	rtlSceneMeshUnMapVertexPointer(view_rtl_scene_id,effect->rtl_mesh_id);
+	rtlSceneMeshUnMapUVPointer(view_rtl_scene_id,effect->rtl_mesh_id);
 
 		// build the polygons
 
@@ -338,7 +338,7 @@ void view_dim3rtl_effect_mesh_particle_update(effect_type *effect,int count,int 
 		}
 	}
 
-	rlSceneMeshSetPoly(view_rtl_scene_id,effect->rtl_mesh_id,RL_MESH_FORMAT_POLY_SHORT_VERTEX_UV,quad_count,polys);
+	rtlSceneMeshSetPoly(view_rtl_scene_id,effect->rtl_mesh_id,RL_MESH_FORMAT_POLY_SHORT_VERTEX_UV,quad_count,polys);
 	free(polys);
 	
 		// setup color and alpha
@@ -353,7 +353,7 @@ void view_dim3rtl_effect_mesh_particle_update(effect_type *effect,int count,int 
 	alpha_dif=particle->end_alpha-particle->start_alpha;
     col.a=particle->start_alpha+((alpha_dif*f_count)/f_tick);
 
-	rlSceneMeshSetPolyColorAll(view_rtl_scene_id,effect->rtl_mesh_id,&col);
+	rtlSceneMeshSetPolyColorAll(view_rtl_scene_id,effect->rtl_mesh_id,&col);
 }
 
 /* =======================================================
@@ -373,7 +373,7 @@ void view_dim3rtl_effect_mesh_ring_update(effect_type *effect,int count,int imag
 							f_count,f_tick;
 	float					*vp,*uv;
 	d3pnt					pnt;
-	rlColor					col;
+	rtlColor				col;
 	iface_ring_type			*ring;
 	ring_effect_data		*eff_ring;
 	matrix_type				mat_x,mat_y,mat_z;
@@ -424,8 +424,8 @@ void view_dim3rtl_effect_mesh_ring_update(effect_type *effect,int count,int imag
 
 		// create the ring vertexes
 
-	rlSceneMeshMapVertexPointer(view_rtl_scene_id,effect->rtl_mesh_id,(void**)&vp);
-	rlSceneMeshMapUVPointer(view_rtl_scene_id,effect->rtl_mesh_id,(void**)&uv);
+	rtlSceneMeshMapVertexPointer(view_rtl_scene_id,effect->rtl_mesh_id,(void**)&vp);
+	rtlSceneMeshMapUVPointer(view_rtl_scene_id,effect->rtl_mesh_id,(void**)&uv);
 
 	for (n=0;n!=360;n+=10) {
 		rd=((float)n)*ANG_to_RAD;
@@ -465,8 +465,8 @@ void view_dim3rtl_effect_mesh_ring_update(effect_type *effect,int count,int imag
 		*uv++=gy+(g_size*((fy+outer_sz)/(outer_sz*2.0f)));
 	}
 
-	rlSceneMeshUnMapVertexPointer(view_rtl_scene_id,effect->rtl_mesh_id);
-	rlSceneMeshUnMapUVPointer(view_rtl_scene_id,effect->rtl_mesh_id);
+	rtlSceneMeshUnMapVertexPointer(view_rtl_scene_id,effect->rtl_mesh_id);
+	rtlSceneMeshUnMapUVPointer(view_rtl_scene_id,effect->rtl_mesh_id);
 
 		// create the polys
 		// last one needs to wrap around to beginning
@@ -504,7 +504,7 @@ void view_dim3rtl_effect_mesh_ring_update(effect_type *effect,int count,int imag
 		idx+=2;
 	}
 
-	rlSceneMeshSetPoly(view_rtl_scene_id,effect->rtl_mesh_id,RL_MESH_FORMAT_POLY_SHORT_VERTEX_UV,36,polys);
+	rtlSceneMeshSetPoly(view_rtl_scene_id,effect->rtl_mesh_id,RL_MESH_FORMAT_POLY_SHORT_VERTEX_UV,36,polys);
 	free(polys);
 
 		// set color and alpha
@@ -519,7 +519,7 @@ void view_dim3rtl_effect_mesh_ring_update(effect_type *effect,int count,int imag
 	alpha=ring->end_alpha-ring->start_alpha;
 	col.a=((alpha*f_count)/f_tick)+ring->start_alpha;
 
-	rlSceneMeshSetPolyColorAll(view_rtl_scene_id,effect->rtl_mesh_id,&col);
+	rtlSceneMeshSetPolyColorAll(view_rtl_scene_id,effect->rtl_mesh_id,&col);
 }
 
 /* =======================================================

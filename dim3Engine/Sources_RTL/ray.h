@@ -29,6 +29,7 @@
 #define ray_max_bounce								8
 #define ray_max_light_per_mesh						8
 #define ray_max_mesh_per_light						128
+#define ray_max_tint_per_pixel						64
 
 //
 // threading
@@ -360,10 +361,21 @@ typedef struct		{
 					} ray_collision_skip_block;
 
 typedef struct		{
+						float						t;
+						ray_color_type				col;
+					} ray_collision_tint_type;
+
+typedef struct		{
+						int							count;
+						ray_collision_tint_type		tints[ray_max_tint_per_pixel];
+					} ray_collision_tint_block;
+
+typedef struct		{
 						int							mesh_idx,poly_idx,trig_idx;
 						float						max_t,t,u,v;
 						bool						in_bounce,only_pass_through;
 						ray_collision_skip_block	skip_block;
+						ray_collision_tint_block	tint_block;
 					} ray_collision_type;
 
 //
@@ -409,7 +421,8 @@ extern void ray_precalc_triangle_vectors(ray_mesh_type *mesh,ray_trig_type *trig
 extern void ray_precalc_render_scene_setup(ray_scene_type *scene);
 extern void ray_precalc_render_scene_thread_setup(ray_scene_type *scene,ray_draw_scene_thread_info *thread_info);
 
-extern void ray_get_material_rgb(ray_scene_type *scene,ray_point_type *eye_pnt,ray_point_type *trig_pnt,ray_collision_type *collision,ray_material_pixel_type *pixel);
+extern void ray_get_material_pixel(ray_scene_type *scene,ray_point_type *eye_pnt,ray_point_type *trig_pnt,ray_collision_type *collision,ray_material_pixel_type *pixel);
+extern void ray_get_material_color(ray_scene_type *scene,ray_point_type *eye_pnt,ray_point_type *trig_pnt,ray_collision_type *collision,ray_color_type *col);
 extern float ray_get_material_alpha(ray_scene_type *scene,ray_point_type *eye_pnt,ray_point_type *trig_pnt,ray_collision_type *collision);
 extern void ray_get_material_normal(ray_scene_type *scene,ray_point_type *eye_pnt,ray_point_type *trig_pnt,ray_collision_type *collision,ray_vector_type *normal);
 extern bool ray_get_overlay_rgb(ray_scene_type *scene,int x,int y,ray_color_type *col);

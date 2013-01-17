@@ -25,7 +25,7 @@ ray_global_type					ray_global;
      
 ======================================================= */
 
-int rlSceneEyePositionSet(int sceneId,ray_point_type *pnt,ray_matrix_type *rot_matrix,float eye_min_dist,float eye_max_dist)
+int rtlSceneEyePositionSet(int sceneId,ray_point_type *pnt,ray_matrix_type *rot_matrix,float eye_min_dist,float eye_max_dist)
 {
 	int				idx;
 	ray_scene_type	*scene;

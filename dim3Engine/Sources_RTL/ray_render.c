@@ -83,13 +83,14 @@ bool ray_intersect_triangle(ray_scene_type *scene,ray_point_type *eye_point,ray_
 
 void ray_intersect_mesh_list_initial(ray_scene_type *scene,ray_draw_scene_thread_info *thread_info,ray_point_type *eye_point,ray_vector_type *eye_vector,ray_collision_type *collision)
 {
-	int								n,mesh_idx,poly_idx,trig_idx;
-	float							it,iu,iv;
-	ray_point_type					trig_pnt;
-	ray_mesh_type					*mesh;
-	ray_poly_type					*poly;
-	ray_trig_type					*trig;
-	ray_collision_type				alpha_collision;
+	int							n,mesh_idx,poly_idx,trig_idx;
+	float						it,iu,iv;
+	ray_point_type				trig_pnt;
+	ray_mesh_type				*mesh;
+	ray_poly_type				*poly;
+	ray_trig_type				*trig;
+	ray_material_type			*material;
+	ray_collision_type			tmp_collision;
 	
 		// clear collision
 		// anything > 1.0f is outside
@@ -150,20 +151,41 @@ void ray_intersect_mesh_list_initial(ray_scene_type *scene,ray_draw_scene_thread
 					// special check for
 					// alpha==0.0f, which is a skip
 
-				if (!ray_global.material_list.materials[poly->material_idx]->no_alpha) {
-					alpha_collision.t=it;
-					alpha_collision.u=iu;
-					alpha_collision.v=iv;
-					alpha_collision.mesh_idx=mesh_idx;
-					alpha_collision.poly_idx=poly_idx;
-					alpha_collision.trig_idx=trig_idx;
+				material=ray_global.material_list.materials[poly->material_idx];
+
+				if (!material->no_alpha) {
+					tmp_collision.t=it;
+					tmp_collision.u=iu;
+					tmp_collision.v=iv;
+					tmp_collision.mesh_idx=mesh_idx;
+					tmp_collision.poly_idx=poly_idx;
+					tmp_collision.trig_idx=trig_idx;
 
 					ray_vector_find_line_point_for_T(eye_point,eye_vector,it,&trig_pnt);
-					if (ray_get_material_alpha(scene,eye_point,&trig_pnt,&alpha_collision)==0.0f) break;
+					if (ray_get_material_alpha(scene,eye_point,&trig_pnt,&tmp_collision)==0.0f) break;
+				}
+
+					// if material is a tint, then add the tint
+					// and continue on to next hit
+
+				if (material->alpha_type==RL_MATERIAL_ALPHA_ADDITIVE) {
+					if (collision->tint_block.count<ray_max_tint_per_pixel) {
+						tmp_collision.t=it;
+						tmp_collision.u=iu;
+						tmp_collision.v=iv;
+						tmp_collision.mesh_idx=mesh_idx;
+						tmp_collision.poly_idx=poly_idx;
+						tmp_collision.trig_idx=trig_idx;
+
+						ray_get_material_color(scene,eye_point,&trig_pnt,&tmp_collision,&collision->tint_block.tints[collision->tint_block.count].col);
+						collision->tint_block.tints[collision->tint_block.count].t=it;
+						collision->tint_block.count++;
+					}
+					break;
 				}
 
 					// set the hit and exit out
-					// of the loop
+					// of the trig loop
 				
 				collision->t=it;
 				collision->u=iu;
@@ -180,14 +202,15 @@ void ray_intersect_mesh_list_initial(ray_scene_type *scene,ray_draw_scene_thread
 
 void ray_intersect_mesh_list_pass_through_bounce(ray_scene_type *scene,ray_draw_scene_thread_info *thread_info,ray_point_type *eye_point,ray_vector_type *eye_vector,ray_collision_type *collision)
 {
-	int								n,k,mesh_idx,poly_idx,trig_idx;
-	float							it,iu,iv;
-	bool							skip;
-	ray_point_type					trig_pnt;
-	ray_mesh_type					*mesh;
-	ray_poly_type					*poly;
-	ray_trig_type					*trig;
-	ray_collision_type				alpha_collision;
+	int							n,k,mesh_idx,poly_idx,trig_idx;
+	float						it,iu,iv;
+	bool						skip;
+	ray_point_type				trig_pnt;
+	ray_mesh_type				*mesh;
+	ray_poly_type				*poly;
+	ray_trig_type				*trig;
+	ray_material_type			*material;
+	ray_collision_type			tmp_collision;
 	
 		// clear collision
 		// anything > 1.0f is outside
@@ -260,20 +283,41 @@ void ray_intersect_mesh_list_pass_through_bounce(ray_scene_type *scene,ray_draw_
 					// special check for
 					// alpha==0.0f, which is a skip
 
-				if (!ray_global.material_list.materials[poly->material_idx]->no_alpha) {
-					alpha_collision.t=it;
-					alpha_collision.u=iu;
-					alpha_collision.v=iv;
-					alpha_collision.mesh_idx=mesh_idx;
-					alpha_collision.poly_idx=poly_idx;
-					alpha_collision.trig_idx=trig_idx;
+				material=ray_global.material_list.materials[poly->material_idx];
+
+				if (!material->no_alpha) {
+					tmp_collision.t=it;
+					tmp_collision.u=iu;
+					tmp_collision.v=iv;
+					tmp_collision.mesh_idx=mesh_idx;
+					tmp_collision.poly_idx=poly_idx;
+					tmp_collision.trig_idx=trig_idx;
 
 					ray_vector_find_line_point_for_T(eye_point,eye_vector,it,&trig_pnt);
-					if (ray_get_material_alpha(scene,eye_point,&trig_pnt,&alpha_collision)==0.0f) break;
+					if (ray_get_material_alpha(scene,eye_point,&trig_pnt,&tmp_collision)==0.0f) break;
+				}
+
+					// if material is a tint, then add the tint
+					// and continue on to next hit
+
+				if (material->alpha_type==RL_MATERIAL_ALPHA_ADDITIVE) {
+					if (collision->tint_block.count<ray_max_tint_per_pixel) {
+						tmp_collision.t=it;
+						tmp_collision.u=iu;
+						tmp_collision.v=iv;
+						tmp_collision.mesh_idx=mesh_idx;
+						tmp_collision.poly_idx=poly_idx;
+						tmp_collision.trig_idx=trig_idx;
+
+						ray_get_material_color(scene,eye_point,&trig_pnt,&tmp_collision,&collision->tint_block.tints[collision->tint_block.count].col);
+						collision->tint_block.tints[collision->tint_block.count].t=it;
+						collision->tint_block.count++;
+					}
+					break;
 				}
 
 					// set the hit and exit out
-					// of the loop
+					// of the trig loop
 				
 				collision->t=it;
 				collision->u=iu;
@@ -290,14 +334,15 @@ void ray_intersect_mesh_list_pass_through_bounce(ray_scene_type *scene,ray_draw_
 
 void ray_intersect_mesh_list_other_bounce(ray_scene_type *scene,ray_draw_scene_thread_info *thread_info,ray_point_type *eye_point,ray_vector_type *eye_vector,ray_collision_type *collision)
 {
-	int								n,k,mesh_idx,poly_idx,trig_idx;
-	float							it,iu,iv;
-	bool							skip;
-	ray_point_type					trig_pnt;
-	ray_mesh_type					*mesh;
-	ray_poly_type					*poly;
-	ray_trig_type					*trig;
-	ray_collision_type				alpha_collision;
+	int							n,k,mesh_idx,poly_idx,trig_idx;
+	float						it,iu,iv;
+	bool						skip;
+	ray_point_type				trig_pnt;
+	ray_mesh_type				*mesh;
+	ray_poly_type				*poly;
+	ray_trig_type				*trig;
+	ray_material_type			*material;
+	ray_collision_type			tmp_collision;
 	
 		// clear collision
 		// anything > 1.0f is outside
@@ -375,20 +420,41 @@ void ray_intersect_mesh_list_other_bounce(ray_scene_type *scene,ray_draw_scene_t
 					// special check for
 					// alpha==0.0f, which is a skip
 
-				if (!ray_global.material_list.materials[poly->material_idx]->no_alpha) {
-					alpha_collision.t=it;
-					alpha_collision.u=iu;
-					alpha_collision.v=iv;
-					alpha_collision.mesh_idx=mesh_idx;
-					alpha_collision.poly_idx=poly_idx;
-					alpha_collision.trig_idx=trig_idx;
+				material=ray_global.material_list.materials[poly->material_idx];
+
+				if (!material->no_alpha) {
+					tmp_collision.t=it;
+					tmp_collision.u=iu;
+					tmp_collision.v=iv;
+					tmp_collision.mesh_idx=mesh_idx;
+					tmp_collision.poly_idx=poly_idx;
+					tmp_collision.trig_idx=trig_idx;
 
 					ray_vector_find_line_point_for_T(eye_point,eye_vector,it,&trig_pnt);
-					if (ray_get_material_alpha(scene,eye_point,&trig_pnt,&alpha_collision)==0.0f) break;
+					if (ray_get_material_alpha(scene,eye_point,&trig_pnt,&tmp_collision)==0.0f) break;
+				}
+
+					// if material is a tint, then add the tint
+					// and continue on to next hit
+
+				if (material->alpha_type==RL_MATERIAL_ALPHA_ADDITIVE) {
+					if (collision->tint_block.count<ray_max_tint_per_pixel) {
+						tmp_collision.t=it;
+						tmp_collision.u=iu;
+						tmp_collision.v=iv;
+						tmp_collision.mesh_idx=mesh_idx;
+						tmp_collision.poly_idx=poly_idx;
+						tmp_collision.trig_idx=trig_idx;
+
+						ray_get_material_color(scene,eye_point,&trig_pnt,&tmp_collision,&collision->tint_block.tints[collision->tint_block.count].col);
+						collision->tint_block.tints[collision->tint_block.count].t=it;
+						collision->tint_block.count++;
+					}
+					break;
 				}
 
 					// set the hit and exit out
-					// of the loop
+					// of the trig loop
 				
 				collision->t=it;
 				collision->u=iu;
@@ -500,18 +566,18 @@ bool ray_block_light(ray_scene_type *scene,ray_point_type *pnt,ray_vector_type *
 bool ray_mesh_special_lighting_conditions(ray_scene_type *scene,ray_point_type *eye_pnt,ray_point_type *trig_pnt,int mesh_idx,ray_collision_type *collision,ray_color_type *pixel_col)
 {
 	ray_mesh_type			*mesh;
-	ray_material_pixel_type	material_pixel;
+	ray_color_type			col;
 
 	mesh=scene->mesh_list.meshes[mesh_idx];
 
 		// highlighting
 
 	if ((mesh->flags&RL_MESH_FLAG_HIGHLIGHT)!=0) {
-		ray_get_material_rgb(scene,eye_pnt,trig_pnt,collision,&material_pixel);
-		pixel_col->r=material_pixel.color.rgb.r;
-		pixel_col->g=material_pixel.color.rgb.g;
-		pixel_col->b=material_pixel.color.rgb.b;
-		pixel_col->a=material_pixel.color.rgb.a;
+		ray_get_material_color(scene,eye_pnt,trig_pnt,collision,&col);
+		pixel_col->r=col.r;
+		pixel_col->g=col.g;
+		pixel_col->b=col.b;
+		pixel_col->a=col.a;
 		return(TRUE);
 	}
 
@@ -540,7 +606,7 @@ void ray_trace_lights(ray_scene_type *scene,ray_point_type *eye_pnt,ray_point_ty
 	
 		// get material pixels
 		
-	ray_get_material_rgb(scene,eye_pnt,trig_pnt,collision,&material_pixel);
+	ray_get_material_pixel(scene,eye_pnt,trig_pnt,collision,&material_pixel);
 	
 		// starting mix color
 
@@ -772,6 +838,33 @@ void ray_set_buffer(unsigned long *buf,ray_color_type *pixel_col,ray_color_type 
 		
 	*buf=ray_create_ulong_color_from_float_no_alpha(pixel_col);
 }
+
+/* =======================================================
+
+      Add in Tinting Polygons Hit During Ray Trace
+      
+======================================================= */
+
+void ray_add_tinting(ray_color_type *col,ray_collision_type *collision)
+{
+	int						n;
+	ray_collision_tint_type	*tint;
+
+	for (n=0;n!=collision->tint_block.count;n++) {
+
+			// see if this tint ended up past
+			// the final collision point
+
+		tint=&collision->tint_block.tints[n];
+		if (tint->t>=collision->t) continue;
+
+			// add in tint
+
+		col->r+=(tint->col.r*tint->col.a);
+		col->g+=(tint->col.g*tint->col.a);
+		col->b+=(tint->col.b*tint->col.a);
+	}
+}
 	
 /* =======================================================
 
@@ -969,7 +1062,7 @@ void ray_render_thread_run(ray_draw_scene_thread_info *thread_info)
 			
 			ray_vector_create_from_points(&ray_vector,&view_plane_point,&ray_origin);
 			
-			rlMatrixVectorMultiply(&scene->eye.matrix,&ray_vector);
+			rtlMatrixVectorMultiply(&scene->eye.matrix,&ray_vector);
 			
 				// scale it to eye distance
 				
@@ -982,6 +1075,7 @@ void ray_render_thread_run(ray_draw_scene_thread_info *thread_info)
 				
 			collision.max_t=scene->eye.max_dist;
 			collision.skip_block.count=0;
+			collision.tint_block.count=0;
 			collision.in_bounce=FALSE;
 			collision.only_pass_through=TRUE;
 		
@@ -1017,6 +1111,10 @@ void ray_render_thread_run(ray_draw_scene_thread_info *thread_info)
 				if (!ray_mesh_special_lighting_conditions(scene,&ray_origin,&trig_point,collision.mesh_idx,&collision,&mat_col)) {
 					ray_trace_lights(scene,&ray_origin,&trig_point,&collision,&mat_col);
 				}
+
+					// add in any tinting
+
+				if (collision.tint_block.count!=0) ray_add_tinting(&mat_col,&collision);
 
 					// add in the new lighting
 					// if it's the first hit, then pixel
@@ -1205,7 +1303,7 @@ void ray_render_stall(ray_scene_type *scene)
      
 ======================================================= */
 
-int rlSceneRender(int sceneId)
+int rtlSceneRender(int sceneId)
 {
 	int						idx;
 	ray_scene_type			*scene;
@@ -1258,7 +1356,7 @@ int rlSceneRender(int sceneId)
      
 ======================================================= */
 
-int rlSceneRenderState(int sceneId)
+int rtlSceneRenderState(int sceneId)
 {
 	int					idx;
 	ray_scene_type		*scene;
@@ -1291,7 +1389,7 @@ int rlSceneRenderState(int sceneId)
      
 ======================================================= */
 
-int rlSceneRenderFinish(int sceneId)
+int rtlSceneRenderFinish(int sceneId)
 {
 	int					idx;
 	ray_scene_type		*scene;

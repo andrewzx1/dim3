@@ -254,6 +254,8 @@ void loop_app_active(void)
 
 	if (!input_app_active()) return;
 
+	fprintf(stdout,"becoming active!\n");
+
 	app.state=as_active;
 	
 	input_clear();

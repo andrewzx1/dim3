@@ -92,7 +92,7 @@ void ray_scene_mesh_precalc(ray_scene_type *scene,ray_mesh_type *mesh)
       
 ======================================================= */
 
-int rlSceneMeshAdd(int sceneId,unsigned long flags)
+int rtlSceneMeshAdd(int sceneId,unsigned long flags)
 {
 	int					idx;
 	ray_mesh_type		*mesh;
@@ -162,7 +162,7 @@ int rlSceneMeshAdd(int sceneId,unsigned long flags)
       
 ======================================================= */
 
-int rlSceneMeshDelete(int sceneId,int meshId)
+int rtlSceneMeshDelete(int sceneId,int meshId)
 {
 	int				n,idx,count;
 	ray_mesh_type	*mesh;
@@ -230,7 +230,7 @@ int rlSceneMeshDelete(int sceneId,int meshId)
       
 ======================================================= */
 
-int rlSceneMeshDeleteAll(int sceneId)
+int rtlSceneMeshDeleteAll(int sceneId)
 {
 	int				idx,err;
 	ray_scene_type	*scene;
@@ -245,7 +245,7 @@ int rlSceneMeshDeleteAll(int sceneId)
 		// free memory
 
 	while (scene->mesh_list.count!=0) {
-		err=rlSceneMeshDelete(sceneId,scene->mesh_list.meshes[0]->id);
+		err=rtlSceneMeshDelete(sceneId,scene->mesh_list.meshes[0]->id);
 		if (err!=RL_ERROR_OK) return(err);
 	}
 	
@@ -267,7 +267,7 @@ int rlSceneMeshDeleteAll(int sceneId)
       
 ======================================================= */
 
-int rlSceneMeshSetHidden(int sceneId,int meshId,bool hidden)
+int rtlSceneMeshSetHidden(int sceneId,int meshId,bool hidden)
 {
 	int				idx;
 	ray_scene_type	*scene;
@@ -311,7 +311,7 @@ int rlSceneMeshSetHidden(int sceneId,int meshId,bool hidden)
       
 ======================================================= */
 
-int rlSceneMeshSetVertex(int sceneId,int meshId,int format,int count,void *vertex_data)
+int rtlSceneMeshSetVertex(int sceneId,int meshId,int format,int count,void *vertex_data)
 {
 	int				n,idx;
 	float			*vp;
@@ -369,7 +369,7 @@ int rlSceneMeshSetVertex(int sceneId,int meshId,int format,int count,void *verte
 	return(RL_ERROR_OK);
 }
 
-int rlSceneMeshMapVertexPointer(int sceneId,int meshId,void **vertex_data)
+int rtlSceneMeshMapVertexPointer(int sceneId,int meshId,void **vertex_data)
 {
 	int				idx;
 	ray_scene_type	*scene;
@@ -397,7 +397,7 @@ int rlSceneMeshMapVertexPointer(int sceneId,int meshId,void **vertex_data)
 	return(RL_ERROR_OK);
 }
 
-int rlSceneMeshUnMapVertexPointer(int sceneId,int meshId)
+int rtlSceneMeshUnMapVertexPointer(int sceneId,int meshId)
 {
 	int				idx;
 	ray_scene_type	*scene;
@@ -443,7 +443,7 @@ int rlSceneMeshUnMapVertexPointer(int sceneId,int meshId)
       
 ======================================================= */
 
-int rlSceneMeshSetUV(int sceneId,int meshId,int format,int count,void *uv_data)
+int rtlSceneMeshSetUV(int sceneId,int meshId,int format,int count,void *uv_data)
 {
 	int				n,idx;
 	float			*tp;
@@ -495,7 +495,7 @@ int rlSceneMeshSetUV(int sceneId,int meshId,int format,int count,void *uv_data)
 	return(RL_ERROR_OK);
 }
 
-int rlSceneMeshMapUVPointer(int sceneId,int meshId,void **uv_data)
+int rtlSceneMeshMapUVPointer(int sceneId,int meshId,void **uv_data)
 {
 	int				idx;
 	ray_scene_type	*scene;
@@ -523,7 +523,7 @@ int rlSceneMeshMapUVPointer(int sceneId,int meshId,void **uv_data)
 	return(RL_ERROR_OK);
 }
 
-int rlSceneMeshUnMapUVPointer(int sceneId,int meshId)
+int rtlSceneMeshUnMapUVPointer(int sceneId,int meshId)
 {
 	return(RL_ERROR_OK);
 }
@@ -547,7 +547,7 @@ int rlSceneMeshUnMapUVPointer(int sceneId,int meshId)
       
 ======================================================= */
 
-int rlSceneMeshSetNormal(int sceneId,int meshId,int format,int count,void *normal_data)
+int rtlSceneMeshSetNormal(int sceneId,int meshId,int format,int count,void *normal_data)
 {
 	int				n,idx;
 	float			*np;
@@ -604,7 +604,7 @@ int rlSceneMeshSetNormal(int sceneId,int meshId,int format,int count,void *norma
 	return(RL_ERROR_OK);
 }
 
-int rlSceneMeshMapNormalPointer(int sceneId,int meshId,void **normal_data)
+int rtlSceneMeshMapNormalPointer(int sceneId,int meshId,void **normal_data)
 {
 	int				idx;
 	ray_scene_type	*scene;
@@ -632,7 +632,7 @@ int rlSceneMeshMapNormalPointer(int sceneId,int meshId,void **normal_data)
 	return(RL_ERROR_OK);
 }
 
-int rlSceneMeshUnMapNormalPointer(int sceneId,int meshId)
+int rtlSceneMeshUnMapNormalPointer(int sceneId,int meshId)
 {
 	return(RL_ERROR_OK);
 }
@@ -656,7 +656,7 @@ int rlSceneMeshUnMapNormalPointer(int sceneId,int meshId)
       
 ======================================================= */
 
-int rlSceneMeshSetTangent(int sceneId,int meshId,int format,int count,void *tangent_data)
+int rtlSceneMeshSetTangent(int sceneId,int meshId,int format,int count,void *tangent_data)
 {
 	int				n,idx;
 	float			*np;
@@ -713,7 +713,7 @@ int rlSceneMeshSetTangent(int sceneId,int meshId,int format,int count,void *tang
 	return(RL_ERROR_OK);
 }
 
-int rlSceneMeshMapTangentPointer(int sceneId,int meshId,void **tangent_data)
+int rtlSceneMeshMapTangentPointer(int sceneId,int meshId,void **tangent_data)
 {
 	int				idx;
 	ray_scene_type	*scene;
@@ -741,7 +741,7 @@ int rlSceneMeshMapTangentPointer(int sceneId,int meshId,void **tangent_data)
 	return(RL_ERROR_OK);
 }
 
-int rlSceneMeshUnMapTangentPointer(int sceneId,int meshId)
+int rtlSceneMeshUnMapTangentPointer(int sceneId,int meshId)
 {
 	return(RL_ERROR_OK);
 }
@@ -767,7 +767,7 @@ int rlSceneMeshUnMapTangentPointer(int sceneId,int meshId)
       
 ======================================================= */
 
-int rlSceneMeshSetPoly(int sceneId,int meshId,int format,int count,void *poly_data)
+int rtlSceneMeshSetPoly(int sceneId,int meshId,int format,int count,void *poly_data)
 {
 	int						n,k,ntrig,scene_idx,mesh_idx;
 	short					*pp;
@@ -916,7 +916,7 @@ int rlSceneMeshSetPoly(int sceneId,int meshId,int format,int count,void *poly_da
       
 ======================================================= */
 
-int rlSceneMeshSetPolyColor(int sceneId,int meshId,int poly_idx,rlColor *col)
+int rtlSceneMeshSetPolyColor(int sceneId,int meshId,int poly_idx,ray_color_type *col)
 {
 	int						scene_idx,mesh_idx;
 	ray_mesh_type			*mesh;
@@ -964,7 +964,7 @@ int rlSceneMeshSetPolyColor(int sceneId,int meshId,int poly_idx,rlColor *col)
       
 ======================================================= */
 
-int rlSceneMeshSetPolyColorAll(int sceneId,int meshId,rlColor *col)
+int rtlSceneMeshSetPolyColorAll(int sceneId,int meshId,ray_color_type *col)
 {
 	int						n,scene_idx,mesh_idx;
 	ray_mesh_type			*mesh;
