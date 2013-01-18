@@ -332,14 +332,17 @@ void view_dim3rtl_map_model_mesh_start(void)
 
 		// player weapon models
 
-	obj=server.obj_list.objs[server.player_obj_idx];
+	if (!setup.no_draw_weapon) {
 
-	for (n=0;n!=max_weap_list;n++) {
-		weap=obj->weap_list.weaps[n];
-		if (weap==NULL) continue;
-		
-		view_dim3rtl_model_setup_single_model(&weap->draw,TRUE,FALSE,TRUE,TRUE);
-		progress_update();
+		obj=server.obj_list.objs[server.player_obj_idx];
+
+		for (n=0;n!=max_weap_list;n++) {
+			weap=obj->weap_list.weaps[n];
+			if (weap==NULL) continue;
+			
+			view_dim3rtl_model_setup_single_model(&weap->draw,TRUE,FALSE,TRUE,TRUE);
+			progress_update();
+		}
 	}
 }
 
@@ -364,14 +367,16 @@ void view_dim3rtl_map_model_mesh_stop(void)
 
 		// delete player weapon models
 
-	obj=server.obj_list.objs[server.player_obj_idx];
+	if (!setup.no_draw_weapon) {
+		obj=server.obj_list.objs[server.player_obj_idx];
 
-	for (n=0;n!=max_weap_list;n++) {
-		weap=obj->weap_list.weaps[n];
-		if (weap==NULL) continue;
-		
-		view_dim3rtl_model_close_single_model(&weap->draw);
-		progress_update();
+		for (n=0;n!=max_weap_list;n++) {
+			weap=obj->weap_list.weaps[n];
+			if (weap==NULL) continue;
+			
+			view_dim3rtl_model_close_single_model(&weap->draw);
+			progress_update();
+		}
 	}
 
 		// delete materials
@@ -410,11 +415,13 @@ void view_dim3rtl_map_model_update(void)
 
 		// player weapon models
 
-	obj=server.obj_list.objs[server.player_obj_idx];
+	if (!setup.no_draw_weapon) {
+		obj=server.obj_list.objs[server.player_obj_idx];
 
-	for (n=0;n!=max_weap_list;n++) {
-		weap=obj->weap_list.weaps[n];
-		if (weap!=NULL) view_dim3rtl_model_update_single_model(&weap->draw,(n!=obj->held_weapon.current_idx));
+		for (n=0;n!=max_weap_list;n++) {
+			weap=obj->weap_list.weaps[n];
+			if (weap!=NULL) view_dim3rtl_model_update_single_model(&weap->draw,(n!=obj->held_weapon.current_idx));
+		}
 	}
 }
 

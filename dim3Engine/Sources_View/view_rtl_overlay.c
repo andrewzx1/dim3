@@ -67,6 +67,8 @@ void view_dim3rtl_overlay_start(void)
 	iface_crosshair_type	*crosshair;
 	texture_font_size_type	*font_size;
 
+	if (setup.no_hud) return;
+
 		// hud bitmaps
 
 	bitmap=iface.bitmap_list.bitmaps;
@@ -143,6 +145,10 @@ void view_dim3rtl_overlay_stop(void)
 	iface_bitmap_type		*bitmap;
 	iface_text_type			*text;
 
+	if (setup.no_hud) return;
+
+		// remove bitmaps
+
 	bitmap=iface.bitmap_list.bitmaps;
 	
 	for (n=0;n!=iface.bitmap_list.nbitmap;n++) {
@@ -151,6 +157,8 @@ void view_dim3rtl_overlay_stop(void)
 
 		progress_update();
 	}
+
+		// remove texts
 	
 	text=iface.text_list.texts;
 	
@@ -160,6 +168,8 @@ void view_dim3rtl_overlay_stop(void)
 
 		progress_update();
 	}
+
+		// remove crosshair
 
 	rtlSceneOverlayDelete(view_rtl_scene_id,view_rtl_overlay_crosshair_id);
 	progress_update();
@@ -523,6 +533,8 @@ void view_dim3rtl_overlay_update(void)
 	int						n;
 	iface_bitmap_type		*bitmap;
 	iface_text_type			*text;
+
+	if (setup.no_hud) return;
 
 		// update hud bitmaps
 
