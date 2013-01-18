@@ -58,6 +58,7 @@ JSValueRef js_obj_health_add_func(JSContextRef cx,JSObjectRef func,JSObjectRef j
 JSValueRef js_obj_health_remove_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_health_remove_from_object_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_health_damage_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_obj_health_damage_from_object_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_health_reset_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 JSStaticValue 		obj_health_props[]={
@@ -79,6 +80,7 @@ JSStaticFunction	obj_health_functions[]={
 							{"remove",					js_obj_health_remove_func,					kJSPropertyAttributeDontDelete},
 							{"removeFromObject",		js_obj_health_remove_from_object_func,		kJSPropertyAttributeDontDelete},
 							{"damage",					js_obj_health_damage_func,					kJSPropertyAttributeDontDelete},
+							{"damageFromObject",		js_obj_health_damage_from_object_func,		kJSPropertyAttributeDontDelete},
 							{"reset",					js_obj_health_reset_func,					kJSPropertyAttributeDontDelete},
 							{0,0,0}};
 
@@ -331,12 +333,10 @@ JSValueRef js_obj_health_remove_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 JSValueRef js_obj_health_remove_from_object_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	obj_type		*obj;
-	obj_health		*health;
 	
 	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
 	
 	obj=object_get_attach(j_obj);
-    health=&obj->status.health;
 	
 	obj->damage_obj_idx=script_value_to_int(cx,argv[1]);
 	object_health_remove(obj,script_value_to_int(cx,argv[0]));
@@ -352,6 +352,22 @@ JSValueRef js_obj_health_damage_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 	
 	obj=object_get_attach(j_obj);
 	object_damage(obj,NULL,NULL,NULL,NULL,script_value_to_int(cx,argv[0]));
+
+	return(script_null_to_value(cx));
+}
+
+JSValueRef js_obj_health_damage_from_object_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+{
+	obj_type		*obj,*damage_obj;
+
+	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
+	
+	obj=object_get_attach(j_obj);
+	
+	damage_obj=script_find_obj_from_uid_arg(cx,argv[1],exception);
+	if (damage_obj==NULL) return(script_null_to_value(cx));
+
+	object_damage(obj,damage_obj,NULL,NULL,NULL,script_value_to_int(cx,argv[0]));
 
 	return(script_null_to_value(cx));
 }
