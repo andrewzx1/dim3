@@ -367,6 +367,22 @@
 		260B43221411F8CC006ED023 /* png.h in Headers */ = {isa = PBXBuildFile; fileRef = 260B42EE1411F8CC006ED023 /* png.h */; };
 		260B43231411F8CC006ED023 /* pngconf.h in Headers */ = {isa = PBXBuildFile; fileRef = 260B42EF1411F8CC006ED023 /* pngconf.h */; };
 		260B43241411F8CC006ED023 /* pnglibconf.h in Headers */ = {isa = PBXBuildFile; fileRef = 260B42F01411F8CC006ED023 /* pnglibconf.h */; };
+		26149B7816A8BA86007DB713 /* ray_color.c in Sources */ = {isa = PBXBuildFile; fileRef = 26149B6816A8BA86007DB713 /* ray_color.c */; };
+		26149B7916A8BA86007DB713 /* ray_eye.c in Sources */ = {isa = PBXBuildFile; fileRef = 26149B6916A8BA86007DB713 /* ray_eye.c */; };
+		26149B7A16A8BA86007DB713 /* ray_interface.h in Headers */ = {isa = PBXBuildFile; fileRef = 26149B6A16A8BA86007DB713 /* ray_interface.h */; };
+		26149B7B16A8BA86007DB713 /* ray_light.c in Sources */ = {isa = PBXBuildFile; fileRef = 26149B6B16A8BA86007DB713 /* ray_light.c */; };
+		26149B7C16A8BA86007DB713 /* ray_main.c in Sources */ = {isa = PBXBuildFile; fileRef = 26149B6C16A8BA86007DB713 /* ray_main.c */; };
+		26149B7D16A8BA86007DB713 /* ray_material.c in Sources */ = {isa = PBXBuildFile; fileRef = 26149B6D16A8BA86007DB713 /* ray_material.c */; };
+		26149B7E16A8BA86007DB713 /* ray_math.c in Sources */ = {isa = PBXBuildFile; fileRef = 26149B6E16A8BA86007DB713 /* ray_math.c */; };
+		26149B7F16A8BA86007DB713 /* ray_mesh.c in Sources */ = {isa = PBXBuildFile; fileRef = 26149B6F16A8BA86007DB713 /* ray_mesh.c */; };
+		26149B8016A8BA86007DB713 /* ray_os_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 26149B7016A8BA86007DB713 /* ray_os_defs.h */; };
+		26149B8116A8BA86007DB713 /* ray_overlay.c in Sources */ = {isa = PBXBuildFile; fileRef = 26149B7116A8BA86007DB713 /* ray_overlay.c */; };
+		26149B8216A8BA86007DB713 /* ray_precalc.c in Sources */ = {isa = PBXBuildFile; fileRef = 26149B7216A8BA86007DB713 /* ray_precalc.c */; };
+		26149B8316A8BA86007DB713 /* ray_render.c in Sources */ = {isa = PBXBuildFile; fileRef = 26149B7316A8BA86007DB713 /* ray_render.c */; };
+		26149B8416A8BA86007DB713 /* ray_scene.c in Sources */ = {isa = PBXBuildFile; fileRef = 26149B7416A8BA86007DB713 /* ray_scene.c */; };
+		26149B8516A8BA86007DB713 /* ray_thread.c in Sources */ = {isa = PBXBuildFile; fileRef = 26149B7516A8BA86007DB713 /* ray_thread.c */; };
+		26149B8616A8BA86007DB713 /* ray_types.h in Headers */ = {isa = PBXBuildFile; fileRef = 26149B7616A8BA86007DB713 /* ray_types.h */; };
+		26149B8716A8BA86007DB713 /* ray.h in Headers */ = {isa = PBXBuildFile; fileRef = 26149B7716A8BA86007DB713 /* ray.h */; };
 		2618337B14DDE4F9004DD37A /* begin_code.h in Headers */ = {isa = PBXBuildFile; fileRef = 2618333F14DDE4F9004DD37A /* begin_code.h */; };
 		2618337C14DDE4F9004DD37A /* close_code.h in Headers */ = {isa = PBXBuildFile; fileRef = 2618334014DDE4F9004DD37A /* close_code.h */; };
 		2618337E14DDE4F9004DD37A /* SDL_assert.h in Headers */ = {isa = PBXBuildFile; fileRef = 2618334214DDE4F9004DD37A /* SDL_assert.h */; };
@@ -451,24 +467,9 @@
 		2649D14A13412B2900573F6F /* view_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 2649D13F13412B2900573F6F /* view_defs.h */; };
 		2669FCE7161273A0002292C6 /* mac_os_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 2669FCE6161273A0002292C6 /* mac_os_defs.h */; };
 		2669FCE9161273D5002292C6 /* os_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 2669FCE8161273D5002292C6 /* os_defs.h */; };
-		2669FD0016127502002292C6 /* ray_color.c in Sources */ = {isa = PBXBuildFile; fileRef = 2669FCF116127502002292C6 /* ray_color.c */; };
-		2669FD0116127502002292C6 /* ray_eye.c in Sources */ = {isa = PBXBuildFile; fileRef = 2669FCF216127502002292C6 /* ray_eye.c */; };
-		2669FD0216127502002292C6 /* ray_interface.h in Headers */ = {isa = PBXBuildFile; fileRef = 2669FCF316127502002292C6 /* ray_interface.h */; };
-		2669FD0316127502002292C6 /* ray_light.c in Sources */ = {isa = PBXBuildFile; fileRef = 2669FCF416127502002292C6 /* ray_light.c */; };
-		2669FD0416127502002292C6 /* ray_main.c in Sources */ = {isa = PBXBuildFile; fileRef = 2669FCF516127502002292C6 /* ray_main.c */; };
-		2669FD0516127502002292C6 /* ray_material.c in Sources */ = {isa = PBXBuildFile; fileRef = 2669FCF616127502002292C6 /* ray_material.c */; };
-		2669FD0616127502002292C6 /* ray_math.c in Sources */ = {isa = PBXBuildFile; fileRef = 2669FCF716127502002292C6 /* ray_math.c */; };
-		2669FD0716127502002292C6 /* ray_mesh.c in Sources */ = {isa = PBXBuildFile; fileRef = 2669FCF816127502002292C6 /* ray_mesh.c */; };
-		2669FD0916127502002292C6 /* ray_overlay.c in Sources */ = {isa = PBXBuildFile; fileRef = 2669FCFA16127502002292C6 /* ray_overlay.c */; };
-		2669FD0A16127502002292C6 /* ray_precalc.c in Sources */ = {isa = PBXBuildFile; fileRef = 2669FCFB16127502002292C6 /* ray_precalc.c */; };
-		2669FD0B16127502002292C6 /* ray_render.c in Sources */ = {isa = PBXBuildFile; fileRef = 2669FCFC16127502002292C6 /* ray_render.c */; };
-		2669FD0C16127502002292C6 /* ray_scene.c in Sources */ = {isa = PBXBuildFile; fileRef = 2669FCFD16127502002292C6 /* ray_scene.c */; };
-		2669FD0D16127502002292C6 /* ray_types.h in Headers */ = {isa = PBXBuildFile; fileRef = 2669FCFE16127502002292C6 /* ray_types.h */; };
-		2669FD0E16127502002292C6 /* ray.h in Headers */ = {isa = PBXBuildFile; fileRef = 2669FCFF16127502002292C6 /* ray.h */; };
 		2669FD1A16127B66002292C6 /* libSDL2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2669FD1916127B66002292C6 /* libSDL2.a */; };
 		2669FD1C16127B84002292C6 /* libPNG.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2669FD1B16127B84002292C6 /* libPNG.a */; };
 		2669FD1E16127B95002292C6 /* libmpg123.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2669FD1D16127B95002292C6 /* libmpg123.a */; };
-		267381E3161D3FB300512DCC /* ray_os_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 267381E2161D3FB300512DCC /* ray_os_defs.h */; };
 		267DEDB9158ACD9300216D36 /* script_obj_watch_angle.c in Sources */ = {isa = PBXBuildFile; fileRef = 267DEDB7158ACD9300216D36 /* script_obj_watch_angle.c */; };
 		267DEDBA158ACD9300216D36 /* script_obj_watch_position.c in Sources */ = {isa = PBXBuildFile; fileRef = 267DEDB8158ACD9300216D36 /* script_obj_watch_position.c */; };
 		267E82861330155B0087DCED /* interface.h in Headers */ = {isa = PBXBuildFile; fileRef = 267E82851330155B0087DCED /* interface.h */; };
@@ -487,7 +488,6 @@
 		26A45D081489AD6C00C02936 /* script_color.c in Sources */ = {isa = PBXBuildFile; fileRef = 26A45D061489AD6C00C02936 /* script_color.c */; };
 		26A45D091489AD6C00C02936 /* script_point_angle_vector.c in Sources */ = {isa = PBXBuildFile; fileRef = 26A45D071489AD6C00C02936 /* script_point_angle_vector.c */; };
 		26BB48F41685067E00825030 /* script_interface_virtual_control.c in Sources */ = {isa = PBXBuildFile; fileRef = 26BB48F31685067E00825030 /* script_interface_virtual_control.c */; };
-		26C816A516530D4300D2E12A /* ray_thread.c in Sources */ = {isa = PBXBuildFile; fileRef = 26C816A416530D4300D2E12A /* ray_thread.c */; };
 		26CBE2041581AD1E00093D7C /* simple_save_pick.c in Sources */ = {isa = PBXBuildFile; fileRef = 26CBE2031581AD1E00093D7C /* simple_save_pick.c */; };
 		26E1844513CEA27800812348 /* dim3 Engine.app in Copy Application */ = {isa = PBXBuildFile; fileRef = F5CD87F70557721D0023AD9B /* dim3 Engine.app */; };
 		26EE3E1713DA7F78000ABAF1 /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26EE3E1613DA7F78000ABAF1 /* AudioUnit.framework */; };
@@ -890,6 +890,22 @@
 		260B42EE1411F8CC006ED023 /* png.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = png.h; sourceTree = "<group>"; };
 		260B42EF1411F8CC006ED023 /* pngconf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pngconf.h; sourceTree = "<group>"; };
 		260B42F01411F8CC006ED023 /* pnglibconf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pnglibconf.h; sourceTree = "<group>"; };
+		26149B6816A8BA86007DB713 /* ray_color.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ray_color.c; path = ../Sources_RTL/ray_color.c; sourceTree = "<group>"; };
+		26149B6916A8BA86007DB713 /* ray_eye.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ray_eye.c; path = ../Sources_RTL/ray_eye.c; sourceTree = "<group>"; };
+		26149B6A16A8BA86007DB713 /* ray_interface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ray_interface.h; path = ../Sources_RTL/ray_interface.h; sourceTree = "<group>"; };
+		26149B6B16A8BA86007DB713 /* ray_light.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ray_light.c; path = ../Sources_RTL/ray_light.c; sourceTree = "<group>"; };
+		26149B6C16A8BA86007DB713 /* ray_main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ray_main.c; path = ../Sources_RTL/ray_main.c; sourceTree = "<group>"; };
+		26149B6D16A8BA86007DB713 /* ray_material.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ray_material.c; path = ../Sources_RTL/ray_material.c; sourceTree = "<group>"; };
+		26149B6E16A8BA86007DB713 /* ray_math.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ray_math.c; path = ../Sources_RTL/ray_math.c; sourceTree = "<group>"; };
+		26149B6F16A8BA86007DB713 /* ray_mesh.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ray_mesh.c; path = ../Sources_RTL/ray_mesh.c; sourceTree = "<group>"; };
+		26149B7016A8BA86007DB713 /* ray_os_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ray_os_defs.h; path = ../Sources_RTL/ray_os_defs.h; sourceTree = "<group>"; };
+		26149B7116A8BA86007DB713 /* ray_overlay.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ray_overlay.c; path = ../Sources_RTL/ray_overlay.c; sourceTree = "<group>"; };
+		26149B7216A8BA86007DB713 /* ray_precalc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ray_precalc.c; path = ../Sources_RTL/ray_precalc.c; sourceTree = "<group>"; };
+		26149B7316A8BA86007DB713 /* ray_render.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ray_render.c; path = ../Sources_RTL/ray_render.c; sourceTree = "<group>"; };
+		26149B7416A8BA86007DB713 /* ray_scene.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ray_scene.c; path = ../Sources_RTL/ray_scene.c; sourceTree = "<group>"; };
+		26149B7516A8BA86007DB713 /* ray_thread.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ray_thread.c; path = ../Sources_RTL/ray_thread.c; sourceTree = "<group>"; };
+		26149B7616A8BA86007DB713 /* ray_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ray_types.h; path = ../Sources_RTL/ray_types.h; sourceTree = "<group>"; };
+		26149B7716A8BA86007DB713 /* ray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ray.h; path = ../Sources_RTL/ray.h; sourceTree = "<group>"; };
 		2618333F14DDE4F9004DD37A /* begin_code.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = begin_code.h; sourceTree = "<group>"; };
 		2618334014DDE4F9004DD37A /* close_code.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = close_code.h; sourceTree = "<group>"; };
 		2618334214DDE4F9004DD37A /* SDL_assert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL_assert.h; sourceTree = "<group>"; };
@@ -974,24 +990,9 @@
 		2649D13F13412B2900573F6F /* view_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = view_defs.h; path = Headers/view_defs.h; sourceTree = "<group>"; };
 		2669FCE6161273A0002292C6 /* mac_os_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mac_os_defs.h; path = ../OSXBuild/Common/Headers/mac_os_defs.h; sourceTree = "<group>"; };
 		2669FCE8161273D5002292C6 /* os_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = os_defs.h; path = ../dim3Common/Headers/os_defs.h; sourceTree = "<group>"; };
-		2669FCF116127502002292C6 /* ray_color.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ray_color.c; path = ../Sources_OpenRL/ray_color.c; sourceTree = "<group>"; };
-		2669FCF216127502002292C6 /* ray_eye.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ray_eye.c; path = ../Sources_OpenRL/ray_eye.c; sourceTree = "<group>"; };
-		2669FCF316127502002292C6 /* ray_interface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ray_interface.h; path = ../Sources_OpenRL/ray_interface.h; sourceTree = "<group>"; };
-		2669FCF416127502002292C6 /* ray_light.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ray_light.c; path = ../Sources_OpenRL/ray_light.c; sourceTree = "<group>"; };
-		2669FCF516127502002292C6 /* ray_main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ray_main.c; path = ../Sources_OpenRL/ray_main.c; sourceTree = "<group>"; };
-		2669FCF616127502002292C6 /* ray_material.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ray_material.c; path = ../Sources_OpenRL/ray_material.c; sourceTree = "<group>"; };
-		2669FCF716127502002292C6 /* ray_math.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ray_math.c; path = ../Sources_OpenRL/ray_math.c; sourceTree = "<group>"; };
-		2669FCF816127502002292C6 /* ray_mesh.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ray_mesh.c; path = ../Sources_OpenRL/ray_mesh.c; sourceTree = "<group>"; };
-		2669FCFA16127502002292C6 /* ray_overlay.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ray_overlay.c; path = ../Sources_OpenRL/ray_overlay.c; sourceTree = "<group>"; };
-		2669FCFB16127502002292C6 /* ray_precalc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ray_precalc.c; path = ../Sources_OpenRL/ray_precalc.c; sourceTree = "<group>"; };
-		2669FCFC16127502002292C6 /* ray_render.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ray_render.c; path = ../Sources_OpenRL/ray_render.c; sourceTree = "<group>"; };
-		2669FCFD16127502002292C6 /* ray_scene.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ray_scene.c; path = ../Sources_OpenRL/ray_scene.c; sourceTree = "<group>"; };
-		2669FCFE16127502002292C6 /* ray_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ray_types.h; path = ../Sources_OpenRL/ray_types.h; sourceTree = "<group>"; };
-		2669FCFF16127502002292C6 /* ray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ray.h; path = ../Sources_OpenRL/ray.h; sourceTree = "<group>"; };
 		2669FD1916127B66002292C6 /* libSDL2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libSDL2.a; sourceTree = "<group>"; };
 		2669FD1B16127B84002292C6 /* libPNG.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libPNG.a; sourceTree = "<group>"; };
 		2669FD1D16127B95002292C6 /* libmpg123.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libmpg123.a; sourceTree = "<group>"; };
-		267381E2161D3FB300512DCC /* ray_os_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ray_os_defs.h; path = ../Sources_OpenRL/ray_os_defs.h; sourceTree = "<group>"; };
 		267DEDB7158ACD9300216D36 /* script_obj_watch_angle.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_obj_watch_angle.c; sourceTree = "<group>"; };
 		267DEDB8158ACD9300216D36 /* script_obj_watch_position.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_obj_watch_position.c; sourceTree = "<group>"; };
 		267E82851330155B0087DCED /* interface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = interface.h; path = Headers/interface.h; sourceTree = "<group>"; };
@@ -1010,7 +1011,6 @@
 		26A45D061489AD6C00C02936 /* script_color.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_color.c; sourceTree = "<group>"; };
 		26A45D071489AD6C00C02936 /* script_point_angle_vector.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_point_angle_vector.c; sourceTree = "<group>"; };
 		26BB48F31685067E00825030 /* script_interface_virtual_control.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_interface_virtual_control.c; sourceTree = "<group>"; };
-		26C816A416530D4300D2E12A /* ray_thread.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ray_thread.c; path = ../Sources_OpenRL/ray_thread.c; sourceTree = "<group>"; };
 		26CBE2031581AD1E00093D7C /* simple_save_pick.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = simple_save_pick.c; sourceTree = "<group>"; };
 		26EE3E1613DA7F78000ABAF1 /* AudioUnit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioUnit.framework; path = ../../../../System/Library/Frameworks/AudioUnit.framework; sourceTree = "<group>"; };
 		26F0C43E1563297300AFE368 /* app_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = app_defs.h; path = Headers/app_defs.h; sourceTree = "<group>"; };
@@ -1382,7 +1382,7 @@
 				264470E414AED1A00099DEE3 /* Sky */,
 				264470E514AED21D0099DEE3 /* Effects */,
 				264470E614AED2860099DEE3 /* Input */,
-				2669FCF0161274E6002292C6 /* OpenRL */,
+				2669FCF0161274E6002292C6 /* RTL */,
 			);
 			path = Sources_View;
 			sourceTree = "<group>";
@@ -1640,27 +1640,27 @@
 			name = Input;
 			sourceTree = "<group>";
 		};
-		2669FCF0161274E6002292C6 /* OpenRL */ = {
+		2669FCF0161274E6002292C6 /* RTL */ = {
 			isa = PBXGroup;
 			children = (
-				2669FCFF16127502002292C6 /* ray.h */,
-				2669FCFE16127502002292C6 /* ray_types.h */,
-				267381E2161D3FB300512DCC /* ray_os_defs.h */,
-				2669FCF316127502002292C6 /* ray_interface.h */,
-				2669FCF116127502002292C6 /* ray_color.c */,
-				2669FCF216127502002292C6 /* ray_eye.c */,
-				2669FCF416127502002292C6 /* ray_light.c */,
-				2669FCF516127502002292C6 /* ray_main.c */,
-				2669FCF616127502002292C6 /* ray_material.c */,
-				2669FCF716127502002292C6 /* ray_math.c */,
-				26C816A416530D4300D2E12A /* ray_thread.c */,
-				2669FCF816127502002292C6 /* ray_mesh.c */,
-				2669FCFA16127502002292C6 /* ray_overlay.c */,
-				2669FCFB16127502002292C6 /* ray_precalc.c */,
-				2669FCFC16127502002292C6 /* ray_render.c */,
-				2669FCFD16127502002292C6 /* ray_scene.c */,
+				26149B7716A8BA86007DB713 /* ray.h */,
+				26149B7616A8BA86007DB713 /* ray_types.h */,
+				26149B6A16A8BA86007DB713 /* ray_interface.h */,
+				26149B6816A8BA86007DB713 /* ray_color.c */,
+				26149B6916A8BA86007DB713 /* ray_eye.c */,
+				26149B6B16A8BA86007DB713 /* ray_light.c */,
+				26149B6C16A8BA86007DB713 /* ray_main.c */,
+				26149B6D16A8BA86007DB713 /* ray_material.c */,
+				26149B6E16A8BA86007DB713 /* ray_math.c */,
+				26149B6F16A8BA86007DB713 /* ray_mesh.c */,
+				26149B7016A8BA86007DB713 /* ray_os_defs.h */,
+				26149B7116A8BA86007DB713 /* ray_overlay.c */,
+				26149B7216A8BA86007DB713 /* ray_precalc.c */,
+				26149B7316A8BA86007DB713 /* ray_render.c */,
+				26149B7416A8BA86007DB713 /* ray_scene.c */,
+				26149B7516A8BA86007DB713 /* ray_thread.c */,
 			);
-			name = OpenRL;
+			name = RTL;
 			sourceTree = "<group>";
 		};
 		268BCEBA1623C1E000A18404 /* ViewRTL */ = {
@@ -2012,10 +2012,10 @@
 				26F0C43F1563297300AFE368 /* app_defs.h in Headers */,
 				2669FCE7161273A0002292C6 /* mac_os_defs.h in Headers */,
 				2669FCE9161273D5002292C6 /* os_defs.h in Headers */,
-				2669FD0216127502002292C6 /* ray_interface.h in Headers */,
-				2669FD0D16127502002292C6 /* ray_types.h in Headers */,
-				2669FD0E16127502002292C6 /* ray.h in Headers */,
-				267381E3161D3FB300512DCC /* ray_os_defs.h in Headers */,
+				26149B7A16A8BA86007DB713 /* ray_interface.h in Headers */,
+				26149B8016A8BA86007DB713 /* ray_os_defs.h in Headers */,
+				26149B8616A8BA86007DB713 /* ray_types.h in Headers */,
+				26149B8716A8BA86007DB713 /* ray.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2463,18 +2463,6 @@
 				2682E450159D1F7C001CE3DB /* gl_shader_simple.c in Sources */,
 				26FF359E15A936820010C22E /* gl_shader_execute.c in Sources */,
 				2602769315C88619007B19CD /* label.c in Sources */,
-				2669FD0016127502002292C6 /* ray_color.c in Sources */,
-				2669FD0116127502002292C6 /* ray_eye.c in Sources */,
-				2669FD0316127502002292C6 /* ray_light.c in Sources */,
-				2669FD0416127502002292C6 /* ray_main.c in Sources */,
-				2669FD0516127502002292C6 /* ray_material.c in Sources */,
-				2669FD0616127502002292C6 /* ray_math.c in Sources */,
-				2669FD0716127502002292C6 /* ray_mesh.c in Sources */,
-				2669FD0916127502002292C6 /* ray_overlay.c in Sources */,
-				2669FD0A16127502002292C6 /* ray_precalc.c in Sources */,
-				2669FD0B16127502002292C6 /* ray_render.c in Sources */,
-				2669FD0C16127502002292C6 /* ray_scene.c in Sources */,
-				26C816A516530D4300D2E12A /* ray_thread.c in Sources */,
 				26BB48F41685067E00825030 /* script_interface_virtual_control.c in Sources */,
 				2618B77816A7B25B004BB291 /* view_rtl_effect.c in Sources */,
 				2618B77916A7B25B004BB291 /* view_rtl_liquid.c in Sources */,
@@ -2483,6 +2471,18 @@
 				2618B77C16A7B25B004BB291 /* view_rtl_model.c in Sources */,
 				2618B77D16A7B25B004BB291 /* view_rtl_overlay.c in Sources */,
 				2618B77E16A7B25B004BB291 /* view_rtl_patch.c in Sources */,
+				26149B7816A8BA86007DB713 /* ray_color.c in Sources */,
+				26149B7916A8BA86007DB713 /* ray_eye.c in Sources */,
+				26149B7B16A8BA86007DB713 /* ray_light.c in Sources */,
+				26149B7C16A8BA86007DB713 /* ray_main.c in Sources */,
+				26149B7D16A8BA86007DB713 /* ray_material.c in Sources */,
+				26149B7E16A8BA86007DB713 /* ray_math.c in Sources */,
+				26149B7F16A8BA86007DB713 /* ray_mesh.c in Sources */,
+				26149B8116A8BA86007DB713 /* ray_overlay.c in Sources */,
+				26149B8216A8BA86007DB713 /* ray_precalc.c in Sources */,
+				26149B8316A8BA86007DB713 /* ray_render.c in Sources */,
+				26149B8416A8BA86007DB713 /* ray_scene.c in Sources */,
+				26149B8516A8BA86007DB713 /* ray_thread.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
