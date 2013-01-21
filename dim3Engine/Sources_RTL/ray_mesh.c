@@ -61,6 +61,7 @@ void ray_scene_mesh_precalc(ray_scene_type *scene,ray_mesh_type *mesh)
 			
 			// poly precalcs
 			
+		ray_precalc_polygon_normal(mesh,poly);
 		ray_precalc_polygon_bounds(mesh,poly);
 	
 			// trig precalcs

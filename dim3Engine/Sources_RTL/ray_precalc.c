@@ -52,7 +52,7 @@ void ray_precalc_mesh_bounds(ray_mesh_type *mesh)
 
 /* =======================================================
 
-      Precalculate Polygon Bounds and Culling Info
+      Precalculate Polygon Bounds and Normals
       
 ======================================================= */
 
@@ -92,6 +92,38 @@ void ray_precalc_polygon_bounds(ray_mesh_type *mesh,ray_poly_type *poly)
 	bnd->mid.x=(bnd->min.x+bnd->max.x)*0.5f;
 	bnd->mid.y=(bnd->min.y+bnd->max.y)*0.5f;
 	bnd->mid.z=(bnd->min.z+bnd->max.z)*0.5f;
+}
+
+void ray_precalc_polygon_normal(ray_mesh_type *mesh,ray_poly_type *poly)
+{
+	int					n;
+	float				f;
+	ray_vector_type		*normal;
+	
+	if (mesh->normal_block.count==0) {
+		poly->surface_normal.x=0.0f;
+		poly->surface_normal.y=0.0f;
+		poly->surface_normal.z=0.0f;
+		return;
+	}
+
+	poly->surface_normal.x=0.0f;
+	poly->surface_normal.y=0.0f;
+	poly->surface_normal.z=0.0f;
+	
+	for (n=0;n!=poly->nvertex;n++) {
+		normal=&mesh->normal_block.normals[poly->idxs[n].normal];
+		poly->surface_normal.x+=normal->x;
+		poly->surface_normal.y+=normal->y;
+		poly->surface_normal.z+=normal->z;
+	}
+	
+	f=(float)poly->nvertex;
+	poly->surface_normal.x/=f;
+	poly->surface_normal.y/=f;
+	poly->surface_normal.z/=f;
+	
+	ray_vector_normalize(&poly->surface_normal);
 }
 
 /* =======================================================
@@ -344,6 +376,41 @@ bool ray_precalc_frustum_plane_bound_cull(ray_plane_type *planes,ray_bound_type 
 
 /* =======================================================
 
+      Normal Culling
+      
+======================================================= */
+
+bool ray_precalc_normal_cull(ray_scene_type *scene,ray_draw_scene_thread_info *thread_info,ray_mesh_type *mesh,ray_poly_type *poly)
+{
+	float					wid,high;
+	ray_point_type			pnt;
+	ray_vector_type			eye_vct;
+	
+		// skip meshes without normals
+		
+	if (mesh->normal_block.count==0) return(TRUE);
+	
+		// get midpoint of thread box
+		
+	wid=(float)(scene->buffer.wid>>1);
+	high=(float)(scene->buffer.high>>1);
+
+	pnt.x=(scene->eye.pnt.x-wid)+((thread_info->pixel_start.x+thread_info->pixel_start.x)>>1);
+	pnt.y=(scene->eye.pnt.y-high)+((thread_info->pixel_start.y+thread_info->pixel_start.y)>>1);
+	pnt.z=scene->eye.pnt.z+scene->eye.min_dist;
+	
+	eye_vct.x=poly->bound.mid.x-pnt.x;
+	eye_vct.y=poly->bound.mid.y-pnt.y;
+	eye_vct.z=poly->bound.mid.z-pnt.z;
+
+		// run the dot product against
+		// the poly normal
+		
+	return(((poly->surface_normal.x*eye_vct.x)+(poly->surface_normal.y*eye_vct.y)+(poly->surface_normal.z*eye_vct.z))<=0.0f);
+}
+
+/* =======================================================
+
       Precalc For Scene Rendering
 
 	  Mesh in scene list
@@ -451,8 +518,7 @@ void ray_precalc_render_scene_setup(ray_scene_type *scene)
 	  the thread's pixel block
 	  
 	  If the ray bounces, we retreat to the
-	  meshes in scene list, as this list is created
-	  by intersecting the original ray box
+	  meshes in the larger scene list
       
 ======================================================= */
 
@@ -496,15 +562,27 @@ void ray_precalc_render_scene_thread_setup(ray_scene_type *scene,ray_draw_scene_
 			// set up the poly rendering flags
 			// for this thread, which is a list of which
 			// polys can be seen from the frustum of
-			// this thread
+			// this thread and aren't culled by the poly
+			// normal
 
 		poly=mesh->poly_block.polys;
 
 		for (k=0;k!=mesh->poly_block.count;k++) {
-			poly->thread_render_mask[thread_info->idx]=ray_precalc_frustum_plane_bound_cull(planes,&poly->bound)?0x1:0x0;
+		
+			if (!ray_precalc_frustum_plane_bound_cull(planes,&poly->bound)) {
+				poly->thread_render_mask[thread_info->idx]=0x0;
+			}
+			else {
+				if (!ray_precalc_normal_cull(scene,thread_info,mesh,poly)) {
+					poly->thread_render_mask[thread_info->idx]=0x0;
+				}
+				else {
+					poly->thread_render_mask[thread_info->idx]=0x1;
+				}
+			}
+			
 			poly++;
 		}
-
 	}
 }
 
