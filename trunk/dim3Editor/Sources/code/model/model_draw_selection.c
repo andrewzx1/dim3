@@ -186,6 +186,15 @@ void model_draw_normals(int mesh_idx)
 	pt=draw_setup.mesh_arrays[mesh_idx].gl_tangent_array;
 
 	for (n=0;n!=nvertex;n++) {
+		
+			// skip hiddens
+			
+		if (model_vertex_mask_check_hide(mesh_idx,n)) {
+			pv+=3;
+			pn+=3;
+			pt+=3;
+			continue;
+		}
 
 			// vertex point
 

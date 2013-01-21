@@ -244,6 +244,8 @@ void ray_intersect_mesh_list_pass_through_bounce(ray_scene_type *scene,ray_draw_
 				// bounds check
 				
 			poly=&mesh->poly_block.polys[poly_idx];
+			if (poly->thread_render_mask[thread_info->idx]==0x0) continue;
+			
 			if (!ray_bound_ray_collision(eye_point,eye_vector,&poly->bound)) continue;
 				
 				// skiping polys, this is used
