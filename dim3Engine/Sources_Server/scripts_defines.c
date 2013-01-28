@@ -118,6 +118,7 @@ script_define_type			script_dim3_defines[]={
 								{sd_spot_type_bot,								"",		"DIM3_SPOT_TYPE_BOT"},
 								{sd_spot_type_player,							"",		"DIM3_SPOT_TYPE_PLAYER"},
 								{sd_spot_type_spawn,							"",		"DIM3_SPOT_TYPE_SPAWN"},
+								{sd_spot_type_checkpoint,						"",		"DIM3_SPOT_TYPE_CHECKPOINT"},
 								
 								{sd_object_type_player,							"",		"DIM3_OBJECT_TYPE_PLAYER"},
 								{sd_object_type_bot_multiplayer,				"",		"DIM3_OBJECT_TYPE_BOT_MULTIPLAYER"},

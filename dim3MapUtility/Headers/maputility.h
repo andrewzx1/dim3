@@ -150,6 +150,7 @@ and can be sold or given away.
 #define spot_type_bot										1
 #define spot_type_player									2
 #define spot_type_spawn										3
+#define spot_type_checkpoint								4
 
 //
 // skills
@@ -496,6 +497,7 @@ typedef struct		{
 															script[name_str_len],
 															display_model[name_str_len],
 															params[param_str_len];
+						bool								checkpoint_used;
 						d3pnt								pnt;
 						d3ang								ang;
 						spot_lookup_type					lookup;

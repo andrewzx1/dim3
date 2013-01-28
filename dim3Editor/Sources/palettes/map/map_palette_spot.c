@@ -48,7 +48,7 @@ extern map_type					map;
 extern list_palette_type		map_palette;
 
 int								pal_spot_index;
-char							spot_map_type_list[][name_str_len]={"Object","Bot","Player","Spawn",""},
+char							spot_map_type_list[][name_str_len]={"Object","Bot","Player","Spawn","Checkpoint",""},
 								spot_map_skill_list[][name_str_len]={"Easy","Medium","Hard",""},
 								spot_map_spawn_list[][name_str_len]={"Always","Single Player Only","Multiplayer Only",""};
 
