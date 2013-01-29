@@ -275,7 +275,9 @@ script_define_type			script_dim3_defines[]={
 								{sd_event_interface_cinema_done,				"",		"DIM3_EVENT_INTERFACE_CINEMA_DONE"},
 
 								{sd_event_state_load,							"",		"DIM3_EVENT_STATE_LOAD"},
+								{sd_event_state_load_checkpoint,				"",		"DIM3_EVENT_STATE_LOAD_CHECKPOINT"},
 								{sd_event_state_save,							"",		"DIM3_EVENT_STATE_SAVE"},
+								{sd_event_state_save_checkpoint,				"",		"DIM3_EVENT_STATE_SAVE_CHECKPOINT"},
 
 								{sd_event_remote_join,							"",		"DIM3_EVENT_REMOTE_JOIN"},
 								{sd_event_remote_leave,							"",		"DIM3_EVENT_REMOTE_LEAVE"},

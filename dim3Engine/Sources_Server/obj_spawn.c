@@ -354,6 +354,10 @@ bool map_objects_create(char *err_str)
 	
 		spot=&map.spots[n];
 		spot->lookup.spawned_obj_idx=-1;
+
+			// reset all checkpoints
+
+		spot->checkpoint.used=FALSE;
 		
 			// can only spawn objects and
 			// map bots

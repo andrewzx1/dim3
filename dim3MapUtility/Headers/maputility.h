@@ -492,15 +492,20 @@ typedef struct		{
 					} spot_lookup_type;
 
 typedef struct		{
+						int									radius;
+						bool								used;
+					} spot_checkpoint_type;
+
+typedef struct		{
 						int									type,skill,spawn;
 						char								name[name_str_len],
 															script[name_str_len],
 															display_model[name_str_len],
 															params[param_str_len];
-						bool								checkpoint_used;
 						d3pnt								pnt;
 						d3ang								ang;
 						spot_lookup_type					lookup;
+						spot_checkpoint_type				checkpoint;
 					} spot_type;
 
 //

@@ -604,8 +604,8 @@ extern JSValueRef script_get_global(JSContextRef cx,char *name);
 extern bool script_add_global(JSContextRef cx,char *name,JSValueRef val);
 extern void script_delete_global(char *name);
 
-extern bool script_state_save(char *err_str);
-extern bool script_state_load(char *err_str);
+extern bool script_state_save(bool checkpoint,char *err_str);
+extern bool script_state_load(bool checkpoint,char *err_str);
 
 extern void timers_initialize_list(void);
 extern void timers_free_list(void);

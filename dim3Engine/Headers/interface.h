@@ -118,7 +118,7 @@ extern void game_time_pause_end(void);
 // save state
 //
 
-extern bool game_file_save(bool suspend_save,char *err_str);
+extern bool game_file_save(int checkpoint_spot_idx,bool suspend_save,char *err_str);
 extern bool game_file_load(char *file_name,bool resume_load,char *err_str);
 extern void game_file_suspend(void);
 extern void game_file_resume(void);

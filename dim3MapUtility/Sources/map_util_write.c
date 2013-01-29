@@ -1006,6 +1006,7 @@ bool write_map_xml(map_type *map,char *err_str)
 		xml_add_attribute_float("angle",spot->ang.y);
 		xml_add_attribute_list("skill",(char*)skill_type_str,spot->skill);
 		xml_add_attribute_list("spawn",(char*)spawn_type_str,spot->spawn);
+		xml_add_attribute_int("checkpoint_radius",spot->checkpoint.radius);
 		xml_add_tagend(TRUE);
 	}
 	

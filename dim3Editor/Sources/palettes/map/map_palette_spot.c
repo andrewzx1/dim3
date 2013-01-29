@@ -39,6 +39,7 @@ and can be sold or given away.
 #define kSpotPropertySkill						4
 #define kSpotPropertySpawn						5
 #define kSpotPropertyDisplayModel				6
+#define kSpotPropertyRadius						7
 
 #define kSpotPropertyParamsStart				100
 #define kSpotPropertyParamsEnd					109
@@ -82,6 +83,9 @@ void map_palette_fill_spot(int spot_idx)
 	list_palette_add_picker_list_int(&map_palette,kSpotPropertySkill,"Skill",(char*)spot_map_skill_list,-1,name_str_len,0,FALSE,FALSE,&spot->skill,FALSE);
 	list_palette_add_picker_list_int(&map_palette,kSpotPropertySpawn,"Spawn",(char*)spot_map_spawn_list,-1,name_str_len,0,FALSE,FALSE,&spot->spawn,FALSE);
 	list_palette_add_picker_file(&map_palette,kSpotPropertyDisplayModel,list_button_none,0,"Model","Models","","Mesh.xml;Model.xml",spot->display_model,FALSE);
+
+	list_palette_add_header(&map_palette,0,"Spot Checkpoint");
+	list_palette_add_int(&map_palette,kSpotPropertyRadius,"Radius",&spot->checkpoint.radius,FALSE);
 
 	list_palette_add_header(&map_palette,0,"Spot Parameters");
 	for (n=0;n!=10;n++) {

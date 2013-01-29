@@ -1100,6 +1100,7 @@ bool decode_map_xml(map_type *map,int map_head)
 			
 			spot->skill=xml_get_attribute_list(obj_tag,"skill",(char*)skill_type_str);
 			spot->spawn=xml_get_attribute_list(obj_tag,"spawn",(char*)spawn_type_str);
+			spot->checkpoint.radius=xml_get_attribute_int(obj_tag,"checkpoint_radius");
 			
 			obj_tag=xml_findnextchild(obj_tag);
 		}
