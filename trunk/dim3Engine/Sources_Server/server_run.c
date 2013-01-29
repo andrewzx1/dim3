@@ -151,6 +151,8 @@ void run_object_single(obj_type *obj)
 
 	object_watch(obj);
 
+	if (obj->type==object_type_player) object_checkpoint(obj);
+
 		// health recover
 
 	object_health_recover(obj);

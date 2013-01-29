@@ -35,7 +35,8 @@ and can be sold or given away.
 
 typedef struct		{
 						int					tick,skill,option_flags,
-											simple_save_idx,player_obj_idx;
+											simple_save_idx,checkpoint_spot_idx,
+											player_obj_idx;
 						char				version[16],map_name[name_str_len];
 					} file_save_header;					
 
@@ -254,7 +255,7 @@ void game_file_create_name(int tick,char *file_name)
       
 ======================================================= */
 
-bool game_file_save(bool suspend_save,char *err_str)
+bool game_file_save(int checkpoint_spot_idx,bool suspend_save,char *err_str)
 {
 	int					n,k,t,count,tick;
 	char				path[1024],file_name[256];
@@ -295,6 +296,7 @@ bool game_file_save(bool suspend_save,char *err_str)
 	head.skill=server.skill;
 	head.option_flags=server.option_flags;
 	head.simple_save_idx=server.simple_save_idx;
+	head.checkpoint_spot_idx=checkpoint_spot_idx;
 	head.player_obj_idx=server.player_obj_idx;
 	
 	strcpy(head.version,dim3_version);
@@ -430,7 +432,7 @@ bool game_file_save(bool suspend_save,char *err_str)
 		
 	if (!suspend_save) progress_update();
 
-	if (!script_state_save(err_str)) {
+	if (!script_state_save((checkpoint_spot_idx!=-1),err_str)) {
 		free(game_file_data);
 		if (!suspend_save) progress_shutdown();
 		return(FALSE);
@@ -509,9 +511,10 @@ bool game_file_load(char *file_name,bool resume_load,char *err_str)
 	bool				ok,map_change;
 	char				*c,path[1024],fname[256];
 	file_save_header	head;
-	obj_type			*obj;
+	obj_type			*obj,*player_obj;
 	weapon_type			*weap;
 	proj_setup_type		*proj_setup;
+	spot_type			*spot;
 	model_draw			temp_draw;
 	
 		// load and expand
@@ -837,11 +840,23 @@ bool game_file_load(char *file_name,bool resume_load,char *err_str)
 		game_file_get_chunk(&map.movement.movements[n].run);
 	}
 
+		// if this is a checkpoint
+		// save, we need to reset player and motion
+
+	if (head.checkpoint_spot_idx!=-1) {
+		spot=&map.spots[head.checkpoint_spot_idx];
+		player_obj=server.obj_list.objs[server.player_obj_idx];
+
+		memmove(&player_obj->pnt,&spot->pnt,sizeof(d3pnt));
+		memmove(&player_obj->ang,&spot->ang,sizeof(d3ang));
+		object_stop(player_obj);
+	}
+
 		// script objects
 		
 	if (!resume_load) progress_update();
 
-	if (!script_state_load(err_str)) {
+	if (!script_state_load((head.checkpoint_spot_idx!=-1),err_str)) {
 		free(game_file_data);
 		if (!resume_load) progress_shutdown();
 		return(FALSE);
@@ -979,7 +994,7 @@ void game_file_suspend(void)
 	if (server.game_open) {
 		
 		if (server.map_open) {
-			if (game_file_save(TRUE,err_str)) {
+			if (game_file_save(-1,TRUE,err_str)) {
 				game_file_has_suspended_save=TRUE;
 			}
 		

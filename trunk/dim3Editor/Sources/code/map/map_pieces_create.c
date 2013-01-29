@@ -39,6 +39,8 @@ extern iface_type				iface;
 
 extern list_palette_type		map_palette;
 
+extern char						spot_map_type_list[][name_str_len];
+
 /* =======================================================
 
       Check if Piece Creation OK
@@ -104,6 +106,7 @@ void piece_create_spot(void)
 	spot->ang.y=0;
 	spot->name[0]=0x0;
 	spot->type=spot_type_object;
+	spot->checkpoint.radius=10000;
 	spot->display_model[0]=0x0;
 	spot->params[0]=0x0;
     
@@ -121,8 +124,9 @@ void piece_create_spot(void)
 		// and pick script
 
 	list_palette_set_level(&map_palette,1);
-	property_pick_file("Pick a Script","Scripts/Objects","js",NULL,spot->script);
-	
+//	property_pick_file("Pick a Script","Scripts/Objects","js",NULL,spot->script);
+	list_palette_start_picking_mode(&map_palette,"Pick a Spot Type",(char*)spot_map_type_list,-1,name_str_len,0,FALSE,FALSE,FALSE,&spot->type,NULL);
+
 	main_wind_draw();
 }
 

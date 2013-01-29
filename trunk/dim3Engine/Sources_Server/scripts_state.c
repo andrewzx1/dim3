@@ -43,7 +43,7 @@ extern char* game_file_get_chunk(void *data);
       
 ======================================================= */
 
-bool script_state_save_single(int script_idx,char *err_str)
+bool script_state_save_single(int script_idx,bool checkpoint,char *err_str)
 {
 	int						n,count,prop_name_len,prop_value_len;
 	char					prop_name[256];
@@ -57,7 +57,7 @@ bool script_state_save_single(int script_idx,char *err_str)
 
 		// send save state event
 
-	scripts_post_event(script_idx,-1,sd_event_state,sd_event_state_save,0,err_str);
+	scripts_post_event(script_idx,-1,sd_event_state,(checkpoint?sd_event_state_save_checkpoint:sd_event_state_save),0,err_str);
 
 		// get the script
 
@@ -133,33 +133,33 @@ bool script_state_save_single(int script_idx,char *err_str)
 	return(TRUE);
 }
 
-bool script_state_save(char *err_str)
+bool script_state_save(bool checkpoint,char *err_str)
 {
 	int				n,k,i;
 	obj_type		*obj;
 	weapon_type		*weap;
 	proj_setup_type	*proj_setup;
 
-	if (!script_state_save_single(js.game_script_idx,err_str)) return(FALSE);
-	if (!script_state_save_single(js.course_script_idx,err_str)) return(FALSE);
+	if (!script_state_save_single(js.game_script_idx,checkpoint,err_str)) return(FALSE);
+	if (!script_state_save_single(js.course_script_idx,checkpoint,err_str)) return(FALSE);
 	
 	for (n=0;n!=max_obj_list;n++) {
 		obj=server.obj_list.objs[n];
 		if (obj==NULL) continue;
 
-		if (!script_state_save_single(obj->script_idx,err_str)) return(FALSE);
+		if (!script_state_save_single(obj->script_idx,checkpoint,err_str)) return(FALSE);
 
 		for (k=0;k!=max_weap_list;k++) {
 			weap=obj->weap_list.weaps[k];
 			if (weap==NULL) continue;
 			
-			if (!script_state_save_single(weap->script_idx,err_str)) return(FALSE);
+			if (!script_state_save_single(weap->script_idx,checkpoint,err_str)) return(FALSE);
 		
 			for (i=0;i!=max_proj_setup_list;i++) {
 				proj_setup=weap->proj_setup_list.proj_setups[i];
 				if (proj_setup==NULL) continue;
 				
-				if (!script_state_save_single(proj_setup->script_idx,err_str)) return(FALSE);
+				if (!script_state_save_single(proj_setup->script_idx,checkpoint,err_str)) return(FALSE);
 			}
 		}
 	}
@@ -173,7 +173,7 @@ bool script_state_save(char *err_str)
       
 ======================================================= */
 
-bool script_state_load_single(int script_idx,char *err_str)
+bool script_state_load_single(int script_idx,bool checkpoint,char *err_str)
 {
 	int				prop_name_len,prop_value_len;
 	char			prop_name[256];
@@ -225,12 +225,12 @@ bool script_state_load_single(int script_idx,char *err_str)
 
 		// send load event to script
 
-	scripts_post_event(script_idx,-1,sd_event_state,sd_event_state_load,0,err_str);
+	scripts_post_event(script_idx,-1,sd_event_state,(checkpoint?sd_event_state_load_checkpoint:sd_event_state_load),0,err_str);
 
 	return(TRUE);
 }
 
-bool script_state_load(char *err_str)
+bool script_state_load(bool checkpoint,char *err_str)
 {
 	int				n,k,i;
 	obj_type		*obj;
@@ -240,8 +240,8 @@ bool script_state_load(char *err_str)
 
 		// load the game and course
 
-	if (!script_state_load_single(js.game_script_idx,err_str)) return(FALSE);
-	if (!script_state_load_single(js.course_script_idx,err_str)) return(FALSE);
+	if (!script_state_load_single(js.game_script_idx,checkpoint,err_str)) return(FALSE);
+	if (!script_state_load_single(js.course_script_idx,checkpoint,err_str)) return(FALSE);
 
 		// load the objects
 
@@ -249,19 +249,19 @@ bool script_state_load(char *err_str)
 		obj=server.obj_list.objs[n];
 		if (obj==NULL) continue;
 
-		if (!script_state_load_single(obj->script_idx,err_str)) return(FALSE);
+		if (!script_state_load_single(obj->script_idx,checkpoint,err_str)) return(FALSE);
 
 		for (k=0;k!=max_weap_list;k++) {
 			weap=obj->weap_list.weaps[k];
 			if (weap==NULL) continue;
 			
-			if (!script_state_load_single(weap->script_idx,err_str)) return(FALSE);
+			if (!script_state_load_single(weap->script_idx,checkpoint,err_str)) return(FALSE);
 		
 			for (i=0;i!=max_proj_setup_list;i++) {
 				proj_setup=weap->proj_setup_list.proj_setups[i];
 				if (proj_setup==NULL) continue;
 				
-				if (!script_state_load_single(proj_setup->script_idx,err_str)) return(FALSE);
+				if (!script_state_load_single(proj_setup->script_idx,checkpoint,err_str)) return(FALSE);
 			}
 		}
 	}

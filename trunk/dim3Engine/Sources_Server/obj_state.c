@@ -970,3 +970,33 @@ bool object_set_radar_icon(obj_type *obj,char *err_str)
 	return(FALSE);
 }
 
+/* =======================================================
+
+      Object Checkpoints
+      
+======================================================= */
+
+void object_checkpoint(obj_type *obj)
+{
+	int					n;
+	char				err_str[256];
+	spot_type			*spot;
+	
+		// check against checkpoint spots
+	
+	for (n=0;n!=map.nspot;n++) {
+		spot=&map.spots[n];
+		if (spot->type!=spot_type_checkpoint) continue;
+		if (spot->checkpoint.used) continue;
+
+			// check dist
+
+		if (spot->checkpoint.radius>distance_get(obj->pnt.x,obj->pnt.y,obj->pnt.z,spot->pnt.x,spot->pnt.y,spot->pnt.z)) continue;
+
+			// save it
+			// adjust player to be on spot
+
+		spot->checkpoint.used=TRUE;
+		if (!game_file_save(n,FALSE,err_str)) console_add_error(err_str);	
+	}
+}

@@ -192,6 +192,7 @@ and can be sold or given away.
 #define sd_spot_type_bot								1161
 #define sd_spot_type_player								1162
 #define sd_spot_type_spawn								1163
+#define sd_spot_type_checkpoint							1164
 
 //
 // object type constants
@@ -366,14 +367,16 @@ and can be sold or given away.
 #define sd_event_interface_cinema_done					3081
 
 #define sd_event_state_load								3082
-#define sd_event_state_save								3083
+#define sd_event_state_load_checkpoint					3083
+#define sd_event_state_save								3084
+#define sd_event_state_save_checkpoint					3085
 
-#define sd_event_remote_join							3084
-#define sd_event_remote_leave							3085
-#define sd_event_remote_team							3086
-#define sd_event_remote_death							3087
-#define sd_event_remote_suicide							3088
-#define sd_event_remote_telefrag						3089
+#define sd_event_remote_join							3086
+#define sd_event_remote_leave							3087
+#define sd_event_remote_team							3088
+#define sd_event_remote_death							3089
+#define sd_event_remote_suicide							3090
+#define sd_event_remote_telefrag						3091
 
 //
 // script event messages

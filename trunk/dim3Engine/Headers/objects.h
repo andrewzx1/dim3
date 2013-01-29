@@ -220,6 +220,8 @@ extern void object_watch_death_alert(obj_type *dead_obj);
 extern void object_watch_base_alert(map_mesh_type *mesh,obj_type *enter_obj,bool entry);
 extern void object_watch_sound_alert(d3pnt *pnt,int sound_obj_idx,char *sound_name);
 
+extern void object_checkpoint(obj_type *obj);
+
 extern int object_held_add(obj_type *obj,char *name,char *script,char *params,char *err_str);
 extern bool object_held_drop(obj_type *obj,int uid,float y_ang,int y_change,char *err_str);
 

@@ -137,29 +137,38 @@ void view_draw_sprite(d3pnt *pnt,d3ang *ang,unsigned long gl_id)
 	glDisable(GL_TEXTURE_2D);
 }
 
-void view_draw_circle(d3pnt *pnt,d3col *col,int dist)
+void view_draw_circle(d3pnt *pnt,d3ang *ang,d3col *col,int dist,bool checkpoint)
 {
     int				n,kx,ky,kz;
 	float			vertexes[36*3];
 	float			*pv;
 
 	glLineWidth(4.0f);
-	glColor4f(col->r,col->g,col->b,0.5f);
-	
-	pv=vertexes;
-	
-	for (n=0;n!=360;n+=10) {
-		ky=dist;
-		kz=0;
-		rotate_2D_point_center(&ky,&kz,(float)n);
-		*pv++=(float)pnt->x;
-		*pv++=(float)(pnt->y+ky);
-		*pv++=(float)(pnt->z+kz);
+	if (col==NULL) {
+		glColor4f(0.25f,0.25f,1.0f,1.0f);
 	}
-	
-	glVertexPointer(3,GL_FLOAT,0,vertexes);
-	glDrawArrays(GL_LINE_LOOP,0,36);
-	
+	else {
+		glColor4f(col->r,col->g,col->b,0.5f);
+	}
+
+		// circle
+
+	if (!checkpoint) {
+		pv=vertexes;
+		
+		for (n=0;n!=360;n+=10) {
+			ky=dist;
+			kz=0;
+			rotate_2D_point_center(&ky,&kz,(float)n);
+			*pv++=(float)pnt->x;
+			*pv++=(float)(pnt->y+ky);
+			*pv++=(float)(pnt->z+kz);
+		}
+		
+		glVertexPointer(3,GL_FLOAT,0,vertexes);
+		glDrawArrays(GL_LINE_LOOP,0,36);
+	}
+
 	pv=vertexes;
 	
 	for (n=0;n!=360;n+=10) {
@@ -173,21 +182,43 @@ void view_draw_circle(d3pnt *pnt,d3col *col,int dist)
 	
 	glVertexPointer(3,GL_FLOAT,0,vertexes);
 	glDrawArrays(GL_LINE_LOOP,0,36);
-	
-	pv=vertexes;
-	
-	for (n=0;n!=360;n+=10) {
-		kx=dist;
-		ky=0;
-		rotate_2D_point_center(&kx,&ky,(float)n);
-		*pv++=(float)(pnt->x+kx);
-		*pv++=(float)(pnt->y+ky);
-		*pv++=(float)pnt->z;
+
+	if (!checkpoint) {
+		pv=vertexes;
+		
+		for (n=0;n!=360;n+=10) {
+			kx=dist;
+			ky=0;
+			rotate_2D_point_center(&kx,&ky,(float)n);
+			*pv++=(float)(pnt->x+kx);
+			*pv++=(float)(pnt->y+ky);
+			*pv++=(float)pnt->z;
+		}
+
+		glVertexPointer(3,GL_FLOAT,0,vertexes);
+		glDrawArrays(GL_LINE_LOOP,0,36);
 	}
 
-	glVertexPointer(3,GL_FLOAT,0,vertexes);
-	glDrawArrays(GL_LINE_LOOP,0,36);
-	
+		// checkpoint view line
+
+	if (checkpoint) {
+		pv=vertexes;
+
+		*pv++=(float)pnt->x;
+		*pv++=(float)pnt->y;
+		*pv++=(float)pnt->z;
+
+		kx=0;
+		kz=dist;
+		rotate_2D_point_center(&kx,&kz,ang->y);
+		*pv++=(float)(pnt->x-kx);
+		*pv++=(float)pnt->y;
+		*pv++=(float)(pnt->z-kz);
+
+		glVertexPointer(3,GL_FLOAT,0,vertexes);
+		glDrawArrays(GL_LINES,0,2);
+	}
+
 	glLineWidth(1.0f);
 	glColor4f(1.0f,1.0f,1.0f,1.0f);
 }
@@ -1044,6 +1075,10 @@ void view_draw_spots_scenery(editor_view_type *view)
 		if (!view_model_draw(&spot->pnt,&spot->ang,spot->display_model,1.0f,NULL,0)) {
 			view_draw_sprite(&spot->pnt,&spot->ang,spot_bitmap.gl_id);
 		}
+
+		if (spot->type==spot_type_checkpoint) {
+			if (select_check(item_map_spot,n,-1)) view_draw_circle(&spot->pnt,&spot->ang,NULL,spot->checkpoint.radius,TRUE);
+		}
 	}		
     
 	for (n=0;n!=map.nscenery;n++) {
@@ -1066,7 +1101,7 @@ void view_draw_lights_sounds_particles(editor_view_type *view)
 	for (n=0;n!=map.nlight;n++) {
 		if (view_clip_point(view,&map.lights[n].pnt)) continue;
 		view_draw_sprite(&map.lights[n].pnt,NULL,light_bitmap.gl_id);
-		if (select_check(item_map_light,n,-1)) view_draw_circle(&map.lights[n].pnt,&map.lights[n].setting.col,map.lights[n].setting.intensity);
+		if (select_check(item_map_light,n,-1)) view_draw_circle(&map.lights[n].pnt,NULL,&map.lights[n].setting.col,map.lights[n].setting.intensity,FALSE);
 	}
 	
 	for (n=0;n!=map.nsound;n++) {
@@ -1077,7 +1112,7 @@ void view_draw_lights_sounds_particles(editor_view_type *view)
 	for (n=0;n!=map.nparticle;n++) {
 		if (view_clip_point(view,&map.particles[n].pnt)) continue;
 		view_draw_sprite(&map.particles[n].pnt,NULL,particle_bitmap.gl_id);
-		if ((select_check(item_map_particle,n,-1)) && (map.particles[n].light_setting.on)) view_draw_circle(&map.particles[n].pnt,&map.particles[n].light_setting.col,map.particles[n].light_setting.intensity);
+		if ((select_check(item_map_particle,n,-1)) && (map.particles[n].light_setting.on)) view_draw_circle(&map.particles[n].pnt,NULL,&map.particles[n].light_setting.col,map.particles[n].light_setting.intensity,FALSE);
 	}
 }
 
