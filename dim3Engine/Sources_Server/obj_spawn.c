@@ -132,6 +132,8 @@ bool object_spawn_position(obj_type *obj,int sub_event,char *err_str)
 	spot=&map.spots[idx];
 	object_set_position(obj,spot->pnt.x,spot->pnt.y,spot->pnt.z,spot->ang.y,0);
 
+	obj->last_spawn_spot_idx=idx;
+
 	return(TRUE);
 }
 

@@ -434,11 +434,12 @@ typedef struct		{
 
 #define item_intro_button_game_new				0
 #define item_intro_button_game_load				1
-#define item_intro_button_game_setup			2
-#define item_intro_button_multiplayer_host		3
-#define item_intro_button_multiplayer_join		4
-#define item_intro_button_credit				5
-#define item_intro_button_quit					6
+#define item_intro_button_game_load_checkpoint	2
+#define item_intro_button_game_setup			3
+#define item_intro_button_multiplayer_host		4
+#define item_intro_button_multiplayer_join		5
+#define item_intro_button_credit				6
+#define item_intro_button_quit					7
 
 #define item_intro_button_simple_save_start		10
 #define item_intro_button_simple_save_erase		20

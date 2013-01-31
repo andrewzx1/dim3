@@ -35,7 +35,8 @@ and can be sold or given away.
 
 #define intro_button_game_new_id				0
 #define intro_button_game_load_id				1
-#define intro_button_game_setup_id				2
+#define intro_button_game_load_checkpoint_id	2
+#define intro_button_game_setup_id				3
 
 #define intro_button_multiplayer_host_id		10
 #define intro_button_multiplayer_join_id		11
@@ -184,6 +185,7 @@ void intro_open(void)
 		
 	intro_open_add_button(&iface.intro.button_game_new,"button_game_new",intro_button_game_new_id);
 	intro_open_add_button(&iface.intro.button_game_load,"button_game_load",intro_button_game_load_id);
+	intro_open_add_button(&iface.intro.button_game_load_checkpoint,"button_game_load_checkpoint",intro_button_game_load_checkpoint_id);
 	intro_open_add_button(&iface.intro.button_game_setup,"button_game_setup",intro_button_game_setup_id);
 	intro_open_add_button(&iface.intro.button_multiplayer_host,"button_multiplayer_host",intro_button_multiplayer_host_id);
 	intro_open_add_button(&iface.intro.button_multiplayer_join,"button_multiplayer_join",intro_button_multiplayer_join_id);
@@ -382,6 +384,10 @@ void intro_click(void)
 			break;
 
 		case intro_button_game_load_id:
+			intro_click_load();
+			break;
+
+		case intro_button_game_load_checkpoint_id:
 			intro_click_load();
 			break;
 

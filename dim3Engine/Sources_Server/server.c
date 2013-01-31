@@ -94,7 +94,7 @@ bool server_initialize(char *err_str)
 	server.map_change.on=FALSE;
 	server.map_change.skip_media=FALSE;
 	server.map_change.player_restart=FALSE;
-	
+
 	return(TRUE);
 }
 

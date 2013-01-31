@@ -906,7 +906,8 @@ typedef struct		{
 												type,bind,next_spawn_sub_event,
 												team_idx,tint_color_idx,character_idx,
 												count,air_mode,damage_obj_idx,item_count,
-												last_move_animation_event,last_turn_animation_event;
+												last_move_animation_event,last_turn_animation_event,
+												last_spawn_spot_idx;
 						char					name[name_str_len];
 						bool					hidden,suspend,fly,slope_gravity,
 												side_step,crawl,floating,single_speed,no_slide,
