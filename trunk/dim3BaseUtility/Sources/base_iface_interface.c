@@ -907,6 +907,7 @@ void iface_read_settings_interface(iface_type *iface)
 		if (button_tag!=-1) {
 			iface_read_settings_intro_button(xml_findfirstchild("Game_New",button_tag),&iface->intro.button_game_new);
 			iface_read_settings_intro_button(xml_findfirstchild("Game_Load",button_tag),&iface->intro.button_game_load);
+			iface_read_settings_intro_button(xml_findfirstchild("Game_Load_Checkpoint",button_tag),&iface->intro.button_game_load_checkpoint);
 			iface_read_settings_intro_button(xml_findfirstchild("Game_Setup",button_tag),&iface->intro.button_game_setup);
 			iface_read_settings_intro_button(xml_findfirstchild("Multiplayer_Host",button_tag),&iface->intro.button_multiplayer_host);
 			iface_read_settings_intro_button(xml_findfirstchild("Multiplayer_Join",button_tag),&iface->intro.button_multiplayer_join);
@@ -1617,6 +1618,7 @@ bool iface_write_settings_interface(iface_type *iface,char *err_str)
 
 	iface_write_settings_interface_intro_button("Game_New",&iface->intro.button_game_new);
 	iface_write_settings_interface_intro_button("Game_Load",&iface->intro.button_game_load);
+	iface_write_settings_interface_intro_button("Game_Load_Checkpoint",&iface->intro.button_game_load_checkpoint);
 	iface_write_settings_interface_intro_button("Game_Setup",&iface->intro.button_game_setup);
 	iface_write_settings_interface_intro_button("Multiplayer_Host",&iface->intro.button_multiplayer_host);
 	iface_write_settings_interface_intro_button("Multiplayer_Join",&iface->intro.button_multiplayer_join);

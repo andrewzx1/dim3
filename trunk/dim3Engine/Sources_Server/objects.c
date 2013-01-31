@@ -546,6 +546,8 @@ int object_create(char *name,int type,int bind)
 	
 	obj->in_collide_event=FALSE;
 	obj->death_trigger=FALSE;
+
+	obj->last_spawn_spot_idx=-1;
 	
 	obj->lock.x=obj->lock.y=obj->lock.z=FALSE;
 	

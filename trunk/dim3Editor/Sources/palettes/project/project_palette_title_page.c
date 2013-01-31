@@ -37,11 +37,12 @@ and can be sold or given away.
 
 #define kIntroPropertyButtonGameNew						10
 #define kIntroPropertyButtonGameLoad					11
-#define kIntroPropertyButtonGameSetup					12
-#define kIntroPropertyButtonMultiplayerHost				13
-#define kIntroPropertyButtonMultiplayerJoin				14
-#define kIntroPropertyButtonCredit						15
-#define kIntroPropertyButtonQuit						16
+#define kIntroPropertyButtonGameLoadCheckpoint			12
+#define kIntroPropertyButtonGameSetup					13
+#define kIntroPropertyButtonMultiplayerHost				14
+#define kIntroPropertyButtonMultiplayerJoin				15
+#define kIntroPropertyButtonCredit						16
+#define kIntroPropertyButtonQuit						17
 
 #define kIntroPropertySimpleSaveProgressOn				30
 #define kIntroPropertySimpleSaveProgressMaxPoint		31
@@ -102,6 +103,7 @@ void project_palette_fill_title_page(void)
 	list_palette_add_header(&project_palette,0,"Regular Buttons");
 	list_palette_add_string_selectable(&project_palette,kIntroPropertyButtonGameNew,"Game New",NULL,-1,(state.proj.cur_intro_button_idx==item_intro_button_game_new),FALSE);
 	list_palette_add_string_selectable(&project_palette,kIntroPropertyButtonGameLoad,"Game Load",NULL,-1,(state.proj.cur_intro_button_idx==item_intro_button_game_load),FALSE);
+	list_palette_add_string_selectable(&project_palette,kIntroPropertyButtonGameLoadCheckpoint,"Game Load Checkpoint",NULL,-1,(state.proj.cur_intro_button_idx==item_intro_button_game_load_checkpoint),FALSE);
 	list_palette_add_string_selectable(&project_palette,kIntroPropertyButtonGameSetup,"Game Setup",NULL,-1,(state.proj.cur_intro_button_idx==item_intro_button_game_setup),FALSE);
 	list_palette_add_string_selectable(&project_palette,kIntroPropertyButtonMultiplayerHost,"Multiplayer Host",NULL,-1,(state.proj.cur_intro_button_idx==item_intro_button_multiplayer_host),FALSE);
 	list_palette_add_string_selectable(&project_palette,kIntroPropertyButtonMultiplayerJoin,"Multiplayer Join",NULL,-1,(state.proj.cur_intro_button_idx==item_intro_button_multiplayer_join),FALSE);

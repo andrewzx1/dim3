@@ -64,6 +64,10 @@ iface_intro_button_type* get_title_page_button_from_item_idx(int item_idx,char *
 			if (name!=NULL) strcpy(name,"Game Load");
 			return(&iface.intro.button_game_load);
 
+		case item_intro_button_game_load_checkpoint:
+			if (name!=NULL) strcpy(name,"Game Load Checkpoint");
+			return(&iface.intro.button_game_load_checkpoint);
+
 		case item_intro_button_game_setup:
 			if (name!=NULL) strcpy(name,"Game Setup");
 			return(&iface.intro.button_game_setup);

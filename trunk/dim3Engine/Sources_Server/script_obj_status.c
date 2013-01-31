@@ -48,6 +48,7 @@ JSValueRef js_obj_status_get_air(JSContextRef cx,JSObjectRef j_obj,JSStringRef n
 JSValueRef js_obj_status_get_liquid(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_obj_status_get_standOnObjectId(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_obj_status_get_standUnderObjectId(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_obj_status_get_lastSpawnSpotId(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_obj_status_freeze_input_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_status_freeze_respawn_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_status_tint_view_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
@@ -64,6 +65,7 @@ JSStaticValue 		obj_status_props[]={
 							{"liquid",				js_obj_status_get_liquid,				NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
 							{"standOnObjectId",		js_obj_status_get_standOnObjectId,		NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
 							{"standUnderObjectId",	js_obj_status_get_standUnderObjectId,	NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"lastSpawnSpotId",		js_obj_status_get_lastSpawnSpotId,		NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
 							{0,0,0,0}};
 							
 JSStaticFunction	obj_status_functions[]={
@@ -189,6 +191,14 @@ JSValueRef js_obj_status_get_standUnderObjectId(JSContextRef cx,JSObjectRef j_ob
 
 	obj=object_get_attach(j_obj);
 	return(script_int_to_value(cx,object_find_idx_by_stood_on_object_idx(obj->idx)));
+}
+
+JSValueRef js_obj_status_get_lastSpawnSpotId(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
+{
+	obj_type		*obj;
+
+	obj=object_get_attach(j_obj);
+	return(script_int_to_value(cx,obj->last_spawn_spot_idx));
 }
 
 /* =======================================================

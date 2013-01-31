@@ -381,11 +381,12 @@ void iface_default_settings(iface_type *iface)
 
 	iface_default_settings_button(&iface->intro.button_game_new,0,0,TRUE);
 	iface_default_settings_button(&iface->intro.button_game_load,0,32,TRUE);
-	iface_default_settings_button(&iface->intro.button_game_setup,0,64,TRUE);
-	iface_default_settings_button(&iface->intro.button_multiplayer_host,0,96,TRUE);
-	iface_default_settings_button(&iface->intro.button_multiplayer_join,0,128,TRUE);
-	iface_default_settings_button(&iface->intro.button_credit,0,192,TRUE);
-	iface_default_settings_button(&iface->intro.button_quit,0,224,TRUE);
+	iface_default_settings_button(&iface->intro.button_game_load_checkpoint,0,64,TRUE);
+	iface_default_settings_button(&iface->intro.button_game_setup,0,96,TRUE);
+	iface_default_settings_button(&iface->intro.button_multiplayer_host,0,128,TRUE);
+	iface_default_settings_button(&iface->intro.button_multiplayer_join,0,192,TRUE);
+	iface_default_settings_button(&iface->intro.button_credit,0,224,TRUE);
+	iface_default_settings_button(&iface->intro.button_quit,0,256,TRUE);
 	
 	iface->intro.simple_save_progress.on=FALSE;
 	iface->intro.simple_save_progress.max_point=100;

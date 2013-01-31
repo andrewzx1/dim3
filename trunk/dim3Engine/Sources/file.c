@@ -850,6 +850,8 @@ bool game_file_load(char *file_name,bool resume_load,char *err_str)
 		memmove(&player_obj->pnt,&spot->pnt,sizeof(d3pnt));
 		memmove(&player_obj->ang,&spot->ang,sizeof(d3ang));
 		object_stop(player_obj);
+
+		player_obj->last_spawn_spot_idx=head.checkpoint_spot_idx;
 	}
 
 		// script objects
