@@ -131,6 +131,7 @@ typedef struct		{
 						ray_vector_type				surface_normal;
 						ray_polygon_index_type		idxs[8];
 						ray_trig_block				trig_block;
+						ray_plane_type				plane;
 						ray_bound_type				bound;
 					} ray_poly_type;
 
@@ -417,6 +418,7 @@ extern void ray_scene_release_mutexes(ray_scene_type *scene);
 extern void ray_precalc_mesh_bounds(ray_mesh_type *mesh);
 extern void ray_precalc_polygon_bounds(ray_mesh_type *mesh,ray_poly_type *poly);
 extern void ray_precalc_polygon_normal(ray_mesh_type *mesh,ray_poly_type *poly);
+extern void ray_precalc_polygon_plane(ray_mesh_type *mesh,ray_poly_type *poly);
 extern void ray_precalc_triangle_bounds(ray_mesh_type *mesh,ray_trig_type *trig);
 extern void ray_precalc_light_bounds(ray_light_type *light);
 extern void ray_precalc_triangle_vectors(ray_mesh_type *mesh,ray_trig_type *trig);

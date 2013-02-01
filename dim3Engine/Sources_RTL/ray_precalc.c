@@ -10,6 +10,21 @@
 
 ray_global_type					ray_global;
 
+
+
+//
+// faster light culling, try plane/ray hits first
+// might be slow, though, but probably faster than all
+// the if's and such, then do regular culling
+//
+
+//
+// kb=Plane Normal (A,B,C) dot Vector Normal, if == 0 then parallel, skip out
+// kt=(Plane Normal dot Vector Start Point) + Plane D
+// if (kt/kb)<0 then before point, if >ray distance then after point, skip out
+//
+// then go right to trig collisions?  need a non UV version?
+
 /* =======================================================
 
       Precalculate Mesh Bounds
@@ -124,6 +139,21 @@ void ray_precalc_polygon_normal(ray_mesh_type *mesh,ray_poly_type *poly)
 	poly->surface_normal.z/=f;
 	
 	ray_vector_normalize(&poly->surface_normal);
+}
+
+void ray_precalc_polygon_plane(ray_mesh_type *mesh,ray_poly_type *poly)
+{
+	ray_point_type			*pnt;
+	
+		// plane equation is just the normal
+		// plus a distance calc
+		
+	poly->plane.a=poly->surface_normal.x;
+	poly->plane.b=poly->surface_normal.y;
+	poly->plane.c=poly->surface_normal.z;
+	
+	pnt=&mesh->vertex_block.vertexes[poly->idxs[0].vertex];
+	poly->plane.d=-((poly->plane.a*pnt->x)+(poly->plane.b*pnt->y)+(poly->plane.c*pnt->z));
 }
 
 /* =======================================================
