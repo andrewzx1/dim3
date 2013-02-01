@@ -126,7 +126,8 @@ typedef struct		{
 typedef struct		{
 						int							material_idx,nvertex,
 													mm_level;
-						unsigned char				thread_render_mask[ray_render_max_thread_count];
+						unsigned char				thread_render_mask[ray_render_max_thread_count],
+													light_render_mask[ray_max_scene_light];
 						ray_color_type				col;
 						ray_vector_type				surface_normal;
 						ray_polygon_index_type		idxs[8];
@@ -390,7 +391,7 @@ extern void ray_create_float_color_from_ulong(unsigned long ul,ray_color_type *r
 extern void ray_create_float_color_from_ulong_no_alpha(unsigned long ul,ray_color_type *rgb);
 extern unsigned long ray_create_ulong_black(void);
 
-extern inline void ray_vector_normalize(ray_vector_type *v);
+extern inline float ray_vector_normalize(ray_vector_type *v);
 extern inline void ray_vector_create_from_points(ray_vector_type *v,ray_point_type *p1,ray_point_type *p2);
 extern inline void ray_vector_scalar_multiply(ray_vector_type *sm,ray_vector_type *v,float f);
 extern inline void ray_vector_add(ray_vector_type *v,ray_vector_type *v1,ray_vector_type *v2);
@@ -401,6 +402,8 @@ extern inline void ray_vector_find_line_point_for_T(ray_point_type *p,ray_vector
 extern void ray_to_bound(ray_point_type *p,ray_vector_type *v,ray_bound_type *bnd);
 extern bool ray_bound_bound_collision(ray_bound_type *bnd_1,ray_bound_type *bnd_2);
 extern bool ray_bound_ray_collision(ray_point_type *p,ray_vector_type *v,ray_bound_type *bnd);
+
+extern bool ray_plane_ray_collision(ray_point_type *p,ray_vector_type *nv,float nv_dist,ray_plane_type *plane);
 
 extern float ray_distance_between_points(ray_point_type *p1,ray_point_type *p2);
 extern unsigned char* ray_bitmap_reduction(int factor,int wid,int high,unsigned char *data);

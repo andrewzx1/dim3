@@ -16,17 +16,19 @@ extern ray_global_type		ray_global;
       
 ======================================================= */
 
-void ray_vector_normalize(ray_vector_type *v)
+float ray_vector_normalize(ray_vector_type *v)
 {
-	float			f;
+	float			f,f_dist;
 	
-	f=sqrtf((v->x*v->x)+(v->y*v->y)+(v->z*v->z));
-	if (f==0.0f) return;
+	f_dist=sqrtf((v->x*v->x)+(v->y*v->y)+(v->z*v->z));
+	if (f_dist==0.0f) return(0.0f);
 	
-	f=1.0f/f;
+	f=1.0f/f_dist;
 	v->x*=f;
 	v->y*=f;
 	v->z*=f;
+
+	return(f_dist);		// return original distance of ray
 }
 
 void ray_vector_create_from_points(ray_vector_type *v,ray_point_type *p1,ray_point_type *p2)
@@ -346,6 +348,37 @@ bool ray_bound_ray_collision(ray_point_type *p,ray_vector_type *v,ray_bound_type
 	if ((p1.y>bnd->max.y) && (p2.y>bnd->max.y)) return(FALSE);
 
 	return(TRUE);
+}
+
+/* =======================================================
+
+      Ray and Plane Collisions
+      
+======================================================= */
+
+bool ray_plane_ray_collision(ray_point_type *p,ray_vector_type *nv,float nv_dist,ray_plane_type *plane)
+{
+	float			f,f2,t;
+
+		// nv is the normal vector for the ray,
+		// and nv_dist is the distance of the ray (ray end point = p+(nv*nv_dist) )
+
+		// the plane/ray collision is
+		// -((plane_normal dot ray_start_point)+plane_d)/(plane_normal dot vector_normal)
+
+		// calculate the denom first, if
+		// it's 0, then the lines are parallel, skip out
+
+	f=(plane->a*nv->x)+(plane->b*nv->y)+(plane->c*nv->z);
+	if (f==0.0f) return(FALSE);
+
+		// finish the equation and check
+		// where point is on line
+
+	f2=(plane->a*p->x)+(plane->b*p->y)+(plane->c*p->z);
+	t=-((f2+plane->d)/f);
+
+	return((t>=0.0f) && (t<nv_dist));
 }
 
 /* =======================================================

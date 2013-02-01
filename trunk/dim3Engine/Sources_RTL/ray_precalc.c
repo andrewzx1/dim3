@@ -10,21 +10,6 @@
 
 ray_global_type					ray_global;
 
-
-
-//
-// faster light culling, try plane/ray hits first
-// might be slow, though, but probably faster than all
-// the if's and such, then do regular culling
-//
-
-//
-// kb=Plane Normal (A,B,C) dot Vector Normal, if == 0 then parallel, skip out
-// kt=(Plane Normal dot Vector Start Point) + Plane D
-// if (kt/kb)<0 then before point, if >ray distance then after point, skip out
-//
-// then go right to trig collisions?  need a non UV version?
-
 /* =======================================================
 
       Precalculate Mesh Bounds
@@ -451,10 +436,11 @@ bool ray_precalc_normal_cull(ray_scene_type *scene,ray_draw_scene_thread_info *t
 
 void ray_precalc_render_scene_setup(ray_scene_type *scene)
 {
-	int				n,k,mesh_idx;
+	int				n,k,t,mesh_idx;
 	float			d;
 	double			dx,dy,dz;
 	ray_mesh_type	*mesh;
+	ray_poly_type	*poly;
 	ray_light_type	*light;
 
 		// create a list of meshes within
@@ -509,6 +495,7 @@ void ray_precalc_render_scene_setup(ray_scene_type *scene)
 		mesh_idx=scene->draw_mesh_index_block.indexes[n];
 		mesh=scene->mesh_list.meshes[mesh_idx];
 		
+
 		for (k=0;k!=scene->light_list.count;k++) {
 			light=scene->light_list.lights[k];
 			if (light->hidden) continue;
@@ -524,6 +511,16 @@ void ray_precalc_render_scene_setup(ray_scene_type *scene)
 						light->collide_meshes_list.indexes[light->collide_meshes_list.count]=mesh_idx;
 						light->collide_meshes_list.count++;
 					}
+
+						// determine the polys the light
+						// can hit
+
+					poly=mesh->poly_block.polys;
+
+					for (t=0;t!=mesh->poly_block.count;t++) {
+						poly->light_render_mask[k]=ray_bound_bound_collision(&poly->bound,&light->bound)?0x1:0x0;
+						poly++;
+					}
 				}
 
 					// add this light to the mesh
@@ -534,7 +531,6 @@ void ray_precalc_render_scene_setup(ray_scene_type *scene)
 					mesh->collide_lights_list.count++;
 				}
 			}
-			
 		}
 	}
 }
