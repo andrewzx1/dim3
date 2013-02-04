@@ -451,7 +451,7 @@ void model_draw_setup_interface_models(model_type *mdl,model_draw *draw,int x,in
 		// turn on ui lighting
 
 	draw->ui_lighting=TRUE;
-	draw->flip_x=FALSE;
+	draw->flip_x=TRUE;
 	
 	draw->light_cache.count=0;
 

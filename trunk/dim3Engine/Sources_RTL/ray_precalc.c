@@ -513,12 +513,19 @@ void ray_precalc_render_scene_setup(ray_scene_type *scene)
 					}
 
 						// determine the polys the light
-						// can hit
+						// can hit, and reset the likely block
+						// polygon
 
 					poly=mesh->poly_block.polys;
 
 					for (t=0;t!=mesh->poly_block.count;t++) {
-						poly->light_render_mask[k]=ray_bound_bound_collision(&poly->bound,&light->bound)?0x1:0x0;
+						if (ray_bound_bound_collision(&poly->bound,&light->bound)) {
+							poly->light_render_mask[k]=0x1;
+							poly->likely_block[mesh->collide_lights_list.count].mesh_poly_ptr.mesh_idx=-1;
+						}
+						else {
+							poly->light_render_mask[k]=0x0;
+						}
 						poly++;
 					}
 				}

@@ -81,6 +81,14 @@ typedef struct		{
 					} ray_eye_type;
 
 //
+// mesh and poly ptr
+//
+
+typedef struct		{
+						int							mesh_idx,poly_idx;
+					} ray_mesh_poly_ptr_type;
+
+//
 // scene meshes
 //
 // these are the meshes inside of each scene object.  They contain
@@ -124,6 +132,10 @@ typedef struct		{
 					} ray_trig_block;
 
 typedef struct		{
+						ray_mesh_poly_ptr_type		mesh_poly_ptr;
+					} ray_poly_likely_block_type;
+
+typedef struct		{
 						int							material_idx,nvertex,
 													mm_level;
 						unsigned char				thread_render_mask[ray_render_max_thread_count],
@@ -134,6 +146,7 @@ typedef struct		{
 						ray_trig_block				trig_block;
 						ray_plane_type				plane;
 						ray_bound_type				bound;
+						ray_poly_likely_block_type	likely_block[ray_max_light_per_mesh];
 					} ray_poly_type;
 
 typedef struct		{
@@ -171,30 +184,30 @@ typedef struct		{
 //
 
 typedef struct		{
-						float						cos_sweep;
-						bool						on;
-						ray_vector_type				vct;
+						float							cos_sweep;
+						bool							on;
+						ray_vector_type					vct;
 					} ray_light_direction_type;
 
 typedef struct		{
-						int							count,
-													indexes[ray_max_mesh_per_light];
-					} ray_collide_meshes_list;
+						int								count,
+														indexes[ray_max_mesh_per_light];
+					} ray_light_collide_meshes_list;
 
 typedef struct		{
-						int							id;
-						float						intensity,exponent;
-						bool						hidden;
-						ray_point_type				pnt;
-						ray_color_type				col;
-						ray_light_direction_type	direction;
-						ray_bound_type				bound;
-						ray_collide_meshes_list		collide_meshes_list;
+						int								id;
+						float							intensity,exponent;
+						bool							hidden;
+						ray_point_type					pnt;
+						ray_color_type					col;
+						ray_light_direction_type		direction;
+						ray_bound_type					bound;
+						ray_light_collide_meshes_list	collide_meshes_list;
 					} ray_light_type;
 
 typedef struct		{
-						int							count,next_id;
-						ray_light_type*				lights[ray_max_scene_light];
+						int								count,next_id;
+						ray_light_type*					lights[ray_max_scene_light];
 					} ray_light_list;
 
 //
