@@ -33,6 +33,7 @@ and can be sold or given away.
 #include "objects.h"
 
 extern app_type				app;
+extern map_type				map;
 extern server_type			server;
 extern view_type			view;
 extern iface_type			iface;
@@ -3040,6 +3041,7 @@ void element_draw_info_field(element_type *element)
 void element_draw_model(element_type *element)
 {
 	int					tick,model_idx;
+	bool				old_fog_on;
 	model_type			*mdl;
 	model_draw			*draw;
 
@@ -3053,6 +3055,11 @@ void element_draw_model(element_type *element)
 
 	mdl=server.model_list.models[model_idx];
 	if (mdl==NULL) return;
+	
+		// make sure fog is off
+		
+	old_fog_on=map.fog.on;
+	map.fog.on=FALSE;
 	
 		// setup 3D drawing
 
@@ -3081,6 +3088,10 @@ void element_draw_model(element_type *element)
 	glDisable(GL_DEPTH_TEST);
 
 	gl_2D_view_interface();
+	
+		// restore fog
+		
+	map.fog.on=old_fog_on;
 }
 
 /* =======================================================

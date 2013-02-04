@@ -2049,7 +2049,7 @@
 		20286C28FDCF999611CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0420;
+				LastUpgradeCheck = 0460;
 			};
 			buildConfigurationList = F5DB0BF3085671A9005A7CB7 /* Build configuration list for PBXProject "dim3Engine" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -2562,7 +2562,7 @@
 					"\"$(SRCROOT)/../Common/Libraries/MPG123\"",
 				);
 				LLVM_LTO = NO;
-				MACOSX_DEPLOYMENT_TARGET = 10.5;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				OBJROOT = build;
 				OTHER_LDFLAGS = "-lz";
 				PRODUCT_NAME = "dim3 Engine";

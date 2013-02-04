@@ -479,20 +479,59 @@ void ray_intersect_mesh_list_other_bounce(ray_scene_type *scene,ray_draw_scene_t
       
 ======================================================= */
 
-bool ray_block_light(ray_scene_type *scene,ray_point_type *pnt,ray_vector_type *vct,ray_vector_type *normal_vct,float vct_dist,ray_collision_type *collision,int light_idx)
+bool ray_block_light(ray_scene_type *scene,ray_point_type *pnt,ray_vector_type *vct,ray_vector_type *normal_vct,float vct_dist,ray_collision_type *collision,int light_idx,int light_collide_offset_idx)
 {
-	int					n,mesh_idx,poly_idx,trig_idx;
-	float				t,u,v;
-	ray_point_type		trig_pnt;
-	ray_mesh_type		*mesh;
-	ray_poly_type		*poly;
-	ray_trig_type		*trig;
-	ray_light_type		*light;
-	ray_collision_type	lit_collision;
+	int							n,mesh_idx,poly_idx,trig_idx;
+	float						t,u,v;
+	ray_point_type				trig_pnt;
+	ray_mesh_type				*mesh;
+	ray_poly_type				*poly;
+	ray_trig_type				*trig;
+	ray_light_type				*light;
+	ray_collision_type			lit_collision;
+	ray_poly_likely_block_type	*likely_block;
 	
 	light=scene->light_list.lights[light_idx];
 	
 	if (light->collide_meshes_list.count==0) return(FALSE);
+	
+			// polygons remember the last poly
+			// that blocked them reaching a certain light
+			// we can assume that in a lot of cases, the same
+			// polygon will be a blocker, so this is
+			// a good optimization
+			
+			// the light list isn't based on the scene
+			// light list, but the collide light list for
+			// the mesh that contains polygon being checked
+			
+			// only polygons that are setup to block light
+			// (non-alpha, etc) will be in this list, so
+			// other checks can be skipped
+
+	likely_block=&scene->mesh_list.meshes[collision->mesh_idx]->poly_block.polys[collision->poly_idx].likely_block[light_collide_offset_idx];
+
+	if (likely_block->mesh_poly_ptr.mesh_idx!=-1) {
+		mesh=scene->mesh_list.meshes[likely_block->mesh_poly_ptr.mesh_idx];
+		
+		if (ray_bound_ray_collision(pnt,vct,&mesh->bound)) {
+			poly=&mesh->poly_block.polys[likely_block->mesh_poly_ptr.poly_idx];
+
+			//if (poly->light_render_mask[light_idx]!=0x0) {
+				if (ray_bound_ray_collision(pnt,vct,&poly->bound)) {
+					if (ray_plane_ray_collision(pnt,normal_vct,vct_dist,&poly->plane)) {
+						
+							// check trigs
+							
+						for (trig_idx=0;trig_idx!=poly->trig_block.count;trig_idx++) {
+							if (!ray_intersect_triangle(scene,pnt,vct,mesh,&poly->trig_block.trigs[trig_idx],&t,&u,&v)) continue;
+							if (t<1.0f) return(TRUE);
+						}
+					}
+				}
+			//}
+		}
+	}
 	
 			// check the list of possible
 			// light to mesh collision
@@ -545,8 +584,13 @@ bool ray_block_light(ray_scene_type *scene,ray_point_type *pnt,ray_vector_type *
 				
 					// if no alpha, then it's
 					// automatically a blocking hit
+					// and also becomes a quick hit polygon
 				
-				if (ray_global.material_list.materials[poly->material_idx]->no_alpha) return(TRUE);
+				if (ray_global.material_list.materials[poly->material_idx]->no_alpha) {
+					likely_block->mesh_poly_ptr.mesh_idx=mesh_idx;
+					likely_block->mesh_poly_ptr.poly_idx=poly_idx;
+					return(TRUE);
+				}
 				
 					// setup the collision
 					// so we can check the alpha
@@ -687,7 +731,7 @@ void ray_trace_lights(ray_scene_type *scene,ray_point_type *eye_pnt,ray_point_ty
 			// check for mesh collides
 			// blocking light
 
-		if (ray_block_light(scene,trig_pnt,&light_vector,&light_vector_normal,light_ray_dist,collision,light_idx)) continue;
+		if (ray_block_light(scene,trig_pnt,&light_vector,&light_vector_normal,light_ray_dist,collision,light_idx,n)) continue;
 
 			// attenuate the light for distance
 
