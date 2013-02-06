@@ -3808,6 +3808,20 @@ bool element_has_table_check(int id)
 	return(hit);
 }
 
+void element_get_table_row(int id,int idx,char *row_str)
+{
+	element_type	*element;
+	
+	SDL_mutexP(element_thread_lock);
+
+	element=element_find(id);
+	if (element!=NULL) {
+		strcpy(row_str,(element->data+(idx*128)));
+	}
+	
+	SDL_mutexV(element_thread_lock);
+}
+
 /* =======================================================
 
       Models

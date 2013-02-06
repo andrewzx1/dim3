@@ -466,7 +466,8 @@ void ray_precalc_render_scene_setup(ray_scene_type *scene)
 	}
 	
 		// clear collide light list and setup
-		// poly mipmap level cahce
+		// poly mipmap level cahce and no current
+		// likely block polygons
 		
 	for (n=0;n!=scene->draw_mesh_index_block.count;n++) {
 
@@ -475,8 +476,12 @@ void ray_precalc_render_scene_setup(ray_scene_type *scene)
 		
 		mesh->collide_lights_list.count=0;
 
+		poly=mesh->poly_block.polys;
+		
 		for (k=0;k!=mesh->poly_block.count;k++) {
-			mesh->poly_block.polys[k].mm_level=-1;
+			poly->mm_level=-1;
+			poly->likely_block_poly_ptr.mesh_idx=-1;
+			poly++;
 		}
 	}
 	
@@ -494,7 +499,6 @@ void ray_precalc_render_scene_setup(ray_scene_type *scene)
 
 		mesh_idx=scene->draw_mesh_index_block.indexes[n];
 		mesh=scene->mesh_list.meshes[mesh_idx];
-		
 
 		for (k=0;k!=scene->light_list.count;k++) {
 			light=scene->light_list.lights[k];
@@ -519,13 +523,7 @@ void ray_precalc_render_scene_setup(ray_scene_type *scene)
 					poly=mesh->poly_block.polys;
 
 					for (t=0;t!=mesh->poly_block.count;t++) {
-						if (ray_bound_bound_collision(&poly->bound,&light->bound)) {
-							poly->light_render_mask[k]=0x1;
-							poly->likely_block[mesh->collide_lights_list.count].mesh_poly_ptr.mesh_idx=-1;
-						}
-						else {
-							poly->light_render_mask[k]=0x0;
-						}
+						poly->light_render_mask[k]=ray_bound_bound_collision(&poly->bound,&light->bound)?0x1:0x0;
 						poly++;
 					}
 				}

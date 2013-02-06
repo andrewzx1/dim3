@@ -489,7 +489,7 @@ bool ray_block_light(ray_scene_type *scene,ray_point_type *pnt,ray_vector_type *
 	ray_trig_type				*trig;
 	ray_light_type				*light;
 	ray_collision_type			lit_collision;
-	ray_poly_likely_block_type	*likely_block;
+	ray_mesh_poly_ptr_type		*likely_block;
 	
 	light=scene->light_list.lights[light_idx];
 	
@@ -509,30 +509,29 @@ bool ray_block_light(ray_scene_type *scene,ray_point_type *pnt,ray_vector_type *
 			// (non-alpha, etc) will be in this list, so
 			// other checks can be skipped
 
-	likely_block=&scene->mesh_list.meshes[collision->mesh_idx]->poly_block.polys[collision->poly_idx].likely_block[light_collide_offset_idx];
+	likely_block=&scene->mesh_list.meshes[collision->mesh_idx]->poly_block.polys[collision->poly_idx].likely_block_poly_ptr;
 
-	if (likely_block->mesh_poly_ptr.mesh_idx!=-1) {
-		mesh=scene->mesh_list.meshes[likely_block->mesh_poly_ptr.mesh_idx];
+	if (likely_block->mesh_idx!=-1) {
+
+		mesh=scene->mesh_list.meshes[likely_block->mesh_idx];
 		
 		if (ray_bound_ray_collision(pnt,vct,&mesh->bound)) {
-			poly=&mesh->poly_block.polys[likely_block->mesh_poly_ptr.poly_idx];
+			poly=&mesh->poly_block.polys[likely_block->poly_idx];
 
-			//if (poly->light_render_mask[light_idx]!=0x0) {
-				if (ray_bound_ray_collision(pnt,vct,&poly->bound)) {
-					if (ray_plane_ray_collision(pnt,normal_vct,vct_dist,&poly->plane)) {
+			if (ray_bound_ray_collision(pnt,vct,&poly->bound)) {
+				if (ray_plane_ray_collision(pnt,normal_vct,vct_dist,&poly->plane)) {
+					
+						// check trigs
 						
-							// check trigs
-							
-						for (trig_idx=0;trig_idx!=poly->trig_block.count;trig_idx++) {
-							if (!ray_intersect_triangle(scene,pnt,vct,mesh,&poly->trig_block.trigs[trig_idx],&t,&u,&v)) continue;
-							if (t<1.0f) return(TRUE);
-						}
+					for (trig_idx=0;trig_idx!=poly->trig_block.count;trig_idx++) {
+						if (!ray_intersect_triangle(scene,pnt,vct,mesh,&poly->trig_block.trigs[trig_idx],&t,&u,&v)) continue;
+						if (t<1.0f) return(TRUE);
 					}
 				}
-			//}
+			}
 		}
 	}
-	
+
 			// check the list of possible
 			// light to mesh collision
 
@@ -587,8 +586,8 @@ bool ray_block_light(ray_scene_type *scene,ray_point_type *pnt,ray_vector_type *
 					// and also becomes a quick hit polygon
 				
 				if (ray_global.material_list.materials[poly->material_idx]->no_alpha) {
-					likely_block->mesh_poly_ptr.mesh_idx=mesh_idx;
-					likely_block->mesh_poly_ptr.poly_idx=poly_idx;
+					likely_block->mesh_idx=mesh_idx;
+					likely_block->poly_idx=poly_idx;
 					return(TRUE);
 				}
 				

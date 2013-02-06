@@ -90,6 +90,11 @@ bool js_model_shadow_set_on(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,J
 {
 	model_draw			*draw;
 	model_draw_shadow	*shadow;
+	
+	if (!script_in_construct(j_obj)) {
+		*exception=script_create_exception(cx,"Can only set model shadow in the construct event");
+		return(TRUE);
+	}
 
 	draw=script_find_model_draw(j_obj);
 	shadow=&draw->shadow;
