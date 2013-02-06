@@ -395,7 +395,7 @@ bool ray_precalc_frustum_plane_bound_cull(ray_plane_type *planes,ray_bound_type 
       
 ======================================================= */
 
-bool ray_precalc_normal_cull(ray_scene_type *scene,ray_draw_scene_thread_info *thread_info,ray_mesh_type *mesh,ray_poly_type *poly)
+bool ray_precalc_eye_normal_cull(ray_scene_type *scene,ray_draw_scene_thread_info *thread_info,ray_mesh_type *mesh,ray_poly_type *poly)
 {
 	float					wid,high;
 	ray_point_type			pnt;
@@ -422,6 +422,26 @@ bool ray_precalc_normal_cull(ray_scene_type *scene,ray_draw_scene_thread_info *t
 		// the poly normal
 		
 	return(((poly->surface_normal.x*eye_vct.x)+(poly->surface_normal.y*eye_vct.y)+(poly->surface_normal.z*eye_vct.z))<=0.0f);
+}
+
+bool ray_precalc_light_normal_cull(ray_scene_type *scene,ray_light_type *light,ray_mesh_type *mesh,ray_poly_type *poly)
+{
+	ray_vector_type			light_vct;
+	
+		// skip meshes without normals
+		
+	if (mesh->normal_block.count==0) return(TRUE);
+	
+		// get the vector
+		
+	light_vct.x=poly->bound.mid.x-light->pnt.x;
+	light_vct.y=poly->bound.mid.y-light->pnt.y;
+	light_vct.z=poly->bound.mid.z-light->pnt.z;
+
+		// run the dot product against
+		// the poly normal
+		
+	return(((poly->surface_normal.x*light_vct.x)+(poly->surface_normal.y*light_vct.y)+(poly->surface_normal.z*light_vct.z))<=0.0f);
 }
 
 /* =======================================================
@@ -517,13 +537,23 @@ void ray_precalc_render_scene_setup(ray_scene_type *scene)
 					}
 
 						// determine the polys the light
-						// can hit, and reset the likely block
-						// polygon
+						// can hit by bounding and normal culling
 
 					poly=mesh->poly_block.polys;
 
 					for (t=0;t!=mesh->poly_block.count;t++) {
-						poly->light_render_mask[k]=ray_bound_bound_collision(&poly->bound,&light->bound)?0x1:0x0;
+						if (ray_bound_bound_collision(&poly->bound,&light->bound)) {
+							if (ray_precalc_light_normal_cull(scene,light,mesh,poly)) {
+								poly->light_render_mask[k]=0x1;
+							}
+							else {
+								poly->light_render_mask[k]=0x0;
+							}
+						}
+						else {
+							poly->light_render_mask[k]=0x0;
+						}
+
 						poly++;
 					}
 				}
@@ -604,7 +634,7 @@ void ray_precalc_render_scene_thread_setup(ray_scene_type *scene,ray_draw_scene_
 				poly->thread_render_mask[thread_info->idx]=0x0;
 			}
 			else {
-				if (!ray_precalc_normal_cull(scene,thread_info,mesh,poly)) {
+				if (!ray_precalc_eye_normal_cull(scene,thread_info,mesh,poly)) {
 					poly->thread_render_mask[thread_info->idx]=0x0;
 				}
 				else {
