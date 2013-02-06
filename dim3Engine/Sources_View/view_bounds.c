@@ -244,7 +244,7 @@ bool view_cull_model(model_draw *draw)
 	else {
 		obscure_dist=(map.fog.outer_radius>>1)*3;
 	}
-
+	
 	if (map.optimize.obscure_dist.model!=0) {
 		if (map.optimize.obscure_dist.model<obscure_dist) obscure_dist=map.optimize.obscure_dist.model;
 	}
@@ -258,7 +258,7 @@ bool view_cull_model(model_draw *draw)
 	return(view_cull_boundbox_in_frustum(&min,&max));
 }
 
-bool view_model_shadow(model_draw *draw)
+bool view_cull_model_shadow(model_draw *draw)
 {
 	int				obscure_dist,dist;
 	d3pnt			min,max;
@@ -275,9 +275,14 @@ bool view_model_shadow(model_draw *draw)
 	else {
 		obscure_dist=(map.fog.outer_radius>>1)*3;
 	}
-
+	
+		// shadows can cull both by the shadow and model distance
+		
 	if (map.optimize.obscure_dist.shadow!=0) {
 		if (map.optimize.obscure_dist.shadow<obscure_dist) obscure_dist=map.optimize.obscure_dist.shadow;
+	}
+	if (map.optimize.obscure_dist.model!=0) {
+		if (map.optimize.obscure_dist.model<obscure_dist) obscure_dist=map.optimize.obscure_dist.model;
 	}
 		
 	dist=view_cull_distance_to_view_center(draw->pnt.x,draw->pnt.y,draw->pnt.z);

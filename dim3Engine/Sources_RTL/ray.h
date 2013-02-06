@@ -30,6 +30,7 @@
 #define ray_max_light_per_mesh						8
 #define ray_max_mesh_per_light						128
 #define ray_max_tint_per_pixel						64
+#define ray_max_likely_block_polys					8
 
 //
 // threading
@@ -96,85 +97,81 @@ typedef struct		{
 //
 
 typedef struct		{
-						int							count;
-						ray_point_type				*vertexes;
+						int								count;
+						ray_point_type					*vertexes;
 					} ray_vertex_block;
 
 typedef struct		{
-						int							count;
-						ray_uv_type					*uvs;
+						int								count;
+						ray_uv_type						*uvs;
 					} ray_uv_block;
 
 typedef struct		{
-						int							count;
-						ray_vector_type				*normals;
+						int								count;
+						ray_vector_type					*normals;
 					} ray_normal_block;
 
 typedef struct		{
-						int							count;
-						ray_vector_type				*tangents;
+						int								count;
+						ray_vector_type					*tangents;
 					} ray_tangent_block;
 
 typedef struct		{
-						int							vertex,uv,
-													normal,tangent;
+						int								vertex,uv,
+														normal,tangent;
 					} ray_polygon_index_type;
 
 typedef struct		{
-						ray_polygon_index_type		idxs[3];
-						ray_vector_type				v1,v2;
-						ray_bound_type				bound;
+						ray_polygon_index_type			idxs[3];
+						ray_vector_type					v1,v2;
+						ray_bound_type					bound;
 					} ray_trig_type;
 
 typedef struct		{
-						int							count;
-						ray_trig_type				*trigs;
+						int								count;
+						ray_trig_type					*trigs;
 					} ray_trig_block;
 
 typedef struct		{
-						ray_mesh_poly_ptr_type		mesh_poly_ptr;
-					} ray_poly_likely_block_type;
-
-typedef struct		{
-						int							material_idx,nvertex,
-													mm_level;
-						unsigned char				thread_render_mask[ray_render_max_thread_count],
-													light_render_mask[ray_max_scene_light];
-						ray_color_type				col;
-						ray_vector_type				surface_normal;
-						ray_polygon_index_type		idxs[8];
-						ray_trig_block				trig_block;
-						ray_plane_type				plane;
-						ray_bound_type				bound;
-						ray_poly_likely_block_type	likely_block[ray_max_light_per_mesh];
+						int								material_idx,nvertex,
+														mm_level;
+						unsigned char					thread_render_mask[ray_render_max_thread_count],
+														light_render_mask[ray_max_scene_light];
+						ray_color_type					col;
+						ray_vector_type					surface_normal;
+						ray_polygon_index_type			idxs[8];
+						ray_trig_block					trig_block;
+						ray_plane_type					plane;
+						ray_bound_type					bound;
+						ray_mesh_poly_ptr_type			likely_block_poly_ptr;
 					} ray_poly_type;
 
 typedef struct		{
-						int							count;
-						ray_poly_type				*polys;
+						int								count;
+						ray_poly_type					*polys;
 					} ray_poly_block;
 
 typedef struct		{
-						int							count,
-													indexes[ray_max_light_per_mesh];
+						int								count,
+														indexes[ray_max_light_per_mesh];
 					} ray_collide_lights_list;
 
 typedef struct		{
-						int							id;
-						bool						hidden;
-						unsigned long				flags;
-						ray_vertex_block			vertex_block;
-						ray_uv_block				uv_block;
-						ray_normal_block			normal_block;
-						ray_tangent_block			tangent_block;
-						ray_poly_block				poly_block;
-						ray_bound_type				bound;
-						ray_collide_lights_list		collide_lights_list;
+						int								id;
+						bool							hidden;
+						unsigned long					flags;
+						ray_vertex_block				vertex_block;
+						ray_uv_block					uv_block;
+						ray_normal_block				normal_block;
+						ray_tangent_block				tangent_block;
+						ray_poly_block					poly_block;
+						ray_bound_type					bound;
+						ray_collide_lights_list			collide_lights_list;
 					} ray_mesh_type;
 
 typedef struct		{
-						int							count,next_id;
-						ray_mesh_type*				meshes[ray_max_scene_mesh];
+						int								count,next_id;
+						ray_mesh_type*					meshes[ray_max_scene_mesh];
 					} ray_mesh_list;
 
 //
@@ -217,26 +214,26 @@ typedef struct		{
 //
 
 typedef struct		{
-						ray_2d_point_type			offset_pnt,pnt_size;
-						ray_uv_type					uv,uv_size;
-						ray_color_type				col;
+						ray_2d_point_type				offset_pnt,pnt_size;
+						ray_uv_type						uv,uv_size;
+						ray_color_type					col;
 					} ray_overlay_quad_type;
 
 typedef struct		{
-						int							count;
-						ray_overlay_quad_type*		quads[ray_max_scene_overlay_quad];
+						int								count;
+						ray_overlay_quad_type*			quads[ray_max_scene_overlay_quad];
 					} ray_overlay_quad_list;
 
 typedef struct		{
-						int							id,material_idx,mm_level;
-						bool						hidden;
-						ray_2d_point_type			pnt,pnt_size;
-						ray_overlay_quad_list		quad_list;
+						int								id,material_idx,mm_level;
+						bool							hidden;
+						ray_2d_point_type				pnt,pnt_size;
+						ray_overlay_quad_list			quad_list;
 					} ray_overlay_type;
 
 typedef struct		{
-						int							count,next_id;
-						ray_overlay_type*			overlays[ray_max_scene_overlay];
+						int								count,next_id;
+						ray_overlay_type*				overlays[ray_max_scene_overlay];
 					} ray_overlay_list;
 
 //
@@ -354,13 +351,13 @@ typedef struct		{
 //
 
 typedef struct		{
-						int							thread_count;
+						int								thread_count;
 					} ray_settings_type;
 
 typedef struct		{
-						ray_settings_type			settings;
-						ray_scene_list				scene_list;
-						ray_material_list			material_list;
+						ray_settings_type				settings;
+						ray_scene_list					scene_list;
+						ray_material_list				material_list;
 					} ray_global_type;
 
 //
@@ -368,30 +365,30 @@ typedef struct		{
 //
 
 typedef struct		{
-						int							mesh_idx,poly_idx;
+						int								mesh_idx,poly_idx;
 					} ray_collision_skip_type;
 
 typedef struct		{
-						int							count;
-						ray_collision_skip_type		skips[ray_max_bounce];
+						int								count;
+						ray_collision_skip_type			skips[ray_max_bounce];
 					} ray_collision_skip_block;
 
 typedef struct		{
-						float						t;
-						ray_color_type				col;
+						float							t;
+						ray_color_type					col;
 					} ray_collision_tint_type;
 
 typedef struct		{
-						int							count;
-						ray_collision_tint_type		tints[ray_max_tint_per_pixel];
+						int								count;
+						ray_collision_tint_type			tints[ray_max_tint_per_pixel];
 					} ray_collision_tint_block;
 
 typedef struct		{
-						int							mesh_idx,poly_idx,trig_idx;
-						float						max_t,t,u,v;
-						bool						in_bounce,only_pass_through;
-						ray_collision_skip_block	skip_block;
-						ray_collision_tint_block	tint_block;
+						int								mesh_idx,poly_idx,trig_idx;
+						float							max_t,t,u,v;
+						bool							in_bounce,only_pass_through;
+						ray_collision_skip_block		skip_block;
+						ray_collision_tint_block		tint_block;
 					} ray_collision_type;
 
 //

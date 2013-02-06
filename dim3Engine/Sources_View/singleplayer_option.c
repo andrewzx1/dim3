@@ -117,14 +117,15 @@ void singleplayer_option_map_list_release(void)
 void singleplayer_option_map_list_get_name(int idx,char *name)
 {
 	char			*c;
-	char			str[128];
+	char			row_str[128],str[128];
 
 	name[0]=0x0;
 
 		// get the name from between the ;; markers
-
-	c=singleplayer_option_table_map_list+(idx*128);
 		
+	element_get_table_row(singleplayer_option_map_table_id,idx,row_str);
+	c=row_str;
+	
 	c=strchr(c,';');
 	if (c!=NULL) {
 		strncpy(str,(c+1),128);
