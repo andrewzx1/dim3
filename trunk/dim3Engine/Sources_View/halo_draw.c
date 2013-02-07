@@ -75,137 +75,109 @@ void halo_draw_add(d3pnt *pnt,int obj_idx,int halo_idx)
       
 ======================================================= */
 
-void halo_draw_setup(void)
+bool halo_draw_setup_cull(iface_halo_type *halo,int obj_idx,d3pnt *pnt,int *p_pixel_sz,float *p_alpha)
 {
-	int						n,pixel_sz,dist,d;
+	int						pixel_sz,dist,d;
 	float					alpha;
 	bool					hit;
-	d3pnt					spt,ept;
-	halo_draw_type			*halo_draw;
-	iface_halo_type			*halo;
+	d3pnt					ept;
 	ray_trace_contact_type	contact;
+	
+		// is ray greater than max distance?
+
+	dist=distance_get(pnt->x,pnt->y,pnt->z,view.render->camera.pnt.x,view.render->camera.pnt.y,view.render->camera.pnt.z);
+	if (dist>halo->max_dist) return(FALSE);
+
+		// ray trace for visibily
+
+	contact.proj.on=FALSE;
+	contact.origin=poly_ray_trace_origin_halo;
+	contact.obj.on=!halo->no_clip_object;
+
+	if ((halo->no_clip_self) && (obj_idx!=-1)) {
+		contact.obj.ignore_idx=obj_idx;
+	}
+	else {
+		contact.obj.ignore_idx=-1;
+	}
+
+	ept.x=view.render->camera.pnt.x;
+	ept.y=view.render->camera.pnt.y;
+	ept.z=view.render->camera.pnt.z;
+
+	hit=ray_trace_map_by_point(pnt,&ept,&contact);
+
+		// check hit and ignore hitting the projecting
+		// player
+
+	if (hit) {
+		if ((contact.poly.mesh_idx!=-1) || (map.camera.mode!=cv_fpp)) return(FALSE);
+		if (contact.obj.idx!=server.player_obj_idx) return(FALSE);
+	}
+
+		// get size
+
+	if (dist>=halo->max_dist) {
+		pixel_sz=halo->max_size;
+		alpha=halo->max_alpha;
+	}
+	else {
+		if (dist<=halo->min_dist) {
+			pixel_sz=halo->min_size;
+			alpha=halo->min_alpha;
+		}
+		else {
+			dist-=halo->min_dist;
+			
+			d=halo->max_dist-halo->min_dist;
+			pixel_sz=halo->max_size-halo->min_size;
+			alpha=halo->max_alpha-halo->min_alpha;
+			
+			pixel_sz=((pixel_sz*dist)/d)+halo->min_size;
+			alpha=((alpha*(float)dist)/(float)d)+halo->min_alpha;
+		}
+	}
+
+	*p_pixel_sz=pixel_sz;
+	*p_alpha=alpha;
+
+	return(TRUE);
+}
+
+void halo_draw_setup(void)
+{
+	int						n;
+	halo_draw_type			*halo_draw;
 	
 	view.render->halo_draw.in_view_count=0;
 	
 		// clear all halo spots
 	
-	halo_draw=view.render->halo_draw.halos;
-	
 	for (n=0;n!=view.render->halo_draw.count;n++) {
-		halo_draw->in_view=TRUE;
-		halo_draw++;
-	}
 
-		// remove halos behind z or off-screen
-		// ignore console as it won't matter for projection
-		
-	for (n=0;n!=view.render->halo_draw.count;n++) {
 		halo_draw=&view.render->halo_draw.halos[n];
-		
+		halo_draw->in_view=FALSE;
+
 			// is it behind the z?
 
-		if (!gl_project_in_view_z(&halo_draw->pnt)) {
-			halo_draw->in_view=FALSE;
-			continue;
-		}
+		if (!gl_project_in_view_z(&halo_draw->pnt)) continue;
 				
-			// project halos
+			// cull halo
+
+		if (!halo_draw_setup_cull(&iface.halo_list.halos[halo_draw->idx],halo_draw->obj_idx,&halo_draw->pnt,&halo_draw->pixel_sz,&halo_draw->alpha)) continue;
+
+			// project the halo
+			// and check if on screen
 
 		halo_draw->proj_pnt.x=halo_draw->pnt.x;
 		halo_draw->proj_pnt.y=halo_draw->pnt.y;
 		halo_draw->proj_pnt.z=halo_draw->pnt.z;
 			
 		gl_project_point(&halo_draw->proj_pnt);
-	}
-
-		// ray trace halos to camera's eye level
-		// to check for visibility
-
-	ept.x=view.render->camera.pnt.x;
-	ept.y=view.render->camera.pnt.y;
-	ept.z=view.render->camera.pnt.z;
-
-	contact.proj.on=FALSE;
-
-	contact.origin=poly_ray_trace_origin_halo;
-
-	for (n=0;n!=view.render->halo_draw.count;n++) {
-		halo_draw=&view.render->halo_draw.halos[n];
-		if (!halo_draw->in_view) continue;
-
-		spt.x=halo_draw->pnt.x;
-		spt.y=halo_draw->pnt.y;
-		spt.z=halo_draw->pnt.z;
-
-		halo=&iface.halo_list.halos[halo_draw->idx];
-
-			// is ray greater than max distance?
-
-		dist=distance_get(spt.x,spt.y,spt.z,ept.x,ept.y,ept.z);
-		if (dist>halo->max_dist) {
-			halo_draw->in_view=FALSE;
-			continue;
-		}
-
-			// ray trace for visibily
-
-		contact.obj.on=!halo->no_clip_object;
-
-		if ((halo->no_clip_self) && (halo_draw->obj_idx!=-1)) {
-			contact.obj.ignore_idx=halo_draw->obj_idx;
-		}
-		else {
-			contact.obj.ignore_idx=-1;
-		}
-
-		hit=ray_trace_map_by_point(&spt,&ept,&contact);
-
-			// check hit and ignore hitting the projecting
-			// player
-
-		if (hit) {
-			if ((contact.poly.mesh_idx!=-1) || (map.camera.mode!=cv_fpp)) {
-				halo_draw->in_view=FALSE;
-				continue;
-			}
-			if (contact.obj.idx!=server.player_obj_idx) {
-				halo_draw->in_view=FALSE;
-				continue;
-			}
-		}
-
-			// get size
-
-		if (dist>=halo->max_dist) {
-			halo_draw->pixel_sz=halo->max_size;
-			halo_draw->alpha=halo->max_alpha;
-		}
-		else {
-			if (dist<=halo->min_dist) {
-				halo_draw->pixel_sz=halo->min_size;
-				halo_draw->alpha=halo->min_alpha;
-			}
-			else {
-				dist-=halo->min_dist;
-				
-				d=halo->max_dist-halo->min_dist;
-				pixel_sz=halo->max_size-halo->min_size;
-				alpha=halo->max_alpha-halo->min_alpha;
-				
-				halo_draw->pixel_sz=((pixel_sz*dist)/d)+halo->min_size;
-				halo_draw->alpha=((alpha*(float)dist)/(float)d)+halo->min_alpha;
-			}
-		}
 		
-			// obscure halos outside of view port
-			
-		if (((halo_draw->proj_pnt.x+halo_draw->pixel_sz)<0) || ((halo_draw->proj_pnt.y+halo_draw->pixel_sz)<0) || ((halo_draw->proj_pnt.x-halo_draw->pixel_sz)>=view.screen.x_sz) || ((halo_draw->proj_pnt.y-halo_draw->pixel_sz)>=view.screen.y_sz)) {
-			halo_draw->in_view=FALSE;
-			continue;
-		}
-		
-			// add to view count
+		if (((halo_draw->proj_pnt.x+halo_draw->pixel_sz)<0) || ((halo_draw->proj_pnt.y+halo_draw->pixel_sz)<0) || ((halo_draw->proj_pnt.x-halo_draw->pixel_sz)>=view.screen.x_sz) || ((halo_draw->proj_pnt.y-halo_draw->pixel_sz)>=view.screen.y_sz)) continue;
 
+		halo_draw->in_view=TRUE;
 		view.render->halo_draw.in_view_count++;
 	}
 }

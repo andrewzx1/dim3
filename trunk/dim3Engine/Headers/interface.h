@@ -163,6 +163,7 @@ extern void camera_static_run(void);
 
 extern void halo_draw_clear(void);
 extern void halo_draw_add(d3pnt *pnt,int obj_idx,int halo_idx);
+extern bool halo_draw_setup_cull(iface_halo_type *halo,int obj_idx,d3pnt *pnt,int *p_pixel_sz,float *p_alpha);
 extern void halo_draw_setup(void);
 extern void halo_draw_render(void);
 

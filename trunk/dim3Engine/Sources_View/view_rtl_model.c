@@ -55,14 +55,14 @@ extern int gl_light_get_intensity(int tick,int light_type,int intensity);
 
 void view_dim3rtl_model_setup_single_model(model_draw *draw,bool hidden,bool no_ray_trace_block,bool no_bounce_trace_block,bool no_light_trace_block)
 {
-	int					n,k,i,mesh_id,uv_count;
+	int					n,k,i,mesh_id,overlay_id,uv_count;
 	unsigned long		flags,mesh_flags;
 	float				*uv;
 	short				*vk,*ray_polys;
+	rtl2DPoint			p_pnt;
 	model_type			*mdl;
 	model_mesh_type		*mesh;
 	model_poly_type		*poly;
-	model_draw_light	*lit;
 	
 		// clear dim3rtl ids
 
@@ -72,6 +72,10 @@ void view_dim3rtl_model_setup_single_model(model_draw *draw,bool hidden,bool no_
 	
 	for (n=0;n!=max_model_light;n++) {
 		draw->lights[n].rtl_light_id=-1;
+	}
+
+	for (n=0;n!=max_model_halo;n++) {
+		draw->halos[n].rtl_overlay_id=-1;
 	}
 
 		// get the model
@@ -161,25 +165,45 @@ void view_dim3rtl_model_setup_single_model(model_draw *draw,bool hidden,bool no_
 			
 		draw->meshes[i].rtl_mesh_id=mesh_id;
 	}
+
+		// lights are dynmaic, so no setup
 	
-		// start with no lights
-		// in the model (they are dynamic)
-		
-	for (n=0;n!=max_model_light;n++) {
-		lit=&draw->lights[n];
-		lit->rtl_light_id=-1;
+		// setup any halo overlays
+
+	for (n=0;n!=max_model_halo;n++) {
+		if ((!draw->halos[n].on) || (draw->halos[n].idx==-1)) continue;
+
+		overlay_id=rtlSceneOverlayAdd(view_rtl_scene_id,iface.halo_list.halos[draw->halos[n].idx].rtl_material_id,0);
+		if (overlay_id<0) return;
+
+		p_pnt.x=0;
+		p_pnt.y=0;
+
+		rtlSceneOverlaySetPosition(view_rtl_scene_id,overlay_id,&p_pnt);
+		rtlSceneOverlaySetSize(view_rtl_scene_id,overlay_id,&p_pnt);
+		rtlSceneOverlaySetQuadCount(view_rtl_scene_id,overlay_id,1);
+		rtlSceneOverlaySetQuadPosition(view_rtl_scene_id,overlay_id,0,&p_pnt);
+		rtlSceneOverlaySetQuadSize(view_rtl_scene_id,overlay_id,0,&p_pnt);
+
+		rtlSceneOverlaySetHidden(view_rtl_scene_id,overlay_id,TRUE);
+
+		draw->halos[n].rtl_overlay_id=overlay_id;
 	}
 }
 
 void view_dim3rtl_model_update_single_model(model_draw *draw,bool hidden)
 {
-	int					n,mesh_id,tick,intensity;
+	int					n,mesh_id,tick,intensity,
+						pixel_sz,pixel_off;
+	float				alpha;
 	d3pnt				pnt;
 	model_type			*mdl;
 	model_mesh_type		*mesh;
 	model_draw_light	*lit;
-	rtlPoint			lit_pnt;
-	rtlColor			lit_col;
+	model_draw_halo		*halo;
+	rtlPoint			lit_pnt,halo_pnt;
+	rtl2DPoint			p_pnt,s_pnt;
+	rtlColor			lit_col,halo_col;
 
 		// get model
 
@@ -255,6 +279,62 @@ void view_dim3rtl_model_update_single_model(model_draw *draw,bool hidden)
 		intensity=gl_light_get_intensity(tick,lit->type,lit->intensity);
 		rtlSceneLightSetIntensity(view_rtl_scene_id,lit->rtl_light_id,(float)intensity,lit->exponent);
 	}
+
+		// update the halos
+
+	for (n=0;n!=max_model_halo;n++) {
+		if ((!draw->halos[n].on) || (draw->halos[n].rtl_overlay_id==-1)) continue;
+	
+		halo=&draw->halos[n];
+
+			// get position and cull
+
+		pnt.x=draw->pnt.x;
+		pnt.y=draw->pnt.y;
+		pnt.z=draw->pnt.z;
+
+		model_get_halo_position(mdl,&draw->setup,n,&pnt);
+
+		if (!halo_draw_setup_cull(&iface.halo_list.halos[halo->idx],draw->connect.obj_idx,&pnt,&pixel_sz,&alpha)) {
+			rtlSceneOverlaySetHidden(view_rtl_scene_id,halo->rtl_overlay_id,TRUE);
+			continue;
+		}
+
+			// project and check if
+			// on screen
+
+		halo_pnt.x=(float)pnt.x;
+		halo_pnt.y=(float)pnt.y;
+		halo_pnt.z=(float)pnt.z;
+
+		if (rtlSceneEyeTranslatePoint(view_rtl_scene_id,&halo_pnt,&p_pnt)==RL_ERROR_POINT_BEHIND_EYE) {
+			rtlSceneOverlaySetHidden(view_rtl_scene_id,halo->rtl_overlay_id,TRUE);
+			continue;
+		}
+
+		if (((p_pnt.x+pixel_sz)<0) || ((p_pnt.y+pixel_sz)<0) || ((p_pnt.x-pixel_sz)>=view.screen.x_sz) || ((p_pnt.y-pixel_sz)>=view.screen.y_sz)) {
+			rtlSceneOverlaySetHidden(view_rtl_scene_id,halo->rtl_overlay_id,TRUE);
+			continue;
+		}
+
+			// setup the overlay
+
+		rtlSceneOverlaySetHidden(view_rtl_scene_id,halo->rtl_overlay_id,FALSE);
+
+		pixel_off=pixel_sz>>1;
+		p_pnt.x-=pixel_off;
+		p_pnt.y-=pixel_off;
+		s_pnt.x=s_pnt.y=pixel_sz;
+
+		halo_col.r=halo_col.g=halo_col.b=1.0f;
+		halo_col.a=alpha;
+
+		rtlSceneOverlaySetPosition(view_rtl_scene_id,halo->rtl_overlay_id,&p_pnt);
+		rtlSceneOverlaySetSize(view_rtl_scene_id,halo->rtl_overlay_id,&s_pnt);
+
+		rtlSceneOverlaySetQuadSize(view_rtl_scene_id,halo->rtl_overlay_id,0,&s_pnt);
+		rtlSceneOverlaySetQuadColor(view_rtl_scene_id,halo->rtl_overlay_id,0,&halo_col);
+	}
 }
 
 void view_dim3rtl_model_close_single_model(model_draw *draw)
@@ -277,6 +357,12 @@ void view_dim3rtl_model_close_single_model(model_draw *draw)
 		
 	for (n=0;n!=max_model_light;n++) {
 		if (draw->lights[n].rtl_light_id!=-1) rtlSceneLightDelete(view_rtl_scene_id,draw->lights[n].rtl_light_id);
+	}
+
+		// delete the halos
+		
+	for (n=0;n!=max_model_halo;n++) {
+		if (draw->halos[n].rtl_overlay_id!=-1) rtlSceneOverlayDelete(view_rtl_scene_id,draw->halos[n].rtl_overlay_id);
 	}
 }
 
