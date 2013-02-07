@@ -217,7 +217,7 @@ bool weapon_add(obj_type *obj,char *name,char *err_str)
 	
 	weap->crosshair.on=FALSE;
 	weap->crosshair.type=ct_center;
-	weap->crosshair.min_size=16;
+	weap->crosshair.min_size=32;
 	weap->crosshair.max_size=64;
 	weap->crosshair.distance=35000;
 	weap->crosshair.col.r=weap->crosshair.col.g=1;

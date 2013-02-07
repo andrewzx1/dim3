@@ -108,10 +108,7 @@ JSValueRef js_model_halo_get_name(JSContextRef cx,JSObjectRef j_obj,JSStringRef 
 	draw=script_find_model_draw(j_obj);
 	halo=&draw->halos[draw->script_halo_idx];
 	
-	if (halo->idx==-1) {
-		return(script_null_to_value(cx));
-	}
-
+	if (halo->idx==-1) return(script_null_to_value(cx));
 	return(script_string_to_value(cx,iface.halo_list.halos[halo->idx].name));
 }
 
@@ -150,7 +147,8 @@ bool js_model_halo_set_on(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSV
 
 bool js_model_halo_set_name(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	char				halo_name[name_str_len];
+	int					idx;
+	char				halo_name[name_str_len],err_str[256];
 	model_draw			*draw;
 	model_draw_halo		*halo;
 
@@ -158,7 +156,15 @@ bool js_model_halo_set_name(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,J
 	halo=&draw->halos[draw->script_halo_idx];
 
 	script_value_to_string(cx,vp,halo_name,name_str_len);
-	halo->idx=iface_halo_find(&iface,halo_name);
+	idx=iface_halo_find(&iface,halo_name);
+	
+	if (idx==-1) {
+		sprintf(err_str,"No halo exists with this name: %s",halo_name);
+		*exception=script_create_exception(cx,err_str);
+		return(FALSE);
+	}
+	
+	halo->idx=idx;
 
 	return(TRUE);
 }
