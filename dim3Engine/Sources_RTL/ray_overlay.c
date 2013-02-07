@@ -54,8 +54,9 @@ bool ray_get_overlay_rgb(ray_scene_type *scene,int x,int y,ray_color_type *col)
 		// search overlay lists backwards
 		// so front to back ordering is
 		// used for rendering
+		// supergumba -- work on this
 
-	for (n=(scene->overlay_list.count-1);n>=0;n--) {
+	for (n=0;n!=scene->overlay_list.count;n++) {
 		overlay=scene->overlay_list.overlays[n];
 		if (overlay->hidden) continue;
 
@@ -141,15 +142,16 @@ bool ray_get_overlay_rgb(ray_scene_type *scene,int x,int y,ray_color_type *col)
 				// previous alpha
 
 			else {
-				f=1.0f-col->a;
-				col->r=(col->r*col->a)+(o_col.r*f);
-				col->g=(col->g*col->a)+(o_col.g*f);
-				col->b=(col->b*col->a)+(o_col.b*f);
+				f=1.0f-o_col.a;
+				col->r=(col->r*f)+(o_col.r*col->a);
+				col->g=(col->g*f)+(o_col.g*col->a);
+				col->b=(col->b*f)+(o_col.b*col->a);
 			}
 
 				// always adopt new alpha
+				// unless we are already at 1
 
-			col->a=o_col.a;
+			if (col->a!=1.0f) col->a=o_col.a;
 
 			hit=TRUE;
 		}

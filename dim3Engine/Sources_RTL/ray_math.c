@@ -215,6 +215,39 @@ void rtlMatrixScale(ray_matrix_type *mat,ray_vector_type *v)
 
 /* =======================================================
 
+      Transpose Matrixes
+      
+======================================================= */
+
+void rlMatrixTranpose(ray_matrix_type *mat)
+{
+	ray_matrix_type			trans_mat;
+
+	memmove(&trans_mat,mat,sizeof(ray_matrix_type));
+	
+	mat->data[0][0]=trans_mat.data[0][0];
+	mat->data[0][1]=trans_mat.data[1][0];
+	mat->data[0][2]=trans_mat.data[2][0];
+	mat->data[0][3]=trans_mat.data[3][0];
+	
+	mat->data[1][0]=trans_mat.data[0][1];
+	mat->data[1][1]=trans_mat.data[1][1];
+	mat->data[1][2]=trans_mat.data[2][1];
+	mat->data[1][3]=trans_mat.data[3][1];
+
+	mat->data[2][0]=trans_mat.data[0][2];
+	mat->data[2][1]=trans_mat.data[1][2];
+	mat->data[2][2]=trans_mat.data[2][2];
+	mat->data[2][3]=trans_mat.data[3][2];
+
+	mat->data[3][0]=trans_mat.data[0][3];
+	mat->data[3][1]=trans_mat.data[1][3];
+	mat->data[3][2]=trans_mat.data[2][3];
+	mat->data[3][3]=trans_mat.data[3][3];
+}
+
+/* =======================================================
+
       Bound Collisions
       
 ======================================================= */

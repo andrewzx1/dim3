@@ -77,6 +77,7 @@
 #define RL_ERROR_MATERIAL_ATTACHED_TO_MESH					-12
 #define RL_ERROR_MATERIAL_ATTACHED_TO_OVERLAY				-13
 #define RL_ERROR_THREADING_ERROR							-14
+#define RL_ERROR_POINT_BEHIND_EYE							-15
 
 //
 // functions
@@ -112,6 +113,7 @@ extern int rtlSceneRenderFinish(int sceneId);
 	// scene eye position
 	
 extern int rtlSceneEyePositionSet(int sceneId,rtlPoint *pnt,rtlMatrix *rot_matrix,float eye_min_dist,float eye_max_dist);
+extern int rtlSceneEyeTranslatePoint(int sceneId,ray_point_type *pnt3d,ray_2d_point_type *pnt2d);
 
 	// scene lights
 
@@ -181,4 +183,5 @@ extern void rtlMatrixRotateX(rtlMatrix *mat,float ang);
 extern void rtlMatrixRotateY(rtlMatrix *mat,float ang);
 extern void rtlMatrixRotateZ(rtlMatrix *mat,float ang);
 extern void rtlMatrixScale(rtlMatrix *mat,rtlVector *v);
+extern void rlMatrixTranpose(rtlMatrix *mat);
 
