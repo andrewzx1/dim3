@@ -360,6 +360,25 @@
 		26107D0B154DFFF300791918 /* Default-Landscape@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 26107D0A154DFFF300791918 /* Default-Landscape@2x~ipad.png */; };
 		262D75DD158FE8C70086B8BB /* script_obj_label.c in Sources */ = {isa = PBXBuildFile; fileRef = 262D75DC158FE8C70086B8BB /* script_obj_label.c */; };
 		262DD2B6151E328C0078FEA4 /* base_iface_score.c in Sources */ = {isa = PBXBuildFile; fileRef = 262DD2B5151E328C0078FEA4 /* base_iface_score.c */; };
+		262DFFA716C3702500CA9F97 /* view_rtl_effect.c in Sources */ = {isa = PBXBuildFile; fileRef = 262DFFA016C3702500CA9F97 /* view_rtl_effect.c */; };
+		262DFFA816C3702500CA9F97 /* view_rtl_liquid.c in Sources */ = {isa = PBXBuildFile; fileRef = 262DFFA116C3702500CA9F97 /* view_rtl_liquid.c */; };
+		262DFFA916C3702500CA9F97 /* view_rtl_map.c in Sources */ = {isa = PBXBuildFile; fileRef = 262DFFA216C3702500CA9F97 /* view_rtl_map.c */; };
+		262DFFAA16C3702500CA9F97 /* view_rtl_material.c in Sources */ = {isa = PBXBuildFile; fileRef = 262DFFA316C3702500CA9F97 /* view_rtl_material.c */; };
+		262DFFAB16C3702500CA9F97 /* view_rtl_model.c in Sources */ = {isa = PBXBuildFile; fileRef = 262DFFA416C3702500CA9F97 /* view_rtl_model.c */; };
+		262DFFAC16C3702500CA9F97 /* view_rtl_overlay.c in Sources */ = {isa = PBXBuildFile; fileRef = 262DFFA516C3702500CA9F97 /* view_rtl_overlay.c */; };
+		262DFFAD16C3702500CA9F97 /* view_rtl_patch.c in Sources */ = {isa = PBXBuildFile; fileRef = 262DFFA616C3702500CA9F97 /* view_rtl_patch.c */; };
+		262DFFBE16C3705200CA9F97 /* ray_color.c in Sources */ = {isa = PBXBuildFile; fileRef = 262DFFAE16C3705000CA9F97 /* ray_color.c */; };
+		262DFFBF16C3705200CA9F97 /* ray_eye.c in Sources */ = {isa = PBXBuildFile; fileRef = 262DFFAF16C3705000CA9F97 /* ray_eye.c */; };
+		262DFFC016C3705200CA9F97 /* ray_light.c in Sources */ = {isa = PBXBuildFile; fileRef = 262DFFB116C3705100CA9F97 /* ray_light.c */; };
+		262DFFC116C3705200CA9F97 /* ray_main.c in Sources */ = {isa = PBXBuildFile; fileRef = 262DFFB216C3705100CA9F97 /* ray_main.c */; };
+		262DFFC216C3705200CA9F97 /* ray_material.c in Sources */ = {isa = PBXBuildFile; fileRef = 262DFFB316C3705100CA9F97 /* ray_material.c */; };
+		262DFFC316C3705200CA9F97 /* ray_math.c in Sources */ = {isa = PBXBuildFile; fileRef = 262DFFB416C3705100CA9F97 /* ray_math.c */; };
+		262DFFC416C3705200CA9F97 /* ray_mesh.c in Sources */ = {isa = PBXBuildFile; fileRef = 262DFFB516C3705100CA9F97 /* ray_mesh.c */; };
+		262DFFC516C3705200CA9F97 /* ray_overlay.c in Sources */ = {isa = PBXBuildFile; fileRef = 262DFFB716C3705100CA9F97 /* ray_overlay.c */; };
+		262DFFC616C3705200CA9F97 /* ray_precalc.c in Sources */ = {isa = PBXBuildFile; fileRef = 262DFFB816C3705100CA9F97 /* ray_precalc.c */; };
+		262DFFC716C3705200CA9F97 /* ray_render.c in Sources */ = {isa = PBXBuildFile; fileRef = 262DFFB916C3705100CA9F97 /* ray_render.c */; };
+		262DFFC816C3705200CA9F97 /* ray_scene.c in Sources */ = {isa = PBXBuildFile; fileRef = 262DFFBA16C3705100CA9F97 /* ray_scene.c */; };
+		262DFFC916C3705200CA9F97 /* ray_thread.c in Sources */ = {isa = PBXBuildFile; fileRef = 262DFFBB16C3705200CA9F97 /* ray_thread.c */; };
 		264356A614576B0F00CA4CFE /* model_util_file_model.c in Sources */ = {isa = PBXBuildFile; fileRef = 264356A514576B0F00CA4CFE /* model_util_file_model.c */; };
 		2647C977152767B3002FEA4B /* singleplayer_option.c in Sources */ = {isa = PBXBuildFile; fileRef = 2647C976152767B3002FEA4B /* singleplayer_option.c */; };
 		266B3DBF15845F31003E7787 /* simple_save_pick.c in Sources */ = {isa = PBXBuildFile; fileRef = 266B3DBE15845F31003E7787 /* simple_save_pick.c */; };
@@ -764,6 +783,29 @@
 		26107D0A154DFFF300791918 /* Default-Landscape@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-Landscape@2x~ipad.png"; path = "Resources/Default-Landscape@2x~ipad.png"; sourceTree = "<group>"; };
 		262D75DC158FE8C70086B8BB /* script_obj_label.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_obj_label.c; sourceTree = "<group>"; };
 		262DD2B5151E328C0078FEA4 /* base_iface_score.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = base_iface_score.c; sourceTree = "<group>"; };
+		262DFFA016C3702500CA9F97 /* view_rtl_effect.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = view_rtl_effect.c; sourceTree = "<group>"; };
+		262DFFA116C3702500CA9F97 /* view_rtl_liquid.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = view_rtl_liquid.c; sourceTree = "<group>"; };
+		262DFFA216C3702500CA9F97 /* view_rtl_map.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = view_rtl_map.c; sourceTree = "<group>"; };
+		262DFFA316C3702500CA9F97 /* view_rtl_material.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = view_rtl_material.c; sourceTree = "<group>"; };
+		262DFFA416C3702500CA9F97 /* view_rtl_model.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = view_rtl_model.c; sourceTree = "<group>"; };
+		262DFFA516C3702500CA9F97 /* view_rtl_overlay.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = view_rtl_overlay.c; sourceTree = "<group>"; };
+		262DFFA616C3702500CA9F97 /* view_rtl_patch.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = view_rtl_patch.c; sourceTree = "<group>"; };
+		262DFFAE16C3705000CA9F97 /* ray_color.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ray_color.c; path = ../Sources_RTL/ray_color.c; sourceTree = "<group>"; };
+		262DFFAF16C3705000CA9F97 /* ray_eye.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ray_eye.c; path = ../Sources_RTL/ray_eye.c; sourceTree = "<group>"; };
+		262DFFB016C3705000CA9F97 /* ray_interface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ray_interface.h; path = ../Sources_RTL/ray_interface.h; sourceTree = "<group>"; };
+		262DFFB116C3705100CA9F97 /* ray_light.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ray_light.c; path = ../Sources_RTL/ray_light.c; sourceTree = "<group>"; };
+		262DFFB216C3705100CA9F97 /* ray_main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ray_main.c; path = ../Sources_RTL/ray_main.c; sourceTree = "<group>"; };
+		262DFFB316C3705100CA9F97 /* ray_material.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ray_material.c; path = ../Sources_RTL/ray_material.c; sourceTree = "<group>"; };
+		262DFFB416C3705100CA9F97 /* ray_math.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ray_math.c; path = ../Sources_RTL/ray_math.c; sourceTree = "<group>"; };
+		262DFFB516C3705100CA9F97 /* ray_mesh.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ray_mesh.c; path = ../Sources_RTL/ray_mesh.c; sourceTree = "<group>"; };
+		262DFFB616C3705100CA9F97 /* ray_os_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ray_os_defs.h; path = ../Sources_RTL/ray_os_defs.h; sourceTree = "<group>"; };
+		262DFFB716C3705100CA9F97 /* ray_overlay.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ray_overlay.c; path = ../Sources_RTL/ray_overlay.c; sourceTree = "<group>"; };
+		262DFFB816C3705100CA9F97 /* ray_precalc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ray_precalc.c; path = ../Sources_RTL/ray_precalc.c; sourceTree = "<group>"; };
+		262DFFB916C3705100CA9F97 /* ray_render.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ray_render.c; path = ../Sources_RTL/ray_render.c; sourceTree = "<group>"; };
+		262DFFBA16C3705100CA9F97 /* ray_scene.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ray_scene.c; path = ../Sources_RTL/ray_scene.c; sourceTree = "<group>"; };
+		262DFFBB16C3705200CA9F97 /* ray_thread.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ray_thread.c; path = ../Sources_RTL/ray_thread.c; sourceTree = "<group>"; };
+		262DFFBC16C3705200CA9F97 /* ray_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ray_types.h; path = ../Sources_RTL/ray_types.h; sourceTree = "<group>"; };
+		262DFFBD16C3705200CA9F97 /* ray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ray.h; path = ../Sources_RTL/ray.h; sourceTree = "<group>"; };
 		2638D24013ED0AD600029B18 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		264356A514576B0F00CA4CFE /* model_util_file_model.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = model_util_file_model.c; sourceTree = "<group>"; };
 		2647C976152767B3002FEA4B /* singleplayer_option.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = singleplayer_option.c; sourceTree = "<group>"; };
@@ -1111,6 +1153,14 @@
 				260B41C81411F812006ED023 /* view_vertex_object.c */,
 				260B41C91411F812006ED023 /* virtual_draw.c */,
 				260B41CA1411F812006ED023 /* zoom_draw.c */,
+				262DFFA016C3702500CA9F97 /* view_rtl_effect.c */,
+				262DFFA116C3702500CA9F97 /* view_rtl_liquid.c */,
+				262DFFA216C3702500CA9F97 /* view_rtl_map.c */,
+				262DFFA316C3702500CA9F97 /* view_rtl_material.c */,
+				262DFFA416C3702500CA9F97 /* view_rtl_model.c */,
+				262DFFA516C3702500CA9F97 /* view_rtl_overlay.c */,
+				262DFFA616C3702500CA9F97 /* view_rtl_patch.c */,
+				262DFFCA16C3708E00CA9F97 /* dim3RTL */,
 			);
 			name = Sources_View;
 			path = ../../dim3Engine/Sources_View;
@@ -1353,6 +1403,30 @@
 			);
 			name = Sources;
 			path = ../../dim3MapUtility/Sources;
+			sourceTree = "<group>";
+		};
+		262DFFCA16C3708E00CA9F97 /* dim3RTL */ = {
+			isa = PBXGroup;
+			children = (
+				262DFFAE16C3705000CA9F97 /* ray_color.c */,
+				262DFFAF16C3705000CA9F97 /* ray_eye.c */,
+				262DFFB016C3705000CA9F97 /* ray_interface.h */,
+				262DFFB116C3705100CA9F97 /* ray_light.c */,
+				262DFFB216C3705100CA9F97 /* ray_main.c */,
+				262DFFB316C3705100CA9F97 /* ray_material.c */,
+				262DFFB416C3705100CA9F97 /* ray_math.c */,
+				262DFFB516C3705100CA9F97 /* ray_mesh.c */,
+				262DFFB616C3705100CA9F97 /* ray_os_defs.h */,
+				262DFFB716C3705100CA9F97 /* ray_overlay.c */,
+				262DFFB816C3705100CA9F97 /* ray_precalc.c */,
+				262DFFB916C3705100CA9F97 /* ray_render.c */,
+				262DFFBA16C3705100CA9F97 /* ray_scene.c */,
+				262DFFBB16C3705200CA9F97 /* ray_thread.c */,
+				262DFFBC16C3705200CA9F97 /* ray_types.h */,
+				262DFFBD16C3705200CA9F97 /* ray.h */,
+			);
+			name = dim3RTL;
+			path = ../Sources_Server;
 			sourceTree = "<group>";
 		};
 		26A45D0E1489AD8300C02936 /* Script API */ = {
@@ -2069,6 +2143,25 @@
 				26A3156215B787490055A01C /* gl_shader_execute.c in Sources */,
 				267A28DC15CA31160024FD7C /* label.c in Sources */,
 				26D1D15E168A32D7004F92DE /* script_interface_virtual_control.c in Sources */,
+				262DFFA716C3702500CA9F97 /* view_rtl_effect.c in Sources */,
+				262DFFA816C3702500CA9F97 /* view_rtl_liquid.c in Sources */,
+				262DFFA916C3702500CA9F97 /* view_rtl_map.c in Sources */,
+				262DFFAA16C3702500CA9F97 /* view_rtl_material.c in Sources */,
+				262DFFAB16C3702500CA9F97 /* view_rtl_model.c in Sources */,
+				262DFFAC16C3702500CA9F97 /* view_rtl_overlay.c in Sources */,
+				262DFFAD16C3702500CA9F97 /* view_rtl_patch.c in Sources */,
+				262DFFBE16C3705200CA9F97 /* ray_color.c in Sources */,
+				262DFFBF16C3705200CA9F97 /* ray_eye.c in Sources */,
+				262DFFC016C3705200CA9F97 /* ray_light.c in Sources */,
+				262DFFC116C3705200CA9F97 /* ray_main.c in Sources */,
+				262DFFC216C3705200CA9F97 /* ray_material.c in Sources */,
+				262DFFC316C3705200CA9F97 /* ray_math.c in Sources */,
+				262DFFC416C3705200CA9F97 /* ray_mesh.c in Sources */,
+				262DFFC516C3705200CA9F97 /* ray_overlay.c in Sources */,
+				262DFFC616C3705200CA9F97 /* ray_precalc.c in Sources */,
+				262DFFC716C3705200CA9F97 /* ray_render.c in Sources */,
+				262DFFC816C3705200CA9F97 /* ray_scene.c in Sources */,
+				262DFFC916C3705200CA9F97 /* ray_thread.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

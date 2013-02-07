@@ -479,7 +479,7 @@ void ray_intersect_mesh_list_other_bounce(ray_scene_type *scene,ray_draw_scene_t
       
 ======================================================= */
 
-bool ray_block_light(ray_scene_type *scene,ray_point_type *pnt,ray_vector_type *vct,ray_vector_type *normal_vct,float vct_dist,ray_collision_type *collision,int light_idx,int light_collide_offset_idx)
+bool ray_block_light(ray_scene_type *scene,ray_point_type *pnt,ray_vector_type *vct,ray_vector_type *normal_vct,float vct_dist,ray_collision_type *collision,int light_idx)
 {
 	int							n,mesh_idx,poly_idx,trig_idx;
 	float						t,u,v;
@@ -730,7 +730,7 @@ void ray_trace_lights(ray_scene_type *scene,ray_point_type *eye_pnt,ray_point_ty
 			// check for mesh collides
 			// blocking light
 
-		if (ray_block_light(scene,trig_pnt,&light_vector,&light_vector_normal,light_ray_dist,collision,light_idx,n)) continue;
+		if (ray_block_light(scene,trig_pnt,&light_vector,&light_vector_normal,light_ray_dist,collision,light_idx)) continue;
 
 			// attenuate the light for distance
 

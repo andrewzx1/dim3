@@ -473,7 +473,7 @@ void view_add_model_halo(model_draw *draw,int obj_idx)
 			if (!view_cull_halo(&pnt)) continue;
 	
 				// add the halo
-			
+				
 			halo_draw_add(&pnt,obj_idx,halo->idx);
 
 			view.count.effect++;
