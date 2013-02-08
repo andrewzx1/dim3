@@ -208,7 +208,8 @@ int model_draw_setup_weapon_height_adjust(void)
 	ratio=(((float)view.screen.y_sz)/((float)view.screen.x_sz))*map.camera.plane.aspect_ratio;
 #endif
 
-	return((int)((1.6f-ratio)*iface.devices[view.device_type].scale.weapon_high_adjust));
+	if (ratio<1.0f) return((int)((1.0f-ratio)*2500.0f));	// based on ratio=0.75 means move y 625
+	return(0);
 }
 
 void model_draw_setup_weapon(obj_type *obj,weapon_type *weap,bool ignore_y_shifts,bool dual_hand)

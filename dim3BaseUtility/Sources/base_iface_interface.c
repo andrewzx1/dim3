@@ -572,8 +572,6 @@ void iface_read_settings_device(int tag,iface_device_type *device)
 		device->scale.button_long_wid=xml_get_attribute_float(scale_tag,"button_long_width");
 		device->scale.tab_margin=xml_get_attribute_float(scale_tag,"tab_margin");
 		device->scale.tab_high=xml_get_attribute_float(scale_tag,"tab_height");
-		device->scale.camera_chase_width_adjust=xml_get_attribute_float(scale_tag,"camera_chase_ratio");
-		device->scale.weapon_high_adjust=xml_get_attribute_float(scale_tag,"weapon_height_ratio");
 	}
 }
 
@@ -1080,8 +1078,6 @@ void iface_write_settings_interface_device(char *name,iface_device_type *device)
 	xml_add_attribute_float("button_long_width",device->scale.button_long_wid);
 	xml_add_attribute_float("tab_margin",device->scale.tab_margin);
 	xml_add_attribute_float("tab_height",device->scale.tab_high);
-	xml_add_attribute_float("camera_chase_ratio",device->scale.camera_chase_width_adjust);
-	xml_add_attribute_float("weapon_height_ratio",device->scale.weapon_high_adjust);
 
 	xml_add_tagend(TRUE);
 

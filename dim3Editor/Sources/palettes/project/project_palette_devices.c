@@ -67,8 +67,6 @@ void project_palette_fill_devices(void)
 		list_palette_add_float(&project_palette,-1,"Button Long Width",&device->scale.button_long_wid,FALSE);
 		list_palette_add_float(&project_palette,-1,"Tab Margin",&device->scale.tab_margin,FALSE);
 		list_palette_add_float(&project_palette,-1,"Tab Height",&device->scale.tab_high,FALSE);
-		list_palette_add_float(&project_palette,-1,"Camera Chase 1.6 Ratio Adjust",&device->scale.camera_chase_width_adjust,FALSE);
-		list_palette_add_float(&project_palette,-1,"Weapon Height 1.6 Ratio Adjust",&device->scale.weapon_high_adjust,FALSE);
 
 		device++;
 	}
