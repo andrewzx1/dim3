@@ -98,19 +98,28 @@ void gl_create_normal_matrix(matrix_type *model_mat)
 
 void gl_3D_view(void)
 {
-	float			ratio;
+	float			fov,ratio;
 	matrix_type		mat;
 	
-		// create the projection matrix
-		// as a column ordered opengl matrix
+		// get screen ratio
+		// we do a special check for low
+		// ratio (in pads or phones) and adjust
+		// the fov
+
+	fov=view.render->camera.fov;
 		
 #ifndef D3_ROTATE_VIEW
 	ratio=(((float)view.screen.x_sz)/((float)view.screen.y_sz))*map.camera.plane.aspect_ratio;
 #else
 	ratio=(((float)view.screen.y_sz)/((float)view.screen.x_sz))*map.camera.plane.aspect_ratio;
 #endif
+
+	if (ratio<1.0f) fov+=((1.0f-ratio)*50.0f);	// based on ratio=0.75 means fov+12
+
+		// create the projection matrix
+		// as a column ordered opengl matrix
 	
-	matrix_perspective(&mat,view.render->camera.fov,ratio,(float)map.camera.plane.near_z,(float)map.camera.plane.far_z);
+	matrix_perspective(&mat,fov,ratio,(float)map.camera.plane.near_z,(float)map.camera.plane.far_z);
 
 	if (view.render->camera.flip) {
 		matrix_scale(&mat,1.0f,1.0f,-1.0f);

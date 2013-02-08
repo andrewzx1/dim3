@@ -579,9 +579,7 @@ typedef struct		{
 														control_short_wid,control_long_wid,
 														control_scroll_size,button_high,
 														button_short_wid,button_long_wid,
-														tab_margin,tab_high,
-														camera_chase_width_adjust,
-														weapon_high_adjust;
+														tab_margin,tab_high;
 					} iface_device_scale_type;
 
 typedef struct		{

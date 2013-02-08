@@ -118,7 +118,7 @@ bool gl_initialize(int screen_wid,int screen_high,int fsaa_mode,char *err_str)
 	}
 
 		// setup rendering sizes
-		
+
 #ifndef D3_ROTATE_VIEW
 	view.screen.x_sz=screen_wid;
 	view.screen.y_sz=screen_high;

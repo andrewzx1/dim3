@@ -77,7 +77,8 @@ float camera_chase_width_adjust(void)
 	ratio=(((float)view.screen.y_sz)/((float)view.screen.x_sz))*map.camera.plane.aspect_ratio;
 #endif
 
-	return((1.6f-ratio)*iface.devices[view.device_type].scale.camera_chase_width_adjust);
+	if (ratio<1.0f) return((1.0f-ratio)*30400.0f);	// based on ratio=0.75 means move camera back 7600
+	return(0);
 }
 
 /* =======================================================
