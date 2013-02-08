@@ -50,6 +50,7 @@ bool ray_get_overlay_rgb(ray_scene_type *scene,int x,int y,ray_color_type *col)
 		// no hits yet
 
 	hit=FALSE;
+	col->a=0.0f;
 
 		// search overlay lists backwards
 		// so front to back ordering is
@@ -135,6 +136,7 @@ bool ray_get_overlay_rgb(ray_scene_type *scene,int x,int y,ray_color_type *col)
 				col->r=o_col.r;
 				col->g=o_col.g;
 				col->b=o_col.b;
+				col->a=o_col.a;
 			}
 
 				// otherwise, we need to
@@ -143,16 +145,18 @@ bool ray_get_overlay_rgb(ray_scene_type *scene,int x,int y,ray_color_type *col)
 
 			else {
 				f=1.0f-o_col.a;
-				col->r=(col->r*f)+(o_col.r*col->a);
-				col->g=(col->g*f)+(o_col.g*col->a);
-				col->b=(col->b*f)+(o_col.b*col->a);
+				col->r=(col->r*f)+(o_col.r*o_col.a);
+				col->g=(col->g*f)+(o_col.g*o_col.a);
+				col->b=(col->b*f)+(o_col.b*o_col.a);
+
+					// always adopt new alpha
+					// unless we are already at 1
+					// any 1 immediately breaks
+					// any alpha with render
+
+				if (col->a!=1.0f) col->a=o_col.a;
 			}
-
-				// always adopt new alpha
-				// unless we are already at 1
-
-			if (col->a!=1.0f) col->a=o_col.a;
-
+			
 			hit=TRUE;
 		}
 	}
