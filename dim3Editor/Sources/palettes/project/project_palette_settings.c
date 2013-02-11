@@ -36,8 +36,9 @@ and can be sold or given away.
 #define kSettingsProjectModernize				1
 #define kSettingsProjectNoShaders				2
 #define kSettingsProjectSimpleSave				4
-#define kSettingsProjectLoadRequiresClick		5
-#define kSettingsProjectSkill					6
+#define kSettingsProjectCheckpoint				5
+#define kSettingsProjectLoadRequiresClick		6
+#define kSettingsProjectSkill					7
 
 #define kSettingsProjectRayTrace				10
 
@@ -66,6 +67,7 @@ void project_palette_fill_project(void)
 	list_palette_add_string(&project_palette,kSettingsProjectName,"Name",iface.project.name,name_str_len,FALSE);
 	list_palette_add_checkbox(&project_palette,kSettingsProjectModernize,"Modernize",&iface.project.modernize,FALSE);
 	list_palette_add_checkbox(&project_palette,kSettingsProjectSimpleSave,"Use Simple Saves",&iface.project.simple_save,FALSE);
+	list_palette_add_checkbox(&project_palette,kSettingsProjectCheckpoint,"Use Check Points",&iface.project.checkpoints,FALSE);
 	list_palette_add_checkbox(&project_palette,kSettingsProjectLoadRequiresClick,"Loads Require Click to Continue",&iface.project.load_requires_click,FALSE);
 
 		// rendering

@@ -248,6 +248,87 @@ void view_dim3rtl_image_cache(void)
 
 /* =======================================================
 
+      dim3RTL Screenshot
+      
+======================================================= */
+
+bool view_dim3rtl_screenshot(bool thumbnail,char *path)
+{
+	int					x,y,x_skip,y_skip,y_add,
+						ss_wid,ss_high,sav_high,dsz,err;
+	unsigned char		*pixel_buffer,*data,*sptr,*dptr,*s2ptr;
+	bool				ok;
+
+		// get the scene buffer
+
+	err=rtlSceneGetBuffer(view_rtl_scene_id,(void**)&pixel_buffer);
+	if (err!=RL_ERROR_OK) return(FALSE);
+	
+		// is this is a thumbnail,
+		// then reduce the picture (but keep
+		// the dimensions)
+		
+	x_skip=y_skip=1;
+	y_add=0;
+	ss_wid=setup.screen_rtl_wid;
+	ss_high=sav_high=setup.screen_rtl_high;
+
+	dsz=(setup.screen_rtl_wid*3)*setup.screen_rtl_high;
+	
+	if (thumbnail) {
+		x_skip=setup.screen_rtl_wid/128;
+		ss_wid=128;
+
+		ss_high=(setup.screen_rtl_high*128)/setup.screen_rtl_wid;
+		y_skip=setup.screen_rtl_high/ss_high;
+		y_add=(128-ss_high)/2;
+		sav_high=128;
+
+		dsz=(128*3)*128;
+	}
+	
+		// transfer the data
+		
+	data=(unsigned char*)malloc(dsz);
+	if (data==NULL) {
+		free(pixel_buffer);
+		return(FALSE);
+	}
+	
+	bzero(data,dsz);
+	
+	sptr=pixel_buffer;
+	dptr=data;
+
+	for (y=0;y!=ss_high;y++) {
+	
+		s2ptr=sptr;
+		
+		for (x=0;x!=ss_wid;x++) {
+			*dptr++=*s2ptr++;
+			*dptr++=*s2ptr++;
+			*dptr++=*s2ptr++;
+			*s2ptr++;				// alpha channel
+			
+			s2ptr+=((x_skip-1)*4);
+		}
+			
+		sptr+=((setup.screen_rtl_wid*4)*y_skip);
+	}
+
+	free(pixel_buffer);
+
+		// save screenshot
+
+	ok=bitmap_write_png_data(data,ss_wid,sav_high,FALSE,path);
+		
+	free(data);
+	
+	return(ok);
+}
+
+/* =======================================================
+
       dim3RTL Rendering
       
 ======================================================= */

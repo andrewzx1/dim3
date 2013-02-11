@@ -681,20 +681,21 @@ void view_loop_draw(void)
 
 void view_capture_draw(char *path)
 {
-	gl_frame_clear(FALSE);
-	gl_shader_frame_start();
-
-		// draw view
+		// opengl capture
 	
 	if (!iface.project.ray_trace) {
-		view_draw_opengl();
-	}
-	else {
-		view_draw_dim3rtl();
-	}
-	
-		// make screenshot
+		gl_frame_clear(FALSE);
+		gl_shader_frame_start();
 
-	gl_screen_shot(0,0,view.screen.x_sz,view.screen.y_sz,TRUE,path);
+		view_draw_opengl();
+
+		gl_screen_shot(0,0,view.screen.x_sz,view.screen.y_sz,TRUE,path);
+
+		return;
+	}
+
+		// ray trace capture
+
+	view_dim3rtl_screenshot(TRUE,path);
 }
 
