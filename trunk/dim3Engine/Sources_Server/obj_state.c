@@ -981,6 +981,8 @@ void object_checkpoint(obj_type *obj)
 	int					n;
 	char				err_str[256];
 	spot_type			*spot;
+
+	if (!iface.project.checkpoints) return;
 	
 		// check against checkpoint spots
 	

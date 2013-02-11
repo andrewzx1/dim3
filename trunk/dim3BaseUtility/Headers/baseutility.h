@@ -906,8 +906,7 @@ typedef struct		{
 
 typedef struct		{
 						char									music[name_str_len];
-						iface_intro_button_type					button_game_new,button_game_load,
-																button_game_load_checkpoint,button_game_setup,
+						iface_intro_button_type					button_game_new,button_game_load,button_game_setup,
 																button_multiplayer_host,button_multiplayer_join,
 																button_credit,button_quit;
 						iface_intro_score_type					score;
@@ -1437,7 +1436,8 @@ typedef struct		{
 typedef struct		{
 						char							name[name_str_len];
 						bool							ray_trace,modernize,
-														simple_save,load_requires_click;
+														simple_save,checkpoints,
+														load_requires_click;
 					} iface_project_type;
 
 //
