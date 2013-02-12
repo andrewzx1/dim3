@@ -254,8 +254,9 @@ void view_dim3rtl_image_cache(void)
 
 bool view_dim3rtl_screenshot(bool thumbnail,char *path)
 {
-	int					x,y,x_skip,y_skip,y_add,
+	int					x,y,y_add,
 						ss_wid,ss_high,sav_high,dsz,err;
+	float				x_skip,y_skip;
 	unsigned char		*pixel_buffer,*data,*sptr,*dptr,*s2ptr;
 	bool				ok;
 
@@ -276,11 +277,11 @@ bool view_dim3rtl_screenshot(bool thumbnail,char *path)
 	dsz=(setup.screen_rtl_wid*3)*setup.screen_rtl_high;
 	
 	if (thumbnail) {
-		x_skip=setup.screen_rtl_wid/128;
+		x_skip=((float)setup.screen_rtl_wid)/128.0f;
 		ss_wid=128;
 
 		ss_high=(setup.screen_rtl_high*128)/setup.screen_rtl_wid;
-		y_skip=setup.screen_rtl_high/ss_high;
+		y_skip=((float)setup.screen_rtl_high)/((float)ss_high);
 		y_add=(128-ss_high)/2;
 		sav_high=128;
 
@@ -297,26 +298,18 @@ bool view_dim3rtl_screenshot(bool thumbnail,char *path)
 	
 	bzero(data,dsz);
 	
-	sptr=pixel_buffer;
-	dptr=data;
+	dptr=data+(y_add*(ss_wid*3));
 
 	for (y=0;y!=ss_high;y++) {
-	
-		s2ptr=sptr;
+		sptr=pixel_buffer+((setup.screen_rtl_wid*4)*(int)(((float)y)*y_skip));
 		
 		for (x=0;x!=ss_wid;x++) {
-			*dptr++=*s2ptr++;
-			*dptr++=*s2ptr++;
-			*dptr++=*s2ptr++;
-			*s2ptr++;				// alpha channel
-			
-			s2ptr+=((x_skip-1)*4);
+			s2ptr=sptr+(((int)(((float)x)*x_skip))*4);
+			*dptr++=*s2ptr;
+			*dptr++=*(s2ptr+1);
+			*dptr++=*(s2ptr+2);
 		}
-			
-		sptr+=((setup.screen_rtl_wid*4)*y_skip);
 	}
-
-	free(pixel_buffer);
 
 		// save screenshot
 

@@ -993,7 +993,7 @@ void object_checkpoint(obj_type *obj)
 
 			// check dist
 
-		if (spot->checkpoint.radius>distance_get(obj->pnt.x,obj->pnt.y,obj->pnt.z,spot->pnt.x,spot->pnt.y,spot->pnt.z)) continue;
+		if (spot->checkpoint.radius<distance_get(obj->pnt.x,obj->pnt.y,obj->pnt.z,spot->pnt.x,spot->pnt.y,spot->pnt.z)) continue;
 
 			// save it
 			// adjust player to be on spot
