@@ -33,11 +33,12 @@ and can be sold or given away.
 
 #define max_file_count					256
 
-#define file_button_save_id				0
-#define file_button_load_id				1
-#define file_button_delete_id			2
-#define file_button_cancel_id			3
-#define file_directory_id				4
+#define file_frame_id					0
+#define file_button_save_id				1
+#define file_button_load_id				2
+#define file_button_delete_id			3
+#define file_button_cancel_id			4
+#define file_directory_id				5
 
 extern server_type			server;
 extern iface_type			iface;
@@ -280,9 +281,8 @@ void file_save_delete(void)
 
 void file_open(void)
 {
-	int					x,y,wid,high,margin,padding;
-	char				save_tab_list[][name_str_len]={"Save"},
-						load_tab_list[][name_str_len]={"Load"};
+	int					x,y,wid,high,margin,padding,
+						control_y_add,title_high;
 	element_column_type	cols[4];
 	
 	file_last_state=server.last_state;
@@ -291,13 +291,23 @@ void file_open(void)
 		
 	gui_initialize("Bitmaps/Backgrounds","main");
 	
-		// the tabs
-		
+		// the frame
+
+	margin=element_get_tab_margin();
+	padding=element_get_padding();
+	control_y_add=element_get_control_separation_high();
+	title_high=element_get_frame_title_high();
+
+	x=25;
+	y=25+title_high;
+	wid=iface.scale_x-50;
+	high=iface.scale_y-(y+25);
+	
 	if (file_is_save) {
-		element_tab_add((char*)save_tab_list,0,-1,1);
+		element_frame_add("Save Game",file_frame_id,25,y,wid,high);
 	}
 	else {
-		element_tab_add((char*)load_tab_list,0,-1,1);
+		element_frame_add("Load Game",file_frame_id,25,y,wid,high);
 	}
 	
 		// make the file list
@@ -306,9 +316,6 @@ void file_open(void)
 	
 		// files
 		
-	margin=element_get_tab_margin();
-	padding=element_get_padding();
-	
 	x=margin+padding;
 	y=(margin+element_get_tab_control_high())+padding;
 
