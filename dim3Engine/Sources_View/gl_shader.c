@@ -764,13 +764,13 @@ void gl_shader_set_poly_variables(shader_type *shader,float alpha)
 	}
 }
 
-void gl_shader_ambient_hilite_override(shader_type *shader,bool hilite)
+void gl_shader_ambient_hilite_override(shader_type *shader,view_glsl_light_list_type *light_list,bool hilite)
 {
 	d3col			col;
 	
 	if (shader->var_locs.dim3AmbientColor==-1) return;
 	
-	if (hilite) {
+	if ((hilite) || (light_list->ui_light.on)) {
 		glUniform3f(shader->var_locs.dim3AmbientColor,1.0f,1.0f,1.0f);
 		return;
 	}
@@ -786,11 +786,11 @@ void gl_shader_hilite_override(shader_type *shader,view_glsl_light_list_type *li
 	if (shader->current_hilite==0) {
 		if (light_list->hilite) {
 			shader->current_hilite=1;
-			gl_shader_ambient_hilite_override(shader,TRUE);
+			gl_shader_ambient_hilite_override(shader,light_list,TRUE);
 			return;
 		}
 		shader->current_hilite=-1;
-		gl_shader_ambient_hilite_override(shader,FALSE);
+		gl_shader_ambient_hilite_override(shader,light_list,FALSE);
 		return;
 	}
 			
@@ -799,7 +799,7 @@ void gl_shader_hilite_override(shader_type *shader,view_glsl_light_list_type *li
 	if (light_list->hilite) {
 		if (shader->current_hilite!=1) {
 			shader->current_hilite=1;
-			gl_shader_ambient_hilite_override(shader,TRUE);
+			gl_shader_ambient_hilite_override(shader,light_list,TRUE);
 		}
 		return;
 	}
@@ -809,7 +809,7 @@ void gl_shader_hilite_override(shader_type *shader,view_glsl_light_list_type *li
 
 	if (shader->current_hilite!=-1) {
 		shader->current_hilite=-1;
-		gl_shader_ambient_hilite_override(shader,FALSE);
+		gl_shader_ambient_hilite_override(shader,light_list,FALSE);
 	}
 }
 

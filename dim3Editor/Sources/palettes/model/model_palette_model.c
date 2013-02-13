@@ -58,10 +58,7 @@ and can be sold or given away.
 #define kModelPropertyRigidBodyZResetFact		27
 #define kModelPropertyRigidBodyZSmoothFact		28
 
-#define kModelPropertyUIMinDiffuse				30
-#define kModelPropertyUIDiffuseVector			31
-
-#define kModelPropertyImportScale				40
+#define kModelPropertyImportScale				30
 
 extern model_type				model;
 extern file_path_setup_type		file_path_setup;
@@ -120,15 +117,11 @@ void model_palette_fill_model(void)
 	list_palette_add_float(&model_palette,kModelPropertyRigidBodyZResetFact,"Z Reset Fact",&model.rigid_body.z.reset_factor,FALSE);
 	list_palette_add_float(&model_palette,kModelPropertyRigidBodyZSmoothFact,"Z Smooth Fact",&model.rigid_body.z.smooth_factor,FALSE);
 
-	list_palette_add_header(&model_palette,0,"Model UI Fixed");
-	list_palette_add_float(&model_palette,kModelPropertyUIMinDiffuse,"Minimum Diffuse",&model.ui.fixed.min_diffuse,FALSE);
-	list_palette_add_normal_vector(&model_palette,kModelPropertyUIDiffuseVector,"Diffuse Vector",&model.ui.fixed.diffuse_vct,FALSE);
-
-	list_palette_add_header(&model_palette,0,"Model UI Shader");
-	list_palette_add_int(&model_palette,-1,"Light Intensity",&model.ui.shader.light_intensity,FALSE);
-	list_palette_add_float(&model_palette,-1,"Light Exponent",&model.ui.shader.light_exponent,FALSE);
-	list_palette_add_point(&model_palette,-1,"Light Offset",&model.ui.shader.light_offset,FALSE);
-	list_palette_add_pick_color(&model_palette,-1,"Light Color",&model.ui.shader.light_col,FALSE);
+	list_palette_add_header(&model_palette,0,"Model UI Lighting");
+	list_palette_add_int(&model_palette,-1,"Light Intensity",&model.ui.light_intensity,FALSE);
+	list_palette_add_float(&model_palette,-1,"Light Exponent",&model.ui.light_exponent,FALSE);
+	list_palette_add_point(&model_palette,-1,"Light Offset",&model.ui.light_offset,FALSE);
+	list_palette_add_pick_color(&model_palette,-1,"Light Color",&model.ui.light_col,FALSE);
 }
 
 /* =======================================================

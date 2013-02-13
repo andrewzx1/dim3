@@ -1050,20 +1050,20 @@ void gl_lights_build_model_glsl_light_list(model_type *mdl,model_draw *draw,view
 		
 		light_list->nlight=1;
 		
-		light_list->diffuse.vct.x=(float)mdl->ui.shader.light_offset.x;
-		light_list->diffuse.vct.y=(float)mdl->ui.shader.light_offset.y;
-		light_list->diffuse.vct.z=(float)mdl->ui.shader.light_offset.z;
+		light_list->diffuse.vct.x=(float)mdl->ui.light_offset.x;
+		light_list->diffuse.vct.y=(float)mdl->ui.light_offset.y;
+		light_list->diffuse.vct.z=(float)mdl->ui.light_offset.z;
 		vector_normalize(&light_list->diffuse.vct);
 		
 		light_list->diffuse.boost=0.0f;
 		
 		light_list->ui_light.on=TRUE;
-		light_list->ui_light.intensity=mdl->ui.shader.light_intensity;
-		light_list->ui_light.exponent=mdl->ui.shader.light_exponent;
-		light_list->ui_light.pnt.x=draw->pnt.x+mdl->ui.shader.light_offset.x;
-		light_list->ui_light.pnt.y=draw->pnt.y+mdl->ui.shader.light_offset.y;
-		light_list->ui_light.pnt.z=draw->pnt.z+mdl->ui.shader.light_offset.z;
-		memmove(&light_list->ui_light.col,&mdl->ui.shader.light_col,sizeof(d3col));
+		light_list->ui_light.intensity=mdl->ui.light_intensity;
+		light_list->ui_light.exponent=mdl->ui.light_exponent;
+		light_list->ui_light.pnt.x=draw->pnt.x+mdl->ui.light_offset.x;
+		light_list->ui_light.pnt.y=draw->pnt.y+mdl->ui.light_offset.y;
+		light_list->ui_light.pnt.z=draw->pnt.z+mdl->ui.light_offset.z;
+		memmove(&light_list->ui_light.col,&mdl->ui.light_col,sizeof(d3col));
 		
 		return;
 	}
