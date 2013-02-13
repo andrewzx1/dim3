@@ -235,13 +235,10 @@ bool model_read_xml(model_type *model)
 		
     ui_tag=xml_findfirstchild("UI",model_head);
 
-	model->ui.fixed.min_diffuse=xml_get_attribute_float(ui_tag,"min_diffuse");
-	xml_get_attribute_3_coord_float(ui_tag,"diffuse_vector",&model->ui.fixed.diffuse_vct.x,&model->ui.fixed.diffuse_vct.y,&model->ui.fixed.diffuse_vct.z);
-	
-	model->ui.shader.light_intensity=xml_get_attribute_int(ui_tag,"light_intensity");
-	model->ui.shader.light_exponent=xml_get_attribute_float(ui_tag,"light_exponent");
-	xml_get_attribute_3_coord_int(ui_tag,"light_offset",&model->ui.shader.light_offset.x,&model->ui.shader.light_offset.y,&model->ui.shader.light_offset.z);
-	xml_get_attribute_color(ui_tag,"light_color",&model->ui.shader.light_col);
+	model->ui.light_intensity=xml_get_attribute_int(ui_tag,"light_intensity");
+	model->ui.light_exponent=xml_get_attribute_float(ui_tag,"light_exponent");
+	xml_get_attribute_3_coord_int(ui_tag,"light_offset",&model->ui.light_offset.x,&model->ui.light_offset.y,&model->ui.light_offset.z);
+	xml_get_attribute_color(ui_tag,"light_color",&model->ui.light_col);
 
 		// meshes
 		
@@ -715,12 +712,9 @@ bool model_write_xml(model_type *model,char *err_str)
   		// ui
 		
     xml_add_tagstart("UI");
-	xml_add_attribute_float("min_diffuse",model->ui.fixed.min_diffuse);
-	xml_add_attribute_3_coord_float("diffuse_vector",model->ui.fixed.diffuse_vct.x,model->ui.fixed.diffuse_vct.y,model->ui.fixed.diffuse_vct.z);
-	xml_add_attribute_int("light_intensity",model->ui.shader.light_intensity);
-	xml_add_attribute_float("light_exponent",model->ui.shader.light_exponent);
-	xml_add_attribute_3_coord_int("light_offset",model->ui.shader.light_offset.x,model->ui.shader.light_offset.y,model->ui.shader.light_offset.z);
-	xml_add_attribute_color("light_color",&model->ui.shader.light_col);
+	xml_add_attribute_float("light_exponent",model->ui.light_exponent);
+	xml_add_attribute_3_coord_int("light_offset",model->ui.light_offset.x,model->ui.light_offset.y,model->ui.light_offset.z);
+	xml_add_attribute_color("light_color",&model->ui.light_col);
 	xml_add_tagend(TRUE);
  		
         // meshes

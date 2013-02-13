@@ -64,7 +64,7 @@ int model_xml_get_attribute_bone(model_type *model,int tag,char *tag_name)
 void model_decode_v2_mesh_xml(model_type *model,int model_head)
 {
 	int						i,n,k,j,deform_mode,bone_idx,nbone,hit_box_idx,nhit_box,trig_count,
-							ui_tag,mesh_idx,nmesh,nfill,trig_idx,
+							mesh_idx,nmesh,nfill,trig_idx,
 							tag,hit_box_tag,rigid_body_tag,meshes_tag,mesh_tag,
 							vertex_tag,bone_tag,vtag,trig_tag,
 							materials_tag,material_tag,fills_tag,fill_tag;
@@ -234,30 +234,6 @@ void model_decode_v2_mesh_xml(model_type *model,int model_head)
 		model->rigid_body.z.max_ang=45.0f;
 		model->rigid_body.z.reset_factor=0.8f;
 		model->rigid_body.z.smooth_factor=0.2f;
-	}
-	
-  		// ui
-		
-    ui_tag=xml_findfirstchild("UI",model_head);
-	if (ui_tag!=-1) {
-		model->ui.fixed.min_diffuse=xml_get_attribute_float(ui_tag,"min_diffuse");
-		xml_get_attribute_3_coord_float(ui_tag,"diffuse_vector",&model->ui.fixed.diffuse_vct.x,&model->ui.fixed.diffuse_vct.y,&model->ui.fixed.diffuse_vct.z);
-	}
-	else {
-		model->ui.fixed.min_diffuse=0.75f;
-
-		model->ui.fixed.diffuse_vct.x=0.0f;
-		model->ui.fixed.diffuse_vct.y=-1.0f;
-		model->ui.fixed.diffuse_vct.z=0.0f;
-
-		model->ui.shader.light_intensity=10000;
-		model->ui.shader.light_exponent=1.0f;
-		model->ui.shader.light_offset.x=0;
-		model->ui.shader.light_offset.y=-5000;
-		model->ui.shader.light_offset.z=0;
-		model->ui.shader.light_col.r=1.0f;
-		model->ui.shader.light_col.g=1.0f;
-		model->ui.shader.light_col.b=1.0f;
 	}
 	
 		// meshes

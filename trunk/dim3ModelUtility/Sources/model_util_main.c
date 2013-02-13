@@ -80,19 +80,14 @@ bool model_new(model_type *model,char *name)
 	model->rigid_body.z.reset_factor=0.8f;
 	model->rigid_body.z.smooth_factor=0.2f;
 
-	model->ui.shader.light_intensity=10000;
-	model->ui.shader.light_exponent=1.0f;
-	model->ui.shader.light_offset.x=0;
-	model->ui.shader.light_offset.y=-5000;
-	model->ui.shader.light_offset.z=0;
-	model->ui.shader.light_col.r=1.0f;
-	model->ui.shader.light_col.g=1.0f;
-	model->ui.shader.light_col.b=1.0f;
-
-	model->ui.fixed.min_diffuse=0.75f;
-	model->ui.fixed.diffuse_vct.x=0.0f;
-	model->ui.fixed.diffuse_vct.y=-1.0f;
-	model->ui.fixed.diffuse_vct.z=0.0f;
+	model->ui.light_intensity=10000;
+	model->ui.light_exponent=1.0f;
+	model->ui.light_offset.x=0;
+	model->ui.light_offset.y=-5000;
+	model->ui.light_offset.z=0;
+	model->ui.light_col.r=1.0f;
+	model->ui.light_col.g=1.0f;
+	model->ui.light_col.b=1.0f;
 
 		// setup first mesh
 
