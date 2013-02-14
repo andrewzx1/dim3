@@ -511,7 +511,7 @@ void host_enable_host_button(void)
 
 void host_create_pane(void)
 {
-	int			x,y,wid,high,pane;
+	int			x,y,butt_wid,butt_high,pane;
 	char		tab_list[][32]={"Host Game","Options","Info"};
 							
 	element_clear();
@@ -527,14 +527,14 @@ void host_create_pane(void)
 	
 		// buttons
 		
-	wid=element_get_button_short_wid();
-	high=element_get_button_high();
+	butt_wid=element_get_button_short_wid();
+	butt_high=element_get_button_high();
 
-	element_get_button_bottom_right(&x,&y,wid,high);
-	element_button_text_add("Host",host_button_host_id,x,y,wid,high,element_pos_right,element_pos_bottom);
+	element_get_tab_button_bottom_right(&x,&y);
+	element_button_text_add("Host",host_button_host_id,x,y,butt_wid,butt_high,element_pos_right,element_pos_bottom);
 
 	x=element_get_x_position(host_button_host_id)-element_get_padding();
-	element_button_text_add("Cancel",host_button_cancel_id,x,y,wid,high,element_pos_right,element_pos_bottom);
+	element_button_text_add("Cancel",host_button_cancel_id,x,y,butt_wid,butt_high,element_pos_right,element_pos_bottom);
 	
 		// specific pane controls
 		

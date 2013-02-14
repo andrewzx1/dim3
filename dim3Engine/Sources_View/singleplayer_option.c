@@ -182,7 +182,7 @@ int singleplayer_option_count(int simple_save_idx)
 void singleplayer_option_open(void)
 {
 	int						n,fx,fy,bx,by,wid,high,title_high,table_high,
-							butt_wid,butt_high,padding,control_y_add;
+							butt_wid,butt_high,margin,padding,control_y_add;
 	element_column_type		cols[1];
 	iface_sp_option_type	*sp_option;
 
@@ -194,12 +194,11 @@ void singleplayer_option_open(void)
 
 		// get height
 
+	margin=element_get_tab_margin();
 	padding=element_get_padding();
 	control_y_add=element_get_control_separation_high();
 	
 	title_high=element_get_frame_title_high();
-	butt_wid=element_get_button_short_wid();
-	butt_high=element_get_button_high();
 
 	if (singleplayer_map_pick_on(intro_simple_save_idx)) {
 		high=iface.scale_y-(title_high+(padding*4));
@@ -209,16 +208,16 @@ void singleplayer_option_open(void)
 
 		if (iface.singleplayer.skill) high+=control_y_add;
 		high+=(control_y_add*singleplayer_option_count(intro_simple_save_idx));
-		high+=butt_high;
+		high+=element_get_button_high();
 	}
 	
 		// dialog and frame
 
-	fx=25;
-	fy=(iface.scale_y-(high-title_high))/2;
+	fx=margin;
+	fy=(iface.scale_y-high)/2;
 	wid=iface.scale_x-50;
 	
-	element_frame_add("New Game",singleplayer_option_frame_id,fx,fy,wid,high);
+	element_frame_add("New Game",singleplayer_option_frame_id,fx,fy,wid,high,0,NULL);
 
 		// controls
 
@@ -248,7 +247,7 @@ void singleplayer_option_open(void)
 		strcpy(cols[0].name,"Map");
 		cols[0].percent_size=1.0f;
 		
-		table_high=((fy+(high-(butt_high+padding)))-by)-padding;
+		table_high=((fy+(high-(element_get_button_high()+padding)))-by)-padding;
 
 		element_table_add(cols,NULL,singleplayer_option_map_table_id,1,(fx+padding),by,(wid-(padding*2)),table_high,FALSE,element_table_bitmap_data);
 	
@@ -259,11 +258,15 @@ void singleplayer_option_open(void)
 
 		// buttons
 
-	bx=(fx+wid)-padding;
-	by=(fy+high)-padding;
+	butt_wid=element_get_button_short_wid();
+	butt_high=element_get_button_high();
+
+	element_get_frame_button_bottom_right(fx,fy,wid,high,&bx,&by);
 
 	element_button_text_add("Play",singleplayer_option_button_ok_id,bx,by,butt_wid,butt_high,element_pos_right,element_pos_bottom);
-	element_button_text_add("Cancel",singleplayer_option_button_cancel_id,((bx-butt_wid)-padding),by,butt_wid,butt_high,element_pos_right,element_pos_bottom);
+
+	bx=element_get_x_position(singleplayer_option_button_ok_id)-padding;
+	element_button_text_add("Cancel",singleplayer_option_button_cancel_id,bx,by,butt_wid,butt_high,element_pos_right,element_pos_bottom);
 	
 		// in key state
 	

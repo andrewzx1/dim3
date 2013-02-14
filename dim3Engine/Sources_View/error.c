@@ -48,7 +48,7 @@ extern js_type				js;
 
 void error_open(void)
 {
-	int				x,y,wid,high,control_y_add;
+	int				x,y,butt_wid,butt_high,control_y_add;
 	char			tab_list[][name_str_len]={"Error"};
 	d3col			col;
 
@@ -79,12 +79,12 @@ void error_open(void)
 	
 		// buttons
 		
-	wid=element_get_button_short_wid();
-	high=element_get_button_high();
+	butt_wid=element_get_button_short_wid();
+	butt_high=element_get_button_high();
 	
-	element_get_button_bottom_right(&x,&y,wid,high);
+	element_get_tab_button_bottom_right(&x,&y);
 	
-	element_button_text_add("Close",error_close_id,x,y,wid,high,element_pos_right,element_pos_bottom);
+	element_button_text_add("Close",error_close_id,x,y,butt_wid,butt_high,element_pos_right,element_pos_bottom);
 }
 
 void error_close(void)

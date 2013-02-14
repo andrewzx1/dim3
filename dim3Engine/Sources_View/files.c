@@ -281,8 +281,11 @@ void file_save_delete(void)
 
 void file_open(void)
 {
-	int					x,y,wid,high,margin,padding,
-						control_y_add,title_high;
+	int							x,y,fx,fy,wid,high,
+								table_wid,table_high,
+								margin,padding,control_y_add;
+	element_frame_button_type	butts_save[3]={{file_button_save_id,"Save",TRUE},{file_button_delete_id,"Delete",TRUE},{file_button_cancel_id,"Cancel",TRUE}},
+								butts_load[3]={{file_button_load_id,"Load",TRUE},{file_button_delete_id,"Delete",TRUE},{file_button_cancel_id,"Cancel",TRUE}};
 	element_column_type	cols[4];
 	
 	file_last_state=server.last_state;
@@ -296,18 +299,17 @@ void file_open(void)
 	margin=element_get_tab_margin();
 	padding=element_get_padding();
 	control_y_add=element_get_control_separation_high();
-	title_high=element_get_frame_title_high();
 
-	x=25;
-	y=25+title_high;
-	wid=iface.scale_x-50;
-	high=iface.scale_y-(y+25);
+	fx=margin;
+	fy=margin;
+	wid=iface.scale_x-(margin*2);
+	high=iface.scale_y-(margin*2);
 	
 	if (file_is_save) {
-		element_frame_add("Save Game",file_frame_id,25,y,wid,high);
+		element_frame_add("Save Game",file_frame_id,fx,fy,wid,high,3,butts_save);
 	}
 	else {
-		element_frame_add("Load Game",file_frame_id,25,y,wid,high);
+		element_frame_add("Load Game",file_frame_id,fx,fy,wid,high,3,butts_load);
 	}
 	
 		// make the file list
@@ -315,12 +317,8 @@ void file_open(void)
 	file_build_list();
 	
 		// files
-		
-	x=margin+padding;
-	y=(margin+element_get_tab_control_high())+padding;
 
-	wid=iface.scale_x-((margin+padding)*2);
-	high=iface.scale_y-(y+margin+(padding*2)+element_get_button_high());
+	element_get_frame_inner_space(file_frame_id,&x,&y,&table_wid,&table_high);
 
 	strcpy(cols[0].name,"Map");
 	cols[0].percent_size=0.50f;
@@ -329,30 +327,7 @@ void file_open(void)
 	strcpy(cols[2].name,"Elapsed Time");
 	cols[2].percent_size=0.18f;
 
-	element_table_add(cols,file_table_data,file_directory_id,3,x,y,wid,high,FALSE,element_table_bitmap_document);
-	
-		// buttons
-		
-	wid=element_get_button_short_wid();
-	high=element_get_button_high();
-	
-	element_get_button_bottom_right(&x,&y,wid,high);
-	
-	if (file_is_save) {
-		element_button_text_add("Save",file_button_save_id,x,y,wid,high,element_pos_right,element_pos_bottom);
-		x=element_get_x_position(file_button_save_id)-padding;
-	}
-	else {
-		element_button_text_add("Load",file_button_load_id,x,y,wid,high,element_pos_right,element_pos_bottom);
-		element_enable(file_button_load_id,FALSE);
-		x=element_get_x_position(file_button_load_id)-padding;
-	}
-
-	element_button_text_add("Delete",file_button_delete_id,x,y,wid,high,element_pos_right,element_pos_bottom);
-	element_enable(file_button_delete_id,FALSE);
-	
-	x=element_get_x_position(file_button_delete_id)-padding;
-	element_button_text_add("Cancel",file_button_cancel_id,x,y,wid,high,element_pos_right,element_pos_bottom);
+	element_table_add(cols,file_table_data,file_directory_id,3,x,y,table_wid,table_high,FALSE,element_table_bitmap_document);
 }
 
 void file_close(void)
