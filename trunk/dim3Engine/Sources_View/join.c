@@ -516,7 +516,8 @@ void join_lan_internet_hosts(void)
 
 void join_create_pane(void)
 {
-	int						x,y,wid,high,pane;
+	int						x,y,wid,
+							butt_wid,butt_high,pane;
 	char					tab_list[][32]={"Hosts","News"};
 	
 		// turn off any scanning threads
@@ -538,19 +539,19 @@ void join_create_pane(void)
 	
 		// buttons
 		
-	wid=element_get_button_long_wid();
-	high=element_get_button_high();
+	butt_wid=element_get_button_long_wid();
+	butt_high=element_get_button_high();
 
-	element_get_button_bottom_left(&x,&y,wid,high);
-	element_button_text_add("Rescan Hosts",join_button_rescan_id,x,y,wid,high,element_pos_left,element_pos_bottom);
+	element_get_tab_button_bottom_left(&x,&y);
+	element_button_text_add("Rescan Hosts",join_button_rescan_id,x,y,butt_wid,butt_high,element_pos_left,element_pos_bottom);
 	
-	wid=element_get_button_short_wid();
+	butt_wid=element_get_button_short_wid();
 
-	element_get_button_bottom_right(&x,&y,wid,high);
-	element_button_text_add("Join",join_button_join_id,x,y,wid,high,element_pos_right,element_pos_bottom);
+	element_get_tab_button_bottom_right(&x,&y);
+	element_button_text_add("Join",join_button_join_id,x,y,butt_wid,butt_high,element_pos_right,element_pos_bottom);
 
 	x=element_get_x_position(join_button_join_id)-element_get_padding();
-	element_button_text_add("Cancel",join_button_cancel_id,x,y,wid,high,element_pos_right,element_pos_bottom);
+	element_button_text_add("Cancel",join_button_cancel_id,x,y,butt_wid,butt_high,element_pos_right,element_pos_bottom);
 
 		// status
 

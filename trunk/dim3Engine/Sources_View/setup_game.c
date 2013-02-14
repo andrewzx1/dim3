@@ -475,7 +475,8 @@ void setup_game_debug_pane(void)
 
 void setup_game_create_pane(void)
 {
-	int			x,y,wid,high,ntab,pane;
+	int			x,y,
+				butt_wid,butt_high,ntab,pane;
 							
 	element_clear();
 	
@@ -518,19 +519,19 @@ void setup_game_create_pane(void)
 	
 		// buttons
 		
-	wid=element_get_button_long_wid();
-	high=element_get_button_high();
+	butt_wid=element_get_button_long_wid();
+	butt_high=element_get_button_high();
 	
-	element_get_button_bottom_left(&x,&y,wid,high);
-	element_button_text_add("Default",setup_game_default_button,x,y,wid,high,element_pos_left,element_pos_bottom);
+	element_get_tab_button_bottom_left(&x,&y);
+	element_button_text_add("Default",setup_game_default_button,x,y,butt_wid,butt_high,element_pos_left,element_pos_bottom);
 
-	wid=element_get_button_short_wid();
+	butt_wid=element_get_button_short_wid();
 	
-	element_get_button_bottom_right(&x,&y,wid,high);
-	element_button_text_add("OK",setup_game_ok_button,x,y,wid,high,element_pos_right,element_pos_bottom);
+	element_get_tab_button_bottom_right(&x,&y);
+	element_button_text_add("OK",setup_game_ok_button,x,y,butt_wid,butt_high,element_pos_right,element_pos_bottom);
 
 	x=element_get_x_position(setup_game_ok_button)-element_get_padding();
-	element_button_text_add("Cancel",setup_game_cancel_button,x,y,wid,high,element_pos_right,element_pos_bottom);
+	element_button_text_add("Cancel",setup_game_cancel_button,x,y,butt_wid,butt_high,element_pos_right,element_pos_bottom);
 	
 		// specific pane controls
 		

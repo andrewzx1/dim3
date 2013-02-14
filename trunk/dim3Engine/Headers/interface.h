@@ -216,8 +216,9 @@ extern inline int element_get_tab_control_high(void);
 extern inline int element_get_control_short_wid(void);
 extern inline int element_get_control_long_wid(void);
 extern inline int element_get_control_high(void);
-extern inline void element_get_button_bottom_left(int *x,int *y,int wid,int high);
-extern inline void element_get_button_bottom_right(int *x,int *y,int wid,int high);
+extern inline void element_get_tab_button_bottom_left(int *x,int *y);
+extern inline void element_get_tab_button_bottom_right(int *x,int *y);
+extern inline void element_get_frame_button_bottom_right(int fx,int fy,int wid,int high,int *x,int *y);
 extern inline int element_get_button_short_wid(void);
 extern inline int element_get_button_long_wid(void);
 extern inline int element_get_button_high(void);
@@ -240,7 +241,8 @@ extern void element_text_box_add(char *data,int id,int x,int y,int wid,int high,
 extern void element_info_field_add(char *str,char *value_str,int id,int x,int y);
 extern void element_model_add(char *name,char *animate,float resize,d3pnt *offset,d3ang *rot,int id,int x,int y);
 extern void element_count_add(char *path,char *disable_path,int id,int x,int y,int wid,int high,int bitmap_add,bool horizontal,int wrap_count,int count,int max_count);
-extern void element_frame_add(char *title,int id,int x,int y,int wid,int high);
+extern void element_frame_add(char *title,int id,int x,int y,int wid,int high,int button_count,element_frame_button_type *buttons);
+
 extern int element_get_selected(void);
 extern int element_get_value(int id);
 extern float element_get_slider_value(int id);
@@ -260,10 +262,13 @@ extern bool element_get_table_checkbox(int id,int idx);
 extern bool element_has_table_check(int id);
 extern void element_get_table_row(int id,int idx,char *row_str);
 extern bool element_replace_model(int id,char *name,char *animate,float resize,d3pnt *offset,d3ang *rot);
+
 extern int element_get_scroll_position(int id);
 extern void element_set_scroll_position(int id,int pos);
 extern void element_make_selection_visible(int id);
 extern int element_get_x_position(int id);
+extern void element_get_frame_inner_space(int id,int *x,int *y,int *wid,int *high);
+
 extern void element_draw(bool cursor_hilite);
 extern void element_click_down(int x,int y);
 extern int element_click_up(int x,int y);

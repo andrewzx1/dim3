@@ -106,8 +106,8 @@ and can be sold or given away.
 // gradients
 //
 
-#define element_gradient_factor_background		0.75f
-#define element_gradient_factor_foreground		0.6f
+#define element_gradient_factor_background		0.9f
+#define element_gradient_factor_foreground		0.8f
 #define element_gradient_factor_darken			0.7f
 #define element_gradient_factor_table_line_1	1.1f
 #define element_gradient_factor_table_line_2	1.2f
@@ -179,6 +179,16 @@ typedef struct		{
 						bool					horizontal;
 					} element_count_type;
 
+typedef struct		{
+						int						id;
+						char					text[name_str_len];
+						bool					right;
+					} element_frame_button_type;
+
+typedef struct		{
+						bool					has_buttons;
+					} element_frame_type;
+
 typedef union		{
 						element_button_type		button;
 						element_text_type		text;
@@ -189,6 +199,7 @@ typedef union		{
 						element_text_box_type	text_box;
 						element_model_type		model;
 						element_count_type		count;
+						element_frame_type		frame;
 					} element_setup_type;
 
 typedef struct		{

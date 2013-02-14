@@ -238,16 +238,22 @@ int element_get_control_high(void)
 	return((int)(((float)iface.scale_x)*iface.devices[view.device_type].scale.control_high));
 }
 
-void element_get_button_bottom_left(int *x,int *y,int wid,int high)
+void element_get_tab_button_bottom_left(int *x,int *y)
 {
 	*x=element_get_tab_margin()+element_get_padding();
 	*y=iface.scale_y-(element_get_tab_margin()+element_get_padding());
 }
 
-void element_get_button_bottom_right(int *x,int *y,int wid,int high)
+void element_get_tab_button_bottom_right(int *x,int *y)
 {
 	*x=iface.scale_x-(element_get_tab_margin()+element_get_padding());
 	*y=iface.scale_y-(element_get_tab_margin()+element_get_padding());
+}
+
+void element_get_frame_button_bottom_right(int fx,int fy,int wid,int high,int *x,int *y)
+{
+	*x=(fx+wid)-element_get_padding();
+	*y=(fy+high)-element_get_padding();
 }
 
 int element_get_button_short_wid(void)
@@ -275,7 +281,7 @@ int element_get_frame_title_high(void)
 	int			high;
 
 	high=gl_text_get_char_height(iface.font.text_size_medium);
-	return(high+(high/2));
+	return(high+4);
 }
 
 /* =======================================================
@@ -951,9 +957,13 @@ void element_count_add(char *path,char *disable_path,int id,int x,int y,int wid,
 	SDL_mutexV(element_thread_lock);
 }
 
-void element_frame_add(char *title,int id,int x,int y,int wid,int high)
+void element_frame_add(char *title,int id,int x,int y,int wid,int high,int button_count,element_frame_button_type *buttons)
 {
+	int				n,blx,brx,by,
+					butt_wid,butt_high,padding;
 	element_type	*element;
+
+		// the frame itself
 
 	SDL_mutexP(element_thread_lock);
 
@@ -975,6 +985,37 @@ void element_frame_add(char *title,int id,int x,int y,int wid,int high)
 	element->hidden=FALSE;
 
 	SDL_mutexV(element_thread_lock);
+
+		// buttons
+
+	butt_wid=element_get_button_short_wid();
+	butt_high=element_get_button_high();
+
+	padding=element_get_padding();
+
+	blx=x+padding;
+	by=(y+high)-padding;
+
+	brx=(x+wid)+butt_wid;
+
+	for (n=0;n!=button_count;n++) {
+		if (buttons[n].right) brx-=(butt_wid+padding);
+	}
+
+	for (n=0;n!=button_count;n++) {
+		if (!buttons[n].right) {
+			element_button_text_add(buttons[n].text,buttons[n].id,blx,by,butt_wid,butt_high,element_pos_left,element_pos_bottom);
+			blx+=(butt_wid+padding);
+		}
+		else {
+			element_button_text_add(buttons[n].text,buttons[n].id,brx,by,butt_wid,butt_high,element_pos_right,element_pos_bottom);
+			brx+=(butt_wid+padding);
+		}
+	}
+
+		// remember if buttons
+
+	element->setup.frame.has_buttons=(button_count!=0);
 }
 
 /* =======================================================
@@ -3102,8 +3143,7 @@ void element_draw_model(element_type *element)
 
 void element_draw_frame(element_type *element)
 {
-	int			lft,rgt,top,bot,high,
-				head_top,y;
+	int			y,lft,rgt,top,mid,bot;
 	bool		is_header;
 	d3col		col,col2;
 	d3col		shadow_col={0.3f,0.3f,0.3f};
@@ -3118,15 +3158,7 @@ void element_draw_frame(element_type *element)
 	rgt=lft+element->wid;
 	top=element->y;
 	bot=top+element->high;
-	
-	high=gl_text_get_char_height(iface.font.text_size_medium);
-
-	head_top=top;
-	if (is_header) head_top-=(high+(high/2));
-
-		// shadow
-
-	view_primitive_2D_color_quad(&shadow_col,0.5f,(lft+5),(rgt+5),(head_top+5),(bot+5));
+	mid=top+element_get_frame_title_high();
 	
 		// inside frame
 
@@ -3135,15 +3167,15 @@ void element_draw_frame(element_type *element)
 		// header
 		
 	if (is_header) {
-		y=(head_top+top)>>1;
+		y=(top+mid)>>1;
 
 		memmove(&col,&iface.color.dialog.header,sizeof(d3col));
 		col2.r=col.r*element_gradient_factor_foreground;
 		col2.g=col.g*element_gradient_factor_foreground;
 		col2.b=col.b*element_gradient_factor_foreground;
 
-		view_primitive_2D_color_poly(lft,head_top,&col,rgt,head_top,&col,rgt,y,&col2,lft,y,&col2,1.0f);
-		view_primitive_2D_color_poly(lft,y,&col2,rgt,y,&col2,rgt,top,&col,lft,top,&col,1.0f);
+		view_primitive_2D_color_poly(lft,top,&col2,rgt,top,&col2,rgt,y,&col,lft,y,&col,1.0f);
+		view_primitive_2D_color_poly(lft,y,&col,rgt,y,&col,rgt,mid,&col2,lft,mid,&col2,1.0f);
 
 		gl_text_start(font_interface_index,iface.font.text_size_medium,FALSE);
 		gl_text_draw(((lft+rgt)/2),(y-2),element->str,tx_center,TRUE,&iface.color.dialog.title,1.0f);
@@ -3152,12 +3184,8 @@ void element_draw_frame(element_type *element)
 	
 		// outline
 
-	glLineWidth(2.0f);
 	view_primitive_2D_line_quad(&iface.color.dialog.outline,1.0f,lft,rgt,top,bot);
-	
-	if (is_header) view_primitive_2D_line_quad(&iface.color.dialog.outline,1.0f,lft,rgt,head_top,top);
-	
-	glLineWidth(1.0f);
+	if (is_header) view_primitive_2D_line_quad(&iface.color.dialog.outline,1.0f,lft,rgt,top,mid);
 }
 
 /* =======================================================
@@ -3928,3 +3956,25 @@ int element_get_x_position(int id)
 
 	return(x);
 }
+
+void element_get_frame_inner_space(int id,int *x,int *y,int *wid,int *high)
+{
+	int					padding;
+	element_type		*element;
+	
+	element=element_find(id);
+	if (element==NULL) {
+		*x=*y=*wid=*high=0;
+		return;
+	}
+
+	padding=element_get_padding();
+
+	*x=element->x+padding;
+	*y=(element->y+element_get_frame_title_high())+padding;
+	*wid=element->wid-(padding*2);
+	*high=(element->high-element_get_frame_title_high())-(padding*2);
+
+	if (element->setup.frame.has_buttons) *high-=(element_get_button_high()+padding);
+}
+

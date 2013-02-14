@@ -143,7 +143,7 @@ void simple_save_pick_open(void)
 					txt_y_off,txt_size,
 					bitmap_max,bitmap_size,bitmap_add,
 					butt_wid,butt_high,save_wid,save_high,erase_wid,erase_high,
-					padding,control_y_add;
+					margin,padding,control_y_add;
 	char			name[256],path[1024],disable_path[1024];
 
 		// simple save UI
@@ -152,6 +152,7 @@ void simple_save_pick_open(void)
 
 		// get height
 
+	margin=element_get_tab_margin();
 	padding=element_get_padding();
 	control_y_add=element_get_control_separation_high();
 	
@@ -160,12 +161,12 @@ void simple_save_pick_open(void)
 	
 		// dialog and frame
 
-	x=25;
-	y=25+(control_y_add+padding);
-	wid=iface.scale_x-50;
-	high=iface.scale_y-(50+(control_y_add+padding));
+	x=margin;
+	y=margin;
+	wid=iface.scale_x-(margin*2);
+	high=iface.scale_y-(margin*2);
 	
-	element_frame_add("Pick Save Spot",simple_save_pick_frame_id,x,y,wid,high);
+	element_frame_add("Pick Save Spot",simple_save_pick_frame_id,x,y,wid,high,0,NULL);
 
 		// simple save picker sizes
 
@@ -220,7 +221,7 @@ void simple_save_pick_open(void)
 	bx=(x+(wid>>1))-(erase_wid>>1);
 	by=(y+(high>>1))-(erase_high>>1);
 	
-	element_frame_add("Erase Save Spot",simple_save_pick_erase_frame_id,bx,by,erase_wid,erase_high);
+	element_frame_add("Erase Save Spot",simple_save_pick_erase_frame_id,bx,by,erase_wid,erase_high,0,NULL);
 	
 	bx+=padding;
 	by+=padding;
