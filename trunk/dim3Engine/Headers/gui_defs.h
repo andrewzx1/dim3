@@ -186,7 +186,7 @@ typedef struct		{
 					} element_frame_button_type;
 
 typedef struct		{
-						bool					has_buttons;
+						bool					has_tabs,has_buttons;
 					} element_frame_type;
 
 typedef union		{

@@ -570,7 +570,7 @@ void iface_read_settings_device(int tag,iface_device_type *device)
 		device->scale.button_high=xml_get_attribute_float(scale_tag,"button_height");
 		device->scale.button_short_wid=xml_get_attribute_float(scale_tag,"button_short_width");
 		device->scale.button_long_wid=xml_get_attribute_float(scale_tag,"button_long_width");
-		device->scale.tab_margin=xml_get_attribute_float(scale_tag,"tab_margin");
+		device->scale.dialog_margin=xml_get_attribute_float_default(scale_tag,"dialog_margin",0.02f);
 		device->scale.tab_high=xml_get_attribute_float(scale_tag,"tab_height");
 	}
 }
@@ -1076,7 +1076,7 @@ void iface_write_settings_interface_device(char *name,iface_device_type *device)
 	xml_add_attribute_float("button_height",device->scale.button_high);
 	xml_add_attribute_float("button_short_width",device->scale.button_short_wid);
 	xml_add_attribute_float("button_long_width",device->scale.button_long_wid);
-	xml_add_attribute_float("tab_margin",device->scale.tab_margin);
+	xml_add_attribute_float("dialog_margin",device->scale.dialog_margin);
 	xml_add_attribute_float("tab_height",device->scale.tab_high);
 
 	xml_add_tagend(TRUE);

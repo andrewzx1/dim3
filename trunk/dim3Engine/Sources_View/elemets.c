@@ -213,9 +213,9 @@ int element_get_padding(void)
 	return((int)(((float)iface.scale_x)*iface.devices[view.device_type].scale.control_padding));
 }
 
-int element_get_tab_margin(void)
+int element_get_margin(void)
 {
-	return((int)(((float)iface.scale_x)*iface.devices[view.device_type].scale.tab_margin));
+	return((int)(((float)iface.scale_x)*iface.devices[view.device_type].scale.dialog_margin));
 }
 
 int element_get_tab_control_high(void)
@@ -240,14 +240,14 @@ int element_get_control_high(void)
 
 void element_get_tab_button_bottom_left(int *x,int *y)
 {
-	*x=element_get_tab_margin()+element_get_padding();
-	*y=iface.scale_y-(element_get_tab_margin()+element_get_padding());
+	*x=element_get_margin()+element_get_padding();
+	*y=iface.scale_y-(element_get_margin()+element_get_padding());
 }
 
 void element_get_tab_button_bottom_right(int *x,int *y)
 {
-	*x=iface.scale_x-(element_get_tab_margin()+element_get_padding());
-	*y=iface.scale_y-(element_get_tab_margin()+element_get_padding());
+	*x=iface.scale_x-(element_get_margin()+element_get_padding());
+	*y=iface.scale_y-(element_get_margin()+element_get_padding());
 }
 
 void element_get_frame_button_bottom_right(int fx,int fy,int wid,int high,int *x,int *y)
@@ -782,9 +782,9 @@ void element_table_add(element_column_type* cols,char *row_data,int id,int ncolu
 	SDL_mutexV(element_thread_lock);
 }
 
-void element_tab_add(char *tab_list,int value,int id,int ntab)
+void element_tab_add(int id,int x,int y,int wid,int high,int tab_count,char *tabs)
 {
-	int				n,margin;
+	int				n;
 	element_type	*element;
 
 	SDL_mutexP(element_thread_lock);
@@ -795,26 +795,22 @@ void element_tab_add(char *tab_list,int value,int id,int ntab)
 	element->id=id;
 	element->type=element_type_tab;
 	
-		// tab elements are special as they fit the screen
-		// so set the box to just the tab part
-		
-	margin=element_get_tab_margin();
-	element->x=margin;
-	element->y=margin;
-	element->wid=iface.scale_x-(margin*2);
-	element->high=element_get_tab_control_high();
+	element->x=x;
+	element->y=y;
+	element->wid=wid;
+	element->high=high;
 	
 	element->selectable=TRUE;
 	element->enabled=TRUE;
 	element->hidden=FALSE;
 	
-	element->value=value;
+	element->value=0;
 	element->offset=0;
 
-	element->setup.tab.ntab=ntab;
+	element->setup.tab.ntab=tab_count;
 	
-	for (n=0;n!=ntab;n++) {
-		strcpy(element->setup.tab.name[n],(char*)&tab_list[n*name_str_len]);
+	for (n=0;n!=tab_count;n++) {
+		strcpy(element->setup.tab.name[n],(char*)&tabs[n*name_str_len]);
 	}
 
 	SDL_mutexV(element_thread_lock);
@@ -957,9 +953,9 @@ void element_count_add(char *path,char *disable_path,int id,int x,int y,int wid,
 	SDL_mutexV(element_thread_lock);
 }
 
-void element_frame_add(char *title,int id,int x,int y,int wid,int high,int button_count,element_frame_button_type *buttons)
+void element_frame_add(char *title,int id,int x,int y,int wid,int high,int tab_id,int tab_count,char *tabs,int button_count,element_frame_button_type *buttons)
 {
-	int				n,blx,brx,by,
+	int				n,blx,brx,ty,by,
 					butt_wid,butt_high,padding;
 	element_type	*element;
 
@@ -985,6 +981,15 @@ void element_frame_add(char *title,int id,int x,int y,int wid,int high,int butto
 	element->hidden=FALSE;
 
 	SDL_mutexV(element_thread_lock);
+
+		// tabs
+
+	if (tab_count!=0) {
+		ty=y;
+		if (title[0]!=0x0) ty+=element_get_frame_title_high();
+
+		element_tab_add(tab_id,(x+1),ty,(wid-2),element_get_tab_control_high(),tab_count,tabs);
+	}
 
 		// buttons
 
@@ -1013,8 +1018,9 @@ void element_frame_add(char *title,int id,int x,int y,int wid,int high,int butto
 		}
 	}
 
-		// remember if buttons
+		// remember if tabs or buttons
 
+	element->setup.frame.has_tabs=(tab_count!=0);
 	element->setup.frame.has_buttons=(button_count!=0);
 }
 
@@ -2218,7 +2224,7 @@ static inline int element_get_table_row_high(element_type *element)
 
 void element_click_table(element_type *element,int x,int y)
 {
-	int				high,row_high,row_cnt,cnt,
+	int				high,row_high,row_cnt,cnt,vis_cnt,
 					scroll_dir;
 	bool			up_ok,down_ok;
 	
@@ -2231,10 +2237,11 @@ void element_click_table(element_type *element,int x,int y)
 	
 		// check for clicking in scroll bar
 
-	cnt=((element->high-(high+4))/row_high)-1;
+	vis_cnt=cnt=((element->high-(high+4))/row_high)-1;
+	if (((element->high-(high+4))%row_high)!=0) vis_cnt--;
 
 	up_ok=(element->offset!=0);
-	down_ok=((element->offset+(cnt+1))<row_cnt);
+	down_ok=((element->offset+(vis_cnt+1))<row_cnt);
 
 	scroll_dir=element_click_scroll_controls(element,high,x,y,up_ok,down_ok);
 	
@@ -2544,6 +2551,26 @@ void element_draw_table_line_data(element_type *element,int x,int y,int row,int 
 	}
 }
 
+void element_draw_table_line_background(element_type *element,int idx,int lft,int rgt,int top,int bot)
+{
+	d3col			col;
+
+	memmove(&col,&iface.color.control.fill,sizeof(d3col));
+
+	if (((idx+element->offset)&0x1)==0) {
+		col.r*=element_gradient_factor_table_line_1;
+		col.g*=element_gradient_factor_table_line_1;
+		col.b*=element_gradient_factor_table_line_1;
+	}
+	else {
+		col.r*=element_gradient_factor_table_line_2;
+		col.g*=element_gradient_factor_table_line_2;
+		col.b*=element_gradient_factor_table_line_2;
+	}
+		
+	view_primitive_2D_color_poly(lft,top,&col,rgt,top,&col,rgt,bot,&col,lft,bot,&col,1.0f);
+}
+
 void element_draw_table_busy(element_type *element)
 {
 	int				n,idx,lft,rgt,top,bot,high;
@@ -2590,7 +2617,7 @@ void element_draw_table_busy(element_type *element)
 
 void element_draw_table(element_type *element,int sel_id)
 {
-	int				n,x,y,ky,wid,high,cnt,
+	int				n,x,y,ky,wid,high,cnt,vis_cnt,
 					lft,rgt,top,bot,row_high,
 					lx,rx,ty,by;
 	char			*c;
@@ -2605,7 +2632,8 @@ void element_draw_table(element_type *element,int sel_id)
 	
 		// get element counts
 		
-	cnt=((element->high-(high+4))/row_high);
+	vis_cnt=cnt=((element->high-(high+4))/row_high);
+	if (((element->high-(high+4))%row_high)!=0) vis_cnt--;
 	
 		// header fill
 		
@@ -2672,20 +2700,7 @@ void element_draw_table(element_type *element,int sel_id)
 				view_primitive_2D_color_poly(lft,ky,&col,rgt,ky,&col,rgt,bot,&col2,lft,bot,&col2,1.0f);
 			}
 			else {
-				memmove(&col,&iface.color.control.fill,sizeof(d3col));
-
-				if (((n+element->offset)&0x1)==0) {
-					col.r*=element_gradient_factor_table_line_1;
-					col.g*=element_gradient_factor_table_line_1;
-					col.b*=element_gradient_factor_table_line_1;
-				}
-				else {
-					col.r*=element_gradient_factor_table_line_2;
-					col.g*=element_gradient_factor_table_line_2;
-					col.b*=element_gradient_factor_table_line_2;
-				}
-				
-				view_primitive_2D_color_poly(lft,top,&col,rgt,top,&col,rgt,bot,&col,lft,bot,&col,1.0f);
+				element_draw_table_line_background(element,n,lft,rgt,top,bot);
 			}
 
 			element_draw_table_row_column_lines(element,top,bot,0.5f);
@@ -2698,13 +2713,24 @@ void element_draw_table(element_type *element,int sel_id)
 			y+=row_high;
 		}
 
+			// finish with blank rows
+
+		n=cnt;
+
+		while (y<by) {
+			element_get_box(element,&lft,&rgt,&top,&bot);
+			element_draw_table_line_background(element,n++,(lft+1),(rgt-1),y,(y+row_high));
+			element_draw_table_row_column_lines(element,y,(y+row_high),0.5f);
+			y+=row_high;
+		}
+
 		gl_2D_scissor_end();
 	}
 
 		// scroll controls
 
 	up_ok=(element->offset!=0);
-	down_ok=((element->offset+(cnt+1))<element_get_table_row_count(element));
+	down_ok=((element->offset+(vis_cnt+1))<element_get_table_row_count(element));
 
 	element_draw_scroll_controls(element,high,up_ok,down_ok);
 	
@@ -2721,24 +2747,20 @@ void element_draw_table(element_type *element,int sel_id)
 
 int element_mouse_over_tab(element_type *element,int x,int y)
 {
-	int				margin,high,max_sz,xadd,idx;
+	int				max_sz,xadd,idx;
 	
 		// within tab box?
 		
-	margin=element_get_tab_margin();
-	if ((x<margin) || (x>(iface.scale_x-margin))) return(-1);
-	
-	high=element_get_tab_control_high();
-	if ((y<margin) || (y>(margin+high))) return(-1);
+	if ((x<element->x) || (x>(element->x+element->wid))) return(-1);
+	if ((y<element->y) || (y>(element->y+element->high))) return(-1);
 	
 		// select value
 		
-	xadd=(iface.scale_x-(margin*3))/element->setup.tab.ntab;
-	
+	xadd=element->wid/element->setup.tab.ntab;
 	max_sz=(int)(((float)iface.scale_x)*0.2f);
 	if (xadd>max_sz) xadd=max_sz;
 
-	idx=(x-margin)/xadd;
+	idx=(x-element->x)/xadd;
 	if ((idx<0) || (idx>=element->setup.tab.ntab)) return(-1);
 
 	return(idx);
@@ -2758,31 +2780,24 @@ bool element_click_tab(element_type *element,int x,int y)
 
 void element_draw_tab(element_type *element,int sel_id,int x,int y)
 {
-	int				n,kx,xadd,x_slant,x_overlap,y_push,
-					high,max_sz,mouse_idx,tab_idx,
+	int				n,xadd,x_slant,x_overlap,y_push,
+					max_sz,mouse_idx,tab_idx,
 					lx,rx,ty,by,margin;
 	int				tab_draw_list[max_element_tab];
-	d3col			col;
-	d3col			shadow_col={0.3f,0.3f,0.3f};
+	d3col			*col_ptr;
 	
-		// sizes
+		// tab sizes
 	
-	margin=element_get_tab_margin();
-	high=element_get_tab_control_high();
-	
-	xadd=(iface.scale_x-(margin*3))/element->setup.tab.ntab;
-	
+	xadd=element->wid/element->setup.tab.ntab;
 	max_sz=(int)(((float)iface.scale_x)*0.2f);
 	if (xadd>max_sz) xadd=max_sz;
 
+	margin=element_get_margin();
+
 		// get mouse over element
 	
-	mouse_idx=-1;
-	
-	if (element->id==sel_id) {
-		mouse_idx=element_mouse_over_tab(element,x,y);
-	}
-	
+	mouse_idx=element_mouse_over_tab(element,x,y);
+
 		// pick drawing order (last to first, selected always on top)
 		
 	tab_idx=0;
@@ -2798,13 +2813,14 @@ void element_draw_tab(element_type *element,int sel_id,int x,int y)
 	x_slant=(int)(((float)xadd)*0.025f);
 	y_push=margin>>1;
 	
-	by=margin+high;
+	ty=element->y;
+	by=ty+element->high;
 	
 	for (n=0;n!=element->setup.tab.ntab;n++) {
 	
 		tab_idx=tab_draw_list[n];
 
-		lx=margin+(xadd*tab_idx);
+		lx=element->x+(xadd*tab_idx);
 		rx=lx+xadd;
 		
 		if (tab_idx!=(element->setup.tab.ntab-1)) {
@@ -2814,64 +2830,43 @@ void element_draw_tab(element_type *element,int sel_id,int x,int y)
 			x_overlap=0;
 		}
 		
+		y=ty;
+
 		if (element->value!=tab_idx) {
-			ty=margin;
-			memmove(&col,&iface.color.tab.dimmed,sizeof(d3col));
+			col_ptr=&iface.color.tab.dimmed;
 		}
 		else {
-			ty=margin-y_push;
-			memmove(&col,&iface.color.tab.background,sizeof(d3col));
+			y-=y_push;
+			col_ptr=&iface.color.tab.background;
 		}
 		
-		view_primitive_2D_color_poly((lx+x_slant),ty,&col,((rx-x_slant)+x_overlap),ty,&col,(rx+x_overlap),by,&col,lx,by,&col,1.0f);
+		view_primitive_2D_color_poly((lx+x_slant),y,col_ptr,((rx-x_slant)+x_overlap),y,col_ptr,(rx+x_overlap),by,col_ptr,lx,by,col_ptr,1.0f);
 
-		view_primitive_2D_line(&iface.color.tab.outline,1.0f,lx,by,(lx+x_slant),ty);
-		view_primitive_2D_line(&iface.color.tab.outline,1.0f,(lx+x_slant),ty,((rx-x_slant)+x_overlap),ty);
-		view_primitive_2D_line(&iface.color.tab.outline,1.0f,((rx-x_slant)+x_overlap),ty,(rx+x_overlap),by);
+		view_primitive_2D_line(&iface.color.tab.outline,1.0f,lx,by,(lx+x_slant),y);
+		view_primitive_2D_line(&iface.color.tab.outline,1.0f,(lx+x_slant),y,((rx-x_slant)+x_overlap),y);
+		view_primitive_2D_line(&iface.color.tab.outline,1.0f,((rx-x_slant)+x_overlap),y,(rx+x_overlap),by);
 
-		memmove(&col,&iface.color.tab.text_dimmed,sizeof(d3col));
+		col_ptr=&iface.color.tab.text_dimmed;
 		
 		if (element->value==tab_idx) {
-			memmove(&col,&iface.color.tab.text,sizeof(d3col));
+			col_ptr=&iface.color.tab.text;
 		}
 		
 		if (mouse_idx==tab_idx) {
-			memmove(&col,&iface.color.tab.text_mouse_over,sizeof(d3col));
+			col_ptr=&iface.color.tab.text_mouse_over;
 		}
 
 		gl_text_start(font_interface_index,iface.font.text_size_medium,FALSE);
-		gl_text_draw(((lx+rx)>>1),((ty+by)>>1),element->setup.tab.name[tab_idx],tx_center,TRUE,&col,1.0f);
+		gl_text_draw(((lx+rx)>>1),((y+by)>>1),element->setup.tab.name[tab_idx],tx_center,TRUE,col_ptr,1.0f);
 		gl_text_end();
 	}
 
-		// tab dialog
-		
-	lx=margin;
-	rx=iface.scale_x-margin;
-	ty=high+margin;
-	by=iface.scale_y-margin;
+		// final underline
 
-	view_primitive_2D_color_quad(&shadow_col,0.5f,(lx+5),(rx+5),(ty+5),(by+5));
-	
-	view_primitive_2D_color_quad(&iface.color.tab.background,1.0f,lx,rx,by,ty);
-	
-		// outside line
-		
-	view_primitive_2D_line(&iface.color.tab.outline,1.0f,lx,ty,lx,by);
-	view_primitive_2D_line(&iface.color.tab.outline,1.0f,lx,by,rx,by);
-	view_primitive_2D_line(&iface.color.tab.outline,1.0f,rx,by,rx,ty);
-	
-		// top line
-		
-	kx=margin+(element->value*xadd);
-	if (element->value!=0) {
-		view_primitive_2D_line(&iface.color.tab.outline,1.0f,lx,ty,kx,ty);
-	}
-	if ((kx+xadd+x_overlap)<rx) {
-		view_primitive_2D_line(&iface.color.tab.outline,1.0f,(kx+xadd+x_overlap),ty,rx,ty);
-	}
-
-	glDisable(GL_BLEND);
+	lx=element->x+(xadd*element->value);
+	rx=lx+xadd;
+	if (element->value!=0) view_primitive_2D_line(&iface.color.tab.outline,1.0f,element->x,by,lx,by);
+	view_primitive_2D_line(&iface.color.tab.outline,1.0f,rx,by,(element->x+element->wid),by);
 }
 
 /* =======================================================
@@ -3141,12 +3136,11 @@ void element_draw_model(element_type *element)
       
 ======================================================= */
 
-void element_draw_frame(element_type *element)
+void element_draw_frame(element_type *element,int mx,int my)
 {
-	int			y,lft,rgt,top,mid,bot;
-	bool		is_header;
-	d3col		col,col2;
-	d3col		shadow_col={0.3f,0.3f,0.3f};
+	int				y,lft,rgt,top,mid,bot;
+	bool			is_header;
+	d3col			col,col2;
 	
 		// header?
 		
@@ -3298,7 +3292,7 @@ void element_draw_lock(bool cursor_hilite)
 				element_draw_count(element);
 				break;
 			case element_type_frame:
-				element_draw_frame(element);
+				element_draw_frame(element,x,y);
 				break;
 				
 		}
@@ -3957,9 +3951,27 @@ int element_get_x_position(int id)
 	return(x);
 }
 
+int element_get_y_position(int id)
+{
+	int				y;
+	element_type	*element;
+
+	y=0;
+
+	SDL_mutexP(element_thread_lock);
+
+	element=element_find(id);
+	if (element!=NULL) y=element->y;
+
+	SDL_mutexV(element_thread_lock);
+
+	return(y);
+}
+
 void element_get_frame_inner_space(int id,int *x,int *y,int *wid,int *high)
 {
-	int					padding;
+	int					fy,fhigh,padding,
+						title_high,tab_high;
 	element_type		*element;
 	
 	element=element_find(id);
@@ -3971,10 +3983,26 @@ void element_get_frame_inner_space(int id,int *x,int *y,int *wid,int *high)
 	padding=element_get_padding();
 
 	*x=element->x+padding;
-	*y=(element->y+element_get_frame_title_high())+padding;
 	*wid=element->wid-(padding*2);
-	*high=(element->high-element_get_frame_title_high())-(padding*2);
 
-	if (element->setup.frame.has_buttons) *high-=(element_get_button_high()+padding);
+	fy=element->y+padding;
+	fhigh=element->high-(padding*2);
+
+	if (element->str[0]!=0x0) {
+		title_high=element_get_frame_title_high();
+		fy+=title_high;
+		fhigh-=title_high;
+	}
+
+	if (element->setup.frame.has_tabs) {
+		tab_high=element_get_tab_control_high();
+		fy+=tab_high;
+		fhigh-=tab_high;
+	}
+
+	if (element->setup.frame.has_buttons) fhigh-=(element_get_button_high()+padding);
+
+	*y=fy;
+	*high=fhigh;
 }
 

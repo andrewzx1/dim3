@@ -36,7 +36,8 @@ and can be sold or given away.
 #define join_pane_hosts					0
 #define join_pane_news					1
 
-#define join_tab_id						0
+#define join_frame_id					0
+#define join_tab_id						1
 
 #define join_button_join_id				10
 #define join_button_cancel_id			11
@@ -413,7 +414,7 @@ void join_ping_thread_end(void)
 
 void join_news_pane(void)
 {
-	int			x,y,wid,high,margin,padding;
+	int			x,y,wid,high;
 	
 		// show and hide proper elements
 		
@@ -423,21 +424,14 @@ void join_news_pane(void)
 
 		// news
 		
-	margin=element_get_tab_margin();
-	padding=element_get_padding();
-	
-	x=margin+padding;
-	y=(margin+element_get_tab_control_high())+padding;
-
-	wid=iface.scale_x-((margin+padding)*2);
-	high=(int)(((float)iface.scale_y)*0.84f)-y;
-
+	element_get_frame_inner_space(join_frame_id,&x,&y,&wid,&high);
 	element_text_box_add(join_news,join_news_id,x,y,wid,high,FALSE);
 }
 
 void join_lan_internet_hosts(void)
 {
-	int						x,y,wid,high,err_high,margin,padding;
+	int						fx,fy,y,wid,high,table_high,
+							err_high,padding;
 	char					str[1024],nstr[32];
 	element_column_type		cols[4];
 
@@ -450,26 +444,23 @@ void join_lan_internet_hosts(void)
 	
 		// hosts tables
 		
-	margin=element_get_tab_margin();
 	padding=element_get_padding();
-	
-	x=margin+padding;
-	y=margin+padding+element_get_tab_control_high();
 
-	wid=iface.scale_x-((margin+padding)*2);
-	high=iface.scale_y-(y+margin+(padding*3)+element_get_button_high());
+	element_get_frame_inner_space(join_frame_id,&fx,&fy,&wid,&high);
+
+	table_high=high;
 
 	switch (join_mode) {
 		case join_mode_wan_lan:
-			high=(high/2);
+			table_high=((high-padding)/2);
 			break;
 		case join_mode_lan_error:
 			err_high=(gl_text_get_char_height(iface.font.text_size_medium)*2)+(padding*2);
-			high-=(err_high+padding);
+			table_high-=(err_high+padding);
 			break;
 	}
 
-	strcpy(cols[0].name,"Local Host");
+	strcpy(cols[0].name,"Local Hosts");
 	cols[0].percent_size=0.4f;
 	strcpy(cols[1].name,"Game");
 	cols[1].percent_size=0.35f;
@@ -480,16 +471,18 @@ void join_lan_internet_hosts(void)
 
 		// lan list
 
-	element_table_add(cols,NULL,join_lan_table_id,4,x,y,wid,high,FALSE,element_table_bitmap_data);
+	y=fy;
+
+	element_table_add(cols,NULL,join_lan_table_id,4,fx,y,wid,table_high,FALSE,element_table_bitmap_data);
 
 		// wan list (if on),
 		// or error if problem gathering list
 
 	if (join_mode==join_mode_wan_lan) {
-		y+=(high+5);
-		strcpy(cols[0].name,"Internet Host");
+		y+=(table_high+padding);
+		strcpy(cols[0].name,"Internet Hosts");
 
-		element_table_add(cols,NULL,join_wan_table_id,4,x,y,wid,high,FALSE,element_table_bitmap_data);
+		element_table_add(cols,NULL,join_wan_table_id,4,fx,y,wid,table_high,FALSE,element_table_bitmap_data);
 
 		join_create_list(join_host_wan_list,join_wan_table_id);
 	}
@@ -505,7 +498,7 @@ void join_lan_internet_hosts(void)
 			}
 			strcat(str,iface.multiplayer.news.url);
 
-			element_text_box_add(str,-1,x,y,wid,err_high,TRUE);
+			element_text_box_add(str,-1,fx,y,wid,err_high,TRUE);
 		}
 	}
 
@@ -516,9 +509,9 @@ void join_lan_internet_hosts(void)
 
 void join_create_pane(void)
 {
-	int						x,y,wid,
-							butt_wid,butt_high,pane;
-	char					tab_list[][32]={"Hosts","News"};
+	int							fx,fy,x,y,wid,high,text_wid,margin,padding;
+	char						tab_list[][32]={"Hosts","News"};
+	element_frame_button_type	butts[3]={{join_button_rescan_id,"Rescan",FALSE},{join_button_cancel_id,"Cancel",TRUE},{join_button_join_id,"Join",TRUE}};
 	
 		// turn off any scanning threads
 		
@@ -527,45 +520,36 @@ void join_create_pane(void)
 		// controls
 
 	element_clear();
-	
-		// tabs
+
+		// frame
 		
+	margin=element_get_margin();
+	padding=element_get_padding();
+
+	fx=margin;
+	fy=margin;
+	wid=iface.scale_x-(margin*2);
+	high=iface.scale_y-(margin*2);
+	
 	if (join_mode==join_mode_wan_lan) {
-		element_tab_add((char*)tab_list,join_tab_value,join_tab_id,2);
+		element_frame_add("Join Game",join_frame_id,fx,fy,wid,high,join_tab_id,2,(char*)tab_list,3,butts);
+		element_set_value(join_tab_id,join_tab_value);
 	}
 	else {
-		element_tab_add((char*)tab_list,join_tab_value,join_tab_id,1);
+		element_frame_add("Join Game",join_frame_id,fx,fy,wid,high,join_tab_id,0,NULL,3,butts);
 	}
 	
-		// buttons
-		
-	butt_wid=element_get_button_long_wid();
-	butt_high=element_get_button_high();
-
-	element_get_tab_button_bottom_left(&x,&y);
-	element_button_text_add("Rescan Hosts",join_button_rescan_id,x,y,butt_wid,butt_high,element_pos_left,element_pos_bottom);
-	
-	butt_wid=element_get_button_short_wid();
-
-	element_get_tab_button_bottom_right(&x,&y);
-	element_button_text_add("Join",join_button_join_id,x,y,butt_wid,butt_high,element_pos_right,element_pos_bottom);
-
-	x=element_get_x_position(join_button_join_id)-element_get_padding();
-	element_button_text_add("Cancel",join_button_cancel_id,x,y,butt_wid,butt_high,element_pos_right,element_pos_bottom);
-
 		// status
 
-	wid=(int)(((float)iface.scale_x)*0.2f);
-	x=(element_get_x_position(join_button_rescan_id)+wid)+element_get_padding();
-	y-=element_get_padding();
+	text_wid=(int)(((float)wid)*0.2f);
+	x=(element_get_x_position(join_button_rescan_id)+wid)+padding;
+	y=element_get_y_position(join_button_rescan_id)-padding;
 	
-	element_text_add("",join_status_id,x,y,iface.font.text_size_small,tx_left,NULL,FALSE);
+	element_text_add("XXXXXXXX",join_status_id,x,y,iface.font.text_size_small,tx_left,NULL,FALSE);
 
 		// specific pane controls
 		
-	pane=element_get_value(join_tab_id);
-		
-	switch (pane) {
+	switch (element_get_value(join_tab_id)) {
 		case join_pane_hosts:
 			join_lan_internet_hosts();
 			break;

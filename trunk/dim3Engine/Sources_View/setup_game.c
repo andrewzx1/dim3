@@ -75,14 +75,15 @@ and can be sold or given away.
 #define ctrl_debug_debug_on_id				75
 #define ctrl_debug_ignore_fps_lock_id		76
 
-#define ctrl_tab_id							80
+#define setup_game_frame_id					80
+#define setup_game_tab_id					81
 
-#define setup_action_set_button				90
-#define setup_action_clear_button			91
+#define setup_action_set_button_id			90
+#define setup_action_clear_button_id		91
 
-#define setup_game_ok_button				100
-#define setup_game_cancel_button			101
-#define setup_game_default_button			102
+#define setup_game_ok_button_id				100
+#define setup_game_cancel_button_id			101
+#define setup_game_default_button_id		102
 
 extern bool view_reset_display(char *err_str);
 extern int setup_find_action_in_setup(int action_idx);
@@ -143,7 +144,7 @@ void setup_network_fill_character_table(void)
 void setup_game_video_pane_opengl(void)
 {
 	int			n,idx,wid,high,
-				x,y,control_y_add,control_y_sz;
+				fx,fy,x,y,control_y_add,control_y_sz;
 	bool		no_res_combo;
 	
 #if defined(D3_OS_IPHONE) || defined(D3_OS_ANDRIOD)
@@ -156,9 +157,10 @@ void setup_game_video_pane_opengl(void)
 	control_y_sz=control_y_add*3;
 	if (!no_res_combo) control_y_sz+=control_y_add;
 	if (gl_check_fsaa_ok()) control_y_sz+=control_y_add;
-	
-	x=(int)(((float)iface.scale_x)*0.4f);
-	y=((iface.scale_y>>1)+(element_get_button_high()>>1))-(control_y_sz>>1);
+
+	element_get_frame_inner_space(setup_game_frame_id,&fx,&fy,&wid,&high);
+	x=fx+(int)(((float)wid)*0.4f);
+	y=(fy+((high-control_y_sz)/2))+control_y_add;
 	
 		// setup screen size list
 		
@@ -202,14 +204,15 @@ void setup_game_video_pane_opengl(void)
 
 void setup_game_video_pane_dim3rtl(void)
 {
-	int			n,idx,
+	int			n,idx,fx,fy,wid,high,
 				x,y,control_y_add,control_y_sz;
 	
 	control_y_add=element_get_control_separation_high();
 	control_y_sz=control_y_add*2;
 	
-	x=(int)(((float)iface.scale_x)*0.4f);
-	y=((iface.scale_y>>1)+(element_get_button_high()>>1))-(control_y_sz>>1);
+	element_get_frame_inner_space(setup_game_frame_id,&fx,&fy,&wid,&high);
+	x=fx+(int)(((float)wid)*0.4f);
+	y=(fy+((high-control_y_sz)/2))+control_y_add;
 	
 		// setup screen size list
 		
@@ -232,13 +235,15 @@ void setup_game_video_pane_dim3rtl(void)
 
 void setup_game_audio_pane(void)
 {
-	int			x,y,control_y_add,control_y_sz;
+	int			fx,fy,wid,high,
+				x,y,control_y_add,control_y_sz;
 	
 	control_y_add=element_get_control_separation_high();
 	control_y_sz=control_y_add*2;
 	
-	x=(int)(((float)iface.scale_x)*0.38f);
-	y=((iface.scale_y>>1)+(element_get_button_high()>>1))-(control_y_sz>>1);
+	element_get_frame_inner_space(setup_game_frame_id,&fx,&fy,&wid,&high);
+	x=fx+(int)(((float)wid)*0.4f);
+	y=(fy+((high-control_y_sz)/2))+control_y_add;
 	
 	element_slider_add("Sound Volume",setup.sound_volume,0.0f,1.0f,ctrl_sound_volume_id,x,y,TRUE);
 	y+=control_y_add;
@@ -262,7 +267,8 @@ bool setup_game_control_pane_visible(void)
 
 void setup_game_control_pane(void)
 {
-	int			x,y,control_y_add,control_y_sz;
+	int			fx,fy,wid,high,
+				x,y,control_y_add,control_y_sz;
 	
 		// get size of controls
 
@@ -275,11 +281,12 @@ void setup_game_control_pane(void)
 #endif
 	if (input_check_joystick_ok()) control_y_sz+=(control_y_add*2);
 
+	element_get_frame_inner_space(setup_game_frame_id,&fx,&fy,&wid,&high);
+	x=fx+(int)(((float)wid)*0.4f);
+	y=(fy+((high-control_y_sz)/2))+control_y_add;
+
 		// add the controls
 
-	x=(int)(((float)iface.scale_x)*0.4f);
-	y=((iface.scale_y>>1)+(element_get_button_high()>>1))-(control_y_sz>>1);
-	
 	if (iface.setup.allow_run) {
 		element_checkbox_add("Always Run",setup.always_run,ctrl_always_run_id,x,y,TRUE);
 		y+=control_y_add;
@@ -314,18 +321,16 @@ void setup_game_control_pane(void)
 
 void setup_game_action_pane(void)
 {
-	int					n,k,list_cnt,idx,x,y,wid,high,
-						margin,padding;
+	int					n,k,list_cnt,idx,
+						fx,fy,wid,high,
+						x,y,table_high,padding;
 	element_column_type	cols[2];
 	
-	margin=element_get_tab_margin();
-	padding=element_get_padding();
-	
-	x=margin+padding;
-	y=(margin+element_get_tab_control_high())+padding;
+	element_get_frame_inner_space(setup_game_frame_id,&fx,&fy,&wid,&high);
 
-	wid=iface.scale_x-((margin+padding)*2);
-	high=iface.scale_y-(y+margin+(padding*3)+(element_get_button_high()*2));
+	padding=element_get_padding();
+
+	table_high=high-(element_get_button_high()+padding);
 	
 		// setup action list
 		
@@ -368,45 +373,44 @@ void setup_game_action_pane(void)
 	strcpy(cols[1].name,"Keys");
 	cols[1].percent_size=0.50f;
 
-	element_table_add(cols,(char*)setup_action_list,ctrl_action_id,2,x,y,wid,high,FALSE,element_table_bitmap_none);
+	element_table_add(cols,(char*)setup_action_list,ctrl_action_id,2,fx,fy,wid,table_high,FALSE,element_table_bitmap_none);
 	
 		// action buttons
 		
-	x=iface.scale_x>>1;
-	y+=high;
+	x=fx+(int)(((float)wid)*0.5f);
+	y=(fy+table_high)+padding;
 	
 	wid=element_get_button_long_wid();
 	high=element_get_button_high();
 	
-	y+=(((padding/2)+(high/2))+5);
+	element_button_text_add("Set Action",setup_action_set_button_id,(x-(padding/2)),y,wid,high,element_pos_right,element_pos_top);
+	element_enable(setup_action_set_button_id,FALSE);
 	
-	element_button_text_add("Set Action",setup_action_set_button,(x-(padding/2)),y,wid,high,element_pos_right,element_pos_center);
-	element_enable(setup_action_set_button,FALSE);
-	
-	element_button_text_add("Clear Action",setup_action_clear_button,(x+(padding/2)),y,wid,high,element_pos_left,element_pos_center);
-	element_enable(setup_action_clear_button,FALSE);
+	element_button_text_add("Clear Action",setup_action_clear_button_id,(x+(padding/2)),y,wid,high,element_pos_left,element_pos_top);
+	element_enable(setup_action_clear_button_id,FALSE);
 }
 
 void setup_game_player_pane(void)
 {
-	int							x,y,wid,high,margin,padding,
-								control_y_add,control_y_sz;
+	int							fx,fy,x,y,wid,high,padding,
+								table_wid,table_high,control_y_add,control_y_sz;
 	element_column_type			cols[1];
 	iface_mp_character_type		*mp_character;
 
-	margin=element_get_tab_margin();
 	padding=element_get_padding();
 
 	control_y_add=element_get_control_separation_high();
 	control_y_sz=control_y_add*2;
+
+	element_get_frame_inner_space(setup_game_frame_id,&fx,&fy,&wid,&high);
 	
 	if (iface.multiplayer.character_list.ncharacter!=0) {
-		x=(int)(((float)iface.scale_x)*0.24f);
-		y=((margin+element_get_tab_control_high())+padding)+control_y_add;
+		x=fx+(int)(((float)wid)*0.24f);
+		y=(fy+control_y_add)+padding;
 	}
 	else {
-		x=(int)(((float)iface.scale_x)*0.38f);
-		y=(iface.scale_y>>1)-(control_y_sz>>1);
+		x=fx+(int)(((float)wid)*0.38f);
+		y=(fy+((high-control_y_sz)/2))+control_y_add;
 	}
 	
 		// names and colors
@@ -421,16 +425,15 @@ void setup_game_player_pane(void)
 	
 		// character table
 		
-	x=margin+padding;
 	y+=padding;
 
-	wid=(int)(((float)iface.scale_x)*0.80f)-((margin+padding)*2);
-	high=iface.scale_y-(y+(padding*2)+margin+element_get_button_high());
+	table_wid=(int)(((float)wid)*0.8f);
+	table_high=high-(y-fy);
 
 	strcpy(cols[0].name,"Characters");
 	cols[0].percent_size=1.0f;
 
-	element_table_add(cols,NULL,ctrl_character_id,1,x,y,wid,high,FALSE,element_table_bitmap_none);
+	element_table_add(cols,NULL,ctrl_character_id,1,fx,y,table_wid,table_high,FALSE,element_table_bitmap_none);
 
 		// fill and select table
 
@@ -441,8 +444,8 @@ void setup_game_player_pane(void)
 	
 		// character model
 
-	x=(int)(((float)iface.scale_x)*0.85f);
-	y=(int)(((float)iface.scale_y)*0.78f);
+	x=fx+(int)(((float)wid)*0.87f);
+	y=fy+(int)(((float)high)*0.9f);
 	
 	mp_character=&iface.multiplayer.character_list.characters[setup.network.character_idx];
 	element_model_add(mp_character->model_name,"Idle",mp_character->interface_resize,&mp_character->interface_offset,NULL,ctrl_character_model_id,x,y);
@@ -450,13 +453,15 @@ void setup_game_player_pane(void)
 
 void setup_game_debug_pane(void)
 {
-	int			x,y,control_y_add,control_y_sz;
+	int			fx,fy,wid,high,
+				x,y,control_y_add,control_y_sz;
 	
 	control_y_add=element_get_control_separation_high();
 	control_y_sz=control_y_add*7;
 	
-	x=(int)(((float)iface.scale_x)*0.6f);
-	y=((iface.scale_y>>1)+(element_get_button_high()>>1))-(control_y_sz>>1);
+	element_get_frame_inner_space(setup_game_frame_id,&fx,&fy,&wid,&high);
+	x=fx+(int)(((float)wid)*0.5f);
+	y=(fy+((high-control_y_sz)/2))+control_y_add;
 	
 	element_checkbox_add("Engine Windowed Mode",setup.window,ctrl_debug_engine_windowed_id,x,y,TRUE);
 	y+=control_y_add;
@@ -475,12 +480,13 @@ void setup_game_debug_pane(void)
 
 void setup_game_create_pane(void)
 {
-	int			x,y,
-				butt_wid,butt_high,ntab,pane;
+	int							fx,fy,wid,high,margin,
+								ntab;
+	element_frame_button_type	butts[3]={{setup_game_default_button_id,"Default",FALSE},{setup_game_cancel_button_id,"Cancel",TRUE},{setup_game_ok_button_id,"OK",TRUE}};
 							
 	element_clear();
 	
-		// tabs
+		// the frame
 
 	ntab=0;
 
@@ -514,30 +520,20 @@ void setup_game_create_pane(void)
 		setup_tab_index[ntab]=setup_pane_debug;
 		ntab++;
 	}
-	
-	element_tab_add((char*)setup_tab_list,setup_tab_value,ctrl_tab_id,ntab);
-	
-		// buttons
-		
-	butt_wid=element_get_button_long_wid();
-	butt_high=element_get_button_high();
-	
-	element_get_tab_button_bottom_left(&x,&y);
-	element_button_text_add("Default",setup_game_default_button,x,y,butt_wid,butt_high,element_pos_left,element_pos_bottom);
 
-	butt_wid=element_get_button_short_wid();
-	
-	element_get_tab_button_bottom_right(&x,&y);
-	element_button_text_add("OK",setup_game_ok_button,x,y,butt_wid,butt_high,element_pos_right,element_pos_bottom);
+	margin=element_get_margin();
 
-	x=element_get_x_position(setup_game_ok_button)-element_get_padding();
-	element_button_text_add("Cancel",setup_game_cancel_button,x,y,butt_wid,butt_high,element_pos_right,element_pos_bottom);
+	fx=margin;
+	fy=margin;
+	wid=iface.scale_x-(margin*2);
+	high=iface.scale_y-(margin*2);
+	
+	element_frame_add("Setup",setup_game_frame_id,fx,fy,wid,high,setup_game_tab_id,ntab,(char*)setup_tab_list,3,butts);
+	element_set_value(setup_game_tab_id,setup_tab_value);
 	
 		// specific pane controls
 		
-	pane=setup_tab_index[element_get_value(ctrl_tab_id)];
-		
-	switch (pane) {
+	switch (setup_tab_index[element_get_value(setup_game_tab_id)]) {
 		case setup_pane_video:
 			if (!iface.project.ray_trace) {
 				setup_game_video_pane_opengl();
@@ -586,8 +582,8 @@ void setup_game_action_enable_buttons(void)
 	int					ctrl_idx,action_idx;
 	setup_action_type	*action;
 	
-	element_enable(setup_action_set_button,FALSE);
-	element_enable(setup_action_clear_button,FALSE);
+	element_enable(setup_action_set_button_id,FALSE);
+	element_enable(setup_action_clear_button_id,FALSE);
 	
 		// get current action
 		
@@ -598,12 +594,12 @@ void setup_game_action_enable_buttons(void)
 	
 		// clear enabled if selection
 		
-	element_enable(setup_action_clear_button,TRUE);
+	element_enable(setup_action_clear_button_id,TRUE);
 	
 		// set enabled if empty attachment
 		
 	action=&setup.action_list.actions[action_idx];
-	if (setup_game_action_find_free_attach(action)!=-1) element_enable(setup_action_set_button,TRUE);
+	if (setup_game_action_find_free_attach(action)!=-1) element_enable(setup_action_set_button_id,TRUE);
 }
 
 void setup_game_action_clear(void)
@@ -801,35 +797,35 @@ void setup_game_handle_click(int id)
 	
 			// tab
 			
-		case ctrl_tab_id:
-			setup_tab_value=element_get_value(ctrl_tab_id);
+		case setup_game_tab_id:
+			setup_tab_value=element_get_value(setup_game_tab_id);
 			setup_game_create_pane();
 			return;
 			
 			// buttons
 			
-		case setup_game_ok_button:
+		case setup_game_ok_button_id:
 			setup_close_save_flag=TRUE;
 			setup_game_done();
 			return;
 			
-		case setup_game_cancel_button:
+		case setup_game_cancel_button_id:
 			setup_close_save_flag=FALSE;
 			setup_game_done();
 			return;
 
-		case setup_game_default_button:
+		case setup_game_default_button_id:
 			setup_game_default();
 			return;
 			
-		case setup_action_set_button:
+		case setup_action_set_button_id:
 			setup_action_scroll_pos=element_get_scroll_position(ctrl_action_id);
 			setup_action_set_flag=TRUE;
 			input_clear();
 			input_set_key_start();
 			return;
 			
-		case setup_action_clear_button:
+		case setup_action_clear_button_id:
 			setup_action_scroll_pos=element_get_scroll_position(ctrl_action_id);
 			setup_game_action_clear();
 			element_set_scroll_position(ctrl_action_id,setup_action_scroll_pos);
