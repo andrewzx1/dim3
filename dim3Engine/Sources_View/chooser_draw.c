@@ -127,7 +127,7 @@ void chooser_create_elements(void)
 
 	if (frame!=NULL) {
 		chooser_text_substitute(frame->title,title,max_chooser_frame_text_sz);
-		element_frame_add(title,-1,frame->x,frame->y,frame->wid,frame->high,0,NULL);
+		element_frame_add(title,-1,frame->x,frame->y,frame->wid,frame->high,-1,0,NULL,0,NULL);
 	}
 
 		// mark regular pieces as not being

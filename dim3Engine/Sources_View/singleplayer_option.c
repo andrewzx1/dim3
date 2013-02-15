@@ -175,16 +175,33 @@ int singleplayer_option_count(int simple_save_idx)
 
 /* =======================================================
 
+      Map Selected
+      
+======================================================= */
+
+void singleplayer_option_map_selected(void)
+{
+	int				idx;
+
+	if (!singleplayer_map_pick_on(intro_simple_save_idx)) return;
+	
+	idx=element_get_value(singleplayer_option_map_table_id);
+	element_enable(singleplayer_option_button_ok_id,(idx!=-1));
+}
+
+/* =======================================================
+
       Singleplayer Option Open and Close
       
 ======================================================= */
 
 void singleplayer_option_open(void)
 {
-	int						n,fx,fy,bx,by,wid,high,title_high,table_high,
-							butt_wid,butt_high,margin,padding,control_y_add;
-	element_column_type		cols[1];
-	iface_sp_option_type	*sp_option;
+	int							n,fx,fy,bx,by,wid,high,title_high,table_high,
+								margin,padding,control_y_add;
+	iface_sp_option_type		*sp_option;
+	element_frame_button_type	butts[2]={{singleplayer_option_button_cancel_id,"Cancel",TRUE},{singleplayer_option_button_ok_id,"Play",TRUE}};
+	element_column_type			cols[1];
 
 	singleplayer_option_map_list_initialize();
 
@@ -194,35 +211,36 @@ void singleplayer_option_open(void)
 
 		// get height
 
-	margin=element_get_tab_margin();
+	margin=element_get_margin();
 	padding=element_get_padding();
 	control_y_add=element_get_control_separation_high();
 	
 	title_high=element_get_frame_title_high();
 
 	if (singleplayer_map_pick_on(intro_simple_save_idx)) {
-		high=iface.scale_y-(title_high+(padding*4));
+		high=iface.scale_y-(margin*2);
 	}
 	else {
-		high=padding*4;
-
+		high=(padding*4);
 		if (iface.singleplayer.skill) high+=control_y_add;
 		high+=(control_y_add*singleplayer_option_count(intro_simple_save_idx));
-		high+=element_get_button_high();
+		high+=element_get_button_high()+element_get_frame_title_high();
 	}
 	
 		// dialog and frame
 
 	fx=margin;
 	fy=(iface.scale_y-high)/2;
-	wid=iface.scale_x-50;
+	wid=iface.scale_x-(margin*2);
 	
-	element_frame_add("New Game",singleplayer_option_frame_id,fx,fy,wid,high,0,NULL);
+	element_frame_add("New Game",singleplayer_option_frame_id,fx,fy,wid,high,-1,0,NULL,2,butts);
 
 		// controls
 
+	element_get_frame_inner_space(singleplayer_option_frame_id,&fx,&fy,&wid,&high);
+
 	bx=fx+(wid/3);
-	by=fy+padding;
+	by=fy;
 
 	if (iface.singleplayer.skill) {
 		element_combo_add("Skill",(char*)skill_list,skill_medium,singleplayer_option_skill_id,bx,(by+control_y_add),TRUE);
@@ -247,30 +265,20 @@ void singleplayer_option_open(void)
 		strcpy(cols[0].name,"Map");
 		cols[0].percent_size=1.0f;
 		
-		table_high=((fy+(high-(element_get_button_high()+padding)))-by)-padding;
+		table_high=high-(by-fy);
 
-		element_table_add(cols,NULL,singleplayer_option_map_table_id,1,(fx+padding),by,(wid-(padding*2)),table_high,FALSE,element_table_bitmap_data);
+		element_table_add(cols,NULL,singleplayer_option_map_table_id,1,fx,by,wid,table_high,FALSE,element_table_bitmap_data);
 	
 		singleplayer_option_map_list_fill();
 		
 		element_set_value(singleplayer_option_map_table_id,0);
 	}
-
-		// buttons
-
-	butt_wid=element_get_button_short_wid();
-	butt_high=element_get_button_high();
-
-	element_get_frame_button_bottom_right(fx,fy,wid,high,&bx,&by);
-
-	element_button_text_add("Play",singleplayer_option_button_ok_id,bx,by,butt_wid,butt_high,element_pos_right,element_pos_bottom);
-
-	bx=element_get_x_position(singleplayer_option_button_ok_id)-padding;
-	element_button_text_add("Cancel",singleplayer_option_button_cancel_id,bx,by,butt_wid,butt_high,element_pos_right,element_pos_bottom);
 	
 		// in key state
 	
 	singleplayer_option_esc_down=FALSE;
+
+	singleplayer_option_map_selected();
 }
 
 void singleplayer_option_close(void)
@@ -340,6 +348,10 @@ void singleplayer_option_click(void)
 
 		case singleplayer_option_button_cancel_id:
 			server.next_state=gs_intro;
+			break;
+
+		case singleplayer_option_map_table_id:
+			singleplayer_option_map_selected();
 			break;
 
 	}

@@ -32,7 +32,8 @@ and can be sold or given away.
 #include "interface.h"
 #include "scripts.h"
 
-#define error_close_id				0
+#define error_frame_id				0
+#define error_close_id				1
 
 extern server_type			server;
 extern view_type			view;
@@ -48,43 +49,40 @@ extern js_type				js;
 
 void error_open(void)
 {
-	int				x,y,butt_wid,butt_high,control_y_add;
-	char			tab_list[][name_str_len]={"Error"};
-	d3col			col;
+	int							fx,fy,x,y,wid,high,
+								margin,padding,control_y_add;
+	element_frame_button_type	butts[1]={{error_close_id,"Close",TRUE}};
 
 		// setup gui
 		
 	gui_initialize(NULL,NULL);
 	
-		// the dialog
-		
-	element_tab_add((char*)tab_list,0,-1,1);
+		// the frame
 
-		// the text
-		
+	margin=element_get_margin();
+	padding=element_get_padding();
 	control_y_add=element_get_control_separation_high();
 	
-	col.r=1.0f;
-	col.g=col.b=0.0f;
+	high=(padding*4)+(control_y_add*2)+(element_get_button_high()+element_get_frame_title_high());
 
-	x=iface.scale_x/2;
-	y=(iface.scale_y/2)-control_y_add;
-	element_text_add("[Error]",-1,x,y,iface.font.text_size_large,tx_center,&col,FALSE);
+	fx=margin;
+	fy=(iface.scale_y-high)/2;
+	wid=iface.scale_x-(margin*2);
 
-	y+=control_y_add;
-	element_text_add(view.error.str,-1,x,y,iface.font.text_size_mini,tx_center,NULL,FALSE);
+	element_frame_add("Error",error_frame_id,fx,fy,wid,high,-1,0,NULL,1,butts);
+
+		// the text
+	
+	element_get_frame_inner_space(error_frame_id,&fx,&fy,&wid,&high);
+
+
+	x=fx+(wid/2);
+	y=fy+control_y_add;
+
+	element_text_add(view.error.str,-1,x,y,iface.font.text_size_small,tx_center,NULL,FALSE);
 	
 	y+=control_y_add;
-	element_text_add(view.error.str_2,-1,x,y,iface.font.text_size_mini,tx_center,NULL,FALSE);
-	
-		// buttons
-		
-	butt_wid=element_get_button_short_wid();
-	butt_high=element_get_button_high();
-	
-	element_get_tab_button_bottom_right(&x,&y);
-	
-	element_button_text_add("Close",error_close_id,x,y,butt_wid,butt_high,element_pos_right,element_pos_bottom);
+	element_text_add(view.error.str_2,-1,x,y,iface.font.text_size_small,tx_center,NULL,FALSE);
 }
 
 void error_close(void)

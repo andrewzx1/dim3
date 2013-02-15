@@ -284,8 +284,8 @@ void file_open(void)
 	int							x,y,fx,fy,wid,high,
 								table_wid,table_high,
 								margin,padding,control_y_add;
-	element_frame_button_type	butts_save[3]={{file_button_save_id,"Save",TRUE},{file_button_delete_id,"Delete",TRUE},{file_button_cancel_id,"Cancel",TRUE}},
-								butts_load[3]={{file_button_load_id,"Load",TRUE},{file_button_delete_id,"Delete",TRUE},{file_button_cancel_id,"Cancel",TRUE}};
+	element_frame_button_type	butts_save[3]={{file_button_delete_id,"Delete",FALSE},{file_button_cancel_id,"Cancel",TRUE},{file_button_save_id,"Save",TRUE}},
+								butts_load[3]={{file_button_delete_id,"Delete",FALSE},{file_button_cancel_id,"Cancel",TRUE},{file_button_load_id,"Load",TRUE}};
 	element_column_type	cols[4];
 	
 	file_last_state=server.last_state;
@@ -296,7 +296,7 @@ void file_open(void)
 	
 		// the frame
 
-	margin=element_get_tab_margin();
+	margin=element_get_margin();
 	padding=element_get_padding();
 	control_y_add=element_get_control_separation_high();
 
@@ -306,10 +306,10 @@ void file_open(void)
 	high=iface.scale_y-(margin*2);
 	
 	if (file_is_save) {
-		element_frame_add("Save Game",file_frame_id,fx,fy,wid,high,3,butts_save);
+		element_frame_add("Save Game",file_frame_id,fx,fy,wid,high,-1,0,NULL,3,butts_save);
 	}
 	else {
-		element_frame_add("Load Game",file_frame_id,fx,fy,wid,high,3,butts_load);
+		element_frame_add("Load Game",file_frame_id,fx,fy,wid,high,-1,0,NULL,3,butts_load);
 	}
 	
 		// make the file list
@@ -328,6 +328,10 @@ void file_open(void)
 	cols[2].percent_size=0.18f;
 
 	element_table_add(cols,file_table_data,file_directory_id,3,x,y,table_wid,table_high,FALSE,element_table_bitmap_document);
+
+		// enable buttons
+
+	file_save_selected();
 }
 
 void file_close(void)

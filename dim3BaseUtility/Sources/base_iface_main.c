@@ -323,7 +323,7 @@ void iface_default_settings(iface_type *iface)
 	iface->devices[device_type_pc].scale.button_high=0.06f;
 	iface->devices[device_type_pc].scale.button_short_wid=0.15f;
 	iface->devices[device_type_pc].scale.button_long_wid=0.25f;
-	iface->devices[device_type_pc].scale.tab_margin=0.02f;
+	iface->devices[device_type_pc].scale.dialog_margin=0.02f;
 	iface->devices[device_type_pc].scale.tab_high=0.04f;
 
 	iface->devices[device_type_phone].scale.control_padding=0.02f;
@@ -334,7 +334,7 @@ void iface_default_settings(iface_type *iface)
 	iface->devices[device_type_phone].scale.button_high=0.08f;
 	iface->devices[device_type_phone].scale.button_short_wid=0.2f;
 	iface->devices[device_type_phone].scale.button_long_wid=0.3f;
-	iface->devices[device_type_phone].scale.tab_margin=0.02f;
+	iface->devices[device_type_phone].scale.dialog_margin=0.02f;
 	iface->devices[device_type_phone].scale.tab_high=0.06f;
 
 	iface->devices[device_type_pad].scale.control_padding=0.015f;
@@ -345,7 +345,7 @@ void iface_default_settings(iface_type *iface)
 	iface->devices[device_type_pad].scale.button_high=0.07f;
 	iface->devices[device_type_pad].scale.button_short_wid=0.2f;
 	iface->devices[device_type_pad].scale.button_long_wid=0.3f;
-	iface->devices[device_type_pad].scale.tab_margin=0.02f;
+	iface->devices[device_type_pad].scale.dialog_margin=0.02f;
 	iface->devices[device_type_pad].scale.tab_high=0.05f;
 
 		// progress

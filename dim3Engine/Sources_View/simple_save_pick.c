@@ -139,12 +139,15 @@ void simple_save_pick_reset_controls(void)
 
 void simple_save_pick_open(void)
 {
-	int				n,x,y,bx,by,wid,high,
-					txt_y_off,txt_size,
-					bitmap_max,bitmap_size,bitmap_add,
-					butt_wid,butt_high,save_wid,save_high,erase_wid,erase_high,
-					margin,padding,control_y_add;
-	char			name[256],path[1024],disable_path[1024];
+	int							n,x,y,bx,by,wid,high,
+								txt_y_off,txt_size,
+								bitmap_max,bitmap_size,bitmap_add,
+								butt_wid,butt_high,save_wid,save_high,erase_wid,erase_high,
+								margin,padding,control_y_add;
+	char						path[1024],disable_path[1024];
+	element_frame_button_type	butts_pick[2]={{simple_save_pick_button_erase_id,"Erase",FALSE},{simple_save_pick_button_cancel_id,"Cancel",TRUE}},
+								butts_erase[max_simple_save_spot+1];
+
 
 		// simple save UI
 		
@@ -152,7 +155,7 @@ void simple_save_pick_open(void)
 
 		// get height
 
-	margin=element_get_tab_margin();
+	margin=element_get_margin();
 	padding=element_get_padding();
 	control_y_add=element_get_control_separation_high();
 	
@@ -166,15 +169,14 @@ void simple_save_pick_open(void)
 	wid=iface.scale_x-(margin*2);
 	high=iface.scale_y-(margin*2);
 	
-	element_frame_add("Pick Save Spot",simple_save_pick_frame_id,x,y,wid,high,0,NULL);
+	element_frame_add("Pick Save Spot",simple_save_pick_frame_id,x,y,wid,high,-1,0,NULL,2,butts_pick);
 
 		// simple save picker sizes
 
+	element_get_frame_inner_space(simple_save_pick_frame_id,&bx,&by,&save_wid,&save_high);
+
 	bx=x+padding;
 	by=y+padding;
-
-	save_wid=wid-(padding*2);
-	save_high=((high-((padding*2)+butt_high))/max_simple_save_spot)-padding;
 
 		// calculate size of text + progress
 		// by dividing it out
@@ -214,6 +216,19 @@ void simple_save_pick_open(void)
 	}
 	
 		// simple save erase
+		// buttons
+
+	for (n=0;n!=max_simple_save_spot;n++) {
+		sprintf(butts_erase[n].text,"Erase %d",(n+1));
+		butts_erase[n].id=simple_save_pick_erase_button_id+n;
+		butts_erase[n].right=FALSE;
+	}
+	
+	strcpy(butts_erase[max_simple_save_spot].text,"Cancel");
+	butts_erase[max_simple_save_spot].id=simple_save_pick_erase_cancel_id;
+	butts_erase[max_simple_save_spot].right=FALSE;
+
+		// simple save erase frame
 		
 	erase_wid=(butt_wid*4)+(padding*5);
 	erase_high=butt_high+(padding*2);
@@ -221,31 +236,7 @@ void simple_save_pick_open(void)
 	bx=(x+(wid>>1))-(erase_wid>>1);
 	by=(y+(high>>1))-(erase_high>>1);
 	
-	element_frame_add("Erase Save Spot",simple_save_pick_erase_frame_id,bx,by,erase_wid,erase_high,0,NULL);
-	
-	bx+=padding;
-	by+=padding;
-	
-	for (n=0;n!=max_simple_save_spot;n++) {
-		sprintf(name,"Erase %d",(n+1));
-		element_button_text_add(name,(simple_save_pick_erase_button_id+n),bx,by,butt_wid,butt_high,element_pos_left,element_pos_top);
-		bx+=(butt_wid+padding);
-	}
-	
-	element_button_text_add("Cancel",simple_save_pick_erase_cancel_id,bx,by,butt_wid,butt_high,element_pos_left,element_pos_top);
-
-		// erase button
-
-	bx=x+padding;
-	by=(y+high)-padding;
-
-	element_button_text_add("Erase",simple_save_pick_button_erase_id,bx,by,butt_wid,butt_high,element_pos_left,element_pos_bottom);
-
-		// cancel button
-
-	bx=(x+wid)-padding;
-
-	element_button_text_add("Cancel",simple_save_pick_button_cancel_id,bx,by,butt_wid,butt_high,element_pos_right,element_pos_bottom);
+	element_frame_add("Erase Save Spot",simple_save_pick_erase_frame_id,bx,by,erase_wid,erase_high,-1,0,NULL,(max_simple_save_spot+1),butts_erase);
 	
 		// in key state
 	

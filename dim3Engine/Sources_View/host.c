@@ -37,7 +37,8 @@ and can be sold or given away.
 #define host_pane_options				1
 #define host_pane_info					2
 
-#define host_tab_id						0
+#define host_frame_id					0
+#define host_tab_id						1
 
 #define host_button_host_id				10
 #define host_button_cancel_id			11
@@ -346,7 +347,7 @@ void host_game_pane(void)
 	int						n,x,y,wid,high,margin,padding,control_y_add;
 	element_column_type		cols[1];
 	
-	margin=element_get_tab_margin();
+	margin=element_get_margin();
 	padding=element_get_padding();
 	control_y_add=element_get_control_separation_high();
 	
@@ -392,7 +393,8 @@ void host_game_pane(void)
 
 void host_options_pane(void)
 {
-	int							n,k,x,y,control_y_add,control_y_sz;
+	int							n,k,fx,fy,wid,high,
+								x,y,control_y_add,control_y_sz;
 	bool						on;
 	iface_mp_option_type		*mp_option;
 
@@ -402,8 +404,9 @@ void host_options_pane(void)
 	control_y_sz=(control_y_add*(3+iface.multiplayer.option_list.noption))+element_get_padding();
 	if (iface.multiplayer.bot_list.on) control_y_sz+=(control_y_add*2);
 	
-	x=(int)(((float)iface.scale_x)*0.45f);
-	y=((iface.scale_y>>1)+(element_get_button_high()>>1))-(control_y_sz>>1);
+	element_get_frame_inner_space(host_frame_id,&fx,&fy,&wid,&high);
+	x=fx+(int)(((float)wid)*0.45f);
+	y=(fy+((high-control_y_sz)/2))+control_y_add;
 	
 		// bots
 
@@ -453,14 +456,16 @@ void host_options_pane(void)
 
 void host_info_pane(void)
 {
-	int			x,y,control_y_add,control_y_sz;
+	int			fx,fy,wid,high,
+				x,y,control_y_add,control_y_sz;
 	char		str[256];
 	
 	control_y_add=element_get_control_separation_high();
 	control_y_sz=4*control_y_add;
 	
-	x=(int)(((float)iface.scale_x)*0.4f);
-	y=((iface.scale_y>>1)+(element_get_button_high()>>1))-(control_y_sz>>1);
+	element_get_frame_inner_space(host_frame_id,&fx,&fy,&wid,&high);
+	x=fx+(int)(((float)wid)*0.45f);
+	y=(fy+((high-control_y_sz)/2))+control_y_add;
 	
 		// type
 		
@@ -511,36 +516,32 @@ void host_enable_host_button(void)
 
 void host_create_pane(void)
 {
-	int			x,y,butt_wid,butt_high,pane;
-	char		tab_list[][32]={"Host Game","Options","Info"};
-							
+	int							fx,fy,wid,high,margin;
+	char						tab_list[][32]={"Game","Options","Info"};
+	element_frame_button_type	butts[2]={{host_button_cancel_id,"Cancel",TRUE},{host_button_host_id,"Host",TRUE}};
+						
 	element_clear();
 	
-		// tabs
+		// frame
 		
-	element_tab_add((char*)tab_list,host_tab_value,host_tab_id,3);
+	margin=element_get_margin();
+
+	fx=margin;
+	fy=margin;
+	wid=iface.scale_x-(margin*2);
+	high=iface.scale_y-(margin*2);
+	
+	element_frame_add("Host Game",host_frame_id,fx,fy,wid,high,host_tab_id,3,(char*)tab_list,2,butts);
+	element_set_value(host_tab_id,host_tab_value);
 	
 		// setup some IP information
 		
 	if (net_setup.host.name[0]==0x0) net_get_host_name(net_setup.host.name);
 	net_get_host_ip(net_setup.host.ip_name,net_setup.host.ip_resolve);
 	
-		// buttons
-		
-	butt_wid=element_get_button_short_wid();
-	butt_high=element_get_button_high();
-
-	element_get_tab_button_bottom_right(&x,&y);
-	element_button_text_add("Host",host_button_host_id,x,y,butt_wid,butt_high,element_pos_right,element_pos_bottom);
-
-	x=element_get_x_position(host_button_host_id)-element_get_padding();
-	element_button_text_add("Cancel",host_button_cancel_id,x,y,butt_wid,butt_high,element_pos_right,element_pos_bottom);
-	
 		// specific pane controls
 		
-	pane=element_get_value(host_tab_id);
-		
-	switch (pane) {
+	switch (element_get_value(host_tab_id)) {
 		case host_pane_game:
 			host_game_pane();
 			break;
