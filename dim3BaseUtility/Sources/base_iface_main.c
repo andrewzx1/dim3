@@ -205,6 +205,7 @@ void iface_default_settings(iface_type *iface)
 	iface->ring_list.nring=0;
 	iface->mark_list.nmark=0;
 	iface->halo_list.nhalo=0;
+	iface->label_list.nlabel=0;
 	iface->crosshair_list.ncrosshair=0;
 	iface->sound_list.nsound=0;
 	iface->shader_list.nshader=0;
@@ -225,30 +226,6 @@ void iface_default_settings(iface_type *iface)
 		// radar
 
 	iface->radar.on=FALSE;
-
-		// labels
-
-	iface->label_general.min_dist=5000;
-	iface->label_general.max_dist=75000;
-
-	iface->label_general.text.size=20;
-	iface->label_general.text.col.r=0.0f;
-	iface->label_general.text.col.g=1.0f;
-	iface->label_general.text.col.b=0.0f;
-
-	iface->label_general.health.wid=50;
-	iface->label_general.health.high=10;
-	iface->label_general.health.border_on=TRUE;
-	iface->label_general.health.background_on=TRUE;
-	iface->label_general.health.border_col.r=1.0f;
-	iface->label_general.health.border_col.g=1.0f;
-	iface->label_general.health.border_col.b=1.0f;
-	iface->label_general.health.background_col.r=0.0f;
-	iface->label_general.health.background_col.g=0.0f;
-	iface->label_general.health.background_col.b=0.0f;
-	iface->label_general.health.bar_col.r=1.0f;
-	iface->label_general.health.bar_col.g=0.0f;
-	iface->label_general.health.bar_col.b=0.0f;
 	
 		// sounds
 		
@@ -595,6 +572,21 @@ int iface_halo_find(iface_type *iface,char *name)
 	for (n=0;n!=iface->halo_list.nhalo;n++) {
 		if (strcasecmp(halo->name,name)==0)  return(n);
 		halo++;
+	}
+	
+	return(-1);
+}
+
+int iface_label_find(iface_type *iface,char *name)
+{
+	int					n;
+	iface_label_type	*label;
+
+	label=iface->label_list.labels;
+
+	for (n=0;n!=iface->label_list.nlabel;n++) {
+		if (strcasecmp(label->name,name)==0)  return(n);
+		label++;
 	}
 	
 	return(-1);

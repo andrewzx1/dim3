@@ -39,6 +39,7 @@ and can be sold or given away.
 #define file_button_delete_id			3
 #define file_button_cancel_id			4
 #define file_directory_id				5
+#define file_load_checkpoint_id			6
 
 extern server_type			server;
 extern iface_type			iface;
@@ -206,6 +207,26 @@ void file_close_list(void)
 
 /* =======================================================
 
+      Get Checkpoint
+      
+======================================================= */
+
+void file_get_checkpoint_file_name(char *checkpoint_name)
+{
+	char			*c;
+
+	strcpy(checkpoint_name,file_table_data);
+	c=strrchr(checkpoint_name,';');
+	if (c==NULL) {
+		checkpoint_name[0]=0x0;
+		return;
+	}
+
+	strcpy(checkpoint_name,(c+1));
+}
+
+/* =======================================================
+
       Save File Selected
       
 ======================================================= */
@@ -281,9 +302,10 @@ void file_save_delete(void)
 
 void file_open(void)
 {
-	int							x,y,fx,fy,wid,high,
-								table_wid,table_high,
+	int							x,y,fx,fy,ty,wid,high,
+								table_high,butt_wid,butt_high,
 								margin,padding,control_y_add;
+	char						checkpoint_name[256];
 	element_frame_button_type	butts_save[3]={{file_button_delete_id,"Delete",FALSE},{file_button_cancel_id,"Cancel",TRUE},{file_button_save_id,"Save",TRUE}},
 								butts_load[3]={{file_button_delete_id,"Delete",FALSE},{file_button_cancel_id,"Cancel",TRUE},{file_button_load_id,"Load",TRUE}};
 	element_column_type	cols[4];
@@ -297,8 +319,6 @@ void file_open(void)
 		// the frame
 
 	margin=element_get_margin();
-	padding=element_get_padding();
-	control_y_add=element_get_control_separation_high();
 
 	fx=margin;
 	fy=margin;
@@ -311,14 +331,36 @@ void file_open(void)
 	else {
 		element_frame_add("Load Game",file_frame_id,fx,fy,wid,high,-1,0,NULL,3,butts_load);
 	}
+
+	element_get_frame_inner_space(file_frame_id,&x,&y,&wid,&table_high);
 	
 		// make the file list
 		
 	file_build_list();
 	
-		// files
+		// last checkpoint
 
-	element_get_frame_inner_space(file_frame_id,&x,&y,&table_wid,&table_high);
+	if ((!file_is_save) && (iface.project.checkpoints)) {
+
+		butt_wid=element_get_button_long_wid();
+		butt_high=element_get_button_high();
+
+		control_y_add=element_get_control_separation_high();
+		padding=element_get_padding();
+
+		file_get_checkpoint_file_name(checkpoint_name);
+	
+		element_button_text_add("Load Last Checkpoint",file_load_checkpoint_id,(x+wid),y,butt_wid,butt_high,element_pos_right,element_pos_top);
+		element_enable(file_load_checkpoint_id,(checkpoint_name[0]!=0x0));
+
+		ty=(y+butt_high)-((butt_high-gl_text_get_char_height(iface.font.text_size_small))/2);
+		element_text_add(checkpoint_name,-1,x,ty,iface.font.text_size_small,tx_left,NULL,FALSE);
+
+		y+=(butt_high+padding);
+		table_high-=(butt_high+padding);
+	}
+
+		// files
 
 	strcpy(cols[0].name,"Map");
 	cols[0].percent_size=0.50f;
@@ -327,7 +369,7 @@ void file_open(void)
 	strcpy(cols[2].name,"Elapsed Time");
 	cols[2].percent_size=0.18f;
 
-	element_table_add(cols,file_table_data,file_directory_id,3,x,y,table_wid,table_high,FALSE,element_table_bitmap_document);
+	element_table_add(cols,file_table_data,file_directory_id,3,x,y,wid,table_high,FALSE,element_table_bitmap_document);
 
 		// enable buttons
 
@@ -395,8 +437,14 @@ void file_click(void)
 			break;
 			
 		case file_button_load_id:
-			k=element_get_value(file_directory_id);
-			if (k==-1) break;
+		case file_load_checkpoint_id:
+
+			k=0;
+
+			if (id==file_button_load_id) {
+				k=element_get_value(file_directory_id);
+				if (k==-1) break;
+			}
 			
 			strcpy(file_name,(char*)(file_name_data+(128*k)));
 

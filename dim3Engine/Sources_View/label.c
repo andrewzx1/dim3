@@ -51,7 +51,6 @@ extern int					remote_slow_image_idx,remote_talk_image_idx;
 
 void label_draw_setup_single(obj_type *obj,int bone_idx,obj_label_draw *label_draw)
 {
-	int						dist;
 	bool					hit;
 	d3pnt					ept;
 	ray_trace_contact_type	contact;
@@ -67,11 +66,6 @@ void label_draw_setup_single(obj_type *obj,int bone_idx,obj_label_draw *label_dr
 		// skip if behind z
 
 	if (!gl_project_in_view_z(&label_draw->pnt)) return;
-
-		// ignore if past fade distance
-
-	dist=distance_get(label_draw->pnt.x,label_draw->pnt.y,label_draw->pnt.z,view.render->camera.pnt.x,view.render->camera.pnt.y,view.render->camera.pnt.z);
-	if (dist>=iface.label.max_dist) return;
 
 		// ignore if obscured by ray trace
 
@@ -95,18 +89,6 @@ void label_draw_setup_single(obj_type *obj,int bone_idx,obj_label_draw *label_dr
 		if (hit) return;
 	}
 
-		// calculate fade and size
-			
-	if (dist<iface.label.min_dist) {
-		label_draw->alpha=1.0f;
-		label_draw->size_factor=1.0f;
-	}
-	else {
-		label_draw->alpha=1.0f-((float)(dist-iface.label.min_dist)/(float)(iface.label.max_dist-iface.label.min_dist));
-		label_draw->size_factor=label_draw->alpha;
-		if (label_draw->size_factor<0.1f) label_draw->size_factor=0.1f;
-	}
-
 		// project point in 2D
 
 	gl_project_point(&label_draw->pnt);
@@ -128,7 +110,7 @@ void label_draw_setup(void)
 		obj=server.obj_list.objs[view.render->draw_list.items[n].idx];
 		obj->label.text.draw.on=FALSE;
 		obj->label.bitmap.draw.on=FALSE;
-		obj->label.health.draw.on=FALSE;
+		obj->label.bar.draw.on=FALSE;
 		obj->label.remote_name.draw.on=FALSE;
 	}
 
@@ -148,9 +130,9 @@ void label_draw_setup(void)
 	
 			// setup labels
 
-		if (obj->label.text.str[0]!=0x0) label_draw_setup_single(obj,mdl->bone_connect.label_text_bone_idx,&obj->label.text.draw);
-		if (obj->label.bitmap.image_idx!=-1) label_draw_setup_single(obj,mdl->bone_connect.label_bitmap_bone_idx,&obj->label.bitmap.draw);
-		if (obj->label.health.on) label_draw_setup_single(obj,mdl->bone_connect.label_health_bone_idx,&obj->label.health.draw);
+		if (obj->label.text.str[0]!=0x0) label_draw_setup_single(obj,mdl->label.text.bone_idx,&obj->label.text.draw);
+		if (obj->label.bitmap.idx!=-1) label_draw_setup_single(obj,mdl->label.bitmap.bone_idx,&obj->label.bitmap.draw);
+		if (obj->label.bar.value>=0.0f) label_draw_setup_single(obj,mdl->label.bar.bone_idx,&obj->label.bar.draw);
 		if ((net_setup.mode!=net_mode_none) && (setup.network.show_names)) label_draw_setup_single(obj,mdl->bone_connect.name_bone_idx,&obj->label.remote_name.draw);
 	}
 }
@@ -161,27 +143,23 @@ void label_draw_setup(void)
       
 ======================================================= */
 
-void label_draw_render_remote_icon(obj_type *obj,int image_idx)
+void label_draw_render_remote_icon(obj_type *obj,model_type *mdl,int image_idx)
 {
-	int				wid,high,txt_size,
-					lft,rgt,top,bot;
+	int				sz,lft,rgt,top,bot;
 	d3col			col;
 	bitmap_type		*bitmap;
 
-	wid=(int)(((float)iface.label.bitmap.size)*obj->label.remote_name.draw.size_factor);
-	high=(int)(((float)iface.label.bitmap.size)*obj->label.remote_name.draw.size_factor);
+	sz=mdl->label.bitmap.size;
 
-	txt_size=(int)(((float)iface.label.text.size)*obj->label.remote_name.draw.size_factor);
-
-	lft=obj->label.remote_name.draw.pnt.x-(wid>>1);
-	rgt=lft+wid;
-	top=((view.screen.y_sz-obj->label.remote_name.draw.pnt.y)-high)-txt_size;
-	bot=top+high;
+	lft=obj->label.remote_name.draw.pnt.x-(sz>>1);
+	rgt=lft+sz;
+	top=(view.screen.y_sz-obj->label.remote_name.draw.pnt.y)-(sz>>1);
+	bot=top+sz;
 
 	col.r=col.g=col.b=1.0f;
 
 	bitmap=view_images_get_bitmap(image_idx);
-	view_primitive_2D_texture_quad(bitmap->gl_id,&col,obj->label.remote_name.draw.alpha,lft,rgt,top,bot,0.0f,1.0f,0.0f,1.0f,TRUE);
+	view_primitive_2D_texture_quad(bitmap->gl_id,&col,1.0f,lft,rgt,top,bot,0.0f,1.0f,0.0f,1.0f,TRUE);
 }
 
 /* =======================================================
@@ -192,11 +170,11 @@ void label_draw_render_remote_icon(obj_type *obj,int image_idx)
 
 void label_draw_render(void)
 {
-	int					n,wid,high,txt_size,
+	int					n,sz,wid,high,
 						x,y,lft,rgt,top,bot;
 	d3col				col;
 	obj_type			*obj;
-	bitmap_type			*bitmap;
+	model_type			*mdl;
 
 	glDisable(GL_DEPTH_TEST);
 	
@@ -205,16 +183,17 @@ void label_draw_render(void)
 
 		obj=server.obj_list.objs[view.render->draw_list.items[n].idx];
 
+		if (obj->draw.model_idx==-1) continue;
+		mdl=server.model_list.models[obj->draw.model_idx];
+
 			// text
 
 		if (obj->label.text.draw.on) {
 			x=obj->label.text.draw.pnt.x;
 			y=view.screen.y_sz-obj->label.text.draw.pnt.y;
 
-			txt_size=(int)(((float)iface.label.text.size)*obj->label.remote_name.draw.size_factor);
-
-			gl_text_start(font_hud_index,txt_size,FALSE);
-			gl_text_draw(x,y,obj->label.text.str,tx_center,FALSE,&iface.label.text.col,obj->label.remote_name.draw.alpha);
+			gl_text_start(font_hud_index,mdl->label.text.size,FALSE);
+			gl_text_draw(x,y,obj->label.text.str,tx_center,FALSE,&mdl->label.text.col,1.0f);
 			gl_text_end();
 		}
 
@@ -224,48 +203,45 @@ void label_draw_render(void)
 
 				// box size
 
-			wid=(int)(((float)iface.label.bitmap.size)*obj->label.health.draw.size_factor);
-			high=(int)(((float)iface.label.bitmap.size)*obj->label.health.draw.size_factor);
+			sz=mdl->label.bitmap.size;
 
-			lft=obj->label.bitmap.draw.pnt.x-(wid>>1);
-			rgt=lft+wid;
-			top=(view.screen.y_sz-obj->label.bitmap.draw.pnt.y)-(high>>1);
-			bot=top+high;
+			lft=obj->label.bitmap.draw.pnt.x-(sz>>1);
+			rgt=lft+sz;
+			top=(view.screen.y_sz-obj->label.bitmap.draw.pnt.y)-(sz>>1);
+			bot=top+sz;
 
 				// draw image
 
 			col.r=col.g=col.b=1.0f;
-
-			bitmap=view_images_get_bitmap(obj->label.bitmap.image_idx);
-			view_primitive_2D_texture_quad(bitmap->gl_id,&col,obj->label.bitmap.draw.alpha,lft,rgt,top,bot,0.0f,1.0f,0.0f,1.0f,TRUE);
+			view_primitive_2D_texture_quad(view_images_get_gl_id(iface.label_list.labels[obj->label.bitmap.idx].image_idx),&col,1.0f,lft,rgt,top,bot,0.0f,1.0f,0.0f,1.0f,TRUE);
 		}
 
-			// health
+			// bar
 
-		if (obj->label.health.draw.on) {
+		if (obj->label.bar.draw.on) {
 			
 				// box size
 
-			wid=(int)(((float)iface.label.health.wid)*obj->label.health.draw.size_factor);
-			high=(int)(((float)iface.label.health.high)*obj->label.health.draw.size_factor);
+			wid=mdl->label.bar.wid;
+			high=mdl->label.bar.high;
 
-			lft=obj->label.health.draw.pnt.x-(wid>>1);
+			lft=obj->label.bar.draw.pnt.x-(wid>>1);
 			rgt=lft+wid;
-			top=(view.screen.y_sz-obj->label.health.draw.pnt.y)-(high>>1);
+			top=(view.screen.y_sz-obj->label.bar.draw.pnt.y)-(high>>1);
 			bot=top+high;
 
 				// health position
 
-			x=lft+(((rgt-lft)*obj->status.health.value)/obj->status.health.max_value);
+			x=lft+(int)((float)(rgt-lft)*obj->label.bar.value);
 			if (x>rgt) x=rgt;
 			if (x<lft) x=lft;
 
 				// draw
 
-			if (iface.label.health.background_on) view_primitive_2D_color_quad(&iface.label.health.background_col,obj->label.health.draw.alpha,lft,rgt,top,bot);
-			if (iface.label.health.border_on) view_primitive_2D_line_quad(&iface.label.health.border_col,obj->label.health.draw.alpha,lft,rgt,top,bot);
+			if (mdl->label.bar.background_on) view_primitive_2D_color_quad(&mdl->label.bar.background_col,1.0f,lft,rgt,top,bot);
+			if (mdl->label.bar.border_on) view_primitive_2D_line_quad(&mdl->label.bar.border_col,1.0f,lft,rgt,top,bot);
 
-			view_primitive_2D_color_quad(&iface.label.health.bar_col,obj->label.health.draw.alpha,lft,x,top,bot);
+			view_primitive_2D_color_quad(&mdl->label.bar.bar_col,1.0f,lft,x,top,bot);
 		}
 
 			// remote names
@@ -278,20 +254,18 @@ void label_draw_render(void)
 
 			object_get_tint(obj,&col);
 
-			txt_size=(int)(((float)iface.label.text.size)*obj->label.remote_name.draw.size_factor);
-
-			gl_text_start(font_hud_index,txt_size,FALSE);
-			gl_text_draw(x,y,obj->name,tx_center,FALSE,&col,obj->label.remote_name.draw.alpha);
+			gl_text_start(font_hud_index,mdl->label.text.size,FALSE);
+			gl_text_draw(x,y,obj->name,tx_center,FALSE,&col,1.0f);
 			gl_text_end();
 
 				// slow and talking status
 		
 			if (remote_timed_out(obj)) {
-				label_draw_render_remote_icon(obj,remote_slow_image_idx);
+				label_draw_render_remote_icon(obj,mdl,remote_slow_image_idx);
 			}
 			else {
 				if ((obj->remote.talking)) {
-					label_draw_render_remote_icon(obj,remote_talk_image_idx);
+					label_draw_render_remote_icon(obj,mdl,remote_talk_image_idx);
 				}
 			}
 		}

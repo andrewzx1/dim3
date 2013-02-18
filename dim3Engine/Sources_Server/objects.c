@@ -694,9 +694,8 @@ int object_create(char *name,int type,int bind)
 	obj->auto_walk.dodge.on=FALSE;
 
 	obj->label.text.str[0]=0x0;
-	obj->label.bitmap.name[0]=0x0;
-	obj->label.bitmap.image_idx=-1;
-	obj->label.health.on=FALSE;
+	obj->label.bitmap.idx=-1;
+	obj->label.bar.value=-1.0f;
 
 	obj->debug.str[0]=0x0;
 	

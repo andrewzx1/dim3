@@ -35,21 +35,21 @@ and can be sold or given away.
 
 extern map_type				map;
 extern server_type			server;
+extern iface_type			iface;
 extern js_type				js;
-extern file_path_setup_type	file_path_setup;
 
 JSValueRef js_obj_label_get_text(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_obj_label_get_bitmap(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
-JSValueRef js_obj_label_get_health(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_obj_label_get_bar(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 bool js_obj_label_set_text(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 bool js_obj_label_set_textSize(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 bool js_obj_label_set_bitmap(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-bool js_obj_label_set_health(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_obj_label_set_bar(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 
 JSStaticValue 		obj_label_props[]={
 							{"text",				js_obj_label_get_text,				js_obj_label_set_text,			kJSPropertyAttributeDontDelete},
 							{"bitmap",				js_obj_label_get_bitmap,			js_obj_label_set_bitmap,		kJSPropertyAttributeDontDelete},
-							{"health",				js_obj_label_get_health,			js_obj_label_set_health,	kJSPropertyAttributeDontDelete},
+							{"bar",					js_obj_label_get_bar,				js_obj_label_set_bar,			kJSPropertyAttributeDontDelete},
 							{0,0,0,0}};
 							
 JSClassRef			obj_label_class;
@@ -96,17 +96,17 @@ JSValueRef js_obj_label_get_bitmap(JSContextRef cx,JSObjectRef j_obj,JSStringRef
 	obj_type		*obj;
 
 	obj=object_get_attach(j_obj);
-	if (obj->label.bitmap.name[0]==0x0) return(script_null_to_value(cx));
+	if (obj->label.bitmap.idx==-1) return(script_null_to_value(cx));
 
-	return(script_string_to_value(cx,obj->label.bitmap.name));
+	return(script_string_to_value(cx,iface.label_list.labels[obj->label.bitmap.idx].name));
 }
 
-JSValueRef js_obj_label_get_health(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
+JSValueRef js_obj_label_get_bar(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	obj_type		*obj;
 
 	obj=object_get_attach(j_obj);
-	return(script_bool_to_value(cx,obj->label.health.on));
+	return(script_float_to_value(cx,obj->label.bar.value));
 }
 
 /* =======================================================
@@ -132,41 +132,41 @@ bool js_obj_label_set_text(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JS
 
 bool js_obj_label_set_bitmap(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	char			path[1024];
+	int				idx;
+	char			label_name[name_str_len],err_str[256];
 	obj_type		*obj;
-	
+
 	obj=object_get_attach(j_obj);
 
 		// if set to NULL, then remove image
 
 	if (script_is_value_null(cx,vp)) {
-		if (obj->label.bitmap.image_idx!=-1) view_images_free_single(obj->label.bitmap.image_idx);
-		obj->label.bitmap.image_idx=-1;
-		obj->label.bitmap.name[0]=0x0;
+		obj->label.bitmap.idx=-1;
 		return(TRUE);
 	}
 	
 		// load new image
 
-	script_value_to_string(cx,vp,obj->label.bitmap.name,name_str_len);
-	file_paths_data(&file_path_setup,path,"Bitmaps/Labels",obj->label.bitmap.name,"png");
-
-	if (obj->label.bitmap.name[0]==0x0) {
-		obj->label.bitmap.image_idx=-1;
+	script_value_to_string(cx,vp,label_name,name_str_len);
+	idx=iface_label_find(&iface,label_name);
+	
+	if (idx==-1) {
+		sprintf(err_str,"No label exists with this name: %s",label_name);
+		*exception=script_create_exception(cx,err_str);
+		return(FALSE);
 	}
-	else {
-		obj->label.bitmap.image_idx=view_images_load_single(path,FALSE,TRUE);
-	}
+	
+	obj->label.bitmap.idx=idx;
 
 	return(TRUE);
 }
 
-bool js_obj_label_set_health(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
+bool js_obj_label_set_bar(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_get_attach(j_obj);
-	obj->label.health.on=script_value_to_bool(cx,vp);
+	obj->label.bar.value=script_value_to_float(cx,vp);
 	
 	return(TRUE);
 }

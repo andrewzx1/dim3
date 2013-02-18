@@ -57,7 +57,7 @@ bool model_read_xml(model_type *model)
 {
 	int						n,k,t,version,model_head,
 							bone_idx,nbone,hit_box_idx,nhit_box,
-							ui_tag,mesh_idx,nmesh,nfill,
+							label_tag,ui_tag,mesh_idx,nmesh,nfill,
 							tag,light_tag,halo_tag,hit_box_tag,
 							rigid_body_tag,meshes_tag,mesh_tag,
 							vertex_tag,poly_tag,bone_tag,fills_tag,fill_tag,
@@ -182,12 +182,33 @@ bool model_read_xml(model_type *model)
 
 		// labels
 
-    tag=xml_findfirstchild("Label",model_head);
-    if (tag!=-1) {
-		model->bone_connect.label_text_bone_idx=model_read_xml_bone(model,tag,"text_bone");
- 		model->bone_connect.label_bitmap_bone_idx=model_read_xml_bone(model,tag,"bitmap_bone");
-		model->bone_connect.label_health_bone_idx=model_read_xml_bone(model,tag,"health_bone");
-   }
+    label_tag=xml_findfirstchild("Label",model_head);
+    if (label_tag!=-1) {
+		tag=xml_findfirstchild("Text",label_tag);
+		if (tag!=-1) {
+			model->label.text.size=xml_get_attribute_int(tag,"size");
+			xml_get_attribute_color(tag,"color",&model->label.text.col);
+			model->label.text.bone_idx=model_read_xml_bone(model,tag,"bone");
+		}
+
+		tag=xml_findfirstchild("Bitmap",label_tag);
+		if (tag!=-1) {
+			model->label.bitmap.size=xml_get_attribute_int(tag,"size");
+			model->label.bitmap.bone_idx=model_read_xml_bone(model,tag,"bone");
+		}
+
+		tag=xml_findfirstchild("Bar",label_tag);
+		if (tag!=-1) {
+			model->label.bar.wid=xml_get_attribute_int(tag,"wid");
+			model->label.bar.high=xml_get_attribute_int(tag,"high");
+			model->label.bar.border_on=xml_get_attribute_boolean(tag,"border_on");
+			model->label.bar.background_on=xml_get_attribute_boolean(tag,"background_on");
+			xml_get_attribute_color(tag,"border_color",&model->label.bar.border_col);
+			xml_get_attribute_color(tag,"background_color",&model->label.bar.background_col);
+			xml_get_attribute_color(tag,"bar_color",&model->label.bar.bar_col);
+			model->label.bar.bone_idx=model_read_xml_bone(model,tag,"bone");
+		}
+	}
 	
         // hit boxes
     
@@ -670,10 +691,31 @@ bool model_write_xml(model_type *model,char *err_str)
         // label
     
     xml_add_tagstart("Label");
- 	model_write_xml_bone(model,"text_bone",model->bone_connect.label_text_bone_idx);
- 	model_write_xml_bone(model,"bitmap_bone",model->bone_connect.label_bitmap_bone_idx);
- 	model_write_xml_bone(model,"health_bone",model->bone_connect.label_health_bone_idx);
+	xml_add_tagend(FALSE);
+
+    xml_add_tagstart("Text");
+	xml_add_attribute_int("size",model->label.text.size);
+	xml_add_attribute_color("color",&model->label.text.col);
+ 	model_write_xml_bone(model,"bone",model->label.text.bone_idx);
 	xml_add_tagend(TRUE);
+
+    xml_add_tagstart("Bitmap");
+	xml_add_attribute_int("size",model->label.bitmap.size);
+ 	model_write_xml_bone(model,"bone",model->label.bitmap.bone_idx);
+	xml_add_tagend(TRUE);
+
+    xml_add_tagstart("Bar");
+	xml_add_attribute_int("wid",model->label.bar.wid);
+	xml_add_attribute_int("high",model->label.bar.high);
+	xml_add_attribute_boolean("border_on",model->label.bar.border_on);
+	xml_add_attribute_boolean("background_on",model->label.bar.background_on);
+	xml_add_attribute_color("border_color",&model->label.bar.border_col);
+	xml_add_attribute_color("background_color",&model->label.bar.background_col);
+	xml_add_attribute_color("bar_color",&model->label.bar.bar_col);
+ 	model_write_xml_bone(model,"bone",model->label.bar.bone_idx);
+	xml_add_tagend(TRUE);
+
+	xml_add_tagclose("Label");
 
 		// hit boxes
 		

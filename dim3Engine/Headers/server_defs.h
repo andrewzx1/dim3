@@ -656,7 +656,6 @@ typedef struct		{
 //
 
 typedef struct		{
-						float					size_factor,alpha;
 						bool					on;
 						d3pnt					pnt;
 					} obj_label_draw;
@@ -667,15 +666,14 @@ typedef struct		{
 					} obj_label_text;
 
 typedef struct		{
-						int						image_idx;
-						char					name[name_str_len];
+						int						idx;
 						obj_label_draw			draw;
 					} obj_label_bitmap;
 
 typedef struct		{
-						bool					on;
+						float					value;
 						obj_label_draw			draw;
-					} obj_label_health;
+					} obj_label_bar;
 
 typedef struct		{
 						obj_label_draw			draw;
@@ -684,7 +682,7 @@ typedef struct		{
 typedef struct		{
 						obj_label_text			text;
 						obj_label_bitmap		bitmap;
-						obj_label_health		health;
+						obj_label_bar			bar;
 						obj_label_remote_name	remote_name;
 					} obj_label;
 
