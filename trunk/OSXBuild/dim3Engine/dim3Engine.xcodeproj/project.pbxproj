@@ -383,6 +383,7 @@
 		26149B8516A8BA86007DB713 /* ray_thread.c in Sources */ = {isa = PBXBuildFile; fileRef = 26149B7516A8BA86007DB713 /* ray_thread.c */; };
 		26149B8616A8BA86007DB713 /* ray_types.h in Headers */ = {isa = PBXBuildFile; fileRef = 26149B7616A8BA86007DB713 /* ray_types.h */; };
 		26149B8716A8BA86007DB713 /* ray.h in Headers */ = {isa = PBXBuildFile; fileRef = 26149B7716A8BA86007DB713 /* ray.h */; };
+		26159D2216D191210069B442 /* base_iface_label.c in Sources */ = {isa = PBXBuildFile; fileRef = 26159D2116D191210069B442 /* base_iface_label.c */; };
 		2618337B14DDE4F9004DD37A /* begin_code.h in Headers */ = {isa = PBXBuildFile; fileRef = 2618333F14DDE4F9004DD37A /* begin_code.h */; };
 		2618337C14DDE4F9004DD37A /* close_code.h in Headers */ = {isa = PBXBuildFile; fileRef = 2618334014DDE4F9004DD37A /* close_code.h */; };
 		2618337E14DDE4F9004DD37A /* SDL_assert.h in Headers */ = {isa = PBXBuildFile; fileRef = 2618334214DDE4F9004DD37A /* SDL_assert.h */; };
@@ -906,6 +907,7 @@
 		26149B7516A8BA86007DB713 /* ray_thread.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ray_thread.c; path = ../Sources_RTL/ray_thread.c; sourceTree = "<group>"; };
 		26149B7616A8BA86007DB713 /* ray_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ray_types.h; path = ../Sources_RTL/ray_types.h; sourceTree = "<group>"; };
 		26149B7716A8BA86007DB713 /* ray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ray.h; path = ../Sources_RTL/ray.h; sourceTree = "<group>"; };
+		26159D2116D191210069B442 /* base_iface_label.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = base_iface_label.c; sourceTree = "<group>"; };
 		2618333F14DDE4F9004DD37A /* begin_code.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = begin_code.h; sourceTree = "<group>"; };
 		2618334014DDE4F9004DD37A /* close_code.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = close_code.h; sourceTree = "<group>"; };
 		2618334214DDE4F9004DD37A /* SDL_assert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL_assert.h; sourceTree = "<group>"; };
@@ -1204,6 +1206,7 @@
 				260B3DD21411F67B006ED023 /* base_iface_crosshairs.c */,
 				260B3DD31411F67B006ED023 /* base_iface_halos.c */,
 				260B3DD41411F67B006ED023 /* base_iface_interface.c */,
+				26159D2116D191210069B442 /* base_iface_label.c */,
 				260B3DD51411F67B006ED023 /* base_iface_main.c */,
 				260B3DD61411F67B006ED023 /* base_iface_mark.c */,
 				26FF68A31523D5A200FACC3B /* base_iface_singleplayer.c */,
@@ -2483,6 +2486,7 @@
 				26149B8316A8BA86007DB713 /* ray_render.c in Sources */,
 				26149B8416A8BA86007DB713 /* ray_scene.c in Sources */,
 				26149B8516A8BA86007DB713 /* ray_thread.c in Sources */,
+				26159D2216D191210069B442 /* base_iface_label.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

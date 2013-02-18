@@ -434,7 +434,7 @@ void iface_read_settings_radar(iface_type *iface,int radar_tag)
       
 ======================================================= */
 
-void iface_read_settings_label(iface_type *iface,int label_tag)
+void iface_read_settings_label_general(iface_type *iface,int label_tag)
 {
 	int					tag;
 
@@ -442,30 +442,25 @@ void iface_read_settings_label(iface_type *iface,int label_tag)
 
 	tag=xml_findfirstchild("Setting",label_tag);
 	if (tag!=-1) {
-		iface->label.min_dist=xml_get_attribute_int(tag,"min_dist");
-		iface->label.max_dist=xml_get_attribute_int(tag,"max_dist");
+		iface->label_general.min_dist=xml_get_attribute_int(tag,"min_dist");
+		iface->label_general.max_dist=xml_get_attribute_int(tag,"max_dist");
 	}
 
 	tag=xml_findfirstchild("Text",label_tag);
 	if (tag!=-1) {
-		iface->label.text.size=xml_get_attribute_int(tag,"size");
-		xml_get_attribute_color(tag,"color",&iface->label.text.col);
-	}
-
-	tag=xml_findfirstchild("Bitmap",label_tag);
-	if (tag!=-1) {
-		iface->label.bitmap.size=xml_get_attribute_int(tag,"size");
+		iface->label_general.text.size=xml_get_attribute_int(tag,"size");
+		xml_get_attribute_color(tag,"color",&iface->label_general.text.col);
 	}
 
 	tag=xml_findfirstchild("Health",label_tag);
 	if (tag!=-1) {
-		iface->label.health.wid=xml_get_attribute_int(tag,"wid");
-		iface->label.health.high=xml_get_attribute_int(tag,"high");
-		iface->label.health.border_on=xml_get_attribute_boolean(tag,"border_on");
-		iface->label.health.background_on=xml_get_attribute_boolean(tag,"background_on");
-		xml_get_attribute_color(tag,"border_color",&iface->label.health.border_col);
-		xml_get_attribute_color(tag,"background_color",&iface->label.health.background_col);
-		xml_get_attribute_color(tag,"bar_color",&iface->label.health.bar_col);
+		iface->label_general.health.wid=xml_get_attribute_int(tag,"wid");
+		iface->label_general.health.high=xml_get_attribute_int(tag,"high");
+		iface->label_general.health.border_on=xml_get_attribute_boolean(tag,"border_on");
+		iface->label_general.health.background_on=xml_get_attribute_boolean(tag,"background_on");
+		xml_get_attribute_color(tag,"border_color",&iface->label_general.health.border_col);
+		xml_get_attribute_color(tag,"background_color",&iface->label_general.health.background_col);
+		xml_get_attribute_color(tag,"bar_color",&iface->label_general.health.bar_col);
 	}
 }
 
@@ -735,7 +730,7 @@ void iface_read_settings_interface(iface_type *iface)
 		// label
 
 	label_head_tag=xml_findfirstchild("Label",interface_head_tag);
-	if (label_head_tag!=-1) iface_read_settings_label(iface,label_head_tag);
+	if (label_head_tag!=-1) iface_read_settings_label_general(iface,label_head_tag);
 	
 		// menus
 		
@@ -1394,27 +1389,23 @@ bool iface_write_settings_interface(iface_type *iface,char *err_str)
 	xml_add_tagend(FALSE);
 
 	xml_add_tagstart("Setting");
-	xml_add_attribute_int("min_dist",iface->label.min_dist);
-	xml_add_attribute_int("max_dist",iface->label.max_dist);
+	xml_add_attribute_int("min_dist",iface->label_general.min_dist);
+	xml_add_attribute_int("max_dist",iface->label_general.max_dist);
 	xml_add_tagend(TRUE);
 
 	xml_add_tagstart("Text");
-	xml_add_attribute_int("size",iface->label.text.size);
-	xml_add_attribute_color("color",&iface->label.text.col);
-	xml_add_tagend(TRUE);
-
-	xml_add_tagstart("Bitmap");
-	xml_add_attribute_int("size",iface->label.bitmap.size);
+	xml_add_attribute_int("size",iface->label_general.text.size);
+	xml_add_attribute_color("color",&iface->label_general.text.col);
 	xml_add_tagend(TRUE);
 
 	xml_add_tagstart("Health");
-	xml_add_attribute_int("wid",iface->label.health.wid);
-	xml_add_attribute_int("high",iface->label.health.high);
-	xml_add_attribute_boolean("border_on",iface->label.health.border_on);
-	xml_add_attribute_boolean("background_on",iface->label.health.background_on);
-	xml_add_attribute_color("border_color",&iface->label.health.border_col);
-	xml_add_attribute_color("background_color",&iface->label.health.background_col);
-	xml_add_attribute_color("bar_color",&iface->label.health.bar_col);
+	xml_add_attribute_int("wid",iface->label_general.health.wid);
+	xml_add_attribute_int("high",iface->label_general.health.high);
+	xml_add_attribute_boolean("border_on",iface->label_general.health.border_on);
+	xml_add_attribute_boolean("background_on",iface->label_general.health.background_on);
+	xml_add_attribute_color("border_color",&iface->label_general.health.border_col);
+	xml_add_attribute_color("background_color",&iface->label_general.health.background_col);
+	xml_add_attribute_color("bar_color",&iface->label_general.health.bar_col);
 	xml_add_tagend(TRUE);
 
 	xml_add_tagclose("Label");

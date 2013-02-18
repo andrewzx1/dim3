@@ -344,12 +344,14 @@ void host_map_table_to_list(void)
 
 void host_game_pane(void)
 {
-	int						n,x,y,wid,high,margin,padding,control_y_add;
+	int						n,fx,fy,x,y,wid,high,table_high,
+							padding,control_y_add;
 	element_column_type		cols[1];
 	
-	margin=element_get_margin();
 	padding=element_get_padding();
 	control_y_add=element_get_control_separation_high();
+	
+	element_get_frame_inner_space(host_frame_id,&fx,&fy,&wid,&high);
 	
 		// game type
 
@@ -358,8 +360,8 @@ void host_game_pane(void)
 	}
 	net_game_types[iface.multiplayer.game_list.ngame][0]=0x0;
 
-	x=(int)(((float)iface.scale_x)*0.25f);
-	y=((margin+element_get_tab_control_high())+padding)+control_y_add;
+	x=(int)(((float)wid)*0.25f);
+	y=fy+control_y_add;
 	
 	element_combo_add("Game Type",(char*)net_game_types,setup.network.game_type,host_game_type_id,x,y,TRUE);
 	y+=control_y_add;
@@ -371,15 +373,12 @@ void host_game_pane(void)
 
 		// hosts table
 		
-	x=margin+padding;
-
-	wid=iface.scale_x-((margin+padding)*2);
-	high=iface.scale_y-(y+margin+(padding*2)+element_get_button_high());
+	table_high=(high-(y-fy));
 
 	strcpy(cols[0].name,"Map");
 	cols[0].percent_size=1.0f;
 
-	element_table_add(cols,NULL,host_table_id,1,x,y,wid,high,setup.network.map_rotation,element_table_bitmap_data);
+	element_table_add(cols,NULL,host_table_id,1,fx,y,wid,table_high,setup.network.map_rotation,element_table_bitmap_data);
 	y+=(high+padding);
 	
 		// fill table with maps

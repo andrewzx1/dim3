@@ -509,7 +509,7 @@ void join_lan_internet_hosts(void)
 
 void join_create_pane(void)
 {
-	int							fx,fy,x,y,wid,high,text_wid,margin,padding;
+	int							fx,fy,x,y,wid,high,margin,padding;
 	char						tab_list[][32]={"Hosts","News"};
 	element_frame_button_type	butts[3]={{join_button_rescan_id,"Rescan",FALSE},{join_button_cancel_id,"Cancel",TRUE},{join_button_join_id,"Join",TRUE}};
 	
@@ -540,14 +540,18 @@ void join_create_pane(void)
 	}
 	
 		// status
-
-	text_wid=(int)(((float)wid)*0.2f);
-	x=(element_get_x_position(join_button_rescan_id)+wid)+padding;
-	y=element_get_y_position(join_button_rescan_id)-padding;
+		
+	x=(element_get_x_position(join_button_rescan_id)+element_get_button_short_wid())+padding;
+	y=(element_get_y_position(join_button_rescan_id)+element_get_button_high())-((element_get_button_high()-gl_text_get_char_height(iface.font.text_size_small))/2);
 	
-	element_text_add("XXXXXXXX",join_status_id,x,y,iface.font.text_size_small,tx_left,NULL,FALSE);
+	element_text_add("",join_status_id,x,y,iface.font.text_size_small,tx_left,NULL,FALSE);
 
 		// specific pane controls
+		
+	if (join_mode!=join_mode_wan_lan) {
+		join_lan_internet_hosts();
+		return;
+	}
 		
 	switch (element_get_value(join_tab_id)) {
 		case join_pane_hosts:

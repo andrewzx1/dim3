@@ -65,7 +65,7 @@ void project_palette_fill_devices(void)
 		list_palette_add_float(&project_palette,-1,"Button Height",&device->scale.button_high,FALSE);
 		list_palette_add_float(&project_palette,-1,"Button Short Width",&device->scale.button_short_wid,FALSE);
 		list_palette_add_float(&project_palette,-1,"Button Long Width",&device->scale.button_long_wid,FALSE);
-		list_palette_add_float(&project_palette,-1,"Tab Margin",&device->scale.tab_margin,FALSE);
+		list_palette_add_float(&project_palette,-1,"Dialog Margin",&device->scale.dialog_margin,FALSE);
 		list_palette_add_float(&project_palette,-1,"Tab Height",&device->scale.tab_high,FALSE);
 
 		device++;

@@ -52,6 +52,7 @@ bool iface_initialize(iface_type *iface)
 	iface->ring_list.nring=0;
 	iface->mark_list.nmark=0;
 	iface->halo_list.nhalo=0;
+	iface->label_list.nlabel=0;
 	iface->crosshair_list.ncrosshair=0;
 	iface->sound_list.nsound=0;
 	iface->shader_list.nshader=0;
@@ -67,6 +68,7 @@ bool iface_initialize(iface_type *iface)
 	iface->ring_list.rings=NULL;
 	iface->mark_list.marks=NULL;
 	iface->halo_list.halos=NULL;
+	iface->label_list.labels=NULL;
 	iface->crosshair_list.crosshairs=NULL;
 	iface->action_display_list.action_displays=NULL;
 	iface->sound_list.sounds=NULL;
@@ -101,6 +103,9 @@ bool iface_initialize(iface_type *iface)
 	iface->halo_list.halos=(iface_halo_type*)malloc(max_iface_halo*sizeof(iface_halo_type));
 	if (iface->halo_list.halos==NULL) return(FALSE);
 
+	iface->label_list.labels=(iface_label_type*)malloc(max_iface_label*sizeof(iface_label_type));
+	if (iface->label_list.labels==NULL) return(FALSE);
+
 	iface->crosshair_list.crosshairs=(iface_crosshair_type*)malloc(max_iface_crosshair*sizeof(iface_crosshair_type));
 	if (iface->crosshair_list.crosshairs==NULL) return(FALSE);
 
@@ -124,6 +129,7 @@ bool iface_initialize(iface_type *iface)
 	bzero(iface->ring_list.rings,(max_iface_ring*sizeof(iface_ring_type)));
 	bzero(iface->mark_list.marks,(max_iface_mark*sizeof(iface_mark_type)));
 	bzero(iface->halo_list.halos,(max_iface_halo*sizeof(iface_halo_type)));
+	bzero(iface->label_list.labels,(max_iface_label*sizeof(iface_label_type)));
 	bzero(iface->crosshair_list.crosshairs,(max_iface_crosshair*sizeof(iface_crosshair_type)));
 	bzero(iface->action_display_list.action_displays,(max_iface_action*sizeof(iface_action_display_type)));
 	bzero(iface->sound_list.sounds,(max_iface_sound*sizeof(iface_sound_type)));
@@ -145,6 +151,7 @@ void iface_shutdown(iface_type *iface)
 	if (iface->ring_list.rings!=NULL) free(iface->ring_list.rings);
 	if (iface->mark_list.marks!=NULL) free(iface->mark_list.marks);
 	if (iface->halo_list.halos!=NULL) free(iface->halo_list.halos);
+	if (iface->label_list.labels!=NULL) free(iface->label_list.labels);
 	if (iface->crosshair_list.crosshairs!=NULL) free(iface->crosshair_list.crosshairs);
 	if (iface->action_display_list.action_displays!=NULL) free(iface->action_display_list.action_displays);
 	if (iface->sound_list.sounds!=NULL) free(iface->sound_list.sounds);
@@ -221,29 +228,27 @@ void iface_default_settings(iface_type *iface)
 
 		// labels
 
-	iface->label.min_dist=5000;
-	iface->label.max_dist=75000;
+	iface->label_general.min_dist=5000;
+	iface->label_general.max_dist=75000;
 
-	iface->label.text.size=20;
-	iface->label.text.col.r=0.0f;
-	iface->label.text.col.g=1.0f;
-	iface->label.text.col.b=0.0f;
+	iface->label_general.text.size=20;
+	iface->label_general.text.col.r=0.0f;
+	iface->label_general.text.col.g=1.0f;
+	iface->label_general.text.col.b=0.0f;
 
-	iface->label.bitmap.size=50;
-
-	iface->label.health.wid=50;
-	iface->label.health.high=10;
-	iface->label.health.border_on=TRUE;
-	iface->label.health.background_on=TRUE;
-	iface->label.health.border_col.r=1.0f;
-	iface->label.health.border_col.g=1.0f;
-	iface->label.health.border_col.b=1.0f;
-	iface->label.health.background_col.r=0.0f;
-	iface->label.health.background_col.g=0.0f;
-	iface->label.health.background_col.b=0.0f;
-	iface->label.health.bar_col.r=1.0f;
-	iface->label.health.bar_col.g=0.0f;
-	iface->label.health.bar_col.b=0.0f;
+	iface->label_general.health.wid=50;
+	iface->label_general.health.high=10;
+	iface->label_general.health.border_on=TRUE;
+	iface->label_general.health.background_on=TRUE;
+	iface->label_general.health.border_col.r=1.0f;
+	iface->label_general.health.border_col.g=1.0f;
+	iface->label_general.health.border_col.b=1.0f;
+	iface->label_general.health.background_col.r=0.0f;
+	iface->label_general.health.background_col.g=0.0f;
+	iface->label_general.health.background_col.b=0.0f;
+	iface->label_general.health.bar_col.r=1.0f;
+	iface->label_general.health.bar_col.g=0.0f;
+	iface->label_general.health.bar_col.b=0.0f;
 	
 		// sounds
 		
@@ -662,6 +667,7 @@ void iface_read(iface_type *iface)
 	iface_read_settings_ring(iface);
 	iface_read_settings_halo(iface);
 	iface_read_settings_mark(iface);
+	iface_read_settings_label(iface);
 	iface_read_settings_crosshair(iface);
 	iface_read_settings_sound(iface);
 	iface_read_settings_action(iface);
@@ -683,6 +689,7 @@ bool iface_write(iface_type *iface,char *err_str)
 	if (!iface_write_settings_ring(iface,err_str)) return(FALSE);
 	if (!iface_write_settings_halo(iface,err_str)) return(FALSE);
 	if (!iface_write_settings_mark(iface,err_str)) return(FALSE);
+	if (!iface_write_settings_label(iface,err_str)) return(FALSE);
 	if (!iface_write_settings_crosshair(iface,err_str)) return(FALSE);
 	if (!iface_write_settings_sound(iface,err_str)) return(FALSE);
 	if (!iface_write_settings_action(iface,err_str)) return(FALSE);
