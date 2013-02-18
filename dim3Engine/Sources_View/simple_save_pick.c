@@ -71,6 +71,7 @@ void simple_save_pick_reset_controls(void)
 		// simple save erase
 		
 	if (simple_save_pick_in_erase) {
+		element_enable(simple_save_pick_frame_id,FALSE);
 	
 		for (n=0;n!=max_simple_save_spot;n++) {
 			element_enable((simple_save_pick_button_start_id+n),FALSE);
@@ -92,6 +93,8 @@ void simple_save_pick_reset_controls(void)
 		// regular picking
 		
 	else {
+		element_enable(simple_save_pick_frame_id,TRUE);
+
 		for (n=0;n!=max_simple_save_spot;n++) {
 			element_enable((simple_save_pick_button_start_id+n),TRUE);
 			element_enable((simple_save_pick_description_id+n),TRUE);
@@ -139,10 +142,10 @@ void simple_save_pick_reset_controls(void)
 
 void simple_save_pick_open(void)
 {
-	int							n,x,y,bx,by,wid,high,
+	int							n,x,y,by,wid,high,
 								txt_y_off,txt_size,
 								bitmap_max,bitmap_size,bitmap_add,
-								butt_wid,butt_high,save_wid,save_high,erase_wid,erase_high,
+								butt_wid,butt_high,save_high,erase_wid,erase_high,
 								margin,padding,control_y_add;
 	char						path[1024],disable_path[1024];
 	element_frame_button_type	butts_pick[2]={{simple_save_pick_button_erase_id,"Erase",FALSE},{simple_save_pick_button_cancel_id,"Cancel",TRUE}},
@@ -159,9 +162,6 @@ void simple_save_pick_open(void)
 	padding=element_get_padding();
 	control_y_add=element_get_control_separation_high();
 	
-	butt_wid=element_get_button_short_wid();
-	butt_high=element_get_button_high();
-	
 		// dialog and frame
 
 	x=margin;
@@ -173,10 +173,11 @@ void simple_save_pick_open(void)
 
 		// simple save picker sizes
 
-	element_get_frame_inner_space(simple_save_pick_frame_id,&bx,&by,&save_wid,&save_high);
+	element_get_frame_inner_space(simple_save_pick_frame_id,&x,&y,&wid,&high);
+	
+	save_high=(high-(padding*(max_simple_save_spot-1)))/max_simple_save_spot;
 
-	bx=x+padding;
-	by=y+padding;
+	by=y;
 
 		// calculate size of text + progress
 		// by dividing it out
@@ -188,7 +189,7 @@ void simple_save_pick_open(void)
 	}
 	else {
 		bitmap_max=iface.intro.simple_save_progress.max_bitmap;
-		bitmap_size=((save_wid-(padding*2))/bitmap_max)-(padding/4);
+		bitmap_size=((wid-padding)/bitmap_max)-(padding/4);
 		bitmap_add=bitmap_size+(padding/4);
 
 		txt_y_off=((save_high/2)-(((txt_size+padding)+bitmap_size)/2))+(txt_size-(padding/2));
@@ -200,23 +201,22 @@ void simple_save_pick_open(void)
 			
 			// big button
 
-		element_button_box_add((simple_save_pick_button_start_id+n),bx,by,save_wid,save_high,element_pos_left,element_pos_top);
+		element_button_box_add((simple_save_pick_button_start_id+n),x,by,wid,save_high,element_pos_left,element_pos_top);
 
 			// description and progress
 
-		element_text_add("",(simple_save_pick_description_id+n),(bx+padding),((by+txt_y_off)+padding),txt_size,tx_left,&iface.color.picker.text,FALSE);
+		element_text_add("",(simple_save_pick_description_id+n),(x+padding),((by+txt_y_off)+padding),txt_size,tx_left,&iface.color.picker.text,FALSE);
 
 		if (iface.intro.simple_save_progress.on) {
 			file_paths_data(&file_path_setup,path,"Bitmaps/Interface",iface.intro.simple_save_progress.bitmap_name,"png");
 			file_paths_data(&file_path_setup,disable_path,"Bitmaps/Interface",iface.intro.simple_save_progress.bitmap_disable_name,"png");
-			element_count_add(path,disable_path,(simple_save_pick_progress_id+n),(bx+padding),((by+txt_y_off)+(padding*2)),bitmap_size,bitmap_size,bitmap_add,TRUE,0,0,bitmap_max);
+			element_count_add(path,disable_path,(simple_save_pick_progress_id+n),(x+padding),((by+txt_y_off)+(padding*2)),bitmap_size,bitmap_size,bitmap_add,TRUE,0,0,bitmap_max);
 		}
 
 		by+=(save_high+padding);
 	}
 	
-		// simple save erase
-		// buttons
+		// simple save erase buttons
 
 	for (n=0;n!=max_simple_save_spot;n++) {
 		sprintf(butts_erase[n].text,"Erase %d",(n+1));
@@ -229,14 +229,17 @@ void simple_save_pick_open(void)
 	butts_erase[max_simple_save_spot].right=FALSE;
 
 		// simple save erase frame
+	
+	butt_wid=element_get_button_short_wid();
+	butt_high=element_get_button_high();
 		
 	erase_wid=(butt_wid*4)+(padding*5);
-	erase_high=butt_high+(padding*2);
+	erase_high=(butt_high+element_get_frame_title_high())+(padding*2);
 		
-	bx=(x+(wid>>1))-(erase_wid>>1);
-	by=(y+(high>>1))-(erase_high>>1);
+	x=(x+(wid>>1))-(erase_wid>>1);
+	y=(y+(high>>1))-(erase_high>>1);
 	
-	element_frame_add("Erase Save Spot",simple_save_pick_erase_frame_id,bx,by,erase_wid,erase_high,-1,0,NULL,(max_simple_save_spot+1),butts_erase);
+	element_frame_add("Erase Save Spot",simple_save_pick_erase_frame_id,x,y,erase_wid,erase_high,-1,0,NULL,(max_simple_save_spot+1),butts_erase);
 	
 		// in key state
 	

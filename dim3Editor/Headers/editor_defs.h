@@ -418,7 +418,7 @@ typedef struct		{
 #define item_interface_hud						10
 #define item_interface_virtual_control			11
 #define item_interface_radar					12
-#define item_interface_label					13
+#define item_interface_label_general			13
 #define item_interface_menu						14
 #define item_interface_chooser					15
 #define item_interface_sound					16
@@ -426,11 +426,12 @@ typedef struct		{
 #define item_interface_ring						18
 #define item_interface_halo						19
 #define item_interface_mark						20
-#define item_interface_crosshair				21
-#define item_interface_action					22
-#define item_interface_shader					23
-#define item_interface_preload_models			24
-#define item_interface_preferences				25
+#define item_interface_label					21
+#define item_interface_crosshair				22
+#define item_interface_action					23
+#define item_interface_shader					24
+#define item_interface_preload_models			25
+#define item_interface_preferences				26
 
 #define item_intro_button_game_new				0
 #define item_intro_button_game_load				1
@@ -797,7 +798,7 @@ typedef struct		{
 												cur_menu_idx,cur_menu_item_idx,cur_chooser_idx,cur_chooser_piece_idx,
 												cur_multiplayer_game_idx,cur_multiplayer_option_idx,
 												cur_sound_idx,cur_particle_idx,cur_group_particle_idx,cur_ring_idx,
-												cur_halo_idx,cur_mark_idx,cur_crosshair_idx,
+												cur_halo_idx,cur_mark_idx,cur_label_idx,cur_crosshair_idx,
 												cur_action_idx,cur_shader_idx;
 					} project_state_type;
 

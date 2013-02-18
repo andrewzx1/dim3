@@ -78,6 +78,7 @@ void project_palette_initialize(void)
 	state.proj.cur_ring_idx=-1;
 	state.proj.cur_halo_idx=-1;
 	state.proj.cur_mark_idx=-1;
+	state.proj.cur_label_idx=-1;
 	state.proj.cur_crosshair_idx=-1;
 	state.proj.cur_action_idx=-1;
 	state.proj.cur_shader_idx=-1;
@@ -151,8 +152,8 @@ void project_palette_fill_level_1(void)
 			project_palette_fill_radar();
 			return;
 
-		case item_interface_label:
-			project_palette_fill_label();
+		case item_interface_label_general:
+			project_palette_fill_label_general();
 			return;
 
 		case item_interface_menu:
@@ -181,6 +182,10 @@ void project_palette_fill_level_1(void)
 
 		case item_interface_mark:
 			project_palette_fill_marks();
+			return;
+			
+		case item_interface_label:
+			project_palette_fill_labels();
 			return;
 
 		case item_interface_crosshair:
@@ -326,6 +331,13 @@ void project_palette_fill_level_2(void)
 		case item_interface_mark:
 			if (state.proj.cur_mark_idx!=-1) {
 				project_palette_fill_mark(state.proj.cur_mark_idx);
+				return;
+			}
+			break;
+			
+		case item_interface_label:
+			if (state.proj.cur_label_idx!=-1) {
+				project_palette_fill_label(state.proj.cur_label_idx);
 				return;
 			}
 			break;
@@ -515,8 +527,8 @@ void project_palette_click_level_1(bool double_click)
 			project_palette_click_radar(double_click);
 			break;
 
-		case item_interface_label:
-			project_palette_click_label(double_click);
+		case item_interface_label_general:
+			project_palette_click_label_general(double_click);
 			break;
 
 		case item_interface_menu:
@@ -545,6 +557,10 @@ void project_palette_click_level_1(bool double_click)
 
 		case item_interface_mark:
 			project_palette_click_marks(double_click);
+			break;
+			
+		case item_interface_label:
+			project_palette_click_labels(double_click);
 			break;
 
 		case item_interface_crosshair:
@@ -690,6 +706,13 @@ void project_palette_click_level_2(bool double_click)
 		case item_interface_mark:
 			if (state.proj.cur_mark_idx!=-1) {
 				project_palette_click_mark(state.proj.cur_mark_idx,double_click);
+				break;
+			}
+			break;
+			
+		case item_interface_label:
+			if (state.proj.cur_label_idx!=-1) {
+				project_palette_click_label(state.proj.cur_label_idx,double_click);
 				break;
 			}
 			break;

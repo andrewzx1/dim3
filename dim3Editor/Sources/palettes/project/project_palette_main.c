@@ -69,7 +69,7 @@ void project_palette_fill_main(void)
 	list_palette_add_header(&project_palette,item_interface,"Displays");
 	list_palette_add_item(&project_palette,item_interface_hud,0,"HUD",(state.proj.cur_item==item_interface_hud),FALSE);
 	list_palette_add_item(&project_palette,item_interface_radar,0,"Radar",(state.proj.cur_item==item_interface_radar),FALSE);
-	list_palette_add_item(&project_palette,item_interface_label,0,"Label",(state.proj.cur_item==item_interface_label),FALSE);
+	list_palette_add_item(&project_palette,item_interface_label_general,0,"Label General",(state.proj.cur_item==item_interface_label_general),FALSE);
 	list_palette_add_item(&project_palette,item_interface_menu,0,"Menus",(state.proj.cur_item==item_interface_menu),FALSE);
 	list_palette_add_item(&project_palette,item_interface_chooser,0,"Choosers",(state.proj.cur_item==item_interface_chooser),FALSE);
 
@@ -79,6 +79,7 @@ void project_palette_fill_main(void)
 	list_palette_add_item(&project_palette,item_interface_ring,0,"Rings",(state.proj.cur_item==item_interface_ring),FALSE);
 	list_palette_add_item(&project_palette,item_interface_halo,0,"Halos",(state.proj.cur_item==item_interface_halo),FALSE);
 	list_palette_add_item(&project_palette,item_interface_mark,0,"Marks",(state.proj.cur_item==item_interface_mark),FALSE);
+	list_palette_add_item(&project_palette,item_interface_label,0,"Labels",(state.proj.cur_item==item_interface_label),FALSE);
 	list_palette_add_item(&project_palette,item_interface_crosshair,0,"Crosshairs",(state.proj.cur_item==item_interface_crosshair),FALSE);
 	list_palette_add_item(&project_palette,item_interface_shader,0,"Shaders",(state.proj.cur_item==item_interface_shader),FALSE);
 

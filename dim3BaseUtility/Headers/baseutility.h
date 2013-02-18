@@ -492,8 +492,9 @@ extern bool bitmap_copy(char *srce_path,char *dest_path);
 
 #define max_iface_particle						128
 #define max_iface_ring							64
-#define max_iface_mark							128
+#define max_iface_mark							64
 #define max_iface_halo							32
+#define max_iface_label							32
 #define max_iface_crosshair						32
 #define max_iface_action						128
 #define max_iface_sound							128
@@ -1045,6 +1046,20 @@ typedef struct		{
 					} iface_halo_list;
 
 //
+// labels
+//
+
+typedef struct		{
+						int								image_idx,rtl_material_id,sz;
+						char							name[name_str_len],bitmap_name[name_str_len];
+					} iface_label_type;
+
+typedef struct		{
+						int								nlabel;
+						iface_label_type				*labels;
+					} iface_label_list;
+
+//
 // crosshair
 //
 
@@ -1068,10 +1083,6 @@ typedef struct		{
 					} iface_label_text_type;
 
 typedef struct		{
-						int								size;
-					} iface_label_bitmap_type;
-
-typedef struct		{
 						int								wid,high;
 						bool							border_on,background_on;
 						d3col							border_col,background_col,bar_col;
@@ -1080,9 +1091,8 @@ typedef struct		{
 typedef struct		{
 						int								min_dist,max_dist;
 						iface_label_text_type			text;
-						iface_label_bitmap_type			bitmap;
 						iface_label_health_type			health;
-					} iface_label_type;
+					} iface_label_general_type;
 
 //
 // configurable control names
@@ -1468,12 +1478,13 @@ typedef struct		{
 						iface_ring_list					ring_list;
 						iface_mark_list					mark_list;
 						iface_halo_list					halo_list;
+						iface_label_list				label_list;
 						iface_crosshair_list			crosshair_list;
 						iface_action_display_list		action_display_list;
 						iface_sound_list				sound_list;
 						iface_shader_list				shader_list;
 						iface_radar_type				radar;
-						iface_label_type				label;
+						iface_label_general_type		label_general;
 						iface_chat_type					chat;
 						iface_preload_model_type		preload_model;
 						iface_simple_save_list			simple_save_list;

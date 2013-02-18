@@ -41,37 +41,32 @@ extern list_palette_type		project_palette;
       
 ======================================================= */
 
-void project_palette_fill_label(void)
+void project_palette_fill_label_general(void)
 {
-	list_palette_set_title(&project_palette,"Label",NULL,NULL,NULL,NULL,NULL);
+	list_palette_set_title(&project_palette,"Label General",NULL,NULL,NULL,NULL,NULL);
 
 		// settings
 		
 	list_palette_add_header(&project_palette,0,"Settings");
-	list_palette_add_int(&project_palette,-1,"Minimum View Distance",&iface.label.min_dist,FALSE);
-	list_palette_add_int(&project_palette,-1,"Maximum View Distance",&iface.label.max_dist,FALSE);
+	list_palette_add_int(&project_palette,-1,"Minimum View Distance",&iface.label_general.min_dist,FALSE);
+	list_palette_add_int(&project_palette,-1,"Maximum View Distance",&iface.label_general.max_dist,FALSE);
 	
 		// text
 		
 	list_palette_add_header(&project_palette,0,"Text");
-	list_palette_add_int(&project_palette,-1,"Size",&iface.label.text.size,FALSE);
-	list_palette_add_pick_color(&project_palette,-1,"Color",&iface.label.text.col,FALSE);
-
-		// bitmap
-		
-	list_palette_add_header(&project_palette,0,"Bitmap");
-	list_palette_add_int(&project_palette,-1,"Size",&iface.label.bitmap.size,FALSE);
+	list_palette_add_int(&project_palette,-1,"Size",&iface.label_general.text.size,FALSE);
+	list_palette_add_pick_color(&project_palette,-1,"Color",&iface.label_general.text.col,FALSE);
 
 		// health
 		
 	list_palette_add_header(&project_palette,0,"Health");
-	list_palette_add_int(&project_palette,-1,"Width",&iface.label.health.wid,FALSE);
-	list_palette_add_int(&project_palette,-1,"Height",&iface.label.health.high,FALSE);
-	list_palette_add_checkbox(&project_palette,-1,"Border",&iface.label.health.border_on,FALSE);
-	list_palette_add_pick_color(&project_palette,-1,"Border Color",&iface.label.health.border_col,FALSE);
-	list_palette_add_checkbox(&project_palette,-1,"Background",&iface.label.health.background_on,FALSE);
-	list_palette_add_pick_color(&project_palette,-1,"Background Color",&iface.label.health.background_col,FALSE);
-	list_palette_add_pick_color(&project_palette,-1,"Bar Color",&iface.label.health.bar_col,FALSE);
+	list_palette_add_int(&project_palette,-1,"Width",&iface.label_general.health.wid,FALSE);
+	list_palette_add_int(&project_palette,-1,"Height",&iface.label_general.health.high,FALSE);
+	list_palette_add_checkbox(&project_palette,-1,"Border",&iface.label_general.health.border_on,FALSE);
+	list_palette_add_pick_color(&project_palette,-1,"Border Color",&iface.label_general.health.border_col,FALSE);
+	list_palette_add_checkbox(&project_palette,-1,"Background",&iface.label_general.health.background_on,FALSE);
+	list_palette_add_pick_color(&project_palette,-1,"Background Color",&iface.label_general.health.background_col,FALSE);
+	list_palette_add_pick_color(&project_palette,-1,"Bar Color",&iface.label_general.health.bar_col,FALSE);
 }
 
 /* =======================================================
@@ -80,7 +75,7 @@ void project_palette_fill_label(void)
       
 ======================================================= */
 
-void project_palette_click_label(bool double_click)
+void project_palette_click_label_general(bool double_click)
 {
 }
 

@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		26159D2016D191050069B442 /* base_iface_label.c in Sources */ = {isa = PBXBuildFile; fileRef = 26159D1F16D191050069B442 /* base_iface_label.c */; };
+		26159D2416D1A92D0069B442 /* project_palette_general_label.c in Sources */ = {isa = PBXBuildFile; fileRef = 26159D2316D1A92D0069B442 /* project_palette_general_label.c */; };
+		26159D2716D1AA6D0069B442 /* project_palette_label.c in Sources */ = {isa = PBXBuildFile; fileRef = 26159D2516D1AA6C0069B442 /* project_palette_label.c */; };
+		26159D2816D1AA6D0069B442 /* project_palette_labels.c in Sources */ = {isa = PBXBuildFile; fileRef = 26159D2616D1AA6D0069B442 /* project_palette_labels.c */; };
 		2620AFD71682B68E00A3C76F /* map_view_auto_generator.c in Sources */ = {isa = PBXBuildFile; fileRef = 2620AFD61682B68E00A3C76F /* map_view_auto_generator.c */; };
 		2621459A1605086A00F18538 /* Back.png in Copy List Icons */ = {isa = PBXBuildFile; fileRef = 26214575160503FA00F18538 /* Back.png */; };
 		2621459B1605086A00F18538 /* Edit.png in Copy List Icons */ = {isa = PBXBuildFile; fileRef = 26214576160503FA00F18538 /* Edit.png */; };
@@ -266,7 +270,6 @@
 		26F7E1241600468600E739C4 /* project_palette_hud_bitmap.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F7E0EF1600468600E739C4 /* project_palette_hud_bitmap.c */; };
 		26F7E1251600468600E739C4 /* project_palette_hud_text.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F7E0F01600468600E739C4 /* project_palette_hud_text.c */; };
 		26F7E1261600468600E739C4 /* project_palette_hud.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F7E0F11600468600E739C4 /* project_palette_hud.c */; };
-		26F7E1271600468600E739C4 /* project_palette_label.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F7E0F21600468600E739C4 /* project_palette_label.c */; };
 		26F7E1281600468600E739C4 /* project_palette_logo.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F7E0F31600468600E739C4 /* project_palette_logo.c */; };
 		26F7E1291600468600E739C4 /* project_palette_main.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F7E0F41600468600E739C4 /* project_palette_main.c */; };
 		26F7E12A1600468600E739C4 /* project_palette_mark.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F7E0F51600468600E739C4 /* project_palette_mark.c */; };
@@ -477,6 +480,10 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		26159D1F16D191050069B442 /* base_iface_label.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = base_iface_label.c; path = Sources/base_iface_label.c; sourceTree = "<group>"; };
+		26159D2316D1A92D0069B442 /* project_palette_general_label.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = project_palette_general_label.c; path = Sources/palettes/project/project_palette_general_label.c; sourceTree = "<group>"; };
+		26159D2516D1AA6C0069B442 /* project_palette_label.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = project_palette_label.c; path = Sources/palettes/project/project_palette_label.c; sourceTree = "<group>"; };
+		26159D2616D1AA6D0069B442 /* project_palette_labels.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = project_palette_labels.c; path = Sources/palettes/project/project_palette_labels.c; sourceTree = "<group>"; };
 		2620AFD61682B68E00A3C76F /* map_view_auto_generator.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = map_view_auto_generator.c; path = Sources/code/map/map_view_auto_generator.c; sourceTree = "<group>"; };
 		262144FD160503F200F18538 /* Tool Auto-Texture Mesh.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Tool Auto-Texture Mesh.png"; sourceTree = "<group>"; };
 		262144FE160503F200F18538 /* Tool Combine Meshes.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Tool Combine Meshes.png"; sourceTree = "<group>"; };
@@ -753,7 +760,6 @@
 		26F7E0EF1600468600E739C4 /* project_palette_hud_bitmap.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = project_palette_hud_bitmap.c; path = Sources/palettes/project/project_palette_hud_bitmap.c; sourceTree = "<group>"; };
 		26F7E0F01600468600E739C4 /* project_palette_hud_text.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = project_palette_hud_text.c; path = Sources/palettes/project/project_palette_hud_text.c; sourceTree = "<group>"; };
 		26F7E0F11600468600E739C4 /* project_palette_hud.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = project_palette_hud.c; path = Sources/palettes/project/project_palette_hud.c; sourceTree = "<group>"; };
-		26F7E0F21600468600E739C4 /* project_palette_label.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = project_palette_label.c; path = Sources/palettes/project/project_palette_label.c; sourceTree = "<group>"; };
 		26F7E0F31600468600E739C4 /* project_palette_logo.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = project_palette_logo.c; path = Sources/palettes/project/project_palette_logo.c; sourceTree = "<group>"; };
 		26F7E0F41600468600E739C4 /* project_palette_main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = project_palette_main.c; path = Sources/palettes/project/project_palette_main.c; sourceTree = "<group>"; };
 		26F7E0F51600468600E739C4 /* project_palette_mark.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = project_palette_mark.c; path = Sources/palettes/project/project_palette_mark.c; sourceTree = "<group>"; };
@@ -892,6 +898,7 @@
 				26C1DF6C1600444C007FDAC7 /* base_iface_crosshairs.c */,
 				26C1DF6D1600444C007FDAC7 /* base_iface_halos.c */,
 				26C1DF6E1600444C007FDAC7 /* base_iface_interface.c */,
+				26159D1F16D191050069B442 /* base_iface_label.c */,
 				26C1DF6F1600444C007FDAC7 /* base_iface_main.c */,
 				26C1DF701600444C007FDAC7 /* base_iface_mark.c */,
 				26C1DF711600444C007FDAC7 /* base_iface_multiplayer.c */,
@@ -1456,6 +1463,7 @@
 				26F7E0E81600468600E739C4 /* project_palette_crosshairs.c */,
 				26F7E0E91600468600E739C4 /* project_palette_devices.c */,
 				26F7E0EA1600468600E739C4 /* project_palette_editor_preference.c */,
+				26159D2316D1A92D0069B442 /* project_palette_general_label.c */,
 				26F7E0EB1600468600E739C4 /* project_palette_group_particle.c */,
 				26F7E0EC1600468600E739C4 /* project_palette_halo.c */,
 				26F7E0ED1600468600E739C4 /* project_palette_halos.c */,
@@ -1463,7 +1471,8 @@
 				26F7E0EF1600468600E739C4 /* project_palette_hud_bitmap.c */,
 				26F7E0F01600468600E739C4 /* project_palette_hud_text.c */,
 				26F7E0F11600468600E739C4 /* project_palette_hud.c */,
-				26F7E0F21600468600E739C4 /* project_palette_label.c */,
+				26159D2516D1AA6C0069B442 /* project_palette_label.c */,
+				26159D2616D1AA6D0069B442 /* project_palette_labels.c */,
 				26F7E0F31600468600E739C4 /* project_palette_logo.c */,
 				26F7E0F41600468600E739C4 /* project_palette_main.c */,
 				26F7E0F51600468600E739C4 /* project_palette_mark.c */,
@@ -1784,7 +1793,6 @@
 				26F7E1241600468600E739C4 /* project_palette_hud_bitmap.c in Sources */,
 				26F7E1251600468600E739C4 /* project_palette_hud_text.c in Sources */,
 				26F7E1261600468600E739C4 /* project_palette_hud.c in Sources */,
-				26F7E1271600468600E739C4 /* project_palette_label.c in Sources */,
 				26F7E1281600468600E739C4 /* project_palette_logo.c in Sources */,
 				26F7E1291600468600E739C4 /* project_palette_main.c in Sources */,
 				26F7E12A1600468600E739C4 /* project_palette_mark.c in Sources */,
@@ -1864,6 +1872,10 @@
 				26E5DA461611552B003D7755 /* dialog_bone_attach_duplicate.c in Sources */,
 				26F7D34F167175D400E51363 /* dialog_distort.c in Sources */,
 				2620AFD71682B68E00A3C76F /* map_view_auto_generator.c in Sources */,
+				26159D2016D191050069B442 /* base_iface_label.c in Sources */,
+				26159D2416D1A92D0069B442 /* project_palette_general_label.c in Sources */,
+				26159D2716D1AA6D0069B442 /* project_palette_label.c in Sources */,
+				26159D2816D1AA6D0069B442 /* project_palette_labels.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

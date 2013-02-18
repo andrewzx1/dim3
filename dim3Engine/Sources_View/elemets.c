@@ -977,7 +977,7 @@ void element_frame_add(char *title,int id,int x,int y,int wid,int high,int tab_i
 	strcpy(element->str,title);
 	
 	element->selectable=FALSE;
-	element->enabled=FALSE;
+	element->enabled=TRUE;
 	element->hidden=FALSE;
 
 	SDL_mutexV(element_thread_lock);
@@ -2579,12 +2579,12 @@ void element_draw_table_busy(element_type *element)
 
 	element_get_box(element,&lft,&rgt,&top,&bot);
 
-	high=gl_text_get_char_height(iface.font.text_size_medium)*2;
+	high=(gl_text_get_char_height(iface.font.text_size_medium)*2)+10;
 	
-	bot-=5;
-	top=bot-(high+5);
-	rgt-=5;
-	lft=rgt-(high+5);
+	lft=((lft+rgt)>>1)-(high/2);
+	rgt=lft+high;
+	top=((top+bot)>>1)-(high/2);
+	bot=top+high;
 
 		// selected arc
 
@@ -2619,7 +2619,7 @@ void element_draw_table(element_type *element,int sel_id)
 {
 	int				n,x,y,ky,wid,high,cnt,vis_cnt,
 					lft,rgt,top,bot,row_high,
-					lx,rx,ty,by;
+					lx,rx,ty,by,last_idx;
 	char			*c;
 	bool			up_ok,down_ok;
 	d3col			col,col2;
@@ -2672,12 +2672,16 @@ void element_draw_table(element_type *element,int sel_id)
 	
 			// draw the data lines
 
+		last_idx=0;
 		y=(element->y+4)+(high+1);
 		
 		c=element->data+(element->offset*128);
 		
 		for (n=0;n<=cnt;n++) {
-			if (*c==0x0) break;
+			if (*c==0x0) {
+				last_idx=n;
+				break;
+			}
 			
 				// selection or background
 
@@ -2715,12 +2719,12 @@ void element_draw_table(element_type *element,int sel_id)
 
 			// finish with blank rows
 
-		n=cnt;
-
 		while (y<by) {
 			element_get_box(element,&lft,&rgt,&top,&bot);
-			element_draw_table_line_background(element,n++,(lft+1),(rgt-1),y,(y+row_high));
+			element_draw_table_line_background(element,last_idx,(lft+1),(rgt-1),y,(y+row_high));
 			element_draw_table_row_column_lines(element,y,(y+row_high),0.5f);
+			
+			last_idx++;
 			y+=row_high;
 		}
 
@@ -3163,7 +3167,13 @@ void element_draw_frame(element_type *element,int mx,int my)
 	if (is_header) {
 		y=(top+mid)>>1;
 
-		memmove(&col,&iface.color.dialog.header,sizeof(d3col));
+		if (element->enabled) {
+			memmove(&col,&iface.color.dialog.header,sizeof(d3col));
+		}
+		else {
+			memmove(&col,&iface.color.dialog.background,sizeof(d3col));
+		}
+		
 		col2.r=col.r*element_gradient_factor_foreground;
 		col2.g=col.g*element_gradient_factor_foreground;
 		col2.b=col.b*element_gradient_factor_foreground;
