@@ -430,42 +430,6 @@ void iface_read_settings_radar(iface_type *iface,int radar_tag)
 
 /* =======================================================
 
-      Read Label XML
-      
-======================================================= */
-
-void iface_read_settings_label_general(iface_type *iface,int label_tag)
-{
-	int					tag;
-
-		// read settings
-
-	tag=xml_findfirstchild("Setting",label_tag);
-	if (tag!=-1) {
-		iface->label_general.min_dist=xml_get_attribute_int(tag,"min_dist");
-		iface->label_general.max_dist=xml_get_attribute_int(tag,"max_dist");
-	}
-
-	tag=xml_findfirstchild("Text",label_tag);
-	if (tag!=-1) {
-		iface->label_general.text.size=xml_get_attribute_int(tag,"size");
-		xml_get_attribute_color(tag,"color",&iface->label_general.text.col);
-	}
-
-	tag=xml_findfirstchild("Health",label_tag);
-	if (tag!=-1) {
-		iface->label_general.health.wid=xml_get_attribute_int(tag,"wid");
-		iface->label_general.health.high=xml_get_attribute_int(tag,"high");
-		iface->label_general.health.border_on=xml_get_attribute_boolean(tag,"border_on");
-		iface->label_general.health.background_on=xml_get_attribute_boolean(tag,"background_on");
-		xml_get_attribute_color(tag,"border_color",&iface->label_general.health.border_col);
-		xml_get_attribute_color(tag,"background_color",&iface->label_general.health.background_col);
-		xml_get_attribute_color(tag,"bar_color",&iface->label_general.health.bar_col);
-	}
-}
-
-/* =======================================================
-
       Read Menu XML
       
 ======================================================= */
@@ -626,7 +590,7 @@ void iface_read_settings_interface(iface_type *iface)
 								bitmap_head_tag,bitmap_tag,text_head_tag,text_tag,bar_head_tag,bar_tag,
 								virtual_head_tag,radar_head_tag,menu_head_tag,menu_tag,title_tag,
 								simple_save_tag,score_tag,preload_tag,preload_models_tag,preload_model_tag,
-								intro_head_tag,intro_model_head_tag,intro_model_tag,label_head_tag,
+								intro_head_tag,intro_model_head_tag,intro_model_tag,
 								color_tag,font_tag,progress_tag,chat_tag,fade_tag,button_tag,sound_tag,
 								proj_tag,setup_tag;
 	char						path[1024],i_name[256],name[256];
@@ -726,11 +690,6 @@ void iface_read_settings_interface(iface_type *iface)
 
 	radar_head_tag=xml_findfirstchild("Radar",interface_head_tag);
 	if (radar_head_tag!=-1) iface_read_settings_radar(iface,radar_head_tag);
-
-		// label
-
-	label_head_tag=xml_findfirstchild("Label",interface_head_tag);
-	if (label_head_tag!=-1) iface_read_settings_label_general(iface,label_head_tag);
 	
 		// menus
 		
@@ -1382,33 +1341,6 @@ bool iface_write_settings_interface(iface_type *iface,char *err_str)
 	xml_add_tagclose("Icons");
 
 	xml_add_tagclose("Radar");
-
-		// labels
-
-	xml_add_tagstart("Label");
-	xml_add_tagend(FALSE);
-
-	xml_add_tagstart("Setting");
-	xml_add_attribute_int("min_dist",iface->label_general.min_dist);
-	xml_add_attribute_int("max_dist",iface->label_general.max_dist);
-	xml_add_tagend(TRUE);
-
-	xml_add_tagstart("Text");
-	xml_add_attribute_int("size",iface->label_general.text.size);
-	xml_add_attribute_color("color",&iface->label_general.text.col);
-	xml_add_tagend(TRUE);
-
-	xml_add_tagstart("Health");
-	xml_add_attribute_int("wid",iface->label_general.health.wid);
-	xml_add_attribute_int("high",iface->label_general.health.high);
-	xml_add_attribute_boolean("border_on",iface->label_general.health.border_on);
-	xml_add_attribute_boolean("background_on",iface->label_general.health.background_on);
-	xml_add_attribute_color("border_color",&iface->label_general.health.border_col);
-	xml_add_attribute_color("background_color",&iface->label_general.health.background_col);
-	xml_add_attribute_color("bar_color",&iface->label_general.health.bar_col);
-	xml_add_tagend(TRUE);
-
-	xml_add_tagclose("Label");
 
 		// menus
 

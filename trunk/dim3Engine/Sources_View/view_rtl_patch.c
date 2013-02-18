@@ -183,6 +183,7 @@ void view_dim3rtl_image_cache(void)
 	iface_ring_type				*ring;
  	iface_mark_type				*mark;
 	iface_halo_type				*halo;
+	iface_label_type			*label;
 	iface_crosshair_type		*crosshair;
 
 		// hud bitmaps
@@ -233,6 +234,16 @@ void view_dim3rtl_image_cache(void)
 		file_paths_data(&file_path_setup,path,"Bitmaps/Halos",halo->bitmap_name,"png");
 		halo->rtl_material_id=view_dim3rtl_create_material_from_path(path,RL_MATERIAL_ALPHA_ADDITIVE);
 		halo++;
+	}
+
+		// labels
+
+	label=iface.label_list.labels;
+
+	for (n=0;n!=iface.label_list.nlabel;n++) {
+		file_paths_data(&file_path_setup,path,"Bitmaps/Labels",label->bitmap_name,"png");
+		label->rtl_material_id=view_dim3rtl_create_material_from_path(path,RL_MATERIAL_ALPHA_ADDITIVE);
+		label++;
 	}
 
 		// crosshairs

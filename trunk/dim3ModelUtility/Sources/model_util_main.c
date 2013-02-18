@@ -64,9 +64,24 @@ bool model_new(model_type *model,char *name)
 	}
 
 	model->bone_connect.name_bone_idx=-1;
-	model->bone_connect.label_text_bone_idx=-1;
-	model->bone_connect.label_bitmap_bone_idx=-1;
-	model->bone_connect.label_health_bone_idx=-1;
+
+	model->label.text.size=20;
+	model->label.text.col.r=model->label.text.col.b=0.0f;
+	model->label.text.col.g=1.0f;
+	model->label.text.bone_idx=-1;
+
+	model->label.bitmap.size=50;
+	model->label.bitmap.bone_idx=-1;
+
+	model->label.bar.wid=100;
+	model->label.bar.high=20;
+	model->label.bar.border_on=TRUE;
+	model->label.bar.background_on=TRUE;
+	model->label.bar.border_col.r=model->label.bar.border_col.g=model->label.bar.border_col.b=0.0f;
+	model->label.bar.background_col.r=model->label.bar.background_col.g=model->label.bar.background_col.b=0.5;
+	model->label.bar.bar_col.r=1.0f;
+	model->label.bar.bar_col.g=model->label.bar.bar_col.b=0.0f;
+	model->label.bar.bone_idx=-1;
 
 	model->rigid_body.on=FALSE;
 

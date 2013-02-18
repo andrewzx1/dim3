@@ -1074,27 +1074,6 @@ typedef struct		{
 					} iface_crosshair_list;
 
 //
-// labels
-//
-
-typedef struct		{
-						int								size;
-						d3col							col;
-					} iface_label_text_type;
-
-typedef struct		{
-						int								wid,high;
-						bool							border_on,background_on;
-						d3col							border_col,background_col,bar_col;
-					} iface_label_health_type;
-
-typedef struct		{
-						int								min_dist,max_dist;
-						iface_label_text_type			text;
-						iface_label_health_type			health;
-					} iface_label_general_type;
-
-//
 // configurable control names
 //
 
@@ -1484,7 +1463,6 @@ typedef struct		{
 						iface_sound_list				sound_list;
 						iface_shader_list				shader_list;
 						iface_radar_type				radar;
-						iface_label_general_type		label_general;
 						iface_chat_type					chat;
 						iface_preload_model_type		preload_model;
 						iface_simple_save_list			simple_save_list;
@@ -1505,6 +1483,7 @@ extern int iface_chooser_find_piece_idx(iface_chooser_type *chooser,int id);
 extern void iface_text_set(iface_text_type *text,char *data);
 extern int iface_crosshair_find(iface_type *iface,char *name);
 extern int iface_halo_find(iface_type *iface,char *name);
+extern int iface_label_find(iface_type *iface,char *name);
 extern void iface_text_set(iface_text_type *text,char *data);
 extern void iface_bitmaps_hide_all(iface_type *iface);
 extern void iface_texts_hide_all(iface_type *iface);

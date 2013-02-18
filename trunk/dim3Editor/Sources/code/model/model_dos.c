@@ -302,9 +302,10 @@ bool model_file_close(void)
 	}
 	
 	model.bone_connect.name_bone_idx=-1;
-	model.bone_connect.label_text_bone_idx=-1;
-	model.bone_connect.label_bitmap_bone_idx=-1;
-	model.bone_connect.label_health_bone_idx=-1;
+
+	model.label.text.bone_idx=-1;
+	model.label.bitmap.bone_idx=-1;
+	model.label.bar.bone_idx=-1;
 
 		// reset state
 

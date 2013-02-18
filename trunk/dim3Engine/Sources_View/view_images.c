@@ -274,6 +274,7 @@ void view_images_cached_load(void)
 	iface_ring_type				*ring;
  	iface_mark_type				*mark;
 	iface_halo_type				*halo;
+	iface_label_type			*label;
 	iface_crosshair_type		*crosshair;
 #if defined(D3_OS_IPHONE) || defined(D3_OS_ANDRIOD)
 	iface_virtual_stick_type	*stick;
@@ -345,6 +346,16 @@ void view_images_cached_load(void)
 		halo++;
 	}
 
+		// labels
+
+	label=iface.label_list.labels;
+
+	for (n=0;n!=iface.label_list.nlabel;n++) {
+		file_paths_data(&file_path_setup,path,"Bitmaps/Labels",label->bitmap_name,"png");
+		label->image_idx=view_images_load_single(path,FALSE,FALSE);
+		label++;
+	}
+
 		// crosshairs
 
 	crosshair=iface.crosshair_list.crosshairs;
@@ -411,6 +422,7 @@ void view_images_cached_free(void)
 	iface_ring_type				*ring;
  	iface_mark_type				*mark;
   	iface_halo_type				*halo;
+	iface_label_type			*label;
 	iface_crosshair_type		*crosshair;
 #if defined(D3_OS_IPHONE) || defined(D3_OS_ANDRIOD)
 	iface_virtual_stick_type	*stick;
@@ -478,6 +490,15 @@ void view_images_cached_free(void)
 	for (n=0;n!=iface.halo_list.nhalo;n++) {
 		view_images_free_single(halo->image_idx);
 		halo++;
+	}
+
+		// labels
+
+	label=iface.label_list.labels;
+
+	for (n=0;n!=iface.label_list.nlabel;n++) {
+		view_images_free_single(label->image_idx);
+		label++;
 	}
 
 		// crosshairs

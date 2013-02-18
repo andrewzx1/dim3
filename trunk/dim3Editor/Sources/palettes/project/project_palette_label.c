@@ -32,25 +32,6 @@ and can be sold or given away.
 #include "glue.h"
 #include "interface.h"
 
-#define kMarkSettingsName						0
-#define kMarkSettingsFileName					1
-
-#define kMarkOptionNoRotate						2
-#define kMarkOptionNoTransparent				3
-#define kMarkOptionNoOpaque						4
-#define kMarkOptionHilite						5
-#define kMarkOptionBlendAdd						6
-#define kMarkOptionColor						7
-
-#define kMarkFadeInTick							9
-#define kMarkFadeLifeTick						10
-#define kMarkFadeOutTick						11
-
-#define kMarkImageCount							12
-#define kMarkImageMillisecond					13
-#define kMarkImageLoop							14
-#define kMarkImageLoopBack						15
-
 extern iface_type				iface;
 extern list_palette_type		project_palette;
 
@@ -62,44 +43,22 @@ extern list_palette_type		project_palette;
 
 void project_palette_fill_label(int label_idx)
 {
-/*
-	iface_mark_type			*mark;
+	iface_label_type			*label;
 
-	mark=&iface.mark_list.marks[mark_idx];
+	label=&iface.label_list.labels[label_idx];
 
-	list_palette_set_title(&project_palette,"Marks",NULL,"Mark",mark->name,NULL,NULL);
+	list_palette_set_title(&project_palette,"Labels",NULL,"Label",label->name,NULL,NULL);
 
 		// settings
 
 	list_palette_add_header(&project_palette,0,"Settings");
-	list_palette_add_string(&project_palette,kMarkSettingsName,"Name",mark->name,name_str_len,FALSE);
-	list_palette_add_picker_file(&project_palette,kMarkSettingsFileName,list_button_none,0,"Bitmap","Bitmaps/Marks","png","",mark->bitmap_name,FALSE);
+	list_palette_add_string(&project_palette,-1,"Name",label->name,name_str_len,FALSE);
+	list_palette_add_picker_file(&project_palette,-1,list_button_none,0,"Bitmap","Bitmaps/Labels","png","",label->bitmap_name,FALSE);
 
 		// options
 
 	list_palette_add_header(&project_palette,0,"Options");
-	list_palette_add_checkbox(&project_palette,kMarkOptionNoRotate,"No Rotate",&mark->no_rotate,FALSE);
-	list_palette_add_checkbox(&project_palette,kMarkOptionNoTransparent,"Ignore Transaparent Polys",&mark->no_transparent,FALSE);
-	list_palette_add_checkbox(&project_palette,kMarkOptionNoOpaque,"Ignore Opaque Polys",&mark->no_opaque,FALSE);
-	list_palette_add_checkbox(&project_palette,kMarkOptionHilite,"High Light",&mark->hilite,FALSE);
-	list_palette_add_checkbox(&project_palette,kMarkOptionBlendAdd,"Additive Blending",&mark->blend_add,FALSE);
-	list_palette_add_pick_color(&project_palette,kMarkOptionColor,"Color",&mark->color,FALSE);
-
-		// fade
-
-	list_palette_add_header(&project_palette,0,"Fade");
-	list_palette_add_int(&project_palette,kMarkFadeInTick,"Fade In Milliseconds",&mark->fade_in_msec,FALSE);
-	list_palette_add_int(&project_palette,kMarkFadeLifeTick,"Life Milliseconds",&mark->life_msec,FALSE);
-	list_palette_add_int(&project_palette,kMarkFadeOutTick,"Fade Out Milliseconds",&mark->fade_out_msec,FALSE);
-
-		// animation
-
-	list_palette_add_header(&project_palette,0,"Animation");
-	list_palette_add_int(&project_palette,kMarkImageCount,"Count",&mark->animate.image_count,FALSE);
-	list_palette_add_int(&project_palette,kMarkImageMillisecond,"Display Milliseconds",&mark->animate.msec,FALSE);
-	list_palette_add_checkbox(&project_palette,kMarkImageLoop,"Loop",&mark->animate.loop,FALSE);
-	list_palette_add_checkbox(&project_palette,kMarkImageLoopBack,"Loop Back",&mark->animate.loop_back,FALSE);
-	*/
+	list_palette_add_int(&project_palette,-1,"Size",&label->sz,FALSE);
 }
 
 /* =======================================================

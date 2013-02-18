@@ -261,9 +261,33 @@ typedef struct		{
 typedef struct		{
 						int								light_bone_idx[max_model_light],
 														halo_bone_idx[max_model_halo],
-														name_bone_idx,label_text_bone_idx,
-														label_bitmap_bone_idx,label_health_bone_idx;
+														name_bone_idx;
 					} model_bone_connect_type;
+
+//
+// model labels
+//
+
+typedef struct		{
+						int								size,bone_idx;
+						d3col							col;
+					} model_label_text_type;
+
+typedef struct		{
+						int								size,bone_idx;
+					} model_label_bitmap_type;
+
+typedef struct		{
+						int								wid,high,bone_idx;
+						bool							border_on,background_on;
+						d3col							border_col,background_col,bar_col;
+					} model_label_bar_type;
+
+typedef struct		{
+						model_label_text_type			text;
+						model_label_bitmap_type			bitmap;
+						model_label_bar_type			bar;
+					} model_label_type;
 
 //
 // model UI settings
@@ -300,6 +324,7 @@ typedef struct		{
 						model_bone_connect_type			bone_connect;
  						model_mesh_type					meshes[max_model_mesh];
 						model_rigid_body_type			rigid_body;
+						model_label_type				label;
 						model_ui_type					ui;
 						model_bone_type					*bones;
 						model_pose_type					*poses;
