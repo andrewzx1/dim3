@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		26159D2016D191050069B442 /* base_iface_label.c in Sources */ = {isa = PBXBuildFile; fileRef = 26159D1F16D191050069B442 /* base_iface_label.c */; };
-		26159D2416D1A92D0069B442 /* project_palette_general_label.c in Sources */ = {isa = PBXBuildFile; fileRef = 26159D2316D1A92D0069B442 /* project_palette_general_label.c */; };
 		26159D2716D1AA6D0069B442 /* project_palette_label.c in Sources */ = {isa = PBXBuildFile; fileRef = 26159D2516D1AA6C0069B442 /* project_palette_label.c */; };
 		26159D2816D1AA6D0069B442 /* project_palette_labels.c in Sources */ = {isa = PBXBuildFile; fileRef = 26159D2616D1AA6D0069B442 /* project_palette_labels.c */; };
 		2620AFD71682B68E00A3C76F /* map_view_auto_generator.c in Sources */ = {isa = PBXBuildFile; fileRef = 2620AFD61682B68E00A3C76F /* map_view_auto_generator.c */; };
@@ -481,7 +480,6 @@
 
 /* Begin PBXFileReference section */
 		26159D1F16D191050069B442 /* base_iface_label.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = base_iface_label.c; path = Sources/base_iface_label.c; sourceTree = "<group>"; };
-		26159D2316D1A92D0069B442 /* project_palette_general_label.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = project_palette_general_label.c; path = Sources/palettes/project/project_palette_general_label.c; sourceTree = "<group>"; };
 		26159D2516D1AA6C0069B442 /* project_palette_label.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = project_palette_label.c; path = Sources/palettes/project/project_palette_label.c; sourceTree = "<group>"; };
 		26159D2616D1AA6D0069B442 /* project_palette_labels.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = project_palette_labels.c; path = Sources/palettes/project/project_palette_labels.c; sourceTree = "<group>"; };
 		2620AFD61682B68E00A3C76F /* map_view_auto_generator.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = map_view_auto_generator.c; path = Sources/code/map/map_view_auto_generator.c; sourceTree = "<group>"; };
@@ -1463,7 +1461,6 @@
 				26F7E0E81600468600E739C4 /* project_palette_crosshairs.c */,
 				26F7E0E91600468600E739C4 /* project_palette_devices.c */,
 				26F7E0EA1600468600E739C4 /* project_palette_editor_preference.c */,
-				26159D2316D1A92D0069B442 /* project_palette_general_label.c */,
 				26F7E0EB1600468600E739C4 /* project_palette_group_particle.c */,
 				26F7E0EC1600468600E739C4 /* project_palette_halo.c */,
 				26F7E0ED1600468600E739C4 /* project_palette_halos.c */,
@@ -1873,7 +1870,6 @@
 				26F7D34F167175D400E51363 /* dialog_distort.c in Sources */,
 				2620AFD71682B68E00A3C76F /* map_view_auto_generator.c in Sources */,
 				26159D2016D191050069B442 /* base_iface_label.c in Sources */,
-				26159D2416D1A92D0069B442 /* project_palette_general_label.c in Sources */,
 				26159D2716D1AA6D0069B442 /* project_palette_label.c in Sources */,
 				26159D2816D1AA6D0069B442 /* project_palette_labels.c in Sources */,
 			);
