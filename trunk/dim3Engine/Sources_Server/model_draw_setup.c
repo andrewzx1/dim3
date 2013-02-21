@@ -208,7 +208,7 @@ int model_draw_setup_weapon_height_adjust(void)
 	ratio=(((float)view.screen.y_sz)/((float)view.screen.x_sz))*map.camera.plane.aspect_ratio;
 #endif
 
-	if (ratio<1.0f) return((int)((1.0f-ratio)*2500.0f));	// based on ratio=0.75 means move y 625
+	if (ratio<1.0f) return((int)((1.0f-ratio)*500.0f));
 	return(0);
 }
 

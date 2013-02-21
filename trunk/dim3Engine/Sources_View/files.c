@@ -350,11 +350,11 @@ void file_open(void)
 
 		file_get_checkpoint_file_name(checkpoint_name);
 	
-		element_button_text_add("Load Last Checkpoint",file_load_checkpoint_id,(x+wid),y,butt_wid,butt_high,element_pos_right,element_pos_top);
+		element_button_text_add("Last Checkpoint",file_load_checkpoint_id,x,y,butt_wid,butt_high,element_pos_left,element_pos_top);
 		element_enable(file_load_checkpoint_id,(checkpoint_name[0]!=0x0));
 
 		ty=(y+butt_high)-((butt_high-gl_text_get_char_height(iface.font.text_size_small))/2);
-		element_text_add(checkpoint_name,-1,x,ty,iface.font.text_size_small,tx_left,NULL,FALSE);
+		element_text_add(checkpoint_name,-1,((x+butt_wid)+padding),ty,iface.font.text_size_small,tx_left,NULL,FALSE);
 
 		y+=(butt_high+padding);
 		table_high-=(butt_high+padding);
