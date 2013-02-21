@@ -410,6 +410,7 @@
 		26A6844913DE4213007513D1 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26A6844813DE4213007513D1 /* OpenGLES.framework */; };
 		26AE7E65154DD17200D9E56A /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 26AE7E64154DD17200D9E56A /* Default.png */; };
 		26AE7E76154DFB9A00D9E56A /* Default-Portrait~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 26AE7E75154DFB9A00D9E56A /* Default-Portrait~ipad.png */; };
+		26CD3E3716D5CA1B00DFC2D4 /* base_iface_label.c in Sources */ = {isa = PBXBuildFile; fileRef = 26CD3E3616D5CA1B00DFC2D4 /* base_iface_label.c */; };
 		26D1D15E168A32D7004F92DE /* script_interface_virtual_control.c in Sources */ = {isa = PBXBuildFile; fileRef = 26D1D15D168A32D7004F92DE /* script_interface_virtual_control.c */; };
 		26D1D161168A3B45004F92DE /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 26D1D160168A3B45004F92DE /* Default-568h@2x.png */; };
 		26D6C0E013E2442D0087FFD4 /* libstdc++.6.0.9.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 26D6C0DF13E2442D0087FFD4 /* libstdc++.6.0.9.dylib */; };
@@ -917,6 +918,7 @@
 		26A6846813DE446E007513D1 /* view_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = view_defs.h; path = ../../dim3Engine/Headers/view_defs.h; sourceTree = "<group>"; };
 		26AE7E64154DD17200D9E56A /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Default.png; path = Resources/Default.png; sourceTree = "<group>"; };
 		26AE7E75154DFB9A00D9E56A /* Default-Portrait~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-Portrait~ipad.png"; path = "Resources/Default-Portrait~ipad.png"; sourceTree = "<group>"; };
+		26CD3E3616D5CA1B00DFC2D4 /* base_iface_label.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = base_iface_label.c; sourceTree = "<group>"; };
 		26D1D15D168A32D7004F92DE /* script_interface_virtual_control.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_interface_virtual_control.c; sourceTree = "<group>"; };
 		26D1D160168A3B45004F92DE /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-568h@2x.png"; path = "Resources/Default-568h@2x.png"; sourceTree = "<group>"; };
 		26D6C0DF13E2442D0087FFD4 /* libstdc++.6.0.9.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libstdc++.6.0.9.dylib"; path = "usr/lib/libstdc++.6.0.9.dylib"; sourceTree = SDKROOT; };
@@ -1300,6 +1302,7 @@
 				260B43EE1411FB18006ED023 /* base_iface_crosshairs.c */,
 				260B43EF1411FB18006ED023 /* base_iface_halos.c */,
 				260B43F01411FB18006ED023 /* base_iface_interface.c */,
+				26CD3E3616D5CA1B00DFC2D4 /* base_iface_label.c */,
 				260B43F11411FB18006ED023 /* base_iface_main.c */,
 				260B43F21411FB18006ED023 /* base_iface_mark.c */,
 				26FF68A91523D5B800FACC3B /* base_iface_singleplayer.c */,
@@ -2162,6 +2165,7 @@
 				262DFFC716C3705200CA9F97 /* ray_render.c in Sources */,
 				262DFFC816C3705200CA9F97 /* ray_scene.c in Sources */,
 				262DFFC916C3705200CA9F97 /* ray_thread.c in Sources */,
+				26CD3E3716D5CA1B00DFC2D4 /* base_iface_label.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
