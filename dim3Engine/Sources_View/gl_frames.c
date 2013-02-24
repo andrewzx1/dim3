@@ -98,7 +98,6 @@ void gl_create_normal_matrix(matrix_type *model_mat)
 
 void gl_3D_view(void)
 {
-	int				y_shift;
 	float			fov,ratio;
 	matrix_type		mat;
 	
@@ -112,17 +111,14 @@ void gl_3D_view(void)
 	ratio=(((float)view.screen.y_sz)/((float)view.screen.x_sz))*map.camera.plane.aspect_ratio;
 #endif
 
-		// we do a special check for low
-		// ratio (in pads or phones) and adjust
-		// the fov
-
-	y_shift=0;
-	if (ratio<1.0f) y_shift=(int)((1.0f-ratio)*-6000.0f);
-
 		// create the projection matrix
 		// as a column ordered opengl matrix
 	
 	matrix_perspective(&mat,fov,ratio,(float)map.camera.plane.near_z,(float)map.camera.plane.far_z);
+
+#ifdef D3_ROTATE_VIEW
+	matrix_rotate(&mat,-90.0f,0.0f,0.0f,1.0f);
+#endif
 
 	if (view.render->camera.flip) {
 		matrix_scale(&mat,1.0f,1.0f,-1.0f);
@@ -131,7 +127,7 @@ void gl_3D_view(void)
 		matrix_scale(&mat,-1.0f,-1.0f,-1.0f);
 	}
 	
-	matrix_translate(&mat,y_shift,0.0f,(float)(map.camera.plane.near_z_offset+view.render->camera.z_adjust));
+	matrix_translate(&mat,0.0f,0.0f,(float)(map.camera.plane.near_z_offset+view.render->camera.z_adjust));
 	
 	matrix_to_opengl_uniform_4x4(&mat,gl_proj_matrix);
 
@@ -141,8 +137,8 @@ void gl_3D_view(void)
 	matrix_identity(&mat);
 
 #ifdef D3_ROTATE_VIEW
-	matrix_translate(&mat,(float)view.screen.y_sz,0.0f,0.0f);
-	matrix_rotate(&mat,-90.0f,0.0f,0.0f,1.0f);
+//	matrix_translate(&mat,(float)view.screen.y_sz,0.0f,0.0f);
+//	matrix_rotate(&mat,-90.0f,0.0f,0.0f,1.0f);
 #endif
 	
 	matrix_lookat(&mat,(float)view.render->camera.pnt.x,(float)view.render->camera.pnt.y,(float)(view.render->camera.pnt.z+map.camera.plane.near_z),(float)view.render->camera.pnt.x,(float)view.render->camera.pnt.y,(float)view.render->camera.pnt.z,0.0f,1.0f,0.0f);
@@ -167,10 +163,10 @@ void gl_3D_rotate(d3pnt *pnt,d3ang *ang)
 		// as a column ordered opengl matrix
 
 	matrix_identity(&mat);
-
+	
 #ifdef D3_ROTATE_VIEW
-	matrix_translate(&mat,(float)view.screen.y_sz,0.0f,0.0f);
-	matrix_rotate(&mat,-90.0f,0.0f,0.0f,1.0f);
+//	matrix_translate(&mat,(float)view.screen.y_sz,0.0f,0.0f);
+//	matrix_rotate(&mat,-90.0f,0.0f,0.0f,1.0f);
 #endif
 	
 		// need to cap look up/down at 90
@@ -221,6 +217,8 @@ void gl_2D_view_screen(void)
 	matrix_ortho(&mat,0.0f,(float)view.screen.x_sz,(float)view.screen.y_sz,0.0f,-1.0f,1.0f);
 #else
 	matrix_ortho(&mat,0.0f,(float)view.screen.y_sz,(float)view.screen.x_sz,0.0f,-1.0f,1.0f);
+	matrix_translate(&mat,(float)view.screen.y_sz,0.0f,0.0f);
+	matrix_rotate(&mat,90.0f,0.0f,0.0f,1.0f);
 #endif
 
 	matrix_to_opengl_uniform_4x4(&mat,gl_proj_matrix);
@@ -231,8 +229,8 @@ void gl_2D_view_screen(void)
 	matrix_identity(&mat);
 
 #ifdef D3_ROTATE_VIEW
-	matrix_translate(&mat,(float)view.screen.y_sz,0.0f,0.0f);
-	matrix_rotate(&mat,90.0f,0.0f,0.0f,1.0f);
+//	matrix_translate(&mat,(float)view.screen.y_sz,0.0f,0.0f);
+//	matrix_rotate(&mat,90.0f,0.0f,0.0f,1.0f);
 #endif
 
 	matrix_to_opengl_uniform_4x4(&mat,gl_model_view_matrix);
@@ -257,6 +255,8 @@ void gl_2D_view_interface(void)
 	matrix_ortho(&mat,0.0f,(float)iface.scale_x,(float)iface.scale_y,0.0f,-1.0f,1.0f);
 #else
 	matrix_ortho(&mat,0.0f,(float)iface.scale_y,(float)iface.scale_x,0.0f,-1.0f,1.0f);
+	matrix_translate(&mat,(float)iface.scale_y,0.0f,0.0f);
+	matrix_rotate(&mat,90.0f,0.0f,0.0f,1.0f);
 #endif
 
 	matrix_to_opengl_uniform_4x4(&mat,gl_proj_matrix);
@@ -267,8 +267,8 @@ void gl_2D_view_interface(void)
 	matrix_identity(&mat);
 
 #ifdef D3_ROTATE_VIEW
-	matrix_translate(&mat,(float)iface.scale_y,0.0f,0.0f);
-	matrix_rotate(&mat,90.0f,0.0f,0.0f,1.0f);
+//	matrix_translate(&mat,(float)iface.scale_y,0.0f,0.0f);
+//	matrix_rotate(&mat,90.0f,0.0f,0.0f,1.0f);
 #endif
 
 	matrix_to_opengl_uniform_4x4(&mat,gl_model_view_matrix);
@@ -303,6 +303,7 @@ void gl_3D_view_interface_model()
 	matrix_frustum(&mat,-x,x,-y,y,1000.0f,21000.0f);
 #else
 	matrix_frustum(&mat,-y,y,-x,x,1000.0f,21000.0f);
+	matrix_rotate(&mat,90.0f,0.0f,0.0f,1.0f);
 #endif
 
 	matrix_scale(&mat,1.0f,-1.0f,-1.0f);
@@ -316,7 +317,7 @@ void gl_3D_view_interface_model()
 	matrix_identity(&mat);
 
 #ifdef D3_ROTATE_VIEW
-	matrix_rotate(&mat,90.0f,0.0f,0.0f,1.0f);
+//	matrix_rotate(&mat,90.0f,0.0f,0.0f,1.0f);		// supergumba -- search these all out and remove them after verification
 #endif
 
 	matrix_to_opengl_uniform_4x4(&mat,gl_model_view_matrix);
