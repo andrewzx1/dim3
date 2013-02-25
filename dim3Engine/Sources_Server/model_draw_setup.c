@@ -198,22 +198,6 @@ void model_draw_setup_object(obj_type *obj)
       
 ======================================================= */
 
-int model_draw_setup_weapon_height_adjust(void)
-{
-	float		ratio;
-	
-#ifndef D3_ROTATE_VIEW
-	ratio=(((float)view.screen.x_sz)/((float)view.screen.y_sz))*map.camera.plane.aspect_ratio;
-#else
-	ratio=(((float)view.screen.y_sz)/((float)view.screen.x_sz))*map.camera.plane.aspect_ratio;
-#endif
-
-return(0);	// supergumba
-
-	if (ratio<1.0f) return((int)((1.0f-ratio)*500.0f));
-	return(0);
-}
-
 void model_draw_setup_weapon(obj_type *obj,weapon_type *weap,bool ignore_y_shifts,bool dual_hand)
 {
 	int					swap_yadd,weap_mode,
@@ -288,8 +272,6 @@ void model_draw_setup_weapon(obj_type *obj,weapon_type *weap,bool ignore_y_shift
 	draw->pnt.x=(int)fx+obj->pnt.x;
 	draw->pnt.y=(int)fy+(obj->pnt.y+obj->size.eye_offset);
 	draw->pnt.z=(int)fz+obj->pnt.z;
-	
-	draw->pnt.y-=model_draw_setup_weapon_height_adjust();
 
 		// viewing angle
 		
