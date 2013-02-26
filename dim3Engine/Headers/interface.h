@@ -118,10 +118,13 @@ extern void game_time_pause_end(void);
 // save state
 //
 
-extern bool game_file_save(int checkpoint_spot_idx,bool suspend_save,char *err_str);
+extern bool game_file_save(bool no_progress,char *err_str);
 extern bool game_file_load(char *file_name,bool resume_load,char *err_str);
 extern void game_file_suspend(void);
 extern void game_file_resume(void);
+extern void game_checkpoint_clear(void);
+extern void game_checkpoint_set(int checkpoint_spot_idx);
+extern void game_checkpoint_run(void);
 
 //
 // meshes
@@ -289,6 +292,7 @@ extern void progress_update(void);
 //
 
 extern void hud_texts_fps(char *data);
+extern void hud_checkpoint_show(bool show);
 extern void hud_click(void);
 extern void hud_draw(void);
 extern void network_draw(void);

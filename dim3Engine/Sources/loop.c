@@ -477,9 +477,11 @@ bool loop_main(char *err_str)
 	game_time_calculate();
 	
 		// clear map changes
+		// and checkpoints
 	
 	map_clear_changes();
-		
+	game_checkpoint_clear();
+
 		// run proper game state
 		
 	server.next_state=server.state;
@@ -497,7 +499,7 @@ bool loop_main(char *err_str)
 		loop_state_next_open();
 	}
 	
-		// map changes
+		// map and checkpoint changes
 		// we need to check for state changes within
 		// the map change (like media launching)
 		
@@ -515,6 +517,10 @@ bool loop_main(char *err_str)
 			}
 			
 		}
+
+			// checkpoint changes
+
+		game_checkpoint_run();
 	}
 	
 	return(TRUE);

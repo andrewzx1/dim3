@@ -51,7 +51,7 @@ extern file_path_setup_type	file_path_setup;
 
 
 bool						game_file_has_suspended_save;
-unsigned long				game_file_sz,game_file_pos;
+unsigned long				game_file_pos;
 char						game_file_last_save_name[256];
 unsigned char				*game_file_data;
 
@@ -76,27 +76,94 @@ void game_file_initialize(void)
       
 ======================================================= */
 
+bool game_file_start(void)
+{
+	int				n,k,t,mem_sz;
+	obj_type		*obj;
+	weapon_type		*weap;
+	proj_setup_type	*proj_setup;
+
+		// start with extra
+
+	mem_sz=(64*1024);
+
+		// add in objects, weapons, proj setups
+
+	for (n=0;n!=max_obj_list;n++) {
+		obj=server.obj_list.objs[n];
+		if (obj==NULL) continue;
+
+		mem_sz+=(sizeof(obj_type)+(2*sizeof(int)));
+		mem_sz+=1024;		// script json
+
+		for (k=0;k!=max_weap_list;k++) {
+			weap=obj->weap_list.weaps[k];
+			if (weap==NULL) continue;
+
+			mem_sz+=(sizeof(weapon_type)+(2*sizeof(int)));
+			mem_sz+=1024;
+
+			for (t=0;t!=max_proj_setup_list;t++) {
+				proj_setup=weap->proj_setup_list.proj_setups[t];
+				if (proj_setup==NULL) continue;
+				
+				mem_sz+=(sizeof(proj_setup_type)+sizeof(int));
+				mem_sz+=1024;
+			}
+		}
+	}
+
+		// projectiles, effects, and decals
+
+	mem_sz+=(projectile_count_list()*(sizeof(proj_type)+sizeof(int)))+sizeof(int);
+	mem_sz+=(effect_count_list()*(sizeof(effect_type)+sizeof(int)))+sizeof(int);
+	mem_sz+=(decal_count_list()*(sizeof(decal_type)+sizeof(int)))+sizeof(int);
+	mem_sz+=(map.nspot*(sizeof(spot_type)+sizeof(int)))+sizeof(int);
+	
+		// HUD
+
+	mem_sz+=sizeof(iface_bitmap_type);
+	mem_sz+=sizeof(iface_text_type);
+	mem_sz+=sizeof(iface_bar_type);
+	mem_sz+=sizeof(iface_radar_type);
+	
+		// map changes
+		
+	mem_sz+=sizeof(map_ambient_type);					
+	mem_sz+=sizeof(map_fog_type);
+	mem_sz+=(map.group.ngroup*sizeof(group_run_type))+sizeof(int);
+	mem_sz+=(map.movement.nmovement*sizeof(movement_run_type))+sizeof(int);
+
+		// timers and script data
+
+	mem_sz+=(timers_count_list()*(sizeof(timer_type)+sizeof(int)))+sizeof(int);
+	mem_sz+=(script_global_count_list()*(sizeof(global_type)+sizeof(int)))+sizeof(int);
+
+		// create the memory
+
+	game_file_data=(unsigned char*)malloc(mem_sz);
+	if (game_file_data==NULL) return(FALSE);
+
+	game_file_pos=0;
+
+	return(TRUE);
+}
+
+void game_file_end(void)
+{
+	free(game_file_data);
+}
+
 bool game_file_add_chunk(void *data,int count,int sz)
 {
-	int				nxt_file_sz;
-	unsigned char	*nptr;
-	
-	sz*=count;
-	nxt_file_sz=game_file_sz+(sz+(sizeof(int)*2));
+	memmove((game_file_data+game_file_pos),&count,sizeof(int));
+	game_file_pos+=sizeof(int);
 
-	nptr=realloc(game_file_data,nxt_file_sz);
-	if (nptr==NULL) return(FALSE);
+	memmove((game_file_data+game_file_pos),&sz,sizeof(int));
+	game_file_pos+=sizeof(int);
 	
-	game_file_data=nptr;
-
-	memmove((game_file_data+game_file_sz),&count,sizeof(int));
-	game_file_sz+=sizeof(int);
-
-	memmove((game_file_data+game_file_sz),&sz,sizeof(int));
-	game_file_sz+=sizeof(int);
-	
-	memmove((game_file_data+game_file_sz),data,sz);
-	game_file_sz+=sz;
+	memmove((game_file_data+game_file_pos),data,sz);
+	game_file_pos+=sz;
 	
 	return(TRUE);
 }
@@ -151,7 +218,7 @@ bool game_file_compress_save(char *path,char *err_str)
 	
 		// compress it
 
-	compress_data=zip_compress(game_file_data,game_file_sz,&compress_sz,err_str);
+	compress_data=zip_compress(game_file_data,game_file_pos,&compress_sz,err_str);
 	if (compress_data==NULL) return(FALSE);
 	
 		// save file
@@ -163,7 +230,7 @@ bool game_file_compress_save(char *path,char *err_str)
 		return(FALSE);
 	}
 		
-	fwrite(&game_file_sz,1,sizeof(unsigned long),file);
+	fwrite(&game_file_pos,1,sizeof(unsigned long),file);
 	fwrite(&compress_sz,1,sizeof(unsigned long),file);
 	fwrite(compress_data,1,compress_sz,file);
 	fclose(file);
@@ -179,7 +246,7 @@ bool game_file_compress_save(char *path,char *err_str)
 
 bool game_file_expand_load(char *path,char *err_str)
 {
-	unsigned long   file_sz,compress_sz;
+	unsigned long   file_sz,game_file_sz,compress_sz;
 	ptr				compress_data;
 	FILE			*file;
 	struct stat		sb;
@@ -255,7 +322,7 @@ void game_file_create_name(int tick,char *file_name)
       
 ======================================================= */
 
-bool game_file_save(int checkpoint_spot_idx,bool suspend_save,char *err_str)
+bool game_file_save(bool no_progress,char *err_str)
 {
 	int					n,k,t,count,tick;
 	char				path[1024],file_name[256];
@@ -269,8 +336,8 @@ bool game_file_save(int checkpoint_spot_idx,bool suspend_save,char *err_str)
 	decal_type			*decal;
 	timer_type			*timer;
 	global_type			*global;
-	
-	if (!suspend_save) progress_initialize(NULL);
+
+	if (!no_progress) progress_initialize(NULL);
 
 		// get saved data file names
 		
@@ -280,15 +347,17 @@ bool game_file_save(int checkpoint_spot_idx,bool suspend_save,char *err_str)
 	
 		// save screen
 		
-	if (!suspend_save) {
+	if (!no_progress) {
 		file_paths_app_data(&file_path_setup,path,"Saved Games",file_name,"png");
 		view_capture_draw(path);
 	}
 
 		// start chunks
-		
-	game_file_sz=0;
-	game_file_data=malloc(32);
+
+	if (!game_file_start()) {
+		strcpy(err_str,"Out of Memory");
+		return(FALSE);
+	}
 
 		// header
 
@@ -296,7 +365,7 @@ bool game_file_save(int checkpoint_spot_idx,bool suspend_save,char *err_str)
 	head.skill=server.skill;
 	head.option_flags=server.option_flags;
 	head.simple_save_idx=server.simple_save_idx;
-	head.checkpoint_spot_idx=checkpoint_spot_idx;
+	head.checkpoint_spot_idx=server.checkpoint_spot_idx;
 	head.player_obj_idx=server.player_obj_idx;
 	
 	strcpy(head.version,dim3_version);
@@ -306,12 +375,12 @@ bool game_file_save(int checkpoint_spot_idx,bool suspend_save,char *err_str)
 	
 		// view & server state
 		
-	if (!suspend_save) progress_update();
+	if (!no_progress) progress_update();
 		
 	game_file_add_chunk(&view.time,1,sizeof(view_time_type));
 	game_file_add_chunk(&camera,1,sizeof(camera_type));
 
-	if (!suspend_save) progress_update();
+	if (!no_progress) progress_update();
 	
 	game_file_add_chunk(&server.time,1,sizeof(server_time_type));
 	game_file_add_chunk(&js.timer_tick,1,sizeof(int));
@@ -322,7 +391,7 @@ bool game_file_save(int checkpoint_spot_idx,bool suspend_save,char *err_str)
 	game_file_add_chunk(&count,1,sizeof(int));
 
 	for (n=0;n!=max_obj_list;n++) {
-		if (!suspend_save) progress_update();
+		if (!no_progress) progress_update();
 
 		obj=server.obj_list.objs[n];
 		if (obj==NULL) continue;
@@ -359,7 +428,7 @@ bool game_file_save(int checkpoint_spot_idx,bool suspend_save,char *err_str)
 	game_file_add_chunk(&count,1,sizeof(int));
 
 	for (n=0;n!=max_proj_list;n++) {
-		if (!suspend_save) progress_update();
+		if (!no_progress) progress_update();
 
 		proj=server.proj_list.projs[n];
 		if (!proj->on) continue;
@@ -372,7 +441,7 @@ bool game_file_save(int checkpoint_spot_idx,bool suspend_save,char *err_str)
 	game_file_add_chunk(&count,1,sizeof(int));
 
 	for (n=0;n!=max_effect_list;n++) {
-		if (!suspend_save) progress_update();
+		if (!no_progress) progress_update();
 
 		effect=server.effect_list.effects[n];
 		if (effect==NULL) continue;
@@ -386,7 +455,7 @@ bool game_file_save(int checkpoint_spot_idx,bool suspend_save,char *err_str)
 	game_file_add_chunk(&count,1,sizeof(int));
 
 	for (n=0;n!=max_decal_list;n++) {
-		if (!suspend_save) progress_update();
+		if (!no_progress) progress_update();
 
 		decal=server.decal_list.decals[n];
 		if (decal==NULL) continue;
@@ -395,10 +464,14 @@ bool game_file_save(int checkpoint_spot_idx,bool suspend_save,char *err_str)
 		game_file_add_chunk(&n,1,sizeof(int));
 		game_file_add_chunk(decal,1,sizeof(decal_type));
 	}
+
+		// spots (mostly for checkpoint data)
+
+	game_file_add_chunk(map.spots,map.nspot,sizeof(spot_type));
 	
 		// HUD
 
-	if (!suspend_save) progress_update();
+	if (!no_progress) progress_update();
 	
 	game_file_add_chunk(iface.bitmap_list.bitmaps,iface.bitmap_list.nbitmap,sizeof(iface_bitmap_type));
 	game_file_add_chunk(iface.text_list.texts,iface.text_list.ntext,sizeof(iface_text_type));
@@ -407,12 +480,12 @@ bool game_file_save(int checkpoint_spot_idx,bool suspend_save,char *err_str)
 	
 		// map changes
 		
-	if (!suspend_save) progress_update();
+	if (!no_progress) progress_update();
 
 	game_file_add_chunk(&map.ambient,1,sizeof(map_ambient_type));					
 	game_file_add_chunk(&map.fog,1,sizeof(map_fog_type));
 
-	if (!suspend_save) progress_update();
+	if (!no_progress) progress_update();
 
 	game_file_add_chunk(&map.group.ngroup,1,sizeof(int));
 
@@ -420,7 +493,7 @@ bool game_file_save(int checkpoint_spot_idx,bool suspend_save,char *err_str)
 		game_file_add_chunk(&map.group.groups[n].run,1,sizeof(group_run_type));
 	}
 
-	if (!suspend_save) progress_update();
+	if (!no_progress) progress_update();
 
 	game_file_add_chunk(&map.movement.nmovement,1,sizeof(int));
 
@@ -430,17 +503,17 @@ bool game_file_save(int checkpoint_spot_idx,bool suspend_save,char *err_str)
 	
 		// script states
 		
-	if (!suspend_save) progress_update();
+	if (!no_progress) progress_update();
 
-	if (!script_state_save((checkpoint_spot_idx!=-1),err_str)) {
+	if (!script_state_save((server.checkpoint_spot_idx!=-1),err_str)) {
 		free(game_file_data);
-		if (!suspend_save) progress_shutdown();
+		if (!no_progress) progress_shutdown();
 		return(FALSE);
 	}
 
 		// timers and script data
 
-	if (!suspend_save) progress_update();
+	if (!no_progress) progress_update();
 
 	count=timers_count_list();
 	game_file_add_chunk(&count,1,sizeof(int));
@@ -453,7 +526,7 @@ bool game_file_save(int checkpoint_spot_idx,bool suspend_save,char *err_str)
 		game_file_add_chunk(timer,1,sizeof(timer_type));
 	}
 
-	if (!suspend_save) progress_update();
+	if (!no_progress) progress_update();
 
 	count=script_global_count_list();
 	game_file_add_chunk(&count,1,sizeof(int));
@@ -468,9 +541,9 @@ bool game_file_save(int checkpoint_spot_idx,bool suspend_save,char *err_str)
 
 		// compress and save
 		
-	if (!suspend_save) progress_update();
+	if (!no_progress) progress_update();
 
-	if (!suspend_save) {
+	if (!no_progress) {
 		file_paths_app_data(&file_path_setup,path,"Saved Games",file_name,"sav");
 	}
 	else {
@@ -479,17 +552,17 @@ bool game_file_save(int checkpoint_spot_idx,bool suspend_save,char *err_str)
 
 	ok=game_file_compress_save(path,err_str);
 	
-	if (!suspend_save) progress_update();
+	if (!no_progress) progress_update();
 	
-	free(game_file_data);
+	game_file_end();
 	
 		// remember last map
 		
-	if (!suspend_save) strcpy(game_file_last_save_name,strrchr(path,'/'));
+	if (!no_progress) strcpy(game_file_last_save_name,strrchr(path,'/'));
 	
 		// finished
 		
-	if (!suspend_save) progress_shutdown();
+	if (!no_progress) progress_shutdown();
 
 		// misc initialization
 
@@ -808,6 +881,10 @@ bool game_file_load(char *file_name,bool resume_load,char *err_str)
 		game_file_get_chunk(server.decal_list.decals[idx]);
 	}
 
+		// spots (mostly for checkpoint data)
+
+	game_file_get_chunk(map.spots);
+
 		// HUD
 
 	if (!resume_load) progress_update();
@@ -996,7 +1073,7 @@ void game_file_suspend(void)
 	if (server.game_open) {
 		
 		if (server.map_open) {
-			if (game_file_save(-1,TRUE,err_str)) {
+			if (game_file_save(TRUE,err_str)) {
 				game_file_has_suspended_save=TRUE;
 			}
 		
@@ -1018,3 +1095,38 @@ void game_file_resume(void)
 		game_file_has_suspended_save=FALSE;
 	}
 }
+
+/* =======================================================
+
+      Checkpoints
+      
+======================================================= */
+
+void game_checkpoint_clear(void)
+{
+	if (server.checkpoint_spot_idx!=-1) {
+		server.checkpoint_spot_idx=-1;
+		hud_checkpoint_show(FALSE);
+	}
+}
+
+void game_checkpoint_set(int checkpoint_spot_idx)
+{
+	server.checkpoint_spot_idx=checkpoint_spot_idx;
+	hud_checkpoint_show(TRUE);
+}
+
+void game_checkpoint_run(void)
+{
+	char			err_str[256];
+
+	if (server.checkpoint_spot_idx==-1) return;
+	
+	if (!game_file_save(TRUE,err_str)) {
+		console_add_error(err_str);
+	}
+
+	server.checkpoint_spot_idx=-1;
+	hud_checkpoint_show(FALSE);
+}
+

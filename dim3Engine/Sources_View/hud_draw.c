@@ -744,6 +744,33 @@ void hud_bars_draw(void)
 
 /* =======================================================
 
+      HUD Checkpoint Show/Hide
+      
+======================================================= */
+
+void hud_checkpoint_show(bool show)
+{
+	int					n;
+	iface_bitmap_type	*bitmap;
+	iface_text_type		*text;
+
+	bitmap=iface.bitmap_list.bitmaps;
+
+	for (n=0;n!=iface.bitmap_list.nbitmap;n++) {
+		if (bitmap->checkpoint) bitmap->show=show;
+		bitmap++;
+	}
+
+	text=iface.text_list.texts;
+
+	for (n=0;n!=iface.text_list.ntext;n++) {
+		if (text->checkpoint) text->show=show;
+		text++;
+	}
+}
+
+/* =======================================================
+
       HUD Sounds
       
 ======================================================= */
