@@ -192,6 +192,7 @@ void project_palette_click_hud(bool double_click)
 		iface.bitmap_list.bitmaps[idx].flip_horz=FALSE;
 		iface.bitmap_list.bitmaps[idx].flip_vert=FALSE;
 		iface.bitmap_list.bitmaps[idx].team_tint=FALSE;
+		iface.bitmap_list.bitmaps[idx].checkpoint=FALSE;
 
 		iface.bitmap_list.bitmaps[idx].repeat.on=FALSE;
 		iface.bitmap_list.bitmaps[idx].repeat.count=0;
@@ -271,6 +272,7 @@ void project_palette_click_hud(bool double_click)
 		iface.text_list.texts[idx].show=TRUE;
 		iface.text_list.texts[idx].monospaced=FALSE;
 		iface.text_list.texts[idx].has_return=FALSE;
+		iface.text_list.texts[idx].checkpoint=FALSE;
 		iface.text_list.texts[idx].color.r=1.0f;
 		iface.text_list.texts[idx].color.g=1.0f;
 		iface.text_list.texts[idx].color.b=1.0f;

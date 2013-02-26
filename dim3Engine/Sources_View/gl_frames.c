@@ -101,17 +101,14 @@ void gl_3D_view(void)
 	float			fov,ratio;
 	matrix_type		mat;
 	
-		// get screen ratio
-		// if flipped, we need to change
-		// the ratio to reflect the flip
+		// get fov and screen ratio
 
-	fov=view.render->camera.fov;
+	fov=view.render->camera.fov*iface.devices[view.device_type].render.fov_adjust;
 		
 #ifndef D3_ROTATE_VIEW
 	ratio=(((float)view.screen.x_sz)/((float)view.screen.y_sz))*map.camera.plane.aspect_ratio;
 #else
 	ratio=(((float)view.screen.y_sz)/((float)view.screen.x_sz))*map.camera.plane.aspect_ratio;
-	fov*=(((float)view.screen.x_sz)/((float)view.screen.y_sz))*map.camera.plane.aspect_ratio;
 #endif
 
 		// create the projection matrix

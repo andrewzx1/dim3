@@ -584,7 +584,12 @@ typedef struct		{
 					} iface_device_scale_type;
 
 typedef struct		{
+						float							fov_adjust;
+					} iface_device_render_type;
+
+typedef struct		{
 						iface_device_scale_type			scale;
+						iface_device_render_type		render;
 					} iface_device_type;
 
 //
@@ -643,7 +648,8 @@ typedef struct		{
 						float							alpha,rot;
 						char							name[name_str_len],filename[file_str_len];
 						bool							show,old_show,
-														flash,flip_horz,flip_vert,team_tint;
+														flash,flip_horz,flip_vert,team_tint,
+														checkpoint;
 						d3pnt							pnt,size;
 						iface_bitmap_repeat_type		repeat;
 						iface_image_animation_type		animate;
@@ -659,7 +665,8 @@ typedef struct		{
 						int								size,just,special,rtl_overlay_id;
 						float							alpha;
 						char							name[name_str_len],data[max_hud_text_str_sz];
-						bool							show,old_show,monospaced,has_return;
+						bool							show,old_show,monospaced,has_return,
+														checkpoint;
 						d3pnt							pnt;
 						d3col							color;
 						iface_item_fade_type			fade;

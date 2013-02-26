@@ -21,7 +21,7 @@ Any non-engine product (games, etc) created with this code is free
 from any and all payment and/or royalties to the author of dim3,
 and can be sold or given away.
 
-(c) 2000-2005 Klink! Software www.klinksoftware.com
+(c) 2000-2011 Klink! Software www.klinksoftware.com
  
 *********************************************************************/
 
@@ -29,8 +29,10 @@ and can be sold or given away.
 // includes
 //
 
-#include <carbon/carbon.h>
+#include <CoreFoundation/CoreFoundation.h>
+#include <CoreGraphics/CoreGraphics.h>
 
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -48,10 +50,8 @@ and can be sold or given away.
 
 #include <pthread.h>
 
-#include <OpenGL/OpenGL.h>
-#include <OpenGL/gl.h>
-#include <OpenGL/glext.h>
-#include <OpenGL/glu.h>
+#include <OpenGLES/es2/gl.h>
+#include <OpenGLES/es2/glext.h>
 
 #include <zlib.h>
 
@@ -59,15 +59,20 @@ and can be sold or given away.
 // os flags
 //
 
-#define D3_OS_MAC				1
-#undef D3_OPENGL_ES
-#undef D3_ROTATE_VIEW
+#define D3_OS_IPHONE					1
+#define D3_OPENGL_ES					1
+#define D3_ROTATE_VIEW					1
+#define D3_SIMPLE_RENDER				1
 
 //
-// some opengl defines
+// OpenGL ES re-defines
 //
 
-#define GL_TEXTURE_RECTANGLE	GL_TEXTURE_RECTANGLE_ARB
+#define GL_DEPTH24_STENCIL8				GL_DEPTH24_STENCIL8_OES
+#define GL_WRITE_ONLY					GL_WRITE_ONLY_OES
+
+#define glMapBuffer						glMapBufferOES
+#define glUnmapBuffer					glUnmapBufferOES
 
 //
 // os specific keys
@@ -95,3 +100,4 @@ typedef int						d3socket;
 #define closesocket(x)			close(x)
 
 #define D3_APP_EXTENSION		"app"
+

@@ -2556,6 +2556,7 @@
 					"$(SRCROOT)/../Common/Libraries/SDL",
 					"$(SRCROOT)/../Common/Libraries/PNG",
 					"$(SRCROOT)/../Common/Libraries/MPG123",
+					"$(SRCROOT)/../Common/Headers",
 				);
 				IBC_STRIP_NIBS = NO;
 				INFOPLIST_FILE = "Resources/Info-dim3_Engine.plist";

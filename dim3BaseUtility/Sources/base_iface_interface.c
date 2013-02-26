@@ -95,6 +95,7 @@ void iface_read_settings_bitmap(iface_type *iface,int bitmap_tag)
 	bitmap->flip_horz=bitmap->flip_vert=FALSE;
 	bitmap->team_tint=FALSE;
 	bitmap->show=TRUE;
+	bitmap->checkpoint=FALSE;
 	
 	tag=xml_findfirstchild("Settings",bitmap_tag);
 	if (tag!=-1) {
@@ -104,6 +105,7 @@ void iface_read_settings_bitmap(iface_type *iface,int bitmap_tag)
 		bitmap->team_tint=xml_get_attribute_boolean(tag,"team_tint");
 		bitmap->show=!xml_get_attribute_boolean(tag,"hide");
 		bitmap->flash=xml_get_attribute_boolean(tag,"flash");
+		bitmap->checkpoint=xml_get_attribute_boolean(tag,"checkpoint");
 	}
 	
 	bitmap->repeat.on=FALSE;
@@ -168,6 +170,7 @@ void iface_read_settings_text(iface_type *iface,int text_tag)
 	text->color.r=text->color.g=text->color.b=1;
 	text->show=TRUE;
 	text->monospaced=FALSE;
+	text->checkpoint=FALSE;
 	text->special=text_special_none;
 	text->just=tx_left;
 	text->alpha=1.0f;
@@ -183,6 +186,7 @@ void iface_read_settings_text(iface_type *iface,int text_tag)
 		text->just=xml_get_attribute_list(tag,"just",(char*)just_mode_str);
 		text->show=!xml_get_attribute_boolean(tag,"hide");
 		text->monospaced=xml_get_attribute_boolean(tag,"monospaced");
+		text->checkpoint=xml_get_attribute_boolean(tag,"checkpoint");
 		text->special=xml_get_attribute_list(tag,"special",(char*)text_special_str);
 	}
 
@@ -517,7 +521,7 @@ void iface_read_settings_intro_model(iface_type *iface,int tag)
 
 void iface_read_settings_device(int tag,iface_device_type *device)
 {
-	int				scale_tag;
+	int				scale_tag,render_tag;
 
 	scale_tag=xml_findfirstchild("Scale",tag);
 	if (scale_tag!=-1) {
@@ -531,6 +535,11 @@ void iface_read_settings_device(int tag,iface_device_type *device)
 		device->scale.button_long_wid=xml_get_attribute_float(scale_tag,"button_long_width");
 		device->scale.dialog_margin=xml_get_attribute_float_default(scale_tag,"dialog_margin",0.02f);
 		device->scale.tab_high=xml_get_attribute_float(scale_tag,"tab_height");
+	}
+	
+	render_tag=xml_findfirstchild("Render",tag);
+	if (render_tag!=-1) {
+		device->render.fov_adjust=xml_get_attribute_float(render_tag,"fov_adjust");
 	}
 }
 
@@ -1032,7 +1041,10 @@ void iface_write_settings_interface_device(char *name,iface_device_type *device)
 	xml_add_attribute_float("button_long_width",device->scale.button_long_wid);
 	xml_add_attribute_float("dialog_margin",device->scale.dialog_margin);
 	xml_add_attribute_float("tab_height",device->scale.tab_high);
-
+	xml_add_tagend(TRUE);
+	
+	xml_add_tagstart("Render");
+	xml_add_attribute_float("fov_adjust",device->render.fov_adjust);
 	xml_add_tagend(TRUE);
 
 	xml_add_tagclose("Device");
@@ -1120,6 +1132,7 @@ bool iface_write_settings_interface(iface_type *iface,char *err_str)
 		xml_add_attribute_boolean("team_tint",bitmap->team_tint);
 		xml_add_attribute_boolean("hide",!bitmap->show);
 		xml_add_attribute_boolean("flash",bitmap->flash);
+		xml_add_attribute_boolean("checkpoint",bitmap->checkpoint);
 		xml_add_tagend(TRUE);
 		
 		xml_add_tagstart("Repeat");
@@ -1168,6 +1181,7 @@ bool iface_write_settings_interface(iface_type *iface,char *err_str)
 		xml_add_attribute_list("just",(char*)just_mode_str,text->just);
 		xml_add_attribute_boolean("hide",!text->show);
 		xml_add_attribute_boolean("monospaced",text->monospaced);
+		xml_add_attribute_boolean("checkpoint",text->checkpoint);
 		xml_add_attribute_list("special",(char*)text_special_str,text->special);
 		xml_add_tagend(TRUE);
 
