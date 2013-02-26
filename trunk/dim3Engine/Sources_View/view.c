@@ -498,6 +498,10 @@ bool view_game_start(char *err_str)
 		
 	chat_clear_messages();
 
+		// turn off any checkpoint HUD items
+
+	hud_checkpoint_show(FALSE);
+
 	return(TRUE);
 }
 

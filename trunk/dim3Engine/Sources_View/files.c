@@ -410,7 +410,7 @@ void file_input(void)
 	}
 	
 	if (input_action_get_state_single(nc_quick_save)) {
-		if (!game_file_save(-1,FALSE,err_str)) console_add_error(err_str);
+		if (!game_file_save(FALSE,err_str)) console_add_error(err_str);
 		return;
 	}
 }
@@ -432,7 +432,7 @@ void file_click(void)
 	switch (id) {
 	
 		case file_button_save_id:
-			if (!game_file_save(-1,FALSE,err_str)) console_add_error(err_str);
+			if (!game_file_save(FALSE,err_str)) console_add_error(err_str);
 			server.next_state=gs_running;
 			break;
 			

@@ -498,6 +498,8 @@ bool script_add_global_object(script_type *script,char *err_str)
 
 bool script_is_prop_global_object(char *name)
 {
+		// build in objects
+
 	if (strcmp(name,"script")==0) return(TRUE);
 	if (strcmp(name,"camera")==0) return(TRUE);
 	if (strcmp(name,"data")==0) return(TRUE);
@@ -506,7 +508,15 @@ bool script_is_prop_global_object(char *name)
 	if (strcmp(name,"sound")==0) return(TRUE);
 	if (strcmp(name,"spawn")==0) return(TRUE);
 	if (strcmp(name,"utility")==0) return(TRUE);
+	if (strcmp(name,"singleplayer")==0) return(TRUE);
 	if (strcmp(name,"multiplayer")==0) return(TRUE);
+
+		// build in types
+
+	if (strcmp(name,"Point")==0) return(TRUE);
+	if (strcmp(name,"Angle")==0) return(TRUE);
+	if (strcmp(name,"Vector")==0) return(TRUE);
+	if (strcmp(name,"Color")==0) return(TRUE);
 
 	return(FALSE);
 }

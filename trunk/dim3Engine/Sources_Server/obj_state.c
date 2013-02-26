@@ -979,7 +979,6 @@ bool object_set_radar_icon(obj_type *obj,char *err_str)
 void object_checkpoint(obj_type *obj)
 {
 	int					n;
-	char				err_str[256];
 	spot_type			*spot;
 
 	if (!iface.project.checkpoints) return;
@@ -995,10 +994,10 @@ void object_checkpoint(obj_type *obj)
 
 		if (spot->checkpoint.radius<distance_get(obj->pnt.x,obj->pnt.y,obj->pnt.z,spot->pnt.x,spot->pnt.y,spot->pnt.z)) continue;
 
-			// save it
-			// adjust player to be on spot
+			// trigger the checkpoint
+			// save for end of view run
 
 		spot->checkpoint.used=TRUE;
-		if (!game_file_save(n,FALSE,err_str)) console_add_error(err_str);	
+		game_checkpoint_set(n);
 	}
 }
