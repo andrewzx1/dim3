@@ -1943,6 +1943,7 @@
 					"$(SRCROOT)/../../dim3MapUtility/Headers",
 					"$(SRCROOT)/../../dim3ModelUtility/Headers",
 					"$(SRCROOT)/../../dim3Editor/Headers",
+					"$(SRCROOT)/../Common/Headers",
 				);
 				INFOPLIST_FILE = "dim3Editor/dim3Editor-Info.plist";
 				INSTALL_PATH = "";

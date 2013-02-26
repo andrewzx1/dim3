@@ -307,6 +307,7 @@ void iface_default_settings(iface_type *iface)
 	iface->devices[device_type_pc].scale.button_long_wid=0.25f;
 	iface->devices[device_type_pc].scale.dialog_margin=0.02f;
 	iface->devices[device_type_pc].scale.tab_high=0.04f;
+	iface->devices[device_type_pc].render.fov_adjust=1.0f;
 
 	iface->devices[device_type_phone].scale.control_padding=0.02f;
 	iface->devices[device_type_phone].scale.control_high=0.06f;
@@ -318,6 +319,7 @@ void iface_default_settings(iface_type *iface)
 	iface->devices[device_type_phone].scale.button_long_wid=0.3f;
 	iface->devices[device_type_phone].scale.dialog_margin=0.02f;
 	iface->devices[device_type_phone].scale.tab_high=0.06f;
+	iface->devices[device_type_phone].render.fov_adjust=1.0f;
 
 	iface->devices[device_type_pad].scale.control_padding=0.015f;
 	iface->devices[device_type_pad].scale.control_high=0.045f;
@@ -329,6 +331,7 @@ void iface_default_settings(iface_type *iface)
 	iface->devices[device_type_pad].scale.button_long_wid=0.3f;
 	iface->devices[device_type_pad].scale.dialog_margin=0.02f;
 	iface->devices[device_type_pad].scale.tab_high=0.05f;
+	iface->devices[device_type_pad].render.fov_adjust=1.0f;
 
 		// progress
 		

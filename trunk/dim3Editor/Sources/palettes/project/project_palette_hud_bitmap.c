@@ -106,6 +106,7 @@ void project_palette_fill_hud_bitmap(int hud_bitmap_idx)
 	list_palette_add_checkbox(&project_palette,kBitmapOptionFlipHorz,"Flip Horizontal",&bitmap->flip_horz,FALSE);
 	list_palette_add_checkbox(&project_palette,kBitmapOptionFlipVert,"Flip Vertical",&bitmap->flip_vert,FALSE);
 	list_palette_add_checkbox(&project_palette,kBitmapOptionTeamTint,"Team Tint",&bitmap->team_tint,FALSE);
+	list_palette_add_checkbox(&project_palette,-1,"Checkpoint",&bitmap->checkpoint,FALSE);
 
 		// repeat
 
