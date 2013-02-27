@@ -479,7 +479,7 @@ void ray_intersect_mesh_list_other_bounce(ray_scene_type *scene,ray_draw_scene_t
       
 ======================================================= */
 
-bool ray_block_light(ray_scene_type *scene,ray_point_type *pnt,ray_vector_type *vct,ray_vector_type *normal_vct,float vct_dist,ray_collision_type *collision,int light_idx)
+bool ray_block_light(ray_scene_type *scene,ray_point_type *pnt,ray_vector_type *vct,ray_vector_type *normal_vct,float vct_dist,ray_collision_type *collision,int light_idx,int mesh_light_idx)
 {
 	int							n,mesh_idx,poly_idx,trig_idx;
 	float						t,u,v;
@@ -490,7 +490,7 @@ bool ray_block_light(ray_scene_type *scene,ray_point_type *pnt,ray_vector_type *
 	ray_light_type				*light;
 	ray_collision_type			lit_collision;
 	ray_mesh_poly_ptr_type		*likely_block;
-	
+
 	light=scene->light_list.lights[light_idx];
 	
 	if (light->collide_meshes_list.count==0) return(FALSE);
@@ -509,7 +509,7 @@ bool ray_block_light(ray_scene_type *scene,ray_point_type *pnt,ray_vector_type *
 			// (non-alpha, etc) will be in this list, so
 			// other checks can be skipped
 
-	likely_block=&scene->mesh_list.meshes[collision->mesh_idx]->poly_block.polys[collision->poly_idx].likely_block_poly_ptr;
+	likely_block=&scene->mesh_list.meshes[collision->mesh_idx]->poly_block.polys[collision->poly_idx].likely_block_poly_ptr[mesh_light_idx];
 
 	if (likely_block->mesh_idx!=-1) {
 
@@ -730,7 +730,7 @@ void ray_trace_lights(ray_scene_type *scene,ray_point_type *eye_pnt,ray_point_ty
 			// check for mesh collides
 			// blocking light
 
-		if (ray_block_light(scene,trig_pnt,&light_vector,&light_vector_normal,light_ray_dist,collision,light_idx)) continue;
+		if (ray_block_light(scene,trig_pnt,&light_vector,&light_vector_normal,light_ray_dist,collision,light_idx,n)) continue;
 
 			// attenuate the light for distance
 

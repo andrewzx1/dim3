@@ -500,7 +500,9 @@ void ray_precalc_render_scene_setup(ray_scene_type *scene)
 		
 		for (k=0;k!=mesh->poly_block.count;k++) {
 			poly->mm_level=-1;
-			poly->likely_block_poly_ptr.mesh_idx=-1;
+			for (t=0;t!=ray_max_light_per_mesh;t++) {
+				poly->likely_block_poly_ptr[t].mesh_idx=-1;
+			}
 			poly++;
 		}
 	}
