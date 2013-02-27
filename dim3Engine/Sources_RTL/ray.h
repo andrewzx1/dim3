@@ -143,7 +143,7 @@ typedef struct		{
 						ray_trig_block					trig_block;
 						ray_plane_type					plane;
 						ray_bound_type					bound;
-						ray_mesh_poly_ptr_type			likely_block_poly_ptr;
+						ray_mesh_poly_ptr_type			likely_block_poly_ptr[ray_max_light_per_mesh];
 					} ray_poly_type;
 
 typedef struct		{
