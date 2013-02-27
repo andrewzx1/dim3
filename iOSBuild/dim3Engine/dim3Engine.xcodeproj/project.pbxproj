@@ -2224,6 +2224,7 @@
 					"$(SRCROOT)/../Common/Libraries/PNG",
 					"$(SRCROOT)/../Common/Libraries/MPG123",
 					"$(SRCROOT)/../Common/Libraries/JavaScriptCore",
+					"$(SRCROOT)/../Common/Headers",
 				);
 				INFOPLIST_FILE = "dim3Engine/dim3Engine-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
@@ -2296,6 +2297,7 @@
 					"$(SRCROOT)/../Common/Libraries/PNG",
 					"$(SRCROOT)/../Common/Libraries/MPG123",
 					"$(SRCROOT)/../Common/Libraries/JavaScriptCore",
+					"$(SRCROOT)/../Common/Headers",
 				);
 				INFOPLIST_FILE = "dim3Engine/dim3Engine-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
