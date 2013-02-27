@@ -322,7 +322,7 @@ void game_file_create_name(int tick,char *file_name)
       
 ======================================================= */
 
-bool game_file_save(bool no_progress,char *err_str)
+bool game_file_save(bool no_progress,bool suspend_save,char *err_str)
 {
 	int					n,k,t,count,tick;
 	char				path[1024],file_name[256];
@@ -347,7 +347,7 @@ bool game_file_save(bool no_progress,char *err_str)
 	
 		// save screen
 		
-	if (!no_progress) {
+	if (!suspend_save) {
 		file_paths_app_data(&file_path_setup,path,"Saved Games",file_name,"png");
 		view_capture_draw(path);
 	}
@@ -543,7 +543,7 @@ bool game_file_save(bool no_progress,char *err_str)
 		
 	if (!no_progress) progress_update();
 
-	if (!no_progress) {
+	if (!suspend_save) {
 		file_paths_app_data(&file_path_setup,path,"Saved Games",file_name,"sav");
 	}
 	else {
@@ -558,7 +558,7 @@ bool game_file_save(bool no_progress,char *err_str)
 	
 		// remember last map
 		
-	if (!no_progress) strcpy(game_file_last_save_name,strrchr(path,'/'));
+	if (!suspend_save) strcpy(game_file_last_save_name,strrchr(path,'/'));
 	
 		// finished
 		
@@ -1073,7 +1073,7 @@ void game_file_suspend(void)
 	if (server.game_open) {
 		
 		if (server.map_open) {
-			if (game_file_save(TRUE,err_str)) {
+			if (game_file_save(TRUE,TRUE,err_str)) {
 				game_file_has_suspended_save=TRUE;
 			}
 		
@@ -1122,7 +1122,7 @@ void game_checkpoint_run(void)
 
 	if (server.checkpoint_spot_idx==-1) return;
 	
-	if (!game_file_save(TRUE,err_str)) {
+	if (!game_file_save(TRUE,FALSE,err_str)) {
 		console_add_error(err_str);
 	}
 
