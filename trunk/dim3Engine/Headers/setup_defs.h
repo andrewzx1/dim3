@@ -129,7 +129,7 @@ typedef struct		{
 														always_run,toggle_run,invert_look,mouse_smooth,
 														music_on,auto_aim,window,window_editor,
 														no_hud,no_draw_weapon,metrics_on,debug_on,
-														ignore_fps_lock,screen_rtl_pixel_double;
+														ignore_fps_lock,screen_rtl_full_window;
 						setup_path_type					path;
 						setup_axis_type					mouse,joystick;
 						setup_action_list_type			action_list;

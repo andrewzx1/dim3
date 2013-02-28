@@ -184,16 +184,16 @@ void view_create_screen_size_list(void)
 
 bool view_initialize_display(char *err_str)
 {
-	int				n;
+	int				n,fsaa_mode;
 	bool			ok;
 
-		// supergumba -- for now
 		// dim3rtl has hard coded window
-		// screen size
+		// screen size and a set fsaa
 
 	if (iface.project.ray_trace) {
 		setup.screen_wid=960;
 		setup.screen_high=600;
+		fsaa_mode=fsaa_mode_none;
 	}
 	else {
 
@@ -212,11 +212,15 @@ bool view_initialize_display(char *err_str)
 			
 			if (!ok) setup.screen_wid=setup.screen_high=-1;
 		}
+
+			// setup fsaa mode
+
+		fsaa_mode=setup.fsaa_mode;
 	}
 
 		// start openGL
 		
-	if (!gl_initialize(setup.screen_wid,setup.screen_high,setup.fsaa_mode,err_str)) {
+	if (!gl_initialize(setup.screen_wid,setup.screen_high,fsaa_mode,err_str)) {
 		view_memory_release();
 		SDL_Quit();
 		return(FALSE);
