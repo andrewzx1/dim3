@@ -47,7 +47,7 @@ int								view_rtl_scene_id,
 bool							view_rtl_has_render;
 GLuint							view_rtl_gl_id;
 
-int								view_rtl_screen_sizes[][2]={{240,150},{280,175},{320,200},{400,250},{480,300},{0,0}};
+int								view_rtl_screen_sizes[][2]={{320,200},{400,250},{480,300},{720,450},{960,600},{0,0}};
 texture_font_type				view_rtl_fonts[2];
 
 extern int view_dim3rtl_create_material_from_path(char *path,int alpha_type);
@@ -92,7 +92,6 @@ void view_dim3rtl_shutdown(void)
 bool view_dim3rtl_scene_start(char *err_str)
 {
 	int					n,sz,wid,high;
-	float				f;
 	unsigned char		*data,*dptr;
 	rtl2DPoint			s_pnt;
 
@@ -147,15 +146,21 @@ bool view_dim3rtl_scene_start(char *err_str)
 
 		// get drawing size
 
-	f=setup.screen_rtl_pixel_double?2.0f:1.0f;
+	if (setup.screen_rtl_full_window) {
+		view_rtl_lx=0;
+		view_rtl_rx=view.screen.x_sz;
+		view_rtl_ty=0;
+		view_rtl_by=view.screen.y_sz;
+	}
+	else {
+		wid=setup.screen_rtl_wid;
+		view_rtl_lx=(view.screen.x_sz-wid)>>1;
+		view_rtl_rx=view_rtl_lx+wid;
 
-	wid=(int)(((float)setup.screen_rtl_wid)*f);
-	view_rtl_lx=(view.screen.x_sz-wid)>>1;
-	view_rtl_rx=view_rtl_lx+wid;
-
-	high=(int)(((float)setup.screen_rtl_high)*f);
-	view_rtl_ty=(view.screen.y_sz-high)>>1;
-	view_rtl_by=view_rtl_ty+high;
+		high=setup.screen_rtl_high;
+		view_rtl_ty=(view.screen.y_sz-high)>>1;
+		view_rtl_by=view_rtl_ty+high;
+	}
 
 	return(TRUE);
 }

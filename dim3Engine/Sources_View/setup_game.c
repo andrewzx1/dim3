@@ -40,7 +40,7 @@ and can be sold or given away.
 
 #define ctrl_screen_gl_size_id				0
 #define ctrl_screen_rtl_size_id				1
-#define ctrl_screen_rtl_pixel_double_id		2
+#define ctrl_screen_rtl_full_window_id		2
 #define ctrl_fsaa_id						3
 #define ctrl_decal_on_id					4
 #define ctrl_shadow_on_id					5
@@ -230,7 +230,7 @@ void setup_game_video_pane_dim3rtl(void)
 	element_combo_add("Screen Size",(char*)setup_screen_size_list,idx,ctrl_screen_rtl_size_id,x,y,TRUE);
 	y+=control_y_add;
 
-	element_checkbox_add("Pixel Double",setup.screen_rtl_pixel_double,ctrl_screen_rtl_pixel_double_id,x,y,TRUE);
+	element_checkbox_add("Enlarge to Full Window",setup.screen_rtl_full_window,ctrl_screen_rtl_full_window_id,x,y,TRUE);
 }
 
 void setup_game_audio_pane(void)
@@ -850,8 +850,8 @@ void setup_game_handle_click(int id)
 			setup.screen_rtl_high=view_rtl_screen_sizes[idx][1];
 			break;
 
-		case ctrl_screen_rtl_pixel_double_id:
-			setup.screen_rtl_pixel_double=element_get_value(ctrl_screen_rtl_pixel_double_id);
+		case ctrl_screen_rtl_full_window_id:
+			setup.screen_rtl_full_window=element_get_value(ctrl_screen_rtl_full_window_id);
 			break;
 			
 		case ctrl_decal_on_id:
