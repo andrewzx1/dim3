@@ -362,7 +362,7 @@ void view_dim3rtl_transfer_to_opengl(void)
 	gl_texture_bind(0,view_rtl_gl_id);
 	glTexSubImage2D(GL_TEXTURE_2D,0,0,0,setup.screen_rtl_wid,setup.screen_rtl_high,GL_RGBA,GL_UNSIGNED_BYTE,data);
 
-		// build the vertex and uv list
+		// draw the quad
 
 	view_primitive_2D_texture_quad(view_rtl_gl_id,NULL,1.0f,view_rtl_lx,view_rtl_rx,view_rtl_ty,view_rtl_by,0.0f,1.0f,0.0f,1.0f,TRUE);
 }
@@ -398,6 +398,12 @@ void view_dim3rtl_render_scene(void)
 	rtlMatrixMultiply(&mat,&scale_mat);
 
 		// set the eye position
+
+	// 320 = 200
+	// 480 = 300
+	// 640 = (400?)
+	// 800 = (500?)
+	// 960 = 600
 		
 	rtlSceneEyePositionSet(view_rtl_scene_id,&pnt,&mat,200.0f,300000.0f);
 
