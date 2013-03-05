@@ -25,9 +25,10 @@ ray_global_type					ray_global;
      
 ======================================================= */
 
-int rtlSceneEyePositionSet(int sceneId,ray_point_type *pnt,ray_matrix_type *rot_matrix,float eye_min_dist,float eye_max_dist)
+int rtlSceneEyePositionSet(int sceneId,ray_point_type *pnt,float fov_y,ray_matrix_type *rot_matrix,float eye_max_dist)
 {
 	int				idx;
+	float			x,y,ang;
 	ray_scene_type	*scene;
 	
 		// get scene
@@ -42,11 +43,21 @@ int rtlSceneEyePositionSet(int sceneId,ray_point_type *pnt,ray_matrix_type *rot_
 	ray_render_stall(scene);
 
 		// set eye position
+		// and rotate matrix
 
 	memmove(&scene->eye.pnt,pnt,sizeof(ray_point_type));
 	memmove(&scene->eye.matrix,rot_matrix,sizeof(ray_matrix_type));
-	
-	scene->eye.min_dist=eye_min_dist;
+
+		// calcualte the plane distance
+		// from the fov (tan(fov_y)=y[high/2]/x[distance]
+
+	ang=fov_y*0.5f;
+	y=(float)(scene->buffer.high/2);
+	x=y/tanf(ang*ray_ANG_to_RAD);
+	scene->eye.plane_dist=x;
+
+		// set the max view distance
+
 	scene->eye.max_dist=eye_max_dist;
 	
 	return(RL_ERROR_OK);
@@ -96,7 +107,7 @@ int rtlSceneEyeTranslatePoint(int sceneId,ray_point_type *pnt3d,ray_2d_point_typ
 		// solve it for hitting the z plane
 		// if z>=1.0f, then it's still behind the plane
 
-	z=scene->eye.min_dist/eye_vector.z;
+	z=scene->eye.plane_dist/eye_vector.z;
 	if (z>=1.0f) return(RL_ERROR_POINT_BEHIND_EYE);
 
 		// create the plane points
