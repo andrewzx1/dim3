@@ -293,7 +293,7 @@ void ray_precalc_build_frustum_planes(ray_scene_type *scene,ray_draw_scene_threa
 		
 	eye_point=&scene->eye.pnt;
 
-	view_plane_point.z=eye_point->z+scene->eye.min_dist;
+	view_plane_point.z=eye_point->z+scene->eye.plane_dist;
 
 	view_plane_point.x=eye_point->x;
 	view_plane_point.y=eye_point->y;
@@ -327,33 +327,33 @@ void ray_precalc_build_frustum_planes(ray_scene_type *scene,ray_draw_scene_threa
 	
 		// get the 8 plane points
 
-	top_lft_near_pnt.x=eye_point->x+(top_lft_vct.x*scene->eye.min_dist);
-	top_lft_near_pnt.y=eye_point->y+(top_lft_vct.y*scene->eye.min_dist);
-	top_lft_near_pnt.z=eye_point->z+(top_lft_vct.z*scene->eye.min_dist);
+	top_lft_near_pnt.x=eye_point->x+(top_lft_vct.x*scene->eye.plane_dist);
+	top_lft_near_pnt.y=eye_point->y+(top_lft_vct.y*scene->eye.plane_dist);
+	top_lft_near_pnt.z=eye_point->z+(top_lft_vct.z*scene->eye.plane_dist);
 		
 	top_lft_far_pnt.x=eye_point->x+(top_lft_vct.x*scene->eye.max_dist);
 	top_lft_far_pnt.y=eye_point->y+(top_lft_vct.y*scene->eye.max_dist);
 	top_lft_far_pnt.z=eye_point->z+(top_lft_vct.z*scene->eye.max_dist);
 	
-	top_rgt_near_pnt.x=eye_point->x+(top_rgt_vct.x*scene->eye.min_dist);
-	top_rgt_near_pnt.y=eye_point->y+(top_rgt_vct.y*scene->eye.min_dist);
-	top_rgt_near_pnt.z=eye_point->z+(top_rgt_vct.z*scene->eye.min_dist);
+	top_rgt_near_pnt.x=eye_point->x+(top_rgt_vct.x*scene->eye.plane_dist);
+	top_rgt_near_pnt.y=eye_point->y+(top_rgt_vct.y*scene->eye.plane_dist);
+	top_rgt_near_pnt.z=eye_point->z+(top_rgt_vct.z*scene->eye.plane_dist);
 		
 	top_rgt_far_pnt.x=eye_point->x+(top_rgt_vct.x*scene->eye.max_dist);
 	top_rgt_far_pnt.y=eye_point->y+(top_rgt_vct.y*scene->eye.max_dist);
 	top_rgt_far_pnt.z=eye_point->z+(top_rgt_vct.z*scene->eye.max_dist);
 	
-	bot_lft_near_pnt.x=eye_point->x+(bot_lft_vct.x*scene->eye.min_dist);
-	bot_lft_near_pnt.y=eye_point->y+(bot_lft_vct.y*scene->eye.min_dist);
-	bot_lft_near_pnt.z=eye_point->z+(bot_lft_vct.z*scene->eye.min_dist);
+	bot_lft_near_pnt.x=eye_point->x+(bot_lft_vct.x*scene->eye.plane_dist);
+	bot_lft_near_pnt.y=eye_point->y+(bot_lft_vct.y*scene->eye.plane_dist);
+	bot_lft_near_pnt.z=eye_point->z+(bot_lft_vct.z*scene->eye.plane_dist);
 		
 	bot_lft_far_pnt.x=eye_point->x+(bot_lft_vct.x*scene->eye.max_dist);
 	bot_lft_far_pnt.y=eye_point->y+(bot_lft_vct.y*scene->eye.max_dist);
 	bot_lft_far_pnt.z=eye_point->z+(bot_lft_vct.z*scene->eye.max_dist);
 	
-	bot_rgt_near_pnt.x=eye_point->x+(bot_rgt_vct.x*scene->eye.min_dist);
-	bot_rgt_near_pnt.y=eye_point->y+(bot_rgt_vct.y*scene->eye.min_dist);
-	bot_rgt_near_pnt.z=eye_point->z+(bot_rgt_vct.z*scene->eye.min_dist);
+	bot_rgt_near_pnt.x=eye_point->x+(bot_rgt_vct.x*scene->eye.plane_dist);
+	bot_rgt_near_pnt.y=eye_point->y+(bot_rgt_vct.y*scene->eye.plane_dist);
+	bot_rgt_near_pnt.z=eye_point->z+(bot_rgt_vct.z*scene->eye.plane_dist);
 		
 	bot_rgt_far_pnt.x=eye_point->x+(bot_rgt_vct.x*scene->eye.max_dist);
 	bot_rgt_far_pnt.y=eye_point->y+(bot_rgt_vct.y*scene->eye.max_dist);
@@ -412,7 +412,7 @@ bool ray_precalc_eye_normal_cull(ray_scene_type *scene,ray_draw_scene_thread_inf
 
 	pnt.x=(scene->eye.pnt.x-wid)+((thread_info->pixel_start.x+thread_info->pixel_start.x)>>1);
 	pnt.y=(scene->eye.pnt.y-high)+((thread_info->pixel_start.y+thread_info->pixel_start.y)>>1);
-	pnt.z=scene->eye.pnt.z+scene->eye.min_dist;
+	pnt.z=scene->eye.pnt.z+scene->eye.plane_dist;
 	
 	eye_vct.x=poly->bound.mid.x-pnt.x;
 	eye_vct.y=poly->bound.mid.y-pnt.y;

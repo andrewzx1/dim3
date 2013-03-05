@@ -399,13 +399,7 @@ void view_dim3rtl_render_scene(void)
 
 		// set the eye position
 
-	// 320 = 200
-	// 480 = 300
-	// 640 = (400?)
-	// 800 = (500?)
-	// 960 = 600
-		
-	rtlSceneEyePositionSet(view_rtl_scene_id,&pnt,&mat,200.0f,300000.0f);
+	rtlSceneEyePositionSet(view_rtl_scene_id,&pnt,60.0f,&mat,300000.0f);
 
 		// update the scene
 		

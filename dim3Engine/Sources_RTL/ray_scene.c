@@ -44,10 +44,10 @@ void ray_scene_3D_to_2D_point(ray_scene_type *scene,ray_point_type *pnt_3d,ray_2
 	ray_vector_create_from_points(&vct,pnt_3d,&scene->eye.pnt);
 	rtlMatrixVectorMultiply(&scene->eye.matrix,&vct);
 
-		// solve for z=eye min distance
+		// solve for z=plane distance
 
 	d=ray_distance_between_points(&scene->eye.pnt,pnt_3d);
-	t=scene->eye.min_dist/d;
+	t=scene->eye.plane_dist/d;
 
 		// find the intersection with the
 		// eye plane and then center into

@@ -1073,7 +1073,7 @@ void ray_render_thread_run(ray_draw_scene_thread_info *thread_info)
 
 	xadd=eye_point->x-(float)(scene->buffer.wid>>1);
 	yadd=eye_point->y-(float)(scene->buffer.high>>1);
-	zadd=eye_point->z+scene->eye.min_dist;
+	zadd=eye_point->z+scene->eye.plane_dist;
 	
 		// draw
 		

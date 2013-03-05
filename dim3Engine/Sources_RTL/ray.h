@@ -76,7 +76,7 @@ typedef struct		{
 //
 
 typedef struct		{
-						float						min_dist,max_dist;
+						float						plane_dist,max_dist;
 						ray_point_type				pnt;
 						ray_matrix_type				matrix;
 					} ray_eye_type;
