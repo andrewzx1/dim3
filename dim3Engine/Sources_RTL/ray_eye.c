@@ -25,7 +25,7 @@ ray_global_type					ray_global;
      
 ======================================================= */
 
-int rtlSceneEyePositionSet(int sceneId,ray_point_type *pnt,float fov_y,ray_matrix_type *rot_matrix,float eye_max_dist)
+int rtlSceneEyePositionSet(int sceneId,ray_point_type *pnt,float fovy,ray_matrix_type *rotMatrix,float eyeMaxDist)
 {
 	int				idx;
 	float			x,y,ang;
@@ -46,19 +46,19 @@ int rtlSceneEyePositionSet(int sceneId,ray_point_type *pnt,float fov_y,ray_matri
 		// and rotate matrix
 
 	memmove(&scene->eye.pnt,pnt,sizeof(ray_point_type));
-	memmove(&scene->eye.matrix,rot_matrix,sizeof(ray_matrix_type));
+	memmove(&scene->eye.matrix,rotMatrix,sizeof(ray_matrix_type));
 
 		// calcualte the plane distance
 		// from the fov (tan(fov_y)=y[high/2]/x[distance]
 
-	ang=fov_y*0.5f;
+	ang=fovy*0.5f;
 	y=(float)(scene->buffer.high/2);
 	x=y/tanf(ang*ray_ANG_to_RAD);
 	scene->eye.plane_dist=x;
 
 		// set the max view distance
 
-	scene->eye.max_dist=eye_max_dist;
+	scene->eye.max_dist=eyeMaxDist;
 	
 	return(RL_ERROR_OK);
 }

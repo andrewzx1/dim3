@@ -112,7 +112,7 @@ extern int rtlSceneRenderFinish(int sceneId);
 
 	// scene eye position
 	
-extern int rtlSceneEyePositionSet(int sceneId,rtlPoint *pnt,float fov_y,rtlMatrix *rot_matrix,float eye_max_dist);
+extern int rtlSceneEyePositionSet(int sceneId,rtlPoint *pnt,float fovy,rtlMatrix *rotMatrix,float eyeMaxDist);
 extern int rtlSceneEyeTranslatePoint(int sceneId,ray_point_type *pnt3d,ray_2d_point_type *pnt2d);
 
 	// scene lights
