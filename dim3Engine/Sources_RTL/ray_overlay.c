@@ -33,7 +33,7 @@ int ray_scene_overlay_get_index(ray_scene_type *scene,int overlayId)
       
 ======================================================= */
 
-bool ray_get_overlay_rgb(ray_scene_type *scene,int x,int y,ray_color_type *col)
+bool ray_overlay_get_rgb(ray_scene_type *scene,ray_scene_overlay_index_block *index_block,int x,int y,ray_color_type *col)
 {
 	int							n,k,px,py,offset;
 	unsigned long				buf;
@@ -45,6 +45,7 @@ bool ray_get_overlay_rgb(ray_scene_type *scene,int x,int y,ray_color_type *col)
 	ray_material_mipmap_type	*mipmap;
 	ray_color_type				o_col;
 
+	if (index_block->count==0) return(FALSE);
 	if (scene->overlay_list.count==0) return(FALSE);
 
 		// no hits yet
@@ -57,8 +58,8 @@ bool ray_get_overlay_rgb(ray_scene_type *scene,int x,int y,ray_color_type *col)
 		// used for rendering
 		// supergumba -- work on this
 
-	for (n=0;n!=scene->overlay_list.count;n++) {
-		overlay=scene->overlay_list.overlays[n];
+	for (n=0;n!=index_block->count;n++) {
+		overlay=scene->overlay_list.overlays[index_block->indexes[n]];
 		if (overlay->hidden) continue;
 
 			// skip if no quads
@@ -162,6 +163,39 @@ bool ray_get_overlay_rgb(ray_scene_type *scene,int x,int y,ray_color_type *col)
 	}
 
 	return(hit);
+}
+
+/* =======================================================
+
+      Check for Overlay and Slice Collision
+      
+======================================================= */
+
+void ray_overlay_setup_slice_collision(ray_scene_type *scene,ray_scene_slice_type *slice)
+{
+	int						n;
+	ray_overlay_type		*overlay;
+
+	slice->overlay_index_block.count=0;
+
+	for (n=0;n!=scene->overlay_list.count;n++) {
+		overlay=scene->overlay_list.overlays[n];
+
+			// overlay hidden
+
+		if (overlay->hidden) continue;
+		if (overlay->quad_list.count==0) continue;
+
+			// box collision
+
+		if ((overlay->pnt.x>slice->pixel_end.x) || (overlay->pnt.y>slice->pixel_end.y) || ((overlay->pnt.x+overlay->pnt_size.x)<slice->pixel_start.x) || ((overlay->pnt.y+overlay->pnt_size.y)<slice->pixel_start.y)) continue;
+
+			// this slice has to check
+			// this overlay
+
+		slice->overlay_index_block.indexes[slice->overlay_index_block.count]=n;
+		slice->overlay_index_block.count++;
+	}
 }
 
 /* =======================================================

@@ -21,7 +21,7 @@ void ray_scene_clear_threads(ray_scene_type *scene)
 	int				n;
 
 	for (n=0;n!=ray_global.settings.thread_count;n++) {
-		scene->render.thread_info[n].thread=0;
+		scene->render.threads[n].thread=0;
 	}
 }
 
@@ -35,7 +35,7 @@ void ray_scene_wait_shutdown_threads(ray_scene_type *scene)
 		not_shutdown=FALSE;
 
 		for (n=0;n!=ray_global.settings.thread_count;n++) {
-			if (!scene->render.thread_info[n].shutdown_done) {
+			if (!scene->render.threads[n].shutdown_done) {
 				not_shutdown=TRUE;
 				break;
 			}
@@ -122,7 +122,7 @@ void ray_scene_resume_threads(ray_scene_type *scene,int mode)
 	scene->thread_mode=mode;
 
 	for (n=0;n!=ray_global.settings.thread_count;n++) {
-		if (scene->render.thread_info[n].thread!=0) ResumeThread(scene->render.thread_info[n].thread);
+		if (scene->render.threads[n].thread!=0) ResumeThread(scene->render.threads[n].thread);
 	}
 }
 
@@ -141,7 +141,7 @@ void ray_scene_release_threads(ray_scene_type *scene)
 		// close threads
 
 	for (n=0;n!=ray_global.settings.thread_count;n++) {
-		if (scene->render.thread_info[n].thread!=0) CloseHandle(scene->render.thread_info[n].thread);
+		if (scene->render.threads[n].thread!=0) CloseHandle(scene->render.threads[n].thread);
 	}
 }
 
@@ -156,8 +156,8 @@ bool ray_scene_create_threads(ray_scene_type *scene)
 		// create threads
 
 	for (n=0;n!=ray_global.settings.thread_count;n++) {
-		scene->render.thread_info[n].thread=(HANDLE)_beginthreadex(NULL,0,ray_render_thread,(void*)&scene->render.thread_info[n],0,NULL);
-		if (scene->render.thread_info[n].thread==0) return(FALSE);
+		scene->render.threads[n].thread=(HANDLE)_beginthreadex(NULL,0,ray_render_thread,(void*)&scene->render.threads[n],0,NULL);
+		if (scene->render.threads[n].thread==0) return(FALSE);
 	}
 
 	return(TRUE);
