@@ -33,10 +33,13 @@
 #define ray_max_likely_block_polys					8
 
 //
-// threading
+// rendering
+//
+// note: max_slice_count MUST BE A SQRT!
 //
 
-#define ray_render_max_thread_count					64
+#define ray_render_max_slice_count					(15*15)
+#define ray_render_max_thread_count					32
 
 //
 // worker thread mode
@@ -66,7 +69,7 @@
 //
 
 typedef struct		{
-                        ray_point_type				min,max,mid;
+                        ray_point_type					min,max,mid;
                     } ray_bound_type;
 
 //
@@ -76,9 +79,9 @@ typedef struct		{
 //
 
 typedef struct		{
-						float						plane_dist,max_dist;
-						ray_point_type				pnt;
-						ray_matrix_type				matrix;
+						float							plane_dist,max_dist;
+						ray_point_type					pnt;
+						ray_matrix_type					matrix;
 					} ray_eye_type;
 
 //
@@ -86,7 +89,7 @@ typedef struct		{
 //
 
 typedef struct		{
-						int							mesh_idx,poly_idx;
+						int								mesh_idx,poly_idx;
 					} ray_mesh_poly_ptr_type;
 
 //
@@ -135,7 +138,7 @@ typedef struct		{
 typedef struct		{
 						int								material_idx,nvertex,
 														mm_level;
-						unsigned char					thread_render_mask[ray_render_max_thread_count],
+						unsigned char					slice_render_mask[ray_render_max_slice_count],
 														light_render_mask[ray_max_scene_light];
 						ray_color_type					col;
 						ray_vector_type					surface_normal;
@@ -244,30 +247,41 @@ typedef struct		{
 //
 
 typedef struct		{
-						int								count,
-														indexes[ray_max_scene_mesh];
-					} ray_scene_draw_mesh_index_block;
-
-typedef struct		{
 						int								target,format,
 														wid,high;
 						unsigned long					*data;
 					} ray_scene_buffer_type;
 
 typedef struct		{
+						int								count,
+														indexes[ray_max_scene_mesh];
+					} ray_scene_mesh_index_block;
+
+typedef struct		{
+						int								count,
+														indexes[ray_max_scene_overlay];
+					} ray_scene_overlay_index_block;
+
+typedef struct		{
 						int								idx;
+						ray_2d_point_type				pixel_start,pixel_end;
+						ray_scene_mesh_index_block		mesh_index_block;
+						ray_scene_overlay_index_block	overlay_index_block;
+					} ray_scene_slice_type;
+
+typedef struct		{
 						bool							shutdown_done;
 						void							*parent_scene;			// this is a pointer back to the parent structure, need by threading
 						ray_thread						thread;
-						ray_2d_point_type				pixel_start,pixel_end;
-						ray_scene_draw_mesh_index_block	draw_mesh_index_block;
-					} ray_draw_scene_thread_info;
+					} ray_scene_thread_type;
 
 typedef struct		{
-						int								thread_done_count;
+						int								next_slice_idx,thread_done_count;
 						ray_mutex						scene_lock,thread_lock;			// thread_lock only needed for pthread con waits
 						ray_cond						thread_cond;					// thread_cond only needed for pthread con waits
-						ray_draw_scene_thread_info		thread_info[ray_render_max_thread_count];
+						ray_scene_thread_type			threads[ray_render_max_thread_count];
+						ray_scene_slice_type			slices[ray_render_max_slice_count];
+						ray_scene_mesh_index_block		mesh_index_block;
 					} ray_scene_render_type;
 
 typedef struct		{
@@ -279,7 +293,6 @@ typedef struct		{
 						ray_overlay_list				overlay_list;
 						ray_scene_buffer_type			buffer;
 						ray_scene_render_type			render;
-						ray_scene_draw_mesh_index_block	draw_mesh_index_block;
 					} ray_scene_type;
 
 typedef struct		{
@@ -351,7 +364,8 @@ typedef struct		{
 //
 
 typedef struct		{
-						int								thread_count;
+						int								slice_count,
+														thread_count;
 					} ray_settings_type;
 
 typedef struct		{
@@ -436,13 +450,15 @@ extern void ray_precalc_triangle_bounds(ray_mesh_type *mesh,ray_trig_type *trig)
 extern void ray_precalc_light_bounds(ray_light_type *light);
 extern void ray_precalc_triangle_vectors(ray_mesh_type *mesh,ray_trig_type *trig);
 extern void ray_precalc_render_scene_setup(ray_scene_type *scene);
-extern void ray_precalc_render_scene_thread_setup(ray_scene_type *scene,ray_draw_scene_thread_info *thread_info);
+extern void ray_precalc_render_scene_slice_setup(ray_scene_type *scene,ray_scene_slice_type *slice);
 
 extern void ray_get_material_pixel(ray_scene_type *scene,ray_point_type *eye_pnt,ray_point_type *trig_pnt,ray_collision_type *collision,ray_material_pixel_type *pixel);
 extern void ray_get_material_color(ray_scene_type *scene,ray_point_type *eye_pnt,ray_point_type *trig_pnt,ray_collision_type *collision,ray_color_type *col);
 extern float ray_get_material_alpha(ray_scene_type *scene,ray_point_type *eye_pnt,ray_point_type *trig_pnt,ray_collision_type *collision);
 extern void ray_get_material_normal(ray_scene_type *scene,ray_point_type *eye_pnt,ray_point_type *trig_pnt,ray_collision_type *collision,ray_vector_type *normal);
-extern bool ray_get_overlay_rgb(ray_scene_type *scene,int x,int y,ray_color_type *col);
+
+extern bool ray_overlay_get_rgb(ray_scene_type *scene,ray_scene_overlay_index_block *index_block,int x,int y,ray_color_type *col);
+extern void ray_overlay_setup_slice_collision(ray_scene_type *scene,ray_scene_slice_type *slice);
 extern void ray_overlay_setup_all(ray_scene_type *scene);
 
 extern int ray_scene_get_index(int sceneId);

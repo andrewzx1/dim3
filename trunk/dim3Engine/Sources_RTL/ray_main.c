@@ -22,7 +22,7 @@ extern ray_global_type				ray_global;
 
 int rtlInitialize(void)
 {
-	int					thread_count;
+	int					thread_count,slice_count;
 #ifdef __APPLE__
 	int					names[2];
 	size_t				len;
@@ -70,25 +70,21 @@ int rtlInitialize(void)
 	thread_count=info.dwNumberOfProcessors;
 #endif
 
-		// reverve some threads
-		// threads always need to be a power
-		// of 2 to equally split the screen
-		
-		// for now, we run this relatively
-		// hardcoded setup.  Will need
-		// better math here
-		
-	if (thread_count<=4) {
-		ray_global.settings.thread_count=16;
-	}
-	else {
-		if (thread_count<=8) {
-			ray_global.settings.thread_count=25;
-		}
-		else {
-			ray_global.settings.thread_count=ray_render_max_thread_count;
-		}
-	}
+		// currently we create double
+		// the number of threads on the system
+
+	ray_global.settings.thread_count=thread_count*2;
+	if (ray_global.settings.thread_count>ray_render_max_thread_count) ray_global.settings.thread_count=ray_render_max_thread_count;
+
+		// the number of slices is currently
+		// set at 10 per thread, and must be a sqrt
+
+	slice_count=(int)sqrtf((float)(ray_global.settings.thread_count*10));
+
+	ray_global.settings.slice_count=slice_count*slice_count;
+	if (ray_global.settings.slice_count>ray_render_max_slice_count) ray_global.settings.slice_count=ray_render_max_slice_count;
+	
+	fprintf(stdout,"thread=%d, slice_count=%d\n",ray_global.settings.thread_count,ray_global.settings.slice_count);
 
 	return(RL_ERROR_OK);
 }

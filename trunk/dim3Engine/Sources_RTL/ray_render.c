@@ -82,7 +82,7 @@ bool ray_intersect_triangle(ray_scene_type *scene,ray_point_type *eye_point,ray_
       
 ======================================================= */
 
-void ray_intersect_mesh_list_initial(ray_scene_type *scene,ray_draw_scene_thread_info *thread_info,ray_point_type *eye_point,ray_vector_type *eye_vector,ray_collision_type *collision)
+void ray_intersect_mesh_list_initial(ray_scene_type *scene,ray_scene_slice_type *slice,ray_point_type *eye_point,ray_vector_type *eye_vector,ray_collision_type *collision)
 {
 	int							n,mesh_idx,poly_idx,trig_idx;
 	float						it,iu,iv;
@@ -110,9 +110,9 @@ void ray_intersect_mesh_list_initial(ray_scene_type *scene,ray_draw_scene_thread
 		// down for the thread's pixel box,
 		// hidden, and non-ray trace blocking
 
-	for (n=0;n!=thread_info->draw_mesh_index_block.count;n++) {
+	for (n=0;n!=slice->mesh_index_block.count;n++) {
 
-		mesh_idx=thread_info->draw_mesh_index_block.indexes[n];
+		mesh_idx=slice->mesh_index_block.indexes[n];
 		mesh=scene->mesh_list.meshes[mesh_idx];
 
 			// mesh bounds check
@@ -129,7 +129,7 @@ void ray_intersect_mesh_list_initial(ray_scene_type *scene,ray_draw_scene_thread
 				// in them
 				
 			poly=&mesh->poly_block.polys[poly_idx];
-			if (poly->thread_render_mask[thread_info->idx]==0x0) continue;
+			if (poly->slice_render_mask[slice->idx]==0x0) continue;
 
 			if (!ray_bound_ray_collision(eye_point,eye_vector,&poly->bound)) continue;
 			
@@ -201,7 +201,7 @@ void ray_intersect_mesh_list_initial(ray_scene_type *scene,ray_draw_scene_thread
 	}
 }
 
-void ray_intersect_mesh_list_pass_through_bounce(ray_scene_type *scene,ray_draw_scene_thread_info *thread_info,ray_point_type *eye_point,ray_vector_type *eye_vector,ray_collision_type *collision)
+void ray_intersect_mesh_list_pass_through_bounce(ray_scene_type *scene,ray_scene_slice_type *slice,ray_point_type *eye_point,ray_vector_type *eye_vector,ray_collision_type *collision)
 {
 	int							n,k,mesh_idx,poly_idx,trig_idx;
 	float						it,iu,iv;
@@ -229,9 +229,9 @@ void ray_intersect_mesh_list_pass_through_bounce(ray_scene_type *scene,ray_draw_
 		// materials that are pass through,
 		// so we can remain on the thread list
 
-	for (n=0;n!=thread_info->draw_mesh_index_block.count;n++) {
+	for (n=0;n!=slice->mesh_index_block.count;n++) {
 
-		mesh_idx=thread_info->draw_mesh_index_block.indexes[n];
+		mesh_idx=slice->mesh_index_block.indexes[n];
 		mesh=scene->mesh_list.meshes[mesh_idx];
 
 			// mesh bounds check
@@ -245,7 +245,7 @@ void ray_intersect_mesh_list_pass_through_bounce(ray_scene_type *scene,ray_draw_
 				// bounds check
 				
 			poly=&mesh->poly_block.polys[poly_idx];
-			if (poly->thread_render_mask[thread_info->idx]==0x0) continue;
+			if (poly->slice_render_mask[slice->idx]==0x0) continue;
 			
 			if (!ray_bound_ray_collision(eye_point,eye_vector,&poly->bound)) continue;
 				
@@ -335,7 +335,7 @@ void ray_intersect_mesh_list_pass_through_bounce(ray_scene_type *scene,ray_draw_
 	}
 }
 
-void ray_intersect_mesh_list_other_bounce(ray_scene_type *scene,ray_draw_scene_thread_info *thread_info,ray_point_type *eye_point,ray_vector_type *eye_vector,ray_vector_type *eye_normal_vector,ray_collision_type *collision)
+void ray_intersect_mesh_list_other_bounce(ray_scene_type *scene,ray_scene_slice_type *slice,ray_point_type *eye_point,ray_vector_type *eye_vector,ray_vector_type *eye_normal_vector,ray_collision_type *collision)
 {
 	int							n,k,mesh_idx,poly_idx,trig_idx;
 	float						it,iu,iv;
@@ -363,9 +363,9 @@ void ray_intersect_mesh_list_other_bounce(ray_scene_type *scene,ray_draw_scene_t
 		// main scene list because bounces could go
 		// in any direction
 
-	for (n=0;n!=scene->draw_mesh_index_block.count;n++) {
+	for (n=0;n!=scene->render.mesh_index_block.count;n++) {
 
-		mesh_idx=scene->draw_mesh_index_block.indexes[n];
+		mesh_idx=scene->render.mesh_index_block.indexes[n];
 		mesh=scene->mesh_list.meshes[mesh_idx];
 
 			// main list isn't pared down
@@ -1044,7 +1044,7 @@ void ray_build_alpha_vector(ray_scene_type *scene,ray_point_type *ray_origin,ray
       
 ======================================================= */
 
-void ray_render_thread_run(ray_draw_scene_thread_info *thread_info)
+void ray_render_slice_run(ray_scene_type *scene,ray_scene_slice_type *slice)
 {
 	int							x,y;
 	float						f,xadd,yadd,zadd;
@@ -1054,16 +1054,11 @@ void ray_render_thread_run(ray_draw_scene_thread_info *thread_info)
 	ray_vector_type				eye_vector,eye_normal_vector;
 	ray_color_type				pixel_col,mat_col,overlay_col;
 	ray_collision_type			collision;
-	ray_scene_type				*scene;
 
-		// get the scene
-
-	scene=thread_info->parent_scene;
-
-		// build some per-thread
+		// build some per-slice
 		// precalcs
 		
-	ray_precalc_render_scene_thread_setup(scene,thread_info);
+	ray_precalc_render_scene_slice_setup(scene,slice);
 	
 		// get eye point
 		
@@ -1077,14 +1072,14 @@ void ray_render_thread_run(ray_draw_scene_thread_info *thread_info)
 	
 		// draw
 		
-	for (y=thread_info->pixel_start.y;y!=thread_info->pixel_end.y;y++) {
+	for (y=slice->pixel_start.y;y!=slice->pixel_end.y;y++) {
 	
-		for (x=thread_info->pixel_start.x;x!=thread_info->pixel_end.x;x++) {
+		for (x=slice->pixel_start.x;x!=slice->pixel_end.x;x++) {
 		
 				// determine if in overlay
 				// do an early exit if no alpha
 				
-			if (ray_get_overlay_rgb(scene,x,y,&overlay_col)) {
+			if (ray_overlay_get_rgb(scene,&slice->overlay_index_block,x,y,&overlay_col)) {
 				if (overlay_col.a==1.0f) {
 					buf=scene->buffer.data+((y*scene->buffer.wid)+x);		// buffer is unsigned long
 					ray_set_buffer(buf,&overlay_col,NULL);
@@ -1139,14 +1134,14 @@ void ray_render_thread_run(ray_draw_scene_thread_info *thread_info)
 					// find nearest mesh-trig intersection
 					
 				if (!collision.in_bounce) {
-					ray_intersect_mesh_list_initial(scene,thread_info,&eye_origin,&eye_vector,&collision);
+					ray_intersect_mesh_list_initial(scene,slice,&eye_origin,&eye_vector,&collision);
 				}
 				else {
 					if (collision.only_pass_through) {
-						ray_intersect_mesh_list_pass_through_bounce(scene,thread_info,&eye_origin,&eye_vector,&collision);
+						ray_intersect_mesh_list_pass_through_bounce(scene,slice,&eye_origin,&eye_vector,&collision);
 					}
 					else {
-						ray_intersect_mesh_list_other_bounce(scene,thread_info,&eye_origin,&eye_vector,&eye_normal_vector,&collision);
+						ray_intersect_mesh_list_other_bounce(scene,slice,&eye_origin,&eye_vector,&eye_normal_vector,&collision);
 					}
 				}
 
@@ -1222,17 +1217,18 @@ void ray_render_thread_run(ray_draw_scene_thread_info *thread_info)
 
 void* ray_render_thread(void *arg)
 {
-	ray_draw_scene_thread_info	*thread_info;
+	int							slice_idx;
+	ray_scene_thread_type		*thread;
 	ray_scene_type				*scene;
 
 		// get the thread and scene
 
-	thread_info=(ray_draw_scene_thread_info*)arg;
-	scene=thread_info->parent_scene;
+	thread=(ray_scene_thread_type*)arg;
+	scene=thread->parent_scene;
 
 		// set some flags
 
-	thread_info->shutdown_done=FALSE;
+	thread->shutdown_done=FALSE;
 
 		// these are worker threads so
 		// they suspend until needed
@@ -1254,14 +1250,27 @@ void* ray_render_thread(void *arg)
 			// in shutdown?
 
 		if (scene->thread_mode==ray_thread_mode_shutdown) {
-			thread_info->shutdown_done=TRUE;
+			thread->shutdown_done=TRUE;
 			pthread_exit(0);
 			return(0);
 		}
 
-			// run the thread
+			// render the next slice
 
-		ray_render_thread_run(thread_info);
+		while (TRUE) {
+			slice_idx=-1;
+
+			pthread_mutex_lock(&scene->render.scene_lock);
+			if (scene->render.next_slice_idx<ray_global.settings.slice_count) {
+				slice_idx=scene->render.next_slice_idx;
+				scene->render.next_slice_idx++;
+			}
+			pthread_mutex_unlock(&scene->render.scene_lock);
+
+			if (slice_idx==-1) break;
+
+			ray_render_slice_run(scene,&scene->render.slices[slice_idx]);
+		}
 		
 			// add up thread done count
 			
@@ -1275,24 +1284,25 @@ void* ray_render_thread(void *arg)
 
 unsigned __stdcall ray_render_thread(void *arg)
 {
-	ray_draw_scene_thread_info	*thread_info;
+	int							slice_idx;
+	ray_scene_thread_type		*thread;
 	ray_scene_type				*scene;
 
 		// get the thread and scene
 
-	thread_info=(ray_draw_scene_thread_info*)arg;
-	scene=thread_info->parent_scene;
+	thread=(ray_scene_thread_type*)arg;
+	scene=thread->parent_scene;
 
 		// set some flags
 
-	thread_info->shutdown_done=FALSE;
+	thread->shutdown_done=FALSE;
 
 		// these are worker threads so
 		// they suspend until needed
 
 	while (TRUE) {
 
-		SuspendThread(thread_info->thread);
+		SuspendThread(thread->thread);
 
 			// in case spurious wake-up
 
@@ -1301,15 +1311,28 @@ unsigned __stdcall ray_render_thread(void *arg)
 			// in shutdown?
 
 		if (scene->thread_mode==ray_thread_mode_shutdown) {
-			thread_info->shutdown_done=TRUE;
+			thread->shutdown_done=TRUE;
 			_endthreadex(0);
 			return(0);
 		}
 
-			// run the thread
+			// render the next slice
 
-		ray_render_thread_run(thread_info);
-		
+		while (TRUE) {
+			slice_idx=-1;
+
+			EnterCriticalSection(&scene->render.scene_lock);
+			if (scene->render.next_slice_idx<ray_global.settings.slice_count) {
+				slice_idx=scene->render.next_slice_idx;
+				scene->render.next_slice_idx++;
+			}
+			LeaveCriticalSection(&scene->render.scene_lock);
+
+			if (slice_idx==-1) break;
+
+			ray_render_slice_run(scene,&scene->render.slices[slice_idx]);
+		}
+
 			// add up thread done count
 			
 		EnterCriticalSection(&scene->render.scene_lock);

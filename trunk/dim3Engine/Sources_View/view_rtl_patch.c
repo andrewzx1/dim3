@@ -47,7 +47,7 @@ int								view_rtl_scene_id,
 bool							view_rtl_has_render;
 GLuint							view_rtl_gl_id;
 
-int								view_rtl_screen_sizes[][2]={{320,200},{400,250},{480,300},{720,450},{960,600},{0,0}};
+int								view_rtl_screen_sizes[][2]={{320,200},{400,250},{480,300},{640,400},{720,450},{960,600},{0,0}};
 texture_font_type				view_rtl_fonts[2];
 
 extern int view_dim3rtl_create_material_from_path(char *path,int alpha_type);

@@ -102,32 +102,40 @@ int rtlSceneAdd(ray_2d_point_type *size,int target,int format,void *attachment,u
 		return(RL_ERROR_OUT_OF_MEMORY);
 	}
 	
-		// precalc any thread info settings,
-		// like parent pointer and the drawing rect
+		// precalc slice settings and drawing rects
 
-	split=(int)sqrtf(ray_global.settings.thread_count);
+	split=(int)sqrtf(ray_global.settings.slice_count);
 
 	x_add=scene->buffer.wid/split;
 	y_add=scene->buffer.high/split;
 
-	for (n=0;n!=ray_global.settings.thread_count;n++) {
-	
+	for (n=0;n!=ray_global.settings.slice_count;n++) {
+
+			// slices need to remember their index as
+			// polygons have per-slice flags in them
+
+		scene->render.slices[n].idx=n;
+
+			// build the pixel rect
+
 		k=n%split;
-		scene->render.thread_info[n].pixel_start.x=x_add*k;
-		scene->render.thread_info[n].pixel_end.x=scene->render.thread_info[n].pixel_start.x+x_add;
-		if (k==(split-1)) scene->render.thread_info[n].pixel_end.x=scene->buffer.wid;
+		scene->render.slices[n].pixel_start.x=x_add*k;
+		scene->render.slices[n].pixel_end.x=scene->render.slices[n].pixel_start.x+x_add;
+		if (k==(split-1)) scene->render.slices[n].pixel_end.x=scene->buffer.wid;
 		
 		k=n/split;
-		scene->render.thread_info[n].pixel_start.y=y_add*k;
-		scene->render.thread_info[n].pixel_end.y=scene->render.thread_info[n].pixel_start.y+y_add;
-		if (k==(split-1)) scene->render.thread_info[n].pixel_end.y=scene->buffer.high;
+		scene->render.slices[n].pixel_start.y=y_add*k;
+		scene->render.slices[n].pixel_end.y=scene->render.slices[n].pixel_start.y+y_add;
+		if (k==(split-1)) scene->render.slices[n].pixel_end.y=scene->buffer.high;
+	}
 
-			// each thread info needs a pointer
-			// back to it's scene as thread_info is
-			// what's passed to each thread
+		// precalc scene threads
+		// current just need a pointer to parent scene
+		// we need to do this here as scene could move
+		// in memory
 
-		scene->render.thread_info[n].idx=n;
-		scene->render.thread_info[n].parent_scene=scene;
+	for (n=0;n!=ray_global.settings.thread_count;n++) {
+		scene->render.threads[n].parent_scene=scene;
 	}
 
 		// make sure thread done list is set

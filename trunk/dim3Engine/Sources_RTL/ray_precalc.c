@@ -264,25 +264,25 @@ void ray_precalc_build_frustum_plane_single(ray_plane_type *plane,ray_point_type
 	plane->d=-((plane->a*p0->x)+(plane->b*p0->y)+(plane->c*p0->z));
 }
 
-void ray_precalc_build_frustum_planes(ray_scene_type *scene,ray_draw_scene_thread_info *thread_info,ray_plane_type *planes)
+void ray_precalc_build_frustum_planes(ray_scene_type *scene,ray_scene_slice_type *slice,ray_plane_type *planes)
 {
-	float					lx,rx,ty,by,wid,high;
-	ray_point_type			*eye_point;
-	ray_point_type			view_plane_point,
-							top_lft_near_pnt,top_rgt_near_pnt,
-							bot_lft_near_pnt,bot_rgt_near_pnt,
-							top_lft_far_pnt,top_rgt_far_pnt,
-							bot_lft_far_pnt,bot_rgt_far_pnt;
-	ray_vector_type			center_vct,
-							top_lft_vct,top_rgt_vct,
-							bot_lft_vct,bot_rgt_vct;
+	float						lx,rx,ty,by,wid,high;
+	ray_point_type				*eye_point;
+	ray_point_type				view_plane_point,
+								top_lft_near_pnt,top_rgt_near_pnt,
+								bot_lft_near_pnt,bot_rgt_near_pnt,
+								top_lft_far_pnt,top_rgt_far_pnt,
+								bot_lft_far_pnt,bot_rgt_far_pnt;
+	ray_vector_type				center_vct,
+								top_lft_vct,top_rgt_vct,
+								bot_lft_vct,bot_rgt_vct;
 	
 		// projection plane size
 
-	lx=(float)thread_info->pixel_start.x;
-	rx=(float)thread_info->pixel_end.x;
-	ty=(float)thread_info->pixel_start.y;
-	by=(float)thread_info->pixel_end.y;
+	lx=(float)slice->pixel_start.x;
+	rx=(float)slice->pixel_end.x;
+	ty=(float)slice->pixel_start.y;
+	by=(float)slice->pixel_end.y;
 
 	wid=(float)(scene->buffer.wid>>1);
 	high=(float)(scene->buffer.high>>1);
@@ -395,7 +395,7 @@ bool ray_precalc_frustum_plane_bound_cull(ray_plane_type *planes,ray_bound_type 
       
 ======================================================= */
 
-bool ray_precalc_eye_normal_cull(ray_scene_type *scene,ray_draw_scene_thread_info *thread_info,ray_mesh_type *mesh,ray_poly_type *poly)
+bool ray_precalc_eye_normal_cull(ray_scene_type *scene,ray_scene_slice_type *slice,ray_mesh_type *mesh,ray_poly_type *poly)
 {
 	float					wid,high;
 	ray_point_type			pnt;
@@ -410,8 +410,8 @@ bool ray_precalc_eye_normal_cull(ray_scene_type *scene,ray_draw_scene_thread_inf
 	wid=(float)(scene->buffer.wid>>1);
 	high=(float)(scene->buffer.high>>1);
 
-	pnt.x=(scene->eye.pnt.x-wid)+((thread_info->pixel_start.x+thread_info->pixel_start.x)>>1);
-	pnt.y=(scene->eye.pnt.y-high)+((thread_info->pixel_start.y+thread_info->pixel_start.y)>>1);
+	pnt.x=(scene->eye.pnt.x-wid)+((slice->pixel_start.x+slice->pixel_start.x)>>1);
+	pnt.y=(scene->eye.pnt.y-high)+((slice->pixel_start.y+slice->pixel_start.y)>>1);
 	pnt.z=scene->eye.pnt.z+scene->eye.plane_dist;
 	
 	eye_vct.x=poly->bound.mid.x-pnt.x;
@@ -463,12 +463,16 @@ void ray_precalc_render_scene_setup(ray_scene_type *scene)
 	ray_poly_type	*poly;
 	ray_light_type	*light;
 
+		// no slices used yet
+
+	scene->render.next_slice_idx=0;
+
 		// create a list of meshes within
 		// the eye max_dist, centered around
 		// the eye point.  These are the drawing
 		// meshes
 		
-	scene->draw_mesh_index_block.count=0;
+	scene->render.mesh_index_block.count=0;
 
 	for (n=0;n!=scene->mesh_list.count;n++) {
 		mesh=scene->mesh_list.meshes[n];
@@ -480,8 +484,8 @@ void ray_precalc_render_scene_setup(ray_scene_type *scene)
 
 		d=(float)sqrt((dx*dx)+(dy*dy)+(dz*dz));
 		if (d<=scene->eye.max_dist) {
-			scene->draw_mesh_index_block.indexes[scene->draw_mesh_index_block.count]=n;
-			scene->draw_mesh_index_block.count++;
+			scene->render.mesh_index_block.indexes[scene->render.mesh_index_block.count]=n;
+			scene->render.mesh_index_block.count++;
 		}
 	}
 	
@@ -489,9 +493,9 @@ void ray_precalc_render_scene_setup(ray_scene_type *scene)
 		// poly mipmap level cahce and no current
 		// likely block polygons
 		
-	for (n=0;n!=scene->draw_mesh_index_block.count;n++) {
+	for (n=0;n!=scene->render.mesh_index_block.count;n++) {
 
-		mesh_idx=scene->draw_mesh_index_block.indexes[n];
+		mesh_idx=scene->render.mesh_index_block.indexes[n];
 		mesh=scene->mesh_list.meshes[mesh_idx];
 		
 		mesh->collide_lights_list.count=0;
@@ -517,9 +521,9 @@ void ray_precalc_render_scene_setup(ray_scene_type *scene)
 		// non light trace blocking meshes
 		// and hidden meshes
 		
-	for (n=0;n!=scene->draw_mesh_index_block.count;n++) {
+	for (n=0;n!=scene->render.mesh_index_block.count;n++) {
 
-		mesh_idx=scene->draw_mesh_index_block.indexes[n];
+		mesh_idx=scene->render.mesh_index_block.indexes[n];
 		mesh=scene->mesh_list.meshes[mesh_idx];
 
 		for (k=0;k!=scene->light_list.count;k++) {
@@ -585,27 +589,27 @@ void ray_precalc_render_scene_setup(ray_scene_type *scene)
       
 ======================================================= */
 
-void ray_precalc_render_scene_thread_setup(ray_scene_type *scene,ray_draw_scene_thread_info *thread_info)
+void ray_precalc_render_scene_slice_setup(ray_scene_type *scene,ray_scene_slice_type *slice)
 {
-	int						n,k,mesh_idx;
-	ray_mesh_type			*mesh;
-	ray_poly_type			*poly;
-	ray_plane_type			planes[6];
-	
+	int							n,k,mesh_idx;
+	ray_mesh_type				*mesh;
+	ray_poly_type				*poly;
+	ray_plane_type				planes[6];
+
 		// build the frustum planes
 		// for this chunk of rendering
 
-	ray_precalc_build_frustum_planes(scene,thread_info,planes);
+	ray_precalc_build_frustum_planes(scene,slice,planes);
 
 		// build the mesh list for this thread
 		// we use this one first hits, but then
 		// retreat to the main list for bounces
 
-	thread_info->draw_mesh_index_block.count=0;
+	slice->mesh_index_block.count=0;
 	
-	for (n=0;n!=scene->draw_mesh_index_block.count;n++) {
+	for (n=0;n!=scene->render.mesh_index_block.count;n++) {
 	
-		mesh_idx=scene->draw_mesh_index_block.indexes[n];
+		mesh_idx=scene->render.mesh_index_block.indexes[n];
 		mesh=scene->mesh_list.meshes[mesh_idx];
 		
 			// special knock-out flags
@@ -619,8 +623,8 @@ void ray_precalc_render_scene_thread_setup(ray_scene_type *scene,ray_draw_scene_
 
 			// insert into list
 			
-		thread_info->draw_mesh_index_block.indexes[thread_info->draw_mesh_index_block.count]=mesh_idx;
-		thread_info->draw_mesh_index_block.count++;
+		slice->mesh_index_block.indexes[slice->mesh_index_block.count]=mesh_idx;
+		slice->mesh_index_block.count++;
 
 			// set up the poly rendering flags
 			// for this thread, which is a list of which
@@ -633,19 +637,24 @@ void ray_precalc_render_scene_thread_setup(ray_scene_type *scene,ray_draw_scene_
 		for (k=0;k!=mesh->poly_block.count;k++) {
 		
 			if (!ray_precalc_frustum_plane_bound_cull(planes,&poly->bound)) {
-				poly->thread_render_mask[thread_info->idx]=0x0;
+				poly->slice_render_mask[slice->idx]=0x0;
 			}
 			else {
-				if (!ray_precalc_eye_normal_cull(scene,thread_info,mesh,poly)) {
-					poly->thread_render_mask[thread_info->idx]=0x0;
+				if (!ray_precalc_eye_normal_cull(scene,slice,mesh,poly)) {
+					poly->slice_render_mask[slice->idx]=0x0;
 				}
 				else {
-					poly->thread_render_mask[thread_info->idx]=0x1;
+					poly->slice_render_mask[slice->idx]=0x1;
 				}
 			}
 			
 			poly++;
 		}
 	}
+
+		// determine if there are any overlays that
+		// cross this slice
+
+	ray_overlay_setup_slice_collision(scene,slice);
 }
 
