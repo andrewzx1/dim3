@@ -22,7 +22,7 @@ extern ray_global_type				ray_global;
 
 int rtlInitialize(void)
 {
-	int					thread_count,slice_count;
+	int					thread_count;
 #ifdef __APPLE__
 	int					names[2];
 	size_t				len;
@@ -77,14 +77,9 @@ int rtlInitialize(void)
 	if (ray_global.settings.thread_count>ray_render_max_thread_count) ray_global.settings.thread_count=ray_render_max_thread_count;
 
 		// the number of slices is currently
-		// set at 10 per thread, and must be a sqrt
+		// set at ray_render_max_slice_count
 
-	slice_count=(int)sqrtf((float)(ray_global.settings.thread_count*10));
-
-	ray_global.settings.slice_count=slice_count*slice_count;
-	if (ray_global.settings.slice_count>ray_render_max_slice_count) ray_global.settings.slice_count=ray_render_max_slice_count;
-	
-	fprintf(stdout,"thread=%d, slice_count=%d\n",ray_global.settings.thread_count,ray_global.settings.slice_count);
+	ray_global.settings.slice_count=ray_render_max_slice_count;
 
 	return(RL_ERROR_OK);
 }

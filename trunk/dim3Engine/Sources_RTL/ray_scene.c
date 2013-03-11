@@ -135,6 +135,7 @@ int rtlSceneAdd(ray_2d_point_type *size,int target,int format,void *attachment,u
 		// in memory
 
 	for (n=0;n!=ray_global.settings.thread_count;n++) {
+		scene->render.threads[n].idx=n;
 		scene->render.threads[n].parent_scene=scene;
 	}
 

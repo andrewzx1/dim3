@@ -38,7 +38,7 @@
 // note: max_slice_count MUST BE A SQRT!
 //
 
-#define ray_render_max_slice_count					(15*15)
+#define ray_render_max_slice_count					(16*16)
 #define ray_render_max_thread_count					32
 
 //
@@ -146,7 +146,7 @@ typedef struct		{
 						ray_trig_block					trig_block;
 						ray_plane_type					plane;
 						ray_bound_type					bound;
-						ray_mesh_poly_ptr_type			likely_block_poly_ptr[ray_max_light_per_mesh];
+						ray_mesh_poly_ptr_type			likely_block_poly_ptr[ray_render_max_thread_count][ray_max_light_per_mesh];
 					} ray_poly_type;
 
 typedef struct		{
@@ -270,6 +270,7 @@ typedef struct		{
 					} ray_scene_slice_type;
 
 typedef struct		{
+						int								idx;
 						bool							shutdown_done;
 						void							*parent_scene;			// this is a pointer back to the parent structure, need by threading
 						ray_thread						thread;

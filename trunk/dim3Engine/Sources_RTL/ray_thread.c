@@ -101,13 +101,13 @@ bool ray_scene_create_threads(ray_scene_type *scene)
 
 	for (n=0;n!=ray_global.settings.thread_count;n++) {
 
-		if (pthread_create(&scene->render.thread_info[n].thread,0,ray_render_thread,(void*)&scene->render.thread_info[n])!=0) {
+		if (pthread_create(&scene->render.threads[n].thread,0,ray_render_thread,(void*)&scene->render.threads[n])!=0) {
 			pthread_mutex_destroy(&scene->render.thread_lock);
 			pthread_cond_destroy(&scene->render.thread_cond);
 			return(FALSE);
 		}
 
-		pthread_detach(scene->render.thread_info[n].thread);
+		pthread_detach(scene->render.threads[n].thread);
 	}
 
 	return(TRUE);
