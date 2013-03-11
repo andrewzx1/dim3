@@ -233,10 +233,12 @@ void host_map_list_shutdown(void)
 void host_map_list_get_name(int idx,char *name)
 {
 	char			*c;
+	char			row_str[128];
 
 	name[0]=0x0;
 
-	c=host_table_map_list+(idx*128);
+	element_get_table_row(host_table_id,idx,row_str);
+	c=row_str;
 		
 	c=strchr(c,';');
 	if (c!=NULL) {

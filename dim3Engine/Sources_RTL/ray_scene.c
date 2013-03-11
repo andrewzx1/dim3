@@ -72,8 +72,10 @@ void ray_scene_3D_to_2D_point(ray_scene_type *scene,ray_point_type *pnt_3d,ray_2
 
 int rtlSceneAdd(ray_2d_point_type *size,int target,int format,void *attachment,unsigned long flags)
 {
-	int					n,k,split,x_add,y_add;
-	ray_scene_type		*scene;
+	int						n,k,split,x_add,y_add;
+	ray_scene_type			*scene;
+	ray_scene_slice_type	*slice;
+	ray_scene_thread_type	*thread;
 
 		// right now only one target/format
 
@@ -109,24 +111,28 @@ int rtlSceneAdd(ray_2d_point_type *size,int target,int format,void *attachment,u
 	x_add=scene->buffer.wid/split;
 	y_add=scene->buffer.high/split;
 
+	slice=scene->render.slices;
+
 	for (n=0;n!=ray_global.settings.slice_count;n++) {
 
 			// slices need to remember their index as
 			// polygons have per-slice flags in them
 
-		scene->render.slices[n].idx=n;
+		slice->idx=n;
 
 			// build the pixel rect
 
 		k=n%split;
-		scene->render.slices[n].pixel_start.x=x_add*k;
-		scene->render.slices[n].pixel_end.x=scene->render.slices[n].pixel_start.x+x_add;
-		if (k==(split-1)) scene->render.slices[n].pixel_end.x=scene->buffer.wid;
+		slice->pixel_start.x=x_add*k;
+		slice->pixel_end.x=slice->pixel_start.x+x_add;
+		if (k==(split-1)) slice->pixel_end.x=scene->buffer.wid;
 		
 		k=n/split;
-		scene->render.slices[n].pixel_start.y=y_add*k;
-		scene->render.slices[n].pixel_end.y=scene->render.slices[n].pixel_start.y+y_add;
-		if (k==(split-1)) scene->render.slices[n].pixel_end.y=scene->buffer.high;
+		slice->pixel_start.y=y_add*k;
+		slice->pixel_end.y=slice->pixel_start.y+y_add;
+		if (k==(split-1)) slice->pixel_end.y=scene->buffer.high;
+
+		slice++;
 	}
 
 		// precalc scene threads
@@ -134,9 +140,11 @@ int rtlSceneAdd(ray_2d_point_type *size,int target,int format,void *attachment,u
 		// we need to do this here as scene could move
 		// in memory
 
+	thread=scene->render.threads;
+
 	for (n=0;n!=ray_global.settings.thread_count;n++) {
-		scene->render.threads[n].idx=n;
-		scene->render.threads[n].parent_scene=scene;
+		thread->parent_scene=scene;
+		thread++;
 	}
 
 		// make sure thread done list is set

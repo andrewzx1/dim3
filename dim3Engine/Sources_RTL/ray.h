@@ -146,7 +146,6 @@ typedef struct		{
 						ray_trig_block					trig_block;
 						ray_plane_type					plane;
 						ray_bound_type					bound;
-						ray_mesh_poly_ptr_type			likely_block_poly_ptr[ray_render_max_thread_count][ray_max_light_per_mesh];
 					} ray_poly_type;
 
 typedef struct		{
@@ -267,10 +266,10 @@ typedef struct		{
 						ray_2d_point_type				pixel_start,pixel_end;
 						ray_scene_mesh_index_block		mesh_index_block;
 						ray_scene_overlay_index_block	overlay_index_block;
+						ray_mesh_poly_ptr_type			likely_block_poly_ptr[ray_max_scene_light];
 					} ray_scene_slice_type;
 
 typedef struct		{
-						int								idx;
 						bool							shutdown_done;
 						void							*parent_scene;			// this is a pointer back to the parent structure, need by threading
 						ray_thread						thread;
