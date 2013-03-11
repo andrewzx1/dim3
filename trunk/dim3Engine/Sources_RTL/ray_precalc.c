@@ -456,7 +456,7 @@ bool ray_precalc_light_normal_cull(ray_scene_type *scene,ray_light_type *light,r
 
 void ray_precalc_render_scene_setup(ray_scene_type *scene)
 {
-	int				n,k,t,i,mesh_idx;
+	int				n,k,t,mesh_idx;
 	float			d;
 	double			dx,dy,dz;
 	ray_mesh_type	*mesh;
@@ -490,8 +490,7 @@ void ray_precalc_render_scene_setup(ray_scene_type *scene)
 	}
 	
 		// clear collide light list and setup
-		// poly mipmap level cahce and no current
-		// likely block polygons
+		// poly mipmap level cache
 		
 	for (n=0;n!=scene->render.mesh_index_block.count;n++) {
 
@@ -504,11 +503,6 @@ void ray_precalc_render_scene_setup(ray_scene_type *scene)
 		
 		for (k=0;k!=mesh->poly_block.count;k++) {
 			poly->mm_level=-1;
-			for (i=0;i!=ray_render_max_thread_count;i++) {
-				for (t=0;t!=ray_max_light_per_mesh;t++) {
-					poly->likely_block_poly_ptr[i][t].mesh_idx=-1;
-				}
-			}
 			poly++;
 		}
 	}
@@ -652,6 +646,12 @@ void ray_precalc_render_scene_slice_setup(ray_scene_type *scene,ray_scene_slice_
 			
 			poly++;
 		}
+	}
+	
+		// reset the likely blocking poly list
+
+	for (n=0;n!=ray_max_scene_light;n++) {
+		slice->likely_block_poly_ptr[n].mesh_idx=-1;
 	}
 
 		// determine if there are any overlays that
