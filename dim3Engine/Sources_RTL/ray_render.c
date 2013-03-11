@@ -479,7 +479,7 @@ void ray_intersect_mesh_list_other_bounce(ray_scene_type *scene,ray_scene_slice_
       
 ======================================================= */
 
-bool ray_block_light(ray_scene_type *scene,ray_point_type *pnt,ray_vector_type *vct,ray_vector_type *normal_vct,float vct_dist,ray_collision_type *collision,int light_idx,int mesh_light_idx)
+bool ray_block_light(ray_scene_type *scene,ray_scene_thread_type *thread,ray_point_type *pnt,ray_vector_type *vct,ray_vector_type *normal_vct,float vct_dist,ray_collision_type *collision,int light_idx,int mesh_light_idx)
 {
 	int							n,mesh_idx,poly_idx,trig_idx;
 	float						t,u,v;
@@ -509,7 +509,7 @@ bool ray_block_light(ray_scene_type *scene,ray_point_type *pnt,ray_vector_type *
 			// (non-alpha, etc) will be in this list, so
 			// other checks can be skipped
 
-	likely_block=&scene->mesh_list.meshes[collision->mesh_idx]->poly_block.polys[collision->poly_idx].likely_block_poly_ptr[mesh_light_idx];
+	likely_block=&scene->mesh_list.meshes[collision->mesh_idx]->poly_block.polys[collision->poly_idx].likely_block_poly_ptr[thread->idx][mesh_light_idx];
 
 	if (likely_block->mesh_idx!=-1) {
 
@@ -517,7 +517,7 @@ bool ray_block_light(ray_scene_type *scene,ray_point_type *pnt,ray_vector_type *
 		
 		if (ray_bound_ray_collision(pnt,vct,&mesh->bound)) {
 			poly=&mesh->poly_block.polys[likely_block->poly_idx];
-
+			
 			if (ray_bound_ray_collision(pnt,vct,&poly->bound)) {
 				if (ray_plane_ray_collision(pnt,normal_vct,vct_dist,&poly->plane)) {
 					
@@ -643,7 +643,7 @@ bool ray_mesh_special_lighting_conditions(ray_scene_type *scene,ray_point_type *
       
 ======================================================= */
 
-void ray_trace_lights(ray_scene_type *scene,ray_point_type *eye_pnt,ray_point_type *trig_pnt,ray_collision_type *collision,ray_color_type *col)
+void ray_trace_lights(ray_scene_type *scene,ray_scene_thread_type *thread,ray_point_type *eye_pnt,ray_point_type *trig_pnt,ray_collision_type *collision,ray_color_type *col)
 {
 	int							n,light_idx;
 	float						light_ray_dist,dist,cone_diffuse,att,
@@ -730,7 +730,7 @@ void ray_trace_lights(ray_scene_type *scene,ray_point_type *eye_pnt,ray_point_ty
 			// check for mesh collides
 			// blocking light
 
-		if (ray_block_light(scene,trig_pnt,&light_vector,&light_vector_normal,light_ray_dist,collision,light_idx,n)) continue;
+		if (ray_block_light(scene,thread,trig_pnt,&light_vector,&light_vector_normal,light_ray_dist,collision,light_idx,n)) continue;
 
 			// attenuate the light for distance
 
@@ -1044,7 +1044,7 @@ void ray_build_alpha_vector(ray_scene_type *scene,ray_point_type *ray_origin,ray
       
 ======================================================= */
 
-void ray_render_slice_run(ray_scene_type *scene,ray_scene_slice_type *slice)
+void ray_render_slice_run(ray_scene_type *scene,ray_scene_thread_type *thread,ray_scene_slice_type *slice)
 {
 	int							x,y;
 	float						f,xadd,yadd,zadd;
@@ -1157,7 +1157,7 @@ void ray_render_slice_run(ray_scene_type *scene,ray_scene_slice_type *slice)
 					// else run regular lighting
 
 				if (!ray_mesh_special_lighting_conditions(scene,&eye_origin,&trig_point,collision.mesh_idx,&collision,&mat_col)) {
-					ray_trace_lights(scene,&eye_origin,&trig_point,&collision,&mat_col);
+					ray_trace_lights(scene,thread,&eye_origin,&trig_point,&collision,&mat_col);
 				}
 
 					// add in any tinting
@@ -1269,7 +1269,7 @@ void* ray_render_thread(void *arg)
 
 			if (slice_idx==-1) break;
 
-			ray_render_slice_run(scene,&scene->render.slices[slice_idx]);
+			ray_render_slice_run(scene,thread,&scene->render.slices[slice_idx]);
 		}
 		
 			// add up thread done count
@@ -1330,7 +1330,7 @@ unsigned __stdcall ray_render_thread(void *arg)
 
 			if (slice_idx==-1) break;
 
-			ray_render_slice_run(scene,&scene->render.slices[slice_idx]);
+			ray_render_slice_run(scene,thread,&scene->render.slices[slice_idx]);
 		}
 
 			// add up thread done count
