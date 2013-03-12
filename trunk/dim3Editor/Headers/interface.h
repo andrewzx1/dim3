@@ -990,6 +990,7 @@ extern void model_vertex_collapse_similar(int mesh_idx);
 extern void model_polygon_make_quad(int mesh_idx);
 extern void model_polygon_tessellate(int mesh_idx,bool sel_only);
 extern void model_bone_attach_duplicate(int mesh_idx);
+extern void model_clean_up(void);
 
 //
 // model picking

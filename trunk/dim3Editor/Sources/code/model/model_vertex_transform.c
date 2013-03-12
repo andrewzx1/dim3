@@ -519,7 +519,7 @@ void model_vertex_collapse_selected(int mesh_idx)
 
 void model_vertex_collapse_similar(int mesh_idx)
 {
-	int					n,k,t,dist;
+	int					n,k,t;
 	model_mesh_type		*mesh;
 	model_vertex_type	*vertex,*chk_vertex;
 	model_poly_type		*poly;
@@ -540,9 +540,7 @@ void model_vertex_collapse_similar(int mesh_idx)
 				if (poly->v[t]==n) continue;
 
 				chk_vertex=&mesh->vertexes[poly->v[t]];
-				dist=abs(chk_vertex->pnt.x-vertex->pnt.x)+abs(chk_vertex->pnt.y-vertex->pnt.y)+abs(chk_vertex->pnt.z-vertex->pnt.z);
-
-				if (dist<10) poly->v[t]=n;
+				if ((chk_vertex->pnt.x==vertex->pnt.x) && (chk_vertex->pnt.y==vertex->pnt.y) && (chk_vertex->pnt.z==vertex->pnt.z)) poly->v[t]=n;
 			}
 
 			poly++;
@@ -561,6 +559,7 @@ void model_vertex_collapse_similar(int mesh_idx)
 		
 	model_vertex_delete_unused_vertexes(mesh_idx);
 }
+
 /* =======================================================
 
       Poly Shared Vertex Utility
@@ -876,5 +875,108 @@ void model_bone_attach_duplicate(int mesh_idx)
 	state.model.cur_bone_idx=to_bone_idx;
 	model_palette_scroll_into_view(item_model_bone,state.model.cur_bone_idx);
 	model_vertex_mask_set_sel_bone(state.model.cur_mesh_idx,state.model.cur_bone_idx);
+}
+
+/* =======================================================
+
+      Clean Up Model
+      
+======================================================= */
+
+void model_clean_up(void)
+{
+	int					mesh_idx,n,k,t,i,npoly,nhit,sz,
+						poly_count;
+	char				str[256];
+	bool				delete_poly;
+	d3pnt				*p1,*p2;
+	model_mesh_type		*mesh;
+	model_poly_type		*poly,*chk_poly;
+	
+	if (os_dialog_confirm("Model Clean Up","Cleaning up a model will delete any overlapped duplicate polygons.\nAre you sure you want to clean up?",FALSE)!=0) return;
+
+		// run through all the meshes
+		
+	poly_count=0;
+		
+	for (mesh_idx=0;mesh_idx!=model.nmesh;mesh_idx++) {
+	
+			// clear current selection
+			
+		model_vertex_mask_clear_sel(mesh_idx);
+		model_vertex_mask_clear_hide(mesh_idx);
+
+			// find all polys that are duplicates
+			// and therefore can be deleted
+			
+		mesh=&model.meshes[mesh_idx];
+		
+		while (TRUE) {
+		
+			delete_poly=FALSE;
+			npoly=mesh->npoly;
+
+			for (n=0;n!=npoly;n++) {
+				poly=&mesh->polys[n];
+					
+					// don't check ones already selected
+						
+				if (model_poly_mask_check_sel(mesh_idx,n)) continue;
+				
+					// compare with other polys
+					
+				for (k=0;k!=npoly;k++) {
+					if (k==n) continue;
+					
+						// don't check ones already selected
+						
+					if (model_poly_mask_check_sel(mesh_idx,k)) continue;
+					
+					chk_poly=&mesh->polys[k];
+					if (chk_poly->ptsz!=poly->ptsz) continue;
+					
+						// they can be in any order,
+						// so check them all
+					
+					nhit=0;
+					
+					for (t=0;t!=chk_poly->ptsz;t++) {
+						for (i=0;i!=poly->ptsz;i++) {
+							p1=&mesh->vertexes[chk_poly->v[t]].pnt;
+							p2=&mesh->vertexes[poly->v[i]].pnt;
+							if ((p1->x==p2->x) && (p1->y==p2->y) && (p1->z==p2->z)) {
+								nhit++;
+								break;
+							}
+						}
+					}
+					
+						// delete if equal
+						
+					if (nhit!=chk_poly->ptsz) continue;
+					
+					delete_poly=TRUE;
+					poly_count++;
+			
+					sz=((model.meshes[mesh_idx].npoly-1)-n);
+					if (sz>0) memmove(&model.meshes[mesh_idx].polys[n],&model.meshes[mesh_idx].polys[n+1],(sz*sizeof(model_poly_type)));
+		
+					model.meshes[mesh_idx].npoly--;
+					
+					break;
+				}
+				
+				if (delete_poly) break;
+				
+			}
+			
+			if (!delete_poly) break;
+		}
+	}
+	
+		// alert
+		
+	sprintf(str,"Deleted %d polygons",poly_count);
+	os_dialog_alert("Model Clean Up",str);
 }
 

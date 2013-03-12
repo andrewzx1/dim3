@@ -173,6 +173,7 @@ and can be sold or given away.
 #define model_menu_item_CenterXZAll				5311
 #define model_menu_item_FloorYAll				5312
 #define model_menu_item_AddHitBox				5313
+#define model_menu_item_CleanUp					5314
 
 #define model_menu_item_Front					5400
 #define model_menu_item_Left					5401
