@@ -255,7 +255,6 @@ bool model_read_xml(model_type *model)
   		// ui
 		
     ui_tag=xml_findfirstchild("UI",model_head);
-
 	model->ui.light_intensity=xml_get_attribute_int(ui_tag,"light_intensity");
 	model->ui.light_exponent=xml_get_attribute_float(ui_tag,"light_exponent");
 	xml_get_attribute_3_coord_int(ui_tag,"light_offset",&model->ui.light_offset.x,&model->ui.light_offset.y,&model->ui.light_offset.z);
@@ -754,6 +753,7 @@ bool model_write_xml(model_type *model,char *err_str)
   		// ui
 		
     xml_add_tagstart("UI");
+	xml_add_attribute_int("light_intensity",model->ui.light_intensity);
 	xml_add_attribute_float("light_exponent",model->ui.light_exponent);
 	xml_add_attribute_3_coord_int("light_offset",model->ui.light_offset.x,model->ui.light_offset.y,model->ui.light_offset.z);
 	xml_add_attribute_color("light_color",&model->ui.light_col);

@@ -71,17 +71,19 @@ void gui_initialize(char *background_path,char *bitmap_name)
 		// stop playing ambients
 		
 	al_stop_all_looping_sources();
-	
-		// initialize cursor and elements
-		
+
+		// clear rtl gui
+
+	if (iface.project.ray_trace) gui_dim3rtl_clear();
+
+		// gui pieces
+
 	cursor_initialize();
 	element_initialize();
-	
-		// load up the proper background bitmap
 		
 	gui_background_image_idx=-1;
 	if (bitmap_name!=NULL) gui_background_load(background_path,bitmap_name);
-	
+
 		// start mouse in middle of screen
 		
 	x=iface.scale_x>>1;
@@ -99,15 +101,13 @@ void gui_initialize(char *background_path,char *bitmap_name)
 
 void gui_shutdown(void)
 {
-		// close background bitmap
+		// close OpenGL GUI
 		
 	if (gui_background_image_idx!=-1) view_images_free_single(gui_background_image_idx);
-	
-		// release cursor and elements
 		
 	element_shutdown();
 	cursor_shutdown();
-	
+
 		// clear all movement from gui	
 			
 	input_clear();
@@ -163,6 +163,13 @@ void gui_draw(float background_alpha,bool cursor)
 
 	gui_draw_tick+=(1000/30);
 
+		// RTL drawing
+
+	if (iface.project.ray_trace) {
+		gui_dim3rtl_draw(background_alpha,cursor);
+		return;
+	}
+
 		// clear background
 
 	gl_frame_clear(FALSE);
@@ -173,11 +180,6 @@ void gui_draw(float background_alpha,bool cursor)
 	gui_draw_background(background_alpha);
 
 		// elements
-
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-
-	glDisable(GL_DEPTH_TEST);
 
 	element_draw(TRUE);
 
