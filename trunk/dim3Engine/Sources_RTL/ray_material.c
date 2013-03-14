@@ -22,8 +22,21 @@ int ray_material_get_index(int materialId)
 {
 	int						n;
 
-	for (n=0;n!=ray_global.material_list.count;n++) {
-		if (ray_global.material_list.materials[n]->id==materialId) return(n);
+	for (n=0;n!=ray_max_material;n++) {
+		if (ray_global.material_list.materials[n]!=NULL) {
+			if (ray_global.material_list.materials[n]->id==materialId) return(n);
+		}
+	}
+
+	return(-1);
+}
+
+int ray_material_get_free_index(void)
+{
+	int						n;
+
+	for (n=0;n!=ray_max_material;n++) {
+		if (ray_global.material_list.materials[n]==NULL) return(n);
 	}
 
 	return(-1);
@@ -407,12 +420,13 @@ void ray_get_material_normal(ray_scene_type *scene,ray_point_type *eye_pnt,ray_p
 	   If >=0, then a material ID
 	   RL_ERROR_OUT_OF_MEMORY
 	   RL_ERROR_UNKNOWN_ALPHA_TYPE
+	   RL_ERROR_TOO_MANY_MATERIALS
       
 ======================================================= */
 
 int rtlMaterialAdd(int wid,int high,int alphaType,unsigned long flags)
 {
-	int							n;
+	int							n,idx;
 	ray_material_type			*material;
 	ray_material_mipmap_type	*mipmap;
 
@@ -420,6 +434,11 @@ int rtlMaterialAdd(int wid,int high,int alphaType,unsigned long flags)
 
 	if ((alphaType!=RL_MATERIAL_ALPHA_PASS_THROUGH) && (alphaType!=RL_MATERIAL_ALPHA_REFLECT) && (alphaType!=RL_MATERIAL_ALPHA_REFRACT) && (alphaType!=RL_MATERIAL_ALPHA_ADDITIVE)) return(RL_ERROR_UNKNOWN_ALPHA_TYPE);
 	
+		// find free spot
+
+	idx=ray_material_get_free_index();
+	if (idx==-1) return(RL_ERROR_TOO_MANY_MATERIALS);
+
 		// add material
 
 	material=(ray_material_type*)malloc(sizeof(ray_material_type));
@@ -460,8 +479,7 @@ int rtlMaterialAdd(int wid,int high,int alphaType,unsigned long flags)
 
 		// add to list
 
-	ray_global.material_list.materials[ray_global.material_list.count]=material;
-	ray_global.material_list.count++;
+	ray_global.material_list.materials[idx]=material;
 	
 	return(material->id);
 }
@@ -480,7 +498,7 @@ int rtlMaterialAdd(int wid,int high,int alphaType,unsigned long flags)
 
 int rtlMaterialDelete(int materialId)
 {
-	int							n,k,t,idx,count;
+	int							n,k,t,idx;
 	ray_mesh_type				*mesh;
 	ray_poly_type				*poly;
 	ray_material_type			*material;
@@ -532,13 +550,7 @@ int rtlMaterialDelete(int materialId)
 
 	free(material);
 
-	count=ray_global.material_list.count-2;
-
-	for (n=idx;n<=count;n++) {
-		ray_global.material_list.materials[n]=ray_global.material_list.materials[n+1];
-	}
-
-	ray_global.material_list.count--;
+	ray_global.material_list.materials[idx]=NULL;
 
 	return(RL_ERROR_OK);
 }
@@ -556,11 +568,14 @@ int rtlMaterialDelete(int materialId)
 
 int rtlMaterialDeleteAll(void)
 {
+	int				n;
 	int				err;
 
-	while (ray_global.material_list.count!=0) {
-		err=rtlMaterialDelete(ray_global.material_list.materials[0]->id);
-		if (err!=RL_ERROR_OK) return(err);
+	for (n=0;n!=ray_max_material;n++) {
+		if (ray_global.material_list.materials[n]!=NULL) {
+			err=rtlMaterialDelete(ray_global.material_list.materials[n]->id);
+			if (err!=RL_ERROR_OK) return(err);
+		}
 	}
 	
 	return(RL_ERROR_OK);

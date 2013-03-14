@@ -78,6 +78,7 @@
 #define RL_ERROR_MATERIAL_ATTACHED_TO_OVERLAY				-13
 #define RL_ERROR_THREADING_ERROR							-14
 #define RL_ERROR_POINT_BEHIND_EYE							-15
+#define RL_ERROR_TOO_MANY_MATERIALS							-16
 
 //
 // functions

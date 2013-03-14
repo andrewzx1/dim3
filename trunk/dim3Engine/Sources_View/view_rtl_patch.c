@@ -52,6 +52,8 @@ GLuint							view_rtl_draw_gl_id,
 int								view_rtl_screen_sizes[][2]={{320,200},{400,250},{480,300},{640,400},{720,450},{960,600},{0,0}};
 texture_font_type				view_rtl_fonts[2];
 
+extern bool view_dim3rtl_create_opengl_texture(GLuint *p_gl_id,int wid,int high,char *err_str);
+extern void view_dim3rtl_transfer_to_opengl(int scene_id,int x,int y,int wid,int high,GLuint gl_id,int buff_wid,int buff_high);
 extern int view_dim3rtl_create_material_from_path(char *path,int alpha_type);
 extern void view_dim3rtl_material_text_start(void);
 extern void view_dim3rtl_material_text_stop(void);
@@ -61,51 +63,6 @@ extern void view_dim3rtl_map_model_update(void);
 extern void view_dim3rtl_projectile_model_update(void);
 extern void view_dim3rtl_effect_mesh_update(void);
 extern void view_dim3rtl_overlay_update(void);
-
-/* =======================================================
-
-      dim3RTL OpenGL Buffer
-      
-======================================================= */
-
-bool view_dim3rtl_create_opengl_texture(GLuint *p_gl_id,int wid,int high,char *err_str)
-{
-	int					n,sz;
-	GLuint				gl_id;
-	unsigned char		*data,*dptr;
-
-	glActiveTexture(GL_TEXTURE0);
-	glGenTextures(1,&gl_id);
-	glBindTexture(GL_TEXTURE_2D,gl_id);
-
-	glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-	glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-
-	sz=(wid*4)*high;
-	data=malloc(sz);
-	if (data==NULL) {
-		strcpy(err_str,"Out of memory");
-		return(FALSE);
-	}
-	bzero(data,sz);
-
-	dptr=data;
-	for (n=0;n!=(sz/4);n++) {
-		*dptr++=0xFF;
-		*dptr++=0x0;
-		*dptr++=0x0;
-		*dptr++=0xFF;
-	}
-
-	glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,wid,high,0,GL_RGBA,GL_UNSIGNED_BYTE,data);
-
-	free(data);
-
-	glBindTexture(GL_TEXTURE_2D,0);
-	
-	*p_gl_id=gl_id;
-	return(TRUE);
-}
 
 /* =======================================================
 
@@ -435,37 +392,6 @@ bool view_dim3rtl_screenshot(bool thumbnail,char *path)
 	free(data);
 	
 	return(ok);
-}
-
-/* =======================================================
-
-      dim3RTL Rendering
-      
-======================================================= */
-
-void view_dim3rtl_transfer_to_opengl(int scene_id,int x,int y,int wid,int high,GLuint gl_id,int buff_wid,int buff_high)
-{
-	int				err;
-	unsigned char	*data;
-
-		// draws on 2D screen
-
-	gl_2D_view_screen();
-
-		// get the scene buffer
-		// and push it to a texture
-		// scene memory buffers was set
-		// to RL_SCENE_FORMAT_32_RGBA
-
-	err=rtlSceneGetBuffer(scene_id,(void**)&data);
-	if (err!=RL_ERROR_OK) return;
-
-	gl_texture_bind(0,gl_id);
-	glTexSubImage2D(GL_TEXTURE_2D,0,0,0,buff_wid,buff_high,GL_RGBA,GL_UNSIGNED_BYTE,data);
-
-		// draw the quad
-
-	view_primitive_2D_texture_quad(gl_id,NULL,1.0f,x,(x+wid),y,(y+high),0.0f,1.0f,0.0f,1.0f,TRUE);
 }
 
 /* =======================================================

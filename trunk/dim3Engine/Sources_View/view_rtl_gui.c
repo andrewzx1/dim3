@@ -44,7 +44,8 @@ extern file_path_setup_type	file_path_setup;
 extern int						view_rtl_gui_scene_id;
 extern GLuint					view_rtl_gui_gl_id;
 
-int								gui_rtl_cursor_material_id;
+int								gui_rtl_cursor_overlay_id,
+								gui_rtl_cursor_material_id;
 
 extern int view_dim3rtl_create_material_from_path(char *path,int alpha_type);
 extern void view_dim3rtl_material_text_start(void);
@@ -59,16 +60,33 @@ extern void view_dim3rtl_transfer_to_opengl(int scene_id,int x,int y,int wid,int
 
 void gui_dim3rtl_initialize(void)
 {
-	char		path[1024];
+	int				sz;
+	char			path[1024];
+	rtl2DPoint		p_pnt,s_pnt;
 	
 		// load the cursor
 
 	file_paths_data(&file_path_setup,path,"Bitmaps/UI_Elements","cursor","png");
 	gui_rtl_cursor_material_id=view_dim3rtl_create_material_from_path(path,RL_MATERIAL_ALPHA_PASS_THROUGH);
+
+	sz=(int)(((float)iface.scale_x)*cursor_size_factor);
+	
+	p_pnt.x=0;
+	p_pnt.y=0;
+	s_pnt.x=sz;
+	s_pnt.y=sz;
+
+	gui_rtl_cursor_overlay_id=rtlSceneOverlayAdd(view_rtl_gui_scene_id,gui_rtl_cursor_material_id,0);
+	rtlSceneOverlaySetPosition(view_rtl_gui_scene_id,gui_rtl_cursor_overlay_id,&p_pnt);
+	rtlSceneOverlaySetSize(view_rtl_gui_scene_id,gui_rtl_cursor_overlay_id,&s_pnt);
+	rtlSceneOverlaySetQuadCount(view_rtl_gui_scene_id,gui_rtl_cursor_overlay_id,1);
+	rtlSceneOverlaySetQuadPosition(view_rtl_gui_scene_id,gui_rtl_cursor_overlay_id,0,&p_pnt);
+	rtlSceneOverlaySetQuadSize(view_rtl_gui_scene_id,gui_rtl_cursor_overlay_id,0,&s_pnt);
 }
 
 void gui_dim3rtl_shutdown(void)
 {
+	rtlSceneOverlayDelete(view_rtl_gui_scene_id,gui_rtl_cursor_overlay_id);
 	rtlMaterialDelete(gui_rtl_cursor_material_id);
 	// supergumba -- this causes problems with texture indexes, maybe not move lists to preserve lookup indexes?
 }
@@ -78,17 +96,13 @@ void gui_dim3rtl_shutdown(void)
 
 void gui_dim3rtl_draw(float background_alpha,bool cursor)
 {
-	int					x,y,sz,cursor_id;
-	rtl2DPoint			p_pnt,s_pnt;
+	int					x,y,sz;
+	rtl2DPoint			p_pnt;
 	rtlColor			col;
 
 	col.r=col.g=col.b=0.0f;
 	col.a=1.0f;
 	rtlSceneClearBuffer(view_rtl_gui_scene_id,&col);
-
-		// clear old overlays
-
-	rtlSceneOverlayDeleteAll(view_rtl_gui_scene_id);
 
 		// cursor
 
@@ -98,27 +112,13 @@ void gui_dim3rtl_draw(float background_alpha,bool cursor)
 	
 	p_pnt.x=x;
 	p_pnt.y=y;
-	s_pnt.x=sz;
-	s_pnt.y=sz;
-
-	cursor_id=rtlSceneOverlayAdd(view_rtl_gui_scene_id,gui_rtl_cursor_material_id,0);
-	rtlSceneOverlaySetPosition(view_rtl_gui_scene_id,cursor_id,&p_pnt);
-	rtlSceneOverlaySetSize(view_rtl_gui_scene_id,cursor_id,&s_pnt);
-
-	p_pnt.x=0;
-	p_pnt.y=0;
-
-	rtlSceneOverlaySetQuadCount(view_rtl_gui_scene_id,cursor_id,1);
-	rtlSceneOverlaySetQuadPosition(view_rtl_gui_scene_id,cursor_id,0,&p_pnt);
-	rtlSceneOverlaySetQuadSize(view_rtl_gui_scene_id,cursor_id,0,&s_pnt);
+	rtlSceneOverlaySetPosition(view_rtl_gui_scene_id,gui_rtl_cursor_overlay_id,&p_pnt);
 	
 	gl_frame_clear(FALSE);
 	
 	rtlSceneRender(view_rtl_gui_scene_id);
 	rtlSceneRenderFinish(view_rtl_gui_scene_id);
 	view_dim3rtl_transfer_to_opengl(view_rtl_gui_scene_id,0,0,setup.screen_wid,setup.screen_high,view_rtl_gui_gl_id,setup.screen_wid,setup.screen_high);
-	
-	gl_frame_swap();
 
 }
 

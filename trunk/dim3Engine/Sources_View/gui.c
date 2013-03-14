@@ -74,7 +74,7 @@ void gui_initialize(char *background_path,char *bitmap_name)
 
 		// clear rtl gui
 
-	//if (iface.project.ray_trace) gui_dim3rtl_initialize();
+	if (iface.project.ray_trace) gui_dim3rtl_initialize();
 
 		// gui pieces
 
@@ -108,7 +108,7 @@ void gui_shutdown(void)
 	element_shutdown();
 	cursor_shutdown();
 	
-	//if (iface.project.ray_trace) gui_dim3rtl_shutdown();
+	if (iface.project.ray_trace) gui_dim3rtl_shutdown();
 
 		// clear all movement from gui	
 			
@@ -165,21 +165,17 @@ void gui_draw(float background_alpha,bool cursor)
 
 	gui_draw_tick+=(1000/30);
 
-		// RTL drawing
-
-	if (iface.project.ray_trace) {
-	//	gui_dim3rtl_draw(background_alpha,cursor);
-	//	return;
-	}
-
-		// clear background
-
-	gl_frame_clear(FALSE);
-	gl_shader_frame_start();
-
 		// background
 
-	gui_draw_background(background_alpha);
+	if (!iface.project.ray_trace) {
+		gl_frame_clear(FALSE);
+		gl_shader_frame_start();
+		
+		gui_draw_background(background_alpha);
+	}
+	else {
+		gui_dim3rtl_draw(background_alpha,cursor);
+	}
 
 		// elements
 
