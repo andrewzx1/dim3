@@ -169,6 +169,15 @@ int rtlSceneAdd(ray_2d_point_type *size,int target,int format,void *attachment,u
 	scene->overlay_list.count=0;
 	scene->overlay_list.next_id=1;
 	
+		// default eye position
+		
+	scene->eye.pnt.x=0.0f;
+	scene->eye.pnt.y=0.0f;
+	scene->eye.pnt.z=0.0f;
+	rtlMatrixIdentity(&scene->eye.matrix);
+	scene->eye.plane_dist=0.0f;
+	scene->eye.max_dist=0.0f;
+	
 		// create the scene lock mutex
 
 	if (!ray_scene_create_mutexes(scene)) {

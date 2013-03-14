@@ -41,7 +41,7 @@ extern setup_type			setup;
 extern network_setup_type	net_setup;
 extern file_path_setup_type	file_path_setup;
 
-extern int					view_rtl_scene_id;
+extern int					view_rtl_draw_scene_id;
 
 extern texture_font_type	view_rtl_fonts[2];
 
