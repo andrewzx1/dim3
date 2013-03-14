@@ -490,8 +490,7 @@ bool view_game_start(char *err_str)
 		view_images_cached_load();
 	}
 	else {
-		if (!view_dim3rtl_scene_start(err_str)) return(FALSE);
-		view_dim3rtl_image_cache();
+		view_dim3rtl_image_cache_load();
 	}
 
 		// precalculate particles
@@ -522,7 +521,7 @@ void view_game_stop(void)
 		view_images_cached_free();
 	}
 	else {
-		view_dim3rtl_scene_stop();
+		view_dim3rtl_image_cache_free();
 	}
 }
 

@@ -41,11 +41,13 @@ extern setup_type			setup;
 extern network_setup_type	net_setup;
 extern file_path_setup_type	file_path_setup;
 
-int								view_rtl_scene_id,
-								view_rtl_lx,view_rtl_rx,
-								view_rtl_ty,view_rtl_by;
+int								view_rtl_draw_scene_id,
+								view_rtl_gui_scene_id,
+								view_rtl_x,view_rtl_y,
+								view_rtl_wid,view_rtl_high;
 bool							view_rtl_has_render;
-GLuint							view_rtl_gl_id;
+GLuint							view_rtl_draw_gl_id,
+								view_rtl_gui_gl_id;
 
 int								view_rtl_screen_sizes[][2]={{320,200},{400,250},{480,300},{640,400},{720,450},{960,600},{0,0}};
 texture_font_type				view_rtl_fonts[2];
@@ -62,70 +64,27 @@ extern void view_dim3rtl_overlay_update(void);
 
 /* =======================================================
 
-      View dim3RTL Init/Shutdown
+      dim3RTL OpenGL Buffer
       
 ======================================================= */
 
-bool view_dim3rtl_initialize(char *err_str)
+bool view_dim3rtl_create_opengl_texture(GLuint *p_gl_id,int wid,int high,char *err_str)
 {
-	if (rtlInitialize()!=RL_ERROR_OK) {
-		strcpy(err_str,"Unable to initialize dim3RTL");
-		return(FALSE);
-	}
-	
-	view_rtl_has_render=FALSE;
-
-	return(TRUE);
-}
-
-void view_dim3rtl_shutdown(void)
-{
-	rtlShutdown();
-}
-
-/* =======================================================
-
-      View dim3RTL Scene
-      
-======================================================= */
-
-bool view_dim3rtl_scene_start(char *err_str)
-{
-	int					n,sz,wid,high;
+	int					n,sz;
+	GLuint				gl_id;
 	unsigned char		*data,*dptr;
-	rtl2DPoint			s_pnt;
-
-		// make the scene
-
-	s_pnt.x=setup.screen_rtl_wid;
-	s_pnt.y=setup.screen_rtl_high;
-
-	view_rtl_scene_id=rtlSceneAdd(&s_pnt,RL_SCENE_TARGET_MEMORY,RL_SCENE_FORMAT_32_RGBA,NULL,0);
-	if (view_rtl_scene_id<0) {
-		strcpy(err_str,"Unable to create dim3RTL scene");
-		rtlShutdown();
-		return(FALSE);
-	}
-
-		// text materials
-
-	view_dim3rtl_material_text_start();
-
-		// we need a texture to transfer
-		// the scene to opengl raster
 
 	glActiveTexture(GL_TEXTURE0);
-	glGenTextures(1,&view_rtl_gl_id);
-	glBindTexture(GL_TEXTURE_2D,view_rtl_gl_id);
+	glGenTextures(1,&gl_id);
+	glBindTexture(GL_TEXTURE_2D,gl_id);
 
 	glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
 	glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
 
-	sz=(setup.screen_rtl_wid*4)*setup.screen_rtl_high;
+	sz=(wid*4)*high;
 	data=malloc(sz);
 	if (data==NULL) {
 		strcpy(err_str,"Out of memory");
-		rtlShutdown();
 		return(FALSE);
 	}
 	bzero(data,sz);
@@ -138,40 +97,107 @@ bool view_dim3rtl_scene_start(char *err_str)
 		*dptr++=0xFF;
 	}
 
-	glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,setup.screen_rtl_wid,setup.screen_rtl_high,0,GL_RGBA,GL_UNSIGNED_BYTE,data);
+	glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,wid,high,0,GL_RGBA,GL_UNSIGNED_BYTE,data);
 
 	free(data);
 
 	glBindTexture(GL_TEXTURE_2D,0);
+	
+	*p_gl_id=gl_id;
+	return(TRUE);
+}
 
-		// get drawing size
+/* =======================================================
+
+      View dim3RTL Init/Shutdown
+      
+======================================================= */
+
+bool view_dim3rtl_initialize(char *err_str)
+{
+	rtl2DPoint			s_pnt;
+
+	if (rtlInitialize()!=RL_ERROR_OK) {
+		strcpy(err_str,"Unable to initialize dim3RTL");
+		return(FALSE);
+	}
+	
+		// initialy no view rendering yet
+		
+	view_rtl_has_render=FALSE;
+
+		// we have two scenes, one for
+		// gui drawing and one for view drawing
+
+	s_pnt.x=setup.screen_rtl_wid;
+	s_pnt.y=setup.screen_rtl_high;
+
+	view_rtl_draw_scene_id=rtlSceneAdd(&s_pnt,RL_SCENE_TARGET_MEMORY,RL_SCENE_FORMAT_32_RGBA,NULL,0);
+	if (view_rtl_draw_scene_id<0) {
+		strcpy(err_str,"Unable to create dim3RTL scene");
+		rtlShutdown();
+		return(FALSE);
+	}
+	
+	s_pnt.x=setup.screen_wid;
+	s_pnt.y=setup.screen_high;
+
+	view_rtl_gui_scene_id=rtlSceneAdd(&s_pnt,RL_SCENE_TARGET_MEMORY,RL_SCENE_FORMAT_32_RGBA,NULL,0);
+	if (view_rtl_gui_scene_id<0) {
+		strcpy(err_str,"Unable to create dim3RTL scene");
+		rtlShutdown();
+		return(FALSE);
+	}
+
+		// text materials
+
+	view_dim3rtl_material_text_start();
+
+		// we need a texture to transfer
+		// the scene to opengl rastering
+		
+	if (!view_dim3rtl_create_opengl_texture(&view_rtl_draw_gl_id,setup.screen_rtl_wid,setup.screen_rtl_high,err_str)) {
+		rtlShutdown();
+		return(FALSE);
+	}
+	
+	if (!view_dim3rtl_create_opengl_texture(&view_rtl_gui_gl_id,setup.screen_wid,setup.screen_high,err_str)) {
+		rtlShutdown();
+		return(FALSE);
+	}
+
+		// get the view drawing offsets
+		// and size
 
 	if (setup.screen_rtl_full_window) {
-		view_rtl_lx=0;
-		view_rtl_rx=view.screen.x_sz;
-		view_rtl_ty=0;
-		view_rtl_by=view.screen.y_sz;
+		view_rtl_x=0;
+		view_rtl_y=0;
+		view_rtl_wid=setup.screen_wid;
+		view_rtl_high=setup.screen_high;
 	}
 	else {
-		wid=setup.screen_rtl_wid;
-		view_rtl_lx=(view.screen.x_sz-wid)>>1;
-		view_rtl_rx=view_rtl_lx+wid;
-
-		high=setup.screen_rtl_high;
-		view_rtl_ty=(view.screen.y_sz-high)>>1;
-		view_rtl_by=view_rtl_ty+high;
+		view_rtl_x=(setup.screen_wid-setup.screen_rtl_wid)>>1;
+		view_rtl_y=(setup.screen_high-setup.screen_rtl_high)>>1;
+		view_rtl_wid=setup.screen_rtl_wid;
+		view_rtl_high=setup.screen_rtl_high;
 	}
 
 	return(TRUE);
 }
 
-void view_dim3rtl_scene_stop(void)
+void view_dim3rtl_shutdown(void)
 {
-	glDeleteTextures(1,&view_rtl_gl_id);
+	glDeleteTextures(1,&view_rtl_draw_gl_id);
+	glDeleteTextures(1,&view_rtl_gui_gl_id);
+	
+	rtlSceneDelete(view_rtl_draw_scene_id);
+	rtlSceneDelete(view_rtl_gui_scene_id);
 
 	view_dim3rtl_material_text_stop();
-	rtlSceneDelete(view_rtl_scene_id);
+
+	rtlShutdown();
 }
+
 
 /* =======================================================
 
@@ -179,7 +205,7 @@ void view_dim3rtl_scene_stop(void)
       
 ======================================================= */
 
-void view_dim3rtl_image_cache(void)
+void view_dim3rtl_image_cache_load(void)
 {
 	int							n;
 	char						path[1024];
@@ -262,6 +288,81 @@ void view_dim3rtl_image_cache(void)
 	}
 }
 
+void view_dim3rtl_image_cache_free(void)
+{
+	int							n;
+	iface_bitmap_type			*iface_bitmap;
+	iface_particle_type			*particle;
+	iface_ring_type				*ring;
+ 	iface_mark_type				*mark;
+	iface_halo_type				*halo;
+	iface_label_type			*label;
+	iface_crosshair_type		*crosshair;
+
+		// hud bitmaps
+
+	iface_bitmap=iface.bitmap_list.bitmaps;
+	
+	for (n=0;n!=iface.bitmap_list.nbitmap;n++) {
+		rtlMaterialDelete(iface_bitmap->rtl_material_id);
+		iface_bitmap++;
+	}
+
+		// particles
+
+	particle=iface.particle_list.particles;
+
+	for (n=0;n!=iface.particle_list.nparticle;n++) {
+		rtlMaterialDelete(particle->rtl_material_id);
+		particle++;
+	}
+	
+		// rings
+
+	ring=iface.ring_list.rings;
+
+	for (n=0;n!=iface.ring_list.nring;n++) {
+		rtlMaterialDelete(ring->rtl_material_id);
+		ring++;
+	}
+
+		// marks
+		
+	mark=iface.mark_list.marks;
+
+	for (n=0;n!=iface.mark_list.nmark;n++) {
+		rtlMaterialDelete(mark->rtl_material_id);
+		mark++;
+	}
+
+		// halos
+
+	halo=iface.halo_list.halos;
+
+	for (n=0;n!=iface.halo_list.nhalo;n++) {
+		rtlMaterialDelete(halo->rtl_material_id);
+		halo++;
+	}
+
+		// labels
+
+	label=iface.label_list.labels;
+
+	for (n=0;n!=iface.label_list.nlabel;n++) {
+		rtlMaterialDelete(label->rtl_material_id);
+		label++;
+	}
+
+		// crosshairs
+
+	crosshair=iface.crosshair_list.crosshairs;
+
+	for (n=0;n!=iface.crosshair_list.ncrosshair;n++) {
+		rtlMaterialDelete(crosshair->rtl_material_id);
+		crosshair++;
+	}
+}
+
 /* =======================================================
 
       dim3RTL Screenshot
@@ -278,7 +379,7 @@ bool view_dim3rtl_screenshot(bool thumbnail,char *path)
 
 		// get the scene buffer
 
-	err=rtlSceneGetBuffer(view_rtl_scene_id,(void**)&pixel_buffer);
+	err=rtlSceneGetBuffer(view_rtl_draw_scene_id,(void**)&pixel_buffer);
 	if (err!=RL_ERROR_OK) return(FALSE);
 	
 		// is this is a thumbnail,
@@ -342,7 +443,7 @@ bool view_dim3rtl_screenshot(bool thumbnail,char *path)
       
 ======================================================= */
 
-void view_dim3rtl_transfer_to_opengl(void)
+void view_dim3rtl_transfer_to_opengl(int scene_id,int x,int y,int wid,int high,GLuint gl_id,int buff_wid,int buff_high)
 {
 	int				err;
 	unsigned char	*data;
@@ -356,16 +457,22 @@ void view_dim3rtl_transfer_to_opengl(void)
 		// scene memory buffers was set
 		// to RL_SCENE_FORMAT_32_RGBA
 
-	err=rtlSceneGetBuffer(view_rtl_scene_id,(void**)&data);
+	err=rtlSceneGetBuffer(scene_id,(void**)&data);
 	if (err!=RL_ERROR_OK) return;
 
-	gl_texture_bind(0,view_rtl_gl_id);
-	glTexSubImage2D(GL_TEXTURE_2D,0,0,0,setup.screen_rtl_wid,setup.screen_rtl_high,GL_RGBA,GL_UNSIGNED_BYTE,data);
+	gl_texture_bind(0,gl_id);
+	glTexSubImage2D(GL_TEXTURE_2D,0,0,0,buff_wid,buff_high,GL_RGBA,GL_UNSIGNED_BYTE,data);
 
 		// draw the quad
 
-	view_primitive_2D_texture_quad(view_rtl_gl_id,NULL,1.0f,view_rtl_lx,view_rtl_rx,view_rtl_ty,view_rtl_by,0.0f,1.0f,0.0f,1.0f,TRUE);
+	view_primitive_2D_texture_quad(gl_id,NULL,1.0f,x,(x+wid),y,(y+high),0.0f,1.0f,0.0f,1.0f,TRUE);
 }
+
+/* =======================================================
+
+      dim3RTL Rendering
+      
+======================================================= */
 
 void view_dim3rtl_render_scene(void)
 {
@@ -399,7 +506,7 @@ void view_dim3rtl_render_scene(void)
 
 		// set the eye position
 
-	rtlSceneEyePositionSet(view_rtl_scene_id,&pnt,60.0f,&mat,300000.0f);
+	rtlSceneEyePositionSet(view_rtl_draw_scene_id,&pnt,60.0f,&mat,300000.0f);
 
 		// update the scene
 		
@@ -412,7 +519,7 @@ void view_dim3rtl_render_scene(void)
 
 		// render
 
-	if (rtlSceneRender(view_rtl_scene_id)!=RL_ERROR_OK) return;
+	if (rtlSceneRender(view_rtl_draw_scene_id)!=RL_ERROR_OK) return;
 }
 
 void view_dim3rtl_render(void)
@@ -422,8 +529,8 @@ void view_dim3rtl_render(void)
 		// before transfering to screen
 		
 	if (view_rtl_has_render) {
-		rtlSceneRenderFinish(view_rtl_scene_id);
-		view_dim3rtl_transfer_to_opengl();
+		rtlSceneRenderFinish(view_rtl_draw_scene_id);
+		view_dim3rtl_transfer_to_opengl(view_rtl_draw_scene_id,view_rtl_x,view_rtl_y,view_rtl_wid,view_rtl_high,view_rtl_draw_gl_id,setup.screen_rtl_wid,setup.screen_rtl_high);
 		view_rtl_has_render=FALSE;
 	}
 	
@@ -435,6 +542,6 @@ void view_dim3rtl_render(void)
 		view_rtl_has_render=TRUE;
 	}
 	else {
-		view_dim3rtl_transfer_to_opengl();
+		view_dim3rtl_transfer_to_opengl(view_rtl_draw_scene_id,view_rtl_x,view_rtl_y,view_rtl_wid,view_rtl_high,view_rtl_draw_gl_id,setup.screen_rtl_wid,setup.screen_rtl_high);
 	}	
 }

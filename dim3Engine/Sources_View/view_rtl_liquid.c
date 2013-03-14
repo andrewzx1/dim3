@@ -41,7 +41,7 @@ extern setup_type			setup;
 extern network_setup_type	net_setup;
 extern file_path_setup_type	file_path_setup;
 
-extern int					view_rtl_scene_id;
+extern int					view_rtl_draw_scene_id;
 extern float				liquid_normal_cycle_xz[4],
 							liquid_normal_cycle_y[4];
 
@@ -72,10 +72,10 @@ void view_dim3rtl_map_liquid_create_draw_data(map_liquid_type *liq)
 
 		// map pointers
 		
-	rtlSceneMeshMapVertexPointer(view_rtl_scene_id,liq->rtl_mesh_id,(void**)&vp);
-	rtlSceneMeshMapUVPointer(view_rtl_scene_id,liq->rtl_mesh_id,(void**)&vu);
-	rtlSceneMeshMapNormalPointer(view_rtl_scene_id,liq->rtl_mesh_id,(void**)&vn);
-	rtlSceneMeshMapTangentPointer(view_rtl_scene_id,liq->rtl_mesh_id,(void**)&vt);
+	rtlSceneMeshMapVertexPointer(view_rtl_draw_scene_id,liq->rtl_mesh_id,(void**)&vp);
+	rtlSceneMeshMapUVPointer(view_rtl_draw_scene_id,liq->rtl_mesh_id,(void**)&vu);
+	rtlSceneMeshMapNormalPointer(view_rtl_draw_scene_id,liq->rtl_mesh_id,(void**)&vn);
+	rtlSceneMeshMapTangentPointer(view_rtl_draw_scene_id,liq->rtl_mesh_id,(void**)&vt);
 
 		// get current UVs
 		
@@ -231,10 +231,10 @@ void view_dim3rtl_map_liquid_create_draw_data(map_liquid_type *liq)
 
 			// unmap the pointers
 
-	rtlSceneMeshUnMapVertexPointer(view_rtl_scene_id,liq->rtl_mesh_id);
-	rtlSceneMeshUnMapUVPointer(view_rtl_scene_id,liq->rtl_mesh_id);
-	rtlSceneMeshUnMapNormalPointer(view_rtl_scene_id,liq->rtl_mesh_id);
-	rtlSceneMeshUnMapTangentPointer(view_rtl_scene_id,liq->rtl_mesh_id);
+	rtlSceneMeshUnMapVertexPointer(view_rtl_draw_scene_id,liq->rtl_mesh_id);
+	rtlSceneMeshUnMapUVPointer(view_rtl_draw_scene_id,liq->rtl_mesh_id);
+	rtlSceneMeshUnMapNormalPointer(view_rtl_draw_scene_id,liq->rtl_mesh_id);
+	rtlSceneMeshUnMapTangentPointer(view_rtl_draw_scene_id,liq->rtl_mesh_id);
 }
 
 /* =======================================================
@@ -258,7 +258,7 @@ void view_dim3rtl_map_liquid_mesh_start(void)
 
 			// add the mesh
 
-		mesh_id=rtlSceneMeshAdd(view_rtl_scene_id,0);
+		mesh_id=rtlSceneMeshAdd(view_rtl_draw_scene_id,0);
 		if (mesh_id<0) return;
 
 		liq->rtl_mesh_id=mesh_id;
@@ -268,10 +268,10 @@ void view_dim3rtl_map_liquid_mesh_start(void)
 		div_count=liquid_wave_get_divisions(liq);
 		nvertex=(div_count+1)*2;
 		
-		rtlSceneMeshSetVertex(view_rtl_scene_id,mesh_id,RL_MESH_FORMAT_VERTEX_3_FLOAT,nvertex,NULL);
-		rtlSceneMeshSetUV(view_rtl_scene_id,mesh_id,RL_MESH_FORMAT_UV_2_FLOAT,nvertex,NULL);
-		rtlSceneMeshSetNormal(view_rtl_scene_id,mesh_id,RL_MESH_FORMAT_NORMAL_3_FLOAT,nvertex,NULL);
-		rtlSceneMeshSetTangent(view_rtl_scene_id,mesh_id,RL_MESH_FORMAT_TANGENT_3_FLOAT,nvertex,NULL);
+		rtlSceneMeshSetVertex(view_rtl_draw_scene_id,mesh_id,RL_MESH_FORMAT_VERTEX_3_FLOAT,nvertex,NULL);
+		rtlSceneMeshSetUV(view_rtl_draw_scene_id,mesh_id,RL_MESH_FORMAT_UV_2_FLOAT,nvertex,NULL);
+		rtlSceneMeshSetNormal(view_rtl_draw_scene_id,mesh_id,RL_MESH_FORMAT_NORMAL_3_FLOAT,nvertex,NULL);
+		rtlSceneMeshSetTangent(view_rtl_draw_scene_id,mesh_id,RL_MESH_FORMAT_TANGENT_3_FLOAT,nvertex,NULL);
 
 			// add in the data
 
@@ -314,7 +314,7 @@ void view_dim3rtl_map_liquid_mesh_start(void)
 			v_idx+=2;
 		}
 
-		rtlSceneMeshSetPoly(view_rtl_scene_id,mesh_id,RL_MESH_FORMAT_POLY_SHORT_VERTEX_UV_NORMAL_TANGENT,div_count,ray_polys);
+		rtlSceneMeshSetPoly(view_rtl_draw_scene_id,mesh_id,RL_MESH_FORMAT_POLY_SHORT_VERTEX_UV_NORMAL_TANGENT,div_count,ray_polys);
 		free(ray_polys);
 
 		progress_update();
@@ -330,7 +330,7 @@ void view_dim3rtl_map_liquid_mesh_stop(void)
 
 	for (n=0;n!=map.liquid.nliquid;n++) {
 		liq=&map.liquid.liquids[n];
-		rtlSceneMeshDelete(view_rtl_scene_id,liq->rtl_mesh_id);
+		rtlSceneMeshDelete(view_rtl_draw_scene_id,liq->rtl_mesh_id);
 
 		progress_update();
 	}

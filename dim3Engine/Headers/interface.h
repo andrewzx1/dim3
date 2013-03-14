@@ -1044,9 +1044,8 @@ extern void ring_draw_position(effect_type *effect,int count,d3pnt *pnt);
 
 extern bool view_dim3rtl_initialize(char *err_str);
 extern void view_dim3rtl_shutdown(void);
-extern bool view_dim3rtl_scene_start(char *err_str);
-extern void view_dim3rtl_scene_stop(void);
-extern void view_dim3rtl_image_cache(void);
+extern void view_dim3rtl_image_cache_load(void);
+extern void view_dim3rtl_image_cache_free(void);
 extern void view_dim3rtl_map_mesh_start(void);
 extern void view_dim3rtl_map_mesh_stop(void);
 extern void view_dim3rtl_map_liquid_mesh_start(void);
@@ -1062,7 +1061,8 @@ extern void view_dim3rtl_effect_mesh_close(effect_type *effect);
 extern bool view_dim3rtl_screenshot(bool thumbnail,char *path);
 extern void view_dim3rtl_render(void);
 
-extern void gui_dim3rtl_clear(void);
+extern void gui_dim3rtl_initialize(void);
+extern void gui_dim3rtl_shutdown(void);
 extern void gui_dim3rtl_draw(float background_alpha,bool cursor);
 
 //

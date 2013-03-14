@@ -479,6 +479,7 @@
 		268936BF155CCB5200147273 /* map_collide_setup.c in Sources */ = {isa = PBXBuildFile; fileRef = 268936BC155CCB5200147273 /* map_collide_setup.c */; };
 		268936C0155CCB5200147273 /* map_collide_xz.c in Sources */ = {isa = PBXBuildFile; fileRef = 268936BD155CCB5200147273 /* map_collide_xz.c */; };
 		268936C1155CCB5200147273 /* map_collide_y.c in Sources */ = {isa = PBXBuildFile; fileRef = 268936BE155CCB5200147273 /* map_collide_y.c */; };
+		268AFA2916F171FD0043DC2F /* view_rtl_gui.c in Sources */ = {isa = PBXBuildFile; fileRef = 268AFA2816F171FD0043DC2F /* view_rtl_gui.c */; };
 		269BAD4815C0DDFE007EE1E9 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 269BAD4715C0DDFE007EE1E9 /* CoreAudio.framework */; };
 		269BAD4A15C0DE10007EE1E9 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 269BAD4915C0DE10007EE1E9 /* AudioToolbox.framework */; };
 		269BAD4C15C0DE1B007EE1E9 /* ForceFeedback.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 269BAD4B15C0DE1B007EE1E9 /* ForceFeedback.framework */; };
@@ -1003,6 +1004,7 @@
 		268936BC155CCB5200147273 /* map_collide_setup.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = map_collide_setup.c; sourceTree = "<group>"; };
 		268936BD155CCB5200147273 /* map_collide_xz.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = map_collide_xz.c; sourceTree = "<group>"; };
 		268936BE155CCB5200147273 /* map_collide_y.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = map_collide_y.c; sourceTree = "<group>"; };
+		268AFA2816F171FD0043DC2F /* view_rtl_gui.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = view_rtl_gui.c; sourceTree = "<group>"; };
 		269BAD4715C0DDFE007EE1E9 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = ../../../../System/Library/Frameworks/CoreAudio.framework; sourceTree = "<group>"; };
 		269BAD4915C0DE10007EE1E9 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = ../../../../System/Library/Frameworks/AudioToolbox.framework; sourceTree = "<group>"; };
 		269BAD4B15C0DE1B007EE1E9 /* ForceFeedback.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ForceFeedback.framework; path = ../../../../System/Library/Frameworks/ForceFeedback.framework; sourceTree = "<group>"; };
@@ -1675,6 +1677,7 @@
 				2618B77416A7B25B004BB291 /* view_rtl_material.c */,
 				2618B77516A7B25B004BB291 /* view_rtl_model.c */,
 				2618B77616A7B25B004BB291 /* view_rtl_overlay.c */,
+				268AFA2816F171FD0043DC2F /* view_rtl_gui.c */,
 				2618B77716A7B25B004BB291 /* view_rtl_patch.c */,
 			);
 			name = ViewRTL;
@@ -2487,6 +2490,7 @@
 				26149B8416A8BA86007DB713 /* ray_scene.c in Sources */,
 				26149B8516A8BA86007DB713 /* ray_thread.c in Sources */,
 				26159D2216D191210069B442 /* base_iface_label.c in Sources */,
+				268AFA2916F171FD0043DC2F /* view_rtl_gui.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

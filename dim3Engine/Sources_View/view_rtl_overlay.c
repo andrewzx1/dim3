@@ -42,7 +42,7 @@ extern setup_type			setup;
 extern network_setup_type	net_setup;
 extern file_path_setup_type	file_path_setup;
 
-extern int						view_rtl_scene_id;
+extern int						view_rtl_draw_scene_id;
 
 extern texture_font_type		view_rtl_fonts[2];
 
@@ -79,17 +79,17 @@ void view_dim3rtl_overlay_start(void)
 		s_pnt.x=(bitmap->size.x*setup.screen_rtl_wid)/iface.scale_x;
 		s_pnt.y=(bitmap->size.y*setup.screen_rtl_high)/iface.scale_y;
 
-		bitmap->rtl_overlay_id=rtlSceneOverlayAdd(view_rtl_scene_id,bitmap->rtl_material_id,0);
-		rtlSceneOverlaySetPosition(view_rtl_scene_id,bitmap->rtl_overlay_id,&p_pnt);
-		rtlSceneOverlaySetSize(view_rtl_scene_id,bitmap->rtl_overlay_id,&s_pnt);
-		rtlSceneOverlaySetHidden(view_rtl_scene_id,bitmap->rtl_overlay_id,(!bitmap->show));
+		bitmap->rtl_overlay_id=rtlSceneOverlayAdd(view_rtl_draw_scene_id,bitmap->rtl_material_id,0);
+		rtlSceneOverlaySetPosition(view_rtl_draw_scene_id,bitmap->rtl_overlay_id,&p_pnt);
+		rtlSceneOverlaySetSize(view_rtl_draw_scene_id,bitmap->rtl_overlay_id,&s_pnt);
+		rtlSceneOverlaySetHidden(view_rtl_draw_scene_id,bitmap->rtl_overlay_id,(!bitmap->show));
 
 		p_pnt.x=0;
 		p_pnt.y=0;
 
-		rtlSceneOverlaySetQuadCount(view_rtl_scene_id,bitmap->rtl_overlay_id,1);
-		rtlSceneOverlaySetQuadPosition(view_rtl_scene_id,bitmap->rtl_overlay_id,0,&p_pnt);
-		rtlSceneOverlaySetQuadSize(view_rtl_scene_id,bitmap->rtl_overlay_id,0,&s_pnt);
+		rtlSceneOverlaySetQuadCount(view_rtl_draw_scene_id,bitmap->rtl_overlay_id,1);
+		rtlSceneOverlaySetQuadPosition(view_rtl_draw_scene_id,bitmap->rtl_overlay_id,0,&p_pnt);
+		rtlSceneOverlaySetQuadSize(view_rtl_draw_scene_id,bitmap->rtl_overlay_id,0,&s_pnt);
 		bitmap++;
 
 		progress_update();
@@ -110,10 +110,10 @@ void view_dim3rtl_overlay_start(void)
 	for (n=0;n!=iface.text_list.ntext;n++) {
 		font_size=view_dim3rtl_material_text_get_font(font_hud_index,text->size);
 
-		text->rtl_overlay_id=rtlSceneOverlayAdd(view_rtl_scene_id,font_size->rtl_material_id,0);
-		rtlSceneOverlaySetPosition(view_rtl_scene_id,text->rtl_overlay_id,&p_pnt);
-		rtlSceneOverlaySetSize(view_rtl_scene_id,text->rtl_overlay_id,&s_pnt);
-		rtlSceneOverlaySetHidden(view_rtl_scene_id,text->rtl_overlay_id,TRUE);
+		text->rtl_overlay_id=rtlSceneOverlayAdd(view_rtl_draw_scene_id,font_size->rtl_material_id,0);
+		rtlSceneOverlaySetPosition(view_rtl_draw_scene_id,text->rtl_overlay_id,&p_pnt);
+		rtlSceneOverlaySetSize(view_rtl_draw_scene_id,text->rtl_overlay_id,&s_pnt);
+		rtlSceneOverlaySetHidden(view_rtl_draw_scene_id,text->rtl_overlay_id,TRUE);
 		text++;
 
 		progress_update();
@@ -126,15 +126,15 @@ void view_dim3rtl_overlay_start(void)
 	p_pnt.x=p_pnt.y=0;
 	s_pnt.x=s_pnt.y=10;
 
-	view_rtl_overlay_crosshair_id=rtlSceneOverlayAdd(view_rtl_scene_id,crosshair->rtl_material_id,0);
-	rtlSceneOverlaySetPosition(view_rtl_scene_id,view_rtl_overlay_crosshair_id,&p_pnt);
-	rtlSceneOverlaySetSize(view_rtl_scene_id,view_rtl_overlay_crosshair_id,&s_pnt);
+	view_rtl_overlay_crosshair_id=rtlSceneOverlayAdd(view_rtl_draw_scene_id,crosshair->rtl_material_id,0);
+	rtlSceneOverlaySetPosition(view_rtl_draw_scene_id,view_rtl_overlay_crosshair_id,&p_pnt);
+	rtlSceneOverlaySetSize(view_rtl_draw_scene_id,view_rtl_overlay_crosshair_id,&s_pnt);
 
-	rtlSceneOverlaySetQuadCount(view_rtl_scene_id,view_rtl_overlay_crosshair_id,1);
-	rtlSceneOverlaySetQuadPosition(view_rtl_scene_id,view_rtl_overlay_crosshair_id,0,&p_pnt);
-	rtlSceneOverlaySetQuadSize(view_rtl_scene_id,view_rtl_overlay_crosshair_id,0,&s_pnt);
+	rtlSceneOverlaySetQuadCount(view_rtl_draw_scene_id,view_rtl_overlay_crosshair_id,1);
+	rtlSceneOverlaySetQuadPosition(view_rtl_draw_scene_id,view_rtl_overlay_crosshair_id,0,&p_pnt);
+	rtlSceneOverlaySetQuadSize(view_rtl_draw_scene_id,view_rtl_overlay_crosshair_id,0,&s_pnt);
 
-	rtlSceneOverlaySetHidden(view_rtl_scene_id,view_rtl_overlay_crosshair_id,TRUE);
+	rtlSceneOverlaySetHidden(view_rtl_draw_scene_id,view_rtl_overlay_crosshair_id,TRUE);
 
 	progress_update();
 }
@@ -152,7 +152,7 @@ void view_dim3rtl_overlay_stop(void)
 	bitmap=iface.bitmap_list.bitmaps;
 	
 	for (n=0;n!=iface.bitmap_list.nbitmap;n++) {
-		rtlSceneOverlayDelete(view_rtl_scene_id,bitmap->rtl_overlay_id);
+		rtlSceneOverlayDelete(view_rtl_draw_scene_id,bitmap->rtl_overlay_id);
 		bitmap++;
 
 		progress_update();
@@ -163,7 +163,7 @@ void view_dim3rtl_overlay_stop(void)
 	text=iface.text_list.texts;
 	
 	for (n=0;n!=iface.text_list.ntext;n++) {
-		rtlSceneOverlayDelete(view_rtl_scene_id,text->rtl_overlay_id);
+		rtlSceneOverlayDelete(view_rtl_draw_scene_id,text->rtl_overlay_id);
 		text++;
 
 		progress_update();
@@ -171,7 +171,7 @@ void view_dim3rtl_overlay_stop(void)
 
 		// remove crosshair
 
-	rtlSceneOverlayDelete(view_rtl_scene_id,view_rtl_overlay_crosshair_id);
+	rtlSceneOverlayDelete(view_rtl_draw_scene_id,view_rtl_overlay_crosshair_id);
 	progress_update();
 }
 
@@ -212,7 +212,7 @@ void view_dim3rtl_overlay_bitmap_to_overlay(iface_bitmap_type *bitmap)
 	
 		// set quad color
 
-	rtlSceneOverlaySetQuadColor(view_rtl_scene_id,bitmap->rtl_overlay_id,0,&col);
+	rtlSceneOverlaySetQuadColor(view_rtl_draw_scene_id,bitmap->rtl_overlay_id,0,&col);
 }
 
 /* =======================================================
@@ -251,8 +251,8 @@ void view_dim3rtl_overlay_set_to_char(texture_font_size_type *font_size,int over
 		uv_size.y=font_size->gl_yadd;
 	}
 
-	rtlSceneOverlaySetQuadUV(view_rtl_scene_id,overlay_id,index,&uv);
-	rtlSceneOverlaySetQuadUVStamp(view_rtl_scene_id,overlay_id,index,&uv_size);
+	rtlSceneOverlaySetQuadUV(view_rtl_draw_scene_id,overlay_id,index,&uv);
+	rtlSceneOverlaySetQuadUVStamp(view_rtl_draw_scene_id,overlay_id,index,&uv_size);
 }
 
 bool view_dim3rtl_overlay_text_to_overlay(iface_text_type *text)
@@ -280,7 +280,7 @@ bool view_dim3rtl_overlay_text_to_overlay(iface_text_type *text)
 
 		// reset overlay quads
 
-	rtlSceneOverlaySetQuadCount(view_rtl_scene_id,text->rtl_overlay_id,txt_len);
+	rtlSceneOverlaySetQuadCount(view_rtl_draw_scene_id,text->rtl_overlay_id,txt_len);
 	
 		// get font
 		
@@ -317,11 +317,11 @@ bool view_dim3rtl_overlay_text_to_overlay(iface_text_type *text)
 
 	p_pnt.x=(x*setup.screen_rtl_wid)/iface.scale_x;
 	p_pnt.y=((y-high)*setup.screen_rtl_high)/iface.scale_y;
-	rtlSceneOverlaySetPosition(view_rtl_scene_id,text->rtl_overlay_id,&p_pnt);
+	rtlSceneOverlaySetPosition(view_rtl_draw_scene_id,text->rtl_overlay_id,&p_pnt);
 
 	s_pnt.x=(txt_wid*setup.screen_rtl_wid)/iface.scale_x;
 	s_pnt.y=(high*setup.screen_rtl_high)/iface.scale_y;
-	rtlSceneOverlaySetSize(view_rtl_scene_id,text->rtl_overlay_id,&s_pnt);
+	rtlSceneOverlaySetSize(view_rtl_draw_scene_id,text->rtl_overlay_id,&s_pnt);
 
 		// get the color
 		// and alpha
@@ -358,10 +358,10 @@ bool view_dim3rtl_overlay_text_to_overlay(iface_text_type *text)
 		p_pnt.x=(lft*setup.screen_rtl_wid)/iface.scale_x;
 		p_pnt.y=0;
 
-		rtlSceneOverlaySetQuadPosition(view_rtl_scene_id,text->rtl_overlay_id,n,&p_pnt);
-		rtlSceneOverlaySetQuadSize(view_rtl_scene_id,text->rtl_overlay_id,n,&s_pnt);
+		rtlSceneOverlaySetQuadPosition(view_rtl_draw_scene_id,text->rtl_overlay_id,n,&p_pnt);
+		rtlSceneOverlaySetQuadSize(view_rtl_draw_scene_id,text->rtl_overlay_id,n,&s_pnt);
 		view_dim3rtl_overlay_set_to_char(font_size,text->rtl_overlay_id,n,ch);
-		rtlSceneOverlaySetQuadColor(view_rtl_scene_id,text->rtl_overlay_id,n,&col);
+		rtlSceneOverlaySetQuadColor(view_rtl_draw_scene_id,text->rtl_overlay_id,n,&col);
 
 			// next character
 
@@ -506,20 +506,20 @@ void view_dim3rtl_overlay_crosshair_setup(void)
 	}
 
 	if (material_id==-1) {
-		rtlSceneOverlaySetHidden(view_rtl_scene_id,view_rtl_overlay_crosshair_id,TRUE);
+		rtlSceneOverlaySetHidden(view_rtl_draw_scene_id,view_rtl_overlay_crosshair_id,TRUE);
 		return;
 	}
 
 		// set cursor overlay
 
-	rtlSceneOverlaySetMaterial(view_rtl_scene_id,view_rtl_overlay_crosshair_id,material_id);
-	rtlSceneOverlaySetHidden(view_rtl_scene_id,view_rtl_overlay_crosshair_id,FALSE);
+	rtlSceneOverlaySetMaterial(view_rtl_draw_scene_id,view_rtl_overlay_crosshair_id,material_id);
+	rtlSceneOverlaySetHidden(view_rtl_draw_scene_id,view_rtl_overlay_crosshair_id,FALSE);
 
-	rtlSceneOverlaySetPosition(view_rtl_scene_id,view_rtl_overlay_crosshair_id,&p_pnt);
-	rtlSceneOverlaySetSize(view_rtl_scene_id,view_rtl_overlay_crosshair_id,&s_pnt);
+	rtlSceneOverlaySetPosition(view_rtl_draw_scene_id,view_rtl_overlay_crosshair_id,&p_pnt);
+	rtlSceneOverlaySetSize(view_rtl_draw_scene_id,view_rtl_overlay_crosshair_id,&s_pnt);
 
-	rtlSceneOverlaySetQuadSize(view_rtl_scene_id,view_rtl_overlay_crosshair_id,0,&s_pnt);
-	rtlSceneOverlaySetQuadColor(view_rtl_scene_id,view_rtl_overlay_crosshair_id,0,&col);
+	rtlSceneOverlaySetQuadSize(view_rtl_draw_scene_id,view_rtl_overlay_crosshair_id,0,&s_pnt);
+	rtlSceneOverlaySetQuadColor(view_rtl_draw_scene_id,view_rtl_overlay_crosshair_id,0,&col);
 }
 
 /* =======================================================
@@ -542,7 +542,7 @@ void view_dim3rtl_overlay_update(void)
 	
 	for (n=0;n!=iface.bitmap_list.nbitmap;n++) {
 		view_dim3rtl_overlay_bitmap_to_overlay(bitmap);
-		rtlSceneOverlaySetHidden(view_rtl_scene_id,bitmap->rtl_overlay_id,(!bitmap->show));
+		rtlSceneOverlaySetHidden(view_rtl_draw_scene_id,bitmap->rtl_overlay_id,(!bitmap->show));
 		bitmap++;
 	}
 
@@ -553,10 +553,10 @@ void view_dim3rtl_overlay_update(void)
 	
 	for (n=0;n!=iface.text_list.ntext;n++) {
 		if (!view_dim3rtl_overlay_text_to_overlay(text)) {
-			rtlSceneOverlaySetHidden(view_rtl_scene_id,text->rtl_overlay_id,TRUE);
+			rtlSceneOverlaySetHidden(view_rtl_draw_scene_id,text->rtl_overlay_id,TRUE);
 		}
 		else {
-			rtlSceneOverlaySetHidden(view_rtl_scene_id,text->rtl_overlay_id,(!text->show));
+			rtlSceneOverlaySetHidden(view_rtl_draw_scene_id,text->rtl_overlay_id,(!text->show));
 		}
 		text++;
 	}
