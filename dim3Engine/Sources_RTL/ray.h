@@ -307,6 +307,10 @@ typedef struct		{
 // materials are global to all scenes within the openRL, and can be used
 // by any scene
 //
+// note that unlike other lists, materials does not have a count.  it uses
+// null to find an empty spot.  This is to preserve the indexes stored within
+// items like meshes or overlays
+//
 
 typedef struct		{
 						unsigned char					*color,*normal,
@@ -334,7 +338,7 @@ typedef struct		{
 					} ray_material_type;
 
 typedef struct		{
-						int								count,next_id;
+						int								next_id;
 						ray_material_type*				materials[ray_max_material];
 					} ray_material_list;
 

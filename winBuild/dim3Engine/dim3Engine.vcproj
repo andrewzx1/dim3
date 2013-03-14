@@ -3852,6 +3852,10 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\dim3Engine\Sources_View\view_rtl_opengl.c"
+						>
+					</File>
+					<File
 						RelativePath="..\..\dim3Engine\Sources_View\view_rtl_overlay.c"
 						>
 					</File>

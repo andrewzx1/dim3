@@ -230,7 +230,7 @@ void setup_game_video_pane_dim3rtl(void)
 	element_combo_add("Screen Size",(char*)setup_screen_size_list,idx,ctrl_screen_rtl_size_id,x,y,TRUE);
 	y+=control_y_add;
 
-	element_checkbox_add("Enlarge to Full Window",setup.screen_rtl_full_window,ctrl_screen_rtl_full_window_id,x,y,TRUE);
+	element_checkbox_add("Full Window (Requires Restart)",setup.screen_rtl_full_window,ctrl_screen_rtl_full_window_id,x,y,TRUE);
 }
 
 void setup_game_audio_pane(void)

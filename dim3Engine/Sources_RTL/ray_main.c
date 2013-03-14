@@ -22,7 +22,7 @@ extern ray_global_type				ray_global;
 
 int rtlInitialize(void)
 {
-	int					thread_count;
+	int					n,thread_count;
 #ifdef __APPLE__
 	int					names[2];
 	size_t				len;
@@ -38,9 +38,16 @@ int rtlInitialize(void)
 	ray_global.scene_list.next_id=1;
 
 		// initialize the material list
+		// need to NULL out all materials
+		// material list doesn't move when adding/deleting
+		// to preserve indexes, instead depends on NULL
+		// for free
 
-	ray_global.material_list.count=0;
 	ray_global.material_list.next_id=1;
+
+	for (n=0;n!=ray_max_material;n++) {
+		ray_global.material_list.materials[n]=NULL;
+	}
 
 		// determine the number of
 		// cores avaiable
@@ -117,11 +124,8 @@ int rtlShutdown(void)
 
 		// free materials
 
-	while (ray_global.material_list.count!=0) {
-		err=rtlMaterialDelete(ray_global.material_list.materials[0]->id);
-		if (err!=RL_ERROR_OK) return(err);
-	}
+	err=rtlMaterialDeleteAll();
 	
-	return(RL_ERROR_OK);
+	return(err);
 }
 
