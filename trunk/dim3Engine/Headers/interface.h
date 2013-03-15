@@ -1061,9 +1061,12 @@ extern void view_dim3rtl_effect_mesh_close(effect_type *effect);
 extern bool view_dim3rtl_screenshot(bool thumbnail,char *path);
 extern void view_dim3rtl_render(void);
 
-extern void gui_dim3rtl_initialize(void);
+extern void gui_dim3rtl_initialize(char *background_path,char *bitmap_name);
 extern void gui_dim3rtl_shutdown(void);
-extern void gui_dim3rtl_draw(float background_alpha,bool cursor);
+extern void gui_dim3rtl_clear(void);
+extern void gui_dim3rtl_cursor_initialize(void);
+extern void gui_dim3rtl_cursor_shutdown(void);
+extern void gui_dim3rtl_cursor_update(bool show);
 
 //
 // chats

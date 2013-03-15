@@ -466,6 +466,7 @@
 		2649D14813412B2900573F6F /* setup_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 2649D13D13412B2900573F6F /* setup_defs.h */; };
 		2649D14913412B2900573F6F /* sound_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 2649D13E13412B2900573F6F /* sound_defs.h */; };
 		2649D14A13412B2900573F6F /* view_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 2649D13F13412B2900573F6F /* view_defs.h */; };
+		264BBA0216F2BBA5003E622A /* view_rtl_opengl.c in Sources */ = {isa = PBXBuildFile; fileRef = 264BBA0116F2BBA5003E622A /* view_rtl_opengl.c */; };
 		2669FCE7161273A0002292C6 /* mac_os_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 2669FCE6161273A0002292C6 /* mac_os_defs.h */; };
 		2669FCE9161273D5002292C6 /* os_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 2669FCE8161273D5002292C6 /* os_defs.h */; };
 		2669FD1A16127B66002292C6 /* libSDL2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2669FD1916127B66002292C6 /* libSDL2.a */; };
@@ -991,6 +992,7 @@
 		2649D13D13412B2900573F6F /* setup_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = setup_defs.h; path = Headers/setup_defs.h; sourceTree = "<group>"; };
 		2649D13E13412B2900573F6F /* sound_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = sound_defs.h; path = Headers/sound_defs.h; sourceTree = "<group>"; };
 		2649D13F13412B2900573F6F /* view_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = view_defs.h; path = Headers/view_defs.h; sourceTree = "<group>"; };
+		264BBA0116F2BBA5003E622A /* view_rtl_opengl.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = view_rtl_opengl.c; sourceTree = "<group>"; };
 		2669FCE6161273A0002292C6 /* mac_os_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mac_os_defs.h; path = ../OSXBuild/Common/Headers/mac_os_defs.h; sourceTree = "<group>"; };
 		2669FCE8161273D5002292C6 /* os_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = os_defs.h; path = ../dim3Common/Headers/os_defs.h; sourceTree = "<group>"; };
 		2669FD1916127B66002292C6 /* libSDL2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libSDL2.a; sourceTree = "<group>"; };
@@ -1679,6 +1681,7 @@
 				2618B77616A7B25B004BB291 /* view_rtl_overlay.c */,
 				268AFA2816F171FD0043DC2F /* view_rtl_gui.c */,
 				2618B77716A7B25B004BB291 /* view_rtl_patch.c */,
+				264BBA0116F2BBA5003E622A /* view_rtl_opengl.c */,
 			);
 			name = ViewRTL;
 			sourceTree = "<group>";
@@ -2491,6 +2494,7 @@
 				26149B8516A8BA86007DB713 /* ray_thread.c in Sources */,
 				26159D2216D191210069B442 /* base_iface_label.c in Sources */,
 				268AFA2916F171FD0043DC2F /* view_rtl_gui.c in Sources */,
+				264BBA0216F2BBA5003E622A /* view_rtl_opengl.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
