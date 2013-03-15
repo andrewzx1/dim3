@@ -72,17 +72,20 @@ void gui_initialize(char *background_path,char *bitmap_name)
 		
 	al_stop_all_looping_sources();
 
-		// clear rtl gui
-
-	if (iface.project.ray_trace) gui_dim3rtl_initialize();
-
-		// gui pieces
-
-	cursor_initialize();
-	element_initialize();
+		// setup
 		
-	gui_background_image_idx=-1;
-	if (bitmap_name!=NULL) gui_background_load(background_path,bitmap_name);
+	element_initialize();
+
+	if (iface.project.ray_trace) {
+		gui_dim3rtl_initialize(background_path,bitmap_name);
+		gui_dim3rtl_cursor_initialize();
+	}
+	else {
+		gui_background_image_idx=-1;
+		if (bitmap_name!=NULL) gui_background_load(background_path,bitmap_name);
+		
+		cursor_initialize();
+	}
 
 		// start mouse in middle of screen
 		
@@ -103,12 +106,16 @@ void gui_shutdown(void)
 {
 		// close OpenGL GUI
 		
-	if (gui_background_image_idx!=-1) view_images_free_single(gui_background_image_idx);
-		
-	element_shutdown();
-	cursor_shutdown();
+	if (iface.project.ray_trace) {
+		gui_dim3rtl_cursor_shutdown();
+		gui_dim3rtl_shutdown();
+	}
+	else {
+		if (gui_background_image_idx!=-1) view_images_free_single(gui_background_image_idx);
+		cursor_shutdown();
+	}
 	
-	if (iface.project.ray_trace) gui_dim3rtl_shutdown();
+	element_shutdown();
 
 		// clear all movement from gui	
 			
@@ -164,26 +171,23 @@ void gui_draw(float background_alpha,bool cursor)
 	if (tick<gui_draw_tick) return;
 
 	gui_draw_tick+=(1000/30);
+	
+		// clear frame
+		
+	gl_frame_clear(FALSE);
+	gl_shader_frame_start();
 
-		// background
+		// draw items
 
 	if (!iface.project.ray_trace) {
-		gl_frame_clear(FALSE);
-		gl_shader_frame_start();
-		
 		gui_draw_background(background_alpha);
+		element_draw(TRUE);
+		if ((cursor) && (app.state==as_active)) cursor_draw();
 	}
 	else {
-		gui_dim3rtl_draw(background_alpha,cursor);
+		gui_dim3rtl_clear();
+		gui_dim3rtl_cursor_update((cursor) && (app.state==as_active));
 	}
-
-		// elements
-
-	element_draw(TRUE);
-
-		// no cursor if no active
-
-	if ((cursor) && (app.state==as_active)) cursor_draw();
 
 		// end frame
 
