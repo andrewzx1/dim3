@@ -282,9 +282,9 @@ void view_draw_scene_render(obj_type *obj,weapon_type *weap)
 	
 		// draw transparent scene items
 
+	render_map_liquid_transparent();
 	render_map_mesh_transparent();
 	view_draw_model_transparent();
-	render_map_liquid_transparent();
 
 		// draw decals
 
@@ -411,7 +411,7 @@ bool view_draw_node(node_type *node)
 		// switch out to node rendering
 
 	view.render=&view_node_render;
-	
+
 		// camera position
 		
 	memmove(&view.render->camera.pnt,&node->pnt,sizeof(d3pnt));
@@ -433,7 +433,7 @@ bool view_draw_node(node_type *node)
 	view.render->force_camera_obj=TRUE;
 
 		// clear the frame
-	
+
 	gl_frame_clear(TRUE);
 	gl_shader_frame_start();
 		
@@ -443,7 +443,7 @@ bool view_draw_node(node_type *node)
 
 		// render the scene
 
-	view_draw_scene_render(NULL,NULL);		// supergumba
+	view_draw_scene_render(NULL,NULL);
 
 		// restore the old rendering
 		
