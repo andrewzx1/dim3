@@ -192,11 +192,6 @@ void gl_back_render_frame_node(char *node_name)
 		
 	glGetIntegerv(GL_FRAMEBUFFER_BINDING,&old_fbo);
 	
-		// new viewport
-		
-	gl_save_viewport();
-	gl_set_viewport(0,0,back_render_texture_pixel_size,back_render_texture_pixel_size);
-
 		// need to create a texture?
 
 	if (node->back_render.txt_id==-1) {
@@ -209,22 +204,31 @@ void gl_back_render_frame_node(char *node_name)
 	glFramebufferTexture2D(GL_FRAMEBUFFER,GL_COLOR_ATTACHMENT0,GL_TEXTURE_2D,node->back_render.txt_id,0);
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER,GL_DEPTH_ATTACHMENT,GL_RENDERBUFFER,back_render_fbo_depth_stencil_id);
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER,GL_STENCIL_ATTACHMENT,GL_RENDERBUFFER,back_render_fbo_depth_stencil_id);
-	
+
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER)!=GL_FRAMEBUFFER_COMPLETE) {
 		glBindFramebuffer(GL_FRAMEBUFFER,old_fbo);
 		return;
 	}
+	
+		// new viewport
+
+	gl_save_viewport();
+	gl_set_viewport(0,0,back_render_texture_pixel_size,back_render_texture_pixel_size);
+
 
 		// draw back buffer
-		
+
 	view_draw_node(node);
 	
 	glFlush();
 	
-		// restore old fbo and viewport
+		// restore viewport
+	
+	gl_restore_viewport();
+	
+		// restore fbo
 		
 	glBindFramebuffer(GL_FRAMEBUFFER,old_fbo);
-	gl_restore_viewport();
 
 		// generate mipmaps
 		

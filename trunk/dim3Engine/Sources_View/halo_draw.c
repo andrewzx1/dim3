@@ -205,9 +205,6 @@ void halo_draw_render(void)
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 
 	glDisable(GL_DEPTH_TEST);
-
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE);
 	
 		// get color
 
@@ -255,16 +252,19 @@ void halo_draw_render(void)
 			// draw halo
 
 		gl_shader_draw_execute_simple_bitmap_set_texture(view_images_get_gl_id(iface.halo_list.halos[halo_draw->idx].image_idx));
+		
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE);
+
 		gl_shader_draw_execute_simple_bitmap_start(2,0,(2*sizeof(float)),((2+2)*sizeof(float)),&col,halo_draw->alpha);
 		glDrawArrays(GL_TRIANGLE_STRIP,0,4);
+		
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT);
+		
 		gl_shader_draw_execute_simple_bitmap_end();
 
 		view_unbind_utility_vertex_object();
 	}
-
-		// reset repeat
-
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT);
 }
 

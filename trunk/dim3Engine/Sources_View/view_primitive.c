@@ -519,6 +519,8 @@ void view_primitive_2D_texture_quad(GLuint gl_id,d3col *col,float alpha,int lft,
 
 	glDisable(GL_DEPTH_TEST);
 	
+	gl_shader_draw_execute_simple_bitmap_set_texture(gl_id);
+
 	if (clamp) {
 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE);
@@ -526,10 +528,8 @@ void view_primitive_2D_texture_quad(GLuint gl_id,d3col *col,float alpha,int lft,
 
 		// draw the quad
 
-	gl_shader_draw_execute_simple_bitmap_set_texture(gl_id);
 	gl_shader_draw_execute_simple_bitmap_start(2,0,(2*sizeof(float)),((2+2)*sizeof(float)),col_ptr,alpha);
 	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
-	gl_shader_draw_execute_simple_bitmap_end();
 
 		// finish texture draw
 		
@@ -537,6 +537,8 @@ void view_primitive_2D_texture_quad(GLuint gl_id,d3col *col,float alpha,int lft,
 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT);
 	}
+	
+	gl_shader_draw_execute_simple_bitmap_end();
 
 	glDisable(GL_BLEND);
 
