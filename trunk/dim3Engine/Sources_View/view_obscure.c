@@ -673,7 +673,7 @@ void view_obscure_run(void)
 				if ((obj->draw.model_idx==-1) || (!obj->draw.on)) break;
 	
 				mdl=server.model_list.models[obj->draw.model_idx];
-				model_get_view_complex_bounding_volume(mdl,&obj->draw.pnt,&obj->ang,&min,&max);
+				model_get_view_complex_bounding_volume(mdl,&obj->draw.pnt,&obj->ang,obj->draw.resize,&min,&max);
 
 				if (!view_obscure_check_box(&camera_pnt,-1,&min,&max,dist)) {
 					view.render->draw_list.items[n].type=view_render_type_none;
@@ -687,7 +687,7 @@ void view_obscure_run(void)
 				if ((proj->draw.model_idx==-1) || (!proj->draw.on)) break;
 	
 				mdl=server.model_list.models[proj->draw.model_idx];
-				model_get_view_complex_bounding_volume(mdl,&proj->draw.pnt,&proj->ang,&min,&max);
+				model_get_view_complex_bounding_volume(mdl,&proj->draw.pnt,&proj->ang,proj->draw.resize,&min,&max);
 
 				if (!view_obscure_check_box(&camera_pnt,-1,&min,&max,dist)) {
 					view.render->draw_list.items[n].type=view_render_type_none;

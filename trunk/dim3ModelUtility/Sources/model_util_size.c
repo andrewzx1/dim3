@@ -116,20 +116,20 @@ void model_get_vertex_extent_all(model_type *model,int *p_minx,int *p_maxx,int *
       
 ======================================================= */
 
-void model_get_view_complex_bounding_box(model_type *model,d3pnt *pnt,d3ang *ang,int *px,int *py,int *pz)
+void model_get_view_complex_bounding_box(model_type *model,d3pnt *pnt,d3ang *ang,float resize,int *px,int *py,int *pz)
 {
     int				n,sz;
 	float			fx,fy,fz;
 	matrix_type		rot_x_mat,rot_z_mat,rot_y_mat;
 	
-    sz=model->view_box.size.x>>1;
+    sz=(int)((float)(model->view_box.size.x>>1)*resize);
     px[0]=px[3]=px[4]=px[7]=-sz;
     px[1]=px[2]=px[5]=px[6]=sz;
     
     py[4]=py[5]=py[6]=py[7]=0;
-    py[0]=py[1]=py[2]=py[3]=-model->view_box.size.y;
+    py[0]=py[1]=py[2]=py[3]=-(int)((float)(model->view_box.size.y)*resize);
     
-    sz=model->view_box.size.z>>1;
+    sz=(int)((float)(model->view_box.size.z>>1)*resize);
     pz[0]=pz[1]=pz[4]=pz[5]=-sz;
     pz[2]=pz[3]=pz[6]=pz[7]=sz;
 
@@ -150,11 +150,11 @@ void model_get_view_complex_bounding_box(model_type *model,d3pnt *pnt,d3ang *ang
 	}
 }
 
-void model_get_view_complex_bounding_volume(model_type *model,d3pnt *pnt,d3ang *ang,d3pnt *min,d3pnt *max)
+void model_get_view_complex_bounding_volume(model_type *model,d3pnt *pnt,d3ang *ang,float resize,d3pnt *min,d3pnt *max)
 {
 	int				n,px[8],py[8],pz[8];
 	
-	model_get_view_complex_bounding_box(model,pnt,ang,px,py,pz);
+	model_get_view_complex_bounding_box(model,pnt,ang,resize,px,py,pz);
 	
 	min->x=max->x=px[0];
 	min->y=max->y=py[0];
