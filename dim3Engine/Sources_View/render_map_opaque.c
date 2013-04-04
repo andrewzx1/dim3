@@ -95,7 +95,7 @@ void render_map_mesh_opaque(void)
 
 		for (k=0;k!=mesh->npoly;k++) {
 
-				// skip transparent polys
+				// skip transparent or culled polys
 
 			if ((poly->draw.transparent_on) || (poly->draw.culled)) {
 				poly++;

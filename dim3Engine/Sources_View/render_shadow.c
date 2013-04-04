@@ -410,7 +410,7 @@ int shadow_build_poly_set_model(model_type *mdl,model_draw *draw)
 	
 		// get bounding box of model
 		
-	model_get_view_complex_bounding_volume(mdl,&draw->pnt,&draw->setup.ang,&model_min,&model_max);
+	model_get_view_complex_bounding_volume(mdl,&draw->pnt,&draw->setup.ang,draw->resize,&model_min,&model_max);
 	
 		// get the shadow volume
 		

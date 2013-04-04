@@ -254,7 +254,7 @@ bool view_cull_model(model_draw *draw)
 
 		// check bounding box
 		
-	model_get_view_complex_bounding_volume(server.model_list.models[draw->model_idx],&draw->pnt,&draw->setup.ang,&min,&max);
+	model_get_view_complex_bounding_volume(server.model_list.models[draw->model_idx],&draw->pnt,&draw->setup.ang,draw->resize,&min,&max);
 	return(view_cull_boundbox_in_frustum(&min,&max));
 }
 
@@ -290,7 +290,7 @@ bool view_cull_model_shadow(model_draw *draw)
 	
 		// get shadow volume
 
-	model_get_view_complex_bounding_volume(server.model_list.models[draw->model_idx],&draw->pnt,&draw->setup.ang,&min,&max);
+	model_get_view_complex_bounding_volume(server.model_list.models[draw->model_idx],&draw->pnt,&draw->setup.ang,draw->resize,&min,&max);
 	shadow_get_volume(&draw->pnt,draw->size.y,&draw->shadow.light_pnt,draw->shadow.light_intensity,&min,&max);
 	return(view_cull_boundbox_in_frustum(&min,&max));
 }
