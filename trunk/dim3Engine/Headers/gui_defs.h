@@ -97,7 +97,7 @@ and can be sold or given away.
 #define text_height_factor						1.2f
 #define text_monospaced_factor					0.45f
 
-#define element_table_max_image					16
+#define element_table_max_image					32
 #define element_table_bitmap_size				0.07f
 #define element_table_max_check					128
 #define element_table_check_column_size			0.18f
@@ -123,8 +123,10 @@ and can be sold or given away.
 //
 
 typedef struct		{
-						int						mode,image_idx,image_select_idx;
+						int						mode,
+												rl_material_id,rl_select_material_id;
 						char					name[name_str_len];
+						bitmap_type				bitmap,select_bitmap;
 					} element_button_type;
 
 typedef struct		{
@@ -146,8 +148,9 @@ typedef struct		{
 					} element_column_type;
 
 typedef struct		{
-						int						image_idx;
+						int						rl_material_id;
 						char					path[1024];
+						bitmap_type				bitmap;
 					} element_image_type;
 
 typedef struct		{
@@ -174,9 +177,10 @@ typedef struct		{
 
 typedef struct		{
 						int						max_count,
-												image_idx,image_disable_idx,
-												bitmap_add,wrap_count;
+												bitmap_add,wrap_count,
+												rl_material_id,rl_disable_material_id;
 						bool					horizontal;
+						bitmap_type				bitmap,disable_bitmap;
 					} element_count_type;
 
 typedef struct		{

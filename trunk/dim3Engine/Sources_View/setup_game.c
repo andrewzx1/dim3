@@ -483,7 +483,7 @@ void setup_game_create_pane(void)
 	int							fx,fy,wid,high,margin,
 								ntab;
 	element_frame_button_type	butts[3]={{setup_game_default_button_id,"Default",FALSE},{setup_game_cancel_button_id,"Cancel",TRUE},{setup_game_ok_button_id,"OK",TRUE}};
-							
+	
 	element_clear();
 	
 		// the frame

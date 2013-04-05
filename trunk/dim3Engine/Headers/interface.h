@@ -273,6 +273,7 @@ extern int element_get_x_position(int id);
 extern int element_get_y_position(int id);
 extern void element_get_frame_inner_space(int id,int *x,int *y,int *wid,int *high);
 
+extern int element_draw_item_under_cursor(void);
 extern void element_draw(bool cursor_hilite);
 extern void element_click_down(int x,int y);
 extern int element_click_up(int x,int y);
@@ -1063,10 +1064,9 @@ extern void view_dim3rtl_render(void);
 
 extern void gui_dim3rtl_initialize(char *background_path,char *bitmap_name);
 extern void gui_dim3rtl_shutdown(void);
-extern void gui_dim3rtl_clear(void);
-extern void gui_dim3rtl_cursor_initialize(void);
-extern void gui_dim3rtl_cursor_shutdown(void);
-extern void gui_dim3rtl_cursor_update(bool show);
+extern int gui_dim3rtl_material_open(char *path);
+extern void gui_dim3rtl_material_close(int rl_material_id);
+extern void gui_dim3rtl_draw(bool show_cursor);
 
 //
 // chats

@@ -78,7 +78,6 @@ void gui_initialize(char *background_path,char *bitmap_name)
 
 	if (iface.project.ray_trace) {
 		gui_dim3rtl_initialize(background_path,bitmap_name);
-		gui_dim3rtl_cursor_initialize();
 	}
 	else {
 		gui_background_image_idx=-1;
@@ -107,7 +106,6 @@ void gui_shutdown(void)
 		// close OpenGL GUI
 		
 	if (iface.project.ray_trace) {
-		gui_dim3rtl_cursor_shutdown();
 		gui_dim3rtl_shutdown();
 	}
 	else {
@@ -185,8 +183,7 @@ void gui_draw(float background_alpha,bool cursor)
 		if ((cursor) && (app.state==as_active)) cursor_draw();
 	}
 	else {
-		gui_dim3rtl_clear();
-		gui_dim3rtl_cursor_update((cursor) && (app.state==as_active));
+		gui_dim3rtl_draw((cursor) && (app.state==as_active));
 	}
 
 		// end frame
