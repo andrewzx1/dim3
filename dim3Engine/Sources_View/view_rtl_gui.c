@@ -48,9 +48,11 @@ extern int						view_rtl_gui_scene_id;
 extern GLuint					view_rtl_gui_gl_id;
 
 int								gui_rtl_cursor_material_id,
-								gui_rtl_background_material_id;
+								gui_rtl_background_material_id,
+								gui_rtl_button_fill_material_id;
 
 extern int view_dim3rtl_create_material_from_path(char *path,int alpha_type);
+extern int view_dim3rtl_create_material_from_color(d3col *col);
 extern void view_dim3rtl_material_text_start(void);
 extern void view_dim3rtl_material_text_stop(void);
 extern void view_dim3rtl_transfer_to_opengl(int scene_id,int x,int y,int wid,int high,GLuint gl_id,int buff_wid,int buff_high);
@@ -83,6 +85,10 @@ void gui_dim3rtl_initialize(char *background_path,char *bitmap_name)
 
 	file_paths_data(&file_path_setup,path,"Bitmaps/UI_Elements","cursor","png");
 	gui_rtl_cursor_material_id=view_dim3rtl_create_material_from_path(path,RL_MATERIAL_ALPHA_PASS_THROUGH);
+	
+		// control colors
+		
+	gui_rtl_button_fill_material_id=view_dim3rtl_create_material_from_color(&iface.color.button.fill);
 }
 
 void gui_dim3rtl_shutdown(void)
@@ -143,6 +149,91 @@ void gui_dim3rtl_add_overlay(int x,int y,int wid,int high,int material_id)
 
 /* =======================================================
 
+      GUI RTL Elements
+      
+======================================================= */
+
+void gui_dim3rtl_element_get_box(element_type *element,int *x,int *y,int *wid,int *high)
+{
+	*x=((element->x*setup.screen_wid)/iface.scale_x);
+	*y=((element->y*setup.screen_high)/iface.scale_y);
+	*wid=((element->wid*setup.screen_wid)/iface.scale_x);
+	*high=((element->high*setup.screen_high)/iface.scale_y);
+}
+
+/*
+void element_draw_button_text(element_type *element,int sel_id)
+{
+	int				x,y,lft,rgt,top,bot;
+	float			alpha;
+	d3col			outline_col;
+	
+	if (element->enabled) {
+		alpha=1.0f;
+		memmove(&outline_col,&iface.color.button.outline,sizeof(d3col));
+	}
+	else {
+		alpha=0.3f;
+		memmove(&outline_col,&iface.color.button.outline,sizeof(d3col));
+	}
+	
+	element_get_box(element,&lft,&rgt,&top,&bot);
+	
+		// button background and outline
+
+	view_primitive_2D_color_quad(&iface.color.button.fill,alpha,lft,rgt,top,bot);
+	view_primitive_2D_line_quad(&outline_col,alpha,lft,rgt,top,bot);
+
+	if (element->id==sel_id) view_primitive_2D_line_quad(&iface.color.control.mouse_over,alpha,(lft-1),(rgt+1),(top-1),(bot+1));
+	
+		// button text
+
+	x=(lft+rgt)>>1;
+	y=((top+bot)>>1)-(iface.font.text_size_medium/10);
+
+	gl_text_start(font_interface_index,iface.font.text_size_medium,FALSE);
+	gl_text_draw(x,y,element->setup.button.name,tx_center,TRUE,&iface.color.button.text,alpha);
+	gl_text_end();
+}
+*/
+void gui_dim3rtl_element_draw_button_text(element_type *element,int sel_id)
+{
+	int		x,y,wid,high;
+	
+	gui_dim3rtl_element_get_box(element,&x,&y,&wid,&high);
+	gui_dim3rtl_add_overlay(x,y,wid,high,gui_rtl_button_fill_material_id);
+}
+
+void gui_dim3rtl_element_draw_button_bitmap(element_type *element,int sel_id)
+{
+	int		x,y,wid,high;
+	
+	gui_dim3rtl_element_get_box(element,&x,&y,&wid,&high);
+	gui_dim3rtl_add_overlay(x,y,wid,high,((element->id==sel_id)?element->setup.button.rl_select_material_id:element->setup.button.rl_material_id));
+}
+
+void gui_dim3rtl_element_draw_button(element_type *element,int sel_id)
+{
+	switch (element->setup.button.mode) {
+
+		case element_button_mode_text:
+			gui_dim3rtl_element_draw_button_text(element,sel_id);
+			break;
+
+		case element_button_mode_bitmap:
+			gui_dim3rtl_element_draw_button_bitmap(element,sel_id);
+			break;
+
+		case element_button_mode_box:
+		//	gui_dim3rtl_element_draw_button_box(element,sel_id);
+			break;
+
+	}
+}
+
+
+/* =======================================================
+
       Draw RTL GUI
       
 ======================================================= */
@@ -196,7 +287,7 @@ void gui_dim3rtl_draw(bool show_cursor)
 		switch (element->type) {
 		
 			case element_type_button:
-			//	element_draw_button(element,id);
+				gui_dim3rtl_element_draw_button(element,id);
 				break;
 			case element_type_bitmap:
 			//	element_draw_bitmap(element);

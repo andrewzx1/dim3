@@ -160,6 +160,22 @@ int view_dim3rtl_create_material_from_path(char *path,int alpha_type)
 	return(material_id);
 }
 
+int view_dim3rtl_create_material_from_color(d3col *col)
+{
+	int				material_id;
+	rtlColor		rcol;
+	
+	rcol.r=col->r;
+	rcol.g=col->g;
+	rcol.b=col->b;
+	rcol.a=1.0f;
+
+	material_id=rtlMaterialAdd(1,1,RL_MATERIAL_ALPHA_PASS_THROUGH,0);
+	rtlMaterialAttachBufferColor(material_id,RL_MATERIAL_TARGET_COLOR,&rcol);
+
+	return(material_id);
+}
+
 /* =======================================================
 
       View dim3RTL Text Materials
