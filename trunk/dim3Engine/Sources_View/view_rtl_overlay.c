@@ -221,7 +221,7 @@ void view_dim3rtl_overlay_bitmap_to_overlay(iface_bitmap_type *bitmap)
       
 ======================================================= */
 
-void view_dim3rtl_overlay_set_to_char(texture_font_size_type *font_size,int overlay_id,int index,int ch)
+void view_dim3rtl_overlay_set_to_char(int scene_id,int overlay_id,texture_font_size_type *font_size,int index,int ch)
 {
 	int				xoff,yoff;
 	rtlUV			uv,uv_size;
@@ -251,49 +251,40 @@ void view_dim3rtl_overlay_set_to_char(texture_font_size_type *font_size,int over
 		uv_size.y=font_size->gl_yadd;
 	}
 
-	rtlSceneOverlaySetQuadUV(view_rtl_draw_scene_id,overlay_id,index,&uv);
-	rtlSceneOverlaySetQuadUVStamp(view_rtl_draw_scene_id,overlay_id,index,&uv_size);
+	rtlSceneOverlaySetQuadUV(scene_id,overlay_id,index,&uv);
+	rtlSceneOverlaySetQuadUVStamp(scene_id,overlay_id,index,&uv_size);
 }
 
-bool view_dim3rtl_overlay_text_to_overlay(iface_text_type *text)
+bool view_dim3rtl_overlay_set_to_text(int scene_id,int overlay_id,d3pnt *pnt,int font_index,int size,int just,bool monospaced,rtlColor *col,char *data)
 {
 	int						n,x,y,txt_len,txt_wid,ch,
 							lft,wid,high;
-	float					alpha;
 	char					*c;
 	texture_font_size_type	*font_size;
 	rtl2DPoint				p_pnt,s_pnt;
-	rtlColor				col;
-
-		// apply specials
-		// supergumba -- limited subset here
-
-	if (text->special==text_special_fps) {
-		hud_texts_fps(text->data);
-	}
 
 		// get text length
 
-	txt_len=strlen(text->data);
+	txt_len=strlen(data);
 	if (txt_len==0) return(FALSE);
 	if (txt_len>255) txt_len=255;
 
 		// reset overlay quads
 
-	rtlSceneOverlaySetQuadCount(view_rtl_draw_scene_id,text->rtl_overlay_id,txt_len);
+	rtlSceneOverlaySetQuadCount(scene_id,overlay_id,txt_len);
 	
 		// get font
 		
-	font_size=view_dim3rtl_material_text_get_font(font_hud_index,text->size);
+	font_size=view_dim3rtl_material_text_get_font(font_index,size);
 
         // font justification
 
-	x=text->pnt.x;
-	y=text->pnt.y;
+	x=pnt->x;
+	y=pnt->y;
 
-	txt_wid=gl_text_get_string_width(font_hud_index,text->size,text->monospaced,text->data);
+	txt_wid=gl_text_get_string_width(font_index,size,monospaced,data);
         
-	switch (text->just) {
+	switch (just) {
 		case tx_center:
 			x-=(txt_wid>>1);
 			break;
@@ -304,38 +295,24 @@ bool view_dim3rtl_overlay_text_to_overlay(iface_text_type *text)
 	
 		// get width and height
 		
-	if (text->monospaced) {
-		wid=gl_text_get_monospace_width(font_size,text->size);
+	if (monospaced) {
+		wid=gl_text_get_monospace_width(font_size,size);
 	}
 	else {
-		wid=text->size;
+		wid=size;
 	}
 
-	high=(int)(((float)text->size)*text_height_factor);
+	high=(int)(((float)size)*text_height_factor);
 
 		// reset size of overlay
 
 	p_pnt.x=(x*setup.screen_rtl_wid)/iface.scale_x;
 	p_pnt.y=((y-high)*setup.screen_rtl_high)/iface.scale_y;
-	rtlSceneOverlaySetPosition(view_rtl_draw_scene_id,text->rtl_overlay_id,&p_pnt);
+	rtlSceneOverlaySetPosition(scene_id,overlay_id,&p_pnt);
 
 	s_pnt.x=(txt_wid*setup.screen_rtl_wid)/iface.scale_x;
 	s_pnt.y=(high*setup.screen_rtl_high)/iface.scale_y;
-	rtlSceneOverlaySetSize(view_rtl_draw_scene_id,text->rtl_overlay_id,&s_pnt);
-
-		// get the color
-		// and alpha
-
-	alpha=text->alpha;
-	if (hud_item_fade_run(&text->fade,&alpha)) {
-		text->show=FALSE;			// a fade has turned off text
-		return(FALSE);
-	}
-
-	col.r=text->color.r;
-	col.g=text->color.g;
-	col.b=text->color.b;
-	col.a=alpha;
+	rtlSceneOverlaySetSize(scene_id,overlay_id,&s_pnt);
 
 		// main quad size
 
@@ -347,7 +324,7 @@ bool view_dim3rtl_overlay_text_to_overlay(iface_text_type *text)
 
 	lft=0;
 	
-	c=text->data;
+	c=data;
 
 	for (n=0;n!=txt_len;n++) {
 	
@@ -358,14 +335,14 @@ bool view_dim3rtl_overlay_text_to_overlay(iface_text_type *text)
 		p_pnt.x=(lft*setup.screen_rtl_wid)/iface.scale_x;
 		p_pnt.y=0;
 
-		rtlSceneOverlaySetQuadPosition(view_rtl_draw_scene_id,text->rtl_overlay_id,n,&p_pnt);
-		rtlSceneOverlaySetQuadSize(view_rtl_draw_scene_id,text->rtl_overlay_id,n,&s_pnt);
-		view_dim3rtl_overlay_set_to_char(font_size,text->rtl_overlay_id,n,ch);
-		rtlSceneOverlaySetQuadColor(view_rtl_draw_scene_id,text->rtl_overlay_id,n,&col);
+		rtlSceneOverlaySetQuadPosition(scene_id,overlay_id,n,&p_pnt);
+		rtlSceneOverlaySetQuadSize(scene_id,overlay_id,n,&s_pnt);
+		view_dim3rtl_overlay_set_to_char(scene_id,overlay_id,font_size,n,ch);
+		rtlSceneOverlaySetQuadColor(scene_id,overlay_id,n,col);
 
 			// next character
 
-		if (text->monospaced) {
+		if (monospaced) {
 			lft+=wid;
 		}
 		else {
@@ -379,6 +356,36 @@ bool view_dim3rtl_overlay_text_to_overlay(iface_text_type *text)
 	}
 
 	return(TRUE);
+}
+
+bool view_dim3rtl_overlay_text_to_overlay(iface_text_type *text)
+{
+	float					alpha;
+	rtlColor				col;
+
+		// apply specials
+		// supergumba -- limited subset here
+
+	if (text->special==text_special_fps) {
+		hud_texts_fps(text->data);
+	}
+
+		// get color and alpha
+
+	alpha=text->alpha;
+	if (hud_item_fade_run(&text->fade,&alpha)) {
+		text->show=FALSE;			// a fade has turned off text
+		return(FALSE);
+	}
+
+	col.r=text->color.r;
+	col.g=text->color.g;
+	col.b=text->color.b;
+	col.a=alpha;
+
+		// set the overlay
+
+	return(view_dim3rtl_overlay_set_to_text(view_rtl_draw_scene_id,text->rtl_overlay_id,&text->pnt,font_hud_index,text->size,text->just,text->monospaced,&col,text->data));
 }
 
 /* =======================================================
