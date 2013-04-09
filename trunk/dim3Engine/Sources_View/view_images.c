@@ -67,9 +67,8 @@ void view_images_initialize(void)
 	image=&view.images[0];
 	
 	col.r=col.b=col.g=1.0f;
-	bitmap_color(&image->bitmaps[0].bitmap,&col);
+	bitmap_color(&image->bitmap,&col);
 	
-	image->nbitmap=1;
 	strcpy(image->path,"_dim3_core_empty_bitmap");
 }
 
@@ -80,7 +79,7 @@ void view_images_shutdown(void)
 	image=&view.images[0];
 	
 	image->path[0]=0x0;
-	bitmap_close(&image->bitmaps[0].bitmap);
+	bitmap_close(&image->bitmap);
 }
 
 /* =======================================================
@@ -127,68 +126,9 @@ int view_images_find_first_free(void)
       
 ======================================================= */
 
-bool view_images_load_single_normal(view_image_type *image,char *path,bool npot,bool simple)
-{
-	image->nbitmap=1;
-	image->total_msec=0;
-	
-	if (simple) return(bitmap_open(&image->bitmaps[0].bitmap,path,FALSE,FALSE,FALSE,npot,FALSE,FALSE));
-	return(bitmap_open(&image->bitmaps[0].bitmap,path,TRUE,FALSE,FALSE,npot,FALSE,FALSE));
-}
-
-bool view_images_load_single_animated(view_image_type *image,char *path,bool npot,bool simple)
-{
-	int				n,animations_head_tag,animation_tag;
-	char			*c,xml_path[1024],bitmap_path[1024],name[256];
-	
-	image->nbitmap=0;
-	
-		// get rid of .png
-		
-	c=strrchr(path,'.');
-	if (c!=NULL) *c=0x0;
-	
-		// decode animation xml
-		
-	sprintf(xml_path,"%s/animation.xml",path);
-	if (!xml_open_file(xml_path)) return(FALSE);
-	
-    animations_head_tag=xml_findrootchild("Animations");
-    if (animations_head_tag==-1) {
-		xml_close_file();
-		return(FALSE);
-	}
-	
-	image->total_msec=0;
-	image->nbitmap=xml_countchildren(animations_head_tag);
-
-	animation_tag=xml_findfirstchild("Animation",animations_head_tag);
-	
-	for (n=0;n!=image->nbitmap;n++) {
-		xml_get_attribute_text(animation_tag,"file",name,256);
-		
-		sprintf(bitmap_path,"%s/%s.png",path,name);
-		
-		if (simple) {
-			if (!bitmap_open(&image->bitmaps[n].bitmap,bitmap_path,FALSE,FALSE,FALSE,npot,FALSE,FALSE)) return(FALSE);
-		}
-		else {
-			if (!bitmap_open(&image->bitmaps[n].bitmap,bitmap_path,TRUE,FALSE,FALSE,npot,FALSE,FALSE)) return(FALSE);
-		}
-		
-		image->bitmaps[n].msec=xml_get_attribute_int(animation_tag,"msec");
-		image->total_msec+=image->bitmaps[n].msec;		
-		
-		animation_tag=xml_findnextchild(animation_tag);
-	}
-	
-	return(TRUE);
-}
-
 int view_images_load_single(char *path,bool npot,bool simple)
 {
 	int					idx;
-	FILE				*file;
 	view_image_type		*image;
 	
 		// null paths get empty image
@@ -207,36 +147,21 @@ int view_images_load_single(char *path,bool npot,bool simple)
 	if (idx==-1) return(0);
 		
 	image=&view.images[idx];
-	strcpy(image->path,path);
 
-		// if the PNG doesn't exist, then
-		// it's a folder based animated image
-		
-	file=fopen(path,"rb");
-	if (file==NULL) {
-		if (!view_images_load_single_animated(image,path,npot,simple)) {
-			image->path[0]=0x0;
-			return(0);
-		}
-		
-		return(idx);
+	if (simple) {
+		if (!bitmap_open(&image->bitmap,path,FALSE,FALSE,FALSE,npot,FALSE,FALSE)) return(0);
 	}
-	
-	fclose(file);
-	
-		// normal non-animated file
-		
-	if (!view_images_load_single_normal(image,path,npot,simple)) {
-		image->path[0]=0x0;
-		return(0);
+	else {
+		if (!bitmap_open(&image->bitmap,path,TRUE,FALSE,FALSE,npot,FALSE,FALSE)) return(0);
 	}
+
+	strcpy(image->path,path);
 	
 	return(idx);
 }
 
 void view_images_free_single(int idx)
 {
-	int					n;
 	view_image_type		*image;
 	
 		// don't remove first item as it's always the empty one
@@ -251,11 +176,9 @@ void view_images_free_single(int idx)
 		
 	image->path[0]=0x0;
    
-		// close the bitmaps
+		// close the bitmap
 	
-	for (n=0;n<image->nbitmap;n++) {
-		bitmap_close(&image->bitmaps[n].bitmap);
-	}
+	bitmap_close(&image->bitmap);
 }
 
 /* =======================================================
@@ -561,39 +484,14 @@ bool view_images_is_empty(int idx)
 
 bitmap_type* view_images_get_bitmap(int idx)
 {
-	int						n,tick,msec;
 	view_image_type			*image;
-	view_image_bitmap_type	*ibm;
 	
 		// sanity check for bad bitmaps
 		
 	if ((idx<0) || (idx>=max_view_image)) idx=0;
 	
 	image=&view.images[idx];
-	
-		// no animations
-		
-	if ((image->nbitmap<=1) || (image->total_msec==0)) return(&image->bitmaps[0].bitmap);
-	
-		// animations use raw tick
-		// so they work through pauses
-	
-	tick=game_time_get_raw();
-	
-		// run animation
-		
-	msec=0;
-	tick=(tick%image->total_msec);
-	
-	ibm=image->bitmaps;
-	
-	for (n=0;n!=image->nbitmap;n++) {
-		msec+=ibm->msec;
-		if (tick<=msec) return(&image->bitmaps[n].bitmap);
-		ibm++;
-	}
-	
-	return(&image->bitmaps[0].bitmap);
+	return(&image->bitmap);
 }
 
 unsigned long view_images_get_gl_id(int idx)
