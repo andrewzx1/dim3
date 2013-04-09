@@ -19,6 +19,7 @@
 #define ray_max_scene_mesh							5120
 #define ray_max_scene_overlay						256
 #define ray_max_scene_overlay_quad					256
+#define ray_max_scene_overlay_line					256
 
 #define ray_max_material							1024
 
@@ -216,6 +217,16 @@ typedef struct		{
 //
 
 typedef struct		{
+						ray_2d_point_type				start_pnt,end_pnt;
+						ray_color_type					col;
+					} ray_overlay_line_type;
+
+typedef struct		{
+						int								count;
+						ray_overlay_line_type*			lines[ray_max_scene_overlay_line];
+					} ray_overlay_line_list;
+
+typedef struct		{
 						ray_2d_point_type				offset_pnt,pnt_size;
 						ray_uv_type						uv,uv_size;
 						ray_color_type					col;
@@ -231,6 +242,7 @@ typedef struct		{
 						bool							hidden;
 						ray_2d_point_type				pnt,pnt_size;
 						ray_overlay_quad_list			quad_list;
+						ray_overlay_line_list			line_list;
 					} ray_overlay_type;
 
 typedef struct		{

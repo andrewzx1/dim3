@@ -54,7 +54,7 @@ int								gui_rtl_cursor_material_id,
 extern int view_dim3rtl_create_material_from_path(char *path,int alpha_type);
 extern int view_dim3rtl_create_material_from_color(d3col *col);
 extern texture_font_size_type* view_dim3rtl_material_text_get_font(int text_font,int text_size);
-extern bool view_dim3rtl_overlay_set_to_text(int scene_id,int overlay_id,d3pnt *pnt,int font_index,int size,int just,bool monospaced,rtlColor *col,char *data);
+extern void view_dim3rtl_overlay_set_to_char(int scene_id,int overlay_id,texture_font_size_type *font_size,int index,int ch);
 extern void view_dim3rtl_transfer_to_opengl(int scene_id,int x,int y,int wid,int high,GLuint gl_id,int buff_wid,int buff_high);
 
 /* =======================================================
@@ -125,23 +125,39 @@ void gui_dim3rtl_material_close(int rl_material_id)
       
 ======================================================= */
 
-void gui_dim3rtl_add_overlay_box(int x,int y,int wid,int high,float alpha,int material_id)
+void gui_dim3rtl_add_overlay_box(int x,int y,int wid,int high,bool outline,bool hilite,float alpha,int material_id)
 {
-	int				overlay_id;
-	rtl2DPoint		p_pnt,s_pnt;
+	int				overlay_id,count;
+	rtl2DPoint		p_pnt,s_pnt,l_pnt[4];
 	rtlColor		col;
 
-	p_pnt.x=x;
-	p_pnt.y=y;
-	s_pnt.x=wid;
-	s_pnt.y=high;
+		// the box
+
+	if (outline) {
+		p_pnt.x=x-1;
+		p_pnt.y=y-1;
+		s_pnt.x=wid+2;
+		s_pnt.y=high+2;
+	}
+	else {
+		p_pnt.x=x;
+		p_pnt.y=y;
+		s_pnt.x=wid;
+		s_pnt.y=high;
+	}
 
 	overlay_id=rtlSceneOverlayAdd(view_rtl_gui_scene_id,material_id,0);
 	rtlSceneOverlaySetPosition(view_rtl_gui_scene_id,overlay_id,&p_pnt);
 	rtlSceneOverlaySetSize(view_rtl_gui_scene_id,overlay_id,&s_pnt);
 
-	p_pnt.x=0;
-	p_pnt.y=0;
+	if (outline) {
+		p_pnt.x=1;
+		p_pnt.y=1;
+	}
+	else {
+		p_pnt.x=0;
+		p_pnt.y=0;
+	}
 
 	rtlSceneOverlaySetQuadCount(view_rtl_gui_scene_id,overlay_id,1);
 	rtlSceneOverlaySetQuadPosition(view_rtl_gui_scene_id,overlay_id,0,&p_pnt);
@@ -150,15 +166,60 @@ void gui_dim3rtl_add_overlay_box(int x,int y,int wid,int high,float alpha,int ma
 	col.r=col.g=col.b=1.0f;
 	col.a=alpha;
 	rtlSceneOverlaySetQuadColor(view_rtl_gui_scene_id,overlay_id,0,&col);
+
+		// no outline, then skip
+
+	if (!outline) return;
+
+		// the outline
+
+	count=hilite?8:4;
+	rtlSceneOverlaySetLineCount(view_rtl_gui_scene_id,overlay_id,count);
+
+	col.r=iface.color.button.outline.r;
+	col.g=iface.color.button.outline.g;
+	col.b=iface.color.button.outline.b;
+	col.a=alpha;
+
+	l_pnt[0].x=l_pnt[3].x=1;
+	l_pnt[1].x=l_pnt[2].x=wid+1;
+	l_pnt[0].y=l_pnt[1].y=1;
+	l_pnt[2].y=l_pnt[3].y=high+1;
+
+	rtlSceneOverlaySetLinePosition(view_rtl_gui_scene_id,overlay_id,0,&l_pnt[0],&l_pnt[1]);
+	rtlSceneOverlaySetLinePosition(view_rtl_gui_scene_id,overlay_id,1,&l_pnt[1],&l_pnt[2]);
+	rtlSceneOverlaySetLinePosition(view_rtl_gui_scene_id,overlay_id,2,&l_pnt[2],&l_pnt[3]);
+	rtlSceneOverlaySetLinePosition(view_rtl_gui_scene_id,overlay_id,3,&l_pnt[3],&l_pnt[0]);
+
+	if (hilite) {
+		col.r=iface.color.control.mouse_over.r;
+		col.g=iface.color.control.mouse_over.g;
+		col.b=iface.color.control.mouse_over.b;
+		col.a=alpha;
+
+		l_pnt[0].x=l_pnt[3].x=0;
+		l_pnt[1].x=l_pnt[2].x=wid+2;
+		l_pnt[0].y=l_pnt[1].y=0;
+		l_pnt[2].y=l_pnt[3].y=high+2;
+
+		rtlSceneOverlaySetLinePosition(view_rtl_gui_scene_id,overlay_id,4,&l_pnt[0],&l_pnt[1]);
+		rtlSceneOverlaySetLinePosition(view_rtl_gui_scene_id,overlay_id,5,&l_pnt[1],&l_pnt[2]);
+		rtlSceneOverlaySetLinePosition(view_rtl_gui_scene_id,overlay_id,6,&l_pnt[2],&l_pnt[3]);
+		rtlSceneOverlaySetLinePosition(view_rtl_gui_scene_id,overlay_id,7,&l_pnt[3],&l_pnt[0]);
+	}
 }
 
 void gui_dim3rtl_add_overlay_text(int x,int y,int wid,int high,float alpha,char *str)
 {
-	int						overlay_id;
-	d3pnt					pnt;
+	int						n,tx,ty,str_len,
+							char_wid,txt_wid,txt_high,
+							ch,lft,overlay_id;
+	char					*c;
 	texture_font_size_type	*font_size;
 	rtl2DPoint				p_pnt,s_pnt;
 	rtlColor				col;
+
+		// the overlay
 
 	p_pnt.x=x;
 	p_pnt.y=y;
@@ -171,15 +232,67 @@ void gui_dim3rtl_add_overlay_text(int x,int y,int wid,int high,float alpha,char 
 	rtlSceneOverlaySetPosition(view_rtl_gui_scene_id,overlay_id,&p_pnt);
 	rtlSceneOverlaySetSize(view_rtl_gui_scene_id,overlay_id,&s_pnt);
 
+		// the color
+
 	col.r=iface.color.button.text.r;
 	col.g=iface.color.button.text.g;
 	col.b=iface.color.button.text.b;
 	col.a=alpha;
 
-	x=x+(wid>>1);
-	y=(y+(high>>1))-(iface.font.text_size_medium/10);
+		// overlay quads
 
-	view_dim3rtl_overlay_set_to_text(view_rtl_gui_scene_id,overlay_id,&pnt,font_interface_index,iface.font.text_size_medium,tx_center,FALSE,&col,str);
+	str_len=strlen(str);
+	rtlSceneOverlaySetQuadCount(view_rtl_gui_scene_id,overlay_id,str_len);
+
+        // get position
+
+	char_wid=(iface.font.text_size_medium*setup.screen_wid)/iface.scale_x;
+
+	txt_wid=gl_text_get_string_width(font_interface_index,iface.font.text_size_medium,FALSE,str);
+	txt_wid=(txt_wid*setup.screen_wid)/iface.scale_x;
+
+	tx=(wid>>1)-(txt_wid>>1);
+
+	txt_high=(int)(((float)iface.font.text_size_medium)*text_height_factor);
+	txt_high=(txt_high*setup.screen_high)/iface.scale_y;
+
+	ty=(high-txt_high)>>1;
+
+		// main quad size
+
+	s_pnt.x=char_wid;
+	s_pnt.y=txt_high;
+
+		// create the quads
+		// quads are offsets into overlays
+
+	lft=tx;
+	
+	c=str;
+
+	for (n=0;n!=str_len;n++) {
+	
+		ch=(int)*c++;
+
+			// the overlay quad
+
+		p_pnt.x=lft;
+		p_pnt.y=ty;
+
+		rtlSceneOverlaySetQuadPosition(view_rtl_gui_scene_id,overlay_id,n,&p_pnt);
+		rtlSceneOverlaySetQuadSize(view_rtl_gui_scene_id,overlay_id,n,&s_pnt);
+		view_dim3rtl_overlay_set_to_char(view_rtl_gui_scene_id,overlay_id,font_size,n,ch);
+		rtlSceneOverlaySetQuadColor(view_rtl_gui_scene_id,overlay_id,n,&col);
+
+			// next character
+
+		if ((ch<'!') || (ch>'z')) {
+			lft+=(int)(((float)char_wid)*0.33f);
+		}
+		else {
+			lft+=(int)(((float)char_wid)*font_size->char_size[ch-'!']);
+		}
+	}
 }
 
 /* =======================================================
@@ -196,57 +309,15 @@ void gui_dim3rtl_element_get_box(element_type *element,int *x,int *y,int *wid,in
 	*high=((element->high*setup.screen_high)/iface.scale_y);
 }
 
-/*
-void element_draw_button_text(element_type *element,int sel_id)
-{
-	int				x,y,lft,rgt,top,bot;
-	float			alpha;
-	d3col			outline_col;
-	
-	if (element->enabled) {
-		alpha=1.0f;
-		memmove(&outline_col,&iface.color.button.outline,sizeof(d3col));
-	}
-	else {
-		alpha=0.3f;
-		memmove(&outline_col,&iface.color.button.outline,sizeof(d3col));
-	}
-	
-	element_get_box(element,&lft,&rgt,&top,&bot);
-	
-		// button background and outline
-
-	view_primitive_2D_color_quad(&iface.color.button.fill,alpha,lft,rgt,top,bot);
-	view_primitive_2D_line_quad(&outline_col,alpha,lft,rgt,top,bot);
-
-	if (element->id==sel_id) view_primitive_2D_line_quad(&iface.color.control.mouse_over,alpha,(lft-1),(rgt+1),(top-1),(bot+1));
-	
-		// button text
-
-	x=(lft+rgt)>>1;
-	y=((top+bot)>>1)-(iface.font.text_size_medium/10);
-
-	gl_text_start(font_interface_index,iface.font.text_size_medium,FALSE);
-	gl_text_draw(x,y,element->setup.button.name,tx_center,TRUE,&iface.color.button.text,alpha);
-	gl_text_end();
-}
-*/
 void gui_dim3rtl_element_draw_button_text(element_type *element,int sel_id)
 {
-	int		x,y,wid,high;
-	float	alpha;
+	int			x,y,wid,high;
+	float		alpha;
 	
-	if (element->enabled) {
-		alpha=1.0f;
-	//	memmove(&outline_col,&iface.color.button.outline,sizeof(d3col));
-	}
-	else {
-		alpha=0.3f;
-	//	memmove(&outline_col,&iface.color.button.outline,sizeof(d3col));
-	}
+	alpha=element->enabled?1.0f:0.3f;
 
 	gui_dim3rtl_element_get_box(element,&x,&y,&wid,&high);
-	gui_dim3rtl_add_overlay_box(x,y,wid,high,alpha,gui_rtl_button_fill_material_id);
+	gui_dim3rtl_add_overlay_box(x,y,wid,high,TRUE,(element->id==sel_id),alpha,gui_rtl_button_fill_material_id);
 	gui_dim3rtl_add_overlay_text(x,y,wid,high,alpha,element->setup.button.name);
 }
 
@@ -255,7 +326,7 @@ void gui_dim3rtl_element_draw_button_bitmap(element_type *element,int sel_id)
 	int		x,y,wid,high;
 	
 	gui_dim3rtl_element_get_box(element,&x,&y,&wid,&high);
-	gui_dim3rtl_add_overlay_box(x,y,wid,high,1.0f,((element->id==sel_id)?element->setup.button.rl_select_material_id:element->setup.button.rl_material_id));
+	gui_dim3rtl_add_overlay_box(x,y,wid,high,FALSE,FALSE,1.0f,((element->id==sel_id)?element->setup.button.rl_select_material_id:element->setup.button.rl_material_id));
 }
 
 void gui_dim3rtl_element_draw_button(element_type *element,int sel_id)
@@ -309,7 +380,7 @@ void gui_dim3rtl_draw(bool show_cursor)
 		// add the background
 
 	if (gui_rtl_background_material_id!=-1) {
-		gui_dim3rtl_add_overlay_box(0,0,setup.screen_wid,setup.screen_high,1.0f,gui_rtl_background_material_id);
+		gui_dim3rtl_add_overlay_box(0,0,setup.screen_wid,setup.screen_high,FALSE,FALSE,1.0f,gui_rtl_background_material_id);
 	}
 
 		// element under cursor
@@ -388,7 +459,7 @@ void gui_dim3rtl_draw(bool show_cursor)
 	if (show_cursor) {
 		input_mouse_gui_get_position(&x,&y);
 		sz=(int)(((float)iface.scale_x)*cursor_size_factor);
-		gui_dim3rtl_add_overlay_box(((x*setup.screen_wid)/iface.scale_x),((y*setup.screen_high)/iface.scale_y),sz,sz,1.0f,gui_rtl_cursor_material_id);
+		gui_dim3rtl_add_overlay_box(((x*setup.screen_wid)/iface.scale_x),((y*setup.screen_high)/iface.scale_y),sz,sz,FALSE,FALSE,1.0f,gui_rtl_cursor_material_id);
 	}
 
 		// render

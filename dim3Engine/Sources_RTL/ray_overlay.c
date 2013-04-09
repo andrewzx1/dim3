@@ -35,12 +35,13 @@ int ray_scene_overlay_get_index(ray_scene_type *scene,int overlayId)
 
 bool ray_overlay_get_rgb(ray_scene_type *scene,ray_scene_overlay_index_block *index_block,int x,int y,ray_color_type *col)
 {
-	int							n,k,px,py,offset;
+	int							n,k,px,py,px2,py2,offset;
 	unsigned long				buf;
 	float						f,fx,fy;
 	bool						hit;
 	ray_overlay_type			*overlay;
 	ray_overlay_quad_type		*overlay_quad;
+	ray_overlay_line_type		*overlay_line;
 	ray_material_type			*material;
 	ray_material_mipmap_type	*mipmap;
 	ray_color_type				o_col;
@@ -56,15 +57,14 @@ bool ray_overlay_get_rgb(ray_scene_type *scene,ray_scene_overlay_index_block *in
 		// search overlay lists backwards
 		// so front to back ordering is
 		// used for rendering
-		// supergumba -- work on this
 
 	for (n=0;n!=index_block->count;n++) {
 		overlay=scene->overlay_list.overlays[index_block->indexes[n]];
 		if (overlay->hidden) continue;
 
-			// skip if no quads
+			// skip if no quads or lines
 
-		if (overlay->quad_list.count==0) continue;
+		if ((overlay->quad_list.count==0) && (overlay->line_list.count==0)) continue;
 		
 			// determine if we are in overlay
 			
@@ -156,6 +156,71 @@ bool ray_overlay_get_rgb(ray_scene_type *scene,ray_scene_overlay_index_block *in
 					// any alpha with render
 
 				if (col->a!=1.0f) col->a=o_col.a;
+			}
+			
+			hit=TRUE;
+		}
+
+			// determine any lines
+
+		for (k=(overlay->line_list.count-1);k>=0;k--) {
+			overlay_line=overlay->line_list.lines[k];
+
+				// in line box?
+
+			px=overlay->pnt.x+overlay_line->start_pnt.x;
+			px2=overlay->pnt.x+overlay_line->end_pnt.x;
+			if (px<px2) {
+				if ((x<px) || (x>px2)) continue;
+			}
+			else {
+				if ((x<px2) || (x>px)) continue;
+			}
+
+			py=overlay->pnt.y+overlay_line->start_pnt.y;
+			py2=overlay->pnt.y+overlay_line->end_pnt.y;
+			if (py<py2) {
+				if ((y<py) || (y>py2)) continue;
+			}
+			else {
+				if ((y<py2) || (y>py)) continue;
+			}
+			
+				// check if it hits line
+				// a straight line is always a hit
+
+			if (!((px2==px) || (py2==py))) {
+				fx=(float)fabs((float)(x-px)/(float)(px2-px));
+				fy=((float)(py2-py))*fx;
+				if (y!=(py+(int)fy)) continue;
+			}
+
+				// if no hits, this becomes
+				// the new color
+
+			if (!hit) {
+				col->r=overlay_line->col.r;
+				col->g=overlay_line->col.g;
+				col->b=overlay_line->col.b;
+				col->a=overlay_line->col.a;
+			}
+
+				// otherwise, we need to
+				// mix the colors using the
+				// previous alpha
+
+			else {
+				f=1.0f-o_col.a;
+				col->r=(col->r*f)+(overlay_line->col.r*overlay_line->col.a);
+				col->g=(col->g*f)+(overlay_line->col.g*overlay_line->col.a);
+				col->b=(col->b*f)+(overlay_line->col.b*overlay_line->col.a);
+
+					// always adopt new alpha
+					// unless we are already at 1
+					// any 1 immediately breaks
+					// any alpha with render
+
+				if (col->a!=1.0f) col->a=overlay_line->col.a;
 			}
 			
 			hit=TRUE;
@@ -300,12 +365,18 @@ int rtlSceneOverlayAdd(int sceneId,int materialId,unsigned long flags)
 	
 	overlay->hidden=FALSE;
 
-		// no quads
+		// no quads or lines
 
 	overlay->quad_list.count=0;
 
 	for (n=0;n!=ray_max_scene_overlay_quad;n++) {
 		overlay->quad_list.quads[n]=NULL;
+	}
+
+	overlay->line_list.count=0;
+
+	for (n=0;n!=ray_max_scene_overlay_line;n++) {
+		overlay->line_list.lines[n]=NULL;
 	}
 
 		// set id
@@ -360,10 +431,14 @@ int rtlSceneOverlayDelete(int sceneId,int overlayId)
 
 	overlay=scene->overlay_list.overlays[idx];
 
-		// remove quads
+		// remove quads and lines
 
 	for (n=0;n!=ray_max_scene_overlay_quad;n++) {
 		if (overlay->quad_list.quads[n]!=NULL) free(overlay->quad_list.quads[n]);
+	}
+
+	for (n=0;n!=ray_max_scene_overlay_line;n++) {
+		if (overlay->line_list.lines[n]!=NULL) free(overlay->line_list.lines[n]);
 	}
 
 		// remove overlay
@@ -414,99 +489,6 @@ int rtlSceneOverlayDeleteAll(int sceneId)
 		if (err!=RL_ERROR_OK) return(err);
 	}
 	
-	return(RL_ERROR_OK);
-}
-
-/* =======================================================
-
-      Sets Number of Quads in an Overlay
-	  
-	  Notes:
-	   If the scene is currently rendering, this API
-	   will stall until it's finished
-
-	  Returns:
-	   RL_ERROR_OK
-	   RL_ERROR_UNKNOWN_SCENE_ID
-	   RL_ERROR_UNKNOWN_OVERLAY_ID
-	   RL_ERROR_OUT_OF_MEMORY
-      
-======================================================= */
-
-int rtlSceneOverlaySetQuadCount(int sceneId,int overlayId,int count)
-{
-	int						n,idx;
-	ray_overlay_type		*overlay;
-	ray_overlay_quad_type	*overlay_quad;
-	ray_scene_type			*scene;
-
-		// too many quads?
-
-	if (count>ray_max_scene_overlay_quad) return(RL_ERROR_OUT_OF_MEMORY);
-
-		// get scene
-
-	idx=ray_scene_get_index(sceneId);
-	if (idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
-
-	scene=ray_global.scene_list.scenes[idx];
-	
-		// stall rendering so it finishes
-		
-	ray_render_stall(scene);
-
-		// get the overlay
-
-	idx=ray_scene_overlay_get_index(scene,overlayId);
-	if (idx==-1) return(RL_ERROR_UNKNOWN_OVERLAY_ID);
-
-	overlay=scene->overlay_list.overlays[idx];
-
-		// if we had more quads than we started
-		// with, clear the old ones
-
-	for (n=count;n<overlay->quad_list.count;n++) {
-		if (overlay->quad_list.quads[n]!=NULL) free(overlay->quad_list.quads[n]);
-		overlay->quad_list.quads[n]=NULL;
-	}
-
-		// add any that we need
-
-	for (n=0;n!=count;n++) {
-		if (overlay->quad_list.quads[n]!=NULL) continue;
-		
-		overlay->quad_list.quads[n]=(ray_overlay_quad_type*)malloc(sizeof(ray_overlay_quad_type));
-		if (overlay->quad_list.quads[n]==NULL) {
-			overlay->quad_list.count=0;
-			return(RL_ERROR_OUT_OF_MEMORY);
-		}
-	}
-
-		// setup quads
-
-	overlay->quad_list.count=count;
-
-	for (n=0;n!=count;n++) {
-		overlay_quad=overlay->quad_list.quads[n];
-
-		overlay_quad->offset_pnt.x=0;
-		overlay_quad->offset_pnt.y=0;
-
-		overlay_quad->pnt_size.x=overlay->pnt_size.x;
-		overlay_quad->pnt_size.y=overlay->pnt_size.y;
-
-		overlay_quad->uv.x=0.0f;
-		overlay_quad->uv.y=0.0f;
-
-		overlay_quad->uv_size.x=1.0f;
-		overlay_quad->uv_size.y=1.0f;
-
-		overlay_quad->col.r=1.0f;
-		overlay_quad->col.g=1.0f;
-		overlay_quad->col.b=1.0f;
-		overlay_quad->col.a=1.0f;
-	}
-
 	return(RL_ERROR_OK);
 }
 
@@ -696,6 +678,99 @@ int rtlSceneOverlaySetSize(int sceneId,int overlayId,ray_2d_point_type *pnt)
 		
 	overlay->pnt_size.x=pnt->x;
 	overlay->pnt_size.y=pnt->y;
+
+	return(RL_ERROR_OK);
+}
+
+/* =======================================================
+
+      Sets Number of Quads in an Overlay
+	  
+	  Notes:
+	   If the scene is currently rendering, this API
+	   will stall until it's finished
+
+	  Returns:
+	   RL_ERROR_OK
+	   RL_ERROR_UNKNOWN_SCENE_ID
+	   RL_ERROR_UNKNOWN_OVERLAY_ID
+	   RL_ERROR_OUT_OF_MEMORY
+      
+======================================================= */
+
+int rtlSceneOverlaySetQuadCount(int sceneId,int overlayId,int count)
+{
+	int						n,idx;
+	ray_overlay_type		*overlay;
+	ray_overlay_quad_type	*overlay_quad;
+	ray_scene_type			*scene;
+
+		// too many quads?
+
+	if (count>ray_max_scene_overlay_quad) return(RL_ERROR_OUT_OF_MEMORY);
+
+		// get scene
+
+	idx=ray_scene_get_index(sceneId);
+	if (idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
+
+	scene=ray_global.scene_list.scenes[idx];
+	
+		// stall rendering so it finishes
+		
+	ray_render_stall(scene);
+
+		// get the overlay
+
+	idx=ray_scene_overlay_get_index(scene,overlayId);
+	if (idx==-1) return(RL_ERROR_UNKNOWN_OVERLAY_ID);
+
+	overlay=scene->overlay_list.overlays[idx];
+
+		// if we had more quads than we started
+		// with, clear the old ones
+
+	for (n=count;n<overlay->quad_list.count;n++) {
+		if (overlay->quad_list.quads[n]!=NULL) free(overlay->quad_list.quads[n]);
+		overlay->quad_list.quads[n]=NULL;
+	}
+
+		// add any that we need
+
+	for (n=0;n!=count;n++) {
+		if (overlay->quad_list.quads[n]!=NULL) continue;
+		
+		overlay->quad_list.quads[n]=(ray_overlay_quad_type*)malloc(sizeof(ray_overlay_quad_type));
+		if (overlay->quad_list.quads[n]==NULL) {
+			overlay->quad_list.count=0;
+			return(RL_ERROR_OUT_OF_MEMORY);
+		}
+	}
+
+		// setup quads
+
+	overlay->quad_list.count=count;
+
+	for (n=0;n!=count;n++) {
+		overlay_quad=overlay->quad_list.quads[n];
+
+		overlay_quad->offset_pnt.x=0;
+		overlay_quad->offset_pnt.y=0;
+
+		overlay_quad->pnt_size.x=overlay->pnt_size.x;
+		overlay_quad->pnt_size.y=overlay->pnt_size.y;
+
+		overlay_quad->uv.x=0.0f;
+		overlay_quad->uv.y=0.0f;
+
+		overlay_quad->uv_size.x=1.0f;
+		overlay_quad->uv_size.y=1.0f;
+
+		overlay_quad->col.r=1.0f;
+		overlay_quad->col.g=1.0f;
+		overlay_quad->col.b=1.0f;
+		overlay_quad->col.a=1.0f;
+	}
 
 	return(RL_ERROR_OK);
 }
@@ -916,7 +991,6 @@ int rtlSceneOverlaySetQuadUVStamp(int sceneId,int overlayId,int quadIndex,ray_uv
 	return(RL_ERROR_OK);
 }
 
-
 /* =======================================================
 
       Changes Color Tint of a Quad in an Overlay
@@ -970,3 +1044,197 @@ int rtlSceneOverlaySetQuadColor(int sceneId,int overlayId,int quadIndex,ray_colo
 	return(RL_ERROR_OK);
 }
 
+/* =======================================================
+
+      Sets Number of Lines in an Overlay
+	  
+	  Notes:
+	   If the scene is currently rendering, this API
+	   will stall until it's finished
+
+	  Returns:
+	   RL_ERROR_OK
+	   RL_ERROR_UNKNOWN_SCENE_ID
+	   RL_ERROR_UNKNOWN_OVERLAY_ID
+	   RL_ERROR_OUT_OF_MEMORY
+      
+======================================================= */
+
+int rtlSceneOverlaySetLineCount(int sceneId,int overlayId,int count)
+{
+	int						n,idx;
+	ray_overlay_type		*overlay;
+	ray_overlay_line_type	*overlay_line;
+	ray_scene_type			*scene;
+
+		// too many lines?
+
+	if (count>ray_max_scene_overlay_line) return(RL_ERROR_OUT_OF_MEMORY);
+
+		// get scene
+
+	idx=ray_scene_get_index(sceneId);
+	if (idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
+
+	scene=ray_global.scene_list.scenes[idx];
+	
+		// stall rendering so it finishes
+		
+	ray_render_stall(scene);
+
+		// get the overlay
+
+	idx=ray_scene_overlay_get_index(scene,overlayId);
+	if (idx==-1) return(RL_ERROR_UNKNOWN_OVERLAY_ID);
+
+	overlay=scene->overlay_list.overlays[idx];
+
+		// if we had more lines than we started
+		// with, clear the old ones
+
+	for (n=count;n<overlay->line_list.count;n++) {
+		if (overlay->line_list.lines[n]!=NULL) free(overlay->line_list.lines[n]);
+		overlay->line_list.lines[n]=NULL;
+	}
+
+		// add any that we need
+
+	for (n=0;n!=count;n++) {
+		if (overlay->line_list.lines[n]!=NULL) continue;
+		
+		overlay->line_list.lines[n]=(ray_overlay_line_type*)malloc(sizeof(ray_overlay_line_type));
+		if (overlay->line_list.lines[n]==NULL) {
+			overlay->line_list.count=0;
+			return(RL_ERROR_OUT_OF_MEMORY);
+		}
+	}
+
+		// setup lines
+
+	overlay->line_list.count=count;
+
+	for (n=0;n!=count;n++) {
+		overlay_line=overlay->line_list.lines[n];
+
+		overlay_line->start_pnt.x=0;
+		overlay_line->start_pnt.y=0;
+		overlay_line->end_pnt.x=0;
+		overlay_line->end_pnt.y=0;
+
+		overlay_line->col.r=1.0f;
+		overlay_line->col.g=1.0f;
+		overlay_line->col.b=1.0f;
+		overlay_line->col.a=1.0f;
+	}
+
+	return(RL_ERROR_OK);
+}
+
+/* =======================================================
+
+      Changes Both Offset Positions of a Line in an Overlay
+	  
+	  Notes:
+	   If the scene is currently rendering, this API
+	   will stall until it's finished
+
+	  Returns:
+	   RL_ERROR_OK
+	   RL_ERROR_UNKNOWN_SCENE_ID
+	   RL_ERROR_UNKNOWN_OVERLAY_ID
+	   RL_ERROR_OVERLAY_LINE_INDEX_OUT_OF_BOUNDS
+      
+======================================================= */
+
+int rtlSceneOverlaySetLinePosition(int sceneId,int overlayId,int lineIndex,rtl2DPoint *startPnt,rtl2DPoint *endPnt)
+{
+	int						idx;
+	ray_overlay_type		*overlay;
+	ray_overlay_line_type	*overlay_line;
+	ray_scene_type			*scene;
+
+		// get scene
+
+	idx=ray_scene_get_index(sceneId);
+	if (idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
+
+	scene=ray_global.scene_list.scenes[idx];
+	
+		// stall rendering so it finishes
+		
+	ray_render_stall(scene);
+
+		// get the overlay
+
+	idx=ray_scene_overlay_get_index(scene,overlayId);
+	if (idx==-1) return(RL_ERROR_UNKNOWN_OVERLAY_ID);
+
+	overlay=scene->overlay_list.overlays[idx];
+
+		// get line
+
+	if ((lineIndex<0) || (lineIndex>=overlay->line_list.count)) return(RL_ERROR_OVERLAY_LINE_INDEX_OUT_OF_BOUNDS);
+	overlay_line=overlay->line_list.lines[lineIndex];
+
+		// reset line
+		
+	overlay_line->start_pnt.x=startPnt->x;
+	overlay_line->start_pnt.y=startPnt->y;
+	overlay_line->end_pnt.x=endPnt->x;
+	overlay_line->end_pnt.y=endPnt->y;
+
+	return(RL_ERROR_OK);
+}
+
+/* =======================================================
+
+      Changes Color of a Line in an Overlay
+	  
+	  Notes:
+	   If the scene is currently rendering, this API
+	   will stall until it's finished
+
+	  Returns:
+	   RL_ERROR_OK
+	   RL_ERROR_UNKNOWN_SCENE_ID
+	   RL_ERROR_UNKNOWN_OVERLAY_ID
+	   RL_ERROR_OVERLAY_LINE_INDEX_OUT_OF_BOUNDS
+      
+======================================================= */
+
+int rtlSceneOverlaySetLineColor(int sceneId,int overlayId,int lineIndex,ray_color_type *col)
+{
+	int						idx;
+	ray_overlay_type		*overlay;
+	ray_overlay_line_type	*overlay_line;
+	ray_scene_type			*scene;
+
+		// get scene
+
+	idx=ray_scene_get_index(sceneId);
+	if (idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
+
+	scene=ray_global.scene_list.scenes[idx];
+	
+		// stall rendering so it finishes
+		
+	ray_render_stall(scene);
+
+		// get the overlay
+
+	idx=ray_scene_overlay_get_index(scene,overlayId);
+	if (idx==-1) return(RL_ERROR_UNKNOWN_OVERLAY_ID);
+
+	overlay=scene->overlay_list.overlays[idx];
+
+		// get line
+
+	if ((lineIndex<0) || (lineIndex>=overlay->line_list.count)) return(RL_ERROR_OVERLAY_LINE_INDEX_OUT_OF_BOUNDS);
+	overlay_line=overlay->line_list.lines[lineIndex];
+
+		// reset color
+
+	memmove(&overlay_line->col,col,sizeof(ray_color_type));
+
+	return(RL_ERROR_OK);
+}

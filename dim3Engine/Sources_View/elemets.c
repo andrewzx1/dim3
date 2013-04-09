@@ -2829,9 +2829,9 @@ bool element_click_tab(element_type *element,int x,int y)
 	return(TRUE);
 }
 
-void element_draw_tab(element_type *element,int sel_id,int x,int y)
+void element_draw_tab(element_type *element,int sel_id)
 {
-	int				n,xadd,x_slant,x_overlap,y_push,
+	int				n,x,y,xadd,x_slant,x_overlap,y_push,
 					max_sz,mouse_idx,tab_idx,
 					lx,rx,ty,by,margin;
 	int				tab_draw_list[max_element_tab];
@@ -2847,6 +2847,7 @@ void element_draw_tab(element_type *element,int sel_id,int x,int y)
 
 		// get mouse over element
 	
+	input_gui_get_hilite_position(&x,&y);
 	mouse_idx=element_mouse_over_tab(element,x,y);
 
 		// pick drawing order (last to first, selected always on top)
@@ -3187,7 +3188,7 @@ void element_draw_model(element_type *element)
       
 ======================================================= */
 
-void element_draw_frame(element_type *element,int mx,int my)
+void element_draw_frame(element_type *element)
 {
 	int				y,lft,rgt,top,mid,bot;
 	bool			is_header;
@@ -3278,7 +3279,7 @@ int element_draw_item_under_cursor(void)
 
 void element_draw_lock(bool cursor_hilite)
 {
-	int					n,id,x,y;
+	int					n,id;
 	element_type		*element;
 
 		// setup drawing
@@ -3341,7 +3342,7 @@ void element_draw_lock(bool cursor_hilite)
 				element_draw_table(element,id);
 				break;
 			case element_type_tab:
-				element_draw_tab(element,id,x,y);
+				element_draw_tab(element,id);
 				break;
 			case element_type_text_box:
 				element_draw_text_box(element);
@@ -3356,7 +3357,7 @@ void element_draw_lock(bool cursor_hilite)
 				element_draw_count(element);
 				break;
 			case element_type_frame:
-				element_draw_frame(element,x,y);
+				element_draw_frame(element);
 				break;
 				
 		}
