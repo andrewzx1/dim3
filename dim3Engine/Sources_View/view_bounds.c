@@ -393,7 +393,7 @@ void view_cull_draw_list_mesh_poly(void)
 		poly=mesh->polys;
 		
 		for (k=0;k!=mesh->npoly;k++) {
-			poly->draw.culled=view_cull_poly(mesh,poly);
+			poly->draw.culled[view.render->cull_idx]=view_cull_poly(mesh,poly);
 			poly++;
 		}
 	}

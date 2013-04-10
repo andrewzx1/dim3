@@ -117,7 +117,7 @@ void render_transparent_sort(void)
 		for (k=0;k!=mesh->npoly;k++) {
 		
 			poly=&mesh->polys[k];
-			if ((!poly->draw.transparent_on) || (poly->draw.culled)) continue;
+			if ((!poly->draw.transparent_on) || (poly->draw.culled[view.render->cull_idx])) continue;
 			
 				// find distance from camera
 
@@ -167,7 +167,9 @@ void render_map_mesh_transparent(void)
 {
 	int							n,mesh_idx,cur_mesh_idx,
 								frame;
+	float						alpha;
 	bool						in_additive,lighting_small;
+	GLuint						gl_id;
 	texture_type				*texture;
 	map_mesh_type				*mesh;
 	map_mesh_poly_type			*poly;
@@ -243,6 +245,14 @@ void render_map_mesh_transparent(void)
 
 		if (!lighting_small) gl_lights_build_poly_glsl_light_list(mesh,poly,&light_list);
 		gl_shader_draw_execute_map_start(texture,poly->txt_idx,frame,poly->lmap_txt_idx,1.0f,0,(3*sizeof(float)),(5*sizeof(float)),(7*sizeof(float)),(10*sizeof(float)),mesh->vbo.vertex_stride,&light_list);
+
+			// fix texture if any back rendering
+
+		if (gl_back_render_get_texture(poly->camera,&gl_id,&alpha)) {
+			gl_shader_texture_override(gl_id,alpha);
+		}
+
+			// draw polygon
 
 		glDrawElements(GL_TRIANGLE_FAN,poly->ptsz,GL_UNSIGNED_SHORT,(GLvoid*)poly->vbo.index_offset);
 

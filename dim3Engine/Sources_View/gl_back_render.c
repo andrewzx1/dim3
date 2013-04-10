@@ -222,6 +222,8 @@ void gl_back_render_frame_node(char *node_name)
 	
 	glFlush();
 	
+	fprintf(stdout,"render to %s.%d\n",node_name,node->back_render.txt_id);
+	
 		// restore viewport
 	
 	gl_restore_viewport();
@@ -298,6 +300,8 @@ bool gl_back_render_get_texture(char *node_name,GLuint *txt_id,float *alpha)
 	node_type		*node;
 	
 	if (node_name[0]==0x0) return(FALSE);
+	fprintf(stdout,"check %s\n",node_name);
+	
 
 		// get node
 		
@@ -312,6 +316,8 @@ bool gl_back_render_get_texture(char *node_name,GLuint *txt_id,float *alpha)
 
 	*txt_id=node->back_render.txt_id;
 	if (alpha!=NULL) *alpha=node->alpha;
+	
+	fprintf(stdout,"draw to %d\n",node->back_render.txt_id);
 	
 	return(TRUE);
 }
