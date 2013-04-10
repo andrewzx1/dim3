@@ -452,10 +452,12 @@ void view_dim3rtl_render(void)
 {
 		// if we started a render last
 		// time, then make sure it's finished
+		// and the overlay is drawn
 		// before transfering to screen
 		
 	if (view_rtl_has_render) {
 		rtlSceneRenderFinish(view_rtl_draw_scene_id);
+		rtlSceneOverlayDraw(view_rtl_draw_scene_id);
 		view_dim3rtl_transfer_to_opengl(view_rtl_draw_scene_id,view_rtl_x,view_rtl_y,view_rtl_wid,view_rtl_high,view_rtl_draw_gl_id,setup.screen_rtl_wid,setup.screen_rtl_high);
 		view_rtl_has_render=FALSE;
 	}

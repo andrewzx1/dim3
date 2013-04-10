@@ -860,36 +860,6 @@ void ray_trace_lights(ray_scene_type *scene,ray_scene_slice_type *slice,ray_poin
 
 /* =======================================================
 
-      Set Draw Buffer
-      
-======================================================= */
-
-void ray_set_buffer(unsigned long *buf,ray_color_type *pixel_col,ray_color_type *overlay_col)
-{
-	float			inv_a;
-	
-		// add in the overlay
-		
-	if (overlay_col!=NULL) {
-		inv_a=1.0f-overlay_col->a;
-		pixel_col->r=(pixel_col->r*inv_a)+(overlay_col->r*overlay_col->a);
-		pixel_col->g=(pixel_col->g*inv_a)+(overlay_col->g*overlay_col->a);
-		pixel_col->b=(pixel_col->b*inv_a)+(overlay_col->b*overlay_col->a);
-	}
-
-		// clamping
-
-	if (pixel_col->r>1.0f) pixel_col->r=1.0f;
-	if (pixel_col->g>1.0f) pixel_col->g=1.0f;
-	if (pixel_col->b>1.0f) pixel_col->b=1.0f;
-
-		// add to buffer
-		
-	*buf=ray_create_ulong_color_from_float_no_alpha(pixel_col);
-}
-
-/* =======================================================
-
       Add in Tinting Polygons Hit During Ray Trace
       
 ======================================================= */
@@ -1048,7 +1018,7 @@ void ray_render_slice_run(ray_scene_type *scene,ray_scene_slice_type *slice)
 	bool						no_hit;
 	ray_point_type				*eye_point,eye_origin,trig_point,view_plane_point;
 	ray_vector_type				eye_vector,eye_normal_vector;
-	ray_color_type				pixel_col,mat_col,overlay_col;
+	ray_color_type				pixel_col,mat_col;
 	ray_collision_type			collision;
 
 		// build some per-slice
@@ -1072,20 +1042,6 @@ void ray_render_slice_run(ray_scene_type *scene,ray_scene_slice_type *slice)
 	
 		for (x=slice->pixel_start.x;x!=slice->pixel_end.x;x++) {
 		
-				// determine if in overlay
-				// do an early exit if no alpha
-				
-			if (ray_overlay_get_rgb(scene,&slice->overlay_index_block,x,y,&overlay_col)) {
-				if (overlay_col.a==1.0f) {
-					buf=scene->buffer.data+((y*scene->buffer.wid)+x);		// buffer is unsigned long
-					ray_set_buffer(buf,&overlay_col,NULL);
-					continue;
-				}
-			}
-			else {
-				overlay_col.r=overlay_col.g=overlay_col.b=overlay_col.a=0.0f;
-			}
-
 				// repeat through this to
 				// capture all reflections or
 				// alpha pass-throughs
@@ -1196,9 +1152,9 @@ void ray_render_slice_run(ray_scene_type *scene,ray_scene_slice_type *slice)
 				ray_build_alpha_vector(scene,&eye_origin,&eye_vector,&trig_point,&collision);
 			}
 
-				// finally set the buffer
+				// finally clamp and set the buffer
 
-			if (!no_hit) ray_set_buffer(buf,&pixel_col,&overlay_col);
+			if (!no_hit) *buf=ray_create_ulong_color_from_float_no_alpha_clamp(&pixel_col);
 		}
 	}
 }
@@ -1397,10 +1353,6 @@ int rtlSceneRender(int sceneId)
 		// lists
 
 	ray_precalc_render_scene_setup(scene);
-
-		// some presetup for overlays
-
-	ray_overlay_setup_all(scene);
 
 		// we are now rendering
 

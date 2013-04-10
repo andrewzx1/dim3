@@ -653,10 +653,5 @@ void ray_precalc_render_scene_slice_setup(ray_scene_type *scene,ray_scene_slice_
 	for (n=0;n!=ray_max_scene_light;n++) {
 		slice->likely_block_poly_ptr[n].mesh_idx=-1;
 	}
-
-		// determine if there are any overlays that
-		// cross this slice
-
-	ray_overlay_setup_slice_collision(scene,slice);
 }
 

@@ -60,6 +60,12 @@
 #define RL_MESH_FLAG_NON_LIGHT_TRACE_BLOCKING				0x00000004
 #define RL_MESH_FLAG_HIGHLIGHT								0x00000008
 
+	// overlay types
+
+#define RL_OVERLAY_TYPE_QUAD_COLOR							0
+#define RL_OVERLAY_TYPE_QUAD_MATERIAL						1
+#define RL_OVERLAY_TYPE_LINE_COLOR							2
+
 	// errors
 
 #define RL_ERROR_OK											0
@@ -69,17 +75,16 @@
 #define RL_ERROR_UNKNOWN_MESH_ID							-4
 #define RL_ERROR_MESH_POLY_INDEX_OUT_OF_BOUNDS				-5
 #define RL_ERROR_UNKNOWN_OVERLAY_ID							-6
-#define RL_ERROR_OVERLAY_QUAD_INDEX_OUT_OF_BOUNDS			-7
-#define RL_ERROR_OVERLAY_LINE_INDEX_OUT_OF_BOUNDS			-8
-#define RL_ERROR_OUT_OF_MEMORY								-9
-#define RL_ERROR_UNKNOWN_TARGET								-10
-#define RL_ERROR_UNKNOWN_FORMAT								-11
-#define RL_ERROR_UNKNOWN_ALPHA_TYPE							-12
-#define RL_ERROR_MATERIAL_ATTACHED_TO_MESH					-13
-#define RL_ERROR_MATERIAL_ATTACHED_TO_OVERLAY				-14
-#define RL_ERROR_THREADING_ERROR							-15
-#define RL_ERROR_POINT_BEHIND_EYE							-16
-#define RL_ERROR_TOO_MANY_MATERIALS							-17
+#define RL_ERROR_UNKNOWN_OVERLAY_TYPE						-7
+#define RL_ERROR_OUT_OF_MEMORY								-8
+#define RL_ERROR_UNKNOWN_TARGET								-9
+#define RL_ERROR_UNKNOWN_FORMAT								-10
+#define RL_ERROR_UNKNOWN_ALPHA_TYPE							-11
+#define RL_ERROR_MATERIAL_ATTACHED_TO_MESH					-12
+#define RL_ERROR_MATERIAL_ATTACHED_TO_OVERLAY				-13
+#define RL_ERROR_THREADING_ERROR							-14
+#define RL_ERROR_POINT_BEHIND_EYE							-15
+#define RL_ERROR_TOO_MANY_MATERIALS							-16
 
 //
 // functions
@@ -162,24 +167,18 @@ extern int rtlSceneMeshSetPolyColorAll(int sceneId,int meshId,rtlColor *col);
 
 	// scene overlays
 	
-extern int rtlSceneOverlayAdd(int sceneId,int materialId,unsigned long flags);
+extern int rtlSceneOverlayAdd(int sceneId,int overlayType,unsigned long flags);
 extern int rtlSceneOverlayDelete(int sceneId,int overlayId);
 extern int rtlSceneOverlayDeleteAll(int sceneId);
+
 extern int rtlSceneOverlaySetMaterial(int sceneId,int overlayId,int materialId);
+extern int rtlSceneOverlaySetTint(int sceneId,int overlayId,rtlColor *col);
 extern int rtlSceneOverlaySetHidden(int sceneId,int overlayId,bool hidden);
-extern int rtlSceneOverlaySetPosition(int sceneId,int overlayId,rtl2DPoint *pnt);
-extern int rtlSceneOverlaySetSize(int sceneId,int overlayId,rtl2DPoint *pnt);
 
-extern int rtlSceneOverlaySetQuadCount(int sceneId,int overlayId,int count);
-extern int rtlSceneOverlaySetQuadPosition(int sceneId,int overlayId,int quadIndex,rtl2DPoint *pnt);
-extern int rtlSceneOverlaySetQuadSize(int sceneId,int overlayId,int quadIndex,rtl2DPoint *pnt);
-extern int rtlSceneOverlaySetQuadUV(int sceneId,int overlayId,int quadIndex,rtlUV *uv);
-extern int rtlSceneOverlaySetQuadUVStamp(int sceneId,int overlayId,int quadIndex,rtlUV *uv);
-extern int rtlSceneOverlaySetQuadColor(int sceneId,int overlayId,int quadIndex,rtlColor *col);
+extern int rtlSceneOverlaySetQuadPosition(int sceneId,int overlayId,rtl2DPoint *pnt,rtl2DPoint *size);
+extern int rtlSceneOverlaySetQuadUV(int sceneId,int overlayId,rtlUV *uv,rtlUV *stamp);
 
-extern int rtlSceneOverlaySetLineCount(int sceneId,int overlayId,int count);
-extern int rtlSceneOverlaySetLinePosition(int sceneId,int overlayId,int lineIndex,rtl2DPoint *startPnt,rtl2DPoint *endPnt);
-extern int rtlSceneOverlaySetLineColor(int sceneId,int overlayId,int lineIndex,rtlColor *col);
+extern int rtlSceneOverlayDraw(int sceneId);
 
 	// math utilities
 
