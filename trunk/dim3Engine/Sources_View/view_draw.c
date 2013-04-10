@@ -360,6 +360,7 @@ void view_draw_opengl(void)
 	view.render->camera.flip=FALSE;
 	view.render->camera.under_liquid_idx=camera_check_liquid(obj,&view.render->camera.pnt);
 	
+	view.render->cull_idx=0;
 	view.render->force_camera_obj=FALSE;
 
 		// camera adjustments
@@ -396,7 +397,7 @@ void view_draw_opengl(void)
 		// render the scene
 
 	gl_fs_shader_render_begin();
-	view_draw_scene_render(obj,weap);		// supergumba
+	view_draw_scene_render(obj,weap);
 	gl_fs_shader_render_finish();
 
 		// draw tints and fades
@@ -430,6 +431,7 @@ bool view_draw_node(node_type *node)
 	view.render->camera.under_liquid_idx=-1;
 	view.render->camera.z_adjust=0;
 	
+	view.render->cull_idx=1;
 	view.render->force_camera_obj=TRUE;
 
 		// clear the frame
@@ -485,6 +487,7 @@ void view_draw_dim3rtl(void)
 	view.render->camera.flip=FALSE;
 	view.render->camera.under_liquid_idx=camera_check_liquid(obj,&view.render->camera.pnt);
 	
+	view.render->cull_idx=0;
 	view.render->force_camera_obj=FALSE;
 
 		// camera adjustments

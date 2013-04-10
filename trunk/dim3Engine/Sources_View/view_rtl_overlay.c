@@ -66,7 +66,7 @@ void view_dim3rtl_overlay_start(void)
 	iface_text_type			*text;
 	iface_crosshair_type	*crosshair;
 	texture_font_size_type	*font_size;
-
+	
 	if (setup.no_hud) return;
 
 		// hud bitmaps
