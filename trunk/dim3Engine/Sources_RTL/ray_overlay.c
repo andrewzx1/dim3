@@ -29,306 +29,24 @@ int ray_scene_overlay_get_index(ray_scene_type *scene,int overlayId)
 
 /* =======================================================
 
-      Find Overlay Pixel
-      
-======================================================= */
-
-bool ray_overlay_get_rgb(ray_scene_type *scene,ray_scene_overlay_index_block *index_block,int x,int y,ray_color_type *col)
-{
-	int							n,k,px,py,px2,py2,offset;
-	unsigned long				buf;
-	float						f,fx,fy;
-	bool						hit;
-	ray_overlay_type			*overlay;
-	ray_overlay_quad_type		*overlay_quad;
-	ray_overlay_line_type		*overlay_line;
-	ray_material_type			*material;
-	ray_material_mipmap_type	*mipmap;
-	ray_color_type				o_col;
-
-	if (index_block->count==0) return(FALSE);
-	if (scene->overlay_list.count==0) return(FALSE);
-
-		// no hits yet
-
-	hit=FALSE;
-	col->a=0.0f;
-
-		// search overlay lists backwards
-		// so front to back ordering is
-		// used for rendering
-
-	for (n=0;n!=index_block->count;n++) {
-		overlay=scene->overlay_list.overlays[index_block->indexes[n]];
-		if (overlay->hidden) continue;
-
-			// skip if no quads or lines
-
-		if ((overlay->quad_list.count==0) && (overlay->line_list.count==0)) continue;
-		
-			// determine if we are in overlay
-			
-		if (x<overlay->pnt.x) continue;
-		if (x>(overlay->pnt.x+overlay->pnt_size.x)) continue;
-		if (y<overlay->pnt.y) continue;
-		if (y>(overlay->pnt.y+overlay->pnt_size.y)) continue;
-
-			// sanity check for materials
-			
-		material=ray_global.material_list.materials[overlay->material_idx];
-
-		mipmap=&material->mipmap_list.mipmaps[overlay->mm_level];
-		if (mipmap->data.color==NULL) continue;
-
-			// determine the quad we are in
-
-		for (k=(overlay->quad_list.count-1);k>=0;k--) {
-			overlay_quad=overlay->quad_list.quads[k];
-
-				// in this quad?
-				// quad points are offsets of overlay box
-
-			px=overlay->pnt.x+overlay_quad->offset_pnt.x;
-			if (x<px) continue;
-			if (x>(px+overlay_quad->pnt_size.x)) continue;
-
-			py=overlay->pnt.y+overlay_quad->offset_pnt.y;
-			if (y<py) continue;
-			if (y>(py+overlay_quad->pnt_size.y)) continue;
-				
-				// get uv
-				
-			f=(float)(x-px)/(float)(overlay_quad->pnt_size.x);
-			fx=overlay_quad->uv.x+((overlay_quad->uv_size.x)*f);
-			
-			f=(float)(y-py)/(float)(overlay_quad->pnt_size.y);
-			fy=overlay_quad->uv.y+((overlay_quad->uv_size.y)*f);
-			
-				// change to texture coordinate
-			
-			fx-=floorf(fx);
-			px=(int)(fx*mipmap->wid_scale);
-
-			fy-=floorf(fy);
-			py=(int)(fy*mipmap->high_scale);
-		
-			offset=(mipmap->wid*py)+px;
-		
-				// get color
-				
-			buf=*(((unsigned long*)mipmap->data.color)+offset);
-			ray_create_float_color_from_ulong(buf,&o_col);
-
-				// multiply in the tint
-
-			o_col.r*=overlay_quad->col.r;
-			o_col.g*=overlay_quad->col.g;
-			o_col.b*=overlay_quad->col.b;
-			o_col.a*=overlay_quad->col.a;
-
-				// skip if no alpha
-
-			if (o_col.a==0.0f) continue;
-
-				// if no hits, this becomes
-				// the new color
-
-			if (!hit) {
-				col->r=o_col.r;
-				col->g=o_col.g;
-				col->b=o_col.b;
-				col->a=o_col.a;
-			}
-
-				// otherwise, we need to
-				// mix the colors using the
-				// previous alpha
-
-			else {
-				f=1.0f-o_col.a;
-				col->r=(col->r*f)+(o_col.r*o_col.a);
-				col->g=(col->g*f)+(o_col.g*o_col.a);
-				col->b=(col->b*f)+(o_col.b*o_col.a);
-
-					// always adopt new alpha
-					// unless we are already at 1
-					// any 1 immediately breaks
-					// any alpha with render
-
-				if (col->a!=1.0f) col->a=o_col.a;
-			}
-			
-			hit=TRUE;
-		}
-
-			// determine any lines
-
-		for (k=(overlay->line_list.count-1);k>=0;k--) {
-			overlay_line=overlay->line_list.lines[k];
-
-				// in line box?
-
-			px=overlay->pnt.x+overlay_line->start_pnt.x;
-			px2=overlay->pnt.x+overlay_line->end_pnt.x;
-			if (px<px2) {
-				if ((x<px) || (x>px2)) continue;
-			}
-			else {
-				if ((x<px2) || (x>px)) continue;
-			}
-
-			py=overlay->pnt.y+overlay_line->start_pnt.y;
-			py2=overlay->pnt.y+overlay_line->end_pnt.y;
-			if (py<py2) {
-				if ((y<py) || (y>py2)) continue;
-			}
-			else {
-				if ((y<py2) || (y>py)) continue;
-			}
-			
-				// check if it hits line
-				// a straight line is always a hit
-
-			if (!((px2==px) || (py2==py))) {
-				fx=(float)fabs((float)(x-px)/(float)(px2-px));
-				fy=((float)(py2-py))*fx;
-				if (y!=(py+(int)fy)) continue;
-			}
-
-				// if no hits, this becomes
-				// the new color
-
-			if (!hit) {
-				col->r=overlay_line->col.r;
-				col->g=overlay_line->col.g;
-				col->b=overlay_line->col.b;
-				col->a=overlay_line->col.a;
-			}
-
-				// otherwise, we need to
-				// mix the colors using the
-				// previous alpha
-
-			else {
-				f=1.0f-o_col.a;
-				col->r=(col->r*f)+(overlay_line->col.r*overlay_line->col.a);
-				col->g=(col->g*f)+(overlay_line->col.g*overlay_line->col.a);
-				col->b=(col->b*f)+(overlay_line->col.b*overlay_line->col.a);
-
-					// always adopt new alpha
-					// unless we are already at 1
-					// any 1 immediately breaks
-					// any alpha with render
-
-				if (col->a!=1.0f) col->a=overlay_line->col.a;
-			}
-			
-			hit=TRUE;
-		}
-	}
-
-	return(hit);
-}
-
-/* =======================================================
-
-      Check for Overlay and Slice Collision
-      
-======================================================= */
-
-void ray_overlay_setup_slice_collision(ray_scene_type *scene,ray_scene_slice_type *slice)
-{
-	int						n;
-	ray_overlay_type		*overlay;
-
-	slice->overlay_index_block.count=0;
-
-	for (n=0;n!=scene->overlay_list.count;n++) {
-		overlay=scene->overlay_list.overlays[n];
-
-			// overlay hidden
-
-		if (overlay->hidden) continue;
-		if (overlay->quad_list.count==0) continue;
-
-			// box collision
-
-		if ((overlay->pnt.x>slice->pixel_end.x) || (overlay->pnt.y>slice->pixel_end.y) || ((overlay->pnt.x+overlay->pnt_size.x)<slice->pixel_start.x) || ((overlay->pnt.y+overlay->pnt_size.y)<slice->pixel_start.y)) continue;
-
-			// this slice has to check
-			// this overlay
-
-		slice->overlay_index_block.indexes[slice->overlay_index_block.count]=n;
-		slice->overlay_index_block.count++;
-	}
-}
-
-/* =======================================================
-
-      Setup Overlays Before Drawing
-      
-======================================================= */
-
-void ray_overlay_setup_all(ray_scene_type *scene)
-{
-	int						n,k,wid;
-	ray_overlay_type		*overlay;
-	ray_overlay_quad_type	*overlay_quad;
-	ray_material_type		*material;
-
-	for (n=0;n!=scene->overlay_list.count;n++) {
-		overlay=scene->overlay_list.overlays[n];
-
-			// no need for levels if hidden
-			// or no quads
-
-		if (overlay->hidden) continue;
-		if (overlay->quad_list.count==0) continue;
-
-			// get drawing size
-			// if UV was 0...1
-			// use first quad in list to determine mipmap level
-			// (this assumes all quads are of relative size)
-
-		overlay_quad=overlay->quad_list.quads[0];
-		wid=(int)(((float)overlay_quad->pnt_size.x)*(1.0f/(overlay_quad->uv_size.x-overlay_quad->uv.x)));
-
-			// get mipmap level
-			// closer but >= to size
-			
-		material=ray_global.material_list.materials[overlay->material_idx];
-
-		overlay->mm_level=0;
-
-		for (k=0;k!=material->mipmap_list.count;k++) {
-			if (material->mipmap_list.mipmaps[k].wid<wid) {
-				overlay->mm_level=k-1;
-				if (overlay->mm_level<0) overlay->mm_level=0;
-				break;
-			}
-		}
-	}
-}
-
-/* =======================================================
-
       Adds a New Overlay to a Scene
-	  
-	  Notes:
-	   If the scene is currently rendering, this API
-	   will stall until it's finished
 
+	  Note:
+	   Default is 0,0-0,0, uv 0..1,
+	   no material, and color 0xFFFFFFFF
+	  
 	  Returns:
 	   If >=0, then a overlay ID
 	   RL_ERROR_UNKNOWN_SCENE_ID
 	   RL_ERROR_UNKNOWN_MATERIAL_ID
+	   RL_ERROR_UNKNOWN_OVERLAY_TYPE
 	   RL_ERROR_OUT_OF_MEMORY
       
 ======================================================= */
 
-int rtlSceneOverlayAdd(int sceneId,int materialId,unsigned long flags)
+int rtlSceneOverlayAdd(int sceneId,int overlayType,unsigned long flags)
 {
-	int					n,idx,material_idx;
+	int					idx;
 	ray_overlay_type	*overlay;
 	ray_scene_type		*scene;
 	
@@ -338,15 +56,10 @@ int rtlSceneOverlayAdd(int sceneId,int materialId,unsigned long flags)
 	if (idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
 
 	scene=ray_global.scene_list.scenes[idx];
-	
-		// stall rendering so it finishes
-		
-	ray_render_stall(scene);
-	
-		// lookup material
-		
-	material_idx=ray_material_get_index(materialId);
-	if (material_idx==-1) return(RL_ERROR_UNKNOWN_MATERIAL_ID);
+
+		// lookup type
+
+	if ((overlayType!=RL_OVERLAY_TYPE_QUAD_COLOR) && (overlayType!=RL_OVERLAY_TYPE_QUAD_MATERIAL) && (overlayType!=RL_OVERLAY_TYPE_LINE_COLOR)) return(RL_ERROR_UNKNOWN_OVERLAY_TYPE);
 
 		// create new overlay
 
@@ -355,28 +68,38 @@ int rtlSceneOverlayAdd(int sceneId,int materialId,unsigned long flags)
 
 		// add overlay
 		
-	overlay->material_idx=material_idx;
-		
-	overlay->pnt.x=0;
-	overlay->pnt.y=0;
-	
-	overlay->pnt_size.x=0;
-	overlay->pnt_size.y=0;
-	
+	overlay->material_idx=-1;
+	overlay->overlay_type=overlayType;
 	overlay->hidden=FALSE;
+	
+	overlay->tint.r=1.0f;
+	overlay->tint.g=1.0f;
+	overlay->tint.b=1.0f;
+	overlay->tint.a=1.0f;
 
-		// no quads or lines
+		// default for types
 
-	overlay->quad_list.count=0;
+	switch (overlayType) {
 
-	for (n=0;n!=ray_max_scene_overlay_quad;n++) {
-		overlay->quad_list.quads[n]=NULL;
-	}
+		case RL_OVERLAY_TYPE_QUAD_COLOR:
+		case RL_OVERLAY_TYPE_QUAD_MATERIAL:
+			overlay->setup.quad.pnt.x=0;
+			overlay->setup.quad.pnt.y=0;
+			overlay->setup.quad.pnt_size.x=0;
+			overlay->setup.quad.pnt_size.y=0;
+			overlay->setup.quad.uv.x=0.0f;
+			overlay->setup.quad.uv.y=0.0f;
+			overlay->setup.quad.uv_size.x=1.0f;
+			overlay->setup.quad.uv_size.y=1.0f;
+			break;
 
-	overlay->line_list.count=0;
+		case RL_OVERLAY_TYPE_LINE_COLOR:
+			overlay->setup.line.start_pnt.x=0;
+			overlay->setup.line.start_pnt.y=0;
+			overlay->setup.line.end_pnt.x=0;
+			overlay->setup.line.end_pnt.y=0;
+			break;
 
-	for (n=0;n!=ray_max_scene_overlay_line;n++) {
-		overlay->line_list.lines[n]=NULL;
 	}
 
 		// set id
@@ -395,10 +118,6 @@ int rtlSceneOverlayAdd(int sceneId,int materialId,unsigned long flags)
 /* =======================================================
 
       Deletes a Overlay from a Scene
-	  
-	  Notes:
-	   If the scene is currently rendering, this API
-	   will stall until it's finished
 
 	  Returns:
 	   RL_ERROR_OK
@@ -419,10 +138,6 @@ int rtlSceneOverlayDelete(int sceneId,int overlayId)
 	if (idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
 
 	scene=ray_global.scene_list.scenes[idx];
-	
-		// stall rendering so it finishes
-		
-	ray_render_stall(scene);
 
 		// get the overlay
 
@@ -430,16 +145,6 @@ int rtlSceneOverlayDelete(int sceneId,int overlayId)
 	if (idx==-1) return(RL_ERROR_UNKNOWN_OVERLAY_ID);
 
 	overlay=scene->overlay_list.overlays[idx];
-
-		// remove quads and lines
-
-	for (n=0;n!=ray_max_scene_overlay_quad;n++) {
-		if (overlay->quad_list.quads[n]!=NULL) free(overlay->quad_list.quads[n]);
-	}
-
-	for (n=0;n!=ray_max_scene_overlay_line;n++) {
-		if (overlay->line_list.lines[n]!=NULL) free(overlay->line_list.lines[n]);
-	}
 
 		// remove overlay
 
@@ -495,10 +200,6 @@ int rtlSceneOverlayDeleteAll(int sceneId)
 /* =======================================================
 
       Changes Material of Overlay Already in a Scene
-	  
-	  Notes:
-	   If the scene is currently rendering, this API
-	   will stall until it's finished
 
 	  Returns:
 	   RL_ERROR_OK
@@ -520,10 +221,6 @@ int rtlSceneOverlaySetMaterial(int sceneId,int overlayId,int materialId)
 	if (idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
 
 	scene=ray_global.scene_list.scenes[idx];
-	
-		// stall rendering so it finishes
-		
-	ray_render_stall(scene);
 
 		// get the overlay
 
@@ -544,11 +241,48 @@ int rtlSceneOverlaySetMaterial(int sceneId,int overlayId,int materialId)
 
 /* =======================================================
 
+      Sets tint (color) of Overlay Already in a Scene
+
+	  Returns:
+	   RL_ERROR_OK
+	   RL_ERROR_UNKNOWN_SCENE_ID
+	   RL_ERROR_UNKNOWN_OVERLAY_ID
+      
+======================================================= */
+
+int rtlSceneOverlaySetTint(int sceneId,int overlayId,ray_color_type *col)
+{
+	int					idx;
+	ray_overlay_type	*overlay;
+	ray_scene_type		*scene;
+
+		// get scene
+
+	idx=ray_scene_get_index(sceneId);
+	if (idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
+
+	scene=ray_global.scene_list.scenes[idx];
+
+		// get the overlay
+
+	idx=ray_scene_overlay_get_index(scene,overlayId);
+	if (idx==-1) return(RL_ERROR_UNKNOWN_OVERLAY_ID);
+
+	overlay=scene->overlay_list.overlays[idx];
+
+		// reset hidden flag
+
+	overlay->tint.r=col->r;
+	overlay->tint.g=col->g;
+	overlay->tint.b=col->b;
+	overlay->tint.a=col->a;
+
+	return(RL_ERROR_OK);
+}
+
+/* =======================================================
+
       Sets an Overlay to Show or Hide
-	  
-	  Notes:
-	   If the scene is currently rendering, this API
-	   will stall until it's finished
 
 	  Returns:
 	   RL_ERROR_OK
@@ -569,10 +303,6 @@ int rtlSceneOverlaySetHidden(int sceneId,int overlayId,bool hidden)
 	if (idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
 
 	scene=ray_global.scene_list.scenes[idx];
-	
-		// stall rendering so it finishes
-		
-	ray_render_stall(scene);
 
 		// get the overlay
 
@@ -590,11 +320,7 @@ int rtlSceneOverlaySetHidden(int sceneId,int overlayId,bool hidden)
 
 /* =======================================================
 
-      Changes Position of Overlay Already in a Scene
-	  
-	  Notes:
-	   If the scene is currently rendering, this API
-	   will stall until it's finished
+      Changes Position of Quad Overlay Already in a Scene
 
 	  Returns:
 	   RL_ERROR_OK
@@ -603,7 +329,7 @@ int rtlSceneOverlaySetHidden(int sceneId,int overlayId,bool hidden)
       
 ======================================================= */
 
-int rtlSceneOverlaySetPosition(int sceneId,int overlayId,ray_2d_point_type *pnt)
+int rtlSceneOverlaySetQuadPosition(int sceneId,int overlayId,ray_2d_point_type *pnt,ray_2d_point_type *size)
 {
 	int					idx;
 	ray_overlay_type	*overlay;
@@ -615,10 +341,6 @@ int rtlSceneOverlaySetPosition(int sceneId,int overlayId,ray_2d_point_type *pnt)
 	if (idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
 
 	scene=ray_global.scene_list.scenes[idx];
-	
-		// stall rendering so it finishes
-		
-	ray_render_stall(scene);
 
 		// get the overlay
 
@@ -629,19 +351,17 @@ int rtlSceneOverlaySetPosition(int sceneId,int overlayId,ray_2d_point_type *pnt)
 
 		// reset point
 		
-	overlay->pnt.x=pnt->x;
-	overlay->pnt.y=pnt->y;
+	overlay->setup.quad.pnt.x=pnt->x;
+	overlay->setup.quad.pnt.y=pnt->y;
+	overlay->setup.quad.pnt_size.x=size->x;
+	overlay->setup.quad.pnt_size.y=size->y;
 
 	return(RL_ERROR_OK);
 }
 
 /* =======================================================
 
-      Changes Size of Overlay Already in a Scene
-	  
-	  Notes:
-	   If the scene is currently rendering, this API
-	   will stall until it's finished
+      Changes UV of Quad Overlay Already in a Scene
 
 	  Returns:
 	   RL_ERROR_OK
@@ -650,7 +370,7 @@ int rtlSceneOverlaySetPosition(int sceneId,int overlayId,ray_2d_point_type *pnt)
       
 ======================================================= */
 
-int rtlSceneOverlaySetSize(int sceneId,int overlayId,ray_2d_point_type *pnt)
+int rtlSceneOverlaySetQuadUV(int sceneId,int overlayId,ray_uv_type *uv,ray_uv_type *stamp)
 {
 	int					idx;
 	ray_overlay_type	*overlay;
@@ -662,10 +382,6 @@ int rtlSceneOverlaySetSize(int sceneId,int overlayId,ray_2d_point_type *pnt)
 	if (idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
 
 	scene=ray_global.scene_list.scenes[idx];
-	
-		// stall rendering so it finishes
-		
-	ray_render_stall(scene);
 
 		// get the overlay
 
@@ -676,565 +392,172 @@ int rtlSceneOverlaySetSize(int sceneId,int overlayId,ray_2d_point_type *pnt)
 
 		// reset point
 		
-	overlay->pnt_size.x=pnt->x;
-	overlay->pnt_size.y=pnt->y;
+	overlay->setup.quad.uv.x=uv->x;
+	overlay->setup.quad.uv.y=uv->y;
+	overlay->setup.quad.uv_size.x=stamp->x;
+	overlay->setup.quad.uv_size.y=stamp->y;
 
 	return(RL_ERROR_OK);
 }
 
 /* =======================================================
 
-      Sets Number of Quads in an Overlay
+      Draws the Overlay into the Scene
 	  
-	  Notes:
-	   If the scene is currently rendering, this API
-	   will stall until it's finished
-
 	  Returns:
-	   RL_ERROR_OK
 	   RL_ERROR_UNKNOWN_SCENE_ID
-	   RL_ERROR_UNKNOWN_OVERLAY_ID
-	   RL_ERROR_OUT_OF_MEMORY
       
 ======================================================= */
 
-int rtlSceneOverlaySetQuadCount(int sceneId,int overlayId,int count)
+void ray_scene_overlay_draw_quad_material(ray_scene_type *scene,ray_overlay_type *overlay)
 {
-	int						n,idx;
-	ray_overlay_type		*overlay;
-	ray_overlay_quad_type	*overlay_quad;
-	ray_scene_type			*scene;
+	int							n,wid,mm_level,
+								x,y,lx,rx,ty,by,px,py,
+								y_buf_offset;
+	float						f,fx,fy,inv_a;
+	unsigned long				*buf;
+	unsigned long				mat_buf;
+	ray_material_type			*material;
+	ray_material_mipmap_type	*mipmap;
+	ray_color_type				buf_col,overlay_col;
 
-		// too many quads?
-
-	if (count>ray_max_scene_overlay_quad) return(RL_ERROR_OUT_OF_MEMORY);
-
-		// get scene
-
-	idx=ray_scene_get_index(sceneId);
-	if (idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
-
-	scene=ray_global.scene_list.scenes[idx];
+		// get the mipmap level
+		
+	if (overlay->material_idx==-1) return;
+	material=ray_global.material_list.materials[overlay->material_idx];
 	
-		// stall rendering so it finishes
-		
-	ray_render_stall(scene);
+	wid=(int)(((float)overlay->setup.quad.pnt_size.x)*(1.0f/(overlay->setup.quad.uv_size.x-overlay->setup.quad.uv.x)));
 
-		// get the overlay
+	mm_level=0;
 
-	idx=ray_scene_overlay_get_index(scene,overlayId);
-	if (idx==-1) return(RL_ERROR_UNKNOWN_OVERLAY_ID);
-
-	overlay=scene->overlay_list.overlays[idx];
-
-		// if we had more quads than we started
-		// with, clear the old ones
-
-	for (n=count;n<overlay->quad_list.count;n++) {
-		if (overlay->quad_list.quads[n]!=NULL) free(overlay->quad_list.quads[n]);
-		overlay->quad_list.quads[n]=NULL;
-	}
-
-		// add any that we need
-
-	for (n=0;n!=count;n++) {
-		if (overlay->quad_list.quads[n]!=NULL) continue;
-		
-		overlay->quad_list.quads[n]=(ray_overlay_quad_type*)malloc(sizeof(ray_overlay_quad_type));
-		if (overlay->quad_list.quads[n]==NULL) {
-			overlay->quad_list.count=0;
-			return(RL_ERROR_OUT_OF_MEMORY);
+	for (n=0;n!=material->mipmap_list.count;n++) {
+		if (material->mipmap_list.mipmaps[n].wid<wid) {
+			mm_level=n-1;
+			if (mm_level<0) mm_level=0;
+			break;
 		}
 	}
 
-		// setup quads
+	mipmap=&material->mipmap_list.mipmaps[mm_level];
+	if (mipmap->data.color==NULL) return;
 
-	overlay->quad_list.count=count;
+		// quad size
 
-	for (n=0;n!=count;n++) {
-		overlay_quad=overlay->quad_list.quads[n];
+	lx=overlay->setup.quad.pnt.x;
+	rx=lx+overlay->setup.quad.pnt_size.x;
+	ty=overlay->setup.quad.pnt.y;
+	by=ty+overlay->setup.quad.pnt_size.y;
 
-		overlay_quad->offset_pnt.x=0;
-		overlay_quad->offset_pnt.y=0;
+	for (y=ty;y<by;y++) {
 
-		overlay_quad->pnt_size.x=overlay->pnt_size.x;
-		overlay_quad->pnt_size.y=overlay->pnt_size.y;
+			// buffer line
 
-		overlay_quad->uv.x=0.0f;
-		overlay_quad->uv.y=0.0f;
+		buf=scene->buffer.data+((y*scene->buffer.wid)+lx);
 
-		overlay_quad->uv_size.x=1.0f;
-		overlay_quad->uv_size.y=1.0f;
+			// get y texture coordinate
+			
+		f=(float)(y-ty)/(float)(overlay->setup.quad.pnt_size.y);
+		fy=overlay->setup.quad.uv.y+((overlay->setup.quad.uv_size.y)*f);
 
-		overlay_quad->col.r=1.0f;
-		overlay_quad->col.g=1.0f;
-		overlay_quad->col.b=1.0f;
-		overlay_quad->col.a=1.0f;
-	}
+		fy-=floorf(fy);
+		py=(int)(fy*mipmap->high_scale);
 
-	return(RL_ERROR_OK);
-}
+		y_buf_offset=mipmap->wid*py;
 
-/* =======================================================
+			// draw the row
 
-      Changes Offset Position of a Quad in an Overlay
-	  
-	  Notes:
-	   If the scene is currently rendering, this API
-	   will stall until it's finished
+		for (x=lx;x<rx;x++) {
 
-	  Returns:
-	   RL_ERROR_OK
-	   RL_ERROR_UNKNOWN_SCENE_ID
-	   RL_ERROR_UNKNOWN_OVERLAY_ID
-	   RL_ERROR_OVERLAY_QUAD_INDEX_OUT_OF_BOUNDS
-      
-======================================================= */
-
-int rtlSceneOverlaySetQuadPosition(int sceneId,int overlayId,int quadIndex,ray_2d_point_type *pnt)
-{
-	int						idx;
-	ray_overlay_type		*overlay;
-	ray_overlay_quad_type	*overlay_quad;
-	ray_scene_type			*scene;
-
-		// get scene
-
-	idx=ray_scene_get_index(sceneId);
-	if (idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
-
-	scene=ray_global.scene_list.scenes[idx];
-	
-		// stall rendering so it finishes
+				// get x texture coordinate
+				
+			f=(float)(x-lx)/(float)(overlay->setup.quad.pnt_size.x);
+			fx=overlay->setup.quad.uv.x+((overlay->setup.quad.uv_size.x)*f);
+			
+			fx-=floorf(fx);
+			px=(int)(fx*mipmap->wid_scale);
 		
-	ray_render_stall(scene);
-
-		// get the overlay
-
-	idx=ray_scene_overlay_get_index(scene,overlayId);
-	if (idx==-1) return(RL_ERROR_UNKNOWN_OVERLAY_ID);
-
-	overlay=scene->overlay_list.overlays[idx];
-
-		// get quad
-
-	if ((quadIndex<0) || (quadIndex>=overlay->quad_list.count)) return(RL_ERROR_OVERLAY_QUAD_INDEX_OUT_OF_BOUNDS);
-	overlay_quad=overlay->quad_list.quads[quadIndex];
-
-		// reset point
+				// get color
 		
-	overlay_quad->offset_pnt.x=pnt->x;
-	overlay_quad->offset_pnt.y=pnt->y;
+			mat_buf=*(((unsigned long*)mipmap->data.color)+(y_buf_offset+px));
+			ray_create_float_color_from_ulong(mat_buf,&overlay_col);
 
-	return(RL_ERROR_OK);
-}
+				// multiply in the tint
 
-/* =======================================================
+			overlay_col.r*=overlay->tint.r;
+			overlay_col.g*=overlay->tint.g;
+			overlay_col.b*=overlay->tint.b;
+			overlay_col.a*=overlay->tint.a;
 
-      Changes Size of a Quad in an Overlay
-	  
-	  Notes:
-	   If the scene is currently rendering, this API
-	   will stall until it's finished
+				// overwrite if alpha=1.0f
 
-	  Returns:
-	   RL_ERROR_OK
-	   RL_ERROR_UNKNOWN_SCENE_ID
-	   RL_ERROR_UNKNOWN_OVERLAY_ID
-	   RL_ERROR_OVERLAY_QUAD_INDEX_OUT_OF_BOUNDS
-      
-======================================================= */
+			if (overlay_col.a==1.0f) {
+				*buf=ray_create_ulong_color_from_float_no_alpha(&overlay_col);
+				buf++;
+				continue;
+			}
 
-int rtlSceneOverlaySetQuadSize(int sceneId,int overlayId,int quadIndex,ray_2d_point_type *pnt)
-{
-	int						idx;
-	ray_overlay_type		*overlay;
-	ray_overlay_quad_type	*overlay_quad;
-	ray_scene_type			*scene;
+				// skip if no alpha
 
-		// get scene
+			if (overlay_col.a==0.0f) {
+				buf++;
+				continue;
+			}
 
-	idx=ray_scene_get_index(sceneId);
-	if (idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
+				// mix with previous values
 
-	scene=ray_global.scene_list.scenes[idx];
-	
-		// stall rendering so it finishes
-		
-	ray_render_stall(scene);
+			ray_create_float_color_from_ulong_no_alpha(*buf,&buf_col);
 
-		// get the overlay
+			inv_a=1.0f-overlay_col.a;
+			buf_col.r=(buf_col.r*inv_a)+(overlay_col.r*overlay_col.a);
+			buf_col.g=(buf_col.g*inv_a)+(overlay_col.g*overlay_col.a);
+			buf_col.b=(buf_col.b*inv_a)+(overlay_col.b*overlay_col.a);
 
-	idx=ray_scene_overlay_get_index(scene,overlayId);
-	if (idx==-1) return(RL_ERROR_UNKNOWN_OVERLAY_ID);
+			*buf=ray_create_ulong_color_from_float_no_alpha(&buf_col);
 
-	overlay=scene->overlay_list.overlays[idx];
-
-		// get quad
-
-	if ((quadIndex<0) || (quadIndex>=overlay->quad_list.count)) return(RL_ERROR_OVERLAY_QUAD_INDEX_OUT_OF_BOUNDS);
-	overlay_quad=overlay->quad_list.quads[quadIndex];
-
-		// reset point
-		
-	overlay_quad->pnt_size.x=pnt->x;
-	overlay_quad->pnt_size.y=pnt->y;
-
-	return(RL_ERROR_OK);
-}
-
-/* =======================================================
-
-      Changes UV of a Quad in an Overlay
-	  
-	  Notes:
-	   If the scene is currently rendering, this API
-	   will stall until it's finished
-
-	  Returns:
-	   RL_ERROR_OK
-	   RL_ERROR_UNKNOWN_SCENE_ID
-	   RL_ERROR_UNKNOWN_OVERLAY_ID
-	   RL_ERROR_OVERLAY_QUAD_INDEX_OUT_OF_BOUNDS
-      
-======================================================= */
-
-int rtlSceneOverlaySetQuadUV(int sceneId,int overlayId,int quadIndex,ray_uv_type *uv)
-{
-	int						idx;
-	ray_overlay_type		*overlay;
-	ray_overlay_quad_type	*overlay_quad;
-	ray_scene_type			*scene;
-
-		// get scene
-
-	idx=ray_scene_get_index(sceneId);
-	if (idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
-
-	scene=ray_global.scene_list.scenes[idx];
-	
-		// stall rendering so it finishes
-		
-	ray_render_stall(scene);
-
-		// get the overlay
-
-	idx=ray_scene_overlay_get_index(scene,overlayId);
-	if (idx==-1) return(RL_ERROR_UNKNOWN_OVERLAY_ID);
-
-	overlay=scene->overlay_list.overlays[idx];
-
-		// get quad
-
-	if ((quadIndex<0) || (quadIndex>=overlay->quad_list.count)) return(RL_ERROR_OVERLAY_QUAD_INDEX_OUT_OF_BOUNDS);
-	overlay_quad=overlay->quad_list.quads[quadIndex];
-
-		// reset UV
-		
-	overlay_quad->uv.x=uv->x;
-	overlay_quad->uv.y=uv->y;
-
-	return(RL_ERROR_OK);
-}
-
-/* =======================================================
-
-      Changes UV Stamp of a Quad in an Overlay
-	  
-	  Notes:
-	   If the scene is currently rendering, this API
-	   will stall until it's finished
-
-	  Returns:
-	   RL_ERROR_OK
-	   RL_ERROR_UNKNOWN_SCENE_ID
-	   RL_ERROR_UNKNOWN_OVERLAY_ID
-	   RL_ERROR_OVERLAY_QUAD_INDEX_OUT_OF_BOUNDS
-      
-======================================================= */
-
-int rtlSceneOverlaySetQuadUVStamp(int sceneId,int overlayId,int quadIndex,ray_uv_type *uv)
-{
-	int						idx;
-	ray_overlay_type		*overlay;
-	ray_overlay_quad_type	*overlay_quad;
-	ray_scene_type			*scene;
-
-		// get scene
-
-	idx=ray_scene_get_index(sceneId);
-	if (idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
-
-	scene=ray_global.scene_list.scenes[idx];
-	
-		// stall rendering so it finishes
-		
-	ray_render_stall(scene);
-
-		// get the overlay
-
-	idx=ray_scene_overlay_get_index(scene,overlayId);
-	if (idx==-1) return(RL_ERROR_UNKNOWN_OVERLAY_ID);
-
-	overlay=scene->overlay_list.overlays[idx];
-
-		// get quad
-
-	if ((quadIndex<0) || (quadIndex>=overlay->quad_list.count)) return(RL_ERROR_OVERLAY_QUAD_INDEX_OUT_OF_BOUNDS);
-	overlay_quad=overlay->quad_list.quads[quadIndex];
-
-		// reset UV
-		
-	overlay_quad->uv_size.x=uv->x;
-	overlay_quad->uv_size.y=uv->y;
-
-	return(RL_ERROR_OK);
-}
-
-/* =======================================================
-
-      Changes Color Tint of a Quad in an Overlay
-	  
-	  Notes:
-	   If the scene is currently rendering, this API
-	   will stall until it's finished
-
-	  Returns:
-	   RL_ERROR_OK
-	   RL_ERROR_UNKNOWN_SCENE_ID
-	   RL_ERROR_UNKNOWN_OVERLAY_ID
-	   RL_ERROR_OVERLAY_QUAD_INDEX_OUT_OF_BOUNDS
-      
-======================================================= */
-
-int rtlSceneOverlaySetQuadColor(int sceneId,int overlayId,int quadIndex,ray_color_type *col)
-{
-	int						idx;
-	ray_overlay_type		*overlay;
-	ray_overlay_quad_type	*overlay_quad;
-	ray_scene_type			*scene;
-
-		// get scene
-
-	idx=ray_scene_get_index(sceneId);
-	if (idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
-
-	scene=ray_global.scene_list.scenes[idx];
-	
-		// stall rendering so it finishes
-		
-	ray_render_stall(scene);
-
-		// get the overlay
-
-	idx=ray_scene_overlay_get_index(scene,overlayId);
-	if (idx==-1) return(RL_ERROR_UNKNOWN_OVERLAY_ID);
-
-	overlay=scene->overlay_list.overlays[idx];
-
-		// get quad
-
-	if ((quadIndex<0) || (quadIndex>=overlay->quad_list.count)) return(RL_ERROR_OVERLAY_QUAD_INDEX_OUT_OF_BOUNDS);
-	overlay_quad=overlay->quad_list.quads[quadIndex];
-
-		// reset color
-
-	memmove(&overlay_quad->col,col,sizeof(ray_color_type));
-
-	return(RL_ERROR_OK);
-}
-
-/* =======================================================
-
-      Sets Number of Lines in an Overlay
-	  
-	  Notes:
-	   If the scene is currently rendering, this API
-	   will stall until it's finished
-
-	  Returns:
-	   RL_ERROR_OK
-	   RL_ERROR_UNKNOWN_SCENE_ID
-	   RL_ERROR_UNKNOWN_OVERLAY_ID
-	   RL_ERROR_OUT_OF_MEMORY
-      
-======================================================= */
-
-int rtlSceneOverlaySetLineCount(int sceneId,int overlayId,int count)
-{
-	int						n,idx;
-	ray_overlay_type		*overlay;
-	ray_overlay_line_type	*overlay_line;
-	ray_scene_type			*scene;
-
-		// too many lines?
-
-	if (count>ray_max_scene_overlay_line) return(RL_ERROR_OUT_OF_MEMORY);
-
-		// get scene
-
-	idx=ray_scene_get_index(sceneId);
-	if (idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
-
-	scene=ray_global.scene_list.scenes[idx];
-	
-		// stall rendering so it finishes
-		
-	ray_render_stall(scene);
-
-		// get the overlay
-
-	idx=ray_scene_overlay_get_index(scene,overlayId);
-	if (idx==-1) return(RL_ERROR_UNKNOWN_OVERLAY_ID);
-
-	overlay=scene->overlay_list.overlays[idx];
-
-		// if we had more lines than we started
-		// with, clear the old ones
-
-	for (n=count;n<overlay->line_list.count;n++) {
-		if (overlay->line_list.lines[n]!=NULL) free(overlay->line_list.lines[n]);
-		overlay->line_list.lines[n]=NULL;
-	}
-
-		// add any that we need
-
-	for (n=0;n!=count;n++) {
-		if (overlay->line_list.lines[n]!=NULL) continue;
-		
-		overlay->line_list.lines[n]=(ray_overlay_line_type*)malloc(sizeof(ray_overlay_line_type));
-		if (overlay->line_list.lines[n]==NULL) {
-			overlay->line_list.count=0;
-			return(RL_ERROR_OUT_OF_MEMORY);
+			buf++;
 		}
 	}
+}
 
-		// setup lines
+int rtlSceneOverlayDraw(int sceneId)
+{
+	int							n,idx;
+	ray_scene_type				*scene;
+	ray_overlay_type			*overlay;
 
-	overlay->line_list.count=count;
+//	int msec;
+//	msec=GetTickCount();		// supergumba -- testing
 
-	for (n=0;n!=count;n++) {
-		overlay_line=overlay->line_list.lines[n];
+		// get scene
 
-		overlay_line->start_pnt.x=0;
-		overlay_line->start_pnt.y=0;
-		overlay_line->end_pnt.x=0;
-		overlay_line->end_pnt.y=0;
+	idx=ray_scene_get_index(sceneId);
+	if (idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
 
-		overlay_line->col.r=1.0f;
-		overlay_line->col.g=1.0f;
-		overlay_line->col.b=1.0f;
-		overlay_line->col.a=1.0f;
+	scene=ray_global.scene_list.scenes[idx];
+
+		// draw the overlays
+
+	for (n=0;n!=scene->overlay_list.count;n++) {
+		overlay=scene->overlay_list.overlays[n];
+		if (overlay->hidden) continue;
+
+		switch (overlay->overlay_type) {
+
+			case RL_OVERLAY_TYPE_QUAD_COLOR:
+				break;
+
+			case RL_OVERLAY_TYPE_QUAD_MATERIAL:
+				ray_scene_overlay_draw_quad_material(scene,overlay);
+				break;
+
+			case RL_OVERLAY_TYPE_LINE_COLOR:
+				break;
+
+		}
+
 	}
 
-	return(RL_ERROR_OK);
-}
-
-/* =======================================================
-
-      Changes Both Offset Positions of a Line in an Overlay
-	  
-	  Notes:
-	   If the scene is currently rendering, this API
-	   will stall until it's finished
-
-	  Returns:
-	   RL_ERROR_OK
-	   RL_ERROR_UNKNOWN_SCENE_ID
-	   RL_ERROR_UNKNOWN_OVERLAY_ID
-	   RL_ERROR_OVERLAY_LINE_INDEX_OUT_OF_BOUNDS
-      
-======================================================= */
-
-int rtlSceneOverlaySetLinePosition(int sceneId,int overlayId,int lineIndex,rtl2DPoint *startPnt,rtl2DPoint *endPnt)
-{
-	int						idx;
-	ray_overlay_type		*overlay;
-	ray_overlay_line_type	*overlay_line;
-	ray_scene_type			*scene;
-
-		// get scene
-
-	idx=ray_scene_get_index(sceneId);
-	if (idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
-
-	scene=ray_global.scene_list.scenes[idx];
-	
-		// stall rendering so it finishes
-		
-	ray_render_stall(scene);
-
-		// get the overlay
-
-	idx=ray_scene_overlay_get_index(scene,overlayId);
-	if (idx==-1) return(RL_ERROR_UNKNOWN_OVERLAY_ID);
-
-	overlay=scene->overlay_list.overlays[idx];
-
-		// get line
-
-	if ((lineIndex<0) || (lineIndex>=overlay->line_list.count)) return(RL_ERROR_OVERLAY_LINE_INDEX_OUT_OF_BOUNDS);
-	overlay_line=overlay->line_list.lines[lineIndex];
-
-		// reset line
-		
-	overlay_line->start_pnt.x=startPnt->x;
-	overlay_line->start_pnt.y=startPnt->y;
-	overlay_line->end_pnt.x=endPnt->x;
-	overlay_line->end_pnt.y=endPnt->y;
-
-	return(RL_ERROR_OK);
-}
-
-/* =======================================================
-
-      Changes Color of a Line in an Overlay
-	  
-	  Notes:
-	   If the scene is currently rendering, this API
-	   will stall until it's finished
-
-	  Returns:
-	   RL_ERROR_OK
-	   RL_ERROR_UNKNOWN_SCENE_ID
-	   RL_ERROR_UNKNOWN_OVERLAY_ID
-	   RL_ERROR_OVERLAY_LINE_INDEX_OUT_OF_BOUNDS
-      
-======================================================= */
-
-int rtlSceneOverlaySetLineColor(int sceneId,int overlayId,int lineIndex,ray_color_type *col)
-{
-	int						idx;
-	ray_overlay_type		*overlay;
-	ray_overlay_line_type	*overlay_line;
-	ray_scene_type			*scene;
-
-		// get scene
-
-	idx=ray_scene_get_index(sceneId);
-	if (idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
-
-	scene=ray_global.scene_list.scenes[idx];
-	
-		// stall rendering so it finishes
-		
-	ray_render_stall(scene);
-
-		// get the overlay
-
-	idx=ray_scene_overlay_get_index(scene,overlayId);
-	if (idx==-1) return(RL_ERROR_UNKNOWN_OVERLAY_ID);
-
-	overlay=scene->overlay_list.overlays[idx];
-
-		// get line
-
-	if ((lineIndex<0) || (lineIndex>=overlay->line_list.count)) return(RL_ERROR_OVERLAY_LINE_INDEX_OUT_OF_BOUNDS);
-	overlay_line=overlay->line_list.lines[lineIndex];
-
-		// reset color
-
-	memmove(&overlay_line->col,col,sizeof(ray_color_type));
+//	fprintf(stdout,"%d\n",(GetTickCount()-msec));	// supergumba
 
 	return(RL_ERROR_OK);
 }

@@ -133,42 +133,22 @@ void gui_dim3rtl_add_overlay_box(int x,int y,int wid,int high,bool outline,bool 
 
 		// the box
 
-	if (outline) {
-		p_pnt.x=x-1;
-		p_pnt.y=y-1;
-		s_pnt.x=wid+2;
-		s_pnt.y=high+2;
-	}
-	else {
-		p_pnt.x=x;
-		p_pnt.y=y;
-		s_pnt.x=wid;
-		s_pnt.y=high;
-	}
-
-	overlay_id=rtlSceneOverlayAdd(view_rtl_gui_scene_id,material_id,0);
-	rtlSceneOverlaySetPosition(view_rtl_gui_scene_id,overlay_id,&p_pnt);
-	rtlSceneOverlaySetSize(view_rtl_gui_scene_id,overlay_id,&s_pnt);
-
-	if (outline) {
-		p_pnt.x=1;
-		p_pnt.y=1;
-	}
-	else {
-		p_pnt.x=0;
-		p_pnt.y=0;
-	}
-
-	rtlSceneOverlaySetQuadCount(view_rtl_gui_scene_id,overlay_id,1);
-	rtlSceneOverlaySetQuadPosition(view_rtl_gui_scene_id,overlay_id,0,&p_pnt);
-	rtlSceneOverlaySetQuadSize(view_rtl_gui_scene_id,overlay_id,0,&s_pnt);
+	overlay_id=rtlSceneOverlayAdd(view_rtl_gui_scene_id,RL_OVERLAY_TYPE_QUAD_MATERIAL,0);
+	rtlSceneOverlaySetMaterial(view_rtl_gui_scene_id,overlay_id,material_id);
 
 	col.r=col.g=col.b=1.0f;
 	col.a=alpha;
-	rtlSceneOverlaySetQuadColor(view_rtl_gui_scene_id,overlay_id,0,&col);
+	rtlSceneOverlaySetTint(view_rtl_gui_scene_id,overlay_id,&col);
+
+	p_pnt.x=x;
+	p_pnt.y=y;
+	s_pnt.x=wid;
+	s_pnt.y=high;
+
+	rtlSceneOverlaySetQuadPosition(view_rtl_gui_scene_id,overlay_id,&p_pnt,&s_pnt);
 
 		// no outline, then skip
-
+/*
 	if (!outline) return;
 
 		// the outline
@@ -207,10 +187,12 @@ void gui_dim3rtl_add_overlay_box(int x,int y,int wid,int high,bool outline,bool 
 		rtlSceneOverlaySetLinePosition(view_rtl_gui_scene_id,overlay_id,6,&l_pnt[2],&l_pnt[3]);
 		rtlSceneOverlaySetLinePosition(view_rtl_gui_scene_id,overlay_id,7,&l_pnt[3],&l_pnt[0]);
 	}
+	*/
 }
 
 void gui_dim3rtl_add_overlay_text(int x,int y,int wid,int high,float alpha,char *str)
 {
+	/*
 	int						n,tx,ty,str_len,
 							char_wid,txt_wid,txt_high,
 							ch,lft,overlay_id;
@@ -293,6 +275,7 @@ void gui_dim3rtl_add_overlay_text(int x,int y,int wid,int high,float alpha,char 
 			lft+=(int)(((float)char_wid)*font_size->char_size[ch-'!']);
 		}
 	}
+	*/
 }
 
 /* =======================================================
@@ -454,6 +437,10 @@ void gui_dim3rtl_draw(bool show_cursor)
 		element++;
 	}
 
+		// supergumba -- test
+
+	gui_dim3rtl_add_overlay_text(300,100,500,30,1.0f,"Here is my Test String Right Here");
+
 		// add the cursor
 
 	if (show_cursor) {
@@ -462,10 +449,10 @@ void gui_dim3rtl_draw(bool show_cursor)
 		gui_dim3rtl_add_overlay_box(((x*setup.screen_wid)/iface.scale_x),((y*setup.screen_high)/iface.scale_y),sz,sz,FALSE,FALSE,1.0f,gui_rtl_cursor_material_id);
 	}
 
-		// render
+		// draw the overlay, there
+		// is no 3D to render here
 
-	rtlSceneRender(view_rtl_gui_scene_id);
-	rtlSceneRenderFinish(view_rtl_gui_scene_id);
+	rtlSceneOverlayDraw(view_rtl_gui_scene_id);
 	view_dim3rtl_transfer_to_opengl(view_rtl_gui_scene_id,0,0,setup.screen_wid,setup.screen_high,view_rtl_gui_gl_id,setup.screen_wid,setup.screen_high);
 }
 

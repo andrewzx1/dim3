@@ -47,6 +47,21 @@ unsigned long ray_create_ulong_color_from_float_no_alpha(ray_color_type *col)
 #endif
 }
 
+unsigned long ray_create_ulong_color_from_float_no_alpha_clamp(ray_color_type *col)
+{
+	int			int_r,int_g,int_b;
+
+	int_r=((int)(col->r*255.0f))&0xFF;
+	int_g=((int)(col->g*255.0f))&0xFF;
+	int_b=((int)(col->b*255.0f))&0xFF;
+	
+#ifdef __BIG_ENDIAN__
+	return((int_r<<24)|(int_g<<16)|(int_b<<8)|0x000000FF);
+#else
+	return((int_r)|(int_g<<8)|(int_b<<16)|0xFF000000);
+#endif
+}
+
 /* =======================================================
 
       ULong to Float

@@ -60,13 +60,14 @@ extern bool hud_item_fade_run(iface_item_fade_type *fade,float *alpha);
 
 void view_dim3rtl_overlay_start(void)
 {
+	/*
 	int						n;
 	rtl2DPoint				p_pnt,s_pnt;
 	iface_bitmap_type		*bitmap;
 	iface_text_type			*text;
 	iface_crosshair_type	*crosshair;
 	texture_font_size_type	*font_size;
-	
+
 	if (setup.no_hud) return;
 
 		// hud bitmaps
@@ -79,7 +80,8 @@ void view_dim3rtl_overlay_start(void)
 		s_pnt.x=(bitmap->size.x*setup.screen_rtl_wid)/iface.scale_x;
 		s_pnt.y=(bitmap->size.y*setup.screen_rtl_high)/iface.scale_y;
 
-		bitmap->rtl_overlay_id=rtlSceneOverlayAdd(view_rtl_draw_scene_id,bitmap->rtl_material_id,0);
+		bitmap->rtl_overlay_id=rtlSceneOverlayAdd(view_rtl_draw_scene_id,RL_OVERLAY_TYPE_QUAD_MATERIAL,0);
+		rtlSceneOverlaySetMaterial(view_rtl_draw_scene_id,bitmap->rtl_overlay_id,bitmap->rtl_material_id);
 		rtlSceneOverlaySetPosition(view_rtl_draw_scene_id,bitmap->rtl_overlay_id,&p_pnt);
 		rtlSceneOverlaySetSize(view_rtl_draw_scene_id,bitmap->rtl_overlay_id,&s_pnt);
 		rtlSceneOverlaySetHidden(view_rtl_draw_scene_id,bitmap->rtl_overlay_id,(!bitmap->show));
@@ -126,7 +128,8 @@ void view_dim3rtl_overlay_start(void)
 	p_pnt.x=p_pnt.y=0;
 	s_pnt.x=s_pnt.y=10;
 
-	view_rtl_overlay_crosshair_id=rtlSceneOverlayAdd(view_rtl_draw_scene_id,crosshair->rtl_material_id,0);
+	view_rtl_overlay_crosshair_id=rtlSceneOverlayAdd(view_rtl_draw_scene_id,RL_OVERLAY_TYPE_QUAD_MATERIAL,0);
+	rtlSceneOverlaySetMaterial(view_rtl_draw_scene_id,view_rtl_overlay_crosshair_id,crosshair->rtl_material_id);
 	rtlSceneOverlaySetPosition(view_rtl_draw_scene_id,view_rtl_overlay_crosshair_id,&p_pnt);
 	rtlSceneOverlaySetSize(view_rtl_draw_scene_id,view_rtl_overlay_crosshair_id,&s_pnt);
 
@@ -137,10 +140,12 @@ void view_dim3rtl_overlay_start(void)
 	rtlSceneOverlaySetHidden(view_rtl_draw_scene_id,view_rtl_overlay_crosshair_id,TRUE);
 
 	progress_update();
+	*/
 }
 
 void view_dim3rtl_overlay_stop(void)
 {
+	/*
 	int						n;
 	iface_bitmap_type		*bitmap;
 	iface_text_type			*text;
@@ -173,6 +178,7 @@ void view_dim3rtl_overlay_stop(void)
 
 	rtlSceneOverlayDelete(view_rtl_draw_scene_id,view_rtl_overlay_crosshair_id);
 	progress_update();
+	*/
 }
 
 /* =======================================================
@@ -183,6 +189,7 @@ void view_dim3rtl_overlay_stop(void)
 
 void view_dim3rtl_overlay_bitmap_to_overlay(iface_bitmap_type *bitmap)
 {
+	/*
 	float				alpha;
 	d3col				team_tint;
 	obj_type			*obj;
@@ -213,6 +220,7 @@ void view_dim3rtl_overlay_bitmap_to_overlay(iface_bitmap_type *bitmap)
 		// set quad color
 
 	rtlSceneOverlaySetQuadColor(view_rtl_draw_scene_id,bitmap->rtl_overlay_id,0,&col);
+	*/
 }
 
 /* =======================================================
@@ -223,6 +231,7 @@ void view_dim3rtl_overlay_bitmap_to_overlay(iface_bitmap_type *bitmap)
 
 void view_dim3rtl_overlay_set_to_char(int scene_id,int overlay_id,texture_font_size_type *font_size,int index,int ch)
 {
+	/*
 	int				xoff,yoff;
 	rtlUV			uv,uv_size;
 
@@ -253,10 +262,12 @@ void view_dim3rtl_overlay_set_to_char(int scene_id,int overlay_id,texture_font_s
 
 	rtlSceneOverlaySetQuadUV(scene_id,overlay_id,index,&uv);
 	rtlSceneOverlaySetQuadUVStamp(scene_id,overlay_id,index,&uv_size);
+	*/
 }
 
 bool view_dim3rtl_overlay_text_to_overlay(iface_text_type *text)
 {
+	/*
 	int						n,x,y,txt_len,txt_wid,ch,
 							lft,wid,high;
 	float					alpha;
@@ -377,7 +388,7 @@ bool view_dim3rtl_overlay_text_to_overlay(iface_text_type *text)
 			}
 		}
 	}
-
+*/
 	return(TRUE);
 }
 
@@ -485,6 +496,7 @@ int view_dim3rtl_overlay_crosshair_setup_weapon(obj_type *obj,weapon_type *weap,
 
 void view_dim3rtl_overlay_crosshair_setup(void)
 {
+	/*
 	int				material_id;
 	obj_type		*obj;
 	weapon_type		*weap;
@@ -520,6 +532,7 @@ void view_dim3rtl_overlay_crosshair_setup(void)
 
 	rtlSceneOverlaySetQuadSize(view_rtl_draw_scene_id,view_rtl_overlay_crosshair_id,0,&s_pnt);
 	rtlSceneOverlaySetQuadColor(view_rtl_draw_scene_id,view_rtl_overlay_crosshair_id,0,&col);
+	*/
 }
 
 /* =======================================================
@@ -530,6 +543,7 @@ void view_dim3rtl_overlay_crosshair_setup(void)
 
 void view_dim3rtl_overlay_update(void)
 {
+	/*
 	int						n;
 	iface_bitmap_type		*bitmap;
 	iface_text_type			*text;
@@ -564,4 +578,5 @@ void view_dim3rtl_overlay_update(void)
 		// crosshair
 
 	view_dim3rtl_overlay_crosshair_setup();
+	*/
 }

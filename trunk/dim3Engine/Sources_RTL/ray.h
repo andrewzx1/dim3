@@ -218,31 +218,24 @@ typedef struct		{
 
 typedef struct		{
 						ray_2d_point_type				start_pnt,end_pnt;
-						ray_color_type					col;
-					} ray_overlay_line_type;
+					} ray_overlay_setup_line_type;
 
 typedef struct		{
-						int								count;
-						ray_overlay_line_type*			lines[ray_max_scene_overlay_line];
-					} ray_overlay_line_list;
-
-typedef struct		{
-						ray_2d_point_type				offset_pnt,pnt_size;
-						ray_uv_type						uv,uv_size;
-						ray_color_type					col;
-					} ray_overlay_quad_type;
-
-typedef struct		{
-						int								count;
-						ray_overlay_quad_type*			quads[ray_max_scene_overlay_quad];
-					} ray_overlay_quad_list;
-
-typedef struct		{
-						int								id,material_idx,mm_level;
-						bool							hidden;
 						ray_2d_point_type				pnt,pnt_size;
-						ray_overlay_quad_list			quad_list;
-						ray_overlay_line_list			line_list;
+						ray_uv_type						uv,uv_size;
+					} ray_overlay_setup_quad_type;
+
+typedef union		{
+						ray_overlay_setup_quad_type		quad;
+						ray_overlay_setup_line_type		line;
+					} ray_overlay_setup_type;
+
+typedef struct		{
+						int								id,material_idx,
+														overlay_type;
+						bool							hidden;
+						ray_color_type					tint;
+						ray_overlay_setup_type			setup;
 					} ray_overlay_type;
 
 typedef struct		{
@@ -269,15 +262,9 @@ typedef struct		{
 					} ray_scene_mesh_index_block;
 
 typedef struct		{
-						int								count,
-														indexes[ray_max_scene_overlay];
-					} ray_scene_overlay_index_block;
-
-typedef struct		{
 						int								idx;
 						ray_2d_point_type				pixel_start,pixel_end;
 						ray_scene_mesh_index_block		mesh_index_block;
-						ray_scene_overlay_index_block	overlay_index_block;
 						ray_mesh_poly_ptr_type			likely_block_poly_ptr[ray_max_scene_light];
 					} ray_scene_slice_type;
 
@@ -427,6 +414,7 @@ typedef struct		{
 
 extern unsigned long ray_create_ulong_color_from_float(ray_color_type *col);
 extern unsigned long ray_create_ulong_color_from_float_no_alpha(ray_color_type *col);
+extern unsigned long ray_create_ulong_color_from_float_no_alpha_clamp(ray_color_type *col);
 extern void ray_create_float_color_from_ulong(unsigned long ul,ray_color_type *rgb);
 extern void ray_create_float_color_from_ulong_no_alpha(unsigned long ul,ray_color_type *rgb);
 extern unsigned long ray_create_ulong_black(void);
@@ -472,10 +460,6 @@ extern void ray_get_material_pixel(ray_scene_type *scene,ray_point_type *eye_pnt
 extern void ray_get_material_color(ray_scene_type *scene,ray_point_type *eye_pnt,ray_point_type *trig_pnt,ray_collision_type *collision,ray_color_type *col);
 extern float ray_get_material_alpha(ray_scene_type *scene,ray_point_type *eye_pnt,ray_point_type *trig_pnt,ray_collision_type *collision);
 extern void ray_get_material_normal(ray_scene_type *scene,ray_point_type *eye_pnt,ray_point_type *trig_pnt,ray_collision_type *collision,ray_vector_type *normal);
-
-extern bool ray_overlay_get_rgb(ray_scene_type *scene,ray_scene_overlay_index_block *index_block,int x,int y,ray_color_type *col);
-extern void ray_overlay_setup_slice_collision(ray_scene_type *scene,ray_scene_slice_type *slice);
-extern void ray_overlay_setup_all(ray_scene_type *scene);
 
 extern int ray_scene_get_index(int sceneId);
 extern int ray_material_get_index(int materialId);

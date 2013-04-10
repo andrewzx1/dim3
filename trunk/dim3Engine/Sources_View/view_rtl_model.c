@@ -173,18 +173,13 @@ void view_dim3rtl_model_setup_single_model(model_draw *draw,bool hidden,bool no_
 	for (n=0;n!=max_model_halo;n++) {
 		if ((!draw->halos[n].on) || (draw->halos[n].idx==-1)) continue;
 
-		overlay_id=rtlSceneOverlayAdd(view_rtl_draw_scene_id,iface.halo_list.halos[draw->halos[n].idx].rtl_material_id,0);
+		overlay_id=rtlSceneOverlayAdd(view_rtl_draw_scene_id,RL_OVERLAY_TYPE_QUAD_MATERIAL,0);
 		if (overlay_id<0) return;
 
 		p_pnt.x=0;
 		p_pnt.y=0;
 
-		rtlSceneOverlaySetPosition(view_rtl_draw_scene_id,overlay_id,&p_pnt);
-		rtlSceneOverlaySetSize(view_rtl_draw_scene_id,overlay_id,&p_pnt);
-		rtlSceneOverlaySetQuadCount(view_rtl_draw_scene_id,overlay_id,1);
-		rtlSceneOverlaySetQuadPosition(view_rtl_draw_scene_id,overlay_id,0,&p_pnt);
-		rtlSceneOverlaySetQuadSize(view_rtl_draw_scene_id,overlay_id,0,&p_pnt);
-
+		rtlSceneOverlaySetMaterial(view_rtl_draw_scene_id,overlay_id,iface.halo_list.halos[draw->halos[n].idx].rtl_material_id);
 		rtlSceneOverlaySetHidden(view_rtl_draw_scene_id,overlay_id,TRUE);
 
 		draw->halos[n].rtl_overlay_id=overlay_id;
@@ -329,11 +324,8 @@ void view_dim3rtl_model_update_single_model(model_draw *draw,bool hidden)
 		halo_col.r=halo_col.g=halo_col.b=1.0f;
 		halo_col.a=alpha;
 
-		rtlSceneOverlaySetPosition(view_rtl_draw_scene_id,halo->rtl_overlay_id,&p_pnt);
-		rtlSceneOverlaySetSize(view_rtl_draw_scene_id,halo->rtl_overlay_id,&s_pnt);
-
-		rtlSceneOverlaySetQuadSize(view_rtl_draw_scene_id,halo->rtl_overlay_id,0,&s_pnt);
-		rtlSceneOverlaySetQuadColor(view_rtl_draw_scene_id,halo->rtl_overlay_id,0,&halo_col);
+		rtlSceneOverlaySetQuadPosition(view_rtl_draw_scene_id,halo->rtl_overlay_id,&p_pnt,&s_pnt);
+		rtlSceneOverlaySetTint(view_rtl_draw_scene_id,halo->rtl_overlay_id,&halo_col);
 	}
 }
 
