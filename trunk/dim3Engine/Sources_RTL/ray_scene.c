@@ -178,6 +178,11 @@ int rtlSceneAdd(ray_2d_point_type *size,int target,int format,void *attachment,u
 	scene->eye.plane_dist=0.0f;
 	scene->eye.max_dist=0.0f;
 	
+		// default overlay scale
+		
+	scene->overlay_scale.x=scene->buffer.wid;
+	scene->overlay_scale.y=scene->buffer.high;
+	
 		// create the scene lock mutex
 
 	if (!ray_scene_create_mutexes(scene)) {

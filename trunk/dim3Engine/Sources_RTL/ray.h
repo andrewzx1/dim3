@@ -290,6 +290,7 @@ typedef struct		{
 						ray_light_list					light_list;
 						ray_mesh_list					mesh_list;
 						ray_overlay_list				overlay_list;
+						ray_2d_point_type				overlay_scale;
 						ray_scene_buffer_type			buffer;
 						ray_scene_render_type			render;
 					} ray_scene_type;

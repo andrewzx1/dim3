@@ -48,8 +48,7 @@ extern int						view_rtl_gui_scene_id;
 extern GLuint					view_rtl_gui_gl_id;
 
 int								gui_rtl_cursor_material_id,
-								gui_rtl_background_material_id,
-								gui_rtl_button_fill_material_id;
+								gui_rtl_background_material_id;
 
 extern int view_dim3rtl_create_material_from_path(char *path,int alpha_type);
 extern int view_dim3rtl_create_material_from_color(d3col *col);
@@ -66,10 +65,18 @@ extern void view_dim3rtl_transfer_to_opengl(int scene_id,int x,int y,int wid,int
 void gui_dim3rtl_initialize(char *background_path,char *bitmap_name)
 {
 	char			path[1024];
+	rtl2DPoint		scale;
 	
 		// clear any overlays
 		
 	rtlSceneOverlayDeleteAll(view_rtl_gui_scene_id);
+	
+		// set the scale
+		
+	scale.x=iface.scale_x;
+	scale.y=iface.scale_y;
+
+	rtlSceneOverlaySetScale(view_rtl_gui_scene_id,&scale);
 	
 		// load the background
 		
@@ -85,10 +92,6 @@ void gui_dim3rtl_initialize(char *background_path,char *bitmap_name)
 
 	file_paths_data(&file_path_setup,path,"Bitmaps/UI_Elements","cursor","png");
 	gui_rtl_cursor_material_id=view_dim3rtl_create_material_from_path(path,RL_MATERIAL_ALPHA_PASS_THROUGH);
-	
-		// control colors
-		
-	gui_rtl_button_fill_material_id=view_dim3rtl_create_material_from_color(&iface.color.button.fill);
 }
 
 void gui_dim3rtl_shutdown(void)
@@ -125,10 +128,10 @@ void gui_dim3rtl_material_close(int rl_material_id)
       
 ======================================================= */
 
-void gui_dim3rtl_add_overlay_box(int x,int y,int wid,int high,bool outline,bool hilite,float alpha,int material_id)
+void gui_dim3rtl_add_overlay_box_material(int x,int y,int wid,int high,float alpha,int material_id)
 {
-	int				overlay_id,count;
-	rtl2DPoint		p_pnt,s_pnt,l_pnt[4];
+	int				overlay_id;
+	rtl2DPoint		p_pnt,s_pnt;
 	rtlColor		col;
 
 		// the box
@@ -146,48 +149,90 @@ void gui_dim3rtl_add_overlay_box(int x,int y,int wid,int high,bool outline,bool 
 	s_pnt.y=high;
 
 	rtlSceneOverlaySetQuadPosition(view_rtl_gui_scene_id,overlay_id,&p_pnt,&s_pnt);
+}
 
-		// no outline, then skip
-/*
-	if (!outline) return;
+void gui_dim3rtl_add_overlay_box_color(int x,int y,int wid,int high,bool outline,bool hilite,d3col *fill_col,d3col *outline_col,float alpha)
+{
+	int				overlay_id;
+	rtl2DPoint		p_pnt,s_pnt,l_pnt[4];
+	rtlColor		col;
+
+		// the box
+
+	overlay_id=rtlSceneOverlayAdd(view_rtl_gui_scene_id,RL_OVERLAY_TYPE_QUAD_COLOR,0);
+
+	col.r=fill_col->r;
+	col.g=fill_col->g;
+	col.b=fill_col->b;
+	col.a=alpha;
+	rtlSceneOverlaySetTint(view_rtl_gui_scene_id,overlay_id,&col);
+
+	p_pnt.x=x;
+	p_pnt.y=y;
+	s_pnt.x=wid;
+	s_pnt.y=high;
+
+	rtlSceneOverlaySetQuadPosition(view_rtl_gui_scene_id,overlay_id,&p_pnt,&s_pnt);
 
 		// the outline
 
-	count=hilite?8:4;
-	rtlSceneOverlaySetLineCount(view_rtl_gui_scene_id,overlay_id,count);
+	if (outline) {
+		col.r=outline_col->r;
+		col.g=outline_col->g;
+		col.b=outline_col->b;
+		col.a=alpha;
 
-	col.r=iface.color.button.outline.r;
-	col.g=iface.color.button.outline.g;
-	col.b=iface.color.button.outline.b;
-	col.a=alpha;
+		l_pnt[0].x=l_pnt[3].x=x;
+		l_pnt[1].x=l_pnt[2].x=x+wid;
+		l_pnt[0].y=l_pnt[1].y=y;
+		l_pnt[2].y=l_pnt[3].y=y+high;
 
-	l_pnt[0].x=l_pnt[3].x=1;
-	l_pnt[1].x=l_pnt[2].x=wid+1;
-	l_pnt[0].y=l_pnt[1].y=1;
-	l_pnt[2].y=l_pnt[3].y=high+1;
-
-	rtlSceneOverlaySetLinePosition(view_rtl_gui_scene_id,overlay_id,0,&l_pnt[0],&l_pnt[1]);
-	rtlSceneOverlaySetLinePosition(view_rtl_gui_scene_id,overlay_id,1,&l_pnt[1],&l_pnt[2]);
-	rtlSceneOverlaySetLinePosition(view_rtl_gui_scene_id,overlay_id,2,&l_pnt[2],&l_pnt[3]);
-	rtlSceneOverlaySetLinePosition(view_rtl_gui_scene_id,overlay_id,3,&l_pnt[3],&l_pnt[0]);
-
+		overlay_id=rtlSceneOverlayAdd(view_rtl_gui_scene_id,RL_OVERLAY_TYPE_LINE_COLOR,0);
+		rtlSceneOverlaySetTint(view_rtl_gui_scene_id,overlay_id,&col);
+		rtlSceneOverlaySetLinePosition(view_rtl_gui_scene_id,overlay_id,&l_pnt[0],&l_pnt[1]);
+		
+		overlay_id=rtlSceneOverlayAdd(view_rtl_gui_scene_id,RL_OVERLAY_TYPE_LINE_COLOR,0);
+		rtlSceneOverlaySetTint(view_rtl_gui_scene_id,overlay_id,&col);
+		rtlSceneOverlaySetLinePosition(view_rtl_gui_scene_id,overlay_id,&l_pnt[1],&l_pnt[2]);
+		
+		overlay_id=rtlSceneOverlayAdd(view_rtl_gui_scene_id,RL_OVERLAY_TYPE_LINE_COLOR,0);
+		rtlSceneOverlaySetTint(view_rtl_gui_scene_id,overlay_id,&col);
+		rtlSceneOverlaySetLinePosition(view_rtl_gui_scene_id,overlay_id,&l_pnt[2],&l_pnt[3]);
+		
+		overlay_id=rtlSceneOverlayAdd(view_rtl_gui_scene_id,RL_OVERLAY_TYPE_LINE_COLOR,0);
+		rtlSceneOverlaySetTint(view_rtl_gui_scene_id,overlay_id,&col);
+		rtlSceneOverlaySetLinePosition(view_rtl_gui_scene_id,overlay_id,&l_pnt[3],&l_pnt[0]);
+	}
+	
+		// the highlight
+		
 	if (hilite) {
 		col.r=iface.color.control.mouse_over.r;
 		col.g=iface.color.control.mouse_over.g;
 		col.b=iface.color.control.mouse_over.b;
 		col.a=alpha;
 
-		l_pnt[0].x=l_pnt[3].x=0;
-		l_pnt[1].x=l_pnt[2].x=wid+2;
-		l_pnt[0].y=l_pnt[1].y=0;
-		l_pnt[2].y=l_pnt[3].y=high+2;
+		l_pnt[0].x=l_pnt[3].x=x-1;
+		l_pnt[1].x=l_pnt[2].x=(x+wid)+1;
+		l_pnt[0].y=l_pnt[1].y=y-1;
+		l_pnt[2].y=l_pnt[3].y=(y+high)+1;
 
-		rtlSceneOverlaySetLinePosition(view_rtl_gui_scene_id,overlay_id,4,&l_pnt[0],&l_pnt[1]);
-		rtlSceneOverlaySetLinePosition(view_rtl_gui_scene_id,overlay_id,5,&l_pnt[1],&l_pnt[2]);
-		rtlSceneOverlaySetLinePosition(view_rtl_gui_scene_id,overlay_id,6,&l_pnt[2],&l_pnt[3]);
-		rtlSceneOverlaySetLinePosition(view_rtl_gui_scene_id,overlay_id,7,&l_pnt[3],&l_pnt[0]);
+		overlay_id=rtlSceneOverlayAdd(view_rtl_gui_scene_id,RL_OVERLAY_TYPE_LINE_COLOR,0);
+		rtlSceneOverlaySetTint(view_rtl_gui_scene_id,overlay_id,&col);
+		rtlSceneOverlaySetLinePosition(view_rtl_gui_scene_id,overlay_id,&l_pnt[0],&l_pnt[1]);
+		
+		overlay_id=rtlSceneOverlayAdd(view_rtl_gui_scene_id,RL_OVERLAY_TYPE_LINE_COLOR,0);
+		rtlSceneOverlaySetTint(view_rtl_gui_scene_id,overlay_id,&col);
+		rtlSceneOverlaySetLinePosition(view_rtl_gui_scene_id,overlay_id,&l_pnt[1],&l_pnt[2]);
+		
+		overlay_id=rtlSceneOverlayAdd(view_rtl_gui_scene_id,RL_OVERLAY_TYPE_LINE_COLOR,0);
+		rtlSceneOverlaySetTint(view_rtl_gui_scene_id,overlay_id,&col);
+		rtlSceneOverlaySetLinePosition(view_rtl_gui_scene_id,overlay_id,&l_pnt[2],&l_pnt[3]);
+		
+		overlay_id=rtlSceneOverlayAdd(view_rtl_gui_scene_id,RL_OVERLAY_TYPE_LINE_COLOR,0);
+		rtlSceneOverlaySetTint(view_rtl_gui_scene_id,overlay_id,&col);
+		rtlSceneOverlaySetLinePosition(view_rtl_gui_scene_id,overlay_id,&l_pnt[3],&l_pnt[0]);
 	}
-	*/
 }
 
 void gui_dim3rtl_add_overlay_text(int x,int y,int wid,int high,float alpha,char *str)
@@ -286,10 +331,10 @@ void gui_dim3rtl_add_overlay_text(int x,int y,int wid,int high,float alpha,char 
 
 void gui_dim3rtl_element_get_box(element_type *element,int *x,int *y,int *wid,int *high)
 {
-	*x=((element->x*setup.screen_wid)/iface.scale_x);
-	*y=((element->y*setup.screen_high)/iface.scale_y);
-	*wid=((element->wid*setup.screen_wid)/iface.scale_x);
-	*high=((element->high*setup.screen_high)/iface.scale_y);
+	*x=element->x;
+	*y=element->y;
+	*wid=element->wid;
+	*high=element->high;
 }
 
 void gui_dim3rtl_element_draw_button_text(element_type *element,int sel_id)
@@ -300,7 +345,7 @@ void gui_dim3rtl_element_draw_button_text(element_type *element,int sel_id)
 	alpha=element->enabled?1.0f:0.3f;
 
 	gui_dim3rtl_element_get_box(element,&x,&y,&wid,&high);
-	gui_dim3rtl_add_overlay_box(x,y,wid,high,TRUE,(element->id==sel_id),alpha,gui_rtl_button_fill_material_id);
+	gui_dim3rtl_add_overlay_box_color(x,y,wid,high,TRUE,(element->id==sel_id),&iface.color.button.fill,&iface.color.button.outline,alpha);
 	gui_dim3rtl_add_overlay_text(x,y,wid,high,alpha,element->setup.button.name);
 }
 
@@ -309,7 +354,7 @@ void gui_dim3rtl_element_draw_button_bitmap(element_type *element,int sel_id)
 	int		x,y,wid,high;
 	
 	gui_dim3rtl_element_get_box(element,&x,&y,&wid,&high);
-	gui_dim3rtl_add_overlay_box(x,y,wid,high,FALSE,FALSE,1.0f,((element->id==sel_id)?element->setup.button.rl_select_material_id:element->setup.button.rl_material_id));
+	gui_dim3rtl_add_overlay_box_material(x,y,wid,high,1.0f,((element->id==sel_id)?element->setup.button.rl_select_material_id:element->setup.button.rl_material_id));
 }
 
 void gui_dim3rtl_element_draw_button(element_type *element,int sel_id)
@@ -331,6 +376,47 @@ void gui_dim3rtl_element_draw_button(element_type *element,int sel_id)
 	}
 }
 
+void gui_dim3rtl_element_draw_frame(element_type *element)
+{
+	int				x,y,wid,high,lft,top,mid;
+	bool			is_header;
+	d3col			col;
+	
+		// header?
+		
+	is_header=element->str[0]!=0x0;
+	
+		// setup draw
+		
+	gui_dim3rtl_element_get_box(element,&x,&y,&wid,&high);
+
+	lft=x;
+	top=y;
+	mid=top+element_get_frame_title_high();
+	
+		// inside frame
+		
+	gui_dim3rtl_add_overlay_box_color(x,y,wid,high,TRUE,FALSE,&iface.color.dialog.background,&iface.color.dialog.outline,1.0f);
+	
+		// header
+		
+	if (is_header) {
+		y=(top+mid)>>1;
+
+		if (element->enabled) {
+			memmove(&col,&iface.color.dialog.header,sizeof(d3col));
+		}
+		else {
+			memmove(&col,&iface.color.dialog.background,sizeof(d3col));
+		}
+	
+		gui_dim3rtl_add_overlay_box_color(lft,top,wid,mid,TRUE,FALSE,&col,&iface.color.dialog.outline,1.0f);
+
+	//	gl_text_start(font_interface_index,iface.font.text_size_medium,FALSE);
+	//	gl_text_draw(((lft+rgt)/2),(y-2),element->str,tx_center,TRUE,&iface.color.dialog.title,1.0f);
+	//	gl_text_end();
+	}
+}
 
 /* =======================================================
 
@@ -363,7 +449,7 @@ void gui_dim3rtl_draw(bool show_cursor)
 		// add the background
 
 	if (gui_rtl_background_material_id!=-1) {
-		gui_dim3rtl_add_overlay_box(0,0,setup.screen_wid,setup.screen_high,FALSE,FALSE,1.0f,gui_rtl_background_material_id);
+		gui_dim3rtl_add_overlay_box_material(0,0,iface.scale_x,iface.scale_y,1.0f,gui_rtl_background_material_id);
 	}
 
 		// element under cursor
@@ -429,7 +515,7 @@ void gui_dim3rtl_draw(bool show_cursor)
 			//	element_draw_count(element);
 				break;
 			case element_type_frame:
-			//	element_draw_frame(element,x,y);
+				gui_dim3rtl_element_draw_frame(element);
 				break;
 				
 		}
@@ -446,7 +532,7 @@ void gui_dim3rtl_draw(bool show_cursor)
 	if (show_cursor) {
 		input_mouse_gui_get_position(&x,&y);
 		sz=(int)(((float)iface.scale_x)*cursor_size_factor);
-		gui_dim3rtl_add_overlay_box(((x*setup.screen_wid)/iface.scale_x),((y*setup.screen_high)/iface.scale_y),sz,sz,FALSE,FALSE,1.0f,gui_rtl_cursor_material_id);
+		gui_dim3rtl_add_overlay_box_material(x,y,sz,sz,1.0f,gui_rtl_cursor_material_id);
 	}
 
 		// draw the overlay, there

@@ -178,6 +178,9 @@ extern int rtlSceneOverlaySetHidden(int sceneId,int overlayId,bool hidden);
 extern int rtlSceneOverlaySetQuadPosition(int sceneId,int overlayId,rtl2DPoint *pnt,rtl2DPoint *size);
 extern int rtlSceneOverlaySetQuadUV(int sceneId,int overlayId,rtlUV *uv,rtlUV *stamp);
 
+extern int rtlSceneOverlaySetLinePosition(int sceneId,int overlayId,ray_2d_point_type *startPnt,ray_2d_point_type *endPnt);
+
+extern int rtlSceneOverlaySetScale(int sceneId,rtl2DPoint *size);
 extern int rtlSceneOverlayDraw(int sceneId);
 
 	// math utilities
