@@ -72,7 +72,7 @@ extern void view_dim3rtl_overlay_update(void);
 
 bool view_dim3rtl_initialize(char *err_str)
 {
-	rtl2DPoint			s_pnt;
+	rtl2DPoint			s_pnt,scale;
 
 	if (rtlInitialize()!=RL_ERROR_OK) {
 		strcpy(err_str,"Unable to initialize dim3RTL");
@@ -105,6 +105,14 @@ bool view_dim3rtl_initialize(char *err_str)
 		rtlShutdown();
 		return(FALSE);
 	}
+	
+		// overlay scales
+		
+	scale.x=iface.scale_x;
+	scale.y=iface.scale_y;
+
+	rtlSceneOverlaySetScale(view_rtl_draw_scene_id,&scale);
+	rtlSceneOverlaySetScale(view_rtl_gui_scene_id,&scale);
 
 		// text materials
 

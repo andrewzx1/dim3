@@ -33,6 +33,9 @@ and can be sold or given away.
 #include "objects.h"
 #include "ray_interface.h"
 
+// supergumba -- for now we have a max limit for text so we don't chew up too many positions
+#define rtl_temp_text_max_len				32
+
 extern map_type				map;
 extern server_type			server;
 extern camera_type			camera;
@@ -60,8 +63,7 @@ extern bool hud_item_fade_run(iface_item_fade_type *fade,float *alpha);
 
 void view_dim3rtl_overlay_start(void)
 {
-	/*
-	int						n;
+	int						n,k;
 	rtl2DPoint				p_pnt,s_pnt;
 	iface_bitmap_type		*bitmap;
 	iface_text_type			*text;
@@ -75,23 +77,16 @@ void view_dim3rtl_overlay_start(void)
 	bitmap=iface.bitmap_list.bitmaps;
 	
 	for (n=0;n!=iface.bitmap_list.nbitmap;n++) {
-		p_pnt.x=(bitmap->pnt.x*setup.screen_rtl_wid)/iface.scale_x;
-		p_pnt.y=(bitmap->pnt.y*setup.screen_rtl_high)/iface.scale_y;
-		s_pnt.x=(bitmap->size.x*setup.screen_rtl_wid)/iface.scale_x;
-		s_pnt.y=(bitmap->size.y*setup.screen_rtl_high)/iface.scale_y;
+		p_pnt.x=bitmap->pnt.x;
+		p_pnt.y=bitmap->pnt.y;
+		s_pnt.x=bitmap->size.x;
+		s_pnt.y=bitmap->size.y;
 
 		bitmap->rtl_overlay_id=rtlSceneOverlayAdd(view_rtl_draw_scene_id,RL_OVERLAY_TYPE_QUAD_MATERIAL,0);
 		rtlSceneOverlaySetMaterial(view_rtl_draw_scene_id,bitmap->rtl_overlay_id,bitmap->rtl_material_id);
-		rtlSceneOverlaySetPosition(view_rtl_draw_scene_id,bitmap->rtl_overlay_id,&p_pnt);
-		rtlSceneOverlaySetSize(view_rtl_draw_scene_id,bitmap->rtl_overlay_id,&s_pnt);
+		rtlSceneOverlaySetQuadPosition(view_rtl_draw_scene_id,bitmap->rtl_overlay_id,&p_pnt,&s_pnt);
 		rtlSceneOverlaySetHidden(view_rtl_draw_scene_id,bitmap->rtl_overlay_id,(!bitmap->show));
 
-		p_pnt.x=0;
-		p_pnt.y=0;
-
-		rtlSceneOverlaySetQuadCount(view_rtl_draw_scene_id,bitmap->rtl_overlay_id,1);
-		rtlSceneOverlaySetQuadPosition(view_rtl_draw_scene_id,bitmap->rtl_overlay_id,0,&p_pnt);
-		rtlSceneOverlaySetQuadSize(view_rtl_draw_scene_id,bitmap->rtl_overlay_id,0,&s_pnt);
 		bitmap++;
 
 		progress_update();
@@ -101,21 +96,18 @@ void view_dim3rtl_overlay_start(void)
 		// start with no quads or position as
 		// this is all set by whatever text we
 		// have to draw
-	
-	p_pnt.x=0;
-	p_pnt.y=0;
-	s_pnt.x=0;
-	s_pnt.y=0;
 
 	text=iface.text_list.texts;
 	
 	for (n=0;n!=iface.text_list.ntext;n++) {
 		font_size=view_dim3rtl_material_text_get_font(font_hud_index,text->size);
 
-		text->rtl_overlay_id=rtlSceneOverlayAdd(view_rtl_draw_scene_id,font_size->rtl_material_id,0);
-		rtlSceneOverlaySetPosition(view_rtl_draw_scene_id,text->rtl_overlay_id,&p_pnt);
-		rtlSceneOverlaySetSize(view_rtl_draw_scene_id,text->rtl_overlay_id,&s_pnt);
-		rtlSceneOverlaySetHidden(view_rtl_draw_scene_id,text->rtl_overlay_id,TRUE);
+		for (k=0;k!=rtl_temp_text_max_len;k++) {
+			text->rtl_overlay_id[k]=rtlSceneOverlayAdd(view_rtl_draw_scene_id,RL_OVERLAY_TYPE_QUAD_MATERIAL,0);
+			rtlSceneOverlaySetMaterial(view_rtl_draw_scene_id,text->rtl_overlay_id[k],font_size->rtl_material_id);
+			rtlSceneOverlaySetHidden(view_rtl_draw_scene_id,text->rtl_overlay_id[k],TRUE);
+		}
+
 		text++;
 
 		progress_update();
@@ -125,28 +117,16 @@ void view_dim3rtl_overlay_start(void)
 
 	crosshair=&iface.crosshair_list.crosshairs[0];
 
-	p_pnt.x=p_pnt.y=0;
-	s_pnt.x=s_pnt.y=10;
-
 	view_rtl_overlay_crosshair_id=rtlSceneOverlayAdd(view_rtl_draw_scene_id,RL_OVERLAY_TYPE_QUAD_MATERIAL,0);
 	rtlSceneOverlaySetMaterial(view_rtl_draw_scene_id,view_rtl_overlay_crosshair_id,crosshair->rtl_material_id);
-	rtlSceneOverlaySetPosition(view_rtl_draw_scene_id,view_rtl_overlay_crosshair_id,&p_pnt);
-	rtlSceneOverlaySetSize(view_rtl_draw_scene_id,view_rtl_overlay_crosshair_id,&s_pnt);
-
-	rtlSceneOverlaySetQuadCount(view_rtl_draw_scene_id,view_rtl_overlay_crosshair_id,1);
-	rtlSceneOverlaySetQuadPosition(view_rtl_draw_scene_id,view_rtl_overlay_crosshair_id,0,&p_pnt);
-	rtlSceneOverlaySetQuadSize(view_rtl_draw_scene_id,view_rtl_overlay_crosshair_id,0,&s_pnt);
-
 	rtlSceneOverlaySetHidden(view_rtl_draw_scene_id,view_rtl_overlay_crosshair_id,TRUE);
 
 	progress_update();
-	*/
 }
 
 void view_dim3rtl_overlay_stop(void)
 {
-	/*
-	int						n;
+	int						n,k;
 	iface_bitmap_type		*bitmap;
 	iface_text_type			*text;
 
@@ -168,7 +148,9 @@ void view_dim3rtl_overlay_stop(void)
 	text=iface.text_list.texts;
 	
 	for (n=0;n!=iface.text_list.ntext;n++) {
-		rtlSceneOverlayDelete(view_rtl_draw_scene_id,text->rtl_overlay_id);
+		for (k=0;k!=rtl_temp_text_max_len;k++) {
+			rtlSceneOverlayDelete(view_rtl_draw_scene_id,text->rtl_overlay_id[k]);
+		}
 		text++;
 
 		progress_update();
@@ -178,7 +160,6 @@ void view_dim3rtl_overlay_stop(void)
 
 	rtlSceneOverlayDelete(view_rtl_draw_scene_id,view_rtl_overlay_crosshair_id);
 	progress_update();
-	*/
 }
 
 /* =======================================================
@@ -189,7 +170,6 @@ void view_dim3rtl_overlay_stop(void)
 
 void view_dim3rtl_overlay_bitmap_to_overlay(iface_bitmap_type *bitmap)
 {
-	/*
 	float				alpha;
 	d3col				team_tint;
 	obj_type			*obj;
@@ -219,8 +199,7 @@ void view_dim3rtl_overlay_bitmap_to_overlay(iface_bitmap_type *bitmap)
 	
 		// set quad color
 
-	rtlSceneOverlaySetQuadColor(view_rtl_draw_scene_id,bitmap->rtl_overlay_id,0,&col);
-	*/
+	rtlSceneOverlaySetTint(view_rtl_draw_scene_id,bitmap->rtl_overlay_id,&col);
 }
 
 /* =======================================================
@@ -229,11 +208,10 @@ void view_dim3rtl_overlay_bitmap_to_overlay(iface_bitmap_type *bitmap)
       
 ======================================================= */
 
-void view_dim3rtl_overlay_set_to_char(int scene_id,int overlay_id,texture_font_size_type *font_size,int index,int ch)
+void view_dim3rtl_overlay_set_to_char(int scene_id,int overlay_id,texture_font_size_type *font_size,int ch)
 {
-	/*
 	int				xoff,yoff;
-	rtlUV			uv,uv_size;
+	rtlUV			uv,uv_stamp;
 
 		// check for non-defined characters
 
@@ -241,8 +219,8 @@ void view_dim3rtl_overlay_set_to_char(int scene_id,int overlay_id,texture_font_s
 		uv.x=0.0f;
 		uv.y=0.0f;
 
-		uv_size.x=0.0f;
-		uv_size.y=0.0f;
+		uv_stamp.x=0.0f;
+		uv_stamp.y=0.0f;
 	}
 
 		// create UV for character
@@ -256,20 +234,17 @@ void view_dim3rtl_overlay_set_to_char(int scene_id,int overlay_id,texture_font_s
 		uv.x=((float)xoff)*font_size->gl_xoff;
 		uv.y=((float)yoff)*font_size->gl_yoff;
 
-		uv_size.x=font_size->gl_xadd;
-		uv_size.y=font_size->gl_yadd;
+		uv_stamp.x=font_size->gl_xadd;
+		uv_stamp.y=font_size->gl_yadd;
 	}
 
-	rtlSceneOverlaySetQuadUV(scene_id,overlay_id,index,&uv);
-	rtlSceneOverlaySetQuadUVStamp(scene_id,overlay_id,index,&uv_size);
-	*/
+	rtlSceneOverlaySetQuadUV(scene_id,overlay_id,&uv,&uv_stamp);
 }
 
-bool view_dim3rtl_overlay_text_to_overlay(iface_text_type *text)
+void view_dim3rtl_overlay_text_to_overlay(iface_text_type *text)
 {
-	/*
 	int						n,x,y,txt_len,txt_wid,ch,
-							lft,wid,high;
+							wid,high;
 	float					alpha;
 	char					*c;
 	texture_font_size_type	*font_size;
@@ -283,16 +258,27 @@ bool view_dim3rtl_overlay_text_to_overlay(iface_text_type *text)
 		hud_texts_fps(text->data);
 	}
 
-		// get text length
+		// get text size
 
 	txt_len=strlen(text->data);
-	if (txt_len==0) return(FALSE);
 	if (txt_len>255) txt_len=255;
 
-		// reset overlay quads
+		// get alpha
 
-	rtlSceneOverlaySetQuadCount(view_rtl_draw_scene_id,text->rtl_overlay_id,txt_len);
-	
+	alpha=text->alpha;
+	if (hud_item_fade_run(&text->fade,&alpha)) {
+		text->show=FALSE;			// a fade has turned off text
+	}
+
+		// hidden text
+
+	if ((!text->show) || (txt_len==0)) {
+		for (n=0;n!=rtl_temp_text_max_len;n++) {
+			rtlSceneOverlaySetHidden(view_rtl_draw_scene_id,text->rtl_overlay_id[n],TRUE);
+		}
+		return;
+	}
+
 		// get font
 		
 	font_size=view_dim3rtl_material_text_get_font(font_hud_index,text->size);
@@ -324,72 +310,54 @@ bool view_dim3rtl_overlay_text_to_overlay(iface_text_type *text)
 
 	high=(int)(((float)text->size)*text_height_factor);
 
-		// reset size of overlay
-
-	p_pnt.x=(x*setup.screen_rtl_wid)/iface.scale_x;
-	p_pnt.y=((y-high)*setup.screen_rtl_high)/iface.scale_y;
-	rtlSceneOverlaySetPosition(view_rtl_draw_scene_id,text->rtl_overlay_id,&p_pnt);
-
-	s_pnt.x=(txt_wid*setup.screen_rtl_wid)/iface.scale_x;
-	s_pnt.y=(high*setup.screen_rtl_high)/iface.scale_y;
-	rtlSceneOverlaySetSize(view_rtl_draw_scene_id,text->rtl_overlay_id,&s_pnt);
-
 		// get the color
-		// and alpha
-
-	alpha=text->alpha;
-	if (hud_item_fade_run(&text->fade,&alpha)) {
-		text->show=FALSE;			// a fade has turned off text
-		return(FALSE);
-	}
 
 	col.r=text->color.r;
 	col.g=text->color.g;
 	col.b=text->color.b;
 	col.a=alpha;
 
-		// main quad size
-
-	s_pnt.x=(wid*setup.screen_rtl_wid)/iface.scale_x;
-	s_pnt.y=(high*setup.screen_rtl_high)/iface.scale_y;
-
 		// create the quads
 		// quads are offsets into overlays
 
-	lft=0;
+	p_pnt.x=x;
+	p_pnt.y=y-high;
+
+	s_pnt.x=wid;
+	s_pnt.y=high;
 	
 	c=text->data;
 
-	for (n=0;n!=txt_len;n++) {
+	for (n=0;n!=rtl_temp_text_max_len;n++) {
+
+		if (n>=txt_len) {
+			rtlSceneOverlaySetHidden(view_rtl_draw_scene_id,text->rtl_overlay_id[n],TRUE);
+			continue;
+		}
 	
 		ch=(int)*c++;
 
 			// the overlay quad
 
-		p_pnt.x=(lft*setup.screen_rtl_wid)/iface.scale_x;
-		p_pnt.y=0;
-
-		rtlSceneOverlaySetQuadPosition(view_rtl_draw_scene_id,text->rtl_overlay_id,n,&p_pnt);
-		rtlSceneOverlaySetQuadSize(view_rtl_draw_scene_id,text->rtl_overlay_id,n,&s_pnt);
-		view_dim3rtl_overlay_set_to_char(view_rtl_draw_scene_id,text->rtl_overlay_id,font_size,n,ch);
-		rtlSceneOverlaySetQuadColor(view_rtl_draw_scene_id,text->rtl_overlay_id,n,&col);
+		rtlSceneOverlaySetQuadPosition(view_rtl_draw_scene_id,text->rtl_overlay_id[n],&p_pnt,&s_pnt);
+		view_dim3rtl_overlay_set_to_char(view_rtl_draw_scene_id,text->rtl_overlay_id[n],font_size,ch);
+		rtlSceneOverlaySetTint(view_rtl_draw_scene_id,text->rtl_overlay_id[n],&col);
+		rtlSceneOverlaySetHidden(view_rtl_draw_scene_id,text->rtl_overlay_id[n],FALSE);
 
 			// next character
 
 		if (text->monospaced) {
-			lft+=wid;
+			p_pnt.x+=wid;
 		}
 		else {
 			if ((ch<'!') || (ch>'z')) {
-				lft+=(int)(((float)wid)*0.33f);
+				p_pnt.x+=(int)(((float)wid)*0.33f);
 			}
 			else {
-				lft+=(int)(((float)wid)*font_size->char_size[ch-'!']);
+				p_pnt.x+=(int)(((float)wid)*font_size->char_size[ch-'!']);
 			}
 		}
 	}
-*/
-	return(TRUE);
 }
 
 /* =======================================================
@@ -496,7 +464,6 @@ int view_dim3rtl_overlay_crosshair_setup_weapon(obj_type *obj,weapon_type *weap,
 
 void view_dim3rtl_overlay_crosshair_setup(void)
 {
-	/*
 	int				material_id;
 	obj_type		*obj;
 	weapon_type		*weap;
@@ -525,14 +492,10 @@ void view_dim3rtl_overlay_crosshair_setup(void)
 		// set cursor overlay
 
 	rtlSceneOverlaySetMaterial(view_rtl_draw_scene_id,view_rtl_overlay_crosshair_id,material_id);
+	rtlSceneOverlaySetQuadPosition(view_rtl_draw_scene_id,view_rtl_overlay_crosshair_id,&p_pnt,&s_pnt);
+	rtlSceneOverlaySetTint(view_rtl_draw_scene_id,view_rtl_overlay_crosshair_id,&col);
+
 	rtlSceneOverlaySetHidden(view_rtl_draw_scene_id,view_rtl_overlay_crosshair_id,FALSE);
-
-	rtlSceneOverlaySetPosition(view_rtl_draw_scene_id,view_rtl_overlay_crosshair_id,&p_pnt);
-	rtlSceneOverlaySetSize(view_rtl_draw_scene_id,view_rtl_overlay_crosshair_id,&s_pnt);
-
-	rtlSceneOverlaySetQuadSize(view_rtl_draw_scene_id,view_rtl_overlay_crosshair_id,0,&s_pnt);
-	rtlSceneOverlaySetQuadColor(view_rtl_draw_scene_id,view_rtl_overlay_crosshair_id,0,&col);
-	*/
 }
 
 /* =======================================================
@@ -543,7 +506,6 @@ void view_dim3rtl_overlay_crosshair_setup(void)
 
 void view_dim3rtl_overlay_update(void)
 {
-	/*
 	int						n;
 	iface_bitmap_type		*bitmap;
 	iface_text_type			*text;
@@ -561,22 +523,17 @@ void view_dim3rtl_overlay_update(void)
 	}
 
 		// hud text
-		// if text string is break, always auto-hide
+		// the overlay to text handles hiding if not
+		// shown, or faded out, or a blank string
 
 	text=iface.text_list.texts;
 	
 	for (n=0;n!=iface.text_list.ntext;n++) {
-		if (!view_dim3rtl_overlay_text_to_overlay(text)) {
-			rtlSceneOverlaySetHidden(view_rtl_draw_scene_id,text->rtl_overlay_id,TRUE);
-		}
-		else {
-			rtlSceneOverlaySetHidden(view_rtl_draw_scene_id,text->rtl_overlay_id,(!text->show));
-		}
+		view_dim3rtl_overlay_text_to_overlay(text);
 		text++;
 	}
 
 		// crosshair
 
 	view_dim3rtl_overlay_crosshair_setup();
-	*/
 }
