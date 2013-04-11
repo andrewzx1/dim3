@@ -17,9 +17,7 @@
 #define ray_max_scene								32
 #define ray_max_scene_light							128
 #define ray_max_scene_mesh							5120
-#define ray_max_scene_overlay						256
-#define ray_max_scene_overlay_quad					256
-#define ray_max_scene_overlay_line					256
+#define ray_max_scene_overlay						2048
 
 #define ray_max_material							1024
 

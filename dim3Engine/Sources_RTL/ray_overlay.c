@@ -476,10 +476,7 @@ int rtlSceneOverlaySetScale(int sceneId,rtl2DPoint *size)
 
 /* =======================================================
 
-      Draws the Overlay into the Scene
-	  
-	  Returns:
-	   RL_ERROR_UNKNOWN_SCENE_ID
+      Internal Draw Utilities
       
 ======================================================= */
 
@@ -487,13 +484,17 @@ void ray_scene_overlay_draw_quad_material(ray_scene_type *scene,ray_overlay_type
 {
 	int							n,wid,mm_level,
 								x,y,lx,rx,ty,by,px,py,
-								y_buf_offset;
-	float						f,fx,fy,inv_a;
+								y_material_buf_offset;
+	float						fx,fy,fx_add,fy_add,inv_a;
 	unsigned long				*buf;
 	unsigned long				mat_buf;
 	ray_material_type			*material;
 	ray_material_mipmap_type	*mipmap;
 	ray_color_type				buf_col,overlay_col;
+
+		// if no alpha, skip
+
+	if (overlay->tint.a==0.0f) return;
 
 		// get the mipmap level
 		
@@ -530,39 +531,113 @@ void ray_scene_overlay_draw_quad_material(ray_scene_type *scene,ray_overlay_type
 	ty=(ty*scene->buffer.high)/scene->overlay_scale.y;
 	by=(by*scene->buffer.high)/scene->overlay_scale.y;
 
-		// draw quad
+		// uv calcs
+
+	fx_add=overlay->setup.quad.uv_size.x/(float)(rx-lx);
+	fy_add=overlay->setup.quad.uv_size.y/(float)(by-ty);
+
+		// draw a quad that has no alpha
+		// this is the easiest route
+
+	if ((material->no_alpha) && (overlay->tint.a==1.0f)) {
+
+		fy=overlay->setup.quad.uv.y;
 		
+		for (y=ty;y<by;y++) {
+
+				// clipping
+
+			if ((y<0) || (y>=scene->buffer.high)) {
+				fy+=fy_add;
+				continue;
+			}
+
+				// get y texture coordinate
+				
+			py=(int)((fy-floorf(fy))*mipmap->high_scale);
+			fy+=fy_add;
+
+				// buffer lines
+
+			buf=scene->buffer.data+((y*scene->buffer.wid)+lx);
+
+			y_material_buf_offset=mipmap->wid*py;
+
+				// draw the row
+
+			fx=overlay->setup.quad.uv.x;
+
+			for (x=lx;x<rx;x++) {
+
+					// clipping
+
+				if ((x<0) || (x>=scene->buffer.wid)) {
+					buf++;
+					fx+=fx_add;
+					continue;
+				}
+
+					// get x texture coordinate
+					
+				px=(int)((fx-floorf(fx))*mipmap->wid_scale);
+				fx+=fx_add;
+
+					// get color
+			
+				*buf++=*(((unsigned long*)mipmap->data.color)+(y_material_buf_offset+px));
+			}
+		}
+
+		return;
+	}
+
+		// draw quad with alpha
+		// this is the slower path
+
+	fy=overlay->setup.quad.uv.y;
+	
 	for (y=ty;y<by;y++) {
 
-			// buffer line
+			// clipping
 
-		buf=scene->buffer.data+((y*scene->buffer.wid)+lx);
+		if ((y<0) || (y>=scene->buffer.high)) {
+			fy+=fy_add;
+			continue;
+		}
 
 			// get y texture coordinate
 			
-		f=(float)(y-ty)/(float)(by-ty);
-		fy=overlay->setup.quad.uv.y+((overlay->setup.quad.uv_size.y)*f);
+		py=(int)((fy-floorf(fy))*mipmap->high_scale);
+		fy+=fy_add;
 
-		fy-=floorf(fy);
-		py=(int)(fy*mipmap->high_scale);
+			// buffer lines
 
-		y_buf_offset=mipmap->wid*py;
+		buf=scene->buffer.data+((y*scene->buffer.wid)+lx);
+
+		y_material_buf_offset=mipmap->wid*py;
 
 			// draw the row
 
+		fx=overlay->setup.quad.uv.x;
+
 		for (x=lx;x<rx;x++) {
+
+				// clipping
+
+			if ((x<0) || (x>=scene->buffer.wid)) {
+				buf++;
+				fx+=fx_add;
+				continue;
+			}
 
 				// get x texture coordinate
 				
-			f=(float)(x-lx)/(float)(rx-lx);
-			fx=overlay->setup.quad.uv.x+((overlay->setup.quad.uv_size.x)*f);
-			
-			fx-=floorf(fx);
-			px=(int)(fx*mipmap->wid_scale);
-		
+			px=(int)((fx-floorf(fx))*mipmap->wid_scale);
+			fx+=fx_add;
+
 				// get color
 		
-			mat_buf=*(((unsigned long*)mipmap->data.color)+(y_buf_offset+px));
+			mat_buf=*(((unsigned long*)mipmap->data.color)+(y_material_buf_offset+px));
 			ray_create_float_color_from_ulong(mat_buf,&overlay_col);
 
 				// multiply in the tint
@@ -575,8 +650,7 @@ void ray_scene_overlay_draw_quad_material(ray_scene_type *scene,ray_overlay_type
 				// overwrite if alpha=1.0f
 
 			if (overlay_col.a==1.0f) {
-				*buf=ray_create_ulong_color_from_float_no_alpha(&overlay_col);
-				buf++;
+				*buf++=ray_create_ulong_color_from_float_no_alpha(&overlay_col);
 				continue;
 			}
 
@@ -608,7 +682,12 @@ void ray_scene_overlay_draw_quad_color(ray_scene_type *scene,ray_overlay_type *o
 	int							x,y,lx,rx,ty,by;
 	float						inv_a;
 	unsigned long				*buf;
+	unsigned long				uc_col;
 	ray_color_type				buf_col;
+
+		// if no alpha, skip
+
+	if (overlay->tint.a==0.0f) return;
 
 		// quad size
 
@@ -624,25 +703,47 @@ void ray_scene_overlay_draw_quad_color(ray_scene_type *scene,ray_overlay_type *o
 	ty=(ty*scene->buffer.high)/scene->overlay_scale.y;
 	by=(by*scene->buffer.high)/scene->overlay_scale.y;
 
-		// draw quad
+		// draw a quad that has no alpha
+		// this is the easiest route
+
+	if (overlay->tint.a==1.0f) {
+		
+		uc_col=ray_create_ulong_color_from_float_no_alpha(&overlay->tint);
+
+		for (y=ty;y<by;y++) {
+
+			if ((y<0) || (y>=scene->buffer.high)) continue;
+
+			buf=scene->buffer.data+((y*scene->buffer.wid)+lx);
+
+			for (x=lx;x<rx;x++) {
+
+				if ((x<0) || (x>=scene->buffer.wid)) {
+					buf++;
+					continue;
+				}
+
+				*buf++=uc_col;
+			}
+		}
+
+		return;
+	}
+
+		// draw quad that has alpha
+		// this is the slower path
 		
 	for (y=ty;y<by;y++) {
+
+		if ((y<0) || (y>=scene->buffer.high)) continue;
 
 		buf=scene->buffer.data+((y*scene->buffer.wid)+lx);
 
 		for (x=lx;x<rx;x++) {
 
-				// overwrite if alpha=1.0f
+				// clipping
 
-			if (overlay->tint.a==1.0f) {
-				*buf=ray_create_ulong_color_from_float_no_alpha(&overlay->tint);
-				buf++;
-				continue;
-			}
-
-				// skip if no alpha
-
-			if (overlay->tint.a==0.0f) {
+			if ((x<0) || (x>=scene->buffer.wid)) {
 				buf++;
 				continue;
 			}
@@ -668,7 +769,12 @@ void ray_scene_overlay_draw_line_color(ray_scene_type *scene,ray_overlay_type *o
 	int							k,x,y,dx,dy,lx,rx,ty,by;
 	float						fx,fy,fx_add,fy_add,inv_a;
 	unsigned long				*buf;
+	unsigned long				uc_col;
 	ray_color_type				buf_col;
+
+		// if no alpha, skip
+
+	if (overlay->tint.a==0.0f) return;
 	
 		// get points
 		
@@ -704,10 +810,35 @@ void ray_scene_overlay_draw_line_color(ray_scene_type *scene,ray_overlay_type *o
 		
 		fy=(float)ty;
 		fy_add=((float)(by-ty))/((float)dx);
-	
+
+			// draw horz line with no alpha
+
+		if (overlay->tint.a==1.0f) {
+			uc_col=ray_create_ulong_color_from_float_no_alpha(&overlay->tint);
+
+			for (x=lx;x<rx;x++) {
+			
+				y=(int)fy;
+				fy+=fy_add;
+				
+				if ((x<0) || (x>=scene->buffer.wid) || (y<0) || (y>=scene->buffer.high)) continue;
+
+				buf=scene->buffer.data+((y*scene->buffer.wid)+x);
+				*buf=uc_col;
+			}
+
+			return;
+		}
+
+			// draw horz line with alpha
+
 		for (x=lx;x<rx;x++) {
 		
 			y=(int)fy;
+			fy+=fy_add;
+			
+			if ((x<0) || (x>=scene->buffer.wid) || (y<0) || (y>=scene->buffer.high)) continue;
+
 			buf=scene->buffer.data+((y*scene->buffer.wid)+x);
 			
 			ray_create_float_color_from_ulong_no_alpha(*buf,&buf_col);
@@ -718,8 +849,6 @@ void ray_scene_overlay_draw_line_color(ray_scene_type *scene,ray_overlay_type *o
 			buf_col.b=(buf_col.b*inv_a)+(overlay->tint.b*overlay->tint.a);
 
 			*buf=ray_create_ulong_color_from_float_no_alpha(&buf_col);
-
-			fy+=fy_add;
 		}
 		
 		return;
@@ -739,9 +868,34 @@ void ray_scene_overlay_draw_line_color(ray_scene_type *scene,ray_overlay_type *o
 	fx=(float)lx;
 	fx_add=((float)(rx-lx))/((float)dy);
 
+		// draw vert line with no alpha
+
+	if (overlay->tint.a==1.0f) {
+		uc_col=ray_create_ulong_color_from_float_no_alpha(&overlay->tint);
+
+		for (y=ty;y<by;y++) {
+		
+			x=(int)fx;
+			fx+=fx_add;
+
+			if ((x<0) || (x>=scene->buffer.wid) || (y<0) || (y>=scene->buffer.high)) continue;
+
+			buf=scene->buffer.data+((y*scene->buffer.wid)+x);
+			*buf=uc_col;
+		}
+
+		return;
+	}
+
+		// draw vert line with alpha
+
 	for (y=ty;y<by;y++) {
 	
 		x=(int)fx;
+		fx+=fx_add;
+
+		if ((x<0) || (x>=scene->buffer.wid) || (y<0) || (y>=scene->buffer.high)) continue;
+
 		buf=scene->buffer.data+((y*scene->buffer.wid)+x);
 		
 		ray_create_float_color_from_ulong_no_alpha(*buf,&buf_col);
@@ -752,10 +906,17 @@ void ray_scene_overlay_draw_line_color(ray_scene_type *scene,ray_overlay_type *o
 		buf_col.b=(buf_col.b*inv_a)+(overlay->tint.b*overlay->tint.a);
 
 		*buf=ray_create_ulong_color_from_float_no_alpha(&buf_col);
-
-		fx+=fx_add;
 	}
 }
+
+/* =======================================================
+
+      Draws the Overlay into the Scene
+	  
+	  Returns:
+	   RL_ERROR_UNKNOWN_SCENE_ID
+      
+======================================================= */
 
 int rtlSceneOverlayDraw(int sceneId)
 {
@@ -797,7 +958,7 @@ int rtlSceneOverlayDraw(int sceneId)
 
 	}
 
-//	fprintf(stdout,"%d\n",(GetTickCount()-msec));	// supergumba
+//	fprintf(stdout,"%d\n",(GetTickCount()-msec));	// supergumba -- testing
 
 	return(RL_ERROR_OK);
 }
