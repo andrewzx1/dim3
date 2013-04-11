@@ -402,6 +402,80 @@ int rtlSceneOverlaySetQuadUV(int sceneId,int overlayId,ray_uv_type *uv,ray_uv_ty
 
 /* =======================================================
 
+      Changes Position of Line Overlay Already in a Scene
+
+	  Returns:
+	   RL_ERROR_OK
+	   RL_ERROR_UNKNOWN_SCENE_ID
+	   RL_ERROR_UNKNOWN_OVERLAY_ID
+      
+======================================================= */
+
+int rtlSceneOverlaySetLinePosition(int sceneId,int overlayId,ray_2d_point_type *startPnt,ray_2d_point_type *endPnt)
+{
+	int					idx;
+	ray_overlay_type	*overlay;
+	ray_scene_type		*scene;
+
+		// get scene
+
+	idx=ray_scene_get_index(sceneId);
+	if (idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
+
+	scene=ray_global.scene_list.scenes[idx];
+
+		// get the overlay
+
+	idx=ray_scene_overlay_get_index(scene,overlayId);
+	if (idx==-1) return(RL_ERROR_UNKNOWN_OVERLAY_ID);
+
+	overlay=scene->overlay_list.overlays[idx];
+
+		// reset point
+		
+	overlay->setup.line.start_pnt.x=startPnt->x;
+	overlay->setup.line.start_pnt.y=startPnt->y;
+	overlay->setup.line.end_pnt.x=endPnt->x;
+	overlay->setup.line.end_pnt.y=endPnt->y;
+
+	return(RL_ERROR_OK);
+}
+
+/* =======================================================
+
+      Sets the drawing scale of the overlay
+	  
+	  Note:
+	   This defaults to the render's buffer width
+	   and height
+	  
+	  Returns:
+	   RL_ERROR_UNKNOWN_SCENE_ID
+      
+======================================================= */
+
+int rtlSceneOverlaySetScale(int sceneId,rtl2DPoint *size)
+{
+	int					idx;
+	ray_scene_type		*scene;
+
+		// get scene
+
+	idx=ray_scene_get_index(sceneId);
+	if (idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
+
+	scene=ray_global.scene_list.scenes[idx];
+	
+		// set the scale
+		
+	scene->overlay_scale.x=size->x;
+	scene->overlay_scale.y=size->y;
+	
+	return(RL_ERROR_OK);
+}
+
+/* =======================================================
+
       Draws the Overlay into the Scene
 	  
 	  Returns:
@@ -426,7 +500,8 @@ void ray_scene_overlay_draw_quad_material(ray_scene_type *scene,ray_overlay_type
 	if (overlay->material_idx==-1) return;
 	material=ray_global.material_list.materials[overlay->material_idx];
 	
-	wid=(int)(((float)overlay->setup.quad.pnt_size.x)*(1.0f/(overlay->setup.quad.uv_size.x-overlay->setup.quad.uv.x)));
+	wid=(overlay->setup.quad.pnt_size.x*scene->buffer.wid)/scene->overlay_scale.x;
+	wid=(int)(((float)wid)*(1.0f/(overlay->setup.quad.uv_size.x-overlay->setup.quad.uv.x)));
 
 	mm_level=0;
 
@@ -447,7 +522,16 @@ void ray_scene_overlay_draw_quad_material(ray_scene_type *scene,ray_overlay_type
 	rx=lx+overlay->setup.quad.pnt_size.x;
 	ty=overlay->setup.quad.pnt.y;
 	by=ty+overlay->setup.quad.pnt_size.y;
+	
+		// scale it
+		
+	lx=(lx*scene->buffer.wid)/scene->overlay_scale.x;
+	rx=(rx*scene->buffer.wid)/scene->overlay_scale.x;
+	ty=(ty*scene->buffer.high)/scene->overlay_scale.y;
+	by=(by*scene->buffer.high)/scene->overlay_scale.y;
 
+		// draw quad
+		
 	for (y=ty;y<by;y++) {
 
 			// buffer line
@@ -456,7 +540,7 @@ void ray_scene_overlay_draw_quad_material(ray_scene_type *scene,ray_overlay_type
 
 			// get y texture coordinate
 			
-		f=(float)(y-ty)/(float)(overlay->setup.quad.pnt_size.y);
+		f=(float)(y-ty)/(float)(by-ty);
 		fy=overlay->setup.quad.uv.y+((overlay->setup.quad.uv_size.y)*f);
 
 		fy-=floorf(fy);
@@ -470,7 +554,7 @@ void ray_scene_overlay_draw_quad_material(ray_scene_type *scene,ray_overlay_type
 
 				// get x texture coordinate
 				
-			f=(float)(x-lx)/(float)(overlay->setup.quad.pnt_size.x);
+			f=(float)(x-lx)/(float)(rx-lx);
 			fx=overlay->setup.quad.uv.x+((overlay->setup.quad.uv_size.x)*f);
 			
 			fx-=floorf(fx);
@@ -519,6 +603,160 @@ void ray_scene_overlay_draw_quad_material(ray_scene_type *scene,ray_overlay_type
 	}
 }
 
+void ray_scene_overlay_draw_quad_color(ray_scene_type *scene,ray_overlay_type *overlay)
+{
+	int							x,y,lx,rx,ty,by;
+	float						inv_a;
+	unsigned long				*buf;
+	ray_color_type				buf_col;
+
+		// quad size
+
+	lx=overlay->setup.quad.pnt.x;
+	rx=lx+overlay->setup.quad.pnt_size.x;
+	ty=overlay->setup.quad.pnt.y;
+	by=ty+overlay->setup.quad.pnt_size.y;
+	
+		// scale it
+		
+	lx=(lx*scene->buffer.wid)/scene->overlay_scale.x;
+	rx=(rx*scene->buffer.wid)/scene->overlay_scale.x;
+	ty=(ty*scene->buffer.high)/scene->overlay_scale.y;
+	by=(by*scene->buffer.high)/scene->overlay_scale.y;
+
+		// draw quad
+		
+	for (y=ty;y<by;y++) {
+
+		buf=scene->buffer.data+((y*scene->buffer.wid)+lx);
+
+		for (x=lx;x<rx;x++) {
+
+				// overwrite if alpha=1.0f
+
+			if (overlay->tint.a==1.0f) {
+				*buf=ray_create_ulong_color_from_float_no_alpha(&overlay->tint);
+				buf++;
+				continue;
+			}
+
+				// skip if no alpha
+
+			if (overlay->tint.a==0.0f) {
+				buf++;
+				continue;
+			}
+
+				// mix with previous values
+
+			ray_create_float_color_from_ulong_no_alpha(*buf,&buf_col);
+
+			inv_a=1.0f-overlay->tint.a;
+			buf_col.r=(buf_col.r*inv_a)+(overlay->tint.r*overlay->tint.a);
+			buf_col.g=(buf_col.g*inv_a)+(overlay->tint.g*overlay->tint.a);
+			buf_col.b=(buf_col.b*inv_a)+(overlay->tint.b*overlay->tint.a);
+
+			*buf=ray_create_ulong_color_from_float_no_alpha(&buf_col);
+
+			buf++;
+		}
+	}
+}
+
+void ray_scene_overlay_draw_line_color(ray_scene_type *scene,ray_overlay_type *overlay)
+{
+	int							k,x,y,dx,dy,lx,rx,ty,by;
+	float						fx,fy,fx_add,fy_add,inv_a;
+	unsigned long				*buf;
+	ray_color_type				buf_col;
+	
+		// get points
+		
+	lx=overlay->setup.line.start_pnt.x;
+	rx=overlay->setup.line.end_pnt.x;
+	ty=overlay->setup.line.start_pnt.y;
+	by=overlay->setup.line.end_pnt.y;
+	
+		// scale it
+		
+	lx=(lx*scene->buffer.wid)/scene->overlay_scale.x;
+	rx=(rx*scene->buffer.wid)/scene->overlay_scale.x;
+	ty=(ty*scene->buffer.high)/scene->overlay_scale.y;
+	by=(by*scene->buffer.high)/scene->overlay_scale.y;
+
+		// find which direction to draw
+		
+	dx=abs(rx-lx);
+	dy=abs(by-ty);
+	
+		// horizontal
+		
+	if (dx>dy) {
+	
+		if (lx>rx) {
+			k=lx;
+			lx=rx;
+			rx=k;
+			k=ty;
+			ty=by;
+			by=k;
+		}
+		
+		fy=(float)ty;
+		fy_add=((float)(by-ty))/((float)dx);
+	
+		for (x=lx;x<rx;x++) {
+		
+			y=(int)fy;
+			buf=scene->buffer.data+((y*scene->buffer.wid)+x);
+			
+			ray_create_float_color_from_ulong_no_alpha(*buf,&buf_col);
+
+			inv_a=1.0f-overlay->tint.a;
+			buf_col.r=(buf_col.r*inv_a)+(overlay->tint.r*overlay->tint.a);
+			buf_col.g=(buf_col.g*inv_a)+(overlay->tint.g*overlay->tint.a);
+			buf_col.b=(buf_col.b*inv_a)+(overlay->tint.b*overlay->tint.a);
+
+			*buf=ray_create_ulong_color_from_float_no_alpha(&buf_col);
+
+			fy+=fy_add;
+		}
+		
+		return;
+	}
+	
+		// vertical
+	
+	if (ty>by) {
+		k=lx;
+		lx=rx;
+		rx=k;
+		k=ty;
+		ty=by;
+		by=k;
+	}
+	
+	fx=(float)lx;
+	fx_add=((float)(rx-lx))/((float)dy);
+
+	for (y=ty;y<by;y++) {
+	
+		x=(int)fx;
+		buf=scene->buffer.data+((y*scene->buffer.wid)+x);
+		
+		ray_create_float_color_from_ulong_no_alpha(*buf,&buf_col);
+
+		inv_a=1.0f-overlay->tint.a;
+		buf_col.r=(buf_col.r*inv_a)+(overlay->tint.r*overlay->tint.a);
+		buf_col.g=(buf_col.g*inv_a)+(overlay->tint.g*overlay->tint.a);
+		buf_col.b=(buf_col.b*inv_a)+(overlay->tint.b*overlay->tint.a);
+
+		*buf=ray_create_ulong_color_from_float_no_alpha(&buf_col);
+
+		fx+=fx_add;
+	}
+}
+
 int rtlSceneOverlayDraw(int sceneId)
 {
 	int							n,idx;
@@ -544,6 +782,7 @@ int rtlSceneOverlayDraw(int sceneId)
 		switch (overlay->overlay_type) {
 
 			case RL_OVERLAY_TYPE_QUAD_COLOR:
+				ray_scene_overlay_draw_quad_color(scene,overlay);
 				break;
 
 			case RL_OVERLAY_TYPE_QUAD_MATERIAL:
@@ -551,6 +790,7 @@ int rtlSceneOverlayDraw(int sceneId)
 				break;
 
 			case RL_OVERLAY_TYPE_LINE_COLOR:
+				ray_scene_overlay_draw_line_color(scene,overlay);
 				break;
 
 		}
