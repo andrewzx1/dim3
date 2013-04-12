@@ -63,8 +63,10 @@
 	// overlay types
 
 #define RL_OVERLAY_TYPE_QUAD_COLOR							0
-#define RL_OVERLAY_TYPE_QUAD_MATERIAL						1
-#define RL_OVERLAY_TYPE_LINE_COLOR							2
+#define RL_OVERLAY_TYPE_QUAD_HORIZONTAL_GRADIENT			1
+#define RL_OVERLAY_TYPE_QUAD_VERTICAL_GRADIENT				2
+#define RL_OVERLAY_TYPE_QUAD_MATERIAL						3
+#define RL_OVERLAY_TYPE_LINE_COLOR							4
 
 	// errors
 
@@ -76,15 +78,16 @@
 #define RL_ERROR_MESH_POLY_INDEX_OUT_OF_BOUNDS				-5
 #define RL_ERROR_UNKNOWN_OVERLAY_ID							-6
 #define RL_ERROR_UNKNOWN_OVERLAY_TYPE						-7
-#define RL_ERROR_OUT_OF_MEMORY								-8
-#define RL_ERROR_UNKNOWN_TARGET								-9
-#define RL_ERROR_UNKNOWN_FORMAT								-10
-#define RL_ERROR_UNKNOWN_ALPHA_TYPE							-11
-#define RL_ERROR_MATERIAL_ATTACHED_TO_MESH					-12
-#define RL_ERROR_MATERIAL_ATTACHED_TO_OVERLAY				-13
-#define RL_ERROR_THREADING_ERROR							-14
-#define RL_ERROR_POINT_BEHIND_EYE							-15
-#define RL_ERROR_TOO_MANY_MATERIALS							-16
+#define RL_ERROR_ILLEGAL_ON_OVERLAY_TYPE					-8
+#define RL_ERROR_OUT_OF_MEMORY								-9
+#define RL_ERROR_UNKNOWN_TARGET								-10
+#define RL_ERROR_UNKNOWN_FORMAT								-11
+#define RL_ERROR_UNKNOWN_ALPHA_TYPE							-12
+#define RL_ERROR_MATERIAL_ATTACHED_TO_MESH					-13
+#define RL_ERROR_MATERIAL_ATTACHED_TO_OVERLAY				-14
+#define RL_ERROR_THREADING_ERROR							-15
+#define RL_ERROR_POINT_BEHIND_EYE							-16
+#define RL_ERROR_TOO_MANY_MATERIALS							-17
 
 //
 // functions
@@ -177,7 +180,7 @@ extern int rtlSceneOverlaySetHidden(int sceneId,int overlayId,bool hidden);
 
 extern int rtlSceneOverlaySetQuadPosition(int sceneId,int overlayId,rtl2DPoint *pnt,rtl2DPoint *size);
 extern int rtlSceneOverlaySetQuadUV(int sceneId,int overlayId,rtlUV *uv,rtlUV *stamp);
-
+extern int rtlSceneOverlaySetGradientColorStops(int sceneId,int overlayId,int colorStopCount,ray_color_type *colorStops);
 extern int rtlSceneOverlaySetLinePosition(int sceneId,int overlayId,ray_2d_point_type *startPnt,ray_2d_point_type *endPnt);
 
 extern int rtlSceneOverlaySetScale(int sceneId,rtl2DPoint *size);

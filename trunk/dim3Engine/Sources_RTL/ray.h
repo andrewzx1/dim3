@@ -21,6 +21,8 @@
 
 #define ray_max_material							1024
 
+#define ray_max_scene_overlay_color_stop			16
+
 //
 // ray tracing
 //
@@ -215,25 +217,37 @@ typedef struct		{
 //
 
 typedef struct		{
-						ray_2d_point_type				start_pnt,end_pnt;
-					} ray_overlay_setup_line_type;
+						ray_2d_point_type						pnt,pnt_size;
+					} ray_overlay_setup_quad_color_type;
 
 typedef struct		{
-						ray_2d_point_type				pnt,pnt_size;
-						ray_uv_type						uv,uv_size;
-					} ray_overlay_setup_quad_type;
+						int										color_stop_count;
+						ray_2d_point_type						pnt,pnt_size;
+						ray_color_type							color_stops[ray_max_scene_overlay_color_stop];
+					} ray_overlay_setup_quad_gradient_type;
+
+typedef struct		{
+						int										material_idx;
+						ray_2d_point_type						pnt,pnt_size;
+						ray_uv_type								uv,uv_size;
+					} ray_overlay_setup_quad_material_type;
+
+typedef struct		{
+						ray_2d_point_type						start_pnt,end_pnt;
+					} ray_overlay_setup_line_type;
 
 typedef union		{
-						ray_overlay_setup_quad_type		quad;
-						ray_overlay_setup_line_type		line;
+						ray_overlay_setup_quad_color_type		quad_color;
+						ray_overlay_setup_quad_gradient_type	quad_gradient;
+						ray_overlay_setup_quad_material_type	quad_material;
+						ray_overlay_setup_line_type				line;
 					} ray_overlay_setup_type;
 
 typedef struct		{
-						int								id,material_idx,
-														overlay_type;
-						bool							hidden;
-						ray_color_type					tint;
-						ray_overlay_setup_type			setup;
+						int										id,overlay_type;
+						bool									hidden;
+						ray_color_type							tint;
+						ray_overlay_setup_type					setup;
 					} ray_overlay_type;
 
 typedef struct		{

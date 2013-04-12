@@ -530,7 +530,9 @@ int rtlMaterialDelete(int materialId)
 		}
 		
 		for (k=0;k!=scene->overlay_list.count;k++) {
-			if (scene->overlay_list.overlays[k]->material_idx==idx) return(RL_ERROR_MATERIAL_ATTACHED_TO_OVERLAY);
+			if (scene->overlay_list.overlays[k]->overlay_type==RL_OVERLAY_TYPE_QUAD_MATERIAL) {
+				if (scene->overlay_list.overlays[k]->setup.quad_material.material_idx==idx) return(RL_ERROR_MATERIAL_ATTACHED_TO_OVERLAY);
+			}
 		}
 	}
 
