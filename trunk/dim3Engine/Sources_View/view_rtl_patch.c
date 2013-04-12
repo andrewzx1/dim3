@@ -341,6 +341,11 @@ bool view_dim3rtl_screenshot(bool thumbnail,char *path)
 	float				x_skip,y_skip;
 	unsigned char		*pixel_buffer,*data,*sptr,*dptr,*s2ptr;
 	bool				ok;
+	
+		// force update
+		
+	rtlSceneRenderFinish(view_rtl_draw_scene_id);
+	rtlSceneOverlayDraw(view_rtl_draw_scene_id);
 
 		// get the scene buffer
 
