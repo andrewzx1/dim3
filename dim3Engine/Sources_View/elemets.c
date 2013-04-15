@@ -2019,6 +2019,7 @@ void element_draw_combo_open(element_type *element)
 	bot=top+(cnt*element->high);
 
 	view_primitive_2D_line_quad(&iface.color.control.outline,1.0f,lft,rgt,top,bot);
+	view_primitive_2D_line_quad(&iface.color.control.mouse_over,1.0f,(lft-1),(rgt+1),(top-1),(bot+1));
 }
 
 /* =======================================================

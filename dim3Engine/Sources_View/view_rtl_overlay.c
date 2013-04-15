@@ -370,10 +370,10 @@ int view_dim3rtl_overlay_crosshair_setup_click(obj_type *obj,rtl2DPoint *p_pnt,r
 {
 	int				sz,idx;
 
-	sz=setup.screen_rtl_wid/20;
+	sz=iface.scale_x/20;
 
-	p_pnt->x=(setup.screen_rtl_wid>>1)-sz;
-	p_pnt->y=(setup.screen_rtl_high>>1)-sz;
+	p_pnt->x=(iface.scale_x>>1)-sz;
+	p_pnt->y=(iface.scale_y>>1)-sz;
 	s_pnt->x=s_pnt->y=sz*2;
 
 	col->r=col->g=col->b=col->a=1.0f;
@@ -411,10 +411,10 @@ int view_dim3rtl_overlay_crosshair_setup_weapon(obj_type *obj,weapon_type *weap,
 		// tied to the OpenGL portion, so lets
 		// just pretend everything is centered
 		
-	sz=(weap->crosshair.min_size*setup.screen_rtl_wid)/iface.scale_x;
+	sz=weap->crosshair.min_size;
 	
-	p_pnt->x=(setup.screen_rtl_wid>>1)-sz;
-	p_pnt->y=(setup.screen_rtl_high>>1)-sz;
+	p_pnt->x=(iface.scale_x>>1)-sz;
+	p_pnt->y=(iface.scale_y>>1)-sz;
 
 	s_pnt->x=s_pnt->y=sz*2;
 	

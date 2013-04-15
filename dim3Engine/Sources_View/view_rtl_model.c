@@ -59,7 +59,6 @@ void view_dim3rtl_model_setup_single_model(model_draw *draw,bool hidden,bool no_
 	unsigned long		flags,mesh_flags;
 	float				*uv;
 	short				*vk,*ray_polys;
-	rtl2DPoint			p_pnt;
 	model_type			*mdl;
 	model_mesh_type		*mesh;
 	model_poly_type		*poly;
@@ -175,9 +174,6 @@ void view_dim3rtl_model_setup_single_model(model_draw *draw,bool hidden,bool no_
 
 		overlay_id=rtlSceneOverlayAdd(view_rtl_draw_scene_id,RL_OVERLAY_TYPE_QUAD_MATERIAL,0);
 		if (overlay_id<0) return;
-
-		p_pnt.x=0;
-		p_pnt.y=0;
 
 		rtlSceneOverlaySetMaterial(view_rtl_draw_scene_id,overlay_id,iface.halo_list.halos[draw->halos[n].idx].rtl_material_id);
 		rtlSceneOverlaySetHidden(view_rtl_draw_scene_id,overlay_id,TRUE);
@@ -307,12 +303,13 @@ void view_dim3rtl_model_update_single_model(model_draw *draw,bool hidden)
 			continue;
 		}
 
-		if (((p_pnt.x+pixel_sz)<0) || ((p_pnt.y+pixel_sz)<0) || ((p_pnt.x-pixel_sz)>=view.screen.x_sz) || ((p_pnt.y-pixel_sz)>=view.screen.y_sz)) {
+		if (((p_pnt.x+pixel_sz)<0) || ((p_pnt.y+pixel_sz)<0) || ((p_pnt.x-pixel_sz)>=setup.screen_rtl_wid) || ((p_pnt.y-pixel_sz)>=setup.screen_rtl_high)) {
 			rtlSceneOverlaySetHidden(view_rtl_draw_scene_id,halo->rtl_overlay_id,TRUE);
 			continue;
 		}
 
 			// setup the overlay
+			// need to transfer to iface scaling
 
 		rtlSceneOverlaySetHidden(view_rtl_draw_scene_id,halo->rtl_overlay_id,FALSE);
 
@@ -320,6 +317,9 @@ void view_dim3rtl_model_update_single_model(model_draw *draw,bool hidden)
 		p_pnt.x-=pixel_off;
 		p_pnt.y-=pixel_off;
 		s_pnt.x=s_pnt.y=pixel_sz;
+		
+		p_pnt.x=(p_pnt.x*iface.scale_x)/setup.screen_rtl_wid;
+		p_pnt.y=(p_pnt.y*iface.scale_y)/setup.screen_rtl_high;
 
 		halo_col.r=halo_col.g=halo_col.b=1.0f;
 		halo_col.a=alpha;

@@ -455,6 +455,7 @@
 		262D75D7158FE8A00086B8BB /* script_obj_label.c in Sources */ = {isa = PBXBuildFile; fileRef = 262D75D6158FE8A00086B8BB /* script_obj_label.c */; };
 		262DD2B0151E32200078FEA4 /* base_iface_score.c in Sources */ = {isa = PBXBuildFile; fileRef = 262DD2AF151E32200078FEA4 /* base_iface_score.c */; };
 		264470E814AF95250099DEE3 /* script_camera_chase_track_angle.c in Sources */ = {isa = PBXBuildFile; fileRef = 264470E714AF95250099DEE3 /* script_camera_chase_track_angle.c */; };
+		26460407171A3C6400A7E0B3 /* view_rtl_elements.c in Sources */ = {isa = PBXBuildFile; fileRef = 26460406171A3C6400A7E0B3 /* view_rtl_elements.c */; };
 		2649D14013412B2900573F6F /* gui_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 2649D13513412B2900573F6F /* gui_defs.h */; };
 		2649D14113412B2900573F6F /* input_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 2649D13613412B2900573F6F /* input_defs.h */; };
 		2649D14213412B2900573F6F /* network_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 2649D13713412B2900573F6F /* network_defs.h */; };
@@ -981,6 +982,7 @@
 		262D75D6158FE8A00086B8BB /* script_obj_label.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_obj_label.c; sourceTree = "<group>"; };
 		262DD2AF151E32200078FEA4 /* base_iface_score.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = base_iface_score.c; sourceTree = "<group>"; };
 		264470E714AF95250099DEE3 /* script_camera_chase_track_angle.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_camera_chase_track_angle.c; sourceTree = "<group>"; };
+		26460406171A3C6400A7E0B3 /* view_rtl_elements.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = view_rtl_elements.c; sourceTree = "<group>"; };
 		2649D13513412B2900573F6F /* gui_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gui_defs.h; path = Headers/gui_defs.h; sourceTree = "<group>"; };
 		2649D13613412B2900573F6F /* input_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = input_defs.h; path = Headers/input_defs.h; sourceTree = "<group>"; };
 		2649D13713412B2900573F6F /* network_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = network_defs.h; path = Headers/network_defs.h; sourceTree = "<group>"; };
@@ -1680,6 +1682,7 @@
 				2618B77516A7B25B004BB291 /* view_rtl_model.c */,
 				2618B77616A7B25B004BB291 /* view_rtl_overlay.c */,
 				268AFA2816F171FD0043DC2F /* view_rtl_gui.c */,
+				26460406171A3C6400A7E0B3 /* view_rtl_elements.c */,
 				2618B77716A7B25B004BB291 /* view_rtl_patch.c */,
 				264BBA0116F2BBA5003E622A /* view_rtl_opengl.c */,
 			);
@@ -2495,6 +2498,7 @@
 				26159D2216D191210069B442 /* base_iface_label.c in Sources */,
 				268AFA2916F171FD0043DC2F /* view_rtl_gui.c in Sources */,
 				264BBA0216F2BBA5003E622A /* view_rtl_opengl.c in Sources */,
+				26460407171A3C6400A7E0B3 /* view_rtl_elements.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
