@@ -317,12 +317,12 @@ unsigned char* bitmap_text_size_internal(texture_font_size_type *d3_size_font,ch
 {
 	int				n,x,y;
 	unsigned char	ch;
-	unsigned char	*data,*ptr;
+	unsigned char	*data,*data_ptr,*bitmap_data,*bitmap_ptr;
 	HDC				screen_dc,dc;
+	BITMAPINFO		bmi;
 	HBITMAP			bmp,old_bmp;
 	HFONT			font,old_font;
 	HBRUSH			brsh,old_brsh;
-	COLORREF		col;
 	RECT			box;
 	ABC				ch_abc;
 
@@ -336,7 +336,17 @@ unsigned char* bitmap_text_size_internal(texture_font_size_type *d3_size_font,ch
 	screen_dc=GetDC(NULL);
 
 	dc=CreateCompatibleDC(screen_dc);
-	bmp=CreateCompatibleBitmap(screen_dc,bitmap_wid,bitmap_high);
+
+	bmi.bmiHeader.biSize=sizeof(BITMAPINFOHEADER);
+	bmi.bmiHeader.biWidth=bitmap_wid;
+	bmi.bmiHeader.biHeight=bitmap_high;
+	bmi.bmiHeader.biPlanes=1;
+	bmi.bmiHeader.biBitCount=32;
+	bmi.bmiHeader.biCompression=BI_RGB;
+	bmi.bmiHeader.biSizeImage=(4*bitmap_wid)*bitmap_high;
+
+	bmp=CreateDIBSection(screen_dc,&bmi,DIB_RGB_COLORS,&bitmap_data,NULL,0);
+
 	old_bmp=SelectObject(dc,bmp);
 
 	SetMapMode(dc,MM_TEXT);
@@ -390,20 +400,21 @@ unsigned char* bitmap_text_size_internal(texture_font_size_type *d3_size_font,ch
 	
 		// get the bitmap
 
-	ptr=data;
+	data_ptr=data;
 
 	for (y=0;y!=bitmap_high;y++) {
 
+		bitmap_ptr=bitmap_data+((4*bitmap_wid)*((bitmap_high-1)-y));
+
 		for (x=0;x!=bitmap_wid;x++) {
 
-			col=GetPixel(dc,x,y);
+			*data_ptr++=0xFF;
+			*data_ptr++=0xFF;
+			*data_ptr++=0xFF;
 
-			*ptr++=0xFF;
-			*ptr++=0xFF;
-			*ptr++=0xFF;
+			*data_ptr++=0xFF-(*bitmap_ptr);		// use the anti-aliased font as the alpha mask
 
-			*ptr++=255-GetRValue(col);		// use the anti-aliased font as the alpha mask
-
+			bitmap_ptr+=4;
 		}
 	}
 

@@ -3832,6 +3832,10 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\dim3Engine\Sources_View\view_rtl_elements.c"
+						>
+					</File>
+					<File
 						RelativePath="..\..\dim3Engine\Sources_View\view_rtl_gui.c"
 						>
 					</File>

@@ -2258,7 +2258,7 @@ int element_get_table_row_count(element_type *element)
 	return(0);
 }
 
-static inline int element_get_table_row_high(element_type *element)
+int element_get_table_row_high(element_type *element)
 {
 	if (element->setup.table.bitmap_mode==element_table_bitmap_none) return(gl_text_get_char_height(iface.font.text_size_medium)+4);
 	return((int)(((float)iface.scale_x)*element_table_bitmap_size)+4);
@@ -2459,12 +2459,11 @@ unsigned long element_draw_table_get_image_gl_id(element_type *element,int row_i
 
 	if (!iface.project.ray_trace) {
 		bitmap_open(&element->setup.table.images[idx].bitmap,path,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE);
-	}
-	else {
-		element->setup.table.images[idx].rl_material_id=gui_dim3rtl_material_open(path);
+		return(element->setup.table.images[idx].bitmap.gl_id);
 	}
 
-	return(element->setup.table.images[idx].bitmap.gl_id);
+	element->setup.table.images[idx].rl_material_id=gui_dim3rtl_material_open(path);
+	return(element->setup.table.images[idx].rl_material_id);
 }
 
 void element_draw_table_line_data_text(int x,int y,int row_high,d3col *txt_col,char *txt)

@@ -52,10 +52,12 @@ extern void gui_dim3rtl_add_overlay_box_color(int x,int y,int wid,int high,bool 
 extern void gui_dim3rtl_add_overlay_box_gradient(int x,int y,int wid,int high,bool outline,bool hilite,d3col *fill_col,d3col *outline_col,float alpha);
 extern void gui_dim3rtl_add_overlay_box_outline(int x,int y,int wid,int high,bool hilite,d3col *outline_col,float alpha);
 extern void gui_dim3rtl_add_overlay_line_color(int x,int y,int x2,int y2,d3col *fill_col,float alpha);
-extern void gui_dim3rtl_add_overlay_text(int x,int y,int wid,int high,d3col *fill_col,float alpha,int just,char *str);
+extern void gui_dim3rtl_add_overlay_text(int x,int y,d3col *fill_col,float alpha,int just,char *str);
 extern element_type* element_find(int id);
 extern int element_get_combo_list_count(element_type *element);
 extern void element_box_combo_open(element_type *element,int *lft,int *rgt,int *top,int *bot);
+extern int element_get_table_row_high(element_type *element);
+extern unsigned long element_draw_table_get_image_gl_id(element_type *element,int row_idx);
 extern int element_mouse_over_tab(element_type *element,int x,int y);
 
 /* =======================================================
@@ -81,7 +83,7 @@ void gui_dim3rtl_element_draw_button_text(element_type *element,int sel_id)
 
 	gui_dim3rtl_element_get_box(element,&x,&y,&wid,&high);
 	gui_dim3rtl_add_overlay_box_color(x,y,wid,high,TRUE,(element->id==sel_id),&iface.color.button.fill,&iface.color.button.outline,alpha);
-	gui_dim3rtl_add_overlay_text(x,y,wid,high,&iface.color.button.text,alpha,tx_center,element->setup.button.name);
+	gui_dim3rtl_add_overlay_text((x+(wid>>1)),(y+(high>>1)),&iface.color.button.text,alpha,tx_center,element->setup.button.name);
 }
 
 void gui_dim3rtl_element_draw_button_bitmap(element_type *element,int sel_id)
@@ -153,7 +155,7 @@ void gui_dim3rtl_element_draw_checkbox_control(int x,int y,bool checked,bool ena
 
 		// text
 		
-	gui_dim3rtl_add_overlay_text(chk_lft,y,(wid>>1),high,&iface.color.control.label,alpha,tx_center,(checked?"on":"off"));
+	gui_dim3rtl_add_overlay_text((chk_lft+(wid>>2)),(y+(high>>1)),&iface.color.control.label,alpha,tx_center,(checked?"on":"off"));
 
 		// outline
 
@@ -168,8 +170,8 @@ void gui_dim3rtl_element_draw_checkbox(element_type *element,int sel_id)
 	
 		// label
 
-	gui_dim3rtl_add_overlay_text((element->x-155),y,140,element->high,&iface.color.control.label,1.0f,tx_right,element->str);
-	gui_dim3rtl_add_overlay_text((element->x-15),y,5,element->high,&iface.color.control.label,1.0f,tx_center,":");
+	gui_dim3rtl_add_overlay_text((element->x-15),(y+(element->high>>1)),&iface.color.control.label,1.0f,tx_right,element->str);
+	gui_dim3rtl_add_overlay_text((element->x-10),(y+(element->high>>1)),&iface.color.control.label,1.0f,tx_center,":");
 	
 		// checkbox
 	
@@ -178,7 +180,7 @@ void gui_dim3rtl_element_draw_checkbox(element_type *element,int sel_id)
 
 void gui_dim3rtl_element_draw_combo(element_type *element,int sel_id)
 {
-	int				y,lft;
+	int				y,lft,rgt,mid,ty,by;
 	char			str[256];
 	float			alpha;
 	
@@ -186,8 +188,8 @@ void gui_dim3rtl_element_draw_combo(element_type *element,int sel_id)
 	
 	y=element->y-(element->high>>1);
 
-	gui_dim3rtl_add_overlay_text((element->x-155),y,140,element->high,&iface.color.control.label,1.0f,tx_right,element->str);
-	gui_dim3rtl_add_overlay_text((element->x-15),y,5,element->high,&iface.color.control.label,1.0f,tx_center,":");
+	gui_dim3rtl_add_overlay_text((element->x-15),(y+(element->high>>1)),&iface.color.control.label,1.0f,tx_right,element->str);
+	gui_dim3rtl_add_overlay_text((element->x-10),(y+(element->high>>1)),&iface.color.control.label,1.0f,tx_center,":");
 		
 		// background and outline
 		
@@ -198,13 +200,20 @@ void gui_dim3rtl_element_draw_combo(element_type *element,int sel_id)
 		// arrow
 
 	lft=(element->x+element->wid)-(element->high-2);
-	
-	gui_dim3rtl_add_overlay_box_gradient(lft,(y+4),(element->high-8),(element->high-8),TRUE,FALSE,&iface.color.control.hilite,&iface.color.control.outline,alpha);
+	rgt=lft+(element->high-8);
+	mid=(lft+rgt)>>1;
+
+	ty=y+4;
+	by=ty+(element->high-8);
+
+	gui_dim3rtl_add_overlay_line_color(lft,ty,rgt,ty,&iface.color.control.outline,1.0f);
+	gui_dim3rtl_add_overlay_line_color(lft,ty,mid,by,&iface.color.control.outline,1.0f);
+	gui_dim3rtl_add_overlay_line_color(rgt,ty,mid,by,&iface.color.control.outline,1.0f);
 
 		// control text
 
 	strcpy(str,(element->data+(element->value*32)));
-	gui_dim3rtl_add_overlay_text((element->x+5),y,(element->wid-10),element->high,&iface.color.control.text,1.0f,tx_left,str);
+	gui_dim3rtl_add_overlay_text((element->x+5),(y+(element->high>>1)),&iface.color.control.text,1.0f,tx_left,str);
 }
 
 void gui_dim3rtl_element_draw_combo_open(element_type *element)
@@ -260,10 +269,10 @@ void gui_dim3rtl_element_draw_combo_open(element_type *element)
 		strcpy(str,(element->data+(n*32)));
 
 		if (sel_item_idx==n) {
-			gui_dim3rtl_add_overlay_text((x+5),ty,(wid-10),element->high,&iface.color.control.mouse_over,1.0f,tx_left,str);
+			gui_dim3rtl_add_overlay_text((x+5),(ty+(element->high>>1)),&iface.color.control.mouse_over,1.0f,tx_left,str);
 		}
 		else {
-			gui_dim3rtl_add_overlay_text((x+5),ty,(wid-10),element->high,&iface.color.control.text,1.0f,tx_left,str);
+			gui_dim3rtl_add_overlay_text((x+5),(ty+(element->high>>1)),&iface.color.control.text,1.0f,tx_left,str);
 		}
 
 		ty+=element->high;
@@ -285,8 +294,8 @@ void gui_dim3rtl_element_draw_slider(element_type *element,int sel_id)
 		
 	y=element->y-(element->high>>1);
 
-	gui_dim3rtl_add_overlay_text((element->x-155),y,140,element->high,&iface.color.control.label,1.0f,tx_right,element->str);
-	gui_dim3rtl_add_overlay_text((element->x-15),y,5,element->high,&iface.color.control.label,1.0f,tx_center,":");
+	gui_dim3rtl_add_overlay_text((element->x-15),(y+(element->high>>1)),&iface.color.control.label,1.0f,tx_right,element->str);
+	gui_dim3rtl_add_overlay_text((element->x-10),(y+(element->high>>1)),&iface.color.control.label,1.0f,tx_center,":");
 	
 		// slider size
 		
@@ -319,7 +328,7 @@ void gui_dim3rtl_element_draw_slider(element_type *element,int sel_id)
 		// text
 		
 	sprintf(str,"%d%%",(int)(element->setup.slider.value*100.0f));
-	gui_dim3rtl_add_overlay_text(((element->x+element->wid)-100),y,95,element->high,&iface.color.control.text,1.0f,tx_right,str);
+	gui_dim3rtl_add_overlay_text(((element->x+element->wid)-5),(y+(element->high>>1)),&iface.color.control.text,1.0f,tx_right,str);
 
 		// outline
 		
@@ -328,15 +337,241 @@ void gui_dim3rtl_element_draw_slider(element_type *element,int sel_id)
 
 /* =======================================================
 
+      Scroll Controls
+      
+======================================================= */
+
+void gui_dim3rtl_element_draw_scroll_controls(element_type *element,int header_high,bool up_ok,bool down_ok)
+{
+	int				lft,top,bot,ctrl_sz;
+	float			alpha;
+	d3col			col,col2,col3;
+	
+		// element size
+
+	ctrl_sz=element_get_control_scroll_size();
+	
+	lft=((element->x+element->wid)-ctrl_sz)-4;
+	top=element->y+(header_high+8);
+	bot=((element->y+element->high)-ctrl_sz)-4;
+
+		// colors
+
+	memmove(&col,&iface.color.control.fill,sizeof(d3col));
+	col2.r=col.r*element_gradient_factor_background;
+	col2.g=col.g*element_gradient_factor_background;
+	col2.b=col.b*element_gradient_factor_background;
+	
+	col3.r=col3.g=col3.b=0.0f;
+
+		// top scroll bar
+
+	alpha=up_ok?1.0f:0.1f;
+	gui_dim3rtl_add_overlay_box_color(lft,top,ctrl_sz,ctrl_sz,TRUE,FALSE,&col,&iface.color.control.outline,alpha);
+
+		// bottom scroll bar
+
+	alpha=down_ok?1.0f:0.1f;
+	gui_dim3rtl_add_overlay_box_color(lft,(bot-ctrl_sz),ctrl_sz,ctrl_sz,TRUE,FALSE,&col,&iface.color.control.outline,alpha);
+}
+
+/* =======================================================
+
       Tables
       
 ======================================================= */
 
+void gui_dim3rtl_element_draw_table_row_column_lines(element_type *element,int ty,int by,float col_factor)
+{
+	int			n,x;
+	float		f_wid;
+	d3col		col;
+	
+	x=element->x;
+	f_wid=(float)element->wid;
+	
+	col.r=iface.color.control.outline.r*col_factor;
+	col.g=iface.color.control.outline.g*col_factor;
+	col.b=iface.color.control.outline.b*col_factor;
+
+	for (n=1;n<element->setup.table.ncolumn;n++) {
+		x+=(int)(element->setup.table.cols[n-1].percent_size*f_wid);
+		gui_dim3rtl_add_overlay_line_color(x,ty,x,by,&col,1.0f);
+	}
+}
+
+void gui_dim3rtl_element_draw_table_header_fill(element_type *element,int high)
+{
+	gui_dim3rtl_add_overlay_box_gradient(element->x,element->y,element->wid,(high+4),FALSE,FALSE,&iface.color.control.header,NULL,1.0f);
+	gui_dim3rtl_element_draw_table_row_column_lines(element,element->y,(element->y+(high+4)),1.0f);
+}
+
+void gui_dim3rtl_element_draw_table_line_header(element_type *element,int row_high)
+{
+	int			n,x,col_wid;
+	d3col		col;
+	
+	x=element->x;
+
+	col.r=col.g=col.b=0.0f;
+	
+	for (n=0;n!=element->setup.table.ncolumn;n++) {
+		col_wid=(int)(element->setup.table.cols[n].percent_size*(float)element->wid);
+		gui_dim3rtl_add_overlay_text((x+4),(element->y+(row_high>>1)),&col,1.0f,tx_left,element->setup.table.cols[n].name);
+		x+=col_wid;
+	}
+}
+
+void gui_dim3rtl_element_draw_table_line_background(element_type *element,int idx,int y,int row_high)
+{
+	d3col			col;
+
+	memmove(&col,&iface.color.control.fill,sizeof(d3col));
+
+	if (((idx+element->offset)&0x1)==0) {
+		col.r*=element_gradient_factor_table_line_1;
+		col.g*=element_gradient_factor_table_line_1;
+		col.b*=element_gradient_factor_table_line_1;
+	}
+	else {
+		col.r*=element_gradient_factor_table_line_2;
+		col.g*=element_gradient_factor_table_line_2;
+		col.b*=element_gradient_factor_table_line_2;
+	}
+	
+	gui_dim3rtl_add_overlay_box_color((element->x+1),y,(element->wid-2),row_high,FALSE,FALSE,&col,NULL,1.0f);
+}
+
+
+
+
+
+
+void gui_dim3rtl_element_draw_table_line_data_text(int x,int y,int row_high,d3col *txt_col,char *txt)
+{
+	int				dy,high;
+	char			*c;
+	
+	high=gl_text_get_char_height(iface.font.text_size_medium);
+	
+		// any returns?
+		
+	c=strchr(txt,'\n');
+	if (c==NULL) {
+		dy=y+((row_high>>1)-3);
+		gui_dim3rtl_add_overlay_text(x,(dy+2),txt_col,1.0f,tx_left,txt);
+	}
+	else {
+		*c=0x0;
+		
+		dy=y+(high+8);
+		gui_dim3rtl_add_overlay_text(x,dy,txt_col,1.0f,tx_left,txt);
+		gui_dim3rtl_add_overlay_text(x,(dy+(high+2)),txt_col,1.0f,tx_left,(c+1));
+	}
+}
+
+void gui_dim3rtl_element_draw_table_line_data(element_type *element,int x,int y,int row,int wid,int row_high,d3col *txt_col,char *data)
+{
+	int				n,dx,dy,tx,col_wid,bitmap_sz,
+					material_id;
+	char			*c,*c2,txt[256];
+	bool			first_col,checked;
+	d3col			col,col2;
+
+	dx=x+4;
+	dy=y+((row_high>>1)-3);
+
+		// data column
+
+	c=data;
+	first_col=TRUE;
+	
+	for (n=0;n!=element->setup.table.ncolumn;n++) {
+
+			// checkboxes
+
+		if ((element->setup.table.checkbox) && (n==0)) {
+
+			col_wid=(int)(element->setup.table.cols[n].percent_size*(float)wid);
+
+			checked=FALSE;
+			if ((row>=0) && (row<element_table_max_check)) checked=element->setup.table.checks[row];
+
+			gui_dim3rtl_element_draw_checkbox_control((dx+4),dy,checked,TRUE,FALSE);
+
+			dx+=col_wid;
+			continue;
+		}
+	
+			// get current data
+			
+		strncpy(txt,c,255);
+		txt[255]=0x0;
+		c2=strchr(txt,'\t');
+		if (c2!=NULL) *c2=0x0;
+		
+			// text draw spot
+			
+		tx=dx;
+
+			// draw any bitmaps
+
+		if ((element->setup.table.bitmap_mode!=element_table_bitmap_none) && (first_col)) {
+
+			bitmap_sz=(int)(((float)iface.scale_x)*element_table_bitmap_size);
+
+				// draw bitmap
+
+			material_id=element_draw_table_get_image_gl_id(element,row);
+			if (material_id!=-1) gui_dim3rtl_add_overlay_box_material(dx,(y+2),bitmap_sz,bitmap_sz,1.0f,material_id);
+
+				// missing graphic
+
+			else {
+				col.r=col.g=col.b=0.4f;
+				gui_dim3rtl_add_overlay_box_color(dx,(y+2),bitmap_sz,bitmap_sz,TRUE,FALSE,&col,&iface.color.control.outline,1.0f);
+
+				col.r=col.g=col.b=1.0f;
+				gui_dim3rtl_add_overlay_text((dx+(bitmap_sz>>1)),(y+(bitmap_sz>>1)),&col,1.0f,tx_center,"?");
+			}
+
+				// get to correct text
+
+			c2=strchr(txt,';');
+			if (c2!=NULL) {
+				c2=strchr((c2+1),';');
+				if (c2!=NULL) {
+					strcpy(txt,(c2+1));
+				}
+			}
+
+			tx+=(bitmap_sz+4);
+		}
+
+		first_col=FALSE;
+		
+			// draw text
+			
+		gui_dim3rtl_element_draw_table_line_data_text(tx,y,row_high,txt_col,txt);
+		
+			// get next data
+			
+		c=strchr(c,'\t');
+		if (c==NULL) break;
+		c++;
+		
+		dx+=(int)(element->setup.table.cols[n].percent_size*(float)wid);
+	}
+}
+
+
+
+
+
 void gui_dim3rtl_element_draw_table(element_type *element,int sel_id)
 {
-/*
-	int				n,x,y,ky,wid,high,cnt,vis_cnt,
-					lft,rgt,top,bot,row_high,
+	int				n,x,y,ky,wid,cnt,vis_cnt,
+					lft,rgt,top,bot,title_high,row_high,
 					lx,rx,ty,by,last_idx;
 	char			*c;
 	bool			up_ok,down_ok;
@@ -345,53 +580,37 @@ void gui_dim3rtl_element_draw_table(element_type *element,int sel_id)
 		// sizes
 	
 	wid=element->wid;
-	high=gl_text_get_char_height(iface.font.text_size_medium)+2;
+	title_high=gl_text_get_char_height(iface.font.text_size_medium)+2;
 	row_high=element_get_table_row_high(element);
 	
 		// get element counts
 		
-	vis_cnt=cnt=((element->high-(high+4))/row_high);
-	if (((element->high-(high+4))%row_high)!=0) vis_cnt--;
+	vis_cnt=cnt=((element->high-(title_high+4))/row_high);
+	if (((element->high-(title_high+4))%row_high)!=0) vis_cnt--;
 	
 		// header fill
 		
-	element_draw_table_header_fill(element,high);
-		
+	gui_dim3rtl_element_draw_table_header_fill(element,title_high);
+
 		// outline
-		
-	element_get_box(element,&lft,&rgt,&top,&bot);
-	view_primitive_2D_line_quad(&iface.color.control.outline,1.0f,lft,rgt,top,bot);
-	
-	element_get_box(element,&lft,&rgt,&top,&bot);
-	top+=(high+4);
 
-	view_primitive_2D_line(&iface.color.control.outline,1.0f,lft,top,rgt,top);
+	y=element->y+(title_high+4);
 
-	if (element->id==sel_id) view_primitive_2D_line_quad(&iface.color.control.mouse_over,1.0f,(lft-1),(rgt+1),(top-(high+5)),(bot+2));
+	gui_dim3rtl_add_overlay_line_color(element->x,y,(element->x+element->wid),y,&iface.color.control.outline,1.0f);
+	gui_dim3rtl_add_overlay_box_outline(element->x,element->y,element->wid,element->high,(element->id==sel_id),&iface.color.control.outline,1.0f);
 
-		// text positions
-		
-	x=element->x;
-	y=element->y+3;
-	
 		// header
 		
-	element_draw_table_line_header(element,x,y,wid,high);
+	gui_dim3rtl_element_draw_table_line_header(element,title_high);
 	
 		// items
-		
+
 	if (element->data!=NULL) {
 
-			// scissor so we can draw partically
-			// obscured rows
-
-		element_get_box(element,&lx,&rx,&ty,&by);
-		gl_2D_scissor_start(lx,rx,ty,by);
-	
 			// draw the data lines
 
 		last_idx=0;
-		y=(element->y+4)+(high+1);
+		y=(element->y+4)+(row_high+1);
 		
 		c=element->data+(element->offset*128);
 		
@@ -403,33 +622,18 @@ void gui_dim3rtl_element_draw_table(element_type *element,int sel_id)
 			
 				// selection or background
 
-			element_get_box(element,&lft,&rgt,&top,&bot);
-			
-			lft+=1;
-			rgt-=1;
-			top=y;
-			bot=y+row_high;
-				
 			if (((n+element->offset)==element->value) && (!element->setup.table.checkbox)) {
-				memmove(&col,&iface.color.control.hilite,sizeof(d3col));
-				col2.r=col.r*element_gradient_factor_foreground;
-				col2.g=col.g*element_gradient_factor_foreground;
-				col2.b=col.b*element_gradient_factor_foreground;
-
-				ky=(top+bot)>>1;
-
-				view_primitive_2D_color_poly(lft,top,&col2,rgt,top,&col2,rgt,ky,&col,lft,ky,&col,1.0f);
-				view_primitive_2D_color_poly(lft,ky,&col,rgt,ky,&col,rgt,bot,&col2,lft,bot,&col2,1.0f);
+				gui_dim3rtl_add_overlay_box_gradient((element->x+1),y,(element->wid-2),row_high,FALSE,FALSE,&iface.color.control.hilite,NULL,1.0f);
 			}
 			else {
-				element_draw_table_line_background(element,n,lft,rgt,top,bot);
+				gui_dim3rtl_element_draw_table_line_background(element,n,y,row_high);
 			}
 
-			element_draw_table_row_column_lines(element,top,bot,0.5f);
+			gui_dim3rtl_element_draw_table_row_column_lines(element,y,(y+row_high),0.5f);
 
 				// table line data
 				
-			element_draw_table_line_data(element,x,y,(element->offset+n),wid,row_high,&iface.color.control.text,c);
+			gui_dim3rtl_element_draw_table_line_data(element,element->x,y,(element->offset+n),wid,row_high,&iface.color.control.text,c);
 			
 			c+=128;
 			y+=row_high;
@@ -437,16 +641,15 @@ void gui_dim3rtl_element_draw_table(element_type *element,int sel_id)
 
 			// finish with blank rows
 
+		by=element->y+element->high;
+
 		while (y<by) {
-			element_get_box(element,&lft,&rgt,&top,&bot);
-			element_draw_table_line_background(element,last_idx,(lft+1),(rgt-1),y,(y+row_high));
-			element_draw_table_row_column_lines(element,y,(y+row_high),0.5f);
+			gui_dim3rtl_element_draw_table_line_background(element,last_idx,y,row_high);
+			gui_dim3rtl_element_draw_table_row_column_lines(element,y,(y+row_high),0.5f);
 			
 			last_idx++;
 			y+=row_high;
 		}
-
-		gl_2D_scissor_end();
 	}
 
 		// scroll controls
@@ -454,10 +657,10 @@ void gui_dim3rtl_element_draw_table(element_type *element,int sel_id)
 	up_ok=(element->offset!=0);
 	down_ok=((element->offset+(vis_cnt+1))<element_get_table_row_count(element));
 
-	element_draw_scroll_controls(element,high,up_ok,down_ok);
+	gui_dim3rtl_element_draw_scroll_controls(element,title_high,up_ok,down_ok);
 	
 		// busy
-		
+/* supergumba		
 	if (element->setup.table.busy) element_draw_table_busy(element);
 	*/
 }
@@ -523,14 +726,14 @@ void gui_dim3rtl_element_draw_tab(element_type *element,int sel_id)
 		gui_dim3rtl_add_overlay_line_color(rx,ty,rx,by,&iface.color.tab.outline,1.0f);
 		
 		if (element->value==tab_idx) {
-			gui_dim3rtl_add_overlay_text(lx,ty,xadd,high,&iface.color.tab.text,1.0f,tx_center,element->setup.tab.name[tab_idx]);
+			gui_dim3rtl_add_overlay_text((lx+(xadd>>1)),(ty+(high>>1)),&iface.color.tab.text,1.0f,tx_center,element->setup.tab.name[tab_idx]);
 		}
 		else {
 			if (mouse_idx==tab_idx) {
-				gui_dim3rtl_add_overlay_text(lx,ty,xadd,high,&iface.color.tab.text_mouse_over,1.0f,tx_center,element->setup.tab.name[tab_idx]);
+				gui_dim3rtl_add_overlay_text((lx+(xadd>>1)),(ty+(high>>1)),&iface.color.tab.text_mouse_over,1.0f,tx_center,element->setup.tab.name[tab_idx]);
 			}
 			else {
-				gui_dim3rtl_add_overlay_text(lx,ty,xadd,high,&iface.color.tab.text_dimmed,1.0f,tx_center,element->setup.tab.name[tab_idx]);
+				gui_dim3rtl_add_overlay_text((lx+(xadd>>1)),(ty+(high>>1)),&iface.color.tab.text_dimmed,1.0f,tx_center,element->setup.tab.name[tab_idx]);
 			}
 		}
 	}
@@ -568,7 +771,7 @@ void gui_dim3rtl_element_draw_frame(element_type *element)
 			gui_dim3rtl_add_overlay_box_gradient(x,y,wid,title_high,TRUE,FALSE,&iface.color.dialog.background,&iface.color.dialog.outline,1.0f);
 		}
 	
-		gui_dim3rtl_add_overlay_text(x,y,wid,title_high,&iface.color.dialog.title,1.0f,tx_center,element->str);
+		gui_dim3rtl_add_overlay_text((x+(element->wid>>1)),(y+(title_high>>1)),&iface.color.dialog.title,1.0f,tx_center,element->str);
 	}
 }
 
