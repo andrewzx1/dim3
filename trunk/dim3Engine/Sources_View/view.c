@@ -355,7 +355,7 @@ bool view_initialize(char *err_str)
 		view.device_type=device_type_pc;
 	#endif
 #endif
-	
+
 		// get desktop screen size
 		
 	SDL_GetDesktopDisplayMode(0,&sdl_mode);

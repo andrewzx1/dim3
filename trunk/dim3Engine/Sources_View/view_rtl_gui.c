@@ -422,7 +422,7 @@ void gui_dim3rtl_add_overlay_line_color(int x,int y,int x2,int y2,d3col *fill_co
 	rtlSceneOverlaySetLinePosition(view_rtl_gui_scene_id,overlay_id,&s_pnt,&e_pnt);
 }
 
-void gui_dim3rtl_add_overlay_text(int x,int y,int wid,int high,d3col *fill_col,float alpha,int just,char *str)
+void gui_dim3rtl_add_overlay_text(int x,int y,d3col *fill_col,float alpha,int just,char *str)
 {
 	int						n,str_len,
 							char_wid,txt_wid,txt_high,
@@ -459,17 +459,17 @@ void gui_dim3rtl_add_overlay_text(int x,int y,int wid,int high,d3col *fill_col,f
 	
 	switch (just) {
 		case tx_center:
-			p_pnt.x=x+((wid>>1)-(txt_wid>>1));
+			p_pnt.x=x-(txt_wid>>1);
 			break;
 		case tx_right:
-			p_pnt.x=(x+wid)-txt_wid;
+			p_pnt.x=x-txt_wid;
 			break;
 		default:
 			p_pnt.x=x;
 			break;
 	}
 	
-	p_pnt.y=y+((high-txt_high)>>1);
+	p_pnt.y=(y-(txt_high>>1))+(txt_high/10);
 	
 	c=str;
 
