@@ -2030,7 +2030,7 @@ void element_draw_combo_open(element_type *element)
 
 void element_click_slider(element_type *element,int x,int y)
 {
-	x-=(element->x+10);
+	x-=element->x;
 	if (x<0) x=0;
 	if (x>element->wid) x=element->wid;
 	

@@ -580,6 +580,7 @@ void ray_scene_overlay_draw_quad_material(ray_scene_type *scene,ray_overlay_type
 {
 	int							n,wid,mm_level,
 								x,y,lx,rx,ty,by,px,py,
+								clip_lx,clip_rx,clip_ty,clip_by,
 								y_material_buf_offset;
 	float						fx,fy,fx_add,fy_add,inv_a;
 	unsigned long				*buf;
@@ -620,12 +621,24 @@ void ray_scene_overlay_draw_quad_material(ray_scene_type *scene,ray_overlay_type
 	ty=overlay->setup.quad_material.pnt.y;
 	by=ty+overlay->setup.quad_material.pnt_size.y;
 	
-		// scale it
+		// scale and clip
 		
 	lx=(lx*scene->buffer.wid)/scene->overlay_scale.x;
 	rx=(rx*scene->buffer.wid)/scene->overlay_scale.x;
 	ty=(ty*scene->buffer.high)/scene->overlay_scale.y;
 	by=(by*scene->buffer.high)/scene->overlay_scale.y;
+	
+	clip_lx=lx;
+	if (clip_lx<0) clip_lx=0;
+
+	clip_rx=rx;
+	if (clip_rx>=scene->buffer.wid) clip_rx=scene->buffer.wid-1;
+
+	clip_ty=ty;
+	if (clip_ty<0) clip_ty=0;
+
+	clip_by=by;
+	if (clip_by>=scene->buffer.high) clip_by=scene->buffer.high-1;
 
 		// uv calcs
 
@@ -637,16 +650,9 @@ void ray_scene_overlay_draw_quad_material(ray_scene_type *scene,ray_overlay_type
 
 	if ((material->no_alpha) && (overlay->tint.a==1.0f)) {
 
-		fy=overlay->setup.quad_material.uv.y;
+		fy=overlay->setup.quad_material.uv.y+((clip_ty-ty)*fy_add);
 		
-		for (y=ty;y<by;y++) {
-
-				// clipping
-
-			if ((y<0) || (y>=scene->buffer.high)) {
-				fy+=fy_add;
-				continue;
-			}
+		for (y=clip_ty;y<clip_by;y++) {
 
 				// get y texture coordinate
 				
@@ -655,23 +661,15 @@ void ray_scene_overlay_draw_quad_material(ray_scene_type *scene,ray_overlay_type
 
 				// buffer lines
 
-			buf=scene->buffer.data+((y*scene->buffer.wid)+lx);
+			buf=scene->buffer.data+((y*scene->buffer.wid)+clip_lx);
 
 			y_material_buf_offset=mipmap->wid*py;
 
 				// draw the row
 
-			fx=overlay->setup.quad_material.uv.x;
+			fx=overlay->setup.quad_material.uv.x+((clip_lx-lx)*fx_add);
 
-			for (x=lx;x<rx;x++) {
-
-					// clipping
-
-				if ((x<0) || (x>=scene->buffer.wid)) {
-					buf++;
-					fx+=fx_add;
-					continue;
-				}
+			for (x=clip_lx;x<clip_rx;x++) {
 
 					// get x texture coordinate
 					
@@ -690,16 +688,9 @@ void ray_scene_overlay_draw_quad_material(ray_scene_type *scene,ray_overlay_type
 		// draw quad with alpha
 		// this is the slower path
 
-	fy=overlay->setup.quad_material.uv.y;
+	fy=overlay->setup.quad_material.uv.y+((clip_ty-ty)*fy_add);
 	
-	for (y=ty;y<by;y++) {
-
-			// clipping
-
-		if ((y<0) || (y>=scene->buffer.high)) {
-			fy+=fy_add;
-			continue;
-		}
+	for (y=clip_ty;y<clip_by;y++) {
 
 			// get y texture coordinate
 			
@@ -708,23 +699,15 @@ void ray_scene_overlay_draw_quad_material(ray_scene_type *scene,ray_overlay_type
 
 			// buffer lines
 
-		buf=scene->buffer.data+((y*scene->buffer.wid)+lx);
+		buf=scene->buffer.data+((y*scene->buffer.wid)+clip_lx);
 
 		y_material_buf_offset=mipmap->wid*py;
 
 			// draw the row
 
-		fx=overlay->setup.quad_material.uv.x;
+		fx=overlay->setup.quad_material.uv.x+((clip_lx-lx)*fx_add);
 
-		for (x=lx;x<rx;x++) {
-
-				// clipping
-
-			if ((x<0) || (x>=scene->buffer.wid)) {
-				buf++;
-				fx+=fx_add;
-				continue;
-			}
+		for (x=clip_lx;x<clip_rx;x++) {
 
 				// get x texture coordinate
 				
