@@ -445,13 +445,10 @@ void gui_dim3rtl_add_overlay_text(int x,int y,int wid,int high,d3col *fill_col,f
 
         // get position
 
-	char_wid=(iface.font.text_size_medium*setup.screen_wid)/iface.scale_x;
+	char_wid=iface.font.text_size_medium;
 
 	txt_wid=gl_text_get_string_width(font_interface_index,iface.font.text_size_medium,FALSE,str);
-	txt_wid=(txt_wid*setup.screen_wid)/iface.scale_x;
-
 	txt_high=(int)(((float)iface.font.text_size_medium)*text_height_factor);
-	txt_high=(txt_high*setup.screen_high)/iface.scale_y;
 
 		// quad size
 
