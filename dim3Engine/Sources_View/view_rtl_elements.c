@@ -56,6 +56,7 @@ extern void gui_dim3rtl_add_overlay_text(int x,int y,d3col *fill_col,float alpha
 extern element_type* element_find(int id);
 extern int element_get_combo_list_count(element_type *element);
 extern void element_box_combo_open(element_type *element,int *lft,int *rgt,int *top,int *bot);
+extern int element_get_table_row_count(element_type *element);
 extern int element_get_table_row_high(element_type *element);
 extern unsigned long element_draw_table_get_image_gl_id(element_type *element,int row_idx);
 extern int element_mouse_over_tab(element_type *element,int x,int y);
@@ -607,6 +608,11 @@ void gui_dim3rtl_element_draw_table(element_type *element,int sel_id)
 
 	if (element->data!=NULL) {
 
+			// clip inside the table
+			
+		rtlSceneOverlaySaveClip(view_rtl_gui_scene_id);
+		//rtlSceneOverlaySetClip(view_rtl_gui_scene_id,rtl2DPoint *top_lft_pnt,rtl2DPoint *bot_rgt_pnt);
+
 			// draw the data lines
 
 		last_idx=0;
@@ -650,6 +656,8 @@ void gui_dim3rtl_element_draw_table(element_type *element,int sel_id)
 			last_idx++;
 			y+=row_high;
 		}
+
+		rtlSceneOverlayRestoreClip(view_rtl_gui_scene_id);
 	}
 
 		// scroll controls

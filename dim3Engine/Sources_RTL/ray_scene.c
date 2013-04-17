@@ -179,9 +179,15 @@ int rtlSceneAdd(ray_2d_point_type *size,int target,int format,void *attachment,u
 	scene->eye.max_dist=0.0f;
 	
 		// default overlay scale
+		// and clipping
 		
 	scene->overlay_scale.x=scene->buffer.wid;
 	scene->overlay_scale.y=scene->buffer.high;
+	
+	scene->overlay_clip.top_lft_pnt.x=0;
+	scene->overlay_clip.top_lft_pnt.y=0;
+	scene->overlay_clip.bot_rgt_pnt.x=scene->buffer.wid;
+	scene->overlay_clip.bot_rgt_pnt.y=scene->buffer.high;
 	
 		// create the scene lock mutex
 
