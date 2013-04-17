@@ -131,6 +131,8 @@ void gui_dim3rtl_element_draw_checkbox_control(int x,int y,bool checked,bool ena
 	wid=element_get_control_short_wid();
 	high=element_get_control_high();
 
+	y-=(high>>1);
+
 	alpha=(enabled?1.0f:0.3f);
 
 		// background
@@ -166,13 +168,13 @@ void gui_dim3rtl_element_draw_checkbox_control(int x,int y,bool checked,bool ena
 void gui_dim3rtl_element_draw_checkbox(element_type *element,int sel_id)
 {
 	int				y;
-	
+
 	y=element->y-(element->high>>1);
-	
+
 		// label
 
-	gui_dim3rtl_add_overlay_text((element->x-15),(y+(element->high>>1)),&iface.color.control.label,1.0f,tx_right,element->str);
-	gui_dim3rtl_add_overlay_text((element->x-10),(y+(element->high>>1)),&iface.color.control.label,1.0f,tx_center,":");
+	gui_dim3rtl_add_overlay_text((element->x-15),y,&iface.color.control.label,1.0f,tx_right,element->str);
+	gui_dim3rtl_add_overlay_text((element->x-10),y,&iface.color.control.label,1.0f,tx_center,":");
 	
 		// checkbox
 	
@@ -181,7 +183,7 @@ void gui_dim3rtl_element_draw_checkbox(element_type *element,int sel_id)
 
 void gui_dim3rtl_element_draw_combo(element_type *element,int sel_id)
 {
-	int				y,lft,rgt,mid,ty,by;
+	int				y,lft,rgt,mid,high,ky,ty,by;
 	char			str[256];
 	float			alpha;
 	
@@ -189,23 +191,26 @@ void gui_dim3rtl_element_draw_combo(element_type *element,int sel_id)
 	
 	y=element->y-(element->high>>1);
 
-	gui_dim3rtl_add_overlay_text((element->x-15),(y+(element->high>>1)),&iface.color.control.label,1.0f,tx_right,element->str);
-	gui_dim3rtl_add_overlay_text((element->x-10),(y+(element->high>>1)),&iface.color.control.label,1.0f,tx_center,":");
+	gui_dim3rtl_add_overlay_text((element->x-15),y,&iface.color.control.label,1.0f,tx_right,element->str);
+	gui_dim3rtl_add_overlay_text((element->x-10),y,&iface.color.control.label,1.0f,tx_center,":");
 		
 		// background and outline
+
+	high=element_get_control_high();
+	ky=y-(high>>1);
 		
 	alpha=(element->enabled?1.0f:0.3f);
 
-	gui_dim3rtl_add_overlay_box_gradient(element->x,y,element->wid,element->high,TRUE,((element->id==sel_id) && (element->enabled)),&iface.color.control.fill,&iface.color.control.outline,alpha);
+	gui_dim3rtl_add_overlay_box_gradient(element->x,ky,element->wid,high,TRUE,((element->id==sel_id) && (element->enabled)),&iface.color.control.fill,&iface.color.control.outline,alpha);
 
 		// arrow
 
-	lft=(element->x+element->wid)-(element->high-2);
-	rgt=lft+(element->high-8);
+	lft=(element->x+element->wid)-(high-2);
+	rgt=lft+(high-8);
 	mid=(lft+rgt)>>1;
 
-	ty=y+4;
-	by=ty+(element->high-8);
+	ty=ky+4;
+	by=ty+(high-8);
 
 	gui_dim3rtl_add_overlay_line_color(lft,ty,rgt,ty,&iface.color.control.outline,1.0f);
 	gui_dim3rtl_add_overlay_line_color(lft,ty,mid,by,&iface.color.control.outline,1.0f);
@@ -214,7 +219,7 @@ void gui_dim3rtl_element_draw_combo(element_type *element,int sel_id)
 		// control text
 
 	strcpy(str,(element->data+(element->value*32)));
-	gui_dim3rtl_add_overlay_text((element->x+5),(y+(element->high>>1)),&iface.color.control.text,1.0f,tx_left,str);
+	gui_dim3rtl_add_overlay_text((element->x+5),y,&iface.color.control.text,1.0f,tx_left,str);
 }
 
 void gui_dim3rtl_element_draw_combo_open(element_type *element)
@@ -243,7 +248,7 @@ void gui_dim3rtl_element_draw_combo_open(element_type *element)
 	y=element->y-(element->high*element->value);
 	if (y<element->high) y=element->high;
 	
-	top=y-(element->high>>1);
+	top=y-element_get_control_high();
 	wid=(element->wid-element->high)-2;
 	high=cnt*element->high;
 
@@ -286,7 +291,7 @@ void gui_dim3rtl_element_draw_combo_open(element_type *element)
 
 void gui_dim3rtl_element_draw_slider(element_type *element,int sel_id)
 {
-	int				y,mid_wid,handle_wid,lx;
+	int				y,ky,mid_wid,high,handle_wid,lx;
 	float			alpha;
 	char			str[32];
 	d3col			col2;
@@ -295,23 +300,26 @@ void gui_dim3rtl_element_draw_slider(element_type *element,int sel_id)
 		
 	y=element->y-(element->high>>1);
 
-	gui_dim3rtl_add_overlay_text((element->x-15),(y+(element->high>>1)),&iface.color.control.label,1.0f,tx_right,element->str);
-	gui_dim3rtl_add_overlay_text((element->x-10),(y+(element->high>>1)),&iface.color.control.label,1.0f,tx_center,":");
+	gui_dim3rtl_add_overlay_text((element->x-15),y,&iface.color.control.label,1.0f,tx_right,element->str);
+	gui_dim3rtl_add_overlay_text((element->x-10),y,&iface.color.control.label,1.0f,tx_center,":");
 	
 		// slider size
 		
+	high=element_get_control_high();
+	ky=y-(high>>1);
+
 	mid_wid=(int)(((float)element->wid)*element->setup.slider.value);
 
 	alpha=(element->enabled?1.0f:0.3f);
 	
 		// background
 		
-	gui_dim3rtl_add_overlay_box_gradient(element->x,y,element->wid,element->high,FALSE,FALSE,&iface.color.control.fill,NULL,alpha);
+	gui_dim3rtl_add_overlay_box_gradient(element->x,ky,element->wid,high,FALSE,FALSE,&iface.color.control.fill,NULL,alpha);
 	
 		// slider and handle
 		
 	if (element->enabled) {
-		gui_dim3rtl_add_overlay_box_gradient(element->x,y,mid_wid,element->high,FALSE,FALSE,&iface.color.control.hilite,NULL,alpha);
+		gui_dim3rtl_add_overlay_box_gradient(element->x,ky,mid_wid,high,FALSE,FALSE,&iface.color.control.hilite,NULL,alpha);
 
 		lx=(element->x+mid_wid)-(element->wid/20);
 		handle_wid=(element->wid/10);
@@ -323,17 +331,17 @@ void gui_dim3rtl_element_draw_slider(element_type *element,int sel_id)
 		col2.g=iface.color.control.hilite.g*element_gradient_factor_foreground;
 		col2.b=iface.color.control.hilite.b*element_gradient_factor_foreground;
 	
-		gui_dim3rtl_add_overlay_box_gradient(lx,y,handle_wid,element->high,TRUE,FALSE,&col2,&iface.color.control.outline,alpha);
+		gui_dim3rtl_add_overlay_box_gradient(lx,ky,handle_wid,element->high,TRUE,FALSE,&col2,&iface.color.control.outline,alpha);
 	}
 
 		// text
 		
 	sprintf(str,"%d%%",(int)(element->setup.slider.value*100.0f));
-	gui_dim3rtl_add_overlay_text(((element->x+element->wid)-5),(y+(element->high>>1)),&iface.color.control.text,1.0f,tx_right,str);
+	gui_dim3rtl_add_overlay_text(((element->x+element->wid)-5),y,&iface.color.control.text,1.0f,tx_right,str);
 
 		// outline
 		
-	gui_dim3rtl_add_overlay_box_outline(element->x,y,element->wid,element->high,((element->id==sel_id) && (element->enabled)),&iface.color.control.outline,1.0f);
+	gui_dim3rtl_add_overlay_box_outline(element->x,ky,element->wid,high,((element->id==sel_id) && (element->enabled)),&iface.color.control.outline,1.0f);
 }
 
 /* =======================================================
@@ -443,11 +451,6 @@ void gui_dim3rtl_element_draw_table_line_background(element_type *element,int id
 	gui_dim3rtl_add_overlay_box_color((element->x+1),y,(element->wid-2),row_high,FALSE,FALSE,&col,NULL,1.0f);
 }
 
-
-
-
-
-
 void gui_dim3rtl_element_draw_table_line_data_text(int x,int y,int row_high,d3col *txt_col,char *txt)
 {
 	int				dy,high;
@@ -477,7 +480,7 @@ void gui_dim3rtl_element_draw_table_line_data(element_type *element,int x,int y,
 					material_id;
 	char			*c,*c2,txt[256];
 	bool			first_col,checked;
-	d3col			col,col2;
+	d3col			col;
 
 	dx=x+4;
 	dy=y+((row_high>>1)-3);
@@ -524,7 +527,9 @@ void gui_dim3rtl_element_draw_table_line_data(element_type *element,int x,int y,
 				// draw bitmap
 
 			material_id=element_draw_table_get_image_gl_id(element,row);
-			if (material_id!=-1) gui_dim3rtl_add_overlay_box_material(dx,(y+2),bitmap_sz,bitmap_sz,1.0f,material_id);
+			if (material_id!=-1) {
+				gui_dim3rtl_add_overlay_box_material(dx,(y+2),bitmap_sz,bitmap_sz,1.0f,material_id);
+			}
 
 				// missing graphic
 
@@ -565,18 +570,14 @@ void gui_dim3rtl_element_draw_table_line_data(element_type *element,int x,int y,
 	}
 }
 
-
-
-
-
 void gui_dim3rtl_element_draw_table(element_type *element,int sel_id)
 {
-	int				n,x,y,ky,wid,cnt,vis_cnt,
-					lft,rgt,top,bot,title_high,row_high,
-					lx,rx,ty,by,last_idx;
+	int				n,y,wid,cnt,vis_cnt,
+					title_high,row_high,
+					by,last_idx;
 	char			*c;
 	bool			up_ok,down_ok;
-	d3col			col,col2;
+	rtl2DPoint		top_lft_pnt,bot_rgt_pnt;
 
 		// sizes
 	
@@ -611,12 +612,17 @@ void gui_dim3rtl_element_draw_table(element_type *element,int sel_id)
 			// clip inside the table
 			
 		rtlSceneOverlaySaveClip(view_rtl_gui_scene_id);
-		//rtlSceneOverlaySetClip(view_rtl_gui_scene_id,rtl2DPoint *top_lft_pnt,rtl2DPoint *bot_rgt_pnt);
+
+		top_lft_pnt.x=(element->x+1);
+		top_lft_pnt.y=((element->y+1)+(title_high+4));
+		bot_rgt_pnt.x=(element->x+element->wid)-1;
+		bot_rgt_pnt.y=(element->y+element->high)-1;
+		rtlSceneOverlaySetClip(view_rtl_gui_scene_id,&top_lft_pnt,&bot_rgt_pnt);
 
 			// draw the data lines
 
 		last_idx=0;
-		y=(element->y+4)+(row_high+1);
+		y=(element->y+1)+(title_high+4);
 		
 		c=element->data+(element->offset*128);
 		
