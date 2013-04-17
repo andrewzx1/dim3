@@ -75,6 +75,10 @@ int rtlSceneOverlayAdd(int sceneId,int overlayType,unsigned long flags)
 	overlay->tint.g=1.0f;
 	overlay->tint.b=1.0f;
 	overlay->tint.a=1.0f;
+	
+		// set the clip to current clip
+		
+	memmove(&overlay->clip,&scene->overlay_clip,sizeof(ray_overlay_clip_type));
 
 		// default for types
 
@@ -572,6 +576,109 @@ int rtlSceneOverlaySetScale(int sceneId,rtl2DPoint *size)
 
 /* =======================================================
 
+      Saves the current overlay clipping
+
+	  Returns:
+	   RL_ERROR_OK
+	   RL_ERROR_UNKNOWN_SCENE_ID
+     
+======================================================= */
+
+int rtlSceneOverlaySaveClip(int sceneId)
+{
+	int					idx;
+	ray_scene_type		*scene;
+
+		// get scene
+
+	idx=ray_scene_get_index(sceneId);
+	if (idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
+
+	scene=ray_global.scene_list.scenes[idx];
+
+		// save the clip
+		
+	memmove(&scene->overlay_save_clip,&scene->overlay_clip,sizeof(ray_overlay_clip_type));
+
+	return(RL_ERROR_OK);
+}
+
+/* =======================================================
+
+      Restores the current overlay clipping
+
+	  Returns:
+	   RL_ERROR_OK
+	   RL_ERROR_UNKNOWN_SCENE_ID
+     
+======================================================= */
+
+int rtlSceneOverlayRestoreClip(int sceneId)
+{
+	int					idx;
+	ray_scene_type		*scene;
+
+		// get scene
+
+	idx=ray_scene_get_index(sceneId);
+	if (idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
+
+	scene=ray_global.scene_list.scenes[idx];
+
+		// restore the clip
+		
+	memmove(&scene->overlay_clip,&scene->overlay_save_clip,sizeof(ray_overlay_clip_type));
+
+	return(RL_ERROR_OK);
+}
+
+/* =======================================================
+
+      Sets Current Clipping for the next Overlays
+	  that are added
+
+	  Note:
+       Default clip is always the buffer.  Clip can not
+	   be bigger than the buffer
+
+	  Returns:
+	   RL_ERROR_OK
+	   RL_ERROR_UNKNOWN_SCENE_ID
+     
+======================================================= */
+
+int rtlSceneOverlaySetClip(int sceneId,rtl2DPoint *top_lft_pnt,rtl2DPoint *bot_rgt_pnt)
+{
+	int					idx;
+	ray_scene_type		*scene;
+
+		// get scene
+
+	idx=ray_scene_get_index(sceneId);
+	if (idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
+
+	scene=ray_global.scene_list.scenes[idx];
+
+		// set the clip and make sure
+		// it doesn't extend past the buffer
+
+	scene->overlay_clip.top_lft_pnt.x=top_lft_pnt->x;
+	if (scene->overlay_clip.top_lft_pnt.x<0) scene->overlay_clip.top_lft_pnt.x=0;
+	
+	scene->overlay_clip.top_lft_pnt.y=top_lft_pnt->y;
+	if (scene->overlay_clip.top_lft_pnt.y<0) scene->overlay_clip.top_lft_pnt.y=0;
+	
+	scene->overlay_clip.bot_rgt_pnt.x=bot_rgt_pnt->x;
+	if (scene->overlay_clip.bot_rgt_pnt.x>scene->buffer.wid) scene->overlay_clip.bot_rgt_pnt.x=scene->buffer.wid;
+	
+	scene->overlay_clip.bot_rgt_pnt.y=bot_rgt_pnt->y;
+	if (scene->overlay_clip.bot_rgt_pnt.y>scene->buffer.high) scene->overlay_clip.bot_rgt_pnt.y=scene->buffer.high;
+
+	return(RL_ERROR_OK);
+}
+
+/* =======================================================
+
       Internal Draw Utilities
       
 ======================================================= */
@@ -629,16 +736,16 @@ void ray_scene_overlay_draw_quad_material(ray_scene_type *scene,ray_overlay_type
 	by=(by*scene->buffer.high)/scene->overlay_scale.y;
 	
 	clip_lx=lx;
-	if (clip_lx<0) clip_lx=0;
+	if (clip_lx<overlay->clip.top_lft_pnt.x) clip_lx=overlay->clip.top_lft_pnt.x;
 
 	clip_rx=rx;
-	if (clip_rx>=scene->buffer.wid) clip_rx=scene->buffer.wid-1;
+	if (clip_rx>=overlay->clip.bot_rgt_pnt.x) clip_rx=overlay->clip.bot_rgt_pnt.x-1;
 
 	clip_ty=ty;
-	if (clip_ty<0) clip_ty=0;
+	if (clip_ty<overlay->clip.top_lft_pnt.y) clip_ty=overlay->clip.top_lft_pnt.y;
 
 	clip_by=by;
-	if (clip_by>=scene->buffer.high) clip_by=scene->buffer.high-1;
+	if (clip_by>=overlay->clip.bot_rgt_pnt.y) clip_by=overlay->clip.bot_rgt_pnt.y-1;
 
 		// uv calcs
 

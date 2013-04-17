@@ -244,15 +244,20 @@ typedef union		{
 					} ray_overlay_setup_type;
 
 typedef struct		{
+						ray_2d_point_type						top_lft_pnt,bot_rgt_pnt;
+					} ray_overlay_clip_type;
+
+typedef struct		{
 						int										id,overlay_type;
 						bool									hidden;
 						ray_color_type							tint;
+						ray_overlay_clip_type					clip;
 						ray_overlay_setup_type					setup;
 					} ray_overlay_type;
 
 typedef struct		{
-						int								count,next_id;
-						ray_overlay_type*				overlays[ray_max_scene_overlay];
+						int										count,next_id;
+						ray_overlay_type*						overlays[ray_max_scene_overlay];
 					} ray_overlay_list;
 
 //
@@ -303,6 +308,7 @@ typedef struct		{
 						ray_mesh_list					mesh_list;
 						ray_overlay_list				overlay_list;
 						ray_2d_point_type				overlay_scale;
+						ray_overlay_clip_type			overlay_clip,overlay_save_clip;
 						ray_scene_buffer_type			buffer;
 						ray_scene_render_type			render;
 					} ray_scene_type;

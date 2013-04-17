@@ -184,6 +184,10 @@ extern int rtlSceneOverlaySetGradientColorStops(int sceneId,int overlayId,int co
 extern int rtlSceneOverlaySetLinePosition(int sceneId,int overlayId,ray_2d_point_type *startPnt,ray_2d_point_type *endPnt);
 
 extern int rtlSceneOverlaySetScale(int sceneId,rtl2DPoint *size);
+extern int rtlSceneOverlaySaveClip(int sceneId);
+extern int rtlSceneOverlayRestoreClip(int sceneId);
+extern int rtlSceneOverlaySetClip(int sceneId,rtl2DPoint *top_lft_pnt,rtl2DPoint *bot_rgt_pnt);
+
 extern int rtlSceneOverlayDraw(int sceneId);
 
 	// math utilities
