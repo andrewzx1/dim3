@@ -2427,7 +2427,14 @@ unsigned long element_draw_table_get_image_gl_id(element_type *element,int row_i
 		
 	for (n=0;n!=element_table_max_image;n++) {
 		if (element->setup.table.images[n].path[0]==0x0) continue;
-		if (strcmp(element->setup.table.images[n].path,path)==0) return(element->setup.table.images[n].bitmap.gl_id);
+		if (strcmp(element->setup.table.images[n].path,path)==0) {
+			if (!iface.project.ray_trace) {
+				return(element->setup.table.images[n].bitmap.gl_id);
+			}
+			else {
+				return(element->setup.table.images[n].rl_material_id);
+			}
+		}
 	}
 
 		// does it exist?

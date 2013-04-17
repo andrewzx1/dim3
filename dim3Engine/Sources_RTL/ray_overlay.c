@@ -662,16 +662,16 @@ int rtlSceneOverlaySetClip(int sceneId,rtl2DPoint *top_lft_pnt,rtl2DPoint *bot_r
 		// set the clip and make sure
 		// it doesn't extend past the buffer
 
-	scene->overlay_clip.top_lft_pnt.x=top_lft_pnt->x;
+	scene->overlay_clip.top_lft_pnt.x=(top_lft_pnt->x*scene->buffer.wid)/scene->overlay_scale.x;
 	if (scene->overlay_clip.top_lft_pnt.x<0) scene->overlay_clip.top_lft_pnt.x=0;
 	
-	scene->overlay_clip.top_lft_pnt.y=top_lft_pnt->y;
+	scene->overlay_clip.top_lft_pnt.y=(top_lft_pnt->y*scene->buffer.high)/scene->overlay_scale.y;
 	if (scene->overlay_clip.top_lft_pnt.y<0) scene->overlay_clip.top_lft_pnt.y=0;
 	
-	scene->overlay_clip.bot_rgt_pnt.x=bot_rgt_pnt->x;
+	scene->overlay_clip.bot_rgt_pnt.x=(bot_rgt_pnt->x*scene->buffer.wid)/scene->overlay_scale.x;
 	if (scene->overlay_clip.bot_rgt_pnt.x>scene->buffer.wid) scene->overlay_clip.bot_rgt_pnt.x=scene->buffer.wid;
 	
-	scene->overlay_clip.bot_rgt_pnt.y=bot_rgt_pnt->y;
+	scene->overlay_clip.bot_rgt_pnt.y=(bot_rgt_pnt->y*scene->buffer.high)/scene->overlay_scale.y;
 	if (scene->overlay_clip.bot_rgt_pnt.y>scene->buffer.high) scene->overlay_clip.bot_rgt_pnt.y=scene->buffer.high;
 
 	return(RL_ERROR_OK);
@@ -891,16 +891,16 @@ void ray_scene_overlay_draw_quad_color(ray_scene_type *scene,ray_overlay_type *o
 	by=(by*scene->buffer.high)/scene->overlay_scale.y;
 
 	clip_lx=lx;
-	if (clip_lx<0) clip_lx=0;
+	if (clip_lx<overlay->clip.top_lft_pnt.x) clip_lx=overlay->clip.top_lft_pnt.x;
 
 	clip_rx=rx;
-	if (clip_rx>=scene->buffer.wid) clip_rx=scene->buffer.wid-1;
+	if (clip_rx>=overlay->clip.bot_rgt_pnt.x) clip_rx=overlay->clip.bot_rgt_pnt.x-1;
 
 	clip_ty=ty;
-	if (clip_ty<0) clip_ty=0;
+	if (clip_ty<overlay->clip.top_lft_pnt.y) clip_ty=overlay->clip.top_lft_pnt.y;
 
 	clip_by=by;
-	if (clip_by>=scene->buffer.high) clip_by=scene->buffer.high-1;
+	if (clip_by>=overlay->clip.bot_rgt_pnt.y) clip_by=overlay->clip.bot_rgt_pnt.y-1;
 
 		// draw a quad that has no alpha
 		// this is the easiest route
@@ -1012,16 +1012,16 @@ void ray_scene_overlay_draw_quad_horizontal_gradient(ray_scene_type *scene,ray_o
 	by=(by*scene->buffer.high)/scene->overlay_scale.y;
 
 	clip_lx=lx;
-	if (clip_lx<0) clip_lx=0;
+	if (clip_lx<overlay->clip.top_lft_pnt.x) clip_lx=overlay->clip.top_lft_pnt.x;
 
 	clip_rx=rx;
-	if (clip_rx>=scene->buffer.wid) clip_rx=scene->buffer.wid-1;
+	if (clip_rx>=overlay->clip.bot_rgt_pnt.x) clip_rx=overlay->clip.bot_rgt_pnt.x-1;
 
 	clip_ty=ty;
-	if (clip_ty<0) clip_ty=0;
+	if (clip_ty<overlay->clip.top_lft_pnt.y) clip_ty=overlay->clip.top_lft_pnt.y;
 
 	clip_by=by;
-	if (clip_by>=scene->buffer.high) clip_by=scene->buffer.high-1;
+	if (clip_by>=overlay->clip.bot_rgt_pnt.y) clip_by=overlay->clip.bot_rgt_pnt.y-1;
 
 		// draw a quad that has no alpha
 		// this is the easiest route
@@ -1095,16 +1095,16 @@ void ray_scene_overlay_draw_quad_vertical_gradient(ray_scene_type *scene,ray_ove
 	by=(by*scene->buffer.high)/scene->overlay_scale.y;
 
 	clip_lx=lx;
-	if (clip_lx<0) clip_lx=0;
+	if (clip_lx<overlay->clip.top_lft_pnt.x) clip_lx=overlay->clip.top_lft_pnt.x;
 
 	clip_rx=rx;
-	if (clip_rx>=scene->buffer.wid) clip_rx=scene->buffer.wid-1;
+	if (clip_rx>=overlay->clip.bot_rgt_pnt.x) clip_rx=overlay->clip.bot_rgt_pnt.x-1;
 
 	clip_ty=ty;
-	if (clip_ty<0) clip_ty=0;
+	if (clip_ty<overlay->clip.top_lft_pnt.y) clip_ty=overlay->clip.top_lft_pnt.y;
 
 	clip_by=by;
-	if (clip_by>=scene->buffer.high) clip_by=scene->buffer.high-1;
+	if (clip_by>=overlay->clip.bot_rgt_pnt.y) clip_by=overlay->clip.bot_rgt_pnt.y-1;
 
 		// draw a quad that has no alpha
 		// this is the easiest route
@@ -1171,12 +1171,16 @@ void ray_scene_overlay_draw_line_color(ray_scene_type *scene,ray_overlay_type *o
 	ty=overlay->setup.line.start_pnt.y;
 	by=overlay->setup.line.end_pnt.y;
 	
-		// scale it
+		// scale points
 		
 	lx=(lx*scene->buffer.wid)/scene->overlay_scale.x;
 	rx=(rx*scene->buffer.wid)/scene->overlay_scale.x;
 	ty=(ty*scene->buffer.high)/scene->overlay_scale.y;
 	by=(by*scene->buffer.high)/scene->overlay_scale.y;
+
+		// supergumba -- we will want to update this
+		// where we actually clip the coordinates, this version
+		// is quick and dirty but slow
 
 		// find which direction to draw
 		
@@ -1209,7 +1213,7 @@ void ray_scene_overlay_draw_line_color(ray_scene_type *scene,ray_overlay_type *o
 				y=(int)fy;
 				fy+=fy_add;
 				
-				if ((x<0) || (x>=scene->buffer.wid) || (y<0) || (y>=scene->buffer.high)) continue;
+				if ((x<overlay->clip.top_lft_pnt.x) || (x>=overlay->clip.bot_rgt_pnt.x) || (y<overlay->clip.top_lft_pnt.y) || (y>=overlay->clip.bot_rgt_pnt.y)) continue;
 
 				buf=scene->buffer.data+((y*scene->buffer.wid)+x);
 				*buf=uc_col;
@@ -1225,7 +1229,7 @@ void ray_scene_overlay_draw_line_color(ray_scene_type *scene,ray_overlay_type *o
 			y=(int)fy;
 			fy+=fy_add;
 			
-			if ((x<0) || (x>=scene->buffer.wid) || (y<0) || (y>=scene->buffer.high)) continue;
+			if ((x<overlay->clip.top_lft_pnt.x) || (x>=overlay->clip.bot_rgt_pnt.x) || (y<overlay->clip.top_lft_pnt.y) || (y>=overlay->clip.bot_rgt_pnt.y)) continue;
 
 			buf=scene->buffer.data+((y*scene->buffer.wid)+x);
 			
@@ -1266,7 +1270,7 @@ void ray_scene_overlay_draw_line_color(ray_scene_type *scene,ray_overlay_type *o
 			x=(int)fx;
 			fx+=fx_add;
 
-			if ((x<0) || (x>=scene->buffer.wid) || (y<0) || (y>=scene->buffer.high)) continue;
+			if ((x<overlay->clip.top_lft_pnt.x) || (x>=overlay->clip.bot_rgt_pnt.x) || (y<overlay->clip.top_lft_pnt.y) || (y>=overlay->clip.bot_rgt_pnt.y)) continue;
 
 			buf=scene->buffer.data+((y*scene->buffer.wid)+x);
 			*buf=uc_col;
@@ -1282,7 +1286,7 @@ void ray_scene_overlay_draw_line_color(ray_scene_type *scene,ray_overlay_type *o
 		x=(int)fx;
 		fx+=fx_add;
 
-		if ((x<0) || (x>=scene->buffer.wid) || (y<0) || (y>=scene->buffer.high)) continue;
+		if ((x<overlay->clip.top_lft_pnt.x) || (x>=overlay->clip.bot_rgt_pnt.x) || (y<overlay->clip.top_lft_pnt.y) || (y>=overlay->clip.bot_rgt_pnt.y)) continue;
 
 		buf=scene->buffer.data+((y*scene->buffer.wid)+x);
 		
