@@ -596,7 +596,7 @@ void gui_dim3rtl_element_draw_table(element_type *element,int sel_id)
 
 		// outline
 
-	y=element->y+(title_high+4);
+	y=element->y+(title_high+3);
 
 	gui_dim3rtl_add_overlay_line_color(element->x,y,(element->x+element->wid),y,&iface.color.control.outline,1.0f);
 	gui_dim3rtl_add_overlay_box_outline(element->x,element->y,element->wid,element->high,(element->id==sel_id),&iface.color.control.outline,1.0f);
