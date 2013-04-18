@@ -205,12 +205,12 @@ void gui_dim3rtl_element_draw_combo(element_type *element,int sel_id)
 
 		// arrow
 
-	lft=(element->x+element->wid)-(high-2);
-	rgt=lft+(high-8);
+	lft=(element->x+element->wid)-(high-4);
+	rgt=lft+(high-10);
 	mid=(lft+rgt)>>1;
 
 	ty=ky+4;
-	by=ty+(high-8);
+	by=(ky+high)-4;
 
 	gui_dim3rtl_add_overlay_line_color(lft,ty,rgt,ty,&iface.color.control.outline,1.0f);
 	gui_dim3rtl_add_overlay_line_color(lft,ty,mid,by,&iface.color.control.outline,1.0f);
@@ -352,7 +352,8 @@ void gui_dim3rtl_element_draw_slider(element_type *element,int sel_id)
 
 void gui_dim3rtl_element_draw_scroll_controls(element_type *element,int header_high,bool up_ok,bool down_ok)
 {
-	int				lft,top,bot,ctrl_sz;
+	int				lft,top,bot,ctrl_sz,
+					lx,rx,ty,by,mx;
 	float			alpha;
 	d3col			col,col2,col3;
 	
@@ -373,15 +374,35 @@ void gui_dim3rtl_element_draw_scroll_controls(element_type *element,int header_h
 	
 	col3.r=col3.g=col3.b=0.0f;
 
+		// arrows
+
+	lx=lft+6;
+	rx=(lft+ctrl_sz)-6;
+	mx=(lx+rx)>>1;
+
 		// top scroll bar
 
 	alpha=up_ok?1.0f:0.1f;
 	gui_dim3rtl_add_overlay_box_color(lft,top,ctrl_sz,ctrl_sz,TRUE,FALSE,&col,&iface.color.control.outline,alpha);
 
+	ty=top+6;
+	by=(top+ctrl_sz)-6;
+
+	gui_dim3rtl_add_overlay_line_color(lx,by,rx,by,&iface.color.control.outline,alpha);
+	gui_dim3rtl_add_overlay_line_color(lx,by,mx,ty,&iface.color.control.outline,alpha);
+	gui_dim3rtl_add_overlay_line_color(rx,by,mx,ty,&iface.color.control.outline,alpha);
+
 		// bottom scroll bar
 
 	alpha=down_ok?1.0f:0.1f;
-	gui_dim3rtl_add_overlay_box_color(lft,(bot-ctrl_sz),ctrl_sz,ctrl_sz,TRUE,FALSE,&col,&iface.color.control.outline,alpha);
+	gui_dim3rtl_add_overlay_box_color(lft,bot,ctrl_sz,ctrl_sz,TRUE,FALSE,&col,&iface.color.control.outline,alpha);
+
+	ty=bot+6;
+	by=(bot+ctrl_sz)-6;
+
+	gui_dim3rtl_add_overlay_line_color(lx,ty,rx,ty,&iface.color.control.outline,alpha);
+	gui_dim3rtl_add_overlay_line_color(lx,ty,mx,by,&iface.color.control.outline,alpha);
+	gui_dim3rtl_add_overlay_line_color(rx,ty,mx,by,&iface.color.control.outline,alpha);
 }
 
 /* =======================================================

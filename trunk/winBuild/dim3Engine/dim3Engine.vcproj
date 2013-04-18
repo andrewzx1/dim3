@@ -3867,6 +3867,10 @@
 						RelativePath="..\..\dim3Engine\Sources_View\view_rtl_patch.c"
 						>
 					</File>
+					<File
+						RelativePath="..\..\dim3Engine\Sources_View\view_rtl_progress.c"
+						>
+					</File>
 				</Filter>
 			</Filter>
 			<Filter

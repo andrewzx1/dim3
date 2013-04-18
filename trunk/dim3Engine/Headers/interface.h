@@ -1068,6 +1068,10 @@ extern int gui_dim3rtl_material_open(char *path);
 extern void gui_dim3rtl_material_close(int rl_material_id);
 extern void gui_dim3rtl_draw(bool show_cursor);
 
+extern void progress_dim3rtl_initialize(char *map_name);
+extern void progress_dim3rtl_shutdown(void);
+extern void progress_dim3rtl_draw(int cur_tick);
+
 //
 // chats
 //
