@@ -50,7 +50,7 @@ GLuint							view_rtl_draw_gl_id;
 int								view_rtl_screen_sizes[][2]={{320,200},{400,250},{480,300},{640,400},{720,450},{960,600},{0,0}};
 
 extern bool view_dim3rtl_create_opengl_texture(GLuint *p_gl_id,int wid,int high,char *err_str);
-extern void view_dim3rtl_transfer_to_opengl(int scene_id,int x,int y,int wid,int high,GLuint gl_id,int buff_wid,int buff_high);
+extern void view_dim3rtl_transfer_texture_to_view(int scene_id,int x,int y,int wid,int high,GLuint gl_id,int buff_wid,int buff_high);
 extern int view_dim3rtl_create_material_from_path(char *path,int alpha_type);
 extern void view_dim3rtl_map_mesh_update(void);
 extern void view_dim3rtl_map_liquid_mesh_update(void);
@@ -73,6 +73,14 @@ bool view_dim3rtl_initialize(char *err_str)
 		return(FALSE);
 	}
 	
+		// we need a texture to transfer
+		// the scene to opengl rastering
+		
+	if (!view_dim3rtl_create_opengl_texture(&view_rtl_draw_gl_id,setup.screen_rtl_wid,setup.screen_rtl_high,err_str)) {
+		rtlShutdown();
+		return(FALSE);
+	}
+	
 		// initialy no view rendering yet
 		
 	view_rtl_has_render=FALSE;
@@ -82,17 +90,10 @@ bool view_dim3rtl_initialize(char *err_str)
 	s_pnt.x=setup.screen_rtl_wid;
 	s_pnt.y=setup.screen_rtl_high;
 
-	view_rtl_draw_scene_id=rtlSceneAdd(&s_pnt,RL_SCENE_TARGET_MEMORY,RL_SCENE_FORMAT_32_RGBA,NULL,0);
+	view_rtl_draw_scene_id=rtlSceneAdd(&s_pnt,RL_SCENE_TARGET_OPENGL_TEXTURE,RL_SCENE_FORMAT_32_RGBA,(void*)view_rtl_draw_gl_id,0);
 	if (view_rtl_draw_scene_id<0) {
 		strcpy(err_str,"Unable to create dim3RTL scene");
-		rtlShutdown();
-		return(FALSE);
-	}
-	
-		// we need a texture to transfer
-		// the scene to opengl rastering
-		
-	if (!view_dim3rtl_create_opengl_texture(&view_rtl_draw_gl_id,setup.screen_rtl_wid,setup.screen_rtl_high,err_str)) {
+		glDeleteTextures(1,&view_rtl_draw_gl_id);
 		rtlShutdown();
 		return(FALSE);
 	}
@@ -124,7 +125,6 @@ void view_dim3rtl_shutdown(void)
 
 	rtlShutdown();
 }
-
 
 /* =======================================================
 
@@ -207,6 +207,27 @@ void view_dim3rtl_image_cache_free(void)
 		rtlMaterialDelete(mark->rtl_material_id);
 		mark++;
 	}
+}
+
+/* =======================================================
+
+      dim3RTL Translate Points
+      
+======================================================= */
+
+void view_dim3rtl_project_point(d3pnt *pnt)
+{
+	ray_point_type			rtl_3d_pnt;
+	ray_2d_point_type		rtl_2d_pnt;
+
+	rtl_3d_pnt.x=(float)pnt->x;
+	rtl_3d_pnt.y=(float)pnt->y;
+	rtl_3d_pnt.z=(float)pnt->z;
+
+	rtlSceneEyeTranslatePoint(view_rtl_draw_scene_id,&rtl_3d_pnt,&rtl_2d_pnt);
+
+	pnt->x=(int)rtl_2d_pnt.x;
+	pnt->y=(int)rtl_2d_pnt.y;
 }
 
 /* =======================================================
@@ -342,24 +363,32 @@ void view_dim3rtl_render_scene(void)
 
 void view_dim3rtl_render(void)
 {
+		// if we are in menu, don't
+		// do anything (use the last render)
+
+	if (view.menu.active) {
+		view_dim3rtl_transfer_texture_to_view(view_rtl_draw_scene_id,view_rtl_x,view_rtl_y,view_rtl_wid,view_rtl_high,view_rtl_draw_gl_id,setup.screen_rtl_wid,setup.screen_rtl_high);
+		return;
+	}
+
 		// if we started a render last
 		// time, then make sure it's finished
-		// before transfering to screen
+		// so it gets transfered to texture
 		
 	if (view_rtl_has_render) {
 		rtlSceneRenderFinish(view_rtl_draw_scene_id);
-		view_dim3rtl_transfer_to_opengl(view_rtl_draw_scene_id,view_rtl_x,view_rtl_y,view_rtl_wid,view_rtl_high,view_rtl_draw_gl_id,setup.screen_rtl_wid,setup.screen_rtl_high);
+		view_dim3rtl_transfer_texture_to_view(view_rtl_draw_scene_id,view_rtl_x,view_rtl_y,view_rtl_wid,view_rtl_high,view_rtl_draw_gl_id,setup.screen_rtl_wid,setup.screen_rtl_high);
 		view_rtl_has_render=FALSE;
 	}
 	
 		// render the scene
-		// if in menu, just transfer the last drawing
 
-	if (!view.menu.active) {
-		view_dim3rtl_render_scene();
-		view_rtl_has_render=TRUE;
-	}
-	else {
-		view_dim3rtl_transfer_to_opengl(view_rtl_draw_scene_id,view_rtl_x,view_rtl_y,view_rtl_wid,view_rtl_high,view_rtl_draw_gl_id,setup.screen_rtl_wid,setup.screen_rtl_high);
-	}	
+	view_dim3rtl_render_scene();
+	view_rtl_has_render=TRUE;
+
+		// these routines interfere with
+		// the first texture unit, so we clear dim3's
+		// opengl cache
+
+	gl_texture_clear(0);
 }

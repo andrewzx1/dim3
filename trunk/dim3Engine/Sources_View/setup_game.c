@@ -208,7 +208,7 @@ void setup_game_video_pane_dim3rtl(void)
 				x,y,control_y_add,control_y_sz;
 	
 	control_y_add=element_get_control_separation_high();
-	control_y_sz=control_y_add*2;
+	control_y_sz=control_y_add*3;
 	
 	element_get_frame_inner_space(setup_game_frame_id,&fx,&fy,&wid,&high);
 	x=fx+(int)(((float)wid)*0.4f);
@@ -229,6 +229,11 @@ void setup_game_video_pane_dim3rtl(void)
 	
 	element_combo_add("Screen Size",(char*)setup_screen_size_list,idx,ctrl_screen_rtl_size_id,x,y,TRUE);
 	y+=control_y_add;
+
+	if (gl_check_fsaa_ok()) {
+		element_combo_add("Full-Screen Anti-Aliasing",(char*)setup_fsaa_mode_list,setup.fsaa_mode,ctrl_fsaa_id,x,y,TRUE);
+		y+=control_y_add;
+	}
 
 	element_checkbox_add("Full Window (Requires Restart)",setup.screen_rtl_full_window,ctrl_screen_rtl_full_window_id,x,y,TRUE);
 }

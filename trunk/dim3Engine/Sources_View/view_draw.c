@@ -32,6 +32,7 @@ and can be sold or given away.
 #include "interface.h"
 #include "objects.h"
 
+extern iface_type			iface;
 extern map_type				map;
 extern camera_type			camera;
 extern view_type			view;
@@ -46,8 +47,10 @@ float						shake_ang_x[16]={-1,0,1,2,1,0,-1,-2,-4,-2,0,4,8,12,8,4};
 extern void model_calc_pose_bones(model_draw *draw);
 extern void view_start_draw_list(void);
 extern void view_add_mesh_liquid_draw_list(void);
-extern void view_setup_objects(int tick);
-extern void view_setup_projectiles(int tick);
+extern void view_setup_objects_gl(int tick);
+extern void view_setup_projectiles_gl(int tick);
+extern void view_setup_objects_rtl(int tick);
+extern void view_setup_projectiles_rtl(int tick);
 extern void view_add_effect_draw_list(void);
 extern void view_add_halos(void);
 extern void view_calculate_scope(obj_type *obj,obj_type *camera_obj);
@@ -213,8 +216,8 @@ void view_draw_scene_build(void)
 		// setup objects and projectiles
 		// and add to draw list
 		
-	view_setup_objects(tick);
-	view_setup_projectiles(tick);
+	view_setup_objects_gl(tick);
+	view_setup_projectiles_gl(tick);
 
 		// add scene effects
 
@@ -462,8 +465,9 @@ bool view_draw_node(node_type *node)
 
 void view_draw_dim3rtl(void)
 {
-	int				n;
-	obj_type		*obj,*camera_obj;
+	int				n,tick;
+	obj_type		*obj,*model_obj,*camera_obj;
+	proj_type		*model_proj;
 	weapon_type		*weap;
 
 		// get player object and held weapon
@@ -514,17 +518,52 @@ void view_draw_dim3rtl(void)
 	view.count.obscure_percent=0;
 	
 		// build the scene
+		// we don't have to do as much as opengl
+		// so just setup the animations
 		
-	view_draw_scene_build();
+	tick=game_time_get();
+
+	view_setup_objects_rtl(tick);
+	view_setup_projectiles_rtl(tick);
+
+		// create the model vertex/etc
+		// lists for updating rtl
 
 	for (n=0;n!=max_obj_list;n++) {
-		obj=server.obj_list.objs[n];
-		if (obj!=NULL) render_model_build_vertex_lists(&obj->draw,TRUE);
+		model_obj=server.obj_list.objs[n];
+		if (model_obj==NULL) continue;
+		if (model_obj->hidden) continue;
+
+		render_model_build_vertex_lists(&model_obj->draw,TRUE);
+	}
+
+	for (n=0;n!=max_proj_list;n++) {
+		model_proj=server.proj_list.projs[n];
+		if (model_proj->on) render_model_build_vertex_lists(&model_proj->draw,FALSE);
 	}
 
 		// dim3rtl rendering
 
 	view_dim3rtl_render();
+
+		// 2D opengl elements
+
+	if ((obj!=NULL) && (weap!=NULL)) {
+		crosshair_setup(obj,weap);
+		zoom_setup(obj,weap);
+	}
+
+	gl_2D_view_screen();
+
+//	label_draw_render();
+//	halo_draw_render();
+
+	if (!view.cinema.on) {
+		if ((obj!=NULL) && (weap!=NULL)) {
+			crosshair_draw(obj,weap);
+			zoom_draw(obj,weap);
+		}
+	}
 		
 		// view fading
 

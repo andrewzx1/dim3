@@ -14,6 +14,9 @@
 	#include <unistd.h>
 	#include <pthread.h>
 
+	#include <OpenGL/OpenGL.h>
+	#include <OpenGL/gl.h>
+
 	typedef pthread_mutex_t			ray_mutex;
 	typedef pthread_t				ray_thread;
 	typedef pthread_cond_t			ray_cond;
@@ -24,6 +27,8 @@
 
 	#include <unistd.h>
 	#include <pthread.h>
+
+	#include <GL/glew.h>
 
 	typedef pthread_mutex_t			ray_mutex;
 	typedef pthread_t				ray_thread;
@@ -46,6 +51,8 @@
 	#include <math.h>
 	#include <time.h>
 	#include <process.h>
+
+	#include "glew.h"
 
 	#define inline					__inline
 

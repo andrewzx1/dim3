@@ -37,6 +37,7 @@ and can be sold or given away.
 extern app_type				app;
 extern map_type				map;
 extern server_type			server;
+extern iface_type			iface;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
 
@@ -53,6 +54,8 @@ bool game_start(bool in_file_load,int skill,int option_flags,int simple_save_idx
 		// pause time
 		
 	game_time_pause_start();
+
+	progress_initialize(NULL);
 	
 		// reset random numbers
 		
@@ -63,19 +66,44 @@ bool game_start(bool in_file_load,int skill,int option_flags,int simple_save_idx
 	console_add_system("Starting Game");
 
 		// start server
+
+	progress_update();
 		
-	if (!server_game_start(in_file_load,skill,option_flags,simple_save_idx,err_str)) return(FALSE);
+	if (!server_game_start(in_file_load,skill,option_flags,simple_save_idx,err_str)) {
+		progress_shutdown();
+		return(FALSE);
+	}
+
+		// rl initialize
+
+	if (iface.project.ray_trace) {
+
+		progress_update();
+
+		if (!view_dim3rtl_initialize(err_str)) {
+			progress_shutdown();
+			return(FALSE);
+		}
+	}
 
 		// start view
 		
 	if (!app.dedicated_host) {
-		if (!view_game_start(err_str)) return(FALSE);
+
+		progress_update();
+
+		if (!view_game_start(err_str)) {
+			progress_shutdown();
+			return(FALSE);
+		}
 	}
 
 		// game in running state
 		
 	server.game_open=TRUE;
 	server.next_state=gs_running;
+
+	progress_shutdown();
 	
 	game_time_pause_end();
 	
@@ -98,10 +126,14 @@ void game_end(void)
 			net_host_game_end();
 			break;
 	}
-	
+
 		// stop view
 		
 	if (!app.dedicated_host) view_game_stop();
+
+		// release rtl
+
+	if (iface.project.ray_trace) view_dim3rtl_shutdown();
 
 		// stop server
 		

@@ -247,8 +247,13 @@ typedef struct		{
 						ray_scene_mesh_index_block		mesh_index_block;
 					} ray_scene_render_type;
 
+typedef union		{
+						unsigned long					gl_id;
+					} ray_attachment_type;
+
 typedef struct		{
-						int								id,thread_mode;
+						int								id,target,thread_mode;
+						ray_attachment_type				attachment;
 						ray_eye_type					eye;
 						ray_color_type					ambient_col;
 						ray_light_list					light_list;
