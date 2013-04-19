@@ -61,13 +61,6 @@ void progress_initialize(char *map_name)
 		
 	progress_start_tick=-1;
 	progress_cur_tick=0;
-
-		// ray trace version
-
-	if (iface.project.ray_trace) {
-		progress_dim3rtl_initialize(map_name);
-		return;
-	}
 	
 		// check for map progress background,
 		// otherwise use default
@@ -99,13 +92,6 @@ void progress_shutdown(void)
 		// ignore if dedicated host
 
 	if (app.dedicated_host) return;
-
-		// ray trace version
-
-	if (iface.project.ray_trace) {
-		progress_dim3rtl_shutdown();
-		return;
-	}
 
 		// close bitmaps
 
@@ -149,39 +135,28 @@ void progress_update(void)
 	gl_frame_clear(FALSE);
 	gl_shader_frame_start();
 
-		// opengl progress
+	gl_2D_view_interface();
 
-	if (!iface.project.ray_trace) {
-		
-		gl_2D_view_interface();
+		// draw background
+		// progress can be called while baseutility loads bitmaps, need to reset the current bitmap so it doesn't get lost
+
+	gl_texture_clear(0);
+	view_primitive_2D_texture_quad(progress_background_bitmap.gl_id,NULL,1.0f,0,iface.scale_x,0,iface.scale_y,0.0f,1.0f,0.0f,1.0f,TRUE);
 	
-			// draw background
-			// progress can be called while baseutility loads bitmaps, need to reset the current bitmap so it doesn't get lost
-
-		gl_texture_clear(0);
-		view_primitive_2D_texture_quad(progress_background_bitmap.gl_id,NULL,1.0f,0,iface.scale_x,0,iface.scale_y,0.0f,1.0f,0.0f,1.0f,TRUE);
+		// draw the progress bitmap
 		
-			// draw the progress bitmap
-			
-		if (progress_on) {
+	if (progress_on) {
 
-				// draw the graphic
-				
-			lft=iface.progress.x;
-			rgt=lft+iface.progress.wid;
-			top=iface.progress.y;
-			bot=top+iface.progress.high;
+			// draw the graphic
+			
+		lft=iface.progress.x;
+		rgt=lft+iface.progress.wid;
+		top=iface.progress.y;
+		bot=top+iface.progress.high;
+	
+		effect_image_animate_get_uv(progress_cur_tick,0,&iface.progress.animate,&gx,&gy,&g_size);
 		
-			effect_image_animate_get_uv(progress_cur_tick,0,&iface.progress.animate,&gx,&gy,&g_size);
-			
-			view_primitive_2D_texture_quad(progress_bitmap.gl_id,NULL,1.0f,lft,rgt,top,bot,gx,(gx+g_size),gy,(gy+g_size),TRUE);
-		}
-	}
-
-		// dim3rtl progress
-
-	else {
-		progress_dim3rtl_draw(progress_cur_tick);
+		view_primitive_2D_texture_quad(progress_bitmap.gl_id,NULL,1.0f,lft,rgt,top,bot,gx,(gx+g_size),gy,(gy+g_size),TRUE);
 	}
 
 	gl_frame_swap();

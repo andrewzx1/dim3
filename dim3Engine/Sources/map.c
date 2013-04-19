@@ -520,7 +520,6 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 		view_dim3rtl_map_mesh_start();
 		view_dim3rtl_map_liquid_mesh_start();
 		view_dim3rtl_map_model_mesh_start();
-		view_dim3rtl_overlay_start();
 	}
 
 		// finish up
@@ -606,7 +605,6 @@ void map_end(void)
 		view_dim3rtl_map_mesh_stop();
 		view_dim3rtl_map_liquid_mesh_stop();
 		view_dim3rtl_map_model_mesh_stop();
-		view_dim3rtl_overlay_stop();
 	}
 	
 		// detach objects

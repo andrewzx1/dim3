@@ -42,27 +42,21 @@ extern network_setup_type	net_setup;
 extern file_path_setup_type	file_path_setup;
 
 int								view_rtl_draw_scene_id,
-								view_rtl_gui_scene_id,
 								view_rtl_x,view_rtl_y,
 								view_rtl_wid,view_rtl_high;
 bool							view_rtl_has_render;
-GLuint							view_rtl_draw_gl_id,
-								view_rtl_gui_gl_id;
+GLuint							view_rtl_draw_gl_id;
 
 int								view_rtl_screen_sizes[][2]={{320,200},{400,250},{480,300},{640,400},{720,450},{960,600},{0,0}};
-texture_font_type				view_rtl_fonts[2];
 
 extern bool view_dim3rtl_create_opengl_texture(GLuint *p_gl_id,int wid,int high,char *err_str);
 extern void view_dim3rtl_transfer_to_opengl(int scene_id,int x,int y,int wid,int high,GLuint gl_id,int buff_wid,int buff_high);
 extern int view_dim3rtl_create_material_from_path(char *path,int alpha_type);
-extern void view_dim3rtl_material_text_start(void);
-extern void view_dim3rtl_material_text_stop(void);
 extern void view_dim3rtl_map_mesh_update(void);
 extern void view_dim3rtl_map_liquid_mesh_update(void);
 extern void view_dim3rtl_map_model_update(void);
 extern void view_dim3rtl_projectile_model_update(void);
 extern void view_dim3rtl_effect_mesh_update(void);
-extern void view_dim3rtl_overlay_update(void);
 
 /* =======================================================
 
@@ -72,7 +66,7 @@ extern void view_dim3rtl_overlay_update(void);
 
 bool view_dim3rtl_initialize(char *err_str)
 {
-	rtl2DPoint			s_pnt,scale;
+	rtl2DPoint			s_pnt;
 
 	if (rtlInitialize()!=RL_ERROR_OK) {
 		strcpy(err_str,"Unable to initialize dim3RTL");
@@ -83,8 +77,7 @@ bool view_dim3rtl_initialize(char *err_str)
 		
 	view_rtl_has_render=FALSE;
 
-		// we have two scenes, one for
-		// gui drawing and one for view drawing
+		// create the drawing scene
 
 	s_pnt.x=setup.screen_rtl_wid;
 	s_pnt.y=setup.screen_rtl_high;
@@ -96,37 +89,10 @@ bool view_dim3rtl_initialize(char *err_str)
 		return(FALSE);
 	}
 	
-	s_pnt.x=setup.screen_wid;
-	s_pnt.y=setup.screen_high;
-
-	view_rtl_gui_scene_id=rtlSceneAdd(&s_pnt,RL_SCENE_TARGET_MEMORY,RL_SCENE_FORMAT_32_RGBA,NULL,0);
-	if (view_rtl_gui_scene_id<0) {
-		strcpy(err_str,"Unable to create dim3RTL scene");
-		rtlShutdown();
-		return(FALSE);
-	}
-	
-		// overlay scales
-		
-	scale.x=iface.scale_x;
-	scale.y=iface.scale_y;
-
-	rtlSceneOverlaySetScale(view_rtl_draw_scene_id,&scale);
-	rtlSceneOverlaySetScale(view_rtl_gui_scene_id,&scale);
-
-		// text materials
-
-	view_dim3rtl_material_text_start();
-
 		// we need a texture to transfer
 		// the scene to opengl rastering
 		
 	if (!view_dim3rtl_create_opengl_texture(&view_rtl_draw_gl_id,setup.screen_rtl_wid,setup.screen_rtl_high,err_str)) {
-		rtlShutdown();
-		return(FALSE);
-	}
-	
-	if (!view_dim3rtl_create_opengl_texture(&view_rtl_gui_gl_id,setup.screen_wid,setup.screen_high,err_str)) {
 		rtlShutdown();
 		return(FALSE);
 	}
@@ -153,12 +119,8 @@ bool view_dim3rtl_initialize(char *err_str)
 void view_dim3rtl_shutdown(void)
 {
 	glDeleteTextures(1,&view_rtl_draw_gl_id);
-	glDeleteTextures(1,&view_rtl_gui_gl_id);
 	
 	rtlSceneDelete(view_rtl_draw_scene_id);
-	rtlSceneDelete(view_rtl_gui_scene_id);
-
-	view_dim3rtl_material_text_stop();
 
 	rtlShutdown();
 }
@@ -174,23 +136,12 @@ void view_dim3rtl_image_cache_load(void)
 {
 	int							n;
 	char						path[1024];
-	iface_bitmap_type			*iface_bitmap;
 	iface_particle_type			*particle;
 	iface_ring_type				*ring;
  	iface_mark_type				*mark;
-	iface_halo_type				*halo;
-	iface_label_type			*label;
-	iface_crosshair_type		*crosshair;
 
-		// hud bitmaps
-
-	iface_bitmap=iface.bitmap_list.bitmaps;
-	
-	for (n=0;n!=iface.bitmap_list.nbitmap;n++) {
-		file_paths_data(&file_path_setup,path,"Bitmaps/Interface",iface_bitmap->filename,"png");
-		iface_bitmap->rtl_material_id=view_dim3rtl_create_material_from_path(path,RL_MATERIAL_ALPHA_PASS_THROUGH);
-		iface_bitmap++;
-	}
+		// hud bitmaps, halos, crosshairs,
+		// and labels are 2D effects done in OpenGL
 
 		// particles
 
@@ -221,57 +172,14 @@ void view_dim3rtl_image_cache_load(void)
 		mark->rtl_material_id=view_dim3rtl_create_material_from_path(path,RL_MATERIAL_ALPHA_PASS_THROUGH);
 		mark++;
 	}
-
-		// halos
-
-	halo=iface.halo_list.halos;
-
-	for (n=0;n!=iface.halo_list.nhalo;n++) {
-		file_paths_data(&file_path_setup,path,"Bitmaps/Halos",halo->bitmap_name,"png");
-		halo->rtl_material_id=view_dim3rtl_create_material_from_path(path,RL_MATERIAL_ALPHA_ADDITIVE);
-		halo++;
-	}
-
-		// labels
-
-	label=iface.label_list.labels;
-
-	for (n=0;n!=iface.label_list.nlabel;n++) {
-		file_paths_data(&file_path_setup,path,"Bitmaps/Labels",label->bitmap_name,"png");
-		label->rtl_material_id=view_dim3rtl_create_material_from_path(path,RL_MATERIAL_ALPHA_ADDITIVE);
-		label++;
-	}
-
-		// crosshairs
-
-	crosshair=iface.crosshair_list.crosshairs;
-
-	for (n=0;n!=iface.crosshair_list.ncrosshair;n++) {
-		file_paths_data(&file_path_setup,path,"Bitmaps/Crosshairs",crosshair->bitmap_name,"png");
-		crosshair->rtl_material_id=view_dim3rtl_create_material_from_path(path,RL_MATERIAL_ALPHA_PASS_THROUGH);
-		crosshair++;
-	}
 }
 
 void view_dim3rtl_image_cache_free(void)
 {
 	int							n;
-	iface_bitmap_type			*iface_bitmap;
 	iface_particle_type			*particle;
 	iface_ring_type				*ring;
  	iface_mark_type				*mark;
-	iface_halo_type				*halo;
-	iface_label_type			*label;
-	iface_crosshair_type		*crosshair;
-
-		// hud bitmaps
-
-	iface_bitmap=iface.bitmap_list.bitmaps;
-	
-	for (n=0;n!=iface.bitmap_list.nbitmap;n++) {
-		rtlMaterialDelete(iface_bitmap->rtl_material_id);
-		iface_bitmap++;
-	}
 
 		// particles
 
@@ -299,33 +207,6 @@ void view_dim3rtl_image_cache_free(void)
 		rtlMaterialDelete(mark->rtl_material_id);
 		mark++;
 	}
-
-		// halos
-
-	halo=iface.halo_list.halos;
-
-	for (n=0;n!=iface.halo_list.nhalo;n++) {
-		rtlMaterialDelete(halo->rtl_material_id);
-		halo++;
-	}
-
-		// labels
-
-	label=iface.label_list.labels;
-
-	for (n=0;n!=iface.label_list.nlabel;n++) {
-		rtlMaterialDelete(label->rtl_material_id);
-		label++;
-	}
-
-		// crosshairs
-
-	crosshair=iface.crosshair_list.crosshairs;
-
-	for (n=0;n!=iface.crosshair_list.ncrosshair;n++) {
-		rtlMaterialDelete(crosshair->rtl_material_id);
-		crosshair++;
-	}
 }
 
 /* =======================================================
@@ -345,7 +226,6 @@ bool view_dim3rtl_screenshot(bool thumbnail,char *path)
 		// force update
 		
 	rtlSceneRenderFinish(view_rtl_draw_scene_id);
-	rtlSceneOverlayDraw(view_rtl_draw_scene_id);
 
 		// get the scene buffer
 
@@ -454,7 +334,6 @@ void view_dim3rtl_render_scene(void)
 	view_dim3rtl_map_model_update();
 	view_dim3rtl_projectile_model_update();
 	view_dim3rtl_effect_mesh_update();
-	view_dim3rtl_overlay_update();
 
 		// render
 
@@ -465,12 +344,10 @@ void view_dim3rtl_render(void)
 {
 		// if we started a render last
 		// time, then make sure it's finished
-		// and the overlay is drawn
 		// before transfering to screen
 		
 	if (view_rtl_has_render) {
 		rtlSceneRenderFinish(view_rtl_draw_scene_id);
-		rtlSceneOverlayDraw(view_rtl_draw_scene_id);
 		view_dim3rtl_transfer_to_opengl(view_rtl_draw_scene_id,view_rtl_x,view_rtl_y,view_rtl_wid,view_rtl_high,view_rtl_draw_gl_id,setup.screen_rtl_wid,setup.screen_rtl_high);
 		view_rtl_has_render=FALSE;
 	}
