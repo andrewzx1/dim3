@@ -1053,7 +1053,6 @@ extern void view_dim3rtl_map_liquid_mesh_start(void);
 extern void view_dim3rtl_map_liquid_mesh_stop(void);
 extern void view_dim3rtl_map_model_mesh_start(void);
 extern void view_dim3rtl_map_model_mesh_stop(void);
-extern void view_dim3rtl_overlay_start(void);
 extern void view_dim3rtl_overlay_stop(void);
 extern void view_dim3rtl_projectile_model_setup(proj_type *proj);
 extern void view_dim3rtl_projectile_model_close(proj_type *proj);
@@ -1061,16 +1060,6 @@ extern void view_dim3rtl_effect_mesh_setup(effect_type *effect);
 extern void view_dim3rtl_effect_mesh_close(effect_type *effect);
 extern bool view_dim3rtl_screenshot(bool thumbnail,char *path);
 extern void view_dim3rtl_render(void);
-
-extern void gui_dim3rtl_initialize(char *background_path,char *bitmap_name);
-extern void gui_dim3rtl_shutdown(void);
-extern int gui_dim3rtl_material_open(char *path);
-extern void gui_dim3rtl_material_close(int rl_material_id);
-extern void gui_dim3rtl_draw(bool show_cursor);
-
-extern void progress_dim3rtl_initialize(char *map_name);
-extern void progress_dim3rtl_shutdown(void);
-extern void progress_dim3rtl_draw(int cur_tick);
 
 //
 // chats

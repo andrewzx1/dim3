@@ -166,9 +166,6 @@ int rtlSceneAdd(ray_2d_point_type *size,int target,int format,void *attachment,u
 	scene->mesh_list.count=0;
 	scene->mesh_list.next_id=1;
 	
-	scene->overlay_list.count=0;
-	scene->overlay_list.next_id=1;
-	
 		// default eye position
 		
 	scene->eye.pnt.x=0.0f;
@@ -177,17 +174,6 @@ int rtlSceneAdd(ray_2d_point_type *size,int target,int format,void *attachment,u
 	rtlMatrixIdentity(&scene->eye.matrix);
 	scene->eye.plane_dist=0.0f;
 	scene->eye.max_dist=0.0f;
-	
-		// default overlay scale
-		// and clipping
-		
-	scene->overlay_scale.x=scene->buffer.wid;
-	scene->overlay_scale.y=scene->buffer.high;
-	
-	scene->overlay_clip.top_lft_pnt.x=0;
-	scene->overlay_clip.top_lft_pnt.y=0;
-	scene->overlay_clip.bot_rgt_pnt.x=scene->buffer.wid;
-	scene->overlay_clip.bot_rgt_pnt.y=scene->buffer.high;
 	
 		// create the scene lock mutex
 
@@ -259,7 +245,6 @@ int rtlSceneDelete(int sceneId)
 
 	rtlSceneLightDeleteAll(sceneId);
 	rtlSceneMeshDeleteAll(sceneId);
-	rtlSceneOverlayDeleteAll(sceneId);
 
 		// delete scene
 

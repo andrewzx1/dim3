@@ -43,10 +43,6 @@ extern file_path_setup_type	file_path_setup;
 
 extern int					view_rtl_draw_scene_id;
 
-extern texture_font_type	view_rtl_fonts[2];
-
-extern bool bitmap_text_font_exist(char *name);
-
 /* =======================================================
 
       dim3RTL Create Material from Texture
@@ -176,69 +172,3 @@ int view_dim3rtl_create_material_from_color(d3col *col)
 	return(material_id);
 }
 
-/* =======================================================
-
-      View dim3RTL Text Materials
-      
-======================================================= */
-
-void view_dim3rtl_material_text_start_single_font_size(texture_font_size_type *font_size,char *name,int txt_size,int wid,int high)
-{
-	unsigned char		*data;
-
-	data=bitmap_text_size_data(font_size,name,txt_size,wid,high);
-
-	font_size->rtl_material_id=rtlMaterialAdd(wid,high,RL_MATERIAL_ALPHA_PASS_THROUGH,0);
-	rtlMaterialAttachBufferData(font_size->rtl_material_id,RL_MATERIAL_TARGET_COLOR,RL_MATERIAL_FORMAT_32_RGBA,data);
-	free(data);
-
-	rtlMaterialBuildMipMaps(font_size->rtl_material_id);
-}
-
-void view_dim3rtl_material_text_start_single_font(texture_font_type *d3_font)
-{
-	int				n,idx;
-
-		// determine which font exists, and use that
-
-	idx=0;
-
-	for (n=0;n!=max_iface_font_variant;n++) {
-		if (bitmap_text_font_exist(d3_font->name[n])) {
-			idx=n;
-			break;
-		}
-	}
-
-		// load the font
-
-	view_dim3rtl_material_text_start_single_font_size(&d3_font->size_24,d3_font->name[idx],24,512,256);
-	view_dim3rtl_material_text_start_single_font_size(&d3_font->size_48,d3_font->name[idx],48,1024,512);
-}
-
-void view_dim3rtl_material_text_start(void)
-{
-	int				n;
-
-	for (n=0;n!=max_iface_font_variant;n++) {
-		strcpy(view_rtl_fonts[font_interface_index].name[n],iface.font.interface_name[n]);
-		strcpy(view_rtl_fonts[font_hud_index].name[n],iface.font.hud_name[n]);
-	}
-
-	view_dim3rtl_material_text_start_single_font(&view_rtl_fonts[font_interface_index]);
-	view_dim3rtl_material_text_start_single_font(&view_rtl_fonts[font_hud_index]);
-}
-
-void view_dim3rtl_material_text_stop(void)
-{
-	rtlMaterialDelete(view_rtl_fonts[font_interface_index].size_24.rtl_material_id);
-	rtlMaterialDelete(view_rtl_fonts[font_interface_index].size_48.rtl_material_id);
-	rtlMaterialDelete(view_rtl_fonts[font_hud_index].size_24.rtl_material_id);
-	rtlMaterialDelete(view_rtl_fonts[font_hud_index].size_48.rtl_material_id);
-}
-
-texture_font_size_type* view_dim3rtl_material_text_get_font(int text_font,int text_size)
-{
-	if (text_size<=24) return(&view_rtl_fonts[text_font].size_24);
-	return(&view_rtl_fonts[text_font].size_48);
-}

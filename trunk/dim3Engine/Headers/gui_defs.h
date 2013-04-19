@@ -123,8 +123,7 @@ and can be sold or given away.
 //
 
 typedef struct		{
-						int						mode,
-												rl_material_id,rl_select_material_id;
+						int						mode;
 						char					name[name_str_len];
 						bitmap_type				bitmap,select_bitmap;
 					} element_button_type;
@@ -148,7 +147,6 @@ typedef struct		{
 					} element_column_type;
 
 typedef struct		{
-						int						rl_material_id;
 						char					path[1024];
 						bitmap_type				bitmap;
 					} element_image_type;
@@ -177,8 +175,7 @@ typedef struct		{
 
 typedef struct		{
 						int						max_count,
-												bitmap_add,wrap_count,
-												rl_material_id,rl_disable_material_id;
+												bitmap_add,wrap_count;
 						bool					horizontal;
 						bitmap_type				bitmap,disable_bitmap;
 					} element_count_type;

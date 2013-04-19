@@ -204,6 +204,9 @@ void view_images_cached_load(void)
 	iface_virtual_button_type	*button;
 #endif
 
+		// particles, rings, and decals
+		// aren't loaded if ray tracing on
+
 		// hud bitmaps
 
 	iface_bitmap=iface.bitmap_list.bitmaps;
@@ -228,35 +231,38 @@ void view_images_cached_load(void)
 		icon->image_idx=view_images_load_single(path,FALSE,TRUE);
 		icon++;
 	}
-
-		// particles
-
-	particle=iface.particle_list.particles;
-
-	for (n=0;n!=iface.particle_list.nparticle;n++) {
-		file_paths_data(&file_path_setup,path,"Bitmaps/Particles",particle->bitmap_name,"png");
-		particle->image_idx=view_images_load_single(path,FALSE,FALSE);
-		particle++;
-	}
 	
-		// rings
+	if (iface.project.ray_trace) {
 
-	ring=iface.ring_list.rings;
+			// particles
 
-	for (n=0;n!=iface.ring_list.nring;n++) {
-		file_paths_data(&file_path_setup,path,"Bitmaps/Rings",ring->bitmap_name,"png");
-		ring->image_idx=view_images_load_single(path,FALSE,FALSE);
-		ring++;
-	}
+		particle=iface.particle_list.particles;
 
-		// marks
+		for (n=0;n!=iface.particle_list.nparticle;n++) {
+			file_paths_data(&file_path_setup,path,"Bitmaps/Particles",particle->bitmap_name,"png");
+			particle->image_idx=view_images_load_single(path,FALSE,FALSE);
+			particle++;
+		}
 		
-	mark=iface.mark_list.marks;
+			// rings
 
-	for (n=0;n!=iface.mark_list.nmark;n++) {
-		file_paths_data(&file_path_setup,path,"Bitmaps/Marks",mark->bitmap_name,"png");
-		mark->image_idx=view_images_load_single(path,FALSE,FALSE);
-		mark++;
+		ring=iface.ring_list.rings;
+
+		for (n=0;n!=iface.ring_list.nring;n++) {
+			file_paths_data(&file_path_setup,path,"Bitmaps/Rings",ring->bitmap_name,"png");
+			ring->image_idx=view_images_load_single(path,FALSE,FALSE);
+			ring++;
+		}
+
+			// marks
+			
+		mark=iface.mark_list.marks;
+
+		for (n=0;n!=iface.mark_list.nmark;n++) {
+			file_paths_data(&file_path_setup,path,"Bitmaps/Marks",mark->bitmap_name,"png");
+			mark->image_idx=view_images_load_single(path,FALSE,FALSE);
+			mark++;
+		}
 	}
 
 		// halos
@@ -378,34 +384,37 @@ void view_images_cached_free(void)
 			icon++;
 		}
 	}
+	
+	if (iface.project.ray_trace) {
 
-		// particles
+			// particles
 
-	particle=iface.particle_list.particles;
+		particle=iface.particle_list.particles;
 
-	for (n=0;n!=iface.particle_list.nparticle;n++) {
-		view_images_free_single(particle->image_idx);
-		particle++;
-	}
-
-		// marks
+		for (n=0;n!=iface.particle_list.nparticle;n++) {
+			view_images_free_single(particle->image_idx);
+			particle++;
+		}
 		
-	mark=iface.mark_list.marks;
+			// rings
 
-	for (n=0;n!=iface.mark_list.nmark;n++) {
-		view_images_free_single(mark->image_idx);
-		mark++;
+		ring=iface.ring_list.rings;
+
+		for (n=0;n!=iface.ring_list.nring;n++) {
+			view_images_free_single(ring->image_idx);
+			ring++;
+		}
+
+			// marks
+			
+		mark=iface.mark_list.marks;
+
+		for (n=0;n!=iface.mark_list.nmark;n++) {
+			view_images_free_single(mark->image_idx);
+			mark++;
+		}
 	}
 	
-		// rings
-
-	ring=iface.ring_list.rings;
-
-	for (n=0;n!=iface.ring_list.nring;n++) {
-		view_images_free_single(ring->image_idx);
-		ring++;
-	}
-
 		// halos
 
 	halo=iface.halo_list.halos;

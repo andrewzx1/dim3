@@ -486,12 +486,8 @@ bool view_game_start(char *err_str)
 		// load images for hud bitmaps, radar, particles,
 		// rings, halos, marks, crosshairs and remote icons
 	
-	if (!iface.project.ray_trace) {
-		view_images_cached_load();
-	}
-	else {
-		view_dim3rtl_image_cache_load();
-	}
+	view_images_cached_load();
+	if (iface.project.ray_trace) view_dim3rtl_image_cache_load();
 
 		// precalculate particles
 
@@ -517,12 +513,8 @@ void view_game_stop(void)
 		// free images for hud bitmaps, radar, particles,
 		// rings, halos, marks, crosshairs and remote icons
 	
-	if (!iface.project.ray_trace) {
-		view_images_cached_free();
-	}
-	else {
-		view_dim3rtl_image_cache_free();
-	}
+	view_images_cached_free();
+	if (iface.project.ray_trace) view_dim3rtl_image_cache_free();
 }
 
 /* =======================================================
@@ -642,14 +634,15 @@ void view_loop_draw(void)
 
 	if (!iface.project.ray_trace) {
 		view_draw_opengl();
-		hud_draw();
-		radar_draw();
-		network_draw();
-		metrics_draw();
 	}
 	else {
 		view_draw_dim3rtl();
 	}
+	
+	hud_draw();
+	radar_draw();
+	network_draw();
+	metrics_draw();
 
 		// virtual controls
 		

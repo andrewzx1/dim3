@@ -255,7 +255,7 @@ typedef struct		{
 					} model_draw_light;
 
 typedef struct		{
-						int								idx,rtl_overlay_id;
+						int								idx;
 						bool							on;
 					} model_draw_halo;
 					

@@ -17,11 +17,8 @@
 #define ray_max_scene								32
 #define ray_max_scene_light							128
 #define ray_max_scene_mesh							5120
-#define ray_max_scene_overlay						2048
 
 #define ray_max_material							1024
-
-#define ray_max_scene_overlay_color_stop			16
 
 //
 // ray tracing
@@ -211,56 +208,6 @@ typedef struct		{
 					} ray_light_list;
 
 //
-// scene overlays
-//
-// these contain the 2D overlays in a scene.
-//
-
-typedef struct		{
-						ray_2d_point_type						pnt,pnt_size;
-					} ray_overlay_setup_quad_color_type;
-
-typedef struct		{
-						int										color_stop_count;
-						ray_2d_point_type						pnt,pnt_size;
-						ray_color_type							color_stops[ray_max_scene_overlay_color_stop];
-					} ray_overlay_setup_quad_gradient_type;
-
-typedef struct		{
-						int										material_idx;
-						ray_2d_point_type						pnt,pnt_size;
-						ray_uv_type								uv,uv_size;
-					} ray_overlay_setup_quad_material_type;
-
-typedef struct		{
-						ray_2d_point_type						start_pnt,end_pnt;
-					} ray_overlay_setup_line_type;
-
-typedef union		{
-						ray_overlay_setup_quad_color_type		quad_color;
-						ray_overlay_setup_quad_gradient_type	quad_gradient;
-						ray_overlay_setup_quad_material_type	quad_material;
-						ray_overlay_setup_line_type				line;
-					} ray_overlay_setup_type;
-
-typedef struct		{
-						ray_2d_point_type						top_lft_pnt,bot_rgt_pnt;
-					} ray_overlay_clip_type;
-
-typedef struct		{
-						int										id,overlay_type;
-						bool									hidden;
-						ray_color_type							tint;
-						ray_overlay_clip_type					clip;
-						ray_overlay_setup_type					setup;
-					} ray_overlay_type;
-
-typedef struct		{
-						int										count,next_id;
-						ray_overlay_type*						overlays[ray_max_scene_overlay];
-					} ray_overlay_list;
-
-//
 // the scene
 //
 // the scene is the main rendering object for a openRL operation.  Scenes
@@ -306,9 +253,6 @@ typedef struct		{
 						ray_color_type					ambient_col;
 						ray_light_list					light_list;
 						ray_mesh_list					mesh_list;
-						ray_overlay_list				overlay_list;
-						ray_2d_point_type				overlay_scale;
-						ray_overlay_clip_type			overlay_clip,overlay_save_clip;
 						ray_scene_buffer_type			buffer;
 						ray_scene_render_type			render;
 					} ray_scene_type;
@@ -327,7 +271,7 @@ typedef struct		{
 //
 // note that unlike other lists, materials does not have a count.  it uses
 // null to find an empty spot.  This is to preserve the indexes stored within
-// items like meshes or overlays
+// items like meshes
 //
 
 typedef struct		{

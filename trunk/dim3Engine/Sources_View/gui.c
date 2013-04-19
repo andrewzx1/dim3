@@ -76,15 +76,10 @@ void gui_initialize(char *background_path,char *bitmap_name)
 		
 	element_initialize();
 
-	if (iface.project.ray_trace) {
-		gui_dim3rtl_initialize(background_path,bitmap_name);
-	}
-	else {
-		gui_background_image_idx=-1;
-		if (bitmap_name!=NULL) gui_background_load(background_path,bitmap_name);
+	gui_background_image_idx=-1;
+	if (bitmap_name!=NULL) gui_background_load(background_path,bitmap_name);
 		
-		cursor_initialize();
-	}
+	cursor_initialize();
 
 		// start mouse in middle of screen
 		
@@ -105,13 +100,8 @@ void gui_shutdown(void)
 {
 		// close OpenGL GUI
 		
-	if (iface.project.ray_trace) {
-		gui_dim3rtl_shutdown();
-	}
-	else {
-		if (gui_background_image_idx!=-1) view_images_free_single(gui_background_image_idx);
-		cursor_shutdown();
-	}
+	if (gui_background_image_idx!=-1) view_images_free_single(gui_background_image_idx);
+	cursor_shutdown();
 	
 	element_shutdown();
 
@@ -177,14 +167,9 @@ void gui_draw(float background_alpha,bool cursor)
 
 		// draw items
 
-	if (!iface.project.ray_trace) {
-		gui_draw_background(background_alpha);
-		element_draw(TRUE);
-		if ((cursor) && (app.state==as_active)) cursor_draw();
-	}
-	else {
-		gui_dim3rtl_draw((cursor) && (app.state==as_active));
-	}
+	gui_draw_background(background_alpha);
+	element_draw(TRUE);
+	if ((cursor) && (app.state==as_active)) cursor_draw();
 
 		// end frame
 

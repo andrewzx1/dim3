@@ -643,8 +643,7 @@ typedef struct		{
 					} iface_bitmap_repeat_type;
 					
 typedef struct		{
-						int								image_idx,show_tick,
-														rtl_material_id,rtl_overlay_id;
+						int								image_idx,show_tick;
 						float							alpha,rot;
 						char							name[name_str_len],filename[file_str_len];
 						bool							show,old_show,
@@ -1040,7 +1039,7 @@ typedef struct		{
 //
 
 typedef struct		{
-						int								image_idx,rtl_material_id,
+						int								image_idx,
 														min_dist,max_dist,
 														min_size,max_size;
 						float							min_alpha,max_alpha;
@@ -1058,7 +1057,7 @@ typedef struct		{
 //
 
 typedef struct		{
-						int								image_idx,rtl_material_id,sz;
+						int								image_idx,sz;
 						char							name[name_str_len],bitmap_name[name_str_len];
 					} iface_label_type;
 
@@ -1072,7 +1071,7 @@ typedef struct		{
 //
 
 typedef struct		{
-						int								image_idx,rtl_material_id;
+						int								image_idx;
 						char							name[name_str_len],bitmap_name[name_str_len];
 					} iface_crosshair_type;
 
@@ -1518,7 +1517,7 @@ extern int score_add(iface_type *iface,char *name,int score);
 
 typedef struct			{
 							int							char_box_wid,char_box_high,char_real_high,
-														char_baseline,char_per_line,rtl_material_id;
+														char_baseline,char_per_line;
 							float						gl_xoff,gl_xadd,gl_yoff,gl_yadd,char_size[90];
 							bitmap_type					bitmap;
 						} texture_font_size_type;

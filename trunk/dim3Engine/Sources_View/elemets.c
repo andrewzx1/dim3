@@ -128,35 +128,19 @@ void element_release_control_memory(void)
 		switch (element->type) {
 		
 			case element_type_button:
-				if (!iface.project.ray_trace) {
-					bitmap_close(&element->setup.button.bitmap);
-					bitmap_close(&element->setup.button.select_bitmap);
-				}
-				else {
-					gui_dim3rtl_material_close(element->setup.button.rl_material_id);
-					gui_dim3rtl_material_close(element->setup.button.rl_select_material_id);
-				}
+				bitmap_close(&element->setup.button.bitmap);
+				bitmap_close(&element->setup.button.select_bitmap);
 				break;
 				
 			case element_type_bitmap:
-				if (!iface.project.ray_trace) {
-					bitmap_close(&element->setup.button.bitmap);
-				}
-				else {
-					gui_dim3rtl_material_close(element->setup.button.rl_material_id);
-				}
+				bitmap_close(&element->setup.button.bitmap);
 				break;
 				
 			case element_type_table:
 				if (element->data!=NULL) free(element->data);
 				for (k=0;k!=element_table_max_image;k++) {
 					if (element->setup.table.images[k].path[0]==0x0) continue;
-					if (!iface.project.ray_trace) {
-						bitmap_close(&element->setup.table.images[k].bitmap);
-					}
-					else {
-						gui_dim3rtl_material_close(element->setup.table.images[k].rl_material_id);
-					}
+					bitmap_close(&element->setup.table.images[k].bitmap);
 				}
 				break;
 				
@@ -169,14 +153,8 @@ void element_release_control_memory(void)
 				break;
 		
 			case element_type_count:
-				if (!iface.project.ray_trace) {
-					bitmap_close(&element->setup.count.bitmap);
-					bitmap_close(&element->setup.count.disable_bitmap);
-				}
-				else {
-					gui_dim3rtl_material_close(element->setup.count.rl_material_id);
-					gui_dim3rtl_material_close(element->setup.count.rl_disable_material_id);
-				}
+				bitmap_close(&element->setup.count.bitmap);
+				bitmap_close(&element->setup.count.disable_bitmap);
 				break;
 		}
 		
@@ -337,8 +315,6 @@ void element_button_text_add(char *name,int id,int x,int y,int wid,int high,int 
 	
 	element->setup.button.bitmap.gl_id=-1;
 	element->setup.button.select_bitmap.gl_id=-1;
-	element->setup.button.rl_material_id=-1;
-	element->setup.button.rl_select_material_id=-1;
 	
 	element->wid=wid;
 	element->high=high;
@@ -387,14 +363,8 @@ void element_button_bitmap_add(char *path,char *path2,int id,int x,int y,int wid
 	
 		// get button graphics
 	
-	if (!iface.project.ray_trace) {
-		bitmap_open(&element->setup.button.bitmap,path,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE);
-		bitmap_open(&element->setup.button.select_bitmap,path2,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE);
-	}
-	else {
-		element->setup.button.rl_material_id=gui_dim3rtl_material_open(path);
-		element->setup.button.rl_select_material_id=gui_dim3rtl_material_open(path2);
-	}
+	bitmap_open(&element->setup.button.bitmap,path,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE);
+	bitmap_open(&element->setup.button.select_bitmap,path2,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE);
 
 		// setup size and position
 		
@@ -453,8 +423,6 @@ void element_button_box_add(int id,int x,int y,int wid,int high,int x_pos,int y_
 
 	element->setup.button.bitmap.gl_id=-1;
 	element->setup.button.select_bitmap.gl_id=-1;
-	element->setup.button.rl_material_id=-1;
-	element->setup.button.rl_select_material_id=-1;
 	
 	element->wid=wid;
 	element->high=high;
@@ -492,14 +460,8 @@ void element_bitmap_add(char *path,int id,int x,int y,int wid,int high,bool fram
 	element->id=id;
 	element->type=element_type_bitmap;
 	
-	if (!iface.project.ray_trace) {
-		bitmap_open(&element->setup.button.bitmap,path,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE);
-		element->setup.button.select_bitmap.gl_id=-1;
-	}
-	else {
-		element->setup.button.rl_material_id=gui_dim3rtl_material_open(path);
-		element->setup.button.rl_select_material_id=-1;
-	}
+	bitmap_open(&element->setup.button.bitmap,path,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE);
+	element->setup.button.select_bitmap.gl_id=-1;
 	
 	element->x=x;
 	element->y=y;
@@ -795,7 +757,6 @@ void element_table_add(element_column_type* cols,char *row_data,int id,int ncolu
 	for (n=0;n!=element_table_max_image;n++) {
 		element->setup.table.images[n].path[0]=0x0;
 		element->setup.table.images[n].bitmap.gl_id=-1;
-		element->setup.table.images[n].rl_material_id=-1;
 	}
 	
 	element->setup.table.next_image_idx=0;
@@ -960,14 +921,8 @@ void element_count_add(char *path,char *disable_path,int id,int x,int y,int wid,
 	element->id=id;
 	element->type=element_type_count;
 	
-	if (!iface.project.ray_trace) {
-		bitmap_open(&element->setup.count.bitmap,path,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE);
-		bitmap_open(&element->setup.count.disable_bitmap,disable_path,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE);
-	}
-	else {
-		element->setup.count.rl_material_id=gui_dim3rtl_material_open(path);
-		element->setup.count.rl_disable_material_id=gui_dim3rtl_material_open(disable_path);
-	}
+	bitmap_open(&element->setup.count.bitmap,path,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE);
+	bitmap_open(&element->setup.count.disable_bitmap,disable_path,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE);
 	
 	element->x=x;
 	element->y=y;
@@ -1924,6 +1879,11 @@ void element_draw_combo(element_type *element,int sel_id)
 
 	col.r=col.g=col.b=0.0f;
 	view_primitive_2D_line_trig(&col,alpha,lft,rgt,top,bot,2);
+	
+	lft-=4;
+	top-=2;
+	bot+=2;
+	view_primitive_2D_line(&iface.color.control.outline,alpha,lft,top,lft,bot);
 
 		// control text
 
@@ -2427,14 +2387,7 @@ unsigned long element_draw_table_get_image_gl_id(element_type *element,int row_i
 		
 	for (n=0;n!=element_table_max_image;n++) {
 		if (element->setup.table.images[n].path[0]==0x0) continue;
-		if (strcmp(element->setup.table.images[n].path,path)==0) {
-			if (!iface.project.ray_trace) {
-				return(element->setup.table.images[n].bitmap.gl_id);
-			}
-			else {
-				return(element->setup.table.images[n].rl_material_id);
-			}
-		}
+		if (strcmp(element->setup.table.images[n].path,path)==0) return(element->setup.table.images[n].bitmap.gl_id);
 	}
 
 		// does it exist?
@@ -2464,13 +2417,8 @@ unsigned long element_draw_table_get_image_gl_id(element_type *element,int row_i
 		
 	strcpy(element->setup.table.images[idx].path,path);
 
-	if (!iface.project.ray_trace) {
-		bitmap_open(&element->setup.table.images[idx].bitmap,path,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE);
-		return(element->setup.table.images[idx].bitmap.gl_id);
-	}
-
-	element->setup.table.images[idx].rl_material_id=gui_dim3rtl_material_open(path);
-	return(element->setup.table.images[idx].rl_material_id);
+	bitmap_open(&element->setup.table.images[idx].bitmap,path,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE);
+	return(element->setup.table.images[idx].bitmap.gl_id);
 }
 
 void element_draw_table_line_data_text(int x,int y,int row_high,d3col *txt_col,char *txt)
@@ -3829,14 +3777,8 @@ void element_set_bitmap(int id,char *path)
 
 	element=element_find(id);
 	if (element!=NULL) {
-		if (!iface.project.ray_trace) {
-			bitmap_close(&element->setup.button.bitmap);
-			bitmap_open(&element->setup.button.bitmap,path,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE);
-		}
-		else {
-			gui_dim3rtl_material_close(element->setup.button.rl_material_id);
-			element->setup.button.rl_material_id=gui_dim3rtl_material_open(path);
-		}
+		bitmap_close(&element->setup.button.bitmap);
+		bitmap_open(&element->setup.button.bitmap,path,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE);
 	}
 
 	SDL_mutexV(element_thread_lock);
