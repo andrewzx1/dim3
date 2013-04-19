@@ -1154,7 +1154,12 @@ void ray_render_slice_run(ray_scene_type *scene,ray_scene_slice_type *slice)
 
 				// finally clamp and set the buffer
 
-			if (!no_hit) *buf=ray_create_ulong_color_from_float_no_alpha_clamp(&pixel_col);
+			if (!no_hit) {
+				if (pixel_col.r>1.0f) pixel_col.r=1.0f;
+				if (pixel_col.g>1.0f) pixel_col.g=1.0f;
+				if (pixel_col.b>1.0f) pixel_col.b=1.0f;
+				*buf=ray_create_ulong_color_from_float_no_alpha_clamp(&pixel_col);
+			}
 		}
 	}
 }
@@ -1321,8 +1326,13 @@ void ray_render_stall(ray_scene_type *scene)
 	   If there is a current render going on for this
 	   scene, this new render will stall until the old
 	   one is finished
+
 	   All rendering functions (including checking or
 	   stalling functions) must be called on the same thread
+
+	   Rendering to external elements, like textures, is
+	   not guarenteed to be completed unless rtlSceneRenderFinish
+	   is called
 
  	  Returns:
 	   RL_ERROR_OK
@@ -1373,6 +1383,10 @@ int rtlSceneRender(int sceneId)
 	   All rendering functions (including checking or
 	   stalling functions) must be called on the same thread
 
+	   This only check to see if the main rendering is done,
+	   some format will still require a call to rtlSceneRenderFinish
+	   to completely finish
+
  	  Returns:
 	   RL_SCENE_STATE_IDLE
 	   RL_SCENE_STATE_RENDERING
@@ -1408,6 +1422,9 @@ int rtlSceneRenderState(int sceneId)
 	   All rendering functions (including checking or
 	   stalling functions) must be called on the same thread
 
+	   This is a required call to finish some rendering
+	   targets
+
  	  Returns:
 	   RL_ERROR_UNKNOWN_SCENE_ID
      
@@ -1428,6 +1445,21 @@ int rtlSceneRenderFinish(int sceneId)
 		// stall
 		
 	ray_render_stall(scene);
+
+		// finish with any special
+		// target transfers
+
+	switch (scene->target) {
+
+			// transfer scene to texture
+
+		case RL_SCENE_TARGET_OPENGL_TEXTURE:
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D,scene->attachment.gl_id);
+			glTexSubImage2D(GL_TEXTURE_2D,0,0,0,scene->buffer.wid,scene->buffer.high,GL_RGBA,GL_UNSIGNED_BYTE,scene->buffer.data);
+			break;
+
+	}
 	
 	return(RL_ERROR_OK);
 }

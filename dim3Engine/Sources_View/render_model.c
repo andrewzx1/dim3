@@ -31,10 +31,11 @@ and can be sold or given away.
 
 #include "interface.h"
 
-extern map_type			map;
-extern server_type		server;
-extern view_type		view;
-extern setup_type		setup;
+extern map_type				map;
+extern server_type			server;
+extern iface_type			iface;
+extern view_type			view;
+extern setup_type			setup;
 
 /* =======================================================
 

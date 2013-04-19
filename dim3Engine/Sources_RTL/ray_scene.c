@@ -79,7 +79,7 @@ int rtlSceneAdd(ray_2d_point_type *size,int target,int format,void *attachment,u
 
 		// right now only one target/format
 
-	if (target!=RL_SCENE_TARGET_MEMORY) return(RL_ERROR_UNKNOWN_TARGET);
+	if ((target!=RL_SCENE_TARGET_MEMORY) && (target!=RL_SCENE_TARGET_OPENGL_TEXTURE)) return(RL_ERROR_UNKNOWN_TARGET);
 	if (format!=RL_SCENE_FORMAT_32_RGBA) return(RL_ERROR_UNKNOWN_FORMAT);
 
 		// new scene
@@ -90,6 +90,16 @@ int rtlSceneAdd(ray_2d_point_type *size,int target,int format,void *attachment,u
 		// clear thread states
 
 	ray_render_clear_threads(scene);
+
+		// format
+
+	scene->target=target;
+	
+	switch (target) {
+		case RL_SCENE_TARGET_OPENGL_TEXTURE:
+			scene->attachment.gl_id=(unsigned long)attachment;
+			break;
+	}
 
 		// the buffer
 

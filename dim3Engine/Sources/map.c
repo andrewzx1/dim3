@@ -329,7 +329,7 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 
 	progress_update();
 
-	if (!app.dedicated_host) {
+	if ((!app.dedicated_host) && (!iface.project.ray_trace)) {
 		if (!render_transparent_create_sort_list()) {
 			progress_shutdown();
 			strcpy(err_str,"Out of memory");
@@ -347,7 +347,7 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 
 	progress_update();
 
-	if (!app.dedicated_host) {
+	if ((!app.dedicated_host) && (!iface.project.ray_trace)) {
 		if (!view_map_vbo_initialize()) {
 			progress_shutdown();
 			strcpy(err_str,"Out of memory");
@@ -408,7 +408,7 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 
 	progress_update();
 
-	if (!app.dedicated_host) {
+	if ((!app.dedicated_host) && (!iface.project.ray_trace)) {
 		if (!view_obscure_initialize()) {
 			progress_shutdown();
 			strcpy(err_str,"Out of memory");
@@ -499,7 +499,7 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 	
 	map_movements_initialize();
 	map_lookups_setup();
-	map_mesh_polygon_draw_flag_setup();
+	if (!iface.project.ray_trace) map_mesh_polygon_draw_flag_setup();
 	
 		// map start event
 		// skip if we are reloading this map
@@ -643,7 +643,9 @@ void map_end(void)
 		progress_update();
 		gl_fs_shader_map_end();
 		gl_back_render_map_end();
-		view_obscure_release();
+		if (!iface.project.ray_trace) {
+			view_obscure_release();
+		}
 		sky_draw_release();
 		fog_draw_release();
 		rain_draw_release();
@@ -662,7 +664,7 @@ void map_end(void)
 
 		// free group, portal segment, vertex and light lists
 		
-	if (!app.dedicated_host) {
+	if ((!app.dedicated_host) && (!iface.project.ray_trace)) {
 		progress_update();
 		view_map_vbo_release();
 		render_transparent_dispose_sort_list();

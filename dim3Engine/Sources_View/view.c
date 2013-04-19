@@ -370,17 +370,6 @@ bool view_initialize(char *err_str)
 
 	if (!view_initialize_display(err_str)) return(FALSE);
 
-		// rl initialize
-
-	if (iface.project.ray_trace) {
-		if (!view_dim3rtl_initialize(err_str)) {
-			view_shutdown_display();
-			view_memory_release();
-			SDL_Quit();
-			return(FALSE);
-		}
-	}
-
 		// sound initialize
 	
 	if (!al_initialize(err_str)) {
@@ -459,8 +448,6 @@ void view_shutdown(void)
 	view_images_shutdown();
 	view_shutdown_display();
 
-	if (iface.project.ray_trace) view_dim3rtl_shutdown();
-
 		// shutdown SDL
 		
 	SDL_Quit();
@@ -479,6 +466,8 @@ void view_shutdown(void)
 bool view_game_start(char *err_str)
 {
 		// cameras and globals
+
+	progress_update();
 		
     camera_initialize();
 	game_file_initialize();
@@ -486,8 +475,15 @@ bool view_game_start(char *err_str)
 		// load images for hud bitmaps, radar, particles,
 		// rings, halos, marks, crosshairs and remote icons
 	
+	progress_update();
 	view_images_cached_load();
-	if (iface.project.ray_trace) view_dim3rtl_image_cache_load();
+
+	if (iface.project.ray_trace) {
+		progress_update();
+		view_dim3rtl_image_cache_load();
+	}
+
+	progress_update();
 
 		// precalculate particles
 

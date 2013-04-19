@@ -240,11 +240,11 @@ void view_add_mesh_liquid_draw_list(void)
 
 /* =======================================================
 
-      Model Setup and Draw List
+      OpenGL Model Setup and Draw List
       
 ======================================================= */
 
-void view_setup_objects(int tick)
+void view_setup_objects_gl(int tick)
 {
 	int					n,flag;
 	bool				is_camera,shadow_on;
@@ -287,12 +287,7 @@ void view_setup_objects(int tick)
 			if (view_cull_model(&obj->draw)) flag|=view_list_item_flag_model_in_view;
 
 			if ((shadow_on) && (obj->draw.shadow.on)) {
-			//	if ((flag&view_list_item_flag_model_in_view)!=0x0) {		// model in view means shadow is automatically in view
-			//		flag|=view_list_item_flag_shadow_in_view;
-			//	}
-			//	else {
-					if (view_cull_model_shadow(&obj->draw)) flag|=view_list_item_flag_shadow_in_view;
-			//	}
+				if (view_cull_model_shadow(&obj->draw)) flag|=view_list_item_flag_shadow_in_view;
 			}
 		}
 		
@@ -341,7 +336,7 @@ void view_setup_objects(int tick)
 	if (weap!=NULL) draw_weapon_hand_setup(obj,weap);
 }
 
-void view_setup_projectiles(int tick)
+void view_setup_projectiles_gl(int tick)
 {
 	int					n,flag;
 	bool				shadow_on;
@@ -393,6 +388,94 @@ void view_setup_projectiles(int tick)
 		view_add_draw_list(view_render_type_projectile,n,proj->draw.draw_dist,flag);
 
 		view.count.model++;
+	}
+}
+
+/* =======================================================
+
+      RL Model Setup and Draw List
+	  This version doesn't use drawing lists
+      
+======================================================= */
+
+void view_setup_objects_rtl(int tick)
+{
+	int					n;
+	bool				is_camera;
+	obj_type			*obj;
+	weapon_type			*weap;
+	
+	for (n=0;n!=max_obj_list;n++) {
+		obj=server.obj_list.objs[n];
+		if (obj==NULL) continue;
+		
+		if (obj->hidden) continue;
+		
+		is_camera=((map.camera.mode==cv_fpp) && (obj->idx==camera.obj_idx));
+		
+			// setup model positions
+			
+		object_rigid_body_reset_angle(obj);
+		object_fly_reset_angle(obj);
+		model_draw_setup_object(obj);
+		
+		model_calc_animation(&obj->draw,tick);
+		model_calc_draw_bones(&obj->draw);
+					
+			// setup model rendering
+			
+		render_model_setup(&obj->draw,tick);
+		
+			// if the player, setup the held
+			// weapon (and dual if necessary)
+
+		if ((obj->idx==server.player_obj_idx) && (obj->held_weapon.current_idx!=-1)) {
+			weap=weapon_find_current(obj);
+			if (weap!=NULL) {
+
+					// regular weapon
+
+				model_draw_setup_weapon(obj,weap,FALSE,FALSE);
+				if (weap->draw.on) view.count.model++;
+				
+					// dual weapon
+
+				if ((weap->dual.on) && (weap->dual.active)) {
+					model_draw_setup_weapon(obj,weap,FALSE,TRUE);
+					if (weap->draw_dual.on) view.count.model++;
+				}
+			}
+		}
+	}
+	
+		// player weapons
+		
+	obj=server.obj_list.objs[server.player_obj_idx];
+	weap=weapon_find_current(obj);
+
+	if (weap!=NULL) draw_weapon_hand_setup(obj,weap);
+}
+
+void view_setup_projectiles_rtl(int tick)
+{
+	int					n;
+	proj_type			*proj;
+	
+	for (n=0;n!=max_proj_list;n++) {
+		proj=server.proj_list.projs[n];
+		if (!proj->on) continue;
+		
+			// setup model positions
+			
+		projectile_reset_angle_for_flight(proj);
+		model_draw_setup_projectile(proj);
+		
+		model_calc_animation(&proj->draw,tick);
+		model_calc_draw_bones(&proj->draw);
+				
+			// setup model rendering
+			
+		render_model_setup(&proj->draw,tick);
 	}
 }
 

@@ -104,12 +104,20 @@ bool crosshair_get_location(obj_type *obj,weapon_type *weap,int *kx,int *ky,int 
 		win_pnt.x=contact.hpt.x;
 		win_pnt.y=contact.hpt.y;
 		win_pnt.z=contact.hpt.z;
-		
-		gl_project_point(&win_pnt);
-		
-		*kx=win_pnt.x;
-		*ky=view.screen.y_sz-win_pnt.y;
-		
+
+		if (!iface.project.ray_trace) {
+			gl_project_point(&win_pnt);
+
+			*kx=win_pnt.x;
+			*ky=view.screen.y_sz-win_pnt.y;
+		}
+		else {
+			view_dim3rtl_project_point(&win_pnt);
+
+			*kx=win_pnt.x;
+			*ky=win_pnt.y;
+		}
+
 		if (dist!=NULL) *dist=distance_get(view.render->camera.pnt.x,view.render->camera.pnt.y,view.render->camera.pnt.z,contact.hpt.x,contact.hpt.y,contact.hpt.z);
 	}
 	
@@ -283,7 +291,7 @@ void crosshair_draw(obj_type *obj,weapon_type *weap)
 	obj_crosshair_draw	*crosshair_draw;
 	
 		// is scope on?
-		
+
 	if ((weap->zoom.on) && (weap->zoom.mode!=zoom_mode_off)) return;
 
 		// can't use centered crosshairs when not in FPP
@@ -291,7 +299,7 @@ void crosshair_draw(obj_type *obj,weapon_type *weap)
 	if ((weap->crosshair.type==ct_center) && (map.camera.mode!=cv_fpp)) return;
 	
 		// is crosshair on?
-	
+
 	crosshair_draw=&obj->crosshair_draw;
 	if (!crosshair_draw->on) return;
 	

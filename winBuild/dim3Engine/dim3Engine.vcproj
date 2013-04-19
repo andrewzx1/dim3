@@ -3800,10 +3800,6 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\dim3Engine\Sources_RTL\ray_overlay.c"
-						>
-					</File>
-					<File
 						RelativePath="..\..\dim3Engine\Sources_RTL\ray_precalc.c"
 						>
 					</File>
@@ -3832,14 +3828,6 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\dim3Engine\Sources_View\view_rtl_elements.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Engine\Sources_View\view_rtl_gui.c"
-						>
-					</File>
-					<File
 						RelativePath="..\..\dim3Engine\Sources_View\view_rtl_liquid.c"
 						>
 					</File>
@@ -3860,15 +3848,7 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\dim3Engine\Sources_View\view_rtl_overlay.c"
-						>
-					</File>
-					<File
 						RelativePath="..\..\dim3Engine\Sources_View\view_rtl_patch.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Engine\Sources_View\view_rtl_progress.c"
 						>
 					</File>
 				</Filter>

@@ -13,6 +13,7 @@
 	// scene targets
 
 #define RL_SCENE_TARGET_MEMORY								0
+#define RL_SCENE_TARGET_OPENGL_TEXTURE						1
 
 	// scene formats
 

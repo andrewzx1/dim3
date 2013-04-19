@@ -88,27 +88,16 @@ bool view_dim3rtl_create_opengl_texture(GLuint *p_gl_id,int wid,int high,char *e
       
 ======================================================= */
 
-void view_dim3rtl_transfer_to_opengl(int scene_id,int x,int y,int wid,int high,GLuint gl_id,int buff_wid,int buff_high)
+void view_dim3rtl_transfer_texture_to_view(int scene_id,int x,int y,int wid,int high,GLuint gl_id,int buff_wid,int buff_high)
 {
-	int				err;
-	unsigned char	*data;
-
 		// draws on 2D screen
 
 	gl_2D_view_screen();
 
-		// get the scene buffer
-		// and push it to a texture
-		// scene memory buffers was set
-		// to RL_SCENE_FORMAT_32_RGBA
-
-	err=rtlSceneGetBuffer(scene_id,(void**)&data);
-	if (err!=RL_ERROR_OK) return;
-
-	gl_texture_bind(0,gl_id);
-	glTexSubImage2D(GL_TEXTURE_2D,0,0,0,buff_wid,buff_high,GL_RGBA,GL_UNSIGNED_BYTE,data);
-
 		// draw the quad
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D,gl_id);
 
 	view_primitive_2D_texture_quad(gl_id,NULL,1.0f,x,(x+wid),y,(y+high),0.0f,1.0f,0.0f,1.0f,TRUE);
 }
