@@ -91,7 +91,13 @@ void label_draw_setup_single(obj_type *obj,int bone_idx,obj_label_draw *label_dr
 
 		// project point in 2D
 
-	gl_project_point(&label_draw->pnt);
+	if (iface.project.ray_trace) {
+		gl_project_point(&label_draw->pnt);
+		label_draw->pnt.y=view.screen.y_sz-label_draw->pnt.y;	
+	}
+	else {
+		view_dim3rtl_project_point(&label_draw->pnt);
+	}
 
 	label_draw->on=TRUE;
 }
@@ -190,7 +196,7 @@ void label_draw_render(void)
 
 		if (obj->label.text.draw.on) {
 			x=obj->label.text.draw.pnt.x;
-			y=view.screen.y_sz-obj->label.text.draw.pnt.y;
+			y=obj->label.text.draw.pnt.y;
 
 			gl_text_start(font_hud_index,mdl->label.text.size,FALSE);
 			gl_text_draw(x,y,obj->label.text.str,tx_center,FALSE,&mdl->label.text.col,1.0f);
@@ -207,7 +213,7 @@ void label_draw_render(void)
 
 			lft=obj->label.bitmap.draw.pnt.x-(sz>>1);
 			rgt=lft+sz;
-			top=(view.screen.y_sz-obj->label.bitmap.draw.pnt.y)-(sz>>1);
+			top=obj->label.bitmap.draw.pnt.y-(sz>>1);
 			bot=top+sz;
 
 				// draw image
@@ -227,7 +233,7 @@ void label_draw_render(void)
 
 			lft=obj->label.bar.draw.pnt.x-(wid>>1);
 			rgt=lft+wid;
-			top=(view.screen.y_sz-obj->label.bar.draw.pnt.y)-(high>>1);
+			top=obj->label.bar.draw.pnt.y-(high>>1);
 			bot=top+high;
 
 				// health position
@@ -248,7 +254,7 @@ void label_draw_render(void)
 
 		if (obj->label.remote_name.draw.on) {
 			x=obj->label.remote_name.draw.pnt.x;
-			y=view.screen.y_sz-obj->label.remote_name.draw.pnt.y;
+			y=obj->label.remote_name.draw.pnt.y;
 
 				// the name
 
