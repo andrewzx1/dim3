@@ -88,7 +88,7 @@ bool view_dim3rtl_create_opengl_texture(GLuint *p_gl_id,int wid,int high,char *e
       
 ======================================================= */
 
-void view_dim3rtl_transfer_texture_to_view(int scene_id,int x,int y,int wid,int high,GLuint gl_id,int buff_wid,int buff_high)
+void view_dim3rtl_transfer_texture_to_view(int scene_id,int x,int y,int wid,int high,GLuint gl_id)
 {
 		// draws on 2D screen
 

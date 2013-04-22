@@ -50,7 +50,7 @@ GLuint							view_rtl_draw_gl_id;
 int								view_rtl_screen_sizes[][2]={{320,200},{400,250},{480,300},{640,400},{720,450},{960,600},{0,0}};
 
 extern bool view_dim3rtl_create_opengl_texture(GLuint *p_gl_id,int wid,int high,char *err_str);
-extern void view_dim3rtl_transfer_texture_to_view(int scene_id,int x,int y,int wid,int high,GLuint gl_id,int buff_wid,int buff_high);
+extern void view_dim3rtl_transfer_texture_to_view(int scene_id,int x,int y,int wid,int high,GLuint gl_id);
 extern int view_dim3rtl_create_material_from_path(char *path,int alpha_type);
 extern void view_dim3rtl_map_mesh_update(void);
 extern void view_dim3rtl_map_liquid_mesh_update(void);
@@ -220,6 +220,8 @@ void view_dim3rtl_project_point(d3pnt *pnt)
 	ray_point_type			rtl_3d_pnt;
 	ray_2d_point_type		rtl_2d_pnt;
 
+		// translate 3D to 2D
+		
 	rtl_3d_pnt.x=(float)pnt->x;
 	rtl_3d_pnt.y=(float)pnt->y;
 	rtl_3d_pnt.z=(float)pnt->z;
@@ -228,6 +230,12 @@ void view_dim3rtl_project_point(d3pnt *pnt)
 
 	pnt->x=(int)rtl_2d_pnt.x;
 	pnt->y=(int)rtl_2d_pnt.y;
+	
+		// since the screen could be blown up
+		// we need to translate
+		
+	pnt->x=(pnt->x*view_rtl_wid)/setup.screen_rtl_wid;
+	pnt->y=(pnt->y*view_rtl_high)/setup.screen_rtl_high;
 }
 
 /* =======================================================
@@ -367,7 +375,7 @@ void view_dim3rtl_render(void)
 		// do anything (use the last render)
 
 	if (view.menu.active) {
-		view_dim3rtl_transfer_texture_to_view(view_rtl_draw_scene_id,view_rtl_x,view_rtl_y,view_rtl_wid,view_rtl_high,view_rtl_draw_gl_id,setup.screen_rtl_wid,setup.screen_rtl_high);
+		view_dim3rtl_transfer_texture_to_view(view_rtl_draw_scene_id,view_rtl_x,view_rtl_y,view_rtl_wid,view_rtl_high,view_rtl_draw_gl_id);
 		return;
 	}
 
@@ -377,7 +385,7 @@ void view_dim3rtl_render(void)
 		
 	if (view_rtl_has_render) {
 		rtlSceneRenderFinish(view_rtl_draw_scene_id);
-		view_dim3rtl_transfer_texture_to_view(view_rtl_draw_scene_id,view_rtl_x,view_rtl_y,view_rtl_wid,view_rtl_high,view_rtl_draw_gl_id,setup.screen_rtl_wid,setup.screen_rtl_high);
+		view_dim3rtl_transfer_texture_to_view(view_rtl_draw_scene_id,view_rtl_x,view_rtl_y,view_rtl_wid,view_rtl_high,view_rtl_draw_gl_id);
 		view_rtl_has_render=FALSE;
 	}
 	
