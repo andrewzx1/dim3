@@ -1059,6 +1059,7 @@ extern void view_dim3rtl_projectile_model_close(proj_type *proj);
 extern void view_dim3rtl_effect_mesh_setup(effect_type *effect);
 extern void view_dim3rtl_effect_mesh_close(effect_type *effect);
 extern void view_dim3rtl_project_point(d3pnt *pnt);
+extern bool view_dim3rtl_project_point_behind_z(d3pnt *pnt);
 extern bool view_dim3rtl_screenshot(bool thumbnail,char *path);
 extern void view_dim3rtl_render(void);
 

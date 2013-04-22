@@ -70,7 +70,7 @@ int rtlSceneEyePositionSet(int sceneId,ray_point_type *pnt,float fovy,ray_matrix
  	  Returns:
 	   RL_ERROR_OK
 	   RL_ERROR_UNKNOWN_SCENE_ID
-	   RL_ERROR_POINT_BEHIND_EYE
+	   RL_ERROR_POINT_BEHIND_PLANE
      
 ======================================================= */
 
@@ -102,13 +102,13 @@ int rtlSceneEyeTranslatePoint(int sceneId,ray_point_type *pnt3d,ray_2d_point_typ
 
 		// behind z?
 
-	if (eye_vector.z<=0.0f) return(RL_ERROR_POINT_BEHIND_EYE);
+	if (eye_vector.z<=0.0f) return(RL_ERROR_POINT_BEHIND_PLANE);
 
 		// solve it for hitting the z plane
 		// if z>=1.0f, then it's still behind the plane
 
 	z=scene->eye.plane_dist/eye_vector.z;
-	if (z>=1.0f) return(RL_ERROR_POINT_BEHIND_EYE);
+	if (z>=1.0f) return(RL_ERROR_POINT_BEHIND_PLANE);
 
 		// create the plane points
 		// and move them to within the target

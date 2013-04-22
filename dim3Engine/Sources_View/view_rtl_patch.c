@@ -238,6 +238,20 @@ void view_dim3rtl_project_point(d3pnt *pnt)
 	pnt->y=(pnt->y*view_rtl_high)/setup.screen_rtl_high;
 }
 
+bool view_dim3rtl_project_point_behind_z(d3pnt *pnt)
+{
+	ray_point_type			rtl_3d_pnt;
+	ray_2d_point_type		rtl_2d_pnt;
+
+		// translate 3D to 2D
+		
+	rtl_3d_pnt.x=(float)pnt->x;
+	rtl_3d_pnt.y=(float)pnt->y;
+	rtl_3d_pnt.z=(float)pnt->z;
+
+	return(rtlSceneEyeTranslatePoint(view_rtl_draw_scene_id,&rtl_3d_pnt,&rtl_2d_pnt)==RL_ERROR_POINT_BEHIND_PLANE);
+}
+
 /* =======================================================
 
       dim3RTL Screenshot
@@ -366,7 +380,7 @@ void view_dim3rtl_render_scene(void)
 
 		// render
 
-	if (rtlSceneRender(view_rtl_draw_scene_id)!=RL_ERROR_OK) return;
+	rtlSceneRender(view_rtl_draw_scene_id);
 }
 
 void view_dim3rtl_render(void)

@@ -53,6 +53,7 @@ extern void view_setup_objects_rtl(int tick);
 extern void view_setup_projectiles_rtl(int tick);
 extern void view_add_effect_draw_list(void);
 extern void view_add_halos(void);
+extern void view_add_model_halo(model_draw *draw,int obj_idx);
 extern void view_calculate_scope(obj_type *obj,obj_type *camera_obj);
 extern void view_calculate_recoil(obj_type *obj);
 extern void view_calculate_shakes(obj_type *obj);
@@ -463,11 +464,68 @@ bool view_draw_node(node_type *node)
       
 ======================================================= */
 
+void view_draw_dim3rtl_scene_build(void)
+{
+	int					n,tick;
+	obj_type			*obj;
+	proj_type			*proj;
+	map_light_type		*lit;
+	map_particle_type	*prt;
+
+		// build the scene
+		// we don't have to do as much as opengl
+		// so just setup the animations
+		
+	tick=game_time_get();
+
+	view_setup_objects_rtl(tick);
+	view_setup_projectiles_rtl(tick);
+
+		// no halos yet
+
+	halo_draw_clear();
+
+		// create the model vertex/etc
+		// lists for updating rtl and
+		// add any halos
+
+	for (n=0;n!=max_obj_list;n++) {
+		obj=server.obj_list.objs[n];
+		if (obj==NULL) continue;
+		if (obj->hidden) continue;
+
+		render_model_build_vertex_lists(&obj->draw,TRUE);
+		view_add_model_halo(&obj->draw,obj->idx);
+	}
+
+	for (n=0;n!=max_proj_list;n++) {
+		proj=server.proj_list.projs[n];
+		if (!proj->on) continue;
+		
+		render_model_build_vertex_lists(&proj->draw,FALSE);
+		view_add_model_halo(&proj->draw,-1);
+	}
+
+		// map and particle halos
+
+	lit=map.lights;
+
+	for (n=0;n!=map.nlight;n++) {
+		halo_draw_add(&lit->pnt,-1,lit->setting.halo_idx);
+		lit++;
+	}
+
+	prt=map.particles;
+
+	for (n=0;n!=map.nparticle;n++) {
+		halo_draw_add(&prt->pnt,-1,prt->light_setting.halo_idx);
+		prt++;
+	}
+}
+
 void view_draw_dim3rtl(void)
 {
-	int				n,tick;
-	obj_type		*obj,*model_obj,*camera_obj;
-	proj_type		*model_proj;
+	obj_type		*obj,*camera_obj;
 	weapon_type		*weap;
 
 		// get player object and held weapon
@@ -518,45 +576,32 @@ void view_draw_dim3rtl(void)
 	view.count.obscure_percent=0;
 	
 		// build the scene
-		// we don't have to do as much as opengl
-		// so just setup the animations
-		
-	tick=game_time_get();
 
-	view_setup_objects_rtl(tick);
-	view_setup_projectiles_rtl(tick);
+	view_draw_dim3rtl_scene_build();
 
-		// create the model vertex/etc
-		// lists for updating rtl
+		// we setup the 2D elements before
+		// rendering because we get the last
+		// frame so we want to use the last
+		// frames eye point
 
-	for (n=0;n!=max_obj_list;n++) {
-		model_obj=server.obj_list.objs[n];
-		if (model_obj==NULL) continue;
-		if (model_obj->hidden) continue;
-
-		render_model_build_vertex_lists(&model_obj->draw,TRUE);
-	}
-
-	for (n=0;n!=max_proj_list;n++) {
-		model_proj=server.proj_list.projs[n];
-		if (model_proj->on) render_model_build_vertex_lists(&model_proj->draw,FALSE);
-	}
-
-		// dim3rtl rendering
-
-	view_dim3rtl_render();
-
-		// 2D opengl elements
+	label_draw_setup();
+	halo_draw_setup();
 
 	if ((obj!=NULL) && (weap!=NULL)) {
 		crosshair_setup(obj,weap);
 		zoom_setup(obj,weap);
 	}
 
+		// dim3rtl rendering
+
+	view_dim3rtl_render();
+
+		// draw 2D opengl elements
+
 	gl_2D_view_screen();
 
-//	label_draw_render();
-//	halo_draw_render();
+	label_draw_render();
+	halo_draw_render();
 
 	if (!view.cinema.on) {
 		if ((obj!=NULL) && (weap!=NULL)) {
