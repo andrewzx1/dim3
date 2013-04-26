@@ -103,9 +103,10 @@ int model_find_index(char *name)
       
 ======================================================= */
 
-int model_load(char *name)
+int model_load(char *name,bool force_opengl_textures)
 {
 	int				n,idx;
+	bool			load_textures;
 	model_type		*mdl;
 	
 		// has model been already loaded?
@@ -137,8 +138,10 @@ int model_load(char *name)
 	if (mdl==NULL) return(-1);
 
 		// load model
+
+	load_textures=((!app.dedicated_host) && ((force_opengl_textures) || (!iface.project.ray_trace)));
 		
-	if (!model_open(mdl,name,(!app.dedicated_host))) {
+	if (!model_open(mdl,name,load_textures)) {
 		free(mdl);
 		return(-1);
 	}
@@ -161,7 +164,7 @@ int model_load(char *name)
 	return(idx);
 }
 
-bool model_draw_load(model_draw *draw,char *item_type,char *item_name,char *err_str)
+bool model_draw_load(model_draw *draw,char *item_type,char *item_name,bool force_opengl_textures,char *err_str)
 {
 	int					n;
 	bool				ok;
@@ -179,7 +182,7 @@ bool model_draw_load(model_draw *draw,char *item_type,char *item_name,char *err_
 	mdl=NULL;
 
 	if (draw->name[0]!=0x0) {
-		draw->model_idx=model_load(draw->name);
+		draw->model_idx=model_load(draw->name,force_opengl_textures);
 		if (draw->model_idx!=-1) {
 			mdl=server.model_list.models[draw->model_idx];
 			model_get_size(mdl,&draw->size.x,&draw->size.y,&draw->size.z);
@@ -291,7 +294,7 @@ void model_reset_single(model_draw *draw)
 		// try to load it
 
 	else {
-		draw->model_idx=model_load(draw->name);
+		draw->model_idx=model_load(draw->name,FALSE);
 		if (draw->model_idx==-1) draw->on=FALSE;
 	}
 
@@ -383,7 +386,7 @@ void model_preload_start(void)
 	for (n=0;n!=max_preload_model;n++) {
 		if (iface.preload_model.names[n][0]==0x0) continue;
 		
-		idx=model_load(iface.preload_model.names[n]);
+		idx=model_load(iface.preload_model.names[n],FALSE);
 		if (idx!=-1) server.model_list.models[idx]->load.preloaded=TRUE;
 	}
 }

@@ -439,12 +439,13 @@ float ray_distance_between_points(ray_point_type *p1,ray_point_type *p2)
 
 unsigned char* ray_bitmap_reduction(int factor,int wid,int high,unsigned char *data)
 {
-	int					x,y,x2,y2,kx,ky,
+	int					x,y,x2,y2,
+						lx,rx,ty,by,half_factor,
 						r_wid,r_high,sz,
 						merge_count,pixel_offset;
 	float				f;
 	unsigned char		*r_data;
-	unsigned long		buf,*r_buf;
+	unsigned long		*buf,*r_buf;
 	ray_color_type		col,merge_col;
 
 		// memory for new bitmap
@@ -455,6 +456,8 @@ unsigned char* ray_bitmap_reduction(int factor,int wid,int high,unsigned char *d
 	sz=(r_wid*r_high)<<2;
 	r_data=(unsigned char*)malloc(sz);
 	if (r_data==NULL) return(NULL);
+
+	half_factor=factor>>1;
 
 		// build it
 
@@ -468,16 +471,26 @@ unsigned char* ray_bitmap_reduction(int factor,int wid,int high,unsigned char *d
 			merge_count=0;
 			merge_col.r=merge_col.g=merge_col.b=merge_col.a=0.0f;
 
-			kx=x*factor;
-			ky=y*factor;
+			lx=(x*factor)-half_factor;
+			rx=lx+factor;
 
-			for (y2=ky;y2!=(ky+factor);y2++) {
-				for (x2=kx;x2!=(kx+factor);x2++) {
-					if ((y2>=high) || (x2>=wid)) continue;
+			if (lx<0) lx=0;
+			if (rx>wid) rx=wid;
 
-					pixel_offset=(wid*y2)+x2;
-					buf=*(((unsigned long*)data)+pixel_offset);
-					ray_create_float_color_from_ulong(buf,&col);
+			ty=(y*factor)-half_factor;
+			by=ty+factor;
+
+			if (ty<0) ty=0;
+			if (by>high) by=high;
+
+			for (y2=ty;y2<by;y2++) {
+
+				pixel_offset=(wid*y2)+lx;
+				buf=(((unsigned long*)data)+pixel_offset);
+
+				for (x2=lx;x2<rx;x2++) {
+					ray_create_float_color_from_ulong(*buf,&col);
+					buf++;
 
 					merge_col.r+=col.r;
 					merge_col.g+=col.g;

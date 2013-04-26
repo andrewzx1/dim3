@@ -875,8 +875,8 @@ int rtlMaterialBuildMipMaps(int materialId)
 			// have we reached the smallest
 			// mipmap yet?
 
-		if ((material->wid/factor)<2) break;
-		if ((material->high/factor)<2) break;
+		if ((material->wid/factor)<ray_mipmap_min_dimension) break;
+		if ((material->high/factor)<ray_mipmap_min_dimension) break;
 		
 			// new mipmap
 

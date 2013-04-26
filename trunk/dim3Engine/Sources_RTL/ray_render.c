@@ -123,13 +123,13 @@ void ray_intersect_mesh_list_initial(ray_scene_type *scene,ray_scene_slice_type 
 
 		for (poly_idx=0;poly_idx!=mesh->poly_block.count;poly_idx++) {
 			
-				// bounds check
-
 				// thread based lists have poly eliminations
 				// in them
 				
 			poly=&mesh->poly_block.polys[poly_idx];
 			if (poly->slice_render_mask[slice->idx]==0x0) continue;
+
+				// bounds check
 
 			if (!ray_bound_ray_collision(eye_point,eye_vector,&poly->bound)) continue;
 			

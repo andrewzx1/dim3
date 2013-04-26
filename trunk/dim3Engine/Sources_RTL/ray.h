@@ -52,6 +52,7 @@
 //
 
 #define ray_mipmap_max_level						8
+#define ray_mipmap_min_dimension					32
 #define ray_mipmap_distance_exponent				0.7f
 
 //

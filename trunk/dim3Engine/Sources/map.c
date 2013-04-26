@@ -282,9 +282,9 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 		return(FALSE);
 	}
 
-		// load map textures
+		// load opengl map textures
 
-	if (!app.dedicated_host) {
+	if ((!app.dedicated_host) && (!iface.project.ray_trace)) {
 		map_textures_read_setup(&map);
 		
 		for (n=0;n!=max_map_texture;n++) {
