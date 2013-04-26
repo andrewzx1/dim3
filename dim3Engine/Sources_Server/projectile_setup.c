@@ -173,7 +173,7 @@ bool proj_setup_create(obj_type *obj,weapon_type *weap,char *name,char *err_str)
 		// and load the models
 
 	if (proj_setup_start_script(obj,weap,proj_setup,FALSE,err_str)) {
-		if (model_draw_load(&proj_setup->draw,"Projectile",proj_setup->name,err_str)) return(TRUE);
+		if (model_draw_load(&proj_setup->draw,"Projectile",proj_setup->name,FALSE,err_str)) return(TRUE);
 	}
 	
 		// there was an error

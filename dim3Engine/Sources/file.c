@@ -713,7 +713,7 @@ bool game_file_load(char *file_name,bool resume_load,char *err_str)
 
 		memmove(&temp_draw,&obj->draw,sizeof(model_draw));
 
-		if (!model_draw_load(&temp_draw,"Object",obj->name,err_str)) {
+		if (!model_draw_load(&temp_draw,"Object",obj->name,FALSE,err_str)) {
 			free(game_file_data);
 			if (!resume_load) progress_shutdown();
 			return(FALSE);
@@ -755,7 +755,7 @@ bool game_file_load(char *file_name,bool resume_load,char *err_str)
 			
 			memmove(&temp_draw,&weap->draw,sizeof(model_draw));
 
-			if (!model_draw_load(&temp_draw,"Weapon",weap->name,err_str)) {
+			if (!model_draw_load(&temp_draw,"Weapon",weap->name,FALSE,err_str)) {
 				free(game_file_data);
 				if (!resume_load) progress_shutdown();
 				return(FALSE);
@@ -797,7 +797,7 @@ bool game_file_load(char *file_name,bool resume_load,char *err_str)
 
 				memmove(&temp_draw,&proj_setup->draw,sizeof(model_draw));
 
-				if (!model_draw_load(&temp_draw,"Projectile",proj_setup->name,err_str)) {
+				if (!model_draw_load(&temp_draw,"Projectile",proj_setup->name,FALSE,err_str)) {
 					free(game_file_data);
 					if (!resume_load) progress_shutdown();
 					return(FALSE);

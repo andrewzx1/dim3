@@ -308,10 +308,10 @@ bool weapon_add(obj_type *obj,char *name,char *err_str)
 		
 	ok=FALSE;
 	if (weapon_start_script(obj,weap,FALSE,err_str)) {
-		ok=model_draw_load(&weap->draw,"Weapon",weap->name,err_str);
+		ok=model_draw_load(&weap->draw,"Weapon",weap->name,FALSE,err_str);
 		if ((weap->dual.on) && (ok)) {
 			memmove(&weap->draw_dual,&weap->draw,sizeof(model_draw));
-			ok=model_draw_load(&weap->draw_dual,"Weapon",weap->name,err_str);
+			ok=model_draw_load(&weap->draw_dual,"Weapon",weap->name,FALSE,err_str);
 		}
 	}
 	

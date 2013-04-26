@@ -973,7 +973,7 @@ int object_start(spot_type *spot,char *name,int type,int bind,char *err_str)
 
 		// load object model
 
-	if (!model_draw_load(&obj->draw,"Object",obj->name,err_str)) {
+	if (!model_draw_load(&obj->draw,"Object",obj->name,FALSE,err_str)) {
 		server.obj_list.objs[idx]=NULL;
 		free(obj);
 		return(-1);
