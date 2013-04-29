@@ -232,7 +232,7 @@ void view_images_cached_load(void)
 		icon++;
 	}
 	
-	if (iface.project.ray_trace) {
+	if (!iface.project.ray_trace) {
 
 			// particles
 
@@ -385,7 +385,7 @@ void view_images_cached_free(void)
 		}
 	}
 	
-	if (iface.project.ray_trace) {
+	if (!iface.project.ray_trace) {
 
 			// particles
 
