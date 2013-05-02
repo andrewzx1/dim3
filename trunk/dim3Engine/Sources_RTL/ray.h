@@ -231,6 +231,9 @@ typedef struct		{
 						ray_2d_point_type				pixel_start,pixel_end;
 						ray_scene_mesh_index_block		mesh_index_block;
 						ray_mesh_poly_ptr_type			likely_block_poly_ptr[ray_max_scene_light];
+
+						int								npolys;
+						ray_mesh_poly_ptr_type			polys[1000];
 					} ray_scene_slice_type;
 
 typedef struct		{
