@@ -601,6 +601,7 @@ void ray_precalc_render_scene_slice_setup(ray_scene_type *scene,ray_scene_slice_
 		// we use this one first hits, but then
 		// retreat to the main list for bounces
 
+	slice->npolys=0;
 	slice->mesh_index_block.count=0;
 	
 	for (n=0;n!=scene->render.mesh_index_block.count;n++) {
@@ -641,6 +642,9 @@ void ray_precalc_render_scene_slice_setup(ray_scene_type *scene,ray_scene_slice_
 				}
 				else {
 					poly->slice_render_mask[slice->idx]=0x1;
+					slice->polys[slice->npolys].mesh_idx=mesh_idx;
+					slice->polys[slice->npolys].poly_idx=k;
+					slice->npolys++;
 				}
 			}
 			
