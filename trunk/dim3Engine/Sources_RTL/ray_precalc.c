@@ -472,7 +472,7 @@ void ray_precalc_render_scene_setup(ray_scene_type *scene)
 		// the eye point.  These are the drawing
 		// meshes
 		
-	scene->render.mesh_index_block.count=0;
+	scene->render.view_mesh_block.count=0;
 
 	for (n=0;n!=scene->mesh_list.count;n++) {
 		mesh=scene->mesh_list.meshes[n];
@@ -484,20 +484,17 @@ void ray_precalc_render_scene_setup(ray_scene_type *scene)
 
 		d=(float)sqrt((dx*dx)+(dy*dy)+(dz*dz));
 		if (d<=scene->eye.max_dist) {
-			scene->render.mesh_index_block.indexes[scene->render.mesh_index_block.count]=n;
-			scene->render.mesh_index_block.count++;
+			scene->render.view_mesh_block.indexes[scene->render.view_mesh_block.count]=n;
+			scene->render.view_mesh_block.count++;
 		}
 	}
 	
-		// clear collide light list and setup
-		// poly mipmap level cache
+		// setup poly mipmapping cache
 		
-	for (n=0;n!=scene->render.mesh_index_block.count;n++) {
+	for (n=0;n!=scene->render.view_mesh_block.count;n++) {
 
-		mesh_idx=scene->render.mesh_index_block.indexes[n];
+		mesh_idx=scene->render.view_mesh_block.indexes[n];
 		mesh=scene->mesh_list.meshes[mesh_idx];
-		
-		mesh->collide_lights_list.count=0;
 
 		poly=mesh->poly_block.polys;
 		
@@ -506,9 +503,22 @@ void ray_precalc_render_scene_setup(ray_scene_type *scene)
 			poly++;
 		}
 	}
+
+		// scene rendering has it's own parallel list
+		// of meshes and lights that contain all
+		// the possible collisions between these objects
+		// to speed up rendering
 	
 	for (n=0;n!=scene->light_list.count;n++) {
-		scene->light_list.lights[n]->collide_meshes_list.count=0;
+		scene->light_list.lights[n]->collide_meshes_list.count=0;		// supergumba -- remove all this
+	}
+
+	for (n=0;n!=ray_max_scene_mesh;n++) {
+		scene->render.meshes[n].nlight_collision=0;
+	}
+
+	for (n=0;n!=ray_max_scene_light;n++) {
+		scene->render.lights[n].mesh_poly_collision.count=0;
 	}
 	
 		// find the cross collisions
@@ -517,9 +527,9 @@ void ray_precalc_render_scene_setup(ray_scene_type *scene)
 		// non light trace blocking meshes
 		// and hidden meshes
 		
-	for (n=0;n!=scene->render.mesh_index_block.count;n++) {
+	for (n=0;n!=scene->render.view_mesh_block.count;n++) {
 
-		mesh_idx=scene->render.mesh_index_block.indexes[n];
+		mesh_idx=scene->render.view_mesh_block.indexes[n];
 		mesh=scene->mesh_list.meshes[mesh_idx];
 
 		for (k=0;k!=scene->light_list.count;k++) {
@@ -546,6 +556,12 @@ void ray_precalc_render_scene_setup(ray_scene_type *scene)
 					for (t=0;t!=mesh->poly_block.count;t++) {
 						if (ray_bound_bound_collision(&poly->bound,&light->bound)) {
 							if (ray_precalc_light_normal_cull(scene,light,mesh,poly)) {
+								if (scene->render.lights[k].mesh_poly_collision.count<ray_max_poly_per_slice) {
+									scene->render.lights[k].mesh_poly_collision.poly_ptrs[scene->render.lights[k].mesh_poly_collision.count].mesh_idx=mesh_idx;
+									scene->render.lights[k].mesh_poly_collision.poly_ptrs[scene->render.lights[k].mesh_poly_collision.count].poly_idx=t;
+									scene->render.lights[k].mesh_poly_collision.count++;
+								}
+
 								poly->light_render_mask[k]=0x1;
 							}
 							else {
@@ -560,13 +576,14 @@ void ray_precalc_render_scene_setup(ray_scene_type *scene)
 					}
 				}
 
-					// add this light to the mesh
-					// collision list
+					// the mesh list is by the count, not parallel to
+					// the scene list (the mesh_idx points to that)
 
-				if (mesh->collide_lights_list.count<ray_max_light_per_mesh) {
-					mesh->collide_lights_list.indexes[mesh->collide_lights_list.count]=k;
-					mesh->collide_lights_list.count++;
+				if (scene->render.meshes[mesh_idx].nlight_collision<ray_max_light_per_mesh) {
+					scene->render.meshes[mesh_idx].light_collision[scene->render.meshes[mesh_idx].nlight_collision]=k;
+					scene->render.meshes[mesh_idx].nlight_collision++;
 				}
+
 			}
 		}
 	}
@@ -601,12 +618,11 @@ void ray_precalc_render_scene_slice_setup(ray_scene_type *scene,ray_scene_slice_
 		// we use this one first hits, but then
 		// retreat to the main list for bounces
 
-	slice->npolys=0;
-	slice->mesh_index_block.count=0;
+	slice->mesh_poly_block.count=0;
 	
-	for (n=0;n!=scene->render.mesh_index_block.count;n++) {
+	for (n=0;n!=scene->render.view_mesh_block.count;n++) {
 	
-		mesh_idx=scene->render.mesh_index_block.indexes[n];
+		mesh_idx=scene->render.view_mesh_block.indexes[n];
 		mesh=scene->mesh_list.meshes[mesh_idx];
 		
 			// special knock-out flags
@@ -618,34 +634,21 @@ void ray_precalc_render_scene_slice_setup(ray_scene_type *scene,ray_scene_slice_
 
 		if (!ray_precalc_frustum_plane_bound_cull(planes,&mesh->bound)) continue;
 
-			// insert into list
-			
-		slice->mesh_index_block.indexes[slice->mesh_index_block.count]=mesh_idx;
-		slice->mesh_index_block.count++;
-
-			// set up the poly rendering flags
-			// for this thread, which is a list of which
-			// polys can be seen from the frustum of
-			// this thread and aren't culled by the poly
-			// normal
+			// set up the polys that can be seen from the
+			// frustum for this slice and aren't
+			// culled by the poly normal
+			// these are the candidates for ray trace collisions
 
 		poly=mesh->poly_block.polys;
 
 		for (k=0;k!=mesh->poly_block.count;k++) {
 		
-			if (!ray_precalc_frustum_plane_bound_cull(planes,&poly->bound)) {
-				poly->slice_render_mask[slice->idx]=0x0;
-			}
-			else {
-				if (!ray_precalc_eye_normal_cull(scene,slice,mesh,poly)) {
-					poly->slice_render_mask[slice->idx]=0x0;
-				}
-				else {
-					poly->slice_render_mask[slice->idx]=0x1;
-					if (slice->npolys<1000) {
-						slice->polys[slice->npolys].mesh_idx=mesh_idx;
-						slice->polys[slice->npolys].poly_idx=k;
-						slice->npolys++;
+			if (ray_precalc_frustum_plane_bound_cull(planes,&poly->bound)) {
+				if (ray_precalc_eye_normal_cull(scene,slice,mesh,poly)) {
+					if (slice->mesh_poly_block.count<ray_max_poly_per_slice) {
+						slice->mesh_poly_block.poly_ptrs[slice->mesh_poly_block.count].mesh_idx=mesh_idx;
+						slice->mesh_poly_block.poly_ptrs[slice->mesh_poly_block.count].poly_idx=k;
+						slice->mesh_poly_block.count++;
 					}
 				}
 			}
