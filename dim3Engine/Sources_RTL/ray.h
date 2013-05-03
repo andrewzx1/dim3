@@ -24,6 +24,7 @@
 // ray tracing
 //
 
+#define ray_max_poly_per_slice						4096
 #define ray_max_bounce								8
 #define ray_max_light_per_mesh						8
 #define ray_max_mesh_per_light						128
@@ -137,8 +138,7 @@ typedef struct		{
 typedef struct		{
 						int								material_idx,nvertex,
 														mm_level;
-						unsigned char					slice_render_mask[ray_render_max_slice_count],
-														light_render_mask[ray_max_scene_light];
+						unsigned char					light_render_mask[ray_max_scene_light];
 						ray_color_type					col;
 						ray_vector_type					surface_normal;
 						ray_polygon_index_type			idxs[8];
@@ -153,11 +153,6 @@ typedef struct		{
 					} ray_poly_block;
 
 typedef struct		{
-						int								count,
-														indexes[ray_max_light_per_mesh];
-					} ray_collide_lights_list;
-
-typedef struct		{
 						int								id;
 						bool							hidden;
 						unsigned long					flags;
@@ -167,7 +162,6 @@ typedef struct		{
 						ray_tangent_block				tangent_block;
 						ray_poly_block					poly_block;
 						ray_bound_type					bound;
-						ray_collide_lights_list			collide_lights_list;
 					} ray_mesh_type;
 
 typedef struct		{
@@ -209,47 +203,71 @@ typedef struct		{
 					} ray_light_list;
 
 //
+// scene rendering and slices
+//
+// these structures contain information needed to render a scene, like a list of
+// non-culled meshes for the view, and the slices, which are chunks of the view
+// that the rendering threads pick up and render into
+//
+// there's a number a pre-calced lists, like all the non-culled polys in each slice,
+// or all the possible blocking polys for lights
+//
+
+typedef struct		{
+						int									target,format,
+															wid,high;
+						unsigned long						*data;
+					} ray_scene_buffer_type;
+
+typedef struct		{
+						int									count;
+						ray_mesh_poly_ptr_type				*poly_ptrs;				// initially ray_max_poly_per_slice
+					} ray_scene_mesh_poly_block;
+
+typedef struct		{
+						int									idx;
+						ray_2d_point_type					pixel_start,pixel_end;
+						ray_mesh_poly_ptr_type				likely_block_poly_ptr[ray_max_scene_light];
+						ray_scene_mesh_poly_block			mesh_poly_block;
+					} ray_scene_slice_type;
+
+typedef struct		{
+						int									nlight_collision,
+															light_collision[ray_max_light_per_mesh];
+					} ray_scene_render_mesh_type;
+
+typedef struct		{
+						int									count,
+															*indexes;				// initially ray_max_scene_mesh;
+					} ray_scene_render_view_mesh_block;
+
+typedef struct		{
+						ray_scene_mesh_poly_block			mesh_poly_collision;
+					} ray_scene_render_light_type;
+
+typedef struct		{
+						bool								shutdown_done;
+						void								*parent_scene;			// this is a pointer back to the parent structure, need by threading
+						ray_thread							thread;
+					} ray_scene_thread_type;
+
+typedef struct		{
+						int									next_slice_idx,thread_done_count;
+						ray_mutex							scene_lock,thread_lock;			// thread_lock only needed for pthread con waits
+						ray_cond							thread_cond;					// thread_cond only needed for pthread con waits
+						ray_scene_thread_type				threads[ray_render_max_thread_count];
+						ray_scene_slice_type				slices[ray_render_max_slice_count];
+						ray_scene_render_light_type			*lights;			// initially ray_max_scene_light
+						ray_scene_render_mesh_type			*meshes;			// initially ray_max_scene_mesh
+						ray_scene_render_view_mesh_block	view_mesh_block;
+					} ray_scene_render_type;
+
+//
 // the scene
 //
 // the scene is the main rendering object for a openRL operation.  Scenes
 // contain a drawing buffer/target, lights, meshes, and eye position
 //
-
-typedef struct		{
-						int								target,format,
-														wid,high;
-						unsigned long					*data;
-					} ray_scene_buffer_type;
-
-typedef struct		{
-						int								count,
-														indexes[ray_max_scene_mesh];
-					} ray_scene_mesh_index_block;
-
-typedef struct		{
-						int								idx;
-						ray_2d_point_type				pixel_start,pixel_end;
-						ray_scene_mesh_index_block		mesh_index_block;
-						ray_mesh_poly_ptr_type			likely_block_poly_ptr[ray_max_scene_light];
-
-						int								npolys;
-						ray_mesh_poly_ptr_type			polys[1000];
-					} ray_scene_slice_type;
-
-typedef struct		{
-						bool							shutdown_done;
-						void							*parent_scene;			// this is a pointer back to the parent structure, need by threading
-						ray_thread						thread;
-					} ray_scene_thread_type;
-
-typedef struct		{
-						int								next_slice_idx,thread_done_count;
-						ray_mutex						scene_lock,thread_lock;			// thread_lock only needed for pthread con waits
-						ray_cond						thread_cond;					// thread_cond only needed for pthread con waits
-						ray_scene_thread_type			threads[ray_render_max_thread_count];
-						ray_scene_slice_type			slices[ray_render_max_slice_count];
-						ray_scene_mesh_index_block		mesh_index_block;
-					} ray_scene_render_type;
 
 typedef union		{
 						unsigned long					gl_id;
