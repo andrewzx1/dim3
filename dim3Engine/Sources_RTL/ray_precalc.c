@@ -642,9 +642,11 @@ void ray_precalc_render_scene_slice_setup(ray_scene_type *scene,ray_scene_slice_
 				}
 				else {
 					poly->slice_render_mask[slice->idx]=0x1;
-					slice->polys[slice->npolys].mesh_idx=mesh_idx;
-					slice->polys[slice->npolys].poly_idx=k;
-					slice->npolys++;
+					if (slice->npolys<1000) {
+						slice->polys[slice->npolys].mesh_idx=mesh_idx;
+						slice->polys[slice->npolys].poly_idx=k;
+						slice->npolys++;
+					}
 				}
 			}
 			

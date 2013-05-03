@@ -103,31 +103,40 @@ void ray_intersect_mesh_list_initial(ray_scene_type *scene,ray_scene_slice_type 
 
 	collision->t=1.0f;
 
-		// run through the meshes
+		// run through the mesh-polys
 		
 		// for initial collisions, we use the
-		// thread mesh list, which has been pared
-		// down for the thread's pixel box,
+		// slice mesh list, which has been pared
+		// down for the slice's pixel box,
 		// hidden, and non-ray trace blocking
+		
+		
+		// supergumba -- need to move this code to alpha pass through, too
+		// also get rid of slide_render_mask and will need a max slice poly and mallocs
+		
+	for (n=0;n!=slice->npolys;n++) {
+	
+		mesh_idx=slice->polys[n].mesh_idx;
+		poly_idx=slice->polys[n].poly_idx;
 
-	for (n=0;n!=slice->mesh_index_block.count;n++) {
+//	for (n=0;n!=slice->mesh_index_block.count;n++) {
 
-		mesh_idx=slice->mesh_index_block.indexes[n];
+//		mesh_idx=slice->mesh_index_block.indexes[n];
 		mesh=scene->mesh_list.meshes[mesh_idx];
 
 			// mesh bounds check
 
-		if (!ray_bound_ray_collision(eye_point,eye_vector,&mesh->bound)) continue;
+//		if (!ray_bound_ray_collision(eye_point,eye_vector,&mesh->bound)) continue;
 
 			// run through the polys
 
-		for (poly_idx=0;poly_idx!=mesh->poly_block.count;poly_idx++) {
+//		for (poly_idx=0;poly_idx!=mesh->poly_block.count;poly_idx++) {
 			
 				// thread based lists have poly eliminations
 				// in them
 				
 			poly=&mesh->poly_block.polys[poly_idx];
-			if (poly->slice_render_mask[slice->idx]==0x0) continue;
+//			if (poly->slice_render_mask[slice->idx]==0x0) continue;
 
 				// bounds check
 
@@ -197,7 +206,7 @@ void ray_intersect_mesh_list_initial(ray_scene_type *scene,ray_scene_slice_type 
 
 				break;
 			}
-		}
+	//	}
 	}
 }
 
@@ -227,7 +236,7 @@ void ray_intersect_mesh_list_pass_through_bounce(ray_scene_type *scene,ray_scene
 
 		// these bounces have only hit
 		// materials that are pass through,
-		// so we can remain on the thread list
+		// so we can remain on the slice list
 
 	for (n=0;n!=slice->mesh_index_block.count;n++) {
 
