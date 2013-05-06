@@ -515,7 +515,7 @@ void ray_intersect_mesh_list_other_bounce(ray_scene_type *scene,ray_scene_slice_
       
 ======================================================= */
 
-bool ray_block_lightX(ray_scene_type *scene,ray_scene_slice_type *slice,ray_point_type *pnt,ray_vector_type *vct,ray_vector_type *normal_vct,float vct_dist,ray_collision_type *collision,int light_idx)
+bool ray_block_light(ray_scene_type *scene,ray_scene_slice_type *slice,ray_point_type *pnt,ray_vector_type *vct,ray_vector_type *normal_vct,float vct_dist,ray_collision_type *collision,int light_idx)
 {
 	int							list_idx,mesh_idx,poly_idx,
 								last_mesh_idx,trig_idx;
@@ -526,6 +526,7 @@ bool ray_block_lightX(ray_scene_type *scene,ray_scene_slice_type *slice,ray_poin
 	ray_trig_type				*trig;
 	ray_collision_type			lit_collision;
 	ray_scene_mesh_poly_block	*mesh_poly_collision;
+	ray_mesh_poly_ptr_type		*poly_ptr;
 	ray_mesh_poly_ptr_type		*likely_block;
 
 		// any possible blocking polygons?
@@ -578,8 +579,10 @@ bool ray_block_lightX(ray_scene_type *scene,ray_scene_slice_type *slice,ray_poin
 	last_mesh_idx=-1;
 
 	while (list_idx<mesh_poly_collision->count) {
+		
+		poly_ptr=&mesh_poly_collision->poly_ptrs[list_idx];
 
-		mesh_idx=mesh_poly_collision->poly_ptrs[list_idx].mesh_idx;
+		mesh_idx=poly_ptr->mesh_idx;
 		mesh=scene->mesh_list.meshes[mesh_idx];
 
 			// if we have moved onto another mesh (the list
@@ -592,8 +595,9 @@ bool ray_block_lightX(ray_scene_type *scene,ray_scene_slice_type *slice,ray_poin
 			if (!ray_bound_ray_collision(pnt,vct,&mesh->bound)) {
 
 				while (list_idx<mesh_poly_collision->count) {
-					if (mesh_poly_collision->poly_ptrs[list_idx].mesh_idx!=last_mesh_idx) break;
+					if (poly_ptr->mesh_idx!=last_mesh_idx) break;
 					list_idx++;
+					poly_ptr++;
 				}
 
 				continue;
@@ -605,9 +609,9 @@ bool ray_block_lightX(ray_scene_type *scene,ray_scene_slice_type *slice,ray_poin
 			// this list isn't small and the extra
 			// cost is worth it to avoid the trigs
 
-		poly_idx=mesh_poly_collision->poly_ptrs[list_idx].poly_idx;
+		poly_idx=poly_ptr->poly_idx;
 		poly=&mesh->poly_block.polys[poly_idx];
-		
+
 		if (!ray_bound_ray_collision(pnt,vct,&poly->bound)) {
 			list_idx++;
 			continue;
@@ -671,7 +675,7 @@ bool ray_block_lightX(ray_scene_type *scene,ray_scene_slice_type *slice,ray_poin
 
 
 
-bool ray_block_light(ray_scene_type *scene,ray_scene_slice_type *slice,ray_point_type *pnt,ray_vector_type *vct,ray_vector_type *normal_vct,float vct_dist,ray_collision_type *collision,int light_idx)
+bool ray_block_lightX(ray_scene_type *scene,ray_scene_slice_type *slice,ray_point_type *pnt,ray_vector_type *vct,ray_vector_type *normal_vct,float vct_dist,ray_collision_type *collision,int light_idx)
 {
 	int							n,mesh_idx,poly_idx,
 								trig_idx;
@@ -730,7 +734,6 @@ bool ray_block_light(ray_scene_type *scene,ray_scene_slice_type *slice,ray_point
 		// non-hidden, and non-light blocking
 		// and only polygons within the light cone
 
-	
 	for (n=0;n!=light->collide_meshes_list.count;n++) {
 
 		mesh_idx=light->collide_meshes_list.indexes[n];
@@ -760,7 +763,7 @@ bool ray_block_light(ray_scene_type *scene,ray_scene_slice_type *slice,ray_point
 			if ((collision->mesh_idx==mesh_idx) && (collision->poly_idx==poly_idx)) continue;
 
 				// check trigs
-				
+
 			for (trig_idx=0;trig_idx!=poly->trig_block.count;trig_idx++) {
 			
 				trig=&poly->trig_block.trigs[trig_idx];
