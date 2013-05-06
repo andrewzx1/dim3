@@ -515,7 +515,7 @@ void ray_intersect_mesh_list_other_bounce(ray_scene_type *scene,ray_scene_slice_
       
 ======================================================= */
 
-bool ray_block_light_test(ray_scene_type *scene,ray_scene_slice_type *slice,ray_point_type *pnt,ray_vector_type *vct,ray_vector_type *normal_vct,float vct_dist,ray_collision_type *collision,int light_idx)
+bool ray_block_lightX(ray_scene_type *scene,ray_scene_slice_type *slice,ray_point_type *pnt,ray_vector_type *vct,ray_vector_type *normal_vct,float vct_dist,ray_collision_type *collision,int light_idx)
 {
 	int							list_idx,mesh_idx,poly_idx,
 								last_mesh_idx,trig_idx;
@@ -607,7 +607,7 @@ bool ray_block_light_test(ray_scene_type *scene,ray_scene_slice_type *slice,ray_
 
 		poly_idx=mesh_poly_collision->poly_ptrs[list_idx].poly_idx;
 		poly=&mesh->poly_block.polys[poly_idx];
-
+		
 		if (!ray_bound_ray_collision(pnt,vct,&poly->bound)) {
 			list_idx++;
 			continue;
@@ -673,7 +673,7 @@ bool ray_block_light_test(ray_scene_type *scene,ray_scene_slice_type *slice,ray_
 
 bool ray_block_light(ray_scene_type *scene,ray_scene_slice_type *slice,ray_point_type *pnt,ray_vector_type *vct,ray_vector_type *normal_vct,float vct_dist,ray_collision_type *collision,int light_idx)
 {
-	int							n,list_idx,mesh_idx,poly_idx,
+	int							n,mesh_idx,poly_idx,
 								trig_idx;
 	float						t,u,v;
 	ray_point_type				trig_pnt;
@@ -752,22 +752,12 @@ bool ray_block_light(ray_scene_type *scene,ray_scene_slice_type *slice,ray_point
 			poly=&mesh->poly_block.polys[poly_idx];
 			if (poly->light_render_mask[light_idx]==0x0) continue;
 
-			if (!ray_bound_ray_collision(pnt,vct,&poly->bound)) {
-				list_idx++;
-				continue;
-			}
-
-			if (!ray_plane_ray_collision(pnt,normal_vct,vct_dist,&poly->plane)) {
-				list_idx++;
-				continue;
-			}
+			if (!ray_bound_ray_collision(pnt,vct,&poly->bound)) continue;
+			if (!ray_plane_ray_collision(pnt,normal_vct,vct_dist,&poly->plane)) continue;
 
 				// skip self
 				
-			if ((collision->mesh_idx==mesh_idx) && (collision->poly_idx==poly_idx)) {
-				list_idx++;
-				continue;
-			}
+			if ((collision->mesh_idx==mesh_idx) && (collision->poly_idx==poly_idx)) continue;
 
 				// check trigs
 				
