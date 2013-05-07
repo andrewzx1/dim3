@@ -84,13 +84,13 @@ bool ray_intersect_triangle(ray_scene_type *scene,ray_point_type *eye_point,ray_
 
 void ray_intersect_mesh_list_initial(ray_scene_type *scene,ray_scene_slice_type *slice,ray_point_type *eye_point,ray_vector_type *eye_vector,ray_collision_type *collision)
 {
-	int							list_idx,mesh_idx,poly_idx,
-								last_mesh_idx,trig_idx;
+	int							n,k,mesh_idx,poly_idx,trig_idx;
 	float						it,iu,iv;
 	ray_point_type				trig_pnt;
 	ray_mesh_type				*mesh;
 	ray_poly_type				*poly;
 	ray_trig_type				*trig;
+	ray_scene_slice_mesh_type	*slice_mesh;
 	ray_material_type			*material;
 	ray_collision_type			tmp_collision;
 	
@@ -111,80 +111,43 @@ void ray_intersect_mesh_list_initial(ray_scene_type *scene,ray_scene_slice_type 
 		// down for the slice's pixel box,
 		// hidden, and non-ray trace blocking
 
-	list_idx=0;
-	last_mesh_idx=-1;
-		
-	while (list_idx<slice->mesh_poly_block.count) {
+	for (n=0;n!=slice->mesh_block.mesh_count;n++) {
 	
-		mesh_idx=slice->mesh_poly_block.poly_ptrs[list_idx].mesh_idx;
+		slice_mesh=&slice->mesh_block.meshes[n];
+		mesh_idx=slice_mesh->idx;
 		mesh=scene->mesh_list.meshes[mesh_idx];
-
-			// if we have moved onto another mesh (the list
-			// will be naturally sorted by meshes) then check and
-			// elimate all polys if mesh is outside ray collision
-
-		if (mesh_idx!=last_mesh_idx) {
-			last_mesh_idx=mesh_idx;
-
-			if (!ray_bound_ray_collision(eye_point,eye_vector,&mesh->bound)) {
-
-				while (list_idx<slice->mesh_poly_block.count) {
-					if (slice->mesh_poly_block.poly_ptrs[list_idx].mesh_idx!=last_mesh_idx) break;
-					list_idx++;
-				}
-
-				continue;
-			}
-		}
 
 			// check the polygon
 
-		poly_idx=slice->mesh_poly_block.poly_ptrs[list_idx].poly_idx;
-		poly=&mesh->poly_block.polys[poly_idx];
+		for (k=0;k!=slice_mesh->poly_count;k++) {
 
-		if (!ray_bound_ray_collision(eye_point,eye_vector,&poly->bound)) {
-			list_idx++;
-			continue;
-		}
+			poly_idx=slice_mesh->poly_idxs[k];
+			poly=&mesh->poly_block.polys[poly_idx];
 
-			// check triangle/ray intersection
-			// we don't do bound checking as it's
-			// about as fast as the intersection test
-			// first hit exits out of polygons as you
-			// can only hit one triangle of a polygon
-			
-		for (trig_idx=0;trig_idx!=poly->trig_block.count;trig_idx++) {
-		
-			trig=&poly->trig_block.trigs[trig_idx];
-			
-				// have we intersected this triangle
-				// closer to the last hit?
+			if (!ray_bound_ray_collision(eye_point,eye_vector,&poly->bound)) continue;
+
+				// check triangle/ray intersection
+				// we don't do bound checking as it's
+				// about as fast as the intersection test
+				// first hit exits out of polygons as you
+				// can only hit one triangle of a polygon
 				
-			if (!ray_intersect_triangle(scene,eye_point,eye_vector,mesh,trig,&it,&iu,&iv)) continue;
-			if (it>collision->t) continue;
+			for (trig_idx=0;trig_idx!=poly->trig_block.count;trig_idx++) {
 			
-				// special check for
-				// alpha==0.0f, which is a skip
+				trig=&poly->trig_block.trigs[trig_idx];
+				
+					// have we intersected this triangle
+					// closer to the last hit?
+					
+				if (!ray_intersect_triangle(scene,eye_point,eye_vector,mesh,trig,&it,&iu,&iv)) continue;
+				if (it>collision->t) continue;
+				
+					// special check for
+					// alpha==0.0f, which is a skip
 
-			material=ray_global.material_list.materials[poly->material_idx];
+				material=ray_global.material_list.materials[poly->material_idx];
 
-			if (!material->no_alpha) {
-				tmp_collision.t=it;
-				tmp_collision.u=iu;
-				tmp_collision.v=iv;
-				tmp_collision.mesh_idx=mesh_idx;
-				tmp_collision.poly_idx=poly_idx;
-				tmp_collision.trig_idx=trig_idx;
-
-				ray_vector_find_line_point_for_T(eye_point,eye_vector,it,&trig_pnt);
-				if (ray_get_material_alpha(scene,eye_point,&trig_pnt,&tmp_collision)==0.0f) break;
-			}
-
-				// if material is a tint, then add the tint
-				// and continue on to next hit
-
-			if (material->alpha_type==RL_MATERIAL_ALPHA_ADDITIVE) {
-				if (collision->tint_block.count<ray_max_tint_per_pixel) {
+				if (!material->no_alpha) {
 					tmp_collision.t=it;
 					tmp_collision.u=iu;
 					tmp_collision.v=iv;
@@ -192,42 +155,58 @@ void ray_intersect_mesh_list_initial(ray_scene_type *scene,ray_scene_slice_type 
 					tmp_collision.poly_idx=poly_idx;
 					tmp_collision.trig_idx=trig_idx;
 
-					ray_get_material_color(scene,eye_point,&trig_pnt,&tmp_collision,&collision->tint_block.tints[collision->tint_block.count].col);
-					collision->tint_block.tints[collision->tint_block.count].t=it;
-					collision->tint_block.count++;
+					ray_vector_find_line_point_for_T(eye_point,eye_vector,it,&trig_pnt);
+					if (ray_get_material_alpha(scene,eye_point,&trig_pnt,&tmp_collision)==0.0f) break;
 				}
+
+					// if material is a tint, then add the tint
+					// and continue on to next hit
+
+				if (material->alpha_type==RL_MATERIAL_ALPHA_ADDITIVE) {
+					if (collision->tint_block.count<ray_max_tint_per_pixel) {
+						tmp_collision.t=it;
+						tmp_collision.u=iu;
+						tmp_collision.v=iv;
+						tmp_collision.mesh_idx=mesh_idx;
+						tmp_collision.poly_idx=poly_idx;
+						tmp_collision.trig_idx=trig_idx;
+
+						ray_get_material_color(scene,eye_point,&trig_pnt,&tmp_collision,&collision->tint_block.tints[collision->tint_block.count].col);
+						collision->tint_block.tints[collision->tint_block.count].t=it;
+						collision->tint_block.count++;
+					}
+					break;
+				}
+
+					// set the hit and exit out
+					// of the trig loop
+				
+				collision->t=it;
+				collision->u=iu;
+				collision->v=iv;
+				collision->mesh_idx=mesh_idx;
+				collision->poly_idx=poly_idx;
+				collision->trig_idx=trig_idx;
+
 				break;
 			}
 
-				// set the hit and exit out
-				// of the trig loop
-			
-			collision->t=it;
-			collision->u=iu;
-			collision->v=iv;
-			collision->mesh_idx=mesh_idx;
-			collision->poly_idx=poly_idx;
-			collision->trig_idx=trig_idx;
-
-			break;
 		}
-
-		list_idx++;
 	}
 }
 
 void ray_intersect_mesh_list_pass_through_bounce(ray_scene_type *scene,ray_scene_slice_type *slice,ray_point_type *eye_point,ray_vector_type *eye_vector,ray_collision_type *collision)
 {
-	int						list_idx,k,mesh_idx,poly_idx,
-							last_mesh_idx,trig_idx;
-	float					it,iu,iv;
-	bool					skip;
-	ray_point_type			trig_pnt;
-	ray_mesh_type			*mesh;
-	ray_poly_type			*poly;
-	ray_trig_type			*trig;
-	ray_material_type		*material;
-	ray_collision_type		tmp_collision;
+	int							n,k,t,mesh_idx,poly_idx,trig_idx;
+	float						it,iu,iv;
+	bool						skip;
+	ray_point_type				trig_pnt;
+	ray_mesh_type				*mesh;
+	ray_poly_type				*poly;
+	ray_trig_type				*trig;
+	ray_scene_slice_mesh_type	*slice_mesh;
+	ray_material_type			*material;
+	ray_collision_type			tmp_collision;
 	
 		// clear collision
 		// anything > 1.0f is outside
@@ -245,101 +224,61 @@ void ray_intersect_mesh_list_pass_through_bounce(ray_scene_type *scene,ray_scene
 		// materials that are pass through,
 		// so we can remain on the slice list
 
-	list_idx=0;
-	last_mesh_idx=-1;
-		
-	while (list_idx<slice->mesh_poly_block.count) {
+	for (n=0;n!=slice->mesh_block.mesh_count;n++) {
 	
-		mesh_idx=slice->mesh_poly_block.poly_ptrs[list_idx].mesh_idx;
+		slice_mesh=&slice->mesh_block.meshes[n];
+		mesh_idx=slice_mesh->idx;
 		mesh=scene->mesh_list.meshes[mesh_idx];
-
-			// if we have moved onto another mesh (the list
-			// will be naturally sorted by meshes) then check and
-			// elimate all polys if mesh is outside ray collision
-
-		if (mesh_idx!=last_mesh_idx) {
-			last_mesh_idx=mesh_idx;
-
-			if (!ray_bound_ray_collision(eye_point,eye_vector,&mesh->bound)) {
-
-				while (list_idx<slice->mesh_poly_block.count) {
-					if (slice->mesh_poly_block.poly_ptrs[list_idx].mesh_idx!=last_mesh_idx) break;
-					list_idx++;
-				}
-
-				continue;
-			}
-		}
 
 			// check the polygon
 
-		poly_idx=slice->mesh_poly_block.poly_ptrs[list_idx].poly_idx;
-		poly=&mesh->poly_block.polys[poly_idx];
+		for (k=0;k!=slice_mesh->poly_count;k++) {
 
-		if (!ray_bound_ray_collision(eye_point,eye_vector,&poly->bound)) {
-			list_idx++;
-			continue;
-		}
+			poly_idx=slice_mesh->poly_idxs[k];
+			poly=&mesh->poly_block.polys[poly_idx];
+
+			if (!ray_bound_ray_collision(eye_point,eye_vector,&poly->bound)) continue;
+					
+				// skiping polys, this is used
+				// so reflections or pass throughs
+				// so we don't re-hit any polys we've
+				// already hit.  note this means we will
+				// only bounce off a surface once but we
+				// won't have problems with overlayed polygons
 				
-			// skiping polys, this is used
-			// so reflections or pass throughs
-			// so we don't re-hit any polys we've
-			// already hit.  note this means we will
-			// only bounce off a surface once but we
-			// won't have problems with overlayed polygons
+			skip=FALSE;
 			
-		skip=FALSE;
-		
-		for (k=0;k!=collision->skip_block.count;k++) {
-			if ((mesh_idx==collision->skip_block.skips[k].mesh_idx) && (poly_idx==collision->skip_block.skips[k].poly_idx)) {
-				skip=TRUE;
-				break;
+			for (t=0;t!=collision->skip_block.count;t++) {
+				if ((mesh_idx==collision->skip_block.skips[t].mesh_idx) && (poly_idx==collision->skip_block.skips[t].poly_idx)) {
+					skip=TRUE;
+					break;
+				}
 			}
-		}
-		
-		if (skip) {
-			list_idx++;
-			continue;
-		}
+			
+			if (skip) continue;
 
-			// check triangle/ray intersection
-			// we don't do bound checking as it's
-			// about as fast as the intersection test
-			// first hit exits out of polygons as you
-			// can only hit one triangle of a polygon
-			
-		for (trig_idx=0;trig_idx!=poly->trig_block.count;trig_idx++) {
-		
-			trig=&poly->trig_block.trigs[trig_idx];
-			
-				// have we intersected this triangle
-				// closer to the last hit?
+				// check triangle/ray intersection
+				// we don't do bound checking as it's
+				// about as fast as the intersection test
+				// first hit exits out of polygons as you
+				// can only hit one triangle of a polygon
 				
-			if (!ray_intersect_triangle(scene,eye_point,eye_vector,mesh,trig,&it,&iu,&iv)) continue;
-			if (it>collision->t) continue;
+			for (trig_idx=0;trig_idx!=poly->trig_block.count;trig_idx++) {
 			
-				// special check for
-				// alpha==0.0f, which is a skip
+				trig=&poly->trig_block.trigs[trig_idx];
+				
+					// have we intersected this triangle
+					// closer to the last hit?
+					
+				if (!ray_intersect_triangle(scene,eye_point,eye_vector,mesh,trig,&it,&iu,&iv)) continue;
+				if (it>collision->t) continue;
+				
+					// special check for
+					// alpha==0.0f, which is a skip
 
-			material=ray_global.material_list.materials[poly->material_idx];
+				material=ray_global.material_list.materials[poly->material_idx];
 
-			if (!material->no_alpha) {
-				tmp_collision.t=it;
-				tmp_collision.u=iu;
-				tmp_collision.v=iv;
-				tmp_collision.mesh_idx=mesh_idx;
-				tmp_collision.poly_idx=poly_idx;
-				tmp_collision.trig_idx=trig_idx;
-
-				ray_vector_find_line_point_for_T(eye_point,eye_vector,it,&trig_pnt);
-				if (ray_get_material_alpha(scene,eye_point,&trig_pnt,&tmp_collision)==0.0f) break;
-			}
-
-				// if material is a tint, then add the tint
-				// and continue on to next hit
-
-			if (material->alpha_type==RL_MATERIAL_ALPHA_ADDITIVE) {
-				if (collision->tint_block.count<ray_max_tint_per_pixel) {
+				if (!material->no_alpha) {
 					tmp_collision.t=it;
 					tmp_collision.u=iu;
 					tmp_collision.v=iv;
@@ -347,27 +286,43 @@ void ray_intersect_mesh_list_pass_through_bounce(ray_scene_type *scene,ray_scene
 					tmp_collision.poly_idx=poly_idx;
 					tmp_collision.trig_idx=trig_idx;
 
-					ray_get_material_color(scene,eye_point,&trig_pnt,&tmp_collision,&collision->tint_block.tints[collision->tint_block.count].col);
-					collision->tint_block.tints[collision->tint_block.count].t=it;
-					collision->tint_block.count++;
+					ray_vector_find_line_point_for_T(eye_point,eye_vector,it,&trig_pnt);
+					if (ray_get_material_alpha(scene,eye_point,&trig_pnt,&tmp_collision)==0.0f) break;
 				}
+
+					// if material is a tint, then add the tint
+					// and continue on to next hit
+
+				if (material->alpha_type==RL_MATERIAL_ALPHA_ADDITIVE) {
+					if (collision->tint_block.count<ray_max_tint_per_pixel) {
+						tmp_collision.t=it;
+						tmp_collision.u=iu;
+						tmp_collision.v=iv;
+						tmp_collision.mesh_idx=mesh_idx;
+						tmp_collision.poly_idx=poly_idx;
+						tmp_collision.trig_idx=trig_idx;
+
+						ray_get_material_color(scene,eye_point,&trig_pnt,&tmp_collision,&collision->tint_block.tints[collision->tint_block.count].col);
+						collision->tint_block.tints[collision->tint_block.count].t=it;
+						collision->tint_block.count++;
+					}
+					break;
+				}
+
+					// set the hit and exit out
+					// of the trig loop
+				
+				collision->t=it;
+				collision->u=iu;
+				collision->v=iv;
+				collision->mesh_idx=mesh_idx;
+				collision->poly_idx=poly_idx;
+				collision->trig_idx=trig_idx;
+
 				break;
 			}
-
-				// set the hit and exit out
-				// of the trig loop
-			
-			collision->t=it;
-			collision->u=iu;
-			collision->v=iv;
-			collision->mesh_idx=mesh_idx;
-			collision->poly_idx=poly_idx;
-			collision->trig_idx=trig_idx;
-
-			break;
-		}
 		
-		list_idx++;
+		}
 	}
 }
 
@@ -421,7 +376,9 @@ void ray_intersect_mesh_list_other_bounce(ray_scene_type *scene,ray_scene_slice_
 				
 			poly=&mesh->poly_block.polys[poly_idx];
 			if (!ray_bound_ray_collision(eye_point,eye_vector,&poly->bound)) continue;
-			if (!ray_plane_ray_collision(eye_point,eye_normal_vector,scene->eye.max_dist,&poly->plane)) continue;
+
+			// supergumba -- plane collisions are bad here, will need to check
+			//if (!ray_plane_ray_collision(eye_point,eye_normal_vector,scene->eye.max_dist,&poly->plane)) continue;
 				
 				// skiping polys, this is used
 				// so reflections or pass throughs
@@ -517,22 +474,21 @@ void ray_intersect_mesh_list_other_bounce(ray_scene_type *scene,ray_scene_slice_
 
 bool ray_block_light(ray_scene_type *scene,ray_scene_slice_type *slice,ray_point_type *pnt,ray_vector_type *vct,ray_vector_type *normal_vct,float vct_dist,ray_collision_type *collision,int light_idx)
 {
-	int							list_idx,mesh_idx,poly_idx,
-								last_mesh_idx,trig_idx;
-	float						t,u,v;
-	ray_point_type				trig_pnt;
-	ray_mesh_type				*mesh;
-	ray_poly_type				*poly;
-	ray_trig_type				*trig;
-	ray_collision_type			lit_collision;
-	ray_scene_mesh_poly_block	*mesh_poly_collision;
-	ray_mesh_poly_ptr_type		*poly_ptr;
-	ray_mesh_poly_ptr_type		*likely_block;
+	int									n,k,mesh_idx,poly_idx,trig_idx;
+	float								t,u,v;
+	ray_point_type						trig_pnt;
+	ray_mesh_type						*mesh;
+	ray_poly_type						*poly;
+	ray_trig_type						*trig;
+	ray_collision_type					lit_collision;
+	ray_mesh_poly_ptr_type				*likely_block;
+	ray_scene_render_light_type			*light;
+	ray_scene_render_light_mesh_type	*light_mesh;
 
 		// any possible blocking polygons?
 
-	mesh_poly_collision=&scene->render.lights[light_idx].mesh_poly_collision;
-	if (mesh_poly_collision->count==0) return(FALSE);
+	light=&scene->render.lights[light_idx];
+	if (light->mesh_count==0) return(FALSE);
 	
 		// slices remember the last poly
 		// that blocked them reaching a certain light
@@ -575,185 +531,23 @@ bool ray_block_light(ray_scene_type *scene,ray_scene_slice_type *slice,ray_point
 		// non-hidden, and non-light blocking
 		// and only polygons within the light cone
 
-	list_idx=0;
-	last_mesh_idx=-1;
-
-	while (list_idx<mesh_poly_collision->count) {
+	for (n=0;n!=light->mesh_count;n++) {
 		
-		poly_ptr=&mesh_poly_collision->poly_ptrs[list_idx];
-
-		mesh_idx=poly_ptr->mesh_idx;
+		light_mesh=&light->meshes[n];
+		mesh_idx=light_mesh->idx;
 		mesh=scene->mesh_list.meshes[mesh_idx];
-
-			// if we have moved onto another mesh (the list
-			// will be naturally sorted by meshes) then check and
-			// elimate all polys if mesh is outside ray collision
-
-		if (mesh_idx!=last_mesh_idx) {
-			last_mesh_idx=mesh_idx;
-
-			if (!ray_bound_ray_collision(pnt,vct,&mesh->bound)) {
-
-				while (list_idx<mesh_poly_collision->count) {
-					if (poly_ptr->mesh_idx!=last_mesh_idx) break;
-					list_idx++;
-					poly_ptr++;
-				}
-
-				continue;
-			}
-		}
-
-			// bound collision
-			// do a ray-plane collision here because
-			// this list isn't small and the extra
-			// cost is worth it to avoid the trigs
-
-		poly_idx=poly_ptr->poly_idx;
-		poly=&mesh->poly_block.polys[poly_idx];
-
-		if (!ray_bound_ray_collision(pnt,vct,&poly->bound)) {
-			list_idx++;
-			continue;
-		}
-
-		if (!ray_plane_ray_collision(pnt,normal_vct,vct_dist,&poly->plane)) {
-			list_idx++;
-			continue;
-		}
-
-			// skip self
-			
-		if ((collision->mesh_idx==mesh_idx) && (collision->poly_idx==poly_idx)) {
-			list_idx++;
-			continue;
-		}
-
-			// check trigs
-			
-		for (trig_idx=0;trig_idx!=poly->trig_block.count;trig_idx++) {
-		
-			trig=&poly->trig_block.trigs[trig_idx];
-
-				// check for intersection, but
-				// only except t that is less 1.0f, otherwise
-				// we've gone past the light
-				
-			if (!ray_intersect_triangle(scene,pnt,vct,mesh,trig,&t,&u,&v)) continue;
-			if (t>=1.0f) continue;
-			
-				// if no alpha, then it's
-				// automatically a blocking hit
-				// and also becomes a quick hit polygon
-			
-			if (ray_global.material_list.materials[poly->material_idx]->no_alpha) {
-				likely_block->mesh_idx=mesh_idx;
-				likely_block->poly_idx=poly_idx;
-				return(TRUE);
-			}
-			
-				// setup the collision
-				// so we can check the alpha
-
-			lit_collision.t=t;
-			lit_collision.u=u;
-			lit_collision.v=v;
-			lit_collision.mesh_idx=mesh_idx;
-			lit_collision.poly_idx=poly_idx;
-			lit_collision.trig_idx=trig_idx;
-
-			ray_vector_find_line_point_for_T(pnt,vct,t,&trig_pnt);
-			if (ray_get_material_alpha(scene,pnt,&trig_pnt,&lit_collision)==1.0f) return(TRUE);
-		}
-
-		list_idx++;
-	}
-
-	return(FALSE);
-}
-
-
-
-
-bool ray_block_lightX(ray_scene_type *scene,ray_scene_slice_type *slice,ray_point_type *pnt,ray_vector_type *vct,ray_vector_type *normal_vct,float vct_dist,ray_collision_type *collision,int light_idx)
-{
-	int							n,mesh_idx,poly_idx,
-								trig_idx;
-	float						t,u,v;
-	ray_point_type				trig_pnt;
-	ray_mesh_type				*mesh;
-	ray_poly_type				*poly;
-	ray_trig_type				*trig;
-	ray_light_type				*light;
-	ray_collision_type			lit_collision;
-	ray_mesh_poly_ptr_type		*likely_block;
-
-		// any possible blocking polygons?
-
-	light=scene->light_list.lights[light_idx];
-	if (light->collide_meshes_list.count==0) return(FALSE);
-	
-		// slices remember the last poly
-		// that blocked them reaching a certain light
-		// we can assume that in a lot of cases, the same
-		// polygon will be a blocker, so this is
-		// a good optimization
-		
-		// only polygons that are setup to block light
-		// (non-alpha, etc) will be in this list, so
-		// other checks can be skipped
-
-	likely_block=&slice->likely_block_poly_ptr[light_idx];
-
-	if (likely_block->mesh_idx!=-1) {
-
-		if ((collision->mesh_idx!=likely_block->mesh_idx) || (collision->poly_idx!=likely_block->poly_idx)) {
-			mesh=scene->mesh_list.meshes[likely_block->mesh_idx];
-			
-			if (ray_bound_ray_collision(pnt,vct,&mesh->bound)) {
-				poly=&mesh->poly_block.polys[likely_block->poly_idx];
-				
-				if (ray_bound_ray_collision(pnt,vct,&poly->bound)) {
-					if (ray_plane_ray_collision(pnt,normal_vct,vct_dist,&poly->plane)) {
-						
-						for (trig_idx=0;trig_idx!=poly->trig_block.count;trig_idx++) {
-							if (!ray_intersect_triangle(scene,pnt,vct,mesh,&poly->trig_block.trigs[trig_idx],&t,&u,&v)) continue;
-							if (t<1.0f) return(TRUE);
-						}
-					}
-				}
-			}
-		}
-	}
-
-		// check the list of possible
-		// light to mesh collision
-
-		// this list has been precalced and
-		// already pared down non-render,
-		// non-hidden, and non-light blocking
-		// and only polygons within the light cone
-
-	for (n=0;n!=light->collide_meshes_list.count;n++) {
-
-		mesh_idx=light->collide_meshes_list.indexes[n];
-		mesh=scene->mesh_list.meshes[mesh_idx];
-
-			// mesh bounds check
 
 		if (!ray_bound_ray_collision(pnt,vct,&mesh->bound)) continue;
 
-			// run through the polys
-
-		for (poly_idx=0;poly_idx!=mesh->poly_block.count;poly_idx++) {
+		for (k=0;k!=light_mesh->poly_count;k++) {
 
 				// bound collision
 				// do a ray-plane collision here because
 				// this list isn't small and the extra
 				// cost is worth it to avoid the trigs
 
+			poly_idx=light_mesh->poly_idxs[k];
 			poly=&mesh->poly_block.polys[poly_idx];
-			if (poly->light_render_mask[light_idx]==0x0) continue;
 
 			if (!ray_bound_ray_collision(pnt,vct,&poly->bound)) continue;
 			if (!ray_plane_ray_collision(pnt,normal_vct,vct_dist,&poly->plane)) continue;
@@ -763,7 +557,7 @@ bool ray_block_lightX(ray_scene_type *scene,ray_scene_slice_type *slice,ray_poin
 			if ((collision->mesh_idx==mesh_idx) && (collision->poly_idx==poly_idx)) continue;
 
 				// check trigs
-
+				
 			for (trig_idx=0;trig_idx!=poly->trig_block.count;trig_idx++) {
 			
 				trig=&poly->trig_block.trigs[trig_idx];
@@ -798,15 +592,11 @@ bool ray_block_lightX(ray_scene_type *scene,ray_scene_slice_type *slice,ray_poin
 				ray_vector_find_line_point_for_T(pnt,vct,t,&trig_pnt);
 				if (ray_get_material_alpha(scene,pnt,&trig_pnt,&lit_collision)==1.0f) return(TRUE);
 			}
-
 		}
 	}
 
 	return(FALSE);
 }
-
-
-
 
 /* =======================================================
 
@@ -888,8 +678,8 @@ void ray_trace_lights(ray_scene_type *scene,ray_scene_slice_type *slice,ray_poin
 
 	hit=FALSE;
 	
-	for (n=0;n!=scene->render.meshes[collision->mesh_idx].nlight_collision;n++) {
-		light_idx=scene->render.meshes[collision->mesh_idx].light_collision[n];
+	for (n=0;n!=scene->render.meshes[collision->mesh_idx].light_count;n++) {
+		light_idx=scene->render.meshes[collision->mesh_idx].light_idxs[n];
 		light=scene->light_list.lights[light_idx];
 
 			// outside of intensity globe?
@@ -1345,7 +1135,7 @@ void ray_render_slice_run(ray_scene_type *scene,ray_scene_slice_type *slice)
 
 					// minimum ray trace bounce
 
-				if (collision.skip_block.count==ray_max_bounce) break;
+				if (collision.skip_block.count==ray_max_ray_bounce) break;
 
 					// we have an alpha, need to rebuild
 					// the vector and trace again

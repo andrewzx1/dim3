@@ -88,10 +88,6 @@ int rtlSceneAdd(ray_2d_point_type *size,int target,int format,void *attachment,u
 	scene=(ray_scene_type*)malloc(sizeof(ray_scene_type));
 	if (scene==NULL) return(RL_ERROR_OUT_OF_MEMORY);
 
-		// clear thread states
-
-	ray_render_clear_threads(scene);
-
 		// format
 
 	scene->target=target;
@@ -115,10 +111,31 @@ int rtlSceneAdd(ray_2d_point_type *size,int target,int format,void *attachment,u
 		return(RL_ERROR_OUT_OF_MEMORY);
 	}
 
+		// rendering slices
+
+	scene->render.slices=(ray_scene_slice_type*)malloc(sizeof(ray_scene_slice_type)*ray_render_max_slice_count);
+	if (scene->render.slices==NULL) {
+		free(scene->buffer.data);
+		free(scene);
+		return(RL_ERROR_OUT_OF_MEMORY);
+	}
+
+		// rendering threads
+
+	scene->render.threads=(ray_scene_thread_type*)malloc(sizeof(ray_scene_thread_type)*ray_render_max_thread_count);
+	if (scene->render.threads==NULL) {
+		free(scene->render.slices);
+		free(scene->buffer.data);
+		free(scene);
+		return(RL_ERROR_OUT_OF_MEMORY);
+	}
+
 		// rendering parallel light list
 
 	scene->render.lights=(ray_scene_render_light_type*)malloc(sizeof(ray_scene_render_light_type)*ray_max_scene_light);
 	if (scene->render.lights==NULL) {
+		free(scene->render.threads);
+		free(scene->render.slices);
 		free(scene->buffer.data);
 		free(scene);
 		return(RL_ERROR_OUT_OF_MEMORY);
@@ -129,6 +146,8 @@ int rtlSceneAdd(ray_2d_point_type *size,int target,int format,void *attachment,u
 	scene->render.meshes=(ray_scene_render_mesh_type*)malloc(sizeof(ray_scene_render_mesh_type)*ray_max_scene_mesh);
 	if (scene->render.meshes==NULL) {
 		free(scene->render.lights);
+		free(scene->render.threads);
+		free(scene->render.slices);
 		free(scene->buffer.data);
 		free(scene);
 		return(RL_ERROR_OUT_OF_MEMORY);
@@ -140,10 +159,16 @@ int rtlSceneAdd(ray_2d_point_type *size,int target,int format,void *attachment,u
 	if (scene->render.view_mesh_block.indexes==NULL) {
 		free(scene->render.lights);
 		free(scene->render.meshes);
+		free(scene->render.threads);
+		free(scene->render.slices);
 		free(scene->buffer.data);
 		free(scene);
 		return(RL_ERROR_OUT_OF_MEMORY);
 	}
+
+		// clear thread states
+
+	ray_render_clear_threads(scene);
 	
 		// precalc slice settings, drawing rects,
 		// and rendering memory
@@ -175,12 +200,17 @@ int rtlSceneAdd(ray_2d_point_type *size,int target,int format,void *attachment,u
 		if (k==(split-1)) slice->pixel_end.y=scene->buffer.high;
 
 			// build the memory for rendering
-			// supergumba -- this could leak
+			// non-culled mesh/poly list
 
-		slice->mesh_poly_block.poly_ptrs=(ray_mesh_poly_ptr_type*)malloc(sizeof(ray_mesh_poly_ptr_type)*ray_max_poly_per_slice);
-		if (slice->mesh_poly_block.poly_ptrs==NULL) {
-			free(scene);
-			return(RL_ERROR_OUT_OF_MEMORY);
+			// supergumba -- this leaks, will need to fix later
+
+		slice->mesh_block.meshes=(ray_scene_slice_mesh_type*)malloc(sizeof(ray_scene_slice_mesh_type)*ray_max_mesh_per_slice);
+		if (slice->mesh_block.meshes==NULL) return(RL_ERROR_OUT_OF_MEMORY);
+		
+		for (k=0;k!=ray_max_mesh_per_slice;k++) {
+			slice->mesh_block.mesh_count=0;
+			slice->mesh_block.meshes[k].poly_idxs=(int*)malloc(sizeof(int)*ray_max_mesh_poly_per_slice);
+			if (slice->mesh_block.meshes[k].poly_idxs==NULL) return(RL_ERROR_OUT_OF_MEMORY);
 		}
 
 		slice++;
@@ -193,13 +223,16 @@ int rtlSceneAdd(ray_2d_point_type *size,int target,int format,void *attachment,u
 
 	for (n=0;n!=ray_max_scene_light;n++) {
 
-			// supergumba -- this could also leak
-		
-		light->mesh_poly_collision.count=0;
-		light->mesh_poly_collision.poly_ptrs=(ray_mesh_poly_ptr_type*)malloc(sizeof(ray_mesh_poly_ptr_type)*ray_max_poly_per_slice);
-		if (light->mesh_poly_collision.poly_ptrs==NULL) {
-			free(scene);
-			return(RL_ERROR_OUT_OF_MEMORY);
+			// supergumba -- this leaks, will need to fix later
+
+		light->mesh_count=0;
+		light->meshes=(ray_scene_render_light_mesh_type*)malloc(sizeof(ray_scene_render_light_mesh_type)*ray_max_mesh_per_light);
+		if (light->meshes==NULL) return(RL_ERROR_OUT_OF_MEMORY);
+
+		for (k=0;k!=ray_max_mesh_per_light;k++) {
+			light->mesh_count=0;
+			light->meshes[k].poly_idxs=(int*)malloc(sizeof(int)*ray_max_mesh_poly_per_light);
+			if (light->meshes[k].poly_idxs==NULL) return(RL_ERROR_OUT_OF_MEMORY);
 		}
 
 		light++;
@@ -248,6 +281,10 @@ int rtlSceneAdd(ray_2d_point_type *size,int target,int format,void *attachment,u
 		// create the scene lock mutex
 
 	if (!ray_scene_create_mutexes(scene)) {
+		free(scene->render.lights);
+		free(scene->render.meshes);
+		free(scene->render.threads);
+		free(scene->render.slices);
 		free(scene->buffer.data);
 		free(scene);
 		return(RL_ERROR_THREADING_ERROR);
@@ -289,7 +326,7 @@ int rtlSceneAdd(ray_2d_point_type *size,int target,int format,void *attachment,u
 
 int rtlSceneDelete(int sceneId)
 {
-	int							n,idx,count;
+	int							n,k,idx,count;
 	ray_scene_type				*scene;
 	ray_scene_slice_type		*slice;
 	ray_scene_render_light_type	*light;
@@ -316,20 +353,29 @@ int rtlSceneDelete(int sceneId)
 	slice=scene->render.slices;
 
 	for (n=0;n!=ray_global.settings.slice_count;n++) {
-		free(slice->mesh_poly_block.poly_ptrs);
+		for (k=0;k!=ray_max_mesh_per_slice;k++) {
+			free(slice->mesh_block.meshes[k].poly_idxs);
+		}
+		free(slice->mesh_block.meshes);
 		slice++;
 	}
 
 	light=scene->render.lights;
 
 	for (n=0;n!=ray_max_scene_light;n++) {
-		free(light->mesh_poly_collision.poly_ptrs);
+		for (k=0;k!=ray_max_mesh_per_light;k++) {
+			free(light->meshes[k].poly_idxs);
+		}
+		free(light->meshes);
 		light++;
 	}
 
 	free(scene->render.view_mesh_block.indexes);
 	free(scene->render.meshes);
 	free(scene->render.lights);
+
+	free(scene->render.slices);
+	free(scene->render.threads);
 	free(scene->buffer.data);
 
 		// clear lights and meshes
