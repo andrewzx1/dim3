@@ -497,7 +497,7 @@ bool ray_block_light(ray_scene_type *scene,ray_scene_slice_type *slice,ray_point
 		// a good optimization
 		
 		// only polygons that are setup to block light
-		// (non-alpha, etc) will be in this list, so
+		// (non-alpha, etc) will not be in this list, so
 		// other checks can be skipped
 
 	likely_block=&slice->likely_block_poly_ptr[light_idx];
