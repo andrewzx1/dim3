@@ -41,7 +41,7 @@
 // note: max_slice_count MUST BE A SQRT!
 //
 
-#define ray_render_max_slice_count					(16*16)
+#define ray_render_max_slice_count					(32*32)
 #define ray_render_max_thread_count					32
 
 //
