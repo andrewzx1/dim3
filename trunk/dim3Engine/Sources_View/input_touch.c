@@ -349,27 +349,18 @@ void input_touch_event_up(int finger_id)
 	touch_gui_click=FALSE;
 }
 
-void input_touch_scrub_point(d3pnt *pt,int touch_id,int x,int y)
+void input_touch_scrub_point(d3pnt *pt,int touch_id,float x,float y)
 {
-	float				fx,fy;
-	SDL_Touch			*touch;
-	
-	touch=SDL_GetTouch(touch_id);
-	
 		// convert to screen
 		
 #ifndef D3_ROTATE_VIEW
-	fx=((float)x)/((float)touch->xres);
-	pt->x=(int)(fx*((float)view.screen.x_sz));
+	pt->x=(int)(x*((float)view.screen.x_sz));
 	
-	fy=((float)y)/((float)touch->yres);
-	pt->y=view.screen.y_sz-(int)(fy*((float)view.screen.y_sz));
+	pt->y=view.screen.y_sz-(int)(y*((float)view.screen.y_sz));
 #else
-	fx=((float)y)/((float)touch->yres);
-	pt->x=(int)(fx*((float)view.screen.x_sz));
+	pt->x=(int)(y*((float)view.screen.x_sz));
 	
-	fy=((float)x)/((float)touch->xres);
-	pt->y=view.screen.y_sz-(int)(fy*((float)view.screen.y_sz));
+	pt->y=view.screen.y_sz-(int)(x*((float)view.screen.y_sz));
 #endif
 
 		// convert to view scale
@@ -378,7 +369,7 @@ void input_touch_scrub_point(d3pnt *pt,int touch_id,int x,int y)
 	pt->y=(pt->y*iface.scale_y)/view.screen.y_sz;
 }
 
-void input_touch_event_down(int touch_id,int finger_id,int x,int y)
+void input_touch_event_down(int touch_id,int finger_id,float x,float y)
 {
 	d3pnt				pt;
 	
@@ -391,7 +382,7 @@ void input_touch_event_down(int touch_id,int finger_id,int x,int y)
 	touch_gui_click=TRUE;
 }
 
-void input_touch_event_move(int touch_id,int finger_id,int x,int y)
+void input_touch_event_move(int touch_id,int finger_id,float x,float y)
 {
 	d3pnt				pt;
 	
@@ -478,8 +469,8 @@ void input_touch_shutdown(void) {}
 bool input_touch_check_ok(void) { return(FALSE); }
 void input_touch_clear(void) {}
 void input_touch_event_up(int finger_id) {}
-void input_touch_event_down(int touch_id,int finger_id,int x,int y) {}
-void input_touch_event_move(int touch_id,int finger_id,int x,int y) {}
+void input_touch_event_down(int touch_id,int finger_id,float x,float y) {}
+void input_touch_event_move(int touch_id,int finger_id,float x,float y) {}
 float input_touch_get_axis(int axis) { return(0.0f); }
 bool input_touch_get_axis_as_button_min(int axis) { return(FALSE); }
 bool input_touch_get_axis_as_button_max(int axis) { return(FALSE); }

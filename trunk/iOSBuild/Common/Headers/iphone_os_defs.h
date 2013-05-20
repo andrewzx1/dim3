@@ -61,7 +61,7 @@ and can be sold or given away.
 
 #define D3_OS_IPHONE					1
 #define D3_OPENGL_ES					1
-#define D3_ROTATE_VIEW					1
+//#define D3_ROTATE_VIEW					1
 #define D3_SIMPLE_RENDER				1
 
 //

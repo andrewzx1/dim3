@@ -14,8 +14,13 @@
 	#include <unistd.h>
 	#include <pthread.h>
 
+#ifndef TARGET_IPHONE
 	#include <OpenGL/OpenGL.h>
 	#include <OpenGL/gl.h>
+#else
+	#include <OpenGLES/es2/gl.h>
+	#include <OpenGLES/es2/glext.h>
+#endif
 
 	typedef pthread_mutex_t			ray_mutex;
 	typedef pthread_t				ray_thread;

@@ -365,7 +365,6 @@
 		262DFFA916C3702500CA9F97 /* view_rtl_map.c in Sources */ = {isa = PBXBuildFile; fileRef = 262DFFA216C3702500CA9F97 /* view_rtl_map.c */; };
 		262DFFAA16C3702500CA9F97 /* view_rtl_material.c in Sources */ = {isa = PBXBuildFile; fileRef = 262DFFA316C3702500CA9F97 /* view_rtl_material.c */; };
 		262DFFAB16C3702500CA9F97 /* view_rtl_model.c in Sources */ = {isa = PBXBuildFile; fileRef = 262DFFA416C3702500CA9F97 /* view_rtl_model.c */; };
-		262DFFAC16C3702500CA9F97 /* view_rtl_overlay.c in Sources */ = {isa = PBXBuildFile; fileRef = 262DFFA516C3702500CA9F97 /* view_rtl_overlay.c */; };
 		262DFFAD16C3702500CA9F97 /* view_rtl_patch.c in Sources */ = {isa = PBXBuildFile; fileRef = 262DFFA616C3702500CA9F97 /* view_rtl_patch.c */; };
 		262DFFBE16C3705200CA9F97 /* ray_color.c in Sources */ = {isa = PBXBuildFile; fileRef = 262DFFAE16C3705000CA9F97 /* ray_color.c */; };
 		262DFFBF16C3705200CA9F97 /* ray_eye.c in Sources */ = {isa = PBXBuildFile; fileRef = 262DFFAF16C3705000CA9F97 /* ray_eye.c */; };
@@ -374,11 +373,12 @@
 		262DFFC216C3705200CA9F97 /* ray_material.c in Sources */ = {isa = PBXBuildFile; fileRef = 262DFFB316C3705100CA9F97 /* ray_material.c */; };
 		262DFFC316C3705200CA9F97 /* ray_math.c in Sources */ = {isa = PBXBuildFile; fileRef = 262DFFB416C3705100CA9F97 /* ray_math.c */; };
 		262DFFC416C3705200CA9F97 /* ray_mesh.c in Sources */ = {isa = PBXBuildFile; fileRef = 262DFFB516C3705100CA9F97 /* ray_mesh.c */; };
-		262DFFC516C3705200CA9F97 /* ray_overlay.c in Sources */ = {isa = PBXBuildFile; fileRef = 262DFFB716C3705100CA9F97 /* ray_overlay.c */; };
 		262DFFC616C3705200CA9F97 /* ray_precalc.c in Sources */ = {isa = PBXBuildFile; fileRef = 262DFFB816C3705100CA9F97 /* ray_precalc.c */; };
 		262DFFC716C3705200CA9F97 /* ray_render.c in Sources */ = {isa = PBXBuildFile; fileRef = 262DFFB916C3705100CA9F97 /* ray_render.c */; };
 		262DFFC816C3705200CA9F97 /* ray_scene.c in Sources */ = {isa = PBXBuildFile; fileRef = 262DFFBA16C3705100CA9F97 /* ray_scene.c */; };
 		262DFFC916C3705200CA9F97 /* ray_thread.c in Sources */ = {isa = PBXBuildFile; fileRef = 262DFFBB16C3705200CA9F97 /* ray_thread.c */; };
+		263049C81748927000A72521 /* libSDL2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 263049C31748927000A72521 /* libSDL2.a */; };
+		263049CA1748929B00A72521 /* view_rtl_opengl.c in Sources */ = {isa = PBXBuildFile; fileRef = 263049C91748929B00A72521 /* view_rtl_opengl.c */; };
 		264356A614576B0F00CA4CFE /* model_util_file_model.c in Sources */ = {isa = PBXBuildFile; fileRef = 264356A514576B0F00CA4CFE /* model_util_file_model.c */; };
 		2647C977152767B3002FEA4B /* singleplayer_option.c in Sources */ = {isa = PBXBuildFile; fileRef = 2647C976152767B3002FEA4B /* singleplayer_option.c */; };
 		266B3DBF15845F31003E7787 /* simple_save_pick.c in Sources */ = {isa = PBXBuildFile; fileRef = 266B3DBE15845F31003E7787 /* simple_save_pick.c */; };
@@ -396,7 +396,6 @@
 		269CD61F15004CE200F8EC07 /* libJavaScriptCore-iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 269CD61D15004CE200F8EC07 /* libJavaScriptCore-iOS.a */; };
 		269EA83214B8BE2F0069CA6C /* script_camera_chase_track_angle.c in Sources */ = {isa = PBXBuildFile; fileRef = 269EA83114B8BE2F0069CA6C /* script_camera_chase_track_angle.c */; };
 		269EA83D14B965DD0069CA6C /* metrics_draw.c in Sources */ = {isa = PBXBuildFile; fileRef = 269EA83C14B965DD0069CA6C /* metrics_draw.c */; };
-		26A2AB1814F0ADEA008B7C08 /* libSDL.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 26A2AAE714F0ADEA008B7C08 /* libSDL.a */; };
 		26A3156215B787490055A01C /* gl_shader_execute.c in Sources */ = {isa = PBXBuildFile; fileRef = 26A3156115B787490055A01C /* gl_shader_execute.c */; };
 		26A45D121489ADBB00C02936 /* script_color.c in Sources */ = {isa = PBXBuildFile; fileRef = 26A45D101489ADBB00C02936 /* script_color.c */; };
 		26A45D131489ADBB00C02936 /* script_point_angle_vector.c in Sources */ = {isa = PBXBuildFile; fileRef = 26A45D111489ADBB00C02936 /* script_point_angle_vector.c */; };
@@ -789,7 +788,6 @@
 		262DFFA216C3702500CA9F97 /* view_rtl_map.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = view_rtl_map.c; sourceTree = "<group>"; };
 		262DFFA316C3702500CA9F97 /* view_rtl_material.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = view_rtl_material.c; sourceTree = "<group>"; };
 		262DFFA416C3702500CA9F97 /* view_rtl_model.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = view_rtl_model.c; sourceTree = "<group>"; };
-		262DFFA516C3702500CA9F97 /* view_rtl_overlay.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = view_rtl_overlay.c; sourceTree = "<group>"; };
 		262DFFA616C3702500CA9F97 /* view_rtl_patch.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = view_rtl_patch.c; sourceTree = "<group>"; };
 		262DFFAE16C3705000CA9F97 /* ray_color.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ray_color.c; path = ../Sources_RTL/ray_color.c; sourceTree = "<group>"; };
 		262DFFAF16C3705000CA9F97 /* ray_eye.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ray_eye.c; path = ../Sources_RTL/ray_eye.c; sourceTree = "<group>"; };
@@ -800,13 +798,19 @@
 		262DFFB416C3705100CA9F97 /* ray_math.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ray_math.c; path = ../Sources_RTL/ray_math.c; sourceTree = "<group>"; };
 		262DFFB516C3705100CA9F97 /* ray_mesh.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ray_mesh.c; path = ../Sources_RTL/ray_mesh.c; sourceTree = "<group>"; };
 		262DFFB616C3705100CA9F97 /* ray_os_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ray_os_defs.h; path = ../Sources_RTL/ray_os_defs.h; sourceTree = "<group>"; };
-		262DFFB716C3705100CA9F97 /* ray_overlay.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ray_overlay.c; path = ../Sources_RTL/ray_overlay.c; sourceTree = "<group>"; };
 		262DFFB816C3705100CA9F97 /* ray_precalc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ray_precalc.c; path = ../Sources_RTL/ray_precalc.c; sourceTree = "<group>"; };
 		262DFFB916C3705100CA9F97 /* ray_render.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ray_render.c; path = ../Sources_RTL/ray_render.c; sourceTree = "<group>"; };
 		262DFFBA16C3705100CA9F97 /* ray_scene.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ray_scene.c; path = ../Sources_RTL/ray_scene.c; sourceTree = "<group>"; };
 		262DFFBB16C3705200CA9F97 /* ray_thread.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ray_thread.c; path = ../Sources_RTL/ray_thread.c; sourceTree = "<group>"; };
 		262DFFBC16C3705200CA9F97 /* ray_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ray_types.h; path = ../Sources_RTL/ray_types.h; sourceTree = "<group>"; };
 		262DFFBD16C3705200CA9F97 /* ray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ray.h; path = ../Sources_RTL/ray.h; sourceTree = "<group>"; };
+		263049C2174891E200A72521 /* iphone_os_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = iphone_os_defs.h; path = ../Common/Headers/iphone_os_defs.h; sourceTree = "<group>"; };
+		263049C31748927000A72521 /* libSDL2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libSDL2.a; sourceTree = "<group>"; };
+		263049C41748927000A72521 /* SDL_bits.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL_bits.h; sourceTree = "<group>"; };
+		263049C51748927000A72521 /* SDL_gamecontroller.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL_gamecontroller.h; sourceTree = "<group>"; };
+		263049C61748927000A72521 /* SDL_messagebox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL_messagebox.h; sourceTree = "<group>"; };
+		263049C71748927000A72521 /* SDL_system.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL_system.h; sourceTree = "<group>"; };
+		263049C91748929B00A72521 /* view_rtl_opengl.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = view_rtl_opengl.c; sourceTree = "<group>"; };
 		2638D24013ED0AD600029B18 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		264356A514576B0F00CA4CFE /* model_util_file_model.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = model_util_file_model.c; sourceTree = "<group>"; };
 		2647C976152767B3002FEA4B /* singleplayer_option.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = singleplayer_option.c; sourceTree = "<group>"; };
@@ -839,7 +843,6 @@
 		269EA83C14B965DD0069CA6C /* metrics_draw.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = metrics_draw.c; sourceTree = "<group>"; };
 		26A2AAE514F0ADEA008B7C08 /* begin_code.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = begin_code.h; path = ../../../Common/Libraries/SDL/begin_code.h; sourceTree = "<group>"; };
 		26A2AAE614F0ADEA008B7C08 /* close_code.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = close_code.h; path = ../../../Common/Libraries/SDL/close_code.h; sourceTree = "<group>"; };
-		26A2AAE714F0ADEA008B7C08 /* libSDL.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libSDL.a; path = ../../../Common/Libraries/SDL/libSDL.a; sourceTree = "<group>"; };
 		26A2AAE814F0ADEA008B7C08 /* SDL_assert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SDL_assert.h; path = ../../../Common/Libraries/SDL/SDL_assert.h; sourceTree = "<group>"; };
 		26A2AAE914F0ADEA008B7C08 /* SDL_atomic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SDL_atomic.h; path = ../../../Common/Libraries/SDL/SDL_atomic.h; sourceTree = "<group>"; };
 		26A2AAEA14F0ADEA008B7C08 /* SDL_audio.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SDL_audio.h; path = ../../../Common/Libraries/SDL/SDL_audio.h; sourceTree = "<group>"; };
@@ -855,7 +858,6 @@
 		26A2AAF414F0ADEA008B7C08 /* SDL_gesture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SDL_gesture.h; path = ../../../Common/Libraries/SDL/SDL_gesture.h; sourceTree = "<group>"; };
 		26A2AAF514F0ADEA008B7C08 /* SDL_haptic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SDL_haptic.h; path = ../../../Common/Libraries/SDL/SDL_haptic.h; sourceTree = "<group>"; };
 		26A2AAF614F0ADEA008B7C08 /* SDL_hints.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SDL_hints.h; path = ../../../Common/Libraries/SDL/SDL_hints.h; sourceTree = "<group>"; };
-		26A2AAF714F0ADEA008B7C08 /* SDL_input.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SDL_input.h; path = ../../../Common/Libraries/SDL/SDL_input.h; sourceTree = "<group>"; };
 		26A2AAF814F0ADEA008B7C08 /* SDL_joystick.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SDL_joystick.h; path = ../../../Common/Libraries/SDL/SDL_joystick.h; sourceTree = "<group>"; };
 		26A2AAF914F0ADEA008B7C08 /* SDL_keyboard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SDL_keyboard.h; path = ../../../Common/Libraries/SDL/SDL_keyboard.h; sourceTree = "<group>"; };
 		26A2AAFA14F0ADEA008B7C08 /* SDL_keycode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SDL_keycode.h; path = ../../../Common/Libraries/SDL/SDL_keycode.h; sourceTree = "<group>"; };
@@ -901,7 +903,6 @@
 		26A6844413DE41F1007513D1 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		26A6844613DE41F9007513D1 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
 		26A6844813DE4213007513D1 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
-		26A6845813DE4457007513D1 /* iphone_os_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = iphone_os_defs.h; path = ../../dim3Common/Headers/iphone_os_defs.h; sourceTree = "<group>"; };
 		26A6845B13DE4457007513D1 /* os_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = os_defs.h; path = ../../dim3Common/Headers/os_defs.h; sourceTree = "<group>"; };
 		26A6845C13DE446E007513D1 /* dim3engine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = dim3engine.h; path = ../../dim3Engine/Headers/dim3engine.h; sourceTree = "<group>"; };
 		26A6845D13DE446E007513D1 /* gui_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gui_defs.h; path = ../../dim3Engine/Headers/gui_defs.h; sourceTree = "<group>"; };
@@ -945,10 +946,10 @@
 				26A6844913DE4213007513D1 /* OpenGLES.framework in Frameworks */,
 				26D6C0E013E2442D0087FFD4 /* libstdc++.6.0.9.dylib in Frameworks */,
 				26D6C0E213E244400087FFD4 /* libicucore.A.dylib in Frameworks */,
-				26A2AB1814F0ADEA008B7C08 /* libSDL.a in Frameworks */,
 				269CD61115004CB200F8EC07 /* libpng-iOS.a in Frameworks */,
 				269CD61415004CD000F8EC07 /* libmpg123-iOS.a in Frameworks */,
 				269CD61F15004CE200F8EC07 /* libJavaScriptCore-iOS.a in Frameworks */,
+				263049C81748927000A72521 /* libSDL2.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1160,8 +1161,8 @@
 				262DFFA216C3702500CA9F97 /* view_rtl_map.c */,
 				262DFFA316C3702500CA9F97 /* view_rtl_material.c */,
 				262DFFA416C3702500CA9F97 /* view_rtl_model.c */,
-				262DFFA516C3702500CA9F97 /* view_rtl_overlay.c */,
 				262DFFA616C3702500CA9F97 /* view_rtl_patch.c */,
+				263049C91748929B00A72521 /* view_rtl_opengl.c */,
 				262DFFCA16C3708E00CA9F97 /* dim3RTL */,
 			);
 			name = Sources_View;
@@ -1211,9 +1212,13 @@
 		260B436C1411F966006ED023 /* SDL */ = {
 			isa = PBXGroup;
 			children = (
+				263049C31748927000A72521 /* libSDL2.a */,
+				263049C41748927000A72521 /* SDL_bits.h */,
+				263049C51748927000A72521 /* SDL_gamecontroller.h */,
+				263049C61748927000A72521 /* SDL_messagebox.h */,
+				263049C71748927000A72521 /* SDL_system.h */,
 				26A2AAE514F0ADEA008B7C08 /* begin_code.h */,
 				26A2AAE614F0ADEA008B7C08 /* close_code.h */,
-				26A2AAE714F0ADEA008B7C08 /* libSDL.a */,
 				26A2AAE814F0ADEA008B7C08 /* SDL_assert.h */,
 				26A2AAE914F0ADEA008B7C08 /* SDL_atomic.h */,
 				26A2AAEA14F0ADEA008B7C08 /* SDL_audio.h */,
@@ -1229,7 +1234,6 @@
 				26A2AAF414F0ADEA008B7C08 /* SDL_gesture.h */,
 				26A2AAF514F0ADEA008B7C08 /* SDL_haptic.h */,
 				26A2AAF614F0ADEA008B7C08 /* SDL_hints.h */,
-				26A2AAF714F0ADEA008B7C08 /* SDL_input.h */,
 				26A2AAF814F0ADEA008B7C08 /* SDL_joystick.h */,
 				26A2AAF914F0ADEA008B7C08 /* SDL_keyboard.h */,
 				26A2AAFA14F0ADEA008B7C08 /* SDL_keycode.h */,
@@ -1420,7 +1424,6 @@
 				262DFFB416C3705100CA9F97 /* ray_math.c */,
 				262DFFB516C3705100CA9F97 /* ray_mesh.c */,
 				262DFFB616C3705100CA9F97 /* ray_os_defs.h */,
-				262DFFB716C3705100CA9F97 /* ray_overlay.c */,
 				262DFFB816C3705100CA9F97 /* ray_precalc.c */,
 				262DFFB916C3705100CA9F97 /* ray_render.c */,
 				262DFFBA16C3705100CA9F97 /* ray_scene.c */,
@@ -1645,7 +1648,7 @@
 			children = (
 				26A6845C13DE446E007513D1 /* dim3engine.h */,
 				26A6845B13DE4457007513D1 /* os_defs.h */,
-				26A6845813DE4457007513D1 /* iphone_os_defs.h */,
+				263049C2174891E200A72521 /* iphone_os_defs.h */,
 				26F0C44415632CEA00AFE368 /* app_defs.h */,
 				26A6845D13DE446E007513D1 /* gui_defs.h */,
 				26A6845E13DE446E007513D1 /* input_defs.h */,
@@ -1718,7 +1721,7 @@
 		26A6840513DE405D007513D1 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0430;
+				LastUpgradeCheck = 0460;
 			};
 			buildConfigurationList = 26A6840813DE405D007513D1 /* Build configuration list for PBXProject "dim3Engine" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -2151,7 +2154,6 @@
 				262DFFA916C3702500CA9F97 /* view_rtl_map.c in Sources */,
 				262DFFAA16C3702500CA9F97 /* view_rtl_material.c in Sources */,
 				262DFFAB16C3702500CA9F97 /* view_rtl_model.c in Sources */,
-				262DFFAC16C3702500CA9F97 /* view_rtl_overlay.c in Sources */,
 				262DFFAD16C3702500CA9F97 /* view_rtl_patch.c in Sources */,
 				262DFFBE16C3705200CA9F97 /* ray_color.c in Sources */,
 				262DFFBF16C3705200CA9F97 /* ray_eye.c in Sources */,
@@ -2160,12 +2162,12 @@
 				262DFFC216C3705200CA9F97 /* ray_material.c in Sources */,
 				262DFFC316C3705200CA9F97 /* ray_math.c in Sources */,
 				262DFFC416C3705200CA9F97 /* ray_mesh.c in Sources */,
-				262DFFC516C3705200CA9F97 /* ray_overlay.c in Sources */,
 				262DFFC616C3705200CA9F97 /* ray_precalc.c in Sources */,
 				262DFFC716C3705200CA9F97 /* ray_render.c in Sources */,
 				262DFFC816C3705200CA9F97 /* ray_scene.c in Sources */,
 				262DFFC916C3705200CA9F97 /* ray_thread.c in Sources */,
 				26CD3E3716D5CA1B00DFC2D4 /* base_iface_label.c in Sources */,
+				263049CA1748929B00A72521 /* view_rtl_opengl.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
