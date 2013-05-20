@@ -222,7 +222,7 @@ void halo_draw_render(void)
 	col.r=col.g=col.b=1.0f;
 
 		// draw halos
-
+		
 	for (n=0;n!=view.render->halo_draw.count;n++) {
 		halo_draw=&view.render->halo_draw.halos[n];
 		if (!halo_draw->in_view) continue;

@@ -59,9 +59,6 @@ void input_keyboard_clear(void)
 void input_event_key(int key_idx,bool down)
 {
 	int					n;
-#ifdef D3_OS_MAC
-	int					mod;
-#endif
 
 		// set the key
 
@@ -81,17 +78,6 @@ void input_event_key(int key_idx,bool down)
 			break;
 		}
 	}
-
-		// check for OS X cmd-q quits
-
-#ifdef D3_OS_MAC
-	if (key_idx==SDL_SCANCODE_Q) {
-		mod=SDL_GetModState();
-		if (((mod&KMOD_LMETA)!=0) || ((mod&KMOD_RMETA))) {
-			app.loop_quit=TRUE;
-		}
-	}
-#endif
 }
 
 /* =======================================================
