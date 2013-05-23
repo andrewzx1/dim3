@@ -355,11 +355,9 @@ void input_touch_scrub_point(d3pnt *pt,int touch_id,float x,float y)
 		
 #ifndef D3_ROTATE_VIEW
 	pt->x=(int)(x*((float)view.screen.x_sz));
-	
-	pt->y=view.screen.y_sz-(int)(y*((float)view.screen.y_sz));
+	pt->y=(int)(y*((float)view.screen.y_sz));
 #else
 	pt->x=(int)(y*((float)view.screen.x_sz));
-	
 	pt->y=view.screen.y_sz-(int)(x*((float)view.screen.y_sz));
 #endif
 
