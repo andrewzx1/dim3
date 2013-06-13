@@ -48,7 +48,7 @@
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="true"
-				AdditionalIncludeDirectories="..\Common\Libraries;..\Common\Libraries\GLEW;..\Common\Libraries\ZLib;..\Common\Libraries\SDL2;..\Common\Libraries\MPG123;..\Common\Libraries\JavaScriptCore;..\Common\Headers;..\Common\Libraries\PNG;..\..\dim3Engine\Headers;..\..\dim3Common\Headers;..\..\dim3BaseUtility\Headers;..\..\dim3BaseUtility\Sources;..\..\dim3ModelUtility\Headers;..\..\dim3ModelUtility\Sources;..\..\dim3MapUtility\Headers;..\..\dim3MapUtility\Sources;..\..\dim3Engine\Sources_RTL"
+				AdditionalIncludeDirectories="..\Common\Libraries;..\Common\Libraries\GLEW;..\Common\Libraries\ZLib;..\Common\Libraries\SDL;..\Common\Libraries\MPG123;..\Common\Libraries\JavaScriptCore;..\Common\Headers;..\Common\Libraries\PNG;..\..\dim3Engine\Headers;..\..\dim3Common\Headers;..\..\dim3BaseUtility\Headers;..\..\dim3BaseUtility\Sources;..\..\dim3ModelUtility\Headers;..\..\dim3ModelUtility\Sources;..\..\dim3MapUtility\Headers;..\..\dim3MapUtility\Sources;..\..\dim3Engine\Sources_RTL"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;D3_PCH;D3_ENGINE"
 				StringPooling="true"
 				ExceptionHandling="0"
@@ -170,15 +170,15 @@
 				Name="SDL"
 				>
 				<File
-					RelativePath="..\Common\Libraries\SDL2\SDL.h"
+					RelativePath="..\Common\Libraries\SDL\SDL.h"
 					>
 				</File>
 				<File
-					RelativePath="..\Common\Libraries\SDL2\SDL2.lib"
+					RelativePath="..\Common\Libraries\SDL\SDL2.lib"
 					>
 				</File>
 				<File
-					RelativePath="..\Common\Libraries\SDL2\SDL2main.lib"
+					RelativePath="..\Common\Libraries\SDL\SDL2main.lib"
 					>
 				</File>
 			</Filter>
