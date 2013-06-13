@@ -308,7 +308,7 @@ bool view_initialize(char *err_str)
 	SDL_DisplayMode			sdl_mode;
 
 		// clear view structure
-		
+
 	memset(&view,0x0,sizeof(view_type));
 
 		// allocate memory

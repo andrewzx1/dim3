@@ -172,29 +172,7 @@ void app_register_kill_signals(void)
 
 void app_report_error(char *err_str)
 {
-		// mac and windows have alerts
-
-#ifdef D3_OS_MAC	
-	CFStringRef			cf_str;
-	CFOptionFlags		resp;
-	
-	SetThemeCursor(kThemeArrowCursor);
-	
-	cf_str=CFStringCreateWithCString(kCFAllocatorDefault,err_str,kCFStringEncodingMacRoman);
-	CFUserNotificationDisplayAlert(0,kCFUserNotificationStopAlertLevel,NULL,NULL,NULL,CFSTR("dim3 Error"),cf_str,NULL,NULL,NULL,&resp);
-	CFRelease(cf_str);
-
-	return;
-#endif
-
-#ifdef D3_OS_WINDOWS
-	MessageBox(NULL,err_str,"dim3 Error",MB_OK);
-	return;
-#endif
-
-		// everything else prints to stderr
-
-	fprintf(stderr,"dim3 Error: %s\n",err_str);
+	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR,"dim3 Error",err_str,NULL);
 }
 
 /* =======================================================
@@ -207,7 +185,7 @@ int main(int argc,char *argv[])
 {
 	bool			app_start_ok,app_run_ok;
 	char			err_str[256];
-	
+
 		// setup paths
 
 	if (!file_paths_setup(&file_path_setup)) {

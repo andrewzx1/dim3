@@ -31,10 +31,13 @@ and can be sold or given away.
 
 #include "interface.h"
 
+extern iface_type			iface;
 extern map_type				map;
 extern setup_type			setup;
 extern view_type			view;
 extern render_info_type		render_info;
+
+extern shader_type			bitmap_shader;
 
 shader_type					core_shaders[max_shader_light+1][max_core_shader];
 
@@ -1026,6 +1029,10 @@ bool gl_core_shader_initialize_per_light(int nlight,char *err_str)
 bool gl_core_shader_initialize(char *err_str)
 {
 	int					n,k;
+
+		// no game shaders for ray-tracing
+
+	if (iface.project.ray_trace) return(TRUE);
 	
 		// note: we use max_shader_light+1 as
 		// the first spot is 0 lights, and then 1
@@ -1051,6 +1058,10 @@ bool gl_core_shader_initialize(char *err_str)
 void gl_core_shader_shutdown(void)
 {
 	int					n,k;
+
+		// no game shaders for ray-tracing
+
+	if (iface.project.ray_trace) return;
 
 		// shutdown shaders
 
@@ -1145,7 +1156,13 @@ static inline int gl_core_shader_find_for_mode(int core_shader_group,texture_typ
 shader_type* gl_core_shader_find_ptr(int nlight,int core_shader_group,texture_type *texture)
 {
 	int				which_varient;
-	
+
+		// use simple shader if in ray-trace
+
+	if (iface.project.ray_trace) return(&bitmap_shader);
+
+		// regular play shaders
+
 	which_varient=gl_core_shader_find_for_mode(core_shader_group,texture);
 	return(&core_shaders[nlight][which_varient]);
 }

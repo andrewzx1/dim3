@@ -48,7 +48,7 @@ int al_open_buffer(char *name,char *path,int min_dist,int max_dist)
 {
 	int					len,org_len,new_len;
 	unsigned char		*data;
-	audio_buffer_type  *buffer;
+	audio_buffer_type	*buffer;
 	SDL_AudioSpec		aspec;
 	SDL_AudioCVT		acvt;
 
@@ -144,7 +144,7 @@ void al_load_all_xml_sounds(void)
 	int					n;
 	char				wave_path[1024];
 	iface_sound_type	*snd;
-	
+
 		// read in sounds loaded from XML
 
 	snd=iface.sound_list.sounds;
@@ -152,6 +152,7 @@ void al_load_all_xml_sounds(void)
 	for (n=0;n!=iface.sound_list.nsound;n++) {
 		file_paths_data(&file_path_setup,wave_path,"Sounds",snd->file_name,"wav");
 		al_open_buffer(snd->name,wave_path,snd->min_dist,snd->max_dist);
+
 		snd++;
 	}
 }
