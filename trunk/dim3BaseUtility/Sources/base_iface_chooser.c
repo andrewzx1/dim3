@@ -31,7 +31,8 @@ and can be sold or given away.
 
 extern file_path_setup_type		file_path_setup;
 
-extern char						just_mode_str[][32];
+extern char						just_mode_str[][32],
+								chooser_key_str[][32];
 
 /* =======================================================
 
@@ -60,6 +61,7 @@ iface_chooser_piece_type* read_setting_interface_chooser_common(iface_chooser_ty
 	piece->wid=xml_get_attribute_int_default(item_tag,"width",-1);
 	piece->high=xml_get_attribute_int_default(item_tag,"height",-1);
 	piece->clickable=xml_get_attribute_boolean(item_tag,"clickable");
+	piece->key=xml_get_attribute_list(item_tag,"key",(char*)chooser_key_str);
 	xml_get_attribute_text(item_tag,"goto",piece->goto_name,name_str_len);
 	
 	return(piece);
@@ -263,6 +265,7 @@ void iface_write_settings_chooser_piece_type(iface_chooser_type *chooser,int pie
 		if (chooser_piece->wid!=-1) xml_add_attribute_int("width",chooser_piece->wid);
 		if (chooser_piece->high!=-1) xml_add_attribute_int("height",chooser_piece->high);
 		xml_add_attribute_boolean("clickable",chooser_piece->clickable);
+		xml_add_attribute_list("key",(char*)chooser_key_str,chooser_piece->key);
 		xml_add_attribute_text("goto",chooser_piece->goto_name);
 
 			// specific settings

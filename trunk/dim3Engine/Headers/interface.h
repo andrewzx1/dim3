@@ -633,6 +633,8 @@ extern void input_keyboard_clear(void);
 extern void input_event_key(int key_idx,bool down);
 extern bool input_get_keyboard_escape(void);
 extern bool input_get_keyboard_return(void);
+extern bool input_get_keyboard_prev(void);
+extern bool input_get_keyboard_next(void);
 extern bool input_get_keyboard_key(int key_idx);
 extern void input_clear_text_input(void);
 extern char input_get_text_input_key(void);

@@ -39,6 +39,7 @@ and can be sold or given away.
 #include <sys/stat.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stddef.h>
 #include <string.h>
 #include <math.h>
 
@@ -47,10 +48,7 @@ and can be sold or given away.
 #include "glew.h"
 #include "wglew.h"
 
-#include "SDL.h"
-
 #include "zlib.h"
-#include "png.h"
 
 //
 // os flags
