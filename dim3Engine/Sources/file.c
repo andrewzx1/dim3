@@ -359,6 +359,8 @@ bool game_file_save(bool no_progress,bool suspend_save,char *err_str)
 		return(FALSE);
 	}
 
+	fprintf(stdout,"1: %d\n",GetTickCount());
+
 		// header
 
 	head.tick=tick;
@@ -376,6 +378,7 @@ bool game_file_save(bool no_progress,bool suspend_save,char *err_str)
 		// view & server state
 		
 	if (!no_progress) progress_update();
+	fprintf(stdout,"2: %d\n",GetTickCount());
 		
 	game_file_add_chunk(&view.time,1,sizeof(view_time_type));
 	game_file_add_chunk(&camera,1,sizeof(camera_type));
@@ -386,6 +389,7 @@ bool game_file_save(bool no_progress,bool suspend_save,char *err_str)
 	game_file_add_chunk(&js.timer_tick,1,sizeof(int));
 	
 		// objects, weapons, and projectile setups
+	fprintf(stdout,"3: %d\n",GetTickCount());
 
 	count=object_count_list();
 	game_file_add_chunk(&count,1,sizeof(int));
@@ -421,6 +425,7 @@ bool game_file_save(bool no_progress,bool suspend_save,char *err_str)
 			}
 		}
 	}
+	fprintf(stdout,"4: %d\n",GetTickCount());
 
 		// projectiles, effects and decals
 
@@ -450,6 +455,7 @@ bool game_file_save(bool no_progress,bool suspend_save,char *err_str)
 		game_file_add_chunk(&n,1,sizeof(int));
 		game_file_add_chunk(effect,1,sizeof(effect_type));
 	}
+	fprintf(stdout,"5: %d\n",GetTickCount());
 
 	count=decal_count_list();
 	game_file_add_chunk(&count,1,sizeof(int));
@@ -466,12 +472,15 @@ bool game_file_save(bool no_progress,bool suspend_save,char *err_str)
 	}
 
 		// spots (mostly for checkpoint data)
+	fprintf(stdout,"6: %d\n",GetTickCount());
 
 	game_file_add_chunk(map.spots,map.nspot,sizeof(spot_type));
+	fprintf(stdout,"7: %d\n",GetTickCount());
 	
 		// HUD
 
 	if (!no_progress) progress_update();
+	fprintf(stdout,"8: %d\n",GetTickCount());
 	
 	game_file_add_chunk(iface.bitmap_list.bitmaps,iface.bitmap_list.nbitmap,sizeof(iface_bitmap_type));
 	game_file_add_chunk(iface.text_list.texts,iface.text_list.ntext,sizeof(iface_text_type));
@@ -492,6 +501,7 @@ bool game_file_save(bool no_progress,bool suspend_save,char *err_str)
 	for (n=0;n!=map.group.ngroup;n++) {
 		game_file_add_chunk(&map.group.groups[n].run,1,sizeof(group_run_type));
 	}
+	fprintf(stdout,"9: %d\n",GetTickCount());
 
 	if (!no_progress) progress_update();
 
@@ -510,6 +520,7 @@ bool game_file_save(bool no_progress,bool suspend_save,char *err_str)
 		if (!no_progress) progress_shutdown();
 		return(FALSE);
 	}
+	fprintf(stdout,"10: %d\n",GetTickCount());
 
 		// timers and script data
 
@@ -527,6 +538,7 @@ bool game_file_save(bool no_progress,bool suspend_save,char *err_str)
 	}
 
 	if (!no_progress) progress_update();
+	fprintf(stdout,"11: %d\n",GetTickCount());
 
 	count=script_global_count_list();
 	game_file_add_chunk(&count,1,sizeof(int));
@@ -540,6 +552,7 @@ bool game_file_save(bool no_progress,bool suspend_save,char *err_str)
 	}
 
 		// compress and save
+	fprintf(stdout,"12: %d\n",GetTickCount());
 		
 	if (!no_progress) progress_update();
 
@@ -555,6 +568,7 @@ bool game_file_save(bool no_progress,bool suspend_save,char *err_str)
 	if (!no_progress) progress_update();
 	
 	game_file_end();
+	fprintf(stdout,"13: %d\n",GetTickCount());
 	
 		// remember last map
 		

@@ -35,28 +35,31 @@ and can be sold or given away.
 #define kChooserPieceSettingsType				0
 #define kChooserPieceSettingsId					1
 #define kChooserPieceSettingsClickable			2
-#define kChooserPieceSettingsGoto				3
+#define kChooserPieceSettingsKey				3
+#define kChooserPieceSettingsGoto				4
 
-#define kChooserPiecePositionX					4
-#define kChooserPiecePositionY					5
-#define kChooserPiecePositionWid				6
-#define kChooserPiecePositionHigh				7
+#define kChooserPiecePositionX					10
+#define kChooserPiecePositionY					11
+#define kChooserPiecePositionWid				12
+#define kChooserPiecePositionHigh				13
 
-#define kChooserPieceTextStr					8
-#define kChooserPieceTextSize					9
-#define kChooserPieceTextJust					10
-#define kChooserPieceItemFile					11
-#define kChooserPieceModelModelName				12
-#define kChooserPieceModelAnimateName			13
-#define kChooserPieceModelResize				14
-#define kChooserPieceModelRot					15
-#define kChooserPieceButtonText					16
+#define kChooserPieceTextStr					20
+#define kChooserPieceTextSize					21
+#define kChooserPieceTextJust					22
+#define kChooserPieceItemFile					23
+#define kChooserPieceModelModelName				24
+#define kChooserPieceModelAnimateName			25
+#define kChooserPieceModelResize				26
+#define kChooserPieceModelRot					27
+#define kChooserPieceButtonText					28
 
 extern iface_type				iface;
 extern list_palette_type		project_palette;
 
 extern char						chooser_type_str[][32],
 								hud_text_just_type_str[][32];
+
+char							chooser_key_str[][32]=chooser_key_list_def;
 
 /* =======================================================
 
@@ -80,6 +83,7 @@ void project_palette_fill_chooser_piece(int chooser_idx,int chooser_piece_idx)
 	list_palette_add_picker_list_int(&project_palette,kChooserPieceSettingsType,"Type",(char*)chooser_type_str,-1,name_str_len,0,FALSE,FALSE,&piece->type,FALSE);
 	list_palette_add_int(&project_palette,kChooserPieceSettingsId,"Id",&piece->id,FALSE);
 	list_palette_add_checkbox(&project_palette,kChooserPieceSettingsClickable,"Clickable",&piece->clickable,FALSE);
+	list_palette_add_picker_list_int(&project_palette,kChooserPieceSettingsKey,"Key",(char*)chooser_key_str,-1,name_str_len,0,FALSE,FALSE,&piece->key,FALSE);
 	list_palette_add_string(&project_palette,kChooserPieceSettingsGoto,"Goto Chooser",piece->goto_name,name_str_len,FALSE);
 
 		// position

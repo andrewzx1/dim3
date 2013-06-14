@@ -193,6 +193,7 @@ void project_palette_click_chooser(int chooser_idx,bool double_click)
 		chooser->pieces[idx].wid=-1;
 		chooser->pieces[idx].high=-1;
 		chooser->pieces[idx].clickable=FALSE;
+		chooser->pieces[idx].key=chooser_key_none;
 		chooser->pieces[idx].goto_name[0]=0x0;
 		
 		bzero(&chooser->pieces[idx].data,sizeof(iface_chooser_piece_data_type));

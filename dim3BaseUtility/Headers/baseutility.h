@@ -31,7 +31,7 @@ and can be sold or given away.
       
 ======================================================= */
 
-#define dim3_version					"0020"
+#define dim3_version					"0021"
 
 /* =======================================================
 
@@ -791,6 +791,49 @@ typedef struct		{
 #define chooser_piece_type_model						2
 #define chooser_piece_type_button						3
 
+#define chooser_key_none								0
+#define chooser_key_return								1
+#define chooser_key_escape								2
+#define chooser_key_0									3
+#define chooser_key_1									4
+#define chooser_key_2									5
+#define chooser_key_3									6
+#define chooser_key_4									7
+#define chooser_key_5									8
+#define chooser_key_6									9
+#define chooser_key_7									10
+#define chooser_key_8									11
+#define chooser_key_9									12
+#define chooser_key_A									13
+#define chooser_key_B									14
+#define chooser_key_C									15
+#define chooser_key_D									16
+#define chooser_key_E									17
+#define chooser_key_F									18
+#define chooser_key_G									19
+#define chooser_key_H									20
+#define chooser_key_I									21
+#define chooser_key_J									22
+#define chooser_key_K									23
+#define chooser_key_L									24
+#define chooser_key_M									25
+#define chooser_key_N									26
+#define chooser_key_O									27
+#define chooser_key_P									28
+#define chooser_key_Q									29
+#define chooser_key_R									30
+#define chooser_key_S									31
+#define chooser_key_T									32
+#define chooser_key_U									33
+#define chooser_key_V									34
+#define chooser_key_W									35
+#define chooser_key_X									36
+#define chooser_key_Y									37
+#define chooser_key_Z									38
+#define chooser_key_space								39
+
+#define chooser_key_list_def							{"none","return","escape","0","1","2","3","4","5","6","7","8","9","A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z","Space"}
+
 typedef struct		{
 						int								size,just;
 						char							str[max_chooser_text_data_sz];
@@ -818,7 +861,7 @@ typedef union		{
 					} iface_chooser_piece_data_type;
 
 typedef struct		{
-						int								type,id,
+						int								type,id,key,
 														x,y,wid,high;
 						bool							clickable,used_in_override;
 						char							goto_name[name_str_len];

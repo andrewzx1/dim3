@@ -69,7 +69,9 @@ void menu_draw_start(char *name)
 	view.menu.fade_start_tick=game_time_get_raw();
 
 	view.menu.menu_idx=0;
+	view.menu.item_idx=-1;
 	view.menu.mouse_down=FALSE;
+	view.menu.key_down=FALSE;
 
 		// any sub menu?
 
@@ -87,6 +89,10 @@ void menu_draw_start(char *name)
 
 	cursor_initialize();
 	input_gui_set_position((iface.scale_x>>1),(iface.scale_y>>1));
+
+		// remember last mouse
+
+	input_gui_get_hilite_position(&view.menu.mouse_pnt.x,&view.menu.mouse_pnt.y);
 }
 
 void menu_draw_end(bool fade)
@@ -154,20 +160,14 @@ int menu_find_item(iface_menu_type *menu,int kx,int ky)
 
 bool menu_select(void)
 {
-	int						x,y,click_idx,sub_idx;
+	int						sub_idx;
 	iface_menu_type			*menu;
 	iface_menu_item_type	*item;
 	
 		// find clicked item
 		
 	menu=&iface.menu_list.menus[view.menu.menu_idx];
-
-	input_gui_get_position(&x,&y);
-	click_idx=menu_find_item(menu,x,y);
-	
-	if (click_idx==-1) return(FALSE);
-	
-	item=&menu->items[click_idx];
+	item=&menu->items[view.menu.item_idx];
 		
 		// going into sub-menu
 			
@@ -176,6 +176,7 @@ bool menu_select(void)
 		if (sub_idx==-1) return(FALSE);
 			
 		view.menu.menu_idx=sub_idx;
+		view.menu.item_idx=0;
 		return(FALSE);
 	}
 	
@@ -204,8 +205,32 @@ bool menu_select(void)
 	return(TRUE);
 }
 
+void menu_previous_item(void)
+{
+	iface_menu_type			*menu;
+		
+	menu=&iface.menu_list.menus[view.menu.menu_idx];
+	
+	view.menu.item_idx--;
+	if (view.menu.item_idx<0) view.menu.item_idx=menu->nitem-1;
+}
+
+void menu_next_item(void)
+{
+	iface_menu_type			*menu;
+		
+	menu=&iface.menu_list.menus[view.menu.menu_idx];
+	
+	view.menu.item_idx++;
+	if (view.menu.item_idx>=menu->nitem) view.menu.item_idx=0;
+}
+
 void menu_input(void)
 {
+	int					x,y,item_idx;
+	bool				prev,next,rtn;
+	iface_menu_type		*menu;
+
 		// turn on/off menu
 
 	if (input_action_get_state_single(nc_menu)) {
@@ -222,11 +247,71 @@ void menu_input(void)
 		return;
 	}
 
-		// active menu clicking
-		// only click on mouse ups so we don't get
-		// the mouse down travelling through to the game
+		// active menu input
 
 	if (!view.menu.active) return;
+
+	menu=&iface.menu_list.menus[view.menu.menu_idx];
+
+		// if the mouse moves, we can
+		// change the hilite selection
+		// so it doesn't interfere with keys
+
+		// if item idx==-1, then we haven't
+		// gotten any selection yet
+
+	input_gui_get_hilite_position(&x,&y);
+
+	if ((view.menu.item_idx==-1) || ((x!=view.menu.mouse_pnt.x) && (y!=view.menu.mouse_pnt.y))) {
+		view.menu.mouse_pnt.x=x;
+		view.menu.mouse_pnt.y=y;
+
+		item_idx=menu_find_item(menu,x,y);
+		if (item_idx==-1) {
+			if (view.menu.item_idx==-1) view.menu.item_idx=0;
+		}
+		else {
+			view.menu.item_idx=item_idx;
+		}
+	}
+
+		// check key presses
+
+	if (input_get_keyboard_escape()) {
+		menu_draw_end(TRUE);
+		return;
+	}
+
+	prev=input_get_keyboard_prev();
+	next=input_get_keyboard_next();
+	rtn=input_get_keyboard_return();
+
+	if ((!prev) && (!next) && (!rtn)) {
+		view.menu.key_down=FALSE;
+	}
+	else {
+		if (!view.menu.key_down) {
+			view.menu.key_down=TRUE;
+
+			if (rtn) {
+				menu_select();
+				return;
+			}
+			
+			if (prev) {
+				menu_previous_item();
+				return;
+			}
+			
+			if (next) {
+				menu_next_item();
+				return;
+			}
+		}
+	}
+
+		// only click on mouse ups so we don't get
+		// the mouse down travelling through to the game
 
 	if (input_gui_is_click_down()) {
 		view.menu.mouse_down=TRUE;
@@ -235,7 +320,14 @@ void menu_input(void)
 	
 	if (view.menu.mouse_down) {
 		view.menu.mouse_down=FALSE;
-		menu_select();
+
+		input_gui_get_position(&x,&y);
+		item_idx=menu_find_item(menu,x,y);
+
+		if (item_idx!=-1) {
+			view.menu.item_idx=item_idx;
+			menu_select();
+		}
 	}
 }
 
@@ -248,7 +340,7 @@ void menu_input(void)
 void menu_draw(void)
 {
 	int						n,raw_tick,x,y,lft,rgt,top,bot,my,
-							high,half_high,hilite_idx;
+							high,half_high;
 	float					alpha,draw_alpha;
 	d3col					back_col,back_col2;
 	iface_menu_type			*menu;
@@ -290,11 +382,6 @@ void menu_draw(void)
 		}
 	}
 
-		// find any hilite selection
-		
-	input_gui_get_hilite_position(&x,&y);
-	hilite_idx=menu_find_item(menu,x,y);
-		
 		// get height
 
 	high=gl_text_get_char_height(iface.font.text_size_large)+10;
@@ -334,7 +421,7 @@ void menu_draw(void)
 		else {
 			draw_alpha=alpha;
 			
-			if (n==hilite_idx) {
+			if (n==view.menu.item_idx) {
 				memmove(&back_col,&iface.color.menu.mouse_over,sizeof(d3col));
 			}
 			else {

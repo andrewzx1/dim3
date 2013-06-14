@@ -93,6 +93,8 @@ void input_event_key(int key_idx,bool down)
 bool input_get_keyboard_key(int key_idx) { return(FALSE); }
 bool input_get_keyboard_escape(void) { return(FALSE); }
 bool input_get_keyboard_return(void) { return(FALSE); }
+bool input_get_keyboard_prev(void) { return(FALSE); }
+bool input_get_keyboard_next(void) { return(FALSE); }
 
 #else
 
@@ -109,6 +111,16 @@ bool input_get_keyboard_escape(void)
 bool input_get_keyboard_return(void)
 {
 	return((key_states[SDL_SCANCODE_RETURN]) || (key_states[SDL_SCANCODE_KP_ENTER]));
+}
+
+bool input_get_keyboard_prev(void)
+{
+	return((key_states[SDL_SCANCODE_UP]) || (key_states[SDL_SCANCODE_LEFT]));
+}
+
+bool input_get_keyboard_next(void)
+{
+	return((key_states[SDL_SCANCODE_DOWN]) || (key_states[SDL_SCANCODE_RIGHT]));
 }
 
 #endif
