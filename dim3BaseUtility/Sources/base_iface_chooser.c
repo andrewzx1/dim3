@@ -31,8 +31,9 @@ and can be sold or given away.
 
 extern file_path_setup_type		file_path_setup;
 
-extern char						just_mode_str[][32],
-								chooser_key_str[][32];
+extern char						just_mode_str[][32];
+
+char							chooser_key_str[][32]=chooser_key_list_def;
 
 /* =======================================================
 

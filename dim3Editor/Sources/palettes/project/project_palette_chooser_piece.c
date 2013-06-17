@@ -57,9 +57,8 @@ extern iface_type				iface;
 extern list_palette_type		project_palette;
 
 extern char						chooser_type_str[][32],
+								chooser_key_str[][32],
 								hud_text_just_type_str[][32];
-
-char							chooser_key_str[][32]=chooser_key_list_def;
 
 /* =======================================================
 
