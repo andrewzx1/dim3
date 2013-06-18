@@ -39,6 +39,7 @@ extern setup_type			setup;
 extern file_path_setup_type	file_path_setup;
 
 int							chooser_idx;
+bool						chooser_key_down;
 char						chooser_sub_txt[max_chooser_sub_txt][max_chooser_text_data_sz];
 
 /* =======================================================
@@ -232,6 +233,10 @@ void chooser_create_elements(void)
 
 		}
 	}
+
+		// no key downs
+
+	chooser_key_down=FALSE;
 }
 
 void chooser_open(void)
@@ -274,22 +279,56 @@ bool chooser_setup(char *name,char *sub_txt,char *err_str)
 
 /* =======================================================
 
+      Chooser Keys
+      
+======================================================= */
+
+bool chooser_is_key_down(iface_chooser_piece_type *piece)
+{
+	switch (piece->key) {
+		case chooser_key_return:
+			return(input_get_keyboard_return());
+		case chooser_key_escape:
+			return(input_get_keyboard_escape());
+		case chooser_key_space:
+			return(input_get_keyboard_key(SDL_SCANCODE_SPACE));
+	}
+
+	if ((piece->key>=chooser_key_0) && (piece->key<=chooser_key_9)) return(input_get_keyboard_key(SDL_SCANCODE_0+(piece->key-chooser_key_0)));
+	if ((piece->key>=chooser_key_A) && (piece->key<=chooser_key_Z)) return(input_get_keyboard_key(SDL_SCANCODE_A+(piece->key-chooser_key_A)));
+
+	return(FALSE);
+}
+
+/* =======================================================
+
       Chooser Input
       
 ======================================================= */
 
-void chooser_click(void)
+void chooser_input(void)
 {
-	int							id,idx,next_idx,template_idx;
+	int							n,id,idx,next_idx,template_idx;
 	iface_chooser_type			*chooser;
 	iface_chooser_piece_type	*piece;
 	
 	id=-1;
-	
-		// check for ok/cancel keys
 
-	if (input_get_keyboard_escape()) id=iface.chooser_list.choosers[chooser_idx].key.cancel_id;
-	if (input_get_keyboard_return()) id=iface.chooser_list.choosers[chooser_idx].key.ok_id;
+	chooser=&iface.chooser_list.choosers[chooser_idx];
+
+		// check for any key presses
+
+	for (n=0;n!=chooser->npiece;n++) {
+		piece=&chooser->pieces[n];
+		if (piece->key==chooser_key_none) continue;
+
+		if (chooser_is_key_down(piece)) id=piece->id;
+	}
+
+	if (chooser_key_down) {
+		if (id==-1) chooser_key_down=FALSE;
+		id=-1;
+	}
 
 		// if no key check clicking
 		
@@ -304,7 +343,6 @@ void chooser_click(void)
 	
 		// check for any goto clicks
 
-	chooser=&iface.chooser_list.choosers[chooser_idx];
 		
 	piece=NULL;
 
@@ -348,5 +386,5 @@ void chooser_click(void)
 void chooser_run(void)
 {
 	gui_draw(1.0f,TRUE);
-	chooser_click();
+	chooser_input();
 }
