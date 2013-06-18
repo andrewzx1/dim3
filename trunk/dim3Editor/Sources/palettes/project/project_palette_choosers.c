@@ -127,9 +127,6 @@ void project_palette_click_choosers(bool double_click)
 		strcpy(iface.chooser_list.choosers[idx].frame.title,"Chooser");
 		iface.chooser_list.choosers[idx].frame.on=TRUE;
 
-		iface.chooser_list.choosers[idx].key.ok_id=-1;
-		iface.chooser_list.choosers[idx].key.cancel_id=-1;
-
 		iface.chooser_list.choosers[idx].npiece=0;
 
 		state.proj.cur_chooser_idx=idx;

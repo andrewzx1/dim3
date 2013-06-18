@@ -147,8 +147,6 @@ void iface_read_settings_chooser_single(iface_type *iface,int chooser_tag)
 
 	chooser->npiece=0;
 	chooser->frame.on=FALSE;
-	chooser->key.ok_id=-1;
-	chooser->key.cancel_id=-1;
 	
 		// frames and keys
 		
@@ -160,12 +158,6 @@ void iface_read_settings_chooser_single(iface_type *iface,int chooser_tag)
 		chooser->frame.y=xml_get_attribute_int(tag,"y");
 		chooser->frame.wid=xml_get_attribute_int(tag,"width");
 		chooser->frame.high=xml_get_attribute_int(tag,"height");
-	}
-	
-	tag=xml_findfirstchild("Key",chooser_tag);
-	if (tag!=-1) {
-		chooser->key.ok_id=xml_get_attribute_int(tag,"ok_id");
-		chooser->key.cancel_id=xml_get_attribute_int(tag,"cancel_id");
 	}
 	
 		// items
@@ -331,11 +323,6 @@ bool iface_write_settings_chooser(iface_type *iface,char *err_str)
 		xml_add_attribute_int("y",chooser->frame.y);
 		xml_add_attribute_int("width",chooser->frame.wid);
 		xml_add_attribute_int("height",chooser->frame.high);
-		xml_add_tagend(TRUE);
-	
-		xml_add_tagstart("Key");
-		xml_add_attribute_int("ok_id",chooser->key.ok_id);
-		xml_add_attribute_int("cancel_id",chooser->key.cancel_id);
 		xml_add_tagend(TRUE);
 
 			// chooser pieces

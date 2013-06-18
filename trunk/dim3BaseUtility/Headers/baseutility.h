@@ -875,14 +875,9 @@ typedef struct		{
 					} iface_chooser_frame_type;
 					
 typedef struct		{
-						int								ok_id,cancel_id;
-					} iface_chooser_key_type;
-					
-typedef struct		{
 						int								npiece;
 						char							name[name_str_len],template_name[name_str_len];
 						iface_chooser_frame_type		frame;
-						iface_chooser_key_type			key;
 						iface_chooser_piece_type		pieces[max_chooser_piece];
 					} iface_chooser_type;
 

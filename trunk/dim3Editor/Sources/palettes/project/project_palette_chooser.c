@@ -42,9 +42,6 @@ and can be sold or given away.
 #define kChooserPropertyFrameHigh				14
 #define kChooserPropertyFrameTitle				15
 
-#define kChooserPropertyOKID					20
-#define kChooserPropertyCancelID				21
-
 #define kChooserPropertyChooserItemAdd			100
 
 #define kChooserPropertyChooserItemName			1000
@@ -87,12 +84,6 @@ void project_palette_fill_chooser(int chooser_idx)
 	list_palette_add_int(&project_palette,kChooserPropertyFrameWid,"Wid",&chooser->frame.wid,FALSE);
 	list_palette_add_int(&project_palette,kChooserPropertyFrameHigh,"High",&chooser->frame.high,FALSE);
 	list_palette_add_string(&project_palette,kChooserPropertyFrameTitle,"Title",chooser->frame.title,max_chooser_frame_text_sz,FALSE);
-
-		// keys
-
-	list_palette_add_header(&project_palette,0,"Keys");
-	list_palette_add_int(&project_palette,kChooserPropertyOKID,"OK Id",&chooser->key.ok_id,FALSE);
-	list_palette_add_int(&project_palette,kChooserPropertyCancelID,"Cancel Id",&chooser->key.cancel_id,FALSE);
 
 		// chooser items
 
