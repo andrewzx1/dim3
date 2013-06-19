@@ -707,10 +707,28 @@ void host_game(void)
       
 ======================================================= */
 
-void host_handle_click(int id)
+void host_click(void)
 {
-	int							n,idx;
+	int							n,id,idx;
 	iface_mp_option_type		*mp_option;
+
+	id=-1;
+
+		// keyboard
+
+	if (input_get_keyboard_escape()) id=host_button_cancel_id;
+	if (input_get_keyboard_return()) id=host_button_host_id;
+
+	if (id==-1) id=gui_keyboard();
+
+		// clicking
+
+	if (id==-1) {
+		id=gui_click();
+		if (id!=-1) hud_click();
+	}
+		
+	if (id==-1) return;
 
 		// special option clicks
 		// rebuild the options list
@@ -809,26 +827,6 @@ void host_handle_click(int id)
 	}
 }
 
-void host_keyboard(void)
-{
-	int			id;
-
-	id=gui_keyboard();
-	if (id!=-1) host_handle_click(id);
-}
-
-void host_click(void)
-{
-	int			id;
-	
-	id=gui_click();
-	if (id==-1) return;
-	
-	hud_click();
-
-	host_handle_click(id);
-}
-
 /* =======================================================
 
       Run Host
@@ -839,6 +837,5 @@ void host_run(void)
 {
 	gui_draw(1.0f,TRUE);
 	host_click();
-	host_keyboard();
 }
 

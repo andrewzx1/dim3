@@ -419,15 +419,24 @@ void file_click(void)
 {
 	int			id,k;
 	char		err_str[256],file_name[256];
-	
-		// is element being clicked
+
+	id=-1;
+
+		// keyboard
+
+	if (input_get_keyboard_escape()) id=file_button_cancel_id;
+	if (input_get_keyboard_return()) id=file_is_save?file_button_save_id:file_button_load_id;
+
+		// clicking
+
+	if (id==-1) {
+		id=gui_click();
+		if (id!=-1) hud_click();
+	}
 		
-	id=gui_click();
 	if (id==-1) return;
-	
-	hud_click();
-	
-		// run selection
+
+		// handle click
 		
 	switch (id) {
 	

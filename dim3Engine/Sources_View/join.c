@@ -825,14 +825,23 @@ void join_click(void)
 	int			id;
 	bool		enable;
 	
-		// is element being clicked
+	id=-1;
+
+		// keyboard
+
+	if (input_get_keyboard_escape()) id=join_button_cancel_id;
+	if (input_get_keyboard_return()) id=join_button_join_id;
+
+		// clicking
+
+	if (id==-1) {
+		id=gui_click();
+		if (id!=-1) hud_click();
+	}
 		
-	id=gui_click();
 	if (id==-1) return;
-	
-	hud_click();
-	
-		// run selection
+
+		// handle click
 
 	switch (id) {
 			

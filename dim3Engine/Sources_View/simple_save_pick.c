@@ -51,8 +51,7 @@ extern file_path_setup_type	file_path_setup;
 
 extern int					intro_simple_save_idx;
 
-bool						simple_save_pick_esc_down,
-							simple_save_pick_in_erase;
+bool						simple_save_pick_in_erase;
 
 /* =======================================================
 
@@ -241,10 +240,6 @@ void simple_save_pick_open(void)
 	
 	element_frame_add("Erase Save Spot",simple_save_pick_erase_frame_id,x,y,erase_wid,erase_high,-1,0,NULL,(max_simple_save_spot+1),butts_erase);
 	
-		// in key state
-	
-	simple_save_pick_esc_down=FALSE;
-	
 		// setup controls
 		
 	simple_save_pick_in_erase=FALSE;
@@ -262,19 +257,27 @@ void simple_save_pick_close(void)
       
 ======================================================= */
 
-void simple_save_pick_click(void)
+void simple_save_click(void)
 {
 	int						id,simple_save_idx;
 	char					err_str[256];
 	iface_simple_save_type	*save;
-	
-		// element being clicked?
+
+	id=-1;
+
+		// keyboard
+
+	if (input_get_keyboard_escape()) id=simple_save_pick_button_cancel_id;
+
+		// clicking
+
+	if (id==-1) {
+		id=gui_click();
+		if (id!=-1) hud_click();
+	}
 		
-	id=gui_click();
 	if (id==-1) return;
-	
-	hud_click();
-	
+
 		// regular button clicks
 
 	if (id==simple_save_pick_button_cancel_id) {
@@ -341,26 +344,6 @@ void simple_save_pick_click(void)
 	}
 }
 
-void simple_save_pick_key(void)
-{
-		// check for esc
-		
-	if (!input_get_keyboard_escape()) {
-		simple_save_pick_esc_down=FALSE;
-		return;
-	}
-	
-	if (simple_save_pick_esc_down) return;
-	
-	hud_click();
-	
-	simple_save_pick_esc_down=TRUE;
-
-		// escape cancels
-
-	server.next_state=gs_intro;
-}
-
 /* =======================================================
 
       Run Simple Save Pick Page
@@ -370,8 +353,7 @@ void simple_save_pick_key(void)
 void simple_save_pick_run(void)
 {
 	gui_draw(1.0f,TRUE);
-	simple_save_pick_click();
-	simple_save_pick_key();
+	simple_save_click();
 }
 
 
