@@ -793,10 +793,30 @@ void setup_game_default(void)
       
 ======================================================= */
 
-void setup_game_handle_click(int id)
+void setup_game_click(void)
 {
-	int							idx;
+	int							id,idx;
 	iface_mp_character_type		*mp_character;
+
+	id=-1;
+
+		// keyboard
+
+	if (input_get_keyboard_escape()) id=setup_game_cancel_button_id;
+	if (input_get_keyboard_return()) id=setup_game_ok_button_id;
+
+	if (id==-1) id=gui_keyboard();
+
+		// clicking
+
+	if (id==-1) {
+		id=gui_click();
+		if (id!=-1) hud_click();
+	}
+		
+	if (id==-1) return;
+
+		// handle click
 	
 	switch (id) {
 	
@@ -981,28 +1001,6 @@ void setup_game_handle_click(int id)
 
 	}
 }
-
-void setup_game_keyboard(void)
-{
-	int			id;
-
-	id=gui_keyboard();
-	if (id==-1) return;
-
-	setup_game_handle_click(id);
-}
-
-void setup_game_click(void)
-{
-	int			id;
-	
-	id=gui_click();
-	if (id==-1) return;
-	
-	hud_click();
-
-	setup_game_handle_click(id);
-}
 	
 /* =======================================================
 
@@ -1024,9 +1022,6 @@ void setup_game_run(void)
 		
 	gui_draw(1.0f,TRUE);
 
-		// keyboard and clicking
-
-	setup_game_keyboard();
 	setup_game_click();
 }
 

@@ -49,7 +49,6 @@ extern setup_type			setup;
 extern network_setup_type	net_setup;
 extern file_path_setup_type	file_path_setup;
 
-bool						singleplayer_option_esc_down;
 char						skill_list[6][32]={"Easy","Medium","Hard",""};
 char						*singleplayer_option_table_map_list;
 
@@ -274,10 +273,6 @@ void singleplayer_option_open(void)
 		element_set_value(singleplayer_option_map_table_id,0);
 	}
 	
-		// in key state
-	
-	singleplayer_option_esc_down=FALSE;
-
 	singleplayer_option_map_selected();
 }
 
@@ -303,14 +298,23 @@ void singleplayer_option_click(void)
 	int				n,id,idx,skill,option_flags;
 	char			map_name[name_str_len];
 	
-		// element being clicked?
+	id=-1;
+
+		// keyboard
+
+	if (input_get_keyboard_escape()) id=singleplayer_option_button_cancel_id;
+	if (input_get_keyboard_return()) id=singleplayer_option_button_ok_id;
+
+		// clicking
+
+	if (id==-1) {
+		id=gui_click();
+		if (id!=-1) hud_click();
+	}
 		
-	id=gui_click();
 	if (id==-1) return;
-	
-	hud_click();
-	
-		// regular button clicks
+
+		// handle click
 		
 	switch (id) {
 	
@@ -357,26 +361,6 @@ void singleplayer_option_click(void)
 	}
 }
 
-void singleplayer_option_key(void)
-{
-		// check for esc
-		
-	if (!input_get_keyboard_escape()) {
-		singleplayer_option_esc_down=FALSE;
-		return;
-	}
-	
-	if (singleplayer_option_esc_down) return;
-	
-	hud_click();
-	
-	singleplayer_option_esc_down=TRUE;
-
-		// escape cancels
-
-	server.next_state=gs_intro;
-}
-
 /* =======================================================
 
       Run Singleplayer Option Page
@@ -387,7 +371,6 @@ void singleplayer_option_run(void)
 {
 	gui_draw(1.0f,TRUE);
 	singleplayer_option_click();
-	singleplayer_option_key();
 }
 
 
