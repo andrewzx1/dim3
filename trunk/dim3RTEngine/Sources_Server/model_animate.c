@@ -711,7 +711,8 @@ bool model_get_bone_brightness(model_draw *draw,char *pose_name,char *bone_name,
 	
 		// light at position
 
-	gl_lights_calc_color((float)pnt.x,(float)pnt.y,(float)pnt.z,pc);
+	pc[0]=pc[1]=pc[2]=1.0f;		// supergumba -- need a replacement
+	//gl_lights_calc_color((float)pnt.x,(float)pnt.y,(float)pnt.z,pc);
 	
 	*bright=(pc[0]+pc[1]+pc[2])*0.33f;
 	if (*bright<0.0f) *bright=0.0f;

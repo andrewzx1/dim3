@@ -82,7 +82,6 @@ void metrics_draw(void)
 	
 	count=9;
 	if (net_setup.mode==net_mode_client) count++;
-	if (map.optimize.ray_trace_obscure) count++;
 	
 	col.r=col.g=col.b=0.0f;
 	view_primitive_2D_color_quad(&col,0.5f,2,wid,2,((count*high)+(high/2)));
@@ -107,57 +106,6 @@ void metrics_draw(void)
 		}
 
 		metrics_draw_single(y,"Latency:",str);
-		y+=high;
-	}
-
-		// meshes and polys
-
-	sprintf(str,"%d.%d",view.count.mesh,view.count.mesh_poly);
-
-	metrics_draw_single(y,"Meshes:",str);
-	y+=high;
-
-		// liquids
-
-	sprintf(str,"%d.%d",view.count.liquid,view.count.liquid_poly);
-
-	metrics_draw_single(y,"Liquids:",str);
-	y+=high;
-
-		// models
-
-	sprintf(str,"%d.%d",view.count.model,view.count.model_poly);
-
-	metrics_draw_single(y,"Models:",str);
-	y+=high;
-
-		// shadows
-
-	sprintf(str,"%d.%d",view.count.shadow,view.count.shadow_poly);
-
-	metrics_draw_single(y,"Shadows:",str);
-	y+=high;
-
-		// effects
-
-	sprintf(str,"%d",view.count.effect);
-
-	metrics_draw_single(y,"Effects:",str);
-	y+=high;
-
-		// lights
-
-	sprintf(str,"%d",view.render->light.count);
-
-	metrics_draw_single(y,"Lights:",str);
-	y+=high;
-
-		// obscure
-
-	if (map.optimize.ray_trace_obscure) {
-		sprintf(str,"%d%%",view.count.obscure_percent);
-
-		metrics_draw_single(y,"Obscure:",str);
 		y+=high;
 	}
 

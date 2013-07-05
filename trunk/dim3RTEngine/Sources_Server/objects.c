@@ -258,10 +258,6 @@ void object_clear_draw(model_draw *draw)
 		draw->halos[k].on=FALSE;
 	}
 
-		// shadow
-		
-	draw->shadow.on=FALSE;
-
 		// default normal
 
 	draw->normal[0]=0.5f;

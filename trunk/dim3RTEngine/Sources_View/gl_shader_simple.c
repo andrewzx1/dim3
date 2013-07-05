@@ -41,6 +41,21 @@ shader_type					color_shader,gradient_shader,black_shader,
 
 /* =======================================================
 
+      ES2 non-ES2 Precision Fixes
+      
+======================================================= */
+
+void gl_core_shader_build_generic_precision_defines(char *buf)
+{
+	strcat(buf,"#ifndef GL_ES\n");
+	strcat(buf," #define lowp\n");
+	strcat(buf," #define mediump\n");
+	strcat(buf," #define highp\n");
+	strcat(buf,"#endif\n");
+}
+
+/* =======================================================
+
       Build Simple Color Shader
       
 ======================================================= */

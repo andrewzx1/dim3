@@ -49,7 +49,7 @@
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="true"
-				AdditionalIncludeDirectories="..\Common\Libraries;..\Common\Libraries\GLEW;..\Common\Libraries\ZLib;..\Common\Libraries\SDL;..\Common\Libraries\MPG123;..\Common\Libraries\JavaScriptCore;..\Common\Headers;..\Common\Libraries\PNG;..\..\dim3Engine\Headers;..\..\dim3Common\Headers;..\..\dim3BaseUtility\Headers;..\..\dim3BaseUtility\Sources;..\..\dim3ModelUtility\Headers;..\..\dim3ModelUtility\Sources;..\..\dim3MapUtility\Headers;..\..\dim3MapUtility\Sources;..\..\dim3Engine\Sources_RTL"
+				AdditionalIncludeDirectories="..\Common\Libraries;..\Common\Libraries\GLEW;..\Common\Libraries\ZLib;..\Common\Libraries\SDL;..\Common\Libraries\MPG123;..\Common\Libraries\JavaScriptCore;..\Common\Headers;..\Common\Libraries\PNG;..\..\dim3RTEngine\Headers;..\..\dim3Common\Headers;..\..\dim3BaseUtility\Headers;..\..\dim3BaseUtility\Sources;..\..\dim3ModelUtility\Headers;..\..\dim3ModelUtility\Sources;..\..\dim3MapUtility\Headers;..\..\dim3MapUtility\Sources;..\..\dim3RTEngine\Sources_RTL"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;D3_PCH;D3_ENGINE"
 				StringPooling="true"
 				ExceptionHandling="0"
@@ -539,10 +539,6 @@
 					</File>
 					<File
 						RelativePath="..\..\dim3RTEngine\Sources_Server\script_model_rotate.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3RTEngine\Sources_Server\script_model_shadow.c"
 						>
 					</File>
 					<File
@@ -1202,14 +1198,6 @@
 					Name="Video"
 					>
 					<File
-						RelativePath="..\..\dim3RTEngine\Sources_View\gl_back_render.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3RTEngine\Sources_View\gl_check.c"
-						>
-					</File>
-					<File
 						RelativePath="..\..\dim3RTEngine\Sources_View\gl_frames.c"
 						>
 					</File>
@@ -1226,23 +1214,11 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\dim3RTEngine\Sources_View\gl_shader_core.c"
-						>
-					</File>
-					<File
 						RelativePath="..\..\dim3RTEngine\Sources_View\gl_shader_execute.c"
 						>
 					</File>
 					<File
-						RelativePath="..\..\dim3RTEngine\Sources_View\gl_shader_fullscreen.c"
-						>
-					</File>
-					<File
 						RelativePath="..\..\dim3RTEngine\Sources_View\gl_shader_simple.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3RTEngine\Sources_View\gl_shader_user.c"
 						>
 					</File>
 					<File
@@ -1262,19 +1238,7 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\dim3RTEngine\Sources_View\render_map_opaque.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3RTEngine\Sources_View\render_map_transparent.c"
-						>
-					</File>
-					<File
 						RelativePath="..\..\dim3RTEngine\Sources_View\render_model.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3RTEngine\Sources_View\render_shadow.c"
 						>
 					</File>
 				</Filter>
@@ -1359,10 +1323,6 @@
 					</File>
 					<File
 						RelativePath="..\..\dim3RTEngine\Sources_View\view_images.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3RTEngine\Sources_View\view_obscure.c"
 						>
 					</File>
 					<File
@@ -1491,14 +1451,6 @@
 					</File>
 					<File
 						RelativePath="..\..\dim3RTEngine\Sources_View\halo_draw.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3RTEngine\Sources_View\particles_draw.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3RTEngine\Sources_View\rings_draw.c"
 						>
 					</File>
 				</Filter>

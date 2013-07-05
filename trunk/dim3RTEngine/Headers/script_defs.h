@@ -125,15 +125,6 @@ and can be sold or given away.
 #define sd_light_direction_pos_z						1056
 
 //
-// message constants
-//
-
-#define sd_message_to_player							1080
-#define sd_message_to_object							1081
-#define sd_message_to_course							1082
-#define sd_message_to_game								1083
-
-//
 // ducking constants
 //
 
@@ -379,28 +370,6 @@ and can be sold or given away.
 #define sd_event_remote_telefrag						3091
 
 //
-// script event messages
-//
-
-#define d3_jsval_type_number							0
-#define d3_jsval_type_boolean							1
-#define d3_jsval_type_string							2
-
-#define max_d3_jsval_str_len							128
-
-#define max_script_msg_data								8
-
-//
-// javascript data storage
-//
-
-typedef union		{
-						float							d3_number;
-						bool							d3_boolean;
-						char							d3_string[max_d3_jsval_str_len];
-					} d3_jsval_data_type;
-
-//
 // define structure
 //
  
@@ -419,8 +388,20 @@ typedef struct		{
 					} script_attach_type;
 
 //
-// global structures
+// global data structures
 //
+
+#define d3_jsval_type_number							0
+#define d3_jsval_type_boolean							1
+#define d3_jsval_type_string							2
+
+#define max_d3_jsval_str_len							128
+
+typedef union		{
+						float							d3_number;
+						bool							d3_boolean;
+						char							d3_string[max_d3_jsval_str_len];
+					} d3_jsval_data_type;
  
 typedef struct		{
 						int								type;
@@ -448,20 +429,6 @@ typedef struct		{
 					} timer_list_type;
 
 //
-// script message structures
-//
-
-typedef struct		{
-						int								type;
-						d3_jsval_data_type				data;
-					} script_msg_type;
-
-typedef struct		{
-						script_msg_type					set[max_script_msg_data],	// supergumba:modernize -- get rid of this after modernize is finished
-														get[max_script_msg_data];
-					} script_message_data_type;
-
-//
 // script structures
 //
 
@@ -487,7 +454,6 @@ typedef struct		{
 						script_event_state_type			event_state;
 						script_recursive_type			recursive;
 						script_event_attach_list_type	event_attach_list;
-						script_message_data_type		msg_data;
 						JSGlobalContextRef				cx;
 						JSObjectRef						obj,global_obj;
 					} script_type;

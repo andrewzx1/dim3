@@ -100,37 +100,18 @@ JSValueRef js_interface_screen_get_height(JSContextRef cx,JSObjectRef j_obj,JSSt
 
 JSValueRef js_interface_screen_shader_start_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
-	bool			ok;
-	char			shader_name[name_str_len],err_str[256];
-	
-	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
-
-	script_value_to_string(cx,argv[0],shader_name,name_str_len);
-	ok=gl_fs_shader_start(shader_name,-1,err_str);
-	if (err_str[0]!=0x0) *exception=script_create_exception(cx,err_str);
-	
-	return(script_bool_to_value(cx,ok));
+	// supergumba -- need a replacement
+	return(script_bool_to_value(cx,TRUE));
 }
 
 JSValueRef js_interface_screen_shader_start_timed_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
-	bool			ok;
-	char			shader_name[name_str_len],err_str[256];
-	
-	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
-
-	script_value_to_string(cx,argv[0],shader_name,name_str_len);
-	ok=gl_fs_shader_start(shader_name,script_value_to_int(cx,argv[1]),err_str);
-	if (err_str[0]!=0x0) *exception=script_create_exception(cx,err_str);
-	
-	return(script_bool_to_value(cx,ok));
+	// supergumba -- need a replacement
+	return(script_bool_to_value(cx,TRUE));
 }
 
 JSValueRef js_interface_screen_shader_stop_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
-	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
-
-	gl_fs_shader_end();
-
+	// supergumba -- need a replacement
 	return(script_null_to_value(cx));
 }

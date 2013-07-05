@@ -588,7 +588,6 @@ bool game_file_load(char *file_name,bool resume_load,char *err_str)
 	weapon_type			*weap;
 	proj_setup_type		*proj_setup;
 	spot_type			*spot;
-	model_draw			temp_draw;
 	
 		// load and expand
 		
@@ -709,19 +708,6 @@ bool game_file_load(char *file_name,bool resume_load,char *err_str)
 		obj=server.obj_list.objs[idx];
 		game_file_get_chunk(obj);
 
-			// reload model
-
-		memmove(&temp_draw,&obj->draw,sizeof(model_draw));
-
-		if (!model_draw_load(&temp_draw,"Object",obj->name,FALSE,err_str)) {
-			free(game_file_data);
-			if (!resume_load) progress_shutdown();
-			return(FALSE);
-		}
-
-		obj->draw.model_idx=temp_draw.model_idx;
-		memmove(obj->draw.vbo,temp_draw.vbo,(sizeof(model_vbo_type)*max_model_mesh));
-
 			// rebuild object script
 
 		scripts_lock_events();
@@ -751,19 +737,6 @@ bool game_file_load(char *file_name,bool resume_load,char *err_str)
 			weap=obj->weap_list.weaps[idx];
 			game_file_get_chunk(weap);
 
-				// reload model
-			
-			memmove(&temp_draw,&weap->draw,sizeof(model_draw));
-
-			if (!model_draw_load(&temp_draw,"Weapon",weap->name,FALSE,err_str)) {
-				free(game_file_data);
-				if (!resume_load) progress_shutdown();
-				return(FALSE);
-			}
-			
-			weap->draw.model_idx=temp_draw.model_idx;
-			memmove(weap->draw.vbo,temp_draw.vbo,(sizeof(model_vbo_type)*max_model_mesh));
-
 				// rebuild weapon script
 
 			scripts_lock_events();
@@ -792,19 +765,6 @@ bool game_file_load(char *file_name,bool resume_load,char *err_str)
 
 				proj_setup=weap->proj_setup_list.proj_setups[idx];
 				game_file_get_chunk(proj_setup);
-
-					// reload model
-
-				memmove(&temp_draw,&proj_setup->draw,sizeof(model_draw));
-
-				if (!model_draw_load(&temp_draw,"Projectile",proj_setup->name,FALSE,err_str)) {
-					free(game_file_data);
-					if (!resume_load) progress_shutdown();
-					return(FALSE);
-				}
-
-				proj_setup->draw.model_idx=temp_draw.model_idx;
-				memmove(proj_setup->draw.vbo,temp_draw.vbo,(sizeof(model_vbo_type)*max_model_mesh));
 
 					// rebuild projectile setup script
 
@@ -859,7 +819,6 @@ bool game_file_load(char *file_name,bool resume_load,char *err_str)
 		if (!resume_load) progress_update();
 
 		game_file_get_chunk(server.effect_list.effects[idx]);
-		view_clear_effect_vertex_object(server.effect_list.effects[idx]);
 	}
 
 	decal_free_list();

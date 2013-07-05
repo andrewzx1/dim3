@@ -89,7 +89,6 @@ void decal_render_mark(int stencil_idx,decal_type *decal)
 {
 	int					k,tick,fade_out_start_tick;
 	float				alpha,g_size,gx,gy;
-	float				cf[3];
 	float				*vp;
 	d3col				col;
 	iface_mark_type		*mark;
@@ -127,15 +126,16 @@ void decal_render_mark(int stencil_idx,decal_type *decal)
 
 		// get lighting
 		
-	if (mark->hilite) {
+	// supergumba -- need a replacement
+//	if (mark->hilite) {
 		col.r=col.g=col.b=1.0f;
-	}
-	else {
-		gl_lights_calc_color((float)decal->x[0],(float)decal->y[0],(float)decal->z[0],cf);
-		col.r=cf[0];
-		col.g=cf[1];
-		col.b=cf[2];
-	}
+//	}
+//	else {
+//		gl_lights_calc_color((float)decal->x[0],(float)decal->y[0],(float)decal->z[0],cf);
+//		col.r=cf[0];
+//		col.g=cf[1];
+//		col.b=cf[2];
+//	}
 
 		// setup vertex ptr
 

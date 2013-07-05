@@ -47,8 +47,6 @@ char						current_map_name[name_str_len];
 
 extern void map_movements_initialize(void);
 extern void group_move_clear_all(void);
-extern bool render_transparent_create_sort_list(void);
-extern void render_transparent_dispose_sort_list(void);
 extern void map_multiplayer_show_hide_meshes(void);
 
 /* =======================================================
@@ -311,12 +309,7 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 
 	camera_map_setup();
 	
-	if (!app.dedicated_host) {
-		gl_shader_attach_map();
-		gl_fs_shader_map_start();
-		gl_back_render_map_start();
-		al_music_map_pre_cache();
-	}
+	if (!app.dedicated_host) al_music_map_pre_cache();
 
 		// prepare map surfaces
 	
@@ -326,16 +319,6 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 	map_multiplayer_show_hide_meshes();
 
 		// map lists
-
-	progress_update();
-
-	if ((!app.dedicated_host) && (!iface.project.ray_trace)) {
-		if (!render_transparent_create_sort_list()) {
-			progress_shutdown();
-			strcpy(err_str,"Out of memory");
-			return(FALSE);
-		}
-	}
 
 	progress_update();
 
@@ -403,18 +386,6 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 
 	particle_map_initialize();
 	group_move_clear_all();
-
-		// setup obscuring
-
-	progress_update();
-
-	if ((!app.dedicated_host) && (!iface.project.ray_trace)) {
-		if (!view_obscure_initialize()) {
-			progress_shutdown();
-			strcpy(err_str,"Out of memory");
-			return(FALSE);
-		}
-	}
 
         // run the course script
 		// course scripts are the only
@@ -641,11 +612,6 @@ void map_end(void)
 
 	if (!app.dedicated_host) {
 		progress_update();
-		gl_fs_shader_map_end();
-		gl_back_render_map_end();
-		if (!iface.project.ray_trace) {
-			view_obscure_release();
-		}
 		sky_draw_release();
 		fog_draw_release();
 		rain_draw_release();
@@ -667,7 +633,6 @@ void map_end(void)
 	if ((!app.dedicated_host) && (!iface.project.ray_trace)) {
 		progress_update();
 		view_map_vbo_release();
-		render_transparent_dispose_sort_list();
 	}
 
 	map_group_dispose_unit_list(&map);

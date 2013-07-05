@@ -227,7 +227,6 @@ and can be sold or given away.
 // model defines
 //
 
-#define max_model_shadow_vbo_count				5
 #define max_model_dynamic_bone					4
 
 //
@@ -266,12 +265,6 @@ typedef struct		{
 					} model_draw_dynamic_bone;
 
 typedef struct		{
-						int								light_intensity;
-						bool							on;
-						d3pnt							light_pnt;
-					} model_draw_shadow;
-
-typedef struct		{
 						int								obj_idx,weap_idx,proj_idx,
 														net_uid;
 						bool							net_sound,weap_in_dual;
@@ -308,12 +301,6 @@ typedef struct		{
 					} model_texture_type;
 					
 typedef struct		{
-						int								vertex_count,vertex_mem_sz,vertex_stride,
-														shadow_vertex_mem_sz,shadow_current_idx;
-						GLuint							vertex,shadow_vertexes[max_model_shadow_vbo_count];
-					} model_vbo_type;
-
-typedef struct		{
 						int								model_idx,spin_tick,draw_dist,
 														mesh_mask,render_mesh_mask,
 														script_animation_idx,
@@ -333,11 +320,9 @@ typedef struct		{
 						model_draw_animation			animations[max_model_blend_animation];
 						model_draw_mesh_type			meshes[max_model_mesh];
 						model_draw_dynamic_bone			dynamic_bones[max_model_dynamic_bone];
-						model_draw_shadow				shadow;
 						model_draw_fade					fade;
 						model_light_cache				light_cache;
 						model_texture_type				textures[max_model_texture];
-						model_vbo_type					vbo[max_model_mesh];
 						model_draw_setup				setup;
 					} model_draw;
 
@@ -346,7 +331,7 @@ typedef struct		{
 //
 
 typedef struct		{
-						model_type*				models[max_model_list];
+						model_type*						models[max_model_list];
 					} model_list_type;
 
 //
@@ -997,12 +982,6 @@ typedef struct		{
 //
 
 typedef struct		{
-						int						vertex_mem_sz,index_mem_sz;
-						bool					active;
-						GLuint					vertex,index;
-					} effect_vbo_type;
-
-typedef struct		{
 						int						intensity,mid_tick;
 						float					exponent;
 						d3col					col;
@@ -1071,7 +1050,6 @@ typedef struct		{
 						bool					on;
 						d3pnt					pnt;
 						effect_data				data;
-						effect_vbo_type			vbo;
 					} effect_type;
 
 typedef struct		{

@@ -389,11 +389,7 @@ extern bool effect_spawn_flash(d3pnt *pt,d3col *col,int intensity,float exponent
 extern bool effect_spawn_lightning(d3pnt *start_pt,d3pnt *end_pt,int wid,float varient,d3col *col,int life_msec);
 extern bool effect_spawn_ray(d3pnt *start_pt,d3pnt *end_pt,int wid,d3col *col,int life_msec);
 extern bool effect_spawn_shake(d3pnt *pt,int distance,int size,int life_msec);
-extern void effect_draw_lightning(effect_type *effect);
-extern void effect_draw_ray(effect_type *effect,int count);
 extern void effect_image_animate_get_uv(int tick,int image_offset,iface_image_animation_type *animate,float *gx,float *gy,float *g_size);
-extern void effect_draw_get_bound_box(effect_type *effect,d3pnt *min,d3pnt *max);
-extern void effect_draw(void);
 extern iface_particle_type* particle_find(char *name);
 extern int particle_find_index(char *name);
 extern void particle_precalculate(iface_particle_type *particle);
@@ -404,12 +400,10 @@ extern bool particle_chain(effect_type *effect);
 extern float particle_get_gravity(iface_particle_type *particle,int count);
 extern void particle_map_initialize(void);
 extern void particle_map_run(void);
-extern void particle_draw(effect_type *effect,int count,int image_offset);
 extern iface_ring_type* ring_find(char *name);
 extern int ring_find_index(char *name);
 extern bool ring_spawn(int ring_idx,int obj_idx,d3pnt *pt,d3ang *ang);
 extern bool ring_line_spawn(int ring_idx,int obj_idx,d3pnt *start_pt,d3pnt *end_pt,int count);
-extern void ring_draw(effect_type *effect,int count,int image_offset);
 extern int mark_find(char *name);
 extern bool decal_initialize_list(void);
 extern void decal_free_list(void);
@@ -682,32 +676,6 @@ extern bool gl_is_size_widescreen(int wid,int high);
 extern bool gl_screen_shot(int lft_x,int top_y,int wid,int high,bool thumbnail,char *path);
 
 //
-// gl settings
-//
-
-extern bool gl_check_initialize(char *err_str);
-extern inline bool gl_check_frame_buffer_ok(void);
-extern inline bool gl_check_fsaa_ok(void);
-extern inline bool gl_check_texture_generate_mipmaps_ok(void);
-extern inline bool gl_check_npot_textures_ok(void);
-
-//
-// lights
-//
-
-extern void gl_lights_compile(int tick);
-extern int gl_light_get_averaged_shadow_light(d3pnt *pnt,d3pnt *size,d3pnt *light_pnt);
-extern void gl_lights_calc_ambient_color(d3col *col);
-extern void gl_lights_calc_diffuse_vector(d3pnt *pnt,int count,int *indexes,d3vct *vct);
-extern void gl_lights_calc_color(float x,float y,float z,float *cf);
-extern void gl_lights_calc_color_light_cache_byte(int count,int *indexes,bool skip_light_map,float x,float y,float z,unsigned char *cp);
-extern void gl_lights_calc_color_light_cache_float(int count,int *indexes,bool skip_light_map,float x,float y,float z,float *cp);
-extern void gl_lights_build_mesh_glsl_light_list(map_mesh_type *mesh,view_glsl_light_list_type *light_list);
-extern void gl_lights_build_poly_glsl_light_list(map_mesh_type *mesh,map_mesh_poly_type *poly,view_glsl_light_list_type *light_list);
-extern void gl_lights_build_liquid_glsl_light_list(map_liquid_type *liq,view_glsl_light_list_type *light_list);
-extern void gl_lights_build_model_glsl_light_list(model_type *mdl,model_draw *draw,view_glsl_light_list_type *light_list);
-
-//
 // vbos
 //
 
@@ -721,17 +689,6 @@ extern inline void view_bind_mesh_liquid_index_object(map_vbo_type *vbo);
 extern inline unsigned short* view_map_mesh_liquid_index_object(void);
 extern inline void view_unmap_mesh_liquid_index_object(void);
 extern inline void view_unbind_mesh_liquid_index_object(void);
-
-extern void view_create_model_vertex_object(model_draw *draw);
-extern void view_dispose_model_vertex_object(model_draw *draw);
-extern inline void view_bind_model_vertex_object(model_draw *draw,int mesh_idx);
-extern inline unsigned char* view_map_model_vertex_object(void);
-extern inline void view_unmap_model_vertex_object(void);
-extern inline void view_unbind_model_vertex_object(void);
-extern inline void view_bind_model_shadow_vertex_object(model_draw *draw,int mesh_idx);
-extern inline unsigned char* view_map_model_shadow_vertex_object(void);
-extern inline void view_unmap_model_shadow_vertex_object(void);
-extern inline void view_unbind_model_shadow_vertex_object(void);
 
 extern void view_create_sky_vertex_object(int vertex_mem_sz);
 extern void view_dispose_sky_vertex_object(void);
@@ -753,18 +710,6 @@ extern inline void view_bind_rain_vertex_object(void);
 extern inline unsigned char* view_map_rain_vertex_object(void);
 extern inline void view_unmap_rain_vertex_object(void);
 extern inline void view_unbind_rain_vertex_object(void);
-
-extern void view_clear_effect_vertex_object(effect_type *effect);
-extern void view_create_effect_vertex_object(effect_type *effect,int vertex_mem_sz,int index_mem_sz);
-extern void view_dispose_effect_vertex_object(effect_type *effect);
-extern inline void view_bind_effect_vertex_object(effect_type *effect);
-extern inline unsigned char* view_map_effect_vertex_object(void);
-extern inline void view_unmap_effect_vertex_object(void);
-extern inline void view_unbind_effect_vertex_object(void);
-extern inline void view_bind_effect_index_object(effect_type *effect);
-extern inline unsigned short* view_map_effect_index_object(void);
-extern inline void view_unmap_effect_index_object(void);
-extern inline void view_unbind_effect_index_object(void);
 
 extern void view_create_text_vertex_object(void);
 extern void view_dispose_text_vertex_object(void);
@@ -804,19 +749,7 @@ extern void gl_shader_initialize(void);
 extern void gl_shader_code_clear(shader_type *shader);
 extern bool gl_shader_code_compile(shader_type *shader,char *vertex_data,char *fragment_data,char *err_str);
 extern void gl_shader_code_shutdown(shader_type *shader);
-
-extern void gl_shader_attach_map(void);
-extern void gl_shader_attach_model(model_type *mdl);
-
-extern void gl_shader_set_scene_variables(shader_type *shader);
-
 extern void gl_shader_set_draw_matrix_variables(shader_type *shader);
-extern void gl_shader_set_light_variables(shader_type *shader,int core_shader_group,bool is_core,view_glsl_light_list_type *light_list);
-extern void gl_shader_set_diffuse_variables(shader_type *shader,view_glsl_light_list_type *light_list);
-extern void gl_shader_set_poly_variables(shader_type *shader,float alpha);
-extern void gl_shader_hilite_override(shader_type *shader,view_glsl_light_list_type *light_list);
-extern void gl_shader_set_texture(shader_type *shader,int core_shader_group,texture_type *texture,int txt_idx,int lmap_txt_idx,int frame);
-extern void gl_shader_texture_override(GLuint gl_id,float alpha);
 
 extern void gl_shader_frame_start(void);
 extern void gl_shader_force_matrix_resets(void);
@@ -840,62 +773,12 @@ extern inline void gl_shader_draw_execute_simple_bitmap_set_texture(unsigned lon
 extern inline void gl_shader_draw_execute_simple_bitmap_start(int vertex_size,int vertex_offset,int uv_offset,int stride,d3col *col,float alpha);
 extern inline void gl_shader_draw_execute_simple_bitmap_end(void);
 
-extern void gl_shader_draw_execute_reset_cached_offsets(void);
-
-extern void gl_shader_draw_execute_map_start(texture_type *texture,int txt_idx,int frame,int lmap_txt_idx,float alpha,int vertex_offset,int uv_offset,int lmap_uv_offset,int tangent_offset,int normal_offset,int stride,view_glsl_light_list_type *light_list);
-extern void gl_shader_draw_execute_map_end(texture_type *texture,view_glsl_light_list_type *light_list);
-
-extern void gl_shader_draw_execute_liquid_start(texture_type *texture,int txt_idx,int frame,int lmap_txt_idx,float alpha,int vertex_offset,int uv_offset,int lmap_uv_offset,int tangent_offset,int normal_offset,int stride,view_glsl_light_list_type *light_list);
-extern void gl_shader_draw_execute_liquid_end(texture_type *texture,view_glsl_light_list_type *light_list);
-
-extern void gl_shader_draw_execute_model_start(texture_type *texture,int txt_idx,int frame,float alpha,int vertex_offset,int uv_offset,int tangent_offset,int normal_offset,int stride,view_glsl_light_list_type *light_list);
-extern void gl_shader_draw_execute_model_end(texture_type *texture,view_glsl_light_list_type *light_list);
-
-//
-// core shaders
-//
-
-extern bool gl_core_shader_initialize(char *err_str);
-extern void gl_core_shader_shutdown(void);
-extern void gl_core_shader_build_generic_precision_defines(char *buf);
-extern shader_type* gl_core_shader_find_ptr(int nlight,int core_shader_group,texture_type *texture);
-
 //
 // simple shaders
 //
 
 extern bool gl_simple_shader_initialize(char *err_str);
 extern void gl_simple_shader_shutdown(void);
-
-//
-// user shaders
-//
-
-extern bool gl_user_shader_initialize(char *err_str);
-extern void gl_user_shader_shutdown(void);
-extern int gl_user_shader_find(char *name);
-
-//
-// full screen shaders
-//
-
-extern void gl_fs_shader_map_start(void);
-extern void gl_fs_shader_map_end(void);
-extern bool gl_fs_shader_start(char *shader_name,int life_msec,char *err_str);
-extern void gl_fs_shader_end(void);
-extern void gl_fs_shader_render_begin(void);
-extern void gl_fs_shader_render_finish(void);
-
-//
-// back renderers
-//
-
-extern void gl_back_render_initialize(void);
-extern void gl_back_render_shutdown(void);
-extern void gl_back_render_map_start(void);
-extern void gl_back_render_map_end(void);
-extern void gl_back_render_frame_start(void);
-extern bool gl_back_render_get_texture(char *node_name,GLuint *txt_id,float *alpha);
 
 //
 // opengl es patches
@@ -937,19 +820,7 @@ extern void view_cull_setup_frustum_clipping_planes(void);
 extern int view_cull_distance_to_view_center(int x,int y,int z);
 extern bool view_cull_mesh(map_mesh_type *mesh);
 extern bool view_cull_liquid(map_liquid_type *liq);
-extern bool view_cull_model(model_draw *draw);
-extern bool view_cull_model_shadow(model_draw *draw);
-extern bool view_cull_effect(effect_type *effect,d3pnt *center_pnt);
 extern bool view_cull_halo(d3pnt *pnt);
-extern void view_cull_draw_list_mesh_poly(void);
-
-//
-// map obscuring
-//
-
-extern bool view_obscure_initialize(void);
-extern void view_obscure_release(void);
-extern void view_obscure_run(void);
 
 //
 // textures
@@ -987,28 +858,11 @@ extern bitmap_type* view_images_get_bitmap(int idx);
 extern inline unsigned long view_images_get_gl_id(int idx);
 
 //
-// map rendering
-//
-
-extern void render_map_mesh_opaque(void);
-extern void render_map_mesh_transparent(void);
-
-//
 // liquids
 //
 
 extern float liquid_tide_get_high(map_liquid_type *liq);
 extern int liquid_wave_get_divisions(map_liquid_type *liq);
-extern void render_map_liquid_opaque(void);
-extern void render_map_liquid_transparent(void);
-
-//
-// shadows
-//
-
-extern bool shadow_get_volume(d3pnt *pnt,int high,d3pnt *light_pnt,int light_intensity,d3pnt *min,d3pnt *max);
-extern void shadow_render_model_setup_lights(model_draw *draw);
-extern void shadow_render_model(model_draw *draw);
 
 //
 // skies, backgrounds, fogs, rain
@@ -1035,7 +889,6 @@ extern void view_draw_tint_start(d3col *col,float alpha,int fade_in_msec,int lif
 //
 
 extern void draw_weapon_hand_setup(obj_type *obj,weapon_type *weap);
-extern void draw_weapon_hand(obj_type *obj,weapon_type *weap);
 extern void decal_render(void);
 
 extern void particle_draw_position(effect_type *effect,int count,d3pnt *pnt);

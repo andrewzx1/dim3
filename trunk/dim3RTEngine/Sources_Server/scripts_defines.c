@@ -82,11 +82,6 @@ script_define_type			script_dim3_defines[]={
 								{sd_light_direction_neg_z,						"",		"DIM3_LIGHT_DIRECTION_NEG_Z"},
 								{sd_light_direction_pos_z,						"",		"DIM3_LIGHT_DIRECTION_POS_Z"},
 								
-								{sd_message_to_player,							"",		"DIM3_MESSAGE_TO_PLAYER"},
-								{sd_message_to_object,							"",		"DIM3_MESSAGE_TO_OBJECT"},
-								{sd_message_to_course,							"",		"DIM3_MESSAGE_TO_COURSE"},
-								{sd_message_to_game,							"",		"DIM3_MESSAGE_TO_GAME"},
-								
 								{sd_stand_standing,								"",		"DIM3_STAND_STANDING"},
 								{sd_stand_ducking,								"",		"DIM3_STAND_DUCKING"},
 								{sd_stand_standing_up,							"",		"DIM3_STAND_STANDING_UP"},

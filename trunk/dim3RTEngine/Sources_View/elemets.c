@@ -68,7 +68,6 @@ model_draw* element_load_model(char *name,char *animate,float resize,d3pnt *offs
 	}
 
 	draw->resize=resize;
-	draw->shadow.on=FALSE;
 	
 	if (offset==NULL) {
 		draw->offset.x=draw->offset.y=draw->offset.z=0;
@@ -3083,58 +3082,7 @@ void element_draw_info_field(element_type *element)
 
 void element_draw_model(element_type *element)
 {
-	int					tick,model_idx;
-	bool				old_fog_on;
-	model_type			*mdl;
-	model_draw			*draw;
-
-		// get model
-
-	draw=element->setup.model.draw;
-	if (draw==NULL) return;
-
-	model_idx=draw->model_idx;
-	if (model_idx==-1) return;
-
-	mdl=server.model_list.models[model_idx];
-	if (mdl==NULL) return;
-	
-		// make sure fog is off
-		
-	old_fog_on=map.fog.on;
-	map.fog.on=FALSE;
-	
-		// setup 3D drawing
-
-	gl_3D_view_interface_model();
-
-	glEnable(GL_DEPTH_TEST);
-
-		// setup drawing
-
-	tick=game_time_get_raw();
-
-	model_run_animation(draw,tick);
-	model_draw_setup_interface_models(mdl,draw,element->x,element->y);
-
-		// draw model
-		
-	model_calc_animation(draw,tick);
-	model_calc_draw_bones(draw);
-	render_model_setup(draw,tick);
-	render_model_build_vertex_lists(draw,TRUE);
-	render_model_opaque(draw);
-	render_model_transparent(draw);
-
-		// restore 2D drawing
-
-	glDisable(GL_DEPTH_TEST);
-
-	gl_2D_view_interface();
-	
-		// restore fog
-		
-	map.fog.on=old_fog_on;
+	// supergumba -- will need ray trace version
 }
 
 /* =======================================================

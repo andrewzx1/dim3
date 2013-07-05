@@ -39,7 +39,7 @@ extern view_type			view;
 
 /* =======================================================
 
-      Draw Weapon in Hand
+      Setup Weapon in Hand
       
 ======================================================= */
 
@@ -91,60 +91,6 @@ void draw_weapon_hand_setup(obj_type *obj,weapon_type *weap)
 			render_model_setup(draw,tick);
 			render_model_build_vertex_lists(draw,TRUE);
 		}
-	}
-}
-
-void draw_weapon_hand(obj_type *obj,weapon_type *weap)
-{
-	float			old_fov;
-    model_draw		*draw;
-	model_type		*mdl;
-	
-		// weapons hidden or zoom on?
-		
-	if (obj->hide_all_weapons) return;
-	if ((weap->zoom.on) && (weap->zoom.mode!=zoom_mode_off) && (obj->zoom_draw.on) && (!weap->zoom.show_weapon)) return;
-
-		// weapon model draw
-		
-	draw=&weap->draw;
-	if ((draw->model_idx==-1) || (!draw->on)) return;
-	
-	mdl=server.model_list.models[draw->model_idx];
-	
-		// handle any FOV overrides
-		
-	if (weap->hand.fov_override!=0.0f) {
-		old_fov=view.render->camera.fov;
-		view.render->camera.fov=weap->hand.fov_override;
-	}
-
-		// setup drawing
-	
-	glClear(GL_DEPTH_BUFFER_BIT);
-
-		// regular weapon model
-
-	render_model_opaque(draw);
-	render_model_transparent(draw);
-
-		// dual wielded weapons
-
-	if ((weap->dual.on) && (weap->dual.active)) {
-	
-		draw=&weap->draw_dual;
-		if ((draw->model_idx!=-1) && (draw->on)) {
-			mdl=server.model_list.models[draw->model_idx];
-
-			render_model_opaque(draw);
-			render_model_transparent(draw);
-		}
-	}
-	
-		// restore FOV
-		
-	if (weap->hand.fov_override!=0.0f) {
-		view.render->camera.fov=old_fov;
 	}
 }
 

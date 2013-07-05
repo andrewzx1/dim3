@@ -135,15 +135,6 @@ void scripts_setup_data(script_type *script,int thing_type,int obj_idx,int weap_
 	script->event_state.sub_event=-1;
 	script->event_state.id=0;
 	script->event_state.tick=0;
-
-		// messages
-		
-	for (n=0;n!=max_script_msg_data;n++) {
-		script->msg_data.set[n].type=d3_jsval_type_number;
-		script->msg_data.set[n].data.d3_number=0.0f;
-		script->msg_data.get[n].type=d3_jsval_type_number;
-		script->msg_data.get[n].data.d3_number=0.0f;
-	}
 }
 
 /* =======================================================

@@ -146,8 +146,6 @@ int model_load(char *name,bool force_opengl_textures)
 		return(-1);
 	}
 
-	if (!app.dedicated_host) gl_shader_attach_model(mdl);
-
 		// setup some animation indexes to avoid name lookups
 
 	model_animation_effect_setup(mdl);
@@ -216,12 +214,6 @@ bool model_draw_load(model_draw *draw,char *item_type,char *item_name,bool force
 
 	model_fade_clear(draw);
 
-		// create the VBO
-
-	if (!app.dedicated_host) {
-		if (draw->model_idx!=-1) view_create_model_vertex_object(draw);
-	}
-
 	return(ok);
 }
 
@@ -260,10 +252,6 @@ void model_draw_dispose(model_draw *draw)
 		// find model
 		
 	if (draw->model_idx==-1) return;
-
-		// dispose VBO
-
-	if (!app.dedicated_host) view_dispose_model_vertex_object(draw);
 	
 		// clear draw memory
 		

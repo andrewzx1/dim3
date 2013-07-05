@@ -51,7 +51,7 @@ void gui_background_load(char *background_path,char *bitmap_name)
 	char		path[1024];
 
 	if (!view_file_paths_bitmap_check_wide(path,background_path,bitmap_name)) return;
-	gui_background_image_idx=view_images_load_single(path,gl_check_npot_textures_ok(),TRUE);
+	gui_background_image_idx=view_images_load_single(path,TRUE,TRUE);
 }
 
 /* =======================================================

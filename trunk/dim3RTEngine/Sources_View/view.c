@@ -47,11 +47,8 @@ extern void game_file_initialize(void);
 extern void menu_input(void);
 extern void file_input(void);
 extern void debug_input(void);
-extern void view_draw_opengl(void);
 extern void view_draw_dim3rtl(void);
 extern void chat_clear_messages(void);
-extern bool shadow_initialize(void);
-extern void shadow_shutdown(void);
 extern void menu_draw(void);
 extern bool cocoa_is_ipad(void);
 
@@ -226,23 +223,10 @@ bool view_initialize_display(char *err_str)
 		return(FALSE);
 	}
 
-		// fix some OpenGL settings if not supported by card
-
-	if (!gl_check_fsaa_ok()) setup.fsaa_mode=fsaa_mode_none;
-
 		// utility vbo for a couple things
 		// like primitives and bitmaps
 
 	view_create_utility_vertex_object();
-
-		// shadows
-
-	if (!shadow_initialize()) {
-		strcpy(err_str,"Out of Memory");
-		gl_shutdown();
-		SDL_Quit();
-		return(FALSE);
-	}
 	
 		// start the shaders
 		
@@ -254,25 +238,9 @@ bool view_initialize_display(char *err_str)
 		return(FALSE);
 	}
 
-	if (!gl_core_shader_initialize(err_str)) {
-		gl_shutdown();
-		SDL_Quit();
-		return(FALSE);
-	}
-		
-	if (!gl_user_shader_initialize(err_str)) {
-		gl_shutdown();
-		SDL_Quit();
-		return(FALSE);
-	}
-
 		// initialize text
 	
 	gl_text_initialize();
-	
-		// back renderer
-		
-	gl_back_render_initialize();
 
 	return(TRUE);
 }
@@ -281,11 +249,7 @@ void view_shutdown_display(void)
 {
 	view_dispose_utility_vertex_object();
 
-	shadow_shutdown();
 	gl_simple_shader_shutdown();
-	gl_core_shader_shutdown();
-	gl_user_shader_shutdown();
-	gl_back_render_shutdown();
 	gl_text_shutdown();
 	gl_shutdown();
 }
@@ -628,12 +592,7 @@ void view_loop_draw(void)
 	
 		// draw view
 
-	if (!iface.project.ray_trace) {
-		view_draw_opengl();
-	}
-	else {
-		view_draw_dim3rtl();
-	}
+	view_draw_dim3rtl();
 	
 	hud_draw();
 	radar_draw();
@@ -677,21 +636,6 @@ void view_loop_draw(void)
 
 void view_capture_draw(char *path)
 {
-		// opengl capture
-	
-	if (!iface.project.ray_trace) {
-		gl_frame_clear(FALSE);
-		gl_shader_frame_start();
-
-		view_draw_opengl();
-
-		gl_screen_shot(0,0,view.screen.x_sz,view.screen.y_sz,TRUE,path);
-
-		return;
-	}
-
-		// ray trace capture
-
 	view_dim3rtl_screenshot(TRUE,path);
 }
 
