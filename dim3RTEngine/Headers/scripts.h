@@ -180,7 +180,6 @@ extern void script_init_model_light_color_object(void);
 extern void script_init_model_mesh_object(void);
 extern void script_init_model_offset_object(void);
 extern void script_init_model_rotate_object(void);
-extern void script_init_model_shadow_object(void);
 extern void script_init_model_spin_object(void);
 
 extern void script_init_event_object(void);
@@ -330,7 +329,6 @@ extern void script_free_model_light_color_object(void);
 extern void script_free_model_mesh_object(void);
 extern void script_free_model_offset_object(void);
 extern void script_free_model_rotate_object(void);
-extern void script_free_model_shadow_object(void);
 extern void script_free_model_spin_object(void);
 
 extern void script_free_event_object(void);
@@ -480,7 +478,6 @@ extern JSObjectRef script_add_model_light_color_object(JSContextRef cx,JSObjectR
 extern JSObjectRef script_add_model_mesh_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx);
 extern JSObjectRef script_add_model_offset_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx);
 extern JSObjectRef script_add_model_rotate_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx);
-extern JSObjectRef script_add_model_shadow_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx);
 extern JSObjectRef script_add_model_spin_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx);
 
 extern JSObjectRef script_add_event_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx);

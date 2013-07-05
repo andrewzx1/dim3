@@ -470,18 +470,6 @@ typedef struct		{
 					} camera_type;
 
 //
-// view counts
-//
-
-typedef struct		{
-						int									mesh,mesh_poly,
-															liquid,liquid_poly,
-															model,model_poly,
-															shadow,shadow_poly,
-															effect,obscure_percent;
-					} view_count_type;
-
-//
 // view screen
 //
 
@@ -517,11 +505,6 @@ typedef struct		{
 					} view_render_draw_list_type;
 
 typedef struct		{
-						int									count;
-						view_light_spot_type				spots[max_light_spot];
-					} view_render_light_type;
-
-typedef struct		{
 						int									count,in_view_count;
 						halo_draw_type						halos[max_light_spot];
 					} view_render_halo_type;
@@ -531,7 +514,6 @@ typedef struct		{
 						bool								force_camera_obj;
 						view_render_camera_type				camera;
 						view_render_draw_list_type			draw_list;
-						view_render_light_type				light;
 						view_render_halo_type				halo_draw;
 					} view_render_type;
 
@@ -563,7 +545,6 @@ typedef struct		{
  
 typedef struct		{
 						int									device_type;
-						view_count_type						count;
 						view_screen_type					screen;
 						view_render_type					*render;
 						view_time_type						time;

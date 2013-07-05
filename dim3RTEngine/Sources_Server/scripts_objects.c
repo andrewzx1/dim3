@@ -161,7 +161,6 @@ void script_initialize_classes(void)
 	script_init_model_mesh_object();
 	script_init_model_offset_object();
 	script_init_model_rotate_object();
-	script_init_model_shadow_object();
 	script_init_model_spin_object();
 
 	script_init_event_object();
@@ -320,7 +319,6 @@ void script_release_classes(void)
 	script_free_model_mesh_object();
 	script_free_model_offset_object();
 	script_free_model_rotate_object();
-	script_free_model_shadow_object();
 	script_free_model_spin_object();
 
 	script_free_event_object();
@@ -669,7 +667,6 @@ void script_create_main_object_add_model_object(JSContextRef cx,JSObjectRef pare
 	script_add_model_light_object(cx,j_obj,script_idx);
 	script_add_model_light_color_object(cx,j_obj,script_idx);
 	script_add_model_halo_object(cx,j_obj,script_idx);
-	script_add_model_shadow_object(cx,j_obj,script_idx);
 	script_add_model_animation_object(cx,j_obj,script_idx);
 	script_add_model_mesh_object(cx,j_obj,script_idx);
 	script_add_model_bone_object(cx,j_obj,script_idx);

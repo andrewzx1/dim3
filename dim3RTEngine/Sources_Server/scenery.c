@@ -91,7 +91,6 @@ void scenery_create(void)
 		
 		obj->draw.on=TRUE;
 		obj->draw.face_forward=map_scenery->face_forward;
-		obj->draw.shadow.on=map_scenery->shadow;
 		obj->draw.resize=map_scenery->resize;
 
 			// needs current mesh

@@ -69,12 +69,12 @@ void progress_initialize(char *map_name)
 		
 	if (map_name!=NULL) {
 		file_paths_data(&file_path_setup,path,"Bitmaps/Backgrounds_Map",map_name,"png");
-		bitmap_ok=bitmap_open(&progress_background_bitmap,path,FALSE,FALSE,FALSE,gl_check_npot_textures_ok(),FALSE,FALSE);
+		bitmap_ok=bitmap_open(&progress_background_bitmap,path,FALSE,FALSE,FALSE,TRUE,FALSE,FALSE);
 	}
 	
 	if (!bitmap_ok) {
 		view_file_paths_bitmap_check_wide(path,"Bitmaps/Backgrounds","load");
-		bitmap_open(&progress_background_bitmap,path,FALSE,FALSE,FALSE,gl_check_npot_textures_ok(),FALSE,FALSE);
+		bitmap_open(&progress_background_bitmap,path,FALSE,FALSE,FALSE,TRUE,FALSE,FALSE);
 	}
 
 		// progress bitmap

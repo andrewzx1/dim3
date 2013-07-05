@@ -180,10 +180,6 @@ void debug_dump(void)
 	debug_dump_info_str(file,"Screen",str);
 	debug_dump_info_int(file,"Max Texture Size",render_info.texture_max_size);
 	
-	debug_dump_info_enable(file,"FBO",gl_check_frame_buffer_ok());
-	debug_dump_info_enable(file,"NPOT Textures",gl_check_npot_textures_ok());
-	debug_dump_info_enable(file,"FSAA",gl_check_fsaa_ok());
-
 	debug_dump_info_str(file,"Extensions",render_info.ext_string);
 
 #ifdef D3_OS_WINDOWS

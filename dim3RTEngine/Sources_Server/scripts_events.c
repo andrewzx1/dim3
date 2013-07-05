@@ -216,13 +216,7 @@ bool scripts_post_event(int script_idx,int override_proj_idx,int main_event,int 
 
 	if (script_idx==-1) return(TRUE);
 
-		// if not using event attachments,
-		// then we can only call events on the
-		// curent script.
-		// supergumba -- all this needs to be removed
-	
 	script=js.script_list.scripts[script_idx];
-	if (!script->event_attach_list.on) return(scripts_post_event_on_attach(script_idx,override_proj_idx,main_event,sub_event,id,err_str));
 
 	event_idx=main_event-event_main_id_start;
 

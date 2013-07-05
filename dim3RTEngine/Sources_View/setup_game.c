@@ -154,9 +154,8 @@ void setup_game_video_pane_opengl(void)
 #endif
 	
 	control_y_add=element_get_control_separation_high();
-	control_y_sz=control_y_add*3;
+	control_y_sz=control_y_add*4;
 	if (!no_res_combo) control_y_sz+=control_y_add;
-	if (gl_check_fsaa_ok()) control_y_sz+=control_y_add;
 
 	element_get_frame_inner_space(setup_game_frame_id,&fx,&fy,&wid,&high);
 	x=fx+(int)(((float)wid)*0.4f);
@@ -189,10 +188,8 @@ void setup_game_video_pane_opengl(void)
 		y+=control_y_add;
 	}
 
-	if (gl_check_fsaa_ok()) {
-		element_combo_add("Full-Screen Anti-Aliasing",(char*)setup_fsaa_mode_list,setup.fsaa_mode,ctrl_fsaa_id,x,y,TRUE);
-		y+=control_y_add;
-	}
+	element_combo_add("Full-Screen Anti-Aliasing",(char*)setup_fsaa_mode_list,setup.fsaa_mode,ctrl_fsaa_id,x,y,TRUE);
+	y+=control_y_add;
 	
 	element_checkbox_add("Decals",setup.decal_on,ctrl_decal_on_id,x,y,TRUE);
 	y+=control_y_add;
@@ -230,10 +227,8 @@ void setup_game_video_pane_dim3rtl(void)
 	element_combo_add("Screen Size",(char*)setup_screen_size_list,idx,ctrl_screen_rtl_size_id,x,y,TRUE);
 	y+=control_y_add;
 
-	if (gl_check_fsaa_ok()) {
-		element_combo_add("Full-Screen Anti-Aliasing",(char*)setup_fsaa_mode_list,setup.fsaa_mode,ctrl_fsaa_id,x,y,TRUE);
-		y+=control_y_add;
-	}
+	element_combo_add("Full-Screen Anti-Aliasing",(char*)setup_fsaa_mode_list,setup.fsaa_mode,ctrl_fsaa_id,x,y,TRUE);
+	y+=control_y_add;
 
 	element_checkbox_add("Full Window (Requires Restart)",setup.screen_rtl_full_window,ctrl_screen_rtl_full_window_id,x,y,TRUE);
 }

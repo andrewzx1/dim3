@@ -57,10 +57,6 @@ bool effect_initialize_list(void)
 			// not used
 
 		server.effect_list.effects[n]->on=FALSE;
-
-			// clear the vbo
-
-		view_clear_effect_vertex_object(server.effect_list.effects[n]);
 	}
 
 	return(TRUE);
@@ -72,10 +68,6 @@ void effect_free_list(void)
 
 	for (n=0;n!=max_effect_list;n++) {
 		if (server.effect_list.effects[n]==NULL) continue;
-				
-			// dispose vbo if it's active
-
-		view_dispose_effect_vertex_object(server.effect_list.effects[n]);
 
 			// free effect
 
@@ -166,12 +158,7 @@ inline void effect_dispose_single(effect_type *effect)
 		// dispose any active VBOs
 		// or dim3rtl meshes
 		
-	if (!iface.project.ray_trace) {
-		view_dispose_effect_vertex_object(effect);
-	}
-	else {
-		view_dim3rtl_effect_mesh_close(effect);
-	}
+	view_dim3rtl_effect_mesh_close(effect);
 }
 
 void effect_dispose(void)
