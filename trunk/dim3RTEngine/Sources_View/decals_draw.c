@@ -37,8 +37,6 @@ extern server_type		server;
 extern iface_type		iface;
 extern setup_type		setup;
 
-extern bool view_mesh_in_draw_list(int mesh_idx);
-
 /* =======================================================
 
       Decals
@@ -47,6 +45,8 @@ extern bool view_mesh_in_draw_list(int mesh_idx);
 
 void decal_render_stencil(map_mesh_type *mesh,map_mesh_poly_type *poly,int stencil_idx)
 {
+	/* supergumba -- need a replacement
+
 	int			n;
 	float		*vp;
 	d3pnt		*pt;
@@ -83,10 +83,13 @@ void decal_render_stencil(map_mesh_type *mesh,map_mesh_poly_type *poly,int stenc
 	poly->draw.decal_stencil_idx=stencil_idx;
 	
 	view_unbind_utility_vertex_object();
+	*/
 }
 
 void decal_render_mark(int stencil_idx,decal_type *decal)
 {
+	/* supergumba -- need a replacement
+
 	int					k,tick,fade_out_start_tick;
 	float				alpha,g_size,gx,gy;
 	float				*vp;
@@ -183,10 +186,13 @@ void decal_render_mark(int stencil_idx,decal_type *decal)
 	gl_shader_draw_execute_simple_bitmap_end();
 	
 	view_unbind_utility_vertex_object();
+	*/
 }
 
 void decal_render(void)
 {
+	/* supergumba -- need a replacement
+
 	int					n,stencil_idx;
 	bool				has_decal;
 	decal_type			*decal;
@@ -263,5 +269,6 @@ void decal_render(void)
 	}
 
 	glDisable(GL_STENCIL_TEST);
+	*/
 }
 

@@ -192,61 +192,6 @@ void map_lookups_setup(void)
 	}
 }
 
-void map_mesh_polygon_draw_flag_setup(void)
-{
-	int					n,k;
-	bool				has_opaque,has_transparent,has_glow;
-	map_mesh_type		*mesh;
-	map_mesh_poly_type	*poly;
-	texture_type		*texture;
-
-		// run through the meshes
-		// and setup mesh and polygon draw flags
-		
-	mesh=map.mesh.meshes;
-
-	for (n=0;n!=map.mesh.nmesh;n++) {
-		
-			// clear mesh flags
-
-		has_opaque=FALSE;
-		has_transparent=FALSE;
-		has_glow=FALSE;
-		
-			// run through the polys
-
-		poly=mesh->polys;
-
-		for (k=0;k!=mesh->npoly;k++) {
-
-				// get texture and frame
-
-			texture=&map.textures[poly->txt_idx];
-
-				// set the flags
-
-			poly->draw.transparent_on=!texture->frames[0].bitmap.opaque;
-			poly->draw.glow_on=(texture->frames[0].glowmap.gl_id!=-1);
-
-				// or to the mesh flags
-
-			has_opaque|=(!poly->draw.transparent_on);
-			has_transparent|=poly->draw.transparent_on;
-			has_glow|=poly->draw.glow_on;
-
-			poly++;
-		}
-		
-			// set mesh level flags
-		
-		mesh->draw.has_opaque=has_opaque;
-		mesh->draw.has_transparent=has_transparent;
-		mesh->draw.has_glow=has_glow;
-		
-		mesh++;
-	}
-}
-
 /* =======================================================
 
       Map Start and End
@@ -278,17 +223,6 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 		progress_shutdown();
 		sprintf(err_str,"Could not open map: %s",map.info.name);
 		return(FALSE);
-	}
-
-		// load opengl map textures
-
-	if ((!app.dedicated_host) && (!iface.project.ray_trace)) {
-		map_textures_read_setup(&map);
-		
-		for (n=0;n!=max_map_texture;n++) {
-			progress_update();
-			map_textures_read_texture(&map,n);
-		}
 	}
 
 		// don't run blank maps
@@ -327,16 +261,6 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 		strcpy(err_str,"Out of memory");
 		return(FALSE);
 	}
-
-	progress_update();
-
-	if ((!app.dedicated_host) && (!iface.project.ray_trace)) {
-		if (!view_map_vbo_initialize()) {
-			progress_shutdown();
-			strcpy(err_str,"Out of memory");
-			return(FALSE);
-		}
-	}
 	
 		// sky, fog, rain
 
@@ -344,7 +268,6 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 
 	if (!app.dedicated_host) {
 		sky_draw_init();
-		fog_draw_init();
 		rain_draw_init();
 
 		map.rain.reset=TRUE;
@@ -470,7 +393,6 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 	
 	map_movements_initialize();
 	map_lookups_setup();
-	if (!iface.project.ray_trace) map_mesh_polygon_draw_flag_setup();
 	
 		// map start event
 		// skip if we are reloading this map
@@ -487,11 +409,9 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 	
 		// dim3rtl setup
 
-	if (iface.project.ray_trace) {
-		view_dim3rtl_map_mesh_start();
-		view_dim3rtl_map_liquid_mesh_start();
-		view_dim3rtl_map_model_mesh_start();
-	}
+	view_dim3rtl_map_mesh_start();
+	view_dim3rtl_map_liquid_mesh_start();
+	view_dim3rtl_map_model_mesh_start();
 
 		// finish up
 	
@@ -572,11 +492,9 @@ void map_end(void)
 	
 		// dim3rtl cleanup
 	
-	if (iface.project.ray_trace) {
-		view_dim3rtl_map_mesh_stop();
-		view_dim3rtl_map_liquid_mesh_stop();
-		view_dim3rtl_map_model_mesh_stop();
-	}
+	view_dim3rtl_map_mesh_stop();
+	view_dim3rtl_map_liquid_mesh_stop();
+	view_dim3rtl_map_model_mesh_stop();
 	
 		// detach objects
 		
@@ -613,7 +531,6 @@ void map_end(void)
 	if (!app.dedicated_host) {
 		progress_update();
 		sky_draw_release();
-		fog_draw_release();
 		rain_draw_release();
 	}
 
@@ -628,12 +545,7 @@ void map_end(void)
 		
 	scripts_dispose(js.course_script_idx);
 
-		// free group, portal segment, vertex and light lists
-		
-	if ((!app.dedicated_host) && (!iface.project.ray_trace)) {
-		progress_update();
-		view_map_vbo_release();
-	}
+		// free group lists
 
 	map_group_dispose_unit_list(&map);
 	

@@ -127,8 +127,6 @@ void gui_shutdown(void)
 void gui_draw_background(float alpha)
 {
 	bitmap_type		*bitmap;
-	
-	gl_2D_view_interface();
 
 		// background color
 
@@ -162,8 +160,8 @@ void gui_draw(float background_alpha,bool cursor)
 	
 		// clear frame
 		
-	gl_frame_clear(FALSE);
-	gl_shader_frame_start();
+	gl_frame_clear();
+	gl_2D_view_interface();
 
 		// draw items
 
@@ -181,8 +179,8 @@ void gui_draw_message(char *txt)
 	int				x,y,lx,rx,ty,by,high;
 	d3col			col;
 	
-	gl_frame_clear(FALSE);
-	gl_shader_frame_start();
+	gl_frame_clear();
+	gl_2D_view_interface();
 
 		// background
 
@@ -205,8 +203,6 @@ void gui_draw_message(char *txt)
 	
 		// draw the band
 		
-	gl_2D_view_interface();
-
 	view_primitive_2D_color_quad(&iface.color.control.header,1.0f,lx,rx,ty,by);
 		
 	x=iface.scale_x>>1;

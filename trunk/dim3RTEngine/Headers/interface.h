@@ -97,10 +97,6 @@ extern void view_calculate_fps(void);
 
 extern void view_game_reset_timing(void);
 
-extern bool view_map_vbo_initialize(void);
-extern void view_map_vbo_release(void);
-extern void view_map_vbo_rebuild(void);
-
 //
 // timing
 //
@@ -673,22 +669,10 @@ extern void gl_shutdown(void);
 //
 
 extern bool gl_is_size_widescreen(int wid,int high);
-extern bool gl_screen_shot(int lft_x,int top_y,int wid,int high,bool thumbnail,char *path);
 
 //
 // vbos
 //
-
-extern void view_create_mesh_liquid_vertex_object(map_vbo_type *vbo,int vertex_count,int vertex_stride,int index_count);
-extern void view_dispose_mesh_liquid_vertex_object(map_vbo_type *vbo);
-extern inline void view_bind_mesh_liquid_vertex_object(map_vbo_type *vbo);
-extern inline unsigned char* view_map_mesh_liquid_vertex_object(map_vbo_type *vbo);
-extern inline void view_unmap_mesh_liquid_vertex_object(void);
-extern inline void view_unbind_mesh_liquid_vertex_object(void);
-extern inline void view_bind_mesh_liquid_index_object(map_vbo_type *vbo);
-extern inline unsigned short* view_map_mesh_liquid_index_object(void);
-extern inline void view_unmap_mesh_liquid_index_object(void);
-extern inline void view_unbind_mesh_liquid_index_object(void);
 
 extern void view_create_sky_vertex_object(int vertex_mem_sz);
 extern void view_dispose_sky_vertex_object(void);
@@ -696,13 +680,6 @@ extern inline void view_bind_sky_vertex_object(void);
 extern inline unsigned char* view_map_sky_vertex_object(void);
 extern inline void view_unmap_sky_vertex_object(void);
 extern inline void view_unbind_sky_vertex_object(void);
-
-extern void view_create_fog_vertex_object(int vertex_mem_sz);
-extern void view_dispose_fog_vertex_object(void);
-extern inline void view_bind_fog_vertex_object(void);
-extern inline unsigned char* view_map_fog_vertex_object(void);
-extern inline void view_unmap_fog_vertex_object(void);
-extern inline void view_unbind_fog_vertex_object(void);
 
 extern void view_create_rain_vertex_object(int vertex_mem_sz);
 extern void view_dispose_rain_vertex_object(void);
@@ -749,10 +726,6 @@ extern void gl_shader_initialize(void);
 extern void gl_shader_code_clear(shader_type *shader);
 extern bool gl_shader_code_compile(shader_type *shader,char *vertex_data,char *fragment_data,char *err_str);
 extern void gl_shader_code_shutdown(shader_type *shader);
-extern void gl_shader_set_draw_matrix_variables(shader_type *shader);
-
-extern void gl_shader_frame_start(void);
-extern void gl_shader_force_matrix_resets(void);
 
 //
 // shader execution
@@ -764,9 +737,6 @@ extern inline void gl_shader_draw_execute_simple_color_end(void);
 
 extern inline void gl_shader_draw_execute_simple_gradient_start(int vertex_size,int vertex_offset,int color_offset);
 extern inline void gl_shader_draw_execute_simple_gradient_end(void);
-
-extern inline void gl_shader_draw_execute_simple_black_start(int vertex_size,int vertex_offset,float alpha);
-extern inline void gl_shader_draw_execute_simple_black_end(void);
 
 extern inline void gl_shader_draw_execute_simple_bitmap_set_color(d3col *col,float alpha);
 extern inline void gl_shader_draw_execute_simple_bitmap_set_texture(unsigned long gl_id);
@@ -790,37 +760,14 @@ extern bool glu_patch_gluProject(float objx,float objy,float objz,float modelMat
 // view
 //
 
-extern void gl_frame_clear(bool in_view);
+extern void gl_frame_clear(void);
 extern void gl_frame_swap(void);
 
-extern void gl_set_viewport(int x,int y,int wid,int high);
-extern void gl_save_viewport(void);
-extern void gl_restore_viewport(void);
-
-extern void gl_3D_view(void);
-extern void gl_3D_rotate(d3pnt *pnt,d3ang *ang);
 extern void gl_2D_view_screen(void);
 extern void gl_2D_view_interface(void);
-extern void gl_3D_view_interface_model(void);
 
 extern void gl_2D_scissor_start(int lx,int rx,int ty,int by);
 extern void gl_2D_scissor_end(void);
-
-extern inline bool gl_project_in_view_z(d3pnt *pnt);
-extern inline void gl_project_point(d3pnt *pnt);
-extern inline void gl_project_point_f(d3pnt *pnt,d3fpnt *f_pnt);
-extern inline float gl_project_get_depth(d3pnt *pnt);
-extern inline void gl_project_to_eye_coordinates(d3vct *vct);
-
-//
-// view culling
-//
-
-extern void view_cull_setup_frustum_clipping_planes(void);
-extern int view_cull_distance_to_view_center(int x,int y,int z);
-extern bool view_cull_mesh(map_mesh_type *mesh);
-extern bool view_cull_liquid(map_liquid_type *liq);
-extern bool view_cull_halo(d3pnt *pnt);
 
 //
 // textures
@@ -872,11 +819,6 @@ extern void sky_draw_init(void);
 extern void sky_draw_release(void);
 extern void sky_draw_background(void);
 extern void sky_draw(void);
-
-extern inline bool fog_solid_on(void);
-extern void fog_draw_init(void);
-extern void fog_draw_release(void);
-extern void fog_draw_textured(void);
 
 extern void rain_draw_init(void);
 extern void rain_draw_release(void);

@@ -141,65 +141,7 @@ void setup_network_fill_character_table(void)
       
 ======================================================= */
 
-void setup_game_video_pane_opengl(void)
-{
-	int			n,idx,wid,high,
-				fx,fy,x,y,control_y_add,control_y_sz;
-	bool		no_res_combo;
-	
-#if defined(D3_OS_IPHONE) || defined(D3_OS_ANDRIOD)
-	no_res_combo=TRUE;
-#else
-	no_res_combo=(iface.setup.no_resolution_switch) && (!setup.window);
-#endif
-	
-	control_y_add=element_get_control_separation_high();
-	control_y_sz=control_y_add*4;
-	if (!no_res_combo) control_y_sz+=control_y_add;
-
-	element_get_frame_inner_space(setup_game_frame_id,&fx,&fy,&wid,&high);
-	x=fx+(int)(((float)wid)*0.4f);
-	y=(fy+((high-control_y_sz)/2))+control_y_add;
-	
-		// setup screen size list
-		
-	idx=0;
-	strcpy(setup_screen_size_list[0],"Default");
-		
-	for (n=0;n!=render_info.nscreen_size;n++) {
-	
-		wid=render_info.screen_sizes[n].wid;
-		high=render_info.screen_sizes[n].high;
-		
-		if ((wid==setup.screen_wid) && (high==setup.screen_high)) idx=n+1;
-		
-		if (gl_is_size_widescreen(wid,high)) {
-			sprintf(setup_screen_size_list[n+1],"%dx%d Widescreen",wid,high);
-		}
-		else {
-			sprintf(setup_screen_size_list[n+1],"%dx%d",wid,high);
-		}
-	}
-	
-		// build the controls
-		
-	if (!no_res_combo) {
-		element_combo_add("Screen Size",(char*)setup_screen_size_list,idx,ctrl_screen_gl_size_id,x,y,TRUE);
-		y+=control_y_add;
-	}
-
-	element_combo_add("Full-Screen Anti-Aliasing",(char*)setup_fsaa_mode_list,setup.fsaa_mode,ctrl_fsaa_id,x,y,TRUE);
-	y+=control_y_add;
-	
-	element_checkbox_add("Decals",setup.decal_on,ctrl_decal_on_id,x,y,TRUE);
-	y+=control_y_add;
-	element_checkbox_add("Shadows",setup.shadow_on,ctrl_shadow_on_id,x,y,TRUE);
-	y+=control_y_add;
-
-	element_slider_add("Gamma",setup.gamma,-0.5f,0.5f,ctrl_gamma_id,x,y,TRUE);
-}
-
-void setup_game_video_pane_dim3rtl(void)
+void setup_game_video_pane(void)
 {
 	int			n,idx,fx,fy,wid,high,
 				x,y,control_y_add,control_y_sz;
@@ -535,12 +477,7 @@ void setup_game_create_pane(void)
 		
 	switch (setup_tab_index[element_get_value(setup_game_tab_id)]) {
 		case setup_pane_video:
-			if (!iface.project.ray_trace) {
-				setup_game_video_pane_opengl();
-			}
-			else {
-				setup_game_video_pane_dim3rtl();
-			}
+			setup_game_video_pane();
 			break;
 		case setup_pane_audio:
 			setup_game_audio_pane();

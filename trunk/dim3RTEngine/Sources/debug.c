@@ -522,7 +522,6 @@ void debug_dump(void)
 
 void debug_screenshot(void)
 {
-	bool				ok;
 	char				path[1024],file_name[256],str[256];
 	struct tm			*tm;
 	time_t				curtime;
@@ -533,16 +532,7 @@ void debug_screenshot(void)
 	sprintf(file_name,"%.4d%.2d%.2d_%.2d%.2d%.2d",(tm->tm_year+1900),(tm->tm_mon+1),tm->tm_mday,tm->tm_hour,tm->tm_min,tm->tm_sec);
 	file_paths_app_data(&file_path_setup,path,"Screenshots",file_name,"png");
 	
-		// opengl screenshot
-
-	if (!iface.project.ray_trace) {
-		ok=gl_screen_shot(0,0,view.screen.x_sz,view.screen.y_sz,FALSE,path);
-	}
-	else {
-		ok=view_dim3rtl_screenshot(FALSE,path);
-	}
-
-	if (!ok) {
+	if (!view_dim3rtl_screenshot(FALSE,path)) {
 		console_add_system("Unable to save screenshot");
 		return;
 	}

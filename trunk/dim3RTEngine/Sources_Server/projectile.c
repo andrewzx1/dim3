@@ -166,9 +166,7 @@ proj_type* projectile_create(obj_type *obj,weapon_type *weap,proj_setup_type *pr
 
 		// dim3rtl meshes
 
-	if (iface.project.ray_trace) {
-		if (!hit_scan) view_dim3rtl_projectile_model_setup(proj);
-	}
+	if (!hit_scan) view_dim3rtl_projectile_model_setup(proj);
 
     return(proj);
 }
@@ -268,7 +266,7 @@ void projectile_dispose(proj_type *proj)
 
 		// remove any dim3rtl meshes
 
-	if (iface.project.ray_trace) view_dim3rtl_projectile_model_close(proj);
+	view_dim3rtl_projectile_model_close(proj);
 
 		// mark as unused
 

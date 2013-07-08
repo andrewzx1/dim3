@@ -69,8 +69,6 @@ void radar_draw(void)
 	
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-	
-	glDisable(GL_DEPTH_TEST);
 
 		// get radar size
 

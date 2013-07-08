@@ -3184,10 +3184,6 @@ void element_draw_lock(bool cursor_hilite)
 {
 	int					n,id;
 	element_type		*element;
-
-		// setup drawing
-
-	gl_2D_view_interface();
 	
 		// get element under cursor
 		// only works if app active
@@ -3198,7 +3194,6 @@ void element_draw_lock(bool cursor_hilite)
 		// setup draw
 
 	glDisable(GL_BLEND);
-	glDisable(GL_DEPTH_TEST);
 
 	glLineWidth(1.0f);
 	

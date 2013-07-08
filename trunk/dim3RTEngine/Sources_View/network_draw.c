@@ -423,8 +423,6 @@ void network_draw(void)
 		
 	gl_2D_view_interface();
 	
-	glDisable(GL_DEPTH_TEST);
-	
 		// draw the score and chat
 		
 	network_chat_draw();

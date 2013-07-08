@@ -74,8 +74,8 @@ void gl_setup_context(void)
 		// regular setup
 		
 	glDisable(GL_DITHER);
-
-	glDepthFunc(GL_LEQUAL);
+	glDisable(GL_DEPTH_TEST);
+	glDisable(GL_STENCIL_TEST);
 	
 #ifndef D3_OPENGL_ES
 	glEnable(GL_LINE_SMOOTH);
@@ -135,8 +135,8 @@ bool gl_initialize(int screen_wid,int screen_high,int fsaa_mode,char *err_str)
 	SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE,8);
 	SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE,8);
 	SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE,8);
-	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE,24);
-	SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE,8);
+	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE,0);
+	SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE,0);
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER,1);
 	
 #ifdef D3_OPENGL_ES
@@ -204,9 +204,9 @@ bool gl_initialize(int screen_wid,int screen_high,int fsaa_mode,char *err_str)
 	render_info.monitor_refresh_rate=60;
 
 #ifndef D3_ROTATE_VIEW
-	gl_set_viewport(0,0,view.screen.x_sz,view.screen.y_sz);
+	glViewport(0,0,view.screen.x_sz,view.screen.y_sz);
 #else
-	gl_set_viewport(0,0,view.screen.y_sz,view.screen.x_sz);
+	glViewport(0,0,view.screen.y_sz,view.screen.x_sz);
 #endif
 
 	gl_setup_context();
@@ -256,85 +256,3 @@ bool gl_is_size_widescreen(int wid,int high)
 	return(((float)high/(float)wid)<=0.625f);
 }
 
-/* =======================================================
-
-      ScreenShots
-      
-======================================================= */
-
-bool gl_screen_shot(int lft_x,int top_y,int wid,int high,bool thumbnail,char *path)
-{
-	int					x,y,x_skip,y_skip,y_add,
-						ss_wid,ss_high,sav_high,dsz;
-	unsigned char		*pixel_buffer,*data,*sptr,*dptr,*s2ptr,*d2ptr;
-	bool				ok;
-	
-	pixel_buffer=(unsigned char*)malloc((wid*3)*high);
-	if (pixel_buffer==NULL) return(FALSE);
-	
-	glReadPixels(lft_x,top_y,wid,high,GL_RGB,GL_UNSIGNED_BYTE,pixel_buffer);
-	
-		// is this is a thumbnail,
-		// then reduce the picture (but keep
-		// the dimensions)
-		
-	x_skip=y_skip=1;
-	y_add=0;
-	ss_wid=wid;
-	ss_high=sav_high=high;
-
-	dsz=(wid*3)*high;
-	
-	if (thumbnail) {
-		x_skip=wid/128;
-		ss_wid=128;
-
-		ss_high=(high*128)/wid;
-		y_skip=high/ss_high;
-		y_add=(128-ss_high)/2;
-		sav_high=128;
-
-		dsz=(128*3)*128;
-	}
-	
-		// flip the data
-		
-	data=(unsigned char*)malloc(dsz);
-	if (data==NULL) {
-		free(pixel_buffer);
-		return(FALSE);
-	}
-	
-	bzero(data,dsz);
-	
-	sptr=pixel_buffer;
-	dptr=data+(((ss_high-1)+y_add)*(ss_wid*3));
-
-	for (y=0;y!=ss_high;y++) {
-	
-		s2ptr=sptr;
-		d2ptr=dptr;
-		
-		for (x=0;x!=ss_wid;x++) {
-			*d2ptr++=*s2ptr++;
-			*d2ptr++=*s2ptr++;
-			*d2ptr++=*s2ptr++;
-			
-			s2ptr+=((x_skip-1)*3);
-		}
-			
-		sptr+=((wid*3)*y_skip);
-		dptr-=(ss_wid*3);
-	}
-
-	free(pixel_buffer);
-
-		// save screenshot
-
-	ok=bitmap_write_png_data(data,ss_wid,sav_high,FALSE,path);
-		
-	free(data);
-	
-	return(ok);
-}
-	

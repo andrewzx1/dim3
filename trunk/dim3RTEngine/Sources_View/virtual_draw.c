@@ -137,8 +137,6 @@ void virtual_control_draw(void)
 		
 	gl_2D_view_interface();
 	
-	glDisable(GL_DEPTH_TEST);
-	
 		// draw the virtual controls
 	
 	for (n=0;n!=max_virtual_stick;n++) {

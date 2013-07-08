@@ -1310,15 +1310,7 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\dim3RTEngine\Sources_View\view_bounds.c"
-						>
-					</File>
-					<File
 						RelativePath="..\..\dim3RTEngine\Sources_View\view_draw.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3RTEngine\Sources_View\view_draw_debug.c"
 						>
 					</File>
 					<File
@@ -1335,10 +1327,6 @@
 					</File>
 					<File
 						RelativePath="..\..\dim3RTEngine\Sources_View\view_setup.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3RTEngine\Sources_View\view_vertex_list.c"
 						>
 					</File>
 					<File
@@ -1419,10 +1407,6 @@
 					>
 					<File
 						RelativePath="..\..\dim3RTEngine\Sources_View\fade.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3RTEngine\Sources_View\fog.c"
 						>
 					</File>
 					<File
