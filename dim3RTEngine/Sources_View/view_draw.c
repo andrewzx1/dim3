@@ -45,7 +45,6 @@ extern view_render_type		view_camera_render,view_node_render;
 float						shake_ang_x[16]={-1,0,1,2,1,0,-1,-2,-4,-2,0,4,8,12,8,4};
 
 extern void model_calc_pose_bones(model_draw *draw);
-extern void view_start_draw_list(void);
 extern void view_setup_objects_rtl(int tick);
 extern void view_setup_projectiles_rtl(int tick);
 extern void view_add_halos(void);
@@ -54,8 +53,6 @@ extern void view_calculate_scope(obj_type *obj,obj_type *camera_obj);
 extern void view_calculate_recoil(obj_type *obj);
 extern void view_calculate_shakes(obj_type *obj);
 extern void view_calculate_sways(obj_type *obj);
-extern void view_draw_debug_object(obj_type *obj);
-extern void view_draw_debug_projectile(proj_type *proj);
 
 /* =======================================================
 

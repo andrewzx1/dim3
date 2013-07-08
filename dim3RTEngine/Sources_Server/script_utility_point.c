@@ -30,11 +30,10 @@ and can be sold or given away.
 #endif
 
 #include "scripts.h"
+#include "interface.h"
 
 extern iface_type		iface;
 extern js_type			js;
-
-extern void view_script_transform_3D_to_2D(d3pnt *pnt);
 
 JSValueRef js_utility_point_equal_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_utility_point_angle_to_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
@@ -126,7 +125,7 @@ JSValueRef js_utility_point_transform_3D_to_2D_func(JSContextRef cx,JSObjectRef 
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 
 	script_value_to_point(cx,argv[0],&pnt);
-	view_script_transform_3D_to_2D(&pnt);
+	view_dim3rtl_project_point(&pnt);
 
 	return(script_point_to_value(cx,&pnt));
 }

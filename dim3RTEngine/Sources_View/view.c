@@ -575,18 +575,18 @@ void view_loop_draw(void)
 
 		// start frame
 		
-	gl_frame_clear(TRUE);
-	gl_shader_frame_start();
+	gl_frame_clear();
+	gl_2D_view_screen();
 	
 		// squish for open console
 		
 	if (view.console.on) {
 		#ifndef D3_ROTATE_VIEW
 			y_add=(int)(((float)view.screen.y_sz)*console_screen_percent);
-			gl_set_viewport(0,y_add,view.screen.x_sz,(view.screen.y_sz-y_add));
+			glViewport(0,y_add,view.screen.x_sz,(view.screen.y_sz-y_add));
 		#else
 			y_add=(int)(((float)view.screen.y_sz)*console_screen_percent);
-			gl_set_viewport(y_add,0,(view.screen.y_sz-y_add),view.screen.x_sz);
+			glViewport(y_add,0,(view.screen.y_sz-y_add),view.screen.x_sz);
 		#endif
 	}
 	
@@ -614,9 +614,9 @@ void view_loop_draw(void)
 		
 	if (view.console.on) {
 		#ifndef D3_ROTATE_VIEW
-			gl_set_viewport(0,0,view.screen.x_sz,view.screen.y_sz);
+			glViewport(0,0,view.screen.x_sz,view.screen.y_sz);
 		#else
-			gl_set_viewport(0,0,view.screen.y_sz,view.screen.x_sz);
+			glViewport(0,0,view.screen.y_sz,view.screen.x_sz);
 		#endif
 		console_draw();
 	}

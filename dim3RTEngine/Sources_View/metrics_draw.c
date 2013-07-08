@@ -68,8 +68,6 @@ void metrics_draw(void)
 		// set up view
 		
 	gl_2D_view_interface();
-	
-	glDisable(GL_DEPTH_TEST);
 
 		// text height
 		

@@ -65,7 +65,7 @@ void label_draw_setup_single(obj_type *obj,int bone_idx,obj_label_draw *label_dr
 
 		// skip if behind z
 
-	if (!gl_project_in_view_z(&label_draw->pnt)) return;
+	if (view_dim3rtl_project_point_behind_z(&label_draw->pnt)) return;
 
 		// ignore if obscured by ray trace
 
@@ -91,13 +91,7 @@ void label_draw_setup_single(obj_type *obj,int bone_idx,obj_label_draw *label_dr
 
 		// project point in 2D
 
-	if (iface.project.ray_trace) {
-		gl_project_point(&label_draw->pnt);
-		label_draw->pnt.y=view.screen.y_sz-label_draw->pnt.y;	
-	}
-	else {
-		view_dim3rtl_project_point(&label_draw->pnt);
-	}
+	view_dim3rtl_project_point(&label_draw->pnt);
 
 	label_draw->on=TRUE;
 }
@@ -109,11 +103,11 @@ void label_draw_setup(void)
 	model_type				*mdl;
 
 		// clear all labels
-	
-	for (n=0;n!=view.render->draw_list.count;n++) {
-		if (view.render->draw_list.items[n].type!=view_render_type_object) continue;
 
-		obj=server.obj_list.objs[view.render->draw_list.items[n].idx];
+	for (n=0;n!=max_obj_list;n++) {
+		obj=server.obj_list.objs[n];
+		if (obj==NULL) continue;
+	
 		obj->label.text.draw.on=FALSE;
 		obj->label.bitmap.draw.on=FALSE;
 		obj->label.bar.draw.on=FALSE;
@@ -123,12 +117,12 @@ void label_draw_setup(void)
 		// remove labels behind z or off-screen
 		// ignore console as it won't matter for projection
 		
-	for (n=0;n!=view.render->draw_list.count;n++) {
-		if (view.render->draw_list.items[n].type!=view_render_type_object) continue;
+	for (n=0;n!=max_obj_list;n++) {
+		obj=server.obj_list.objs[n];
+		if (obj==NULL) continue;
 
 			// skip objects hidden or with no models
 
-		obj=server.obj_list.objs[view.render->draw_list.items[n].idx];
 		if (obj->hidden) continue;
 		if ((obj->draw.model_idx==-1) || (!obj->draw.on)) continue;
 		
@@ -182,14 +176,13 @@ void label_draw_render(void)
 	obj_type			*obj;
 	model_type			*mdl;
 
-	glDisable(GL_DEPTH_TEST);
-	
-	for (n=0;n!=view.render->draw_list.count;n++) {
-		if (view.render->draw_list.items[n].type!=view_render_type_object) continue;
+	for (n=0;n!=max_obj_list;n++) {
+		obj=server.obj_list.objs[n];
+		if (obj==NULL) continue;
 
-		obj=server.obj_list.objs[view.render->draw_list.items[n].idx];
-
+		if (obj->hidden) continue;
 		if (obj->draw.model_idx==-1) continue;
+
 		mdl=server.model_list.models[obj->draw.model_idx];
 
 			// text

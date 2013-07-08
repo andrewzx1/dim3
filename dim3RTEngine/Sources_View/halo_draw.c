@@ -160,12 +160,7 @@ void halo_draw_setup(void)
 
 			// is it behind the z?
 
-		if (!iface.project.ray_trace) {
-			if (!gl_project_in_view_z(&halo_draw->pnt)) continue;
-		}
-		else {
-			if (view_dim3rtl_project_point_behind_z(&halo_draw->pnt)) continue;
-		}
+		if (view_dim3rtl_project_point_behind_z(&halo_draw->pnt)) continue;
 				
 			// cull halo
 
@@ -178,13 +173,7 @@ void halo_draw_setup(void)
 		halo_draw->proj_pnt.y=halo_draw->pnt.y;
 		halo_draw->proj_pnt.z=halo_draw->pnt.z;
 			
-		if (!iface.project.ray_trace) {
-			gl_project_point(&halo_draw->proj_pnt);
-			halo_draw->proj_pnt.y=view.screen.y_sz-halo_draw->proj_pnt.y;
-		}
-		else {
-			view_dim3rtl_project_point(&halo_draw->proj_pnt);
-		}
+		view_dim3rtl_project_point(&halo_draw->proj_pnt);
 		
 		if (((halo_draw->proj_pnt.x+halo_draw->pixel_sz)<0) || ((halo_draw->proj_pnt.y+halo_draw->pixel_sz)<0) || ((halo_draw->proj_pnt.x-halo_draw->pixel_sz)>=view.screen.x_sz) || ((halo_draw->proj_pnt.y-halo_draw->pixel_sz)>=view.screen.y_sz)) continue;
 
@@ -214,8 +203,6 @@ void halo_draw_render(void)
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-
-	glDisable(GL_DEPTH_TEST);
 	
 		// get color
 

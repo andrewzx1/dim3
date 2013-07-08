@@ -132,9 +132,7 @@ void progress_update(void)
 	
 		// start the frame
 	
-	gl_frame_clear(FALSE);
-	gl_shader_frame_start();
-
+	gl_frame_clear();
 	gl_2D_view_interface();
 
 		// draw background

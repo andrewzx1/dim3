@@ -700,8 +700,6 @@ void hud_bars_draw_pie(iface_bar_type *bar)
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 
-	glDisable(GL_DEPTH_TEST);
-
 	gl_shader_draw_execute_simple_gradient_start(2,0,((6*72)*sizeof(float)));
 	glDrawArrays(GL_TRIANGLES,0,(72*3));
 	gl_shader_draw_execute_simple_gradient_end();
@@ -798,8 +796,6 @@ void hud_draw(void)
 		// set up view
 		
 	gl_2D_view_interface();
-	
-	glDisable(GL_DEPTH_TEST);
 	
 		// draw the bitmaps, bars, and text
 		

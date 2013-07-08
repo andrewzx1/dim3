@@ -42,101 +42,6 @@ extern setup_type			setup;
 
 /* =======================================================
 
-      Draw Lists
-      
-======================================================= */
-
-void view_start_draw_list(void)
-{
-	view.render->draw_list.count=0;
-}
-
-void view_add_draw_list(int item_type,int item_idx,int item_dist,int item_flag)
-{
-	int				t,idx,sz;
-
-		// room for any more items?
-
-	if (view.render->draw_list.count==max_view_render_item) return;
-	
-		// find place in sorted list
-
-	idx=-1;
-
-	for (t=0;t!=view.render->draw_list.count;t++) {
-		if (view.render->draw_list.items[t].dist>item_dist) {
-			idx=t;
-			break;
-		}
-	}
-
-		// insert at end of list
-		
-	if (idx==-1) {
-		view.render->draw_list.items[view.render->draw_list.count].type=item_type;
-		view.render->draw_list.items[view.render->draw_list.count].dist=item_dist;
-		view.render->draw_list.items[view.render->draw_list.count].flag=item_flag;
-		view.render->draw_list.items[view.render->draw_list.count].idx=(short)item_idx;
-	}
-	
-		// insert in list
-	
-	else {
-		sz=sizeof(view_render_draw_list_item_type)*(view.render->draw_list.count-idx);
-		memmove(&view.render->draw_list.items[idx+1],&view.render->draw_list.items[idx],sz);
-		
-		view.render->draw_list.items[idx].type=item_type;
-		view.render->draw_list.items[idx].dist=item_dist;
-		view.render->draw_list.items[idx].flag=item_flag;
-		view.render->draw_list.items[idx].idx=(short)item_idx;
-	}
-
-		// add up list
-
-	view.render->draw_list.count++;
-}
-
-bool view_mesh_in_draw_list(int mesh_idx)
-{
-	int			n;
-
-	for (n=0;n!=view.render->draw_list.count;n++) {
-		if (view.render->draw_list.items[n].type==view_render_type_mesh) {
-			if (view.render->draw_list.items[n].idx==mesh_idx) return(TRUE);
-		}
-	}
-
-	return(FALSE);
-}
-
-bool view_obj_in_draw_list(int obj_idx)
-{
-	int			n;
-
-	for (n=0;n!=view.render->draw_list.count;n++) {
-		if (view.render->draw_list.items[n].type==view_render_type_object) {
-			if (view.render->draw_list.items[n].idx==obj_idx) return(TRUE);
-		}
-	}
-
-	return(FALSE);
-}
-
-bool view_proj_in_draw_list(int proj_idx)
-{
-	int			n;
-
-	for (n=0;n!=view.render->draw_list.count;n++) {
-		if (view.render->draw_list.items[n].type==view_render_type_projectile) {
-			if (view.render->draw_list.items[n].idx==proj_idx) return(TRUE);
-		}
-	}
-
-	return(FALSE);
-}
-
-/* =======================================================
-
       RL Model Setup and Draw List
 	  This version doesn't use drawing lists
       
@@ -255,10 +160,6 @@ void view_add_model_halo(model_draw *draw,int obj_idx)
 			pnt.z=draw->pnt.z;
 
 			model_get_halo_position(mdl,&draw->setup,n,&pnt);
-
-				// check for halo culling
-
-			if (!view_cull_halo(&pnt)) continue;
 	
 				// add the halo
 				
@@ -277,23 +178,18 @@ void view_add_halos(void)
 	map_light_type		*lit;
 	map_particle_type	*prt;
 
-		// halos from objects and their weapons
+		// halos from objects
 		
-	for (n=0;n!=view.render->draw_list.count;n++) {
+	for (n=0;n!=max_obj_list;n++) {
+		obj=server.obj_list.objs[n];
+		if (obj!=NULL) view_add_model_halo(&obj->draw,obj->idx);
+	}
 
-		switch (view.render->draw_list.items[n].type) {
+		// halos from projectiles
 
-			case view_render_type_object:
-				obj=server.obj_list.objs[view.render->draw_list.items[n].idx];
-				view_add_model_halo(&obj->draw,obj->idx);
-				break;
-
-			case view_render_type_projectile:
-				proj=server.proj_list.projs[view.render->draw_list.items[n].idx];
-				view_add_model_halo(&proj->draw,-1);
-				break;
-
-		}
+	for (n=0;n!=max_proj_list;n++) {
+		proj=server.proj_list.projs[n];
+		if (proj->on) view_add_model_halo(&proj->draw,-1);
 	}
 
 		// halos from map lights
@@ -501,19 +397,5 @@ void view_calculate_sways(obj_type *obj)
 
 	// supergumba -- work on sways
 
-}
-
-/* =======================================================
-
-      View Script 3D to 2D transform
-      
-======================================================= */
-
-void view_script_transform_3D_to_2D(d3pnt *pnt)
-{
-	gl_3D_view();
-	gl_3D_rotate(&view.render->camera.pnt,&view.render->camera.ang);
-	
-	gl_project_point(pnt);
 }
 

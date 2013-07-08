@@ -37,11 +37,9 @@ extern setup_type			setup;
 extern file_path_setup_type	file_path_setup;
 
 extern shader_type			*gl_shader_current,
-							core_shaders[max_shader_light+1][max_core_shader],
-							color_shader,gradient_shader,black_shader,
-							bitmap_shader;
+							color_shader,gradient_shader,bitmap_shader;
 
-extern float				gl_proj_matrix[16],gl_model_view_matrix[16];
+extern float				gl_proj_matrix[16];
 
 /* =======================================================
 
@@ -51,10 +49,17 @@ extern float				gl_proj_matrix[16],gl_model_view_matrix[16];
 
 void gl_shader_draw_execute_set_program(shader_type *shader)
 {
+		// switch program if necessary
+
 	if (shader!=gl_shader_current) {
 		gl_shader_current=shader;
 		glUseProgram(shader->program_obj);
 	}
+
+		// set projection matrix
+		// we never use model view as this is always 2D drawing
+
+	glUniformMatrix4fv(shader->var_locs.dim3ProjectionMatrix,1,GL_FALSE,gl_proj_matrix);
 }
 
 /* =======================================================
@@ -65,19 +70,12 @@ void gl_shader_draw_execute_set_program(shader_type *shader)
 
 void gl_shader_draw_execute_simple_color_set_color(d3col *col,float alpha)
 {
-	if ((color_shader.var_values.simple_color.r!=col->r) || (color_shader.var_values.simple_color.g!=col->g) || (color_shader.var_values.simple_color.b!=col->b) || (color_shader.var_values.simple_color.a!=alpha)) {
-		color_shader.var_values.simple_color.r=col->r;
-		color_shader.var_values.simple_color.g=col->g;
-		color_shader.var_values.simple_color.b=col->b;
-		color_shader.var_values.simple_color.a=alpha;
-		glUniform4f(color_shader.var_locs.dim3SimpleColor,col->r,col->g,col->b,alpha);
-	}
+	glUniform4f(color_shader.var_locs.dim3SimpleColor,col->r,col->g,col->b,alpha);
 }
 
 void gl_shader_draw_execute_simple_color_start(int vertex_size,int vertex_offset,d3col *col,float alpha)
 {
 	gl_shader_draw_execute_set_program(&color_shader);
-	gl_shader_set_draw_matrix_variables(&color_shader);
 	gl_shader_draw_execute_simple_color_set_color(col,alpha);
 		
 	glEnableVertexAttribArray(color_shader.var_locs.dim3Vertex);
@@ -98,7 +96,6 @@ void gl_shader_draw_execute_simple_color_end(void)
 void gl_shader_draw_execute_simple_gradient_start(int vertex_size,int vertex_offset,int color_offset)
 {
 	gl_shader_draw_execute_set_program(&gradient_shader);
-	gl_shader_set_draw_matrix_variables(&gradient_shader);
 		
 	glEnableVertexAttribArray(gradient_shader.var_locs.dim3Vertex);
 	glVertexAttribPointer(gradient_shader.var_locs.dim3Vertex,vertex_size,GL_FLOAT,GL_FALSE,0,(void*)vertex_offset);
@@ -115,44 +112,13 @@ void gl_shader_draw_execute_simple_gradient_end(void)
 
 /* =======================================================
 
-      Execute Simple Black Shaders
-      
-======================================================= */
-
-void gl_shader_draw_execute_simple_black_start(int vertex_size,int vertex_offset,float alpha)
-{
-	gl_shader_draw_execute_set_program(&black_shader);
-	gl_shader_set_draw_matrix_variables(&black_shader);
-
-	if (black_shader.var_values.alpha!=alpha) {
-		black_shader.var_values.alpha=alpha;
-		glUniform1f(black_shader.var_locs.dim3Alpha,alpha);
-	}
-		
-	glEnableVertexAttribArray(black_shader.var_locs.dim3Vertex);
-	glVertexAttribPointer(black_shader.var_locs.dim3Vertex,vertex_size,GL_FLOAT,GL_FALSE,0,(void*)vertex_offset);
-}
-
-void gl_shader_draw_execute_simple_black_end(void)
-{
-	glDisableVertexAttribArray(black_shader.var_locs.dim3Vertex);
-}
-
-/* =======================================================
-
       Execute Simple Bitmap Shaders
       
 ======================================================= */
 
 void gl_shader_draw_execute_simple_bitmap_set_color(d3col *col,float alpha)
 {
-	if ((bitmap_shader.var_values.simple_color.r!=col->r) || (bitmap_shader.var_values.simple_color.g!=col->g) || (bitmap_shader.var_values.simple_color.b!=col->b) || (bitmap_shader.var_values.simple_color.a!=alpha)) {
-		bitmap_shader.var_values.simple_color.r=col->r;
-		bitmap_shader.var_values.simple_color.g=col->g;
-		bitmap_shader.var_values.simple_color.b=col->b;
-		bitmap_shader.var_values.simple_color.a=alpha;
-		glUniform4f(bitmap_shader.var_locs.dim3SimpleColor,col->r,col->g,col->b,alpha);
-	}
+	glUniform4f(bitmap_shader.var_locs.dim3SimpleColor,col->r,col->g,col->b,alpha);
 }
 
 void gl_shader_draw_execute_simple_bitmap_set_texture(unsigned long gl_id)
@@ -163,7 +129,6 @@ void gl_shader_draw_execute_simple_bitmap_set_texture(unsigned long gl_id)
 void gl_shader_draw_execute_simple_bitmap_start(int vertex_size,int vertex_offset,int uv_offset,int stride,d3col *col,float alpha)
 {
 	gl_shader_draw_execute_set_program(&bitmap_shader);
-	gl_shader_set_draw_matrix_variables(&bitmap_shader);
 	gl_shader_draw_execute_simple_bitmap_set_color(col,alpha);
 	
 	glEnableVertexAttribArray(bitmap_shader.var_locs.dim3Vertex);

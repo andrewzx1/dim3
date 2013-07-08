@@ -314,7 +314,7 @@ bool particle_spawn_single(int particle_idx,int obj_idx,d3pnt *pt,particle_rotat
 	
 		// dim3rtl setup
 
-	if (iface.project.ray_trace) view_dim3rtl_effect_mesh_setup(effect);
+	view_dim3rtl_effect_mesh_setup(effect);
 	
 	return(TRUE);
 }

@@ -130,6 +130,8 @@ void rain_reset(void)
 
 void rain_draw(void)
 {
+	/* supergumba -- will need to be redone
+
 	int				n,tick,xadd,yadd,zadd,ypush,density,mem_sz,
 					slant_add,slant_mult,slant_div;
 	float			slant_ang_y;
@@ -299,5 +301,6 @@ void rain_draw(void)
 		// unbind the vbo
 
 	view_unbind_rain_vertex_object();
+	*/
 }
 

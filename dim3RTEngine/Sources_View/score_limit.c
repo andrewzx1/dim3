@@ -182,8 +182,8 @@ void score_limit_run(void)
 {
 	char			err_str[256];
 
-	gl_frame_clear(FALSE);
-	gl_shader_frame_start();
+	gl_frame_clear();
+	gl_2D_view_interface();
 	
 		// draw
 		

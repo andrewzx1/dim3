@@ -114,8 +114,6 @@ void view_primitive_2D_color_poly(int x0,int y0,d3col *col0,int x1,int y1,d3col 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 
-	glDisable(GL_DEPTH_TEST);
-
 		// draw the polygon
 
 	gl_shader_draw_execute_simple_gradient_start(2,0,((4*2)*sizeof(float)));
@@ -187,8 +185,6 @@ void view_primitive_2D_color_trig(d3col *col,float alpha,int lft,int rgt,int top
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 
-	glDisable(GL_DEPTH_TEST);
-
 		// draw the trig
 		
 	gl_shader_draw_execute_simple_color_start(2,0,col,alpha);
@@ -254,8 +250,6 @@ void view_primitive_2D_color_arc(d3col *out_col,d3col *in_col,float alpha,int lf
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 
-	glDisable(GL_DEPTH_TEST);
-
 		// draw the trig
 		
 	gl_shader_draw_execute_simple_gradient_start(2,0,((3*2)*sizeof(float)));
@@ -291,7 +285,6 @@ void view_primitive_2D_line(d3col *col,float alpha,int x0,int y0,int x1,int y1)
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-	glDisable(GL_DEPTH_TEST);
 		
 	gl_shader_draw_execute_simple_color_start(2,0,col,alpha);
 	glDrawArrays(GL_LINES,0,2);
@@ -322,7 +315,6 @@ void view_primitive_2D_line_poly(d3col *col,float alpha,int x0,int y0,int x1,int
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-	glDisable(GL_DEPTH_TEST);
 
 	gl_shader_draw_execute_simple_color_start(2,0,col,alpha);
 	glDrawArrays(GL_LINE_LOOP,0,4);
@@ -390,7 +382,6 @@ void view_primitive_2D_line_trig(d3col *col,float alpha,int lft,int rgt,int top,
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-	glDisable(GL_DEPTH_TEST);
 		
 	gl_shader_draw_execute_simple_color_start(2,0,col,alpha);
 	glDrawArrays(GL_LINE_LOOP,0,3);
@@ -516,8 +507,6 @@ void view_primitive_2D_texture_quad(GLuint gl_id,d3col *col,float alpha,int lft,
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-
-	glDisable(GL_DEPTH_TEST);
 	
 	gl_shader_draw_execute_simple_bitmap_set_texture(gl_id);
 
@@ -597,8 +586,6 @@ void view_primitive_2D_texture_quad_rot(GLuint gl_id,d3col *col,float alpha,int 
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-
-	glDisable(GL_DEPTH_TEST);
 
 		// draw the quad
 
