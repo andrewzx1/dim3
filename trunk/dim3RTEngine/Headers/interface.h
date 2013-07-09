@@ -674,20 +674,6 @@ extern bool gl_is_size_widescreen(int wid,int high);
 // vbos
 //
 
-extern void view_create_sky_vertex_object(int vertex_mem_sz);
-extern void view_dispose_sky_vertex_object(void);
-extern inline void view_bind_sky_vertex_object(void);
-extern inline unsigned char* view_map_sky_vertex_object(void);
-extern inline void view_unmap_sky_vertex_object(void);
-extern inline void view_unbind_sky_vertex_object(void);
-
-extern void view_create_rain_vertex_object(int vertex_mem_sz);
-extern void view_dispose_rain_vertex_object(void);
-extern inline void view_bind_rain_vertex_object(void);
-extern inline unsigned char* view_map_rain_vertex_object(void);
-extern inline void view_unmap_rain_vertex_object(void);
-extern inline void view_unbind_rain_vertex_object(void);
-
 extern void view_create_text_vertex_object(void);
 extern void view_dispose_text_vertex_object(void);
 extern inline void view_bind_text_vertex_object(void);
@@ -815,10 +801,9 @@ extern int liquid_wave_get_divisions(map_liquid_type *liq);
 // skies, backgrounds, fogs, rain
 //
 
-extern void sky_draw_init(void);
-extern void sky_draw_release(void);
-extern void sky_draw_background(void);
-extern void sky_draw(void);
+extern void sky_init(void);
+extern void sky_release(void);
+extern void sky_update(void);
 
 extern void rain_draw_init(void);
 extern void rain_draw_release(void);

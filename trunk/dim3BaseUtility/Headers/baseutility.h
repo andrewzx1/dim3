@@ -1469,7 +1469,7 @@ typedef struct		{
 
 typedef struct		{
 						char							name[name_str_len];
-						bool							ray_trace,modernize,
+						bool							modernize,
 														simple_save,checkpoints,
 														load_requires_click;
 					} iface_project_type;

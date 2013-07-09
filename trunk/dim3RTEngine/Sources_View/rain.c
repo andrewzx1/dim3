@@ -54,7 +54,7 @@ void rain_draw_init(void)
 
 void rain_draw_release(void)
 {
-	if (rain_vbo_created) view_dispose_rain_vertex_object();
+//	if (rain_vbo_created) view_dispose_rain_vertex_object();
 }
 
 /* =======================================================

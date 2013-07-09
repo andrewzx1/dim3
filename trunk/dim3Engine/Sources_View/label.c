@@ -91,13 +91,8 @@ void label_draw_setup_single(obj_type *obj,int bone_idx,obj_label_draw *label_dr
 
 		// project point in 2D
 
-	if (iface.project.ray_trace) {
-		gl_project_point(&label_draw->pnt);
-		label_draw->pnt.y=view.screen.y_sz-label_draw->pnt.y;	
-	}
-	else {
-		view_dim3rtl_project_point(&label_draw->pnt);
-	}
+	gl_project_point(&label_draw->pnt);
+	label_draw->pnt.y=view.screen.y_sz-label_draw->pnt.y;	
 
 	label_draw->on=TRUE;
 }

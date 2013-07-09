@@ -48,11 +48,6 @@ SDL_GLContext				*sdl_gl_ctx;
 
 bool gl_in_window_mode(void)
 {
-		// for now, ray tracing always in
-		// windowed mode
-		
-	if (iface.project.ray_trace) return(TRUE);
-	
 		// mobile always full screen,
 		// everything else by settings
 	

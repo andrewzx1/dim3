@@ -200,7 +200,7 @@ void map_lookups_setup(void)
 
 bool map_start(bool in_file_load,bool skip_media,char *err_str)
 {
-	int				n,tick;
+	int				tick;
 	char			txt[256];
 	obj_type		*obj;
 
@@ -267,7 +267,7 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 	progress_update();
 
 	if (!app.dedicated_host) {
-		sky_draw_init();
+		sky_init();
 		rain_draw_init();
 
 		map.rain.reset=TRUE;
@@ -530,7 +530,7 @@ void map_end(void)
 
 	if (!app.dedicated_host) {
 		progress_update();
-		sky_draw_release();
+		sky_release();
 		rain_draw_release();
 	}
 

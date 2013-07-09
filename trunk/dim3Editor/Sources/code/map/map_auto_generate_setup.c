@@ -139,7 +139,7 @@ void ag_read_settings_setup_connector(ag_shape_type *shape,ag_shape_connector_ty
 
 bool ag_read_settings(char *err_str)
 {
-	int					n,k,t,nshape,
+	int					n,k,nshape,
 						head_tag,size_tag,option_tag,
 						shapes_tag,shape_tag,
 						vertexes_tag,vertex_tag,
@@ -264,6 +264,15 @@ bool ag_read_settings(char *err_str)
 			}
 		}
 
+			// determine the extents
+
+		shape->extent.x=shape->extent.z=0;
+
+		for (k=0;k!=shape->nvertex;k++) {
+			if (shape->vertexes[k].x>shape->extent.x) shape->extent.x=shape->vertexes[k].x;
+			if (shape->vertexes[k].z>shape->extent.z) shape->extent.z=shape->vertexes[k].z;
+		}
+
 			// next shape
 
 		shape++;
@@ -282,9 +291,8 @@ bool ag_read_settings(char *err_str)
 		memmove(shape,flip_shape,sizeof(ag_shape_type));
 
 		for (k=0;k!=shape->nvertex;k++) {
-			t=shape->vertexes[k].x;
-			shape->vertexes[k].x=shape->vertexes[k].z;
-			shape->vertexes[k].z=t;
+			shape->vertexes[k].x=flip_shape->vertexes[k].z;
+			shape->vertexes[k].z=flip_shape->vertexes[k].x;
 		}
 		for (k=0;k!=shape->npoly;k++) {
 			ag_read_settings_setup_shape_poly(shape,&shape->polys[k]);
@@ -292,6 +300,9 @@ bool ag_read_settings(char *err_str)
 		for (k=0;k!=shape->nconnector;k++) {
 			ag_read_settings_setup_connector(shape,&shape->connectors[k]);
 		}
+
+		shape->extent.x=flip_shape->extent.z;
+		shape->extent.z=flip_shape->extent.x;
 
 		ag_state.nshape++;
 		shape++;
@@ -314,7 +325,7 @@ bool ag_read_settings(char *err_str)
 		memmove(shape,flip_shape,sizeof(ag_shape_type));
 
 		for (k=0;k!=shape->nvertex;k++) {
-			shape->vertexes[k].x=100-shape->vertexes[k].x;
+			shape->vertexes[k].x=shape->extent.x-shape->vertexes[k].x;
 		}
 		for (k=0;k!=shape->npoly;k++) {
 			ag_read_settings_setup_shape_poly(shape,&shape->polys[k]);
@@ -333,7 +344,7 @@ bool ag_read_settings(char *err_str)
 		memmove(shape,flip_shape,sizeof(ag_shape_type));
 
 		for (k=0;k!=shape->nvertex;k++) {
-			shape->vertexes[k].z=100-shape->vertexes[k].z;
+			shape->vertexes[k].z=shape->extent.z-shape->vertexes[k].z;
 		}
 		for (k=0;k!=shape->npoly;k++) {
 			ag_read_settings_setup_shape_poly(shape,&shape->polys[k]);
@@ -352,8 +363,8 @@ bool ag_read_settings(char *err_str)
 		memmove(shape,flip_shape,sizeof(ag_shape_type));
 
 		for (k=0;k!=shape->nvertex;k++) {
-			shape->vertexes[k].x=100-shape->vertexes[k].x;
-			shape->vertexes[k].z=100-shape->vertexes[k].z;
+			shape->vertexes[k].x=shape->extent.x-shape->vertexes[k].x;
+			shape->vertexes[k].z=shape->extent.z-shape->vertexes[k].z;
 		}
 		for (k=0;k!=shape->npoly;k++) {
 			ag_read_settings_setup_shape_poly(shape,&shape->polys[k]);

@@ -1011,15 +1011,6 @@ bool game_file_load(char *file_name,bool resume_load,char *err_str)
 	free(game_file_data);
 	if (!resume_load) progress_shutdown();
 
-		// if in RT, rebuild the map
-
-	if (iface.project.ray_trace) {
-		view_dim3rtl_map_mesh_stop();
-		view_dim3rtl_map_mesh_start();
-		view_dim3rtl_map_model_mesh_stop();
-		view_dim3rtl_map_model_mesh_start();
-	}
-
 		// fix some necessary functions
 
 	map.rain.reset=TRUE;

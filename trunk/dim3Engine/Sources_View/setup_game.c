@@ -39,12 +39,10 @@ and can be sold or given away.
 #define setup_pane_debug					5
 
 #define ctrl_screen_gl_size_id				0
-#define ctrl_screen_rtl_size_id				1
-#define ctrl_screen_rtl_full_window_id		2
-#define ctrl_fsaa_id						3
-#define ctrl_decal_on_id					4
-#define ctrl_shadow_on_id					5
-#define ctrl_gamma_id						6
+#define ctrl_fsaa_id						1
+#define ctrl_decal_on_id					2
+#define ctrl_shadow_on_id					3
+#define ctrl_gamma_id						4
 
 #define ctrl_sound_volume_id				30
 #define ctrl_music_on_id					31
@@ -95,8 +93,6 @@ extern server_type			server;
 extern iface_type			iface;
 extern setup_type			setup;
 
-extern int					view_rtl_screen_sizes[][2];
-
 int							setup_tab_value,setup_action_scroll_pos,
 							setup_tab_index[6],
 							setup_key_control_to_action_index_list[ncontrol];
@@ -141,7 +137,7 @@ void setup_network_fill_character_table(void)
       
 ======================================================= */
 
-void setup_game_video_pane_opengl(void)
+void setup_game_video_pane(void)
 {
 	int			n,idx,wid,high,
 				fx,fy,x,y,control_y_add,control_y_sz;
@@ -200,42 +196,6 @@ void setup_game_video_pane_opengl(void)
 	y+=control_y_add;
 
 	element_slider_add("Gamma",setup.gamma,-0.5f,0.5f,ctrl_gamma_id,x,y,TRUE);
-}
-
-void setup_game_video_pane_dim3rtl(void)
-{
-	int			n,idx,fx,fy,wid,high,
-				x,y,control_y_add,control_y_sz;
-	
-	control_y_add=element_get_control_separation_high();
-	control_y_sz=control_y_add*3;
-	
-	element_get_frame_inner_space(setup_game_frame_id,&fx,&fy,&wid,&high);
-	x=fx+(int)(((float)wid)*0.4f);
-	y=(fy+((high-control_y_sz)/2))+control_y_add;
-	
-		// setup screen size list
-		
-	idx=0;
-	n=0;
-
-	while (view_rtl_screen_sizes[n][0]!=0) {
-		if (setup.screen_rtl_wid==view_rtl_screen_sizes[n][0]) idx=n;
-		sprintf(setup_screen_size_list[n],"%dx%d",view_rtl_screen_sizes[n][0],view_rtl_screen_sizes[n][1]);
-		n++;
-	}
-
-	setup_screen_size_list[n][0]=0x0;
-	
-	element_combo_add("Screen Size",(char*)setup_screen_size_list,idx,ctrl_screen_rtl_size_id,x,y,TRUE);
-	y+=control_y_add;
-
-	if (gl_check_fsaa_ok()) {
-		element_combo_add("Full-Screen Anti-Aliasing",(char*)setup_fsaa_mode_list,setup.fsaa_mode,ctrl_fsaa_id,x,y,TRUE);
-		y+=control_y_add;
-	}
-
-	element_checkbox_add("Full Window (Requires Restart)",setup.screen_rtl_full_window,ctrl_screen_rtl_full_window_id,x,y,TRUE);
 }
 
 void setup_game_audio_pane(void)
@@ -540,12 +500,7 @@ void setup_game_create_pane(void)
 		
 	switch (setup_tab_index[element_get_value(setup_game_tab_id)]) {
 		case setup_pane_video:
-			if (!iface.project.ray_trace) {
-				setup_game_video_pane_opengl();
-			}
-			else {
-				setup_game_video_pane_dim3rtl();
-			}
+			setup_game_video_pane();
 			break;
 		case setup_pane_audio:
 			setup_game_audio_pane();
@@ -867,16 +822,6 @@ void setup_game_click(void)
 				setup.screen_wid=render_info.screen_sizes[idx-1].wid;
 				setup.screen_high=render_info.screen_sizes[idx-1].high;
 			}
-			break;
-			
-		case ctrl_screen_rtl_size_id:
-			idx=element_get_value(ctrl_screen_rtl_size_id);
-			setup.screen_rtl_wid=view_rtl_screen_sizes[idx][0];
-			setup.screen_rtl_high=view_rtl_screen_sizes[idx][1];
-			break;
-
-		case ctrl_screen_rtl_full_window_id:
-			setup.screen_rtl_full_window=element_get_value(ctrl_screen_rtl_full_window_id);
 			break;
 			
 		case ctrl_decal_on_id:

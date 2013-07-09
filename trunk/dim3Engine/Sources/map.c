@@ -284,7 +284,7 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 
 		// load opengl map textures
 
-	if ((!app.dedicated_host) && (!iface.project.ray_trace)) {
+	if (!app.dedicated_host) {
 		map_textures_read_setup(&map);
 		
 		for (n=0;n!=max_map_texture;n++) {
@@ -329,7 +329,7 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 
 	progress_update();
 
-	if ((!app.dedicated_host) && (!iface.project.ray_trace)) {
+	if (!app.dedicated_host) {
 		if (!render_transparent_create_sort_list()) {
 			progress_shutdown();
 			strcpy(err_str,"Out of memory");
@@ -347,7 +347,7 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 
 	progress_update();
 
-	if ((!app.dedicated_host) && (!iface.project.ray_trace)) {
+	if (!app.dedicated_host) {
 		if (!view_map_vbo_initialize()) {
 			progress_shutdown();
 			strcpy(err_str,"Out of memory");
@@ -408,7 +408,7 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 
 	progress_update();
 
-	if ((!app.dedicated_host) && (!iface.project.ray_trace)) {
+	if (!app.dedicated_host) {
 		if (!view_obscure_initialize()) {
 			progress_shutdown();
 			strcpy(err_str,"Out of memory");
@@ -499,7 +499,7 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 	
 	map_movements_initialize();
 	map_lookups_setup();
-	if (!iface.project.ray_trace) map_mesh_polygon_draw_flag_setup();
+	map_mesh_polygon_draw_flag_setup();
 	
 		// map start event
 		// skip if we are reloading this map
@@ -512,14 +512,6 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 		scripts_post_event_console(js.course_script_idx,-1,sd_event_map,sd_event_map_open,0);
 
 		if (!app.dedicated_host) scripts_post_event_console(obj->script_idx,-1,sd_event_map,sd_event_map_open,0);
-	}
-	
-		// dim3rtl setup
-
-	if (iface.project.ray_trace) {
-		view_dim3rtl_map_mesh_start();
-		view_dim3rtl_map_liquid_mesh_start();
-		view_dim3rtl_map_model_mesh_start();
 	}
 
 		// finish up
@@ -599,14 +591,6 @@ void map_end(void)
 	
 	console_add_system("Closing Map");
 	
-		// dim3rtl cleanup
-	
-	if (iface.project.ray_trace) {
-		view_dim3rtl_map_mesh_stop();
-		view_dim3rtl_map_liquid_mesh_stop();
-		view_dim3rtl_map_model_mesh_stop();
-	}
-	
 		// detach objects
 		
 	progress_update();
@@ -643,9 +627,7 @@ void map_end(void)
 		progress_update();
 		gl_fs_shader_map_end();
 		gl_back_render_map_end();
-		if (!iface.project.ray_trace) {
-			view_obscure_release();
-		}
+		view_obscure_release();
 		sky_draw_release();
 		fog_draw_release();
 		rain_draw_release();
@@ -664,7 +646,7 @@ void map_end(void)
 
 		// free group, portal segment, vertex and light lists
 		
-	if ((!app.dedicated_host) && (!iface.project.ray_trace)) {
+	if (!app.dedicated_host) {
 		progress_update();
 		view_map_vbo_release();
 		render_transparent_dispose_sort_list();

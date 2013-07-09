@@ -48,7 +48,7 @@
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="true"
-				AdditionalIncludeDirectories="..\Common\Libraries;..\Common\Libraries\GLEW;..\Common\Libraries\ZLib;..\Common\Libraries\SDL;..\Common\Libraries\MPG123;..\Common\Libraries\JavaScriptCore;..\Common\Headers;..\Common\Libraries\PNG;..\..\dim3Engine\Headers;..\..\dim3Common\Headers;..\..\dim3BaseUtility\Headers;..\..\dim3BaseUtility\Sources;..\..\dim3ModelUtility\Headers;..\..\dim3ModelUtility\Sources;..\..\dim3MapUtility\Headers;..\..\dim3MapUtility\Sources;..\..\dim3Engine\Sources_RTL"
+				AdditionalIncludeDirectories="..\Common\Libraries;..\Common\Libraries\GLEW;..\Common\Libraries\ZLib;..\Common\Libraries\SDL;..\Common\Libraries\MPG123;..\Common\Libraries\JavaScriptCore;..\Common\Headers;..\Common\Libraries\PNG;..\..\dim3Engine\Headers;..\..\dim3Common\Headers;..\..\dim3BaseUtility\Headers;..\..\dim3BaseUtility\Sources;..\..\dim3ModelUtility\Headers;..\..\dim3ModelUtility\Sources;..\..\dim3MapUtility\Headers;..\..\dim3MapUtility\Sources"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;D3_PCH;D3_ENGINE"
 				StringPooling="true"
 				ExceptionHandling="0"
@@ -3754,102 +3754,6 @@
 								PreprocessorDefinitions=""
 							/>
 						</FileConfiguration>
-					</File>
-				</Filter>
-				<Filter
-					Name="RTL"
-					>
-					<File
-						RelativePath="..\..\dim3Engine\Sources_RTL\ray.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Engine\Sources_RTL\ray_color.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Engine\Sources_RTL\ray_eye.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Engine\Sources_RTL\ray_interface.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Engine\Sources_RTL\ray_light.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Engine\Sources_RTL\ray_main.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Engine\Sources_RTL\ray_material.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Engine\Sources_RTL\ray_math.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Engine\Sources_RTL\ray_mesh.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Engine\Sources_RTL\ray_os_defs.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Engine\Sources_RTL\ray_precalc.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Engine\Sources_RTL\ray_render.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Engine\Sources_RTL\ray_scene.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Engine\Sources_RTL\ray_thread.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Engine\Sources_RTL\ray_types.h"
-						>
-					</File>
-				</Filter>
-				<Filter
-					Name="ViewRTL"
-					>
-					<File
-						RelativePath="..\..\dim3Engine\Sources_View\view_rtl_effect.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Engine\Sources_View\view_rtl_liquid.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Engine\Sources_View\view_rtl_map.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Engine\Sources_View\view_rtl_material.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Engine\Sources_View\view_rtl_model.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Engine\Sources_View\view_rtl_opengl.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Engine\Sources_View\view_rtl_patch.c"
-						>
 					</File>
 				</Filter>
 			</Filter>

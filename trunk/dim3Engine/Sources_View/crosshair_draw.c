@@ -105,18 +105,10 @@ bool crosshair_get_location(obj_type *obj,weapon_type *weap,int *kx,int *ky,int 
 		win_pnt.y=contact.hpt.y;
 		win_pnt.z=contact.hpt.z;
 
-		if (!iface.project.ray_trace) {
-			gl_project_point(&win_pnt);
+		gl_project_point(&win_pnt);
 
-			*kx=win_pnt.x;
-			*ky=view.screen.y_sz-win_pnt.y;
-		}
-		else {
-			view_dim3rtl_project_point(&win_pnt);
-
-			*kx=win_pnt.x;
-			*ky=win_pnt.y;
-		}
+		*kx=win_pnt.x;
+		*ky=view.screen.y_sz-win_pnt.y;
 
 		if (dist!=NULL) *dist=distance_get(view.render->camera.pnt.x,view.render->camera.pnt.y,view.render->camera.pnt.z,contact.hpt.x,contact.hpt.y,contact.hpt.z);
 	}
