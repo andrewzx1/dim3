@@ -50,8 +50,10 @@ bool gl_in_window_mode(void)
 {
 		// for now, ray tracing always in
 		// windowed mode
+
+	// supergumba -- will need to fix this
 		
-	if (iface.project.ray_trace) return(TRUE);
+	return(TRUE);
 	
 		// mobile always full screen,
 		// everything else by settings

@@ -30,428 +30,380 @@ and can be sold or given away.
 #endif
 
 #include "interface.h"
+#include "ray_interface.h"
 
 extern map_type			map;
 extern setup_type		setup;
 extern view_type		view;
 
+extern int				view_rtl_draw_scene_id;
+
+int						rtl_sky_mesh_id,sky_vertex_count;
+
 /* =======================================================
 
-      Draw Cube Sky
+      Sky Cube Mesh
       
 ======================================================= */
 
-void sky_draw_cube_setup(void)
+void sky_init(void)
 {
-	/* supergumba -- will need new version
-	int					sz;
-    float				f_radius,txt_fact;
-	float				*vertex_ptr,*uv_ptr;
+	int				sky_vertex_count;
 
-		// construct VBO
+		// is there a sky?
+		// only supporting cube type skies
+	
+	rtl_sky_mesh_id=-1;
 
-	sz=6*4;
-	view_create_sky_vertex_object(((sz*(3+2+4))*sizeof(float)));
+	if (!map.sky.on) return;
+	if (map.sky.type!=st_cube) return;
 
-	view_bind_sky_vertex_object();
+		// get vertex counts
 
-	vertex_ptr=(float*)view_map_sky_vertex_object();
-	if (vertex_ptr==NULL) {
-		view_unbind_sky_vertex_object();
-		return;
-	}
+	sky_vertex_count=0;
 
-	uv_ptr=vertex_ptr+(sz*3);
+	if (map.sky.fill!=-1) sky_vertex_count+=4;
+	if (map.sky.bottom_fill!=-1) sky_vertex_count+=4;
+	if (map.sky.north_fill!=-1) sky_vertex_count+=4;
+	if (map.sky.south_fill!=-1) sky_vertex_count+=4;
+	if (map.sky.east_fill!=-1) sky_vertex_count+=4;
+	if (map.sky.west_fill!=-1) sky_vertex_count+=4;
 
-	txt_fact=map.sky.txt_fact;
+	if (sky_vertex_count==0) return;
+
+		// create mesh
+		// sky moves with player, so we just
+		// setup mesh here and update on the fly
+		
+	rtl_sky_mesh_id=rtlSceneMeshAdd(view_rtl_draw_scene_id,RL_MESH_FLAG_HIGHLIGHT);
+	if (rtl_sky_mesh_id==-1) return;
+
+	rtlSceneMeshSetVertex(view_rtl_draw_scene_id,rtl_sky_mesh_id,RL_MESH_FORMAT_VERTEX_3_FLOAT,sky_vertex_count,NULL);
+	rtlSceneMeshSetUV(view_rtl_draw_scene_id,rtl_sky_mesh_id,RL_MESH_FORMAT_UV_2_FLOAT,sky_vertex_count,NULL);
+}
+
+void sky_release(void)
+{
+	if (rtl_sky_mesh_id!=-1) rtlSceneMeshDelete(view_rtl_draw_scene_id,rtl_sky_mesh_id);
+}
+
+void sky_update(void)
+{
+	int				k,idx,poly_count;
+	short			*polys,*vk;
+    float			f_radius,txt_fact;
+	float			*vp,*uv;
+	d3fpnt			camera_pos;
+
+	if (rtl_sky_mesh_id==-1) return;
 
 		// setup cube quads
 		
 	f_radius=(float)map.sky.radius;
-		
+	camera_pos.x=(float)view.render->camera.pnt.x;
+	camera_pos.y=(float)view.render->camera.pnt.y;
+	camera_pos.z=(float)view.render->camera.pnt.z;
+
+	txt_fact=map.sky.txt_fact;
+
+		// run polys
+
+	idx=0;
+	poly_count=0;
+
+	polys=(short*)malloc(sizeof(short)*(6*10));
+	vk=polys;
+
 		// top
 		
+	rtlSceneMeshMapVertexPointer(view_rtl_draw_scene_id,rtl_sky_mesh_id,(void**)&vp);
+	rtlSceneMeshMapUVPointer(view_rtl_draw_scene_id,rtl_sky_mesh_id,(void**)&uv);
+
 	if (map.sky.fill!=-1) {
-		*vertex_ptr++=-f_radius;
-		*vertex_ptr++=-f_radius;
-		*vertex_ptr++=-f_radius;
 
-		*uv_ptr++=0.0f;
-		*uv_ptr++=txt_fact;
+			// vertexes and uv
 
-		*vertex_ptr++=-f_radius;
-		*vertex_ptr++=-f_radius;
-		*vertex_ptr++=f_radius;
+		*vp++=camera_pos.x-f_radius;
+		*vp++=camera_pos.y-f_radius;
+		*vp++=camera_pos.z+f_radius;
 
-		*uv_ptr++=0.0f;
-		*uv_ptr++=0.0f;
+		*uv++=0.0f;
+		*uv++=0.0f;
 
-		*vertex_ptr++=f_radius;
-		*vertex_ptr++=-f_radius;
-		*vertex_ptr++=-f_radius;
+		*vp++=camera_pos.x+f_radius;
+		*vp++=camera_pos.y-f_radius;
+		*vp++=camera_pos.z+f_radius;
 
-		*uv_ptr++=txt_fact;
-		*uv_ptr++=txt_fact;
+		*uv++=txt_fact;
+		*uv++=0.0f;
 
-		*vertex_ptr++=f_radius;
-		*vertex_ptr++=-f_radius;
-		*vertex_ptr++=f_radius;
+		*vp++=camera_pos.x+f_radius;
+		*vp++=camera_pos.y-f_radius;
+		*vp++=camera_pos.z-f_radius;
 
-		*uv_ptr++=txt_fact;
-		*uv_ptr++=0.0f;
+		*uv++=txt_fact;
+		*uv++=txt_fact;
+
+		*vp++=camera_pos.x-f_radius;
+		*vp++=camera_pos.y-f_radius;
+		*vp++=camera_pos.z-f_radius;
+
+		*uv++=0.0f;
+		*uv++=txt_fact;
+
+			// polygon
+
+		*vk++=4;
+		*vk++=map.textures[map.sky.fill].frames[0].bitmap.rl_material_id;
+		for (k=0;k!=4;k++) {
+			*vk++=idx;
+			*vk++=idx;
+			idx++;
+		}
+
+		poly_count++;
 	}
 	
 		// bottom
 		
 	if (map.sky.bottom_fill!=-1) {
-		*vertex_ptr++=-f_radius;
-		*vertex_ptr++=f_radius;
-		*vertex_ptr++=-f_radius;
 
-		*uv_ptr++=0.0f;
-		*uv_ptr++=txt_fact;
+			// vertexes and uv
 
-		*vertex_ptr++=-f_radius;
-		*vertex_ptr++=f_radius;
-		*vertex_ptr++=f_radius;
+		*vp++=camera_pos.x-f_radius;
+		*vp++=camera_pos.y+f_radius;
+		*vp++=camera_pos.z+f_radius;
 
-		*uv_ptr++=0.0f;
-		*uv_ptr++=0.0f;
+		*uv++=0.0f;
+		*uv++=0.0f;
 
-		*vertex_ptr++=f_radius;
-		*vertex_ptr++=f_radius;
-		*vertex_ptr++=-f_radius;
+		*vp++=camera_pos.x+f_radius;
+		*vp++=camera_pos.y+f_radius;
+		*vp++=camera_pos.z+f_radius;
 
-		*uv_ptr++=txt_fact;
-		*uv_ptr++=txt_fact;
+		*uv++=txt_fact;
+		*uv++=0.0f;
 
-		*vertex_ptr++=f_radius;
-		*vertex_ptr++=f_radius;
-		*vertex_ptr++=f_radius;
+		*vp++=camera_pos.x+f_radius;
+		*vp++=camera_pos.y+f_radius;
+		*vp++=camera_pos.z-f_radius;
 
-		*uv_ptr++=txt_fact;
-		*uv_ptr++=0.0f;
+		*uv++=txt_fact;
+		*uv++=txt_fact;
+
+		*vp++=camera_pos.x-f_radius;
+		*vp++=camera_pos.y+f_radius;
+		*vp++=camera_pos.z-f_radius;
+
+		*uv++=0.0f;
+		*uv++=txt_fact;
+
+			// polygon
+
+		*vk++=4;
+		*vk++=map.textures[map.sky.bottom_fill].frames[0].bitmap.rl_material_id;
+		for (k=0;k!=4;k++) {
+			*vk++=idx;
+			*vk++=idx;
+			idx++;
+		}
+
+		poly_count++;
 	}
 	
 		// north
 		
 	if (map.sky.north_fill!=-1) {
-		*vertex_ptr++=-f_radius;
-		*vertex_ptr++=-f_radius;
-		*vertex_ptr++=f_radius;
 
-		*uv_ptr++=0.00f;
-		*uv_ptr++=0.00f;
+			// vertexes and uv
 
-		*vertex_ptr++=-f_radius;
-		*vertex_ptr++=f_radius;
-		*vertex_ptr++=f_radius;
+		*vp++=camera_pos.x-f_radius;
+		*vp++=camera_pos.y-f_radius;
+		*vp++=camera_pos.z+f_radius;
 
-		*uv_ptr++=0.00f;
-		*uv_ptr++=txt_fact;
+		*uv++=0.00f;
+		*uv++=0.00f;
 
-		*vertex_ptr++=f_radius;
-		*vertex_ptr++=-f_radius;
-		*vertex_ptr++=f_radius;
+		*vp++=camera_pos.x+f_radius;
+		*vp++=camera_pos.y-f_radius;
+		*vp++=camera_pos.z+f_radius;
 
-		*uv_ptr++=txt_fact;
-		*uv_ptr++=0.00f;
+		*uv++=txt_fact;
+		*uv++=0.00f;
 
-		*vertex_ptr++=f_radius;
-		*vertex_ptr++=f_radius;
-		*vertex_ptr++=f_radius;
+		*vp++=camera_pos.x+f_radius;
+		*vp++=camera_pos.y+f_radius;
+		*vp++=camera_pos.z+f_radius;
 
-		*uv_ptr++=txt_fact;
-		*uv_ptr++=txt_fact;
+		*uv++=txt_fact;
+		*uv++=txt_fact;
+
+		*vp++=camera_pos.x-f_radius;
+		*vp++=camera_pos.y+f_radius;
+		*vp++=camera_pos.z+f_radius;
+
+		*uv++=0.00f;
+		*uv++=txt_fact;
+
+			// polygon
+
+		*vk++=4;
+		*vk++=map.textures[map.sky.north_fill].frames[0].bitmap.rl_material_id;
+		for (k=0;k!=4;k++) {
+			*vk++=idx;
+			*vk++=idx;
+			idx++;
+		}
+
+		poly_count++;
 	}
 	
 		// east
 
 	if (map.sky.east_fill!=-1) {
-		*vertex_ptr++=f_radius;
-		*vertex_ptr++=-f_radius;
-		*vertex_ptr++=f_radius;
 
-		*uv_ptr++=0.0f;
-		*uv_ptr++=0.0f;
+			// vertexes and uv
 
-		*vertex_ptr++=f_radius;
-		*vertex_ptr++=f_radius;
-		*vertex_ptr++=f_radius;
+		*vp++=camera_pos.x+f_radius;
+		*vp++=camera_pos.y-f_radius;
+		*vp++=camera_pos.z+f_radius;
 
-		*uv_ptr++=0.0f;
-		*uv_ptr++=txt_fact;
+		*uv++=0.0f;
+		*uv++=0.0f;
 
-		*vertex_ptr++=f_radius;
-		*vertex_ptr++=-f_radius;
-		*vertex_ptr++=-f_radius;
+		*vp++=camera_pos.x+f_radius;
+		*vp++=camera_pos.y-f_radius;
+		*vp++=camera_pos.z-f_radius;
 
-		*uv_ptr++=txt_fact;
-		*uv_ptr++=0.0f;
+		*uv++=txt_fact;
+		*uv++=0.0f;
 
-		*vertex_ptr++=f_radius;
-		*vertex_ptr++=f_radius;
-		*vertex_ptr++=-f_radius;
+		*vp++=camera_pos.x+f_radius;
+		*vp++=camera_pos.y+f_radius;
+		*vp++=camera_pos.z-f_radius;
 
-		*uv_ptr++=txt_fact;
-		*uv_ptr++=txt_fact;
+		*uv++=txt_fact;
+		*uv++=txt_fact;
+
+		*vp++=camera_pos.x+f_radius;
+		*vp++=camera_pos.y+f_radius;
+		*vp++=camera_pos.z+f_radius;
+
+		*uv++=0.0f;
+		*uv++=txt_fact;
+
+			// polygon
+
+		*vk++=4;
+		*vk++=map.textures[map.sky.east_fill].frames[0].bitmap.rl_material_id;
+		for (k=0;k!=4;k++) {
+			*vk++=idx;
+			*vk++=idx;
+			idx++;
+		}
+
+		poly_count++;
 	}
 	
 		// south
 
 	if (map.sky.south_fill!=-1) {
-		*vertex_ptr++=f_radius;
-		*vertex_ptr++=-f_radius;
-		*vertex_ptr++=-f_radius;
 
-		*uv_ptr++=0.0f;
-		*uv_ptr++=0.0f;
+			// vertexes and uv
 
-		*vertex_ptr++=f_radius;
-		*vertex_ptr++=f_radius;
-		*vertex_ptr++=-f_radius;
+		*vp++=camera_pos.x+f_radius;
+		*vp++=camera_pos.y-f_radius;
+		*vp++=camera_pos.z-f_radius;
 
-		*uv_ptr++=0.0f;
-		*uv_ptr++=txt_fact;
+		*uv++=0.0f;
+		*uv++=0.0f;
 
-		*vertex_ptr++=-f_radius;
-		*vertex_ptr++=-f_radius;
-		*vertex_ptr++=-f_radius;
+		*vp++=camera_pos.x-f_radius;
+		*vp++=camera_pos.y-f_radius;
+		*vp++=camera_pos.z-f_radius;
 
-		*uv_ptr++=txt_fact;
-		*uv_ptr++=0.0f;
+		*uv++=txt_fact;
+		*uv++=0.0f;
 
-		*vertex_ptr++=-f_radius;
-		*vertex_ptr++=f_radius;
-		*vertex_ptr++=-f_radius;
+		*vp++=camera_pos.x-f_radius;
+		*vp++=camera_pos.y+f_radius;
+		*vp++=camera_pos.z-f_radius;
 
-		*uv_ptr++=txt_fact;
-		*uv_ptr++=txt_fact;
+		*uv++=txt_fact;
+		*uv++=txt_fact;
+
+		*vp++=camera_pos.x+f_radius;
+		*vp++=camera_pos.y+f_radius;
+		*vp++=camera_pos.z-f_radius;
+
+		*uv++=0.0f;
+		*uv++=txt_fact;
+
+			// polygon
+
+		*vk++=4;
+		*vk++=map.textures[map.sky.south_fill].frames[0].bitmap.rl_material_id;
+		for (k=0;k!=4;k++) {
+			*vk++=idx;
+			*vk++=idx;
+			idx++;
+		}
+
+		poly_count++;
 	}
 	
 		// west
 
 	if (map.sky.west_fill!=-1) {
-		*vertex_ptr++=-f_radius;
-		*vertex_ptr++=-f_radius;
-		*vertex_ptr++=-f_radius;
 
-		*uv_ptr++=0.0f;
-		*uv_ptr++=0.0f;
+			// vertexes and uv
 
-		*vertex_ptr++=-f_radius;
-		*vertex_ptr++=f_radius;
-		*vertex_ptr++=-f_radius;
+		*vp++=camera_pos.x-f_radius;
+		*vp++=camera_pos.y-f_radius;
+		*vp++=camera_pos.z-f_radius;
 
-		*uv_ptr++=0.0f;
-		*uv_ptr++=txt_fact;
+		*uv++=0.0f;
+		*uv++=0.0f;
 
-		*vertex_ptr++=-f_radius;
-		*vertex_ptr++=-f_radius;
-		*vertex_ptr++=f_radius;
+		*vp++=camera_pos.x-f_radius;
+		*vp++=camera_pos.y-f_radius;
+		*vp++=camera_pos.z+f_radius;
 
-		*uv_ptr++=txt_fact;
-		*uv_ptr++=0.0f;
+		*uv++=txt_fact;
+		*uv++=0.0f;
 
-		*vertex_ptr++=-f_radius;
-		*vertex_ptr++=f_radius;
-		*vertex_ptr++=f_radius;
+		*vp++=camera_pos.x-f_radius;
+		*vp++=camera_pos.y+f_radius;
+		*vp++=camera_pos.z+f_radius;
 
-		*uv_ptr++=txt_fact;
-		*uv_ptr++=txt_fact;
+		*uv++=txt_fact;
+		*uv++=txt_fact;
+
+		*vp++=camera_pos.x-f_radius;
+		*vp++=camera_pos.y+f_radius;
+		*vp++=camera_pos.z-f_radius;
+
+		*uv++=0.0f;
+		*uv++=txt_fact;
+
+			// polygon
+
+		*vk++=4;
+		*vk++=map.textures[map.sky.west_fill].frames[0].bitmap.rl_material_id;
+		for (k=0;k!=4;k++) {
+			*vk++=idx;
+			*vk++=idx;
+			idx++;
+		}
+
+		poly_count++;
 	}
- 
-		// unmap and unbind vbo
 
-	view_unmap_sky_vertex_object();
-	view_unbind_sky_vertex_object();
-	*/
+	rtlSceneMeshUnMapVertexPointer(view_rtl_draw_scene_id,rtl_sky_mesh_id);
+	rtlSceneMeshUnMapUVPointer(view_rtl_draw_scene_id,rtl_sky_mesh_id);
+
+		// build the polygons
+
+	rtlSceneMeshSetPoly(view_rtl_draw_scene_id,rtl_sky_mesh_id,RL_MESH_FORMAT_POLY_SHORT_VERTEX_UV,poly_count,polys);
+	free(polys);
 }
-
-void sky_draw_cube(void)
-{
-	/* supergumba -- will need new version
-
-    int					offset;
-	d3col				col;
-	texture_type		*texture;
-					
-		// setup texture
-		
-	glDisable(GL_BLEND);
-	glDisable(GL_DEPTH_TEST);
-	
-	col.r=col.g=col.b=1.0f;
-	
-		// bind VBO
-
-	view_bind_sky_vertex_object();
-
-		// draw cube sides
-
-	gl_shader_draw_execute_simple_bitmap_start(3,0,(((6*4)*3)*sizeof(float)),0,&col,1.0f);
-
-	offset=0;
-
-	if (map.sky.fill!=-1) {
-		texture=&map.textures[map.sky.fill];
-		gl_shader_draw_execute_simple_bitmap_set_texture(texture->frames[texture->animate.current_frame].bitmap.gl_id);
-		
-		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE);
-		glDrawArrays(GL_TRIANGLE_STRIP,0,4);
-		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT);
-		
-		offset+=4;
-	}
-
-		// bottom
-		
-	if (map.sky.bottom_fill!=-1) {
-		texture=&map.textures[map.sky.bottom_fill];
-		gl_shader_draw_execute_simple_bitmap_set_texture(texture->frames[texture->animate.current_frame].bitmap.gl_id);
-		
-		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE);
-		glDrawArrays(GL_TRIANGLE_STRIP,offset,4);
-		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT);
-		
-		offset+=4;
-	}
-	
-		// north
-		
-	if (map.sky.north_fill!=-1) {
-		texture=&map.textures[map.sky.north_fill];
-		gl_shader_draw_execute_simple_bitmap_set_texture(texture->frames[texture->animate.current_frame].bitmap.gl_id);
-		
-		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE);
-		glDrawArrays(GL_TRIANGLE_STRIP,offset,4);
-		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT);
-		
-		offset+=4;
-	}
-
-		// east
-
-	if (map.sky.east_fill!=-1) {
-		texture=&map.textures[map.sky.east_fill];
-		gl_shader_draw_execute_simple_bitmap_set_texture(texture->frames[texture->animate.current_frame].bitmap.gl_id);
-		
-		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE);
-		glDrawArrays(GL_TRIANGLE_STRIP,offset,4);
-		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT);
-		
-		offset+=4;
-	}
-	
-		// south
-
-	if (map.sky.south_fill!=-1) {
-		texture=&map.textures[map.sky.south_fill];
-		gl_shader_draw_execute_simple_bitmap_set_texture(texture->frames[texture->animate.current_frame].bitmap.gl_id);
-		
-		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE);
-		glDrawArrays(GL_TRIANGLE_STRIP,offset,4);
-		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT);
-		
-		offset+=4;
-	}
-	
-		// west
-
-	if (map.sky.west_fill!=-1) {
-		texture=&map.textures[map.sky.west_fill];
-		gl_shader_draw_execute_simple_bitmap_set_texture(texture->frames[texture->animate.current_frame].bitmap.gl_id);
-		
-		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE);
-		glDrawArrays(GL_TRIANGLE_STRIP,offset,4);
-		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT);
-	}
-
-		// unbind the vbo
-
-	gl_shader_draw_execute_simple_bitmap_end();
-
-	view_unbind_sky_vertex_object();
-	*/
-}
-
-/* =======================================================
-
-      Initialize Sky Drawing
-      
-======================================================= */
-
-void sky_draw_init(void)
-{
-	/* supergumba -- will need new version
-
-		// is there a sky?
-	
-	if (!map.sky.on) return;
-
-		// init vertex list
-
-	switch (map.sky.type) {
-	
-		case st_dome_panoramic:
-			sky_draw_dome_panoramic_setup();
-			break;
-
-		case st_dome_hemisphere:
-			sky_draw_dome_hemisphere_setup();
-			break;
-			
-		case st_cube:
-			sky_draw_cube_setup();
-			break;
-	
-	}
-	*/
-}
-
-void sky_draw_release(void)
-{
-	// supergumba -- will need new version
-//	if (map.sky.on) view_dispose_sky_vertex_object();
-}
-
-/* =======================================================
-
-      Draw Sky Mainline
-      
-======================================================= */
-
-void sky_draw(void)
-{
-	/* supergumba -- will need new version
-	switch (map.sky.type) {
-	
-		case st_dome_panoramic:
-			sky_draw_dome_panoramic();
-			break;
-
-		case st_dome_hemisphere:
-			sky_draw_dome_hemisphere();
-			break;
-			
-		case st_cube:
-			sky_draw_cube();
-			break;
-	
-	}
-	*/
-}
-
-

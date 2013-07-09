@@ -106,7 +106,6 @@ int model_find_index(char *name)
 int model_load(char *name,bool force_opengl_textures)
 {
 	int				n,idx;
-	bool			load_textures;
 	model_type		*mdl;
 	
 		// has model been already loaded?

@@ -277,7 +277,7 @@ int ag_get_room_position(int shape_idx,d3pnt *pnt,d3vct *size,bool prefered)
 
 			switch (opposite_cnt_type) {
 				case ag_connector_type_min_x:
-					pnt->x=room2->min.x-(int)(100.0f*size->x);
+					pnt->x=room2->min.x-(int)(((float)shape->extent.x)*size->x);
 					pnt->z=room2->min.z+((int)(((float)connector2->top_left.z)*room2->size.z)-(int)(((float)connector->top_left.z)*size->z));
 					break;
 				case ag_connector_type_max_x:
@@ -286,7 +286,7 @@ int ag_get_room_position(int shape_idx,d3pnt *pnt,d3vct *size,bool prefered)
 					break;
 				case ag_connector_type_min_z:
 					pnt->x=room2->min.x+((int)(((float)connector2->top_left.x)*room2->size.x)-(int)(((float)connector->top_left.x)*size->x));
-					pnt->z=room2->min.z-(int)(100.0f*size->z);
+					pnt->z=room2->min.z-(int)(((float)shape->extent.z)*size->z);
 					break;
 				case ag_connector_type_max_z:
 					pnt->x=room2->min.x+((int)(((float)connector2->top_left.x)*room2->size.x)-(int)(((float)connector->top_left.x)*size->x));
@@ -298,8 +298,8 @@ int ag_get_room_position(int shape_idx,d3pnt *pnt,d3vct *size,bool prefered)
 
 			min.x=pnt->x;
 			min.z=pnt->z;
-			max.x=min.x+(int)(100.0f*size->x);
-			max.z=min.z+(int)(100.0f*size->z);
+			max.x=min.x+(int)(((float)shape->extent.x)*size->x);
+			max.z=min.z+(int)(((float)shape->extent.z)*size->z);
 
 			if (ag_room_space_blocked(&min,&max)) continue;
 
@@ -358,13 +358,13 @@ void ag_add_room(int shape_idx,int connect_idx,d3pnt *pnt,d3vct *size)
 	room->extra=FALSE;
 
 	room->min.x=pnt->x;
-	room->max.x=pnt->x+(int)(100.0f*size->x);
+	room->max.x=pnt->x+(int)(((float)shape->extent.x)*size->x);
 
 	room->min.y=pnt->y-(int)(100.0f*size->y);
 	room->max.y=pnt->y;
 
 	room->min.z=pnt->z;
-	room->max.z=pnt->z+(int)(100.0f*size->z);
+	room->max.z=pnt->z+(int)(((float)shape->extent.z)*size->z);
 
 	memmove(&room->size,size,sizeof(d3vct));
 

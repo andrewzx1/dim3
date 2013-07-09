@@ -183,7 +183,6 @@ void iface_default_settings(iface_type *iface)
 		// project setup
 	
 	iface->project.name[0]=0x0;
-	iface->project.ray_trace=FALSE;
 	iface->project.modernize=TRUE;
 	iface->project.simple_save=FALSE;
 	iface->project.checkpoints=FALSE;

@@ -181,43 +181,15 @@ void view_create_screen_size_list(void)
 
 bool view_initialize_display(char *err_str)
 {
-	int				n,fsaa_mode;
-	bool			ok;
-
 		// dim3rtl has hard coded window
-		// screen size and a set fsaa
+		// screen size supergumba -- will need to fix this
 
-	if (iface.project.ray_trace) {
-		setup.screen_wid=960;
-		setup.screen_high=600;
-		fsaa_mode=fsaa_mode_none;
-	}
-	else {
-
-			// is screen size legal?
-			// if not, go back to default
-			
-		if (setup.screen_wid!=-1) {
-			ok=FALSE;
-				
-			for (n=0;n!=render_info.nscreen_size;n++) {
-				if ((render_info.screen_sizes[n].wid==setup.screen_wid) && (render_info.screen_sizes[n].high==setup.screen_high)) {
-					ok=TRUE;
-					break;
-				}
-			}
-			
-			if (!ok) setup.screen_wid=setup.screen_high=-1;
-		}
-
-			// setup fsaa mode
-
-		fsaa_mode=setup.fsaa_mode;
-	}
+	setup.screen_wid=960;
+	setup.screen_high=600;
 
 		// start openGL
 		
-	if (!gl_initialize(setup.screen_wid,setup.screen_high,fsaa_mode,err_str)) {
+	if (!gl_initialize(setup.screen_wid,setup.screen_high,setup.fsaa_mode,err_str)) {
 		view_memory_release();
 		SDL_Quit();
 		return(FALSE);
@@ -442,10 +414,8 @@ bool view_game_start(char *err_str)
 	progress_update();
 	view_images_cached_load();
 
-	if (iface.project.ray_trace) {
-		progress_update();
-		view_dim3rtl_image_cache_load();
-	}
+	progress_update();
+	view_dim3rtl_image_cache_load();
 
 	progress_update();
 
@@ -474,7 +444,7 @@ void view_game_stop(void)
 		// rings, halos, marks, crosshairs and remote icons
 	
 	view_images_cached_free();
-	if (iface.project.ray_trace) view_dim3rtl_image_cache_free();
+	view_dim3rtl_image_cache_free();
 }
 
 /* =======================================================

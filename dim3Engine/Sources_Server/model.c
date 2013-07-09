@@ -139,7 +139,7 @@ int model_load(char *name,bool force_opengl_textures)
 
 		// load model
 
-	load_textures=((!app.dedicated_host) && ((force_opengl_textures) || (!iface.project.ray_trace)));
+	load_textures=((!app.dedicated_host) || (force_opengl_textures));
 		
 	if (!model_open(mdl,name,load_textures)) {
 		free(mdl);

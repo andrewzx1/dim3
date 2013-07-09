@@ -1042,30 +1042,6 @@ extern void particle_draw_position(effect_type *effect,int count,d3pnt *pnt);
 extern void ring_draw_position(effect_type *effect,int count,d3pnt *pnt);
 
 //
-// dim3rtl
-//
-
-extern bool view_dim3rtl_initialize(char *err_str);
-extern void view_dim3rtl_shutdown(void);
-extern void view_dim3rtl_image_cache_load(void);
-extern void view_dim3rtl_image_cache_free(void);
-extern void view_dim3rtl_map_mesh_start(void);
-extern void view_dim3rtl_map_mesh_stop(void);
-extern void view_dim3rtl_map_liquid_mesh_start(void);
-extern void view_dim3rtl_map_liquid_mesh_stop(void);
-extern void view_dim3rtl_map_model_mesh_start(void);
-extern void view_dim3rtl_map_model_mesh_stop(void);
-extern void view_dim3rtl_overlay_stop(void);
-extern void view_dim3rtl_projectile_model_setup(proj_type *proj);
-extern void view_dim3rtl_projectile_model_close(proj_type *proj);
-extern void view_dim3rtl_effect_mesh_setup(effect_type *effect);
-extern void view_dim3rtl_effect_mesh_close(effect_type *effect);
-extern void view_dim3rtl_project_point(d3pnt *pnt);
-extern bool view_dim3rtl_project_point_behind_z(d3pnt *pnt);
-extern bool view_dim3rtl_screenshot(bool thumbnail,char *path);
-extern void view_dim3rtl_render(void);
-
-//
 // chats
 //
 

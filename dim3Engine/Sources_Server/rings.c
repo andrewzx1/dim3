@@ -129,10 +129,6 @@ bool ring_spawn(int ring_idx,int obj_idx,d3pnt *pt,d3ang *ang)
 		// setup size
 
 	effect->size=ring_get_effect_size(ring);
-
-		// dim3rtl setup
-
-	if (iface.project.ray_trace) view_dim3rtl_effect_mesh_setup(effect);
 	
 	return(TRUE);
 }

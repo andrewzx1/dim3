@@ -164,14 +164,8 @@ inline void effect_dispose_single(effect_type *effect)
 	effect->on=FALSE;
 
 		// dispose any active VBOs
-		// or dim3rtl meshes
 		
-	if (!iface.project.ray_trace) {
-		view_dispose_effect_vertex_object(effect);
-	}
-	else {
-		view_dim3rtl_effect_mesh_close(effect);
-	}
+	view_dispose_effect_vertex_object(effect);
 }
 
 void effect_dispose(void)

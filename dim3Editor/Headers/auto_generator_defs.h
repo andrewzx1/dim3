@@ -78,7 +78,8 @@ typedef struct		{
 						int						nvertex,npoly,nconnector;
 						char					name[name_str_len];
 						bool					single_floor,stub,spawn_spots;
-						d3pnt					vertexes[ag_max_shape_point];
+						d3pnt					extent,
+												vertexes[ag_max_shape_point];
 						ag_shape_poly_type		polys[ag_max_shape_poly];
 						ag_shape_connector_type	connectors[ag_max_shape_connector];
 					} ag_shape_type;

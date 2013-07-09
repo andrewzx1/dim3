@@ -47,8 +47,7 @@ extern void game_file_initialize(void);
 extern void menu_input(void);
 extern void file_input(void);
 extern void debug_input(void);
-extern void view_draw_opengl(void);
-extern void view_draw_dim3rtl(void);
+extern void view_draw(void);
 extern void chat_clear_messages(void);
 extern bool shadow_initialize(void);
 extern void shadow_shutdown(void);
@@ -184,43 +183,28 @@ void view_create_screen_size_list(void)
 
 bool view_initialize_display(char *err_str)
 {
-	int				n,fsaa_mode;
+	int				n;
 	bool			ok;
 
-		// dim3rtl has hard coded window
-		// screen size and a set fsaa
-
-	if (iface.project.ray_trace) {
-		setup.screen_wid=960;
-		setup.screen_high=600;
-		fsaa_mode=fsaa_mode_none;
-	}
-	else {
-
-			// is screen size legal?
-			// if not, go back to default
+		// is screen size legal?
+		// if not, go back to default
+		
+	if (setup.screen_wid!=-1) {
+		ok=FALSE;
 			
-		if (setup.screen_wid!=-1) {
-			ok=FALSE;
-				
-			for (n=0;n!=render_info.nscreen_size;n++) {
-				if ((render_info.screen_sizes[n].wid==setup.screen_wid) && (render_info.screen_sizes[n].high==setup.screen_high)) {
-					ok=TRUE;
-					break;
-				}
+		for (n=0;n!=render_info.nscreen_size;n++) {
+			if ((render_info.screen_sizes[n].wid==setup.screen_wid) && (render_info.screen_sizes[n].high==setup.screen_high)) {
+				ok=TRUE;
+				break;
 			}
-			
-			if (!ok) setup.screen_wid=setup.screen_high=-1;
 		}
-
-			// setup fsaa mode
-
-		fsaa_mode=setup.fsaa_mode;
+		
+		if (!ok) setup.screen_wid=setup.screen_high=-1;
 	}
 
 		// start openGL
 		
-	if (!gl_initialize(setup.screen_wid,setup.screen_high,fsaa_mode,err_str)) {
+	if (!gl_initialize(setup.screen_wid,setup.screen_high,setup.fsaa_mode,err_str)) {
 		view_memory_release();
 		SDL_Quit();
 		return(FALSE);
@@ -478,11 +462,6 @@ bool view_game_start(char *err_str)
 	progress_update();
 	view_images_cached_load();
 
-	if (iface.project.ray_trace) {
-		progress_update();
-		view_dim3rtl_image_cache_load();
-	}
-
 	progress_update();
 
 		// precalculate particles
@@ -510,7 +489,6 @@ void view_game_stop(void)
 		// rings, halos, marks, crosshairs and remote icons
 	
 	view_images_cached_free();
-	if (iface.project.ray_trace) view_dim3rtl_image_cache_free();
 }
 
 /* =======================================================
@@ -628,12 +606,7 @@ void view_loop_draw(void)
 	
 		// draw view
 
-	if (!iface.project.ray_trace) {
-		view_draw_opengl();
-	}
-	else {
-		view_draw_dim3rtl();
-	}
+	view_draw();
 	
 	hud_draw();
 	radar_draw();
@@ -677,21 +650,11 @@ void view_loop_draw(void)
 
 void view_capture_draw(char *path)
 {
-		// opengl capture
-	
-	if (!iface.project.ray_trace) {
-		gl_frame_clear(FALSE);
-		gl_shader_frame_start();
+	gl_frame_clear(FALSE);
+	gl_shader_frame_start();
 
-		view_draw_opengl();
+	view_draw();
 
-		gl_screen_shot(0,0,view.screen.x_sz,view.screen.y_sz,TRUE,path);
-
-		return;
-	}
-
-		// ray trace capture
-
-	view_dim3rtl_screenshot(TRUE,path);
+	gl_screen_shot(0,0,view.screen.x_sz,view.screen.y_sz,TRUE,path);
 }
 

@@ -74,18 +74,6 @@ bool game_start(bool in_file_load,int skill,int option_flags,int simple_save_idx
 		return(FALSE);
 	}
 
-		// rl initialize
-
-	if (iface.project.ray_trace) {
-
-		progress_update();
-
-		if (!view_dim3rtl_initialize(err_str)) {
-			progress_shutdown();
-			return(FALSE);
-		}
-	}
-
 		// start view
 		
 	if (!app.dedicated_host) {
@@ -130,10 +118,6 @@ void game_end(void)
 		// stop view
 		
 	if (!app.dedicated_host) view_game_stop();
-
-		// release rtl
-
-	if (iface.project.ray_trace) view_dim3rtl_shutdown();
 
 		// stop server
 		

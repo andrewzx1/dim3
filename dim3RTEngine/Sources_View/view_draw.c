@@ -77,6 +77,10 @@ void view_draw_dim3rtl_scene_build(void)
 	view_setup_objects_rtl(tick);
 	view_setup_projectiles_rtl(tick);
 
+		// update the sky cube
+
+	sky_update();
+
 		// no halos yet
 
 	halo_draw_clear();
