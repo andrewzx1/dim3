@@ -54,36 +54,6 @@ and can be sold or given away.
 #define input_tick_rate										33
 
 //
-// stencil constants
-//
-
-#define stencil_none										0
-#define stencil_poly_start									1
-#define stencil_poly_end									255
-
-#define stencil_shadow										1
-
-//
-// render item type
-//
-
-#define view_render_type_none								-1
-#define view_render_type_mesh								0
-#define view_render_type_liquid								1
-#define view_render_type_object								2
-#define view_render_type_projectile							3
-#define view_render_type_effect								4
-
-//
-// shader variable types
-//
-
-#define shader_var_type_int									0
-#define shader_var_type_float								1
-#define shader_var_type_vec3								2
-#define shader_var_type_vec4								3
-
-//
 // console size
 //
 
