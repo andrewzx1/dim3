@@ -335,7 +335,7 @@ bool game_file_save(bool no_progress,bool suspend_save,char *err_str)
 	effect_type			*effect;
 	decal_type			*decal;
 	timer_type			*timer;
-	global_type			*global;
+	global_type		HeadersSources	*global;
 
 	if (!no_progress) progress_initialize(NULL);
 

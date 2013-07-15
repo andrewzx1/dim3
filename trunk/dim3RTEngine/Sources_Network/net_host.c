@@ -258,6 +258,8 @@ int net_host_join_request(net_address_type *addr,network_request_join *request_j
 
 		// create remote UID when
 		// adding this new remote player
+		
+	tint_color_idx=0;
 
 	if (net_host_join_request_ok(request_join,&reply_join)) {
 		tint_color_idx=htons((short)request_join->tint_color_idx);
