@@ -367,21 +367,6 @@
 		260B43221411F8CC006ED023 /* png.h in Headers */ = {isa = PBXBuildFile; fileRef = 260B42EE1411F8CC006ED023 /* png.h */; };
 		260B43231411F8CC006ED023 /* pngconf.h in Headers */ = {isa = PBXBuildFile; fileRef = 260B42EF1411F8CC006ED023 /* pngconf.h */; };
 		260B43241411F8CC006ED023 /* pnglibconf.h in Headers */ = {isa = PBXBuildFile; fileRef = 260B42F01411F8CC006ED023 /* pnglibconf.h */; };
-		26149B7816A8BA86007DB713 /* ray_color.c in Sources */ = {isa = PBXBuildFile; fileRef = 26149B6816A8BA86007DB713 /* ray_color.c */; };
-		26149B7916A8BA86007DB713 /* ray_eye.c in Sources */ = {isa = PBXBuildFile; fileRef = 26149B6916A8BA86007DB713 /* ray_eye.c */; };
-		26149B7A16A8BA86007DB713 /* ray_interface.h in Headers */ = {isa = PBXBuildFile; fileRef = 26149B6A16A8BA86007DB713 /* ray_interface.h */; };
-		26149B7B16A8BA86007DB713 /* ray_light.c in Sources */ = {isa = PBXBuildFile; fileRef = 26149B6B16A8BA86007DB713 /* ray_light.c */; };
-		26149B7C16A8BA86007DB713 /* ray_main.c in Sources */ = {isa = PBXBuildFile; fileRef = 26149B6C16A8BA86007DB713 /* ray_main.c */; };
-		26149B7D16A8BA86007DB713 /* ray_material.c in Sources */ = {isa = PBXBuildFile; fileRef = 26149B6D16A8BA86007DB713 /* ray_material.c */; };
-		26149B7E16A8BA86007DB713 /* ray_math.c in Sources */ = {isa = PBXBuildFile; fileRef = 26149B6E16A8BA86007DB713 /* ray_math.c */; };
-		26149B7F16A8BA86007DB713 /* ray_mesh.c in Sources */ = {isa = PBXBuildFile; fileRef = 26149B6F16A8BA86007DB713 /* ray_mesh.c */; };
-		26149B8016A8BA86007DB713 /* ray_os_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 26149B7016A8BA86007DB713 /* ray_os_defs.h */; };
-		26149B8216A8BA86007DB713 /* ray_precalc.c in Sources */ = {isa = PBXBuildFile; fileRef = 26149B7216A8BA86007DB713 /* ray_precalc.c */; };
-		26149B8316A8BA86007DB713 /* ray_render.c in Sources */ = {isa = PBXBuildFile; fileRef = 26149B7316A8BA86007DB713 /* ray_render.c */; };
-		26149B8416A8BA86007DB713 /* ray_scene.c in Sources */ = {isa = PBXBuildFile; fileRef = 26149B7416A8BA86007DB713 /* ray_scene.c */; };
-		26149B8516A8BA86007DB713 /* ray_thread.c in Sources */ = {isa = PBXBuildFile; fileRef = 26149B7516A8BA86007DB713 /* ray_thread.c */; };
-		26149B8616A8BA86007DB713 /* ray_types.h in Headers */ = {isa = PBXBuildFile; fileRef = 26149B7616A8BA86007DB713 /* ray_types.h */; };
-		26149B8716A8BA86007DB713 /* ray.h in Headers */ = {isa = PBXBuildFile; fileRef = 26149B7716A8BA86007DB713 /* ray.h */; };
 		26159D2216D191210069B442 /* base_iface_label.c in Sources */ = {isa = PBXBuildFile; fileRef = 26159D2116D191210069B442 /* base_iface_label.c */; };
 		2618337B14DDE4F9004DD37A /* begin_code.h in Headers */ = {isa = PBXBuildFile; fileRef = 2618333F14DDE4F9004DD37A /* begin_code.h */; };
 		2618337C14DDE4F9004DD37A /* close_code.h in Headers */ = {isa = PBXBuildFile; fileRef = 2618334014DDE4F9004DD37A /* close_code.h */; };
@@ -390,15 +375,7 @@
 		2618338014DDE4F9004DD37A /* SDL_audio.h in Headers */ = {isa = PBXBuildFile; fileRef = 2618334414DDE4F9004DD37A /* SDL_audio.h */; };
 		2618338114DDE4F9004DD37A /* SDL_blendmode.h in Headers */ = {isa = PBXBuildFile; fileRef = 2618334514DDE4F9004DD37A /* SDL_blendmode.h */; };
 		2618338214DDE4F9004DD37A /* SDL_clipboard.h in Headers */ = {isa = PBXBuildFile; fileRef = 2618334614DDE4F9004DD37A /* SDL_clipboard.h */; };
-		2618338314DDE4F9004DD37A /* SDL_compat.h in Headers */ = {isa = PBXBuildFile; fileRef = 2618334714DDE4F9004DD37A /* SDL_compat.h */; };
-		2618338414DDE4F9004DD37A /* SDL_config_android.h in Headers */ = {isa = PBXBuildFile; fileRef = 2618334814DDE4F9004DD37A /* SDL_config_android.h */; };
-		2618338614DDE4F9004DD37A /* SDL_config_iphoneos.h in Headers */ = {isa = PBXBuildFile; fileRef = 2618334A14DDE4F9004DD37A /* SDL_config_iphoneos.h */; };
 		2618338714DDE4F9004DD37A /* SDL_config_macosx.h in Headers */ = {isa = PBXBuildFile; fileRef = 2618334B14DDE4F9004DD37A /* SDL_config_macosx.h */; };
-		2618338814DDE4F9004DD37A /* SDL_config_minimal.h in Headers */ = {isa = PBXBuildFile; fileRef = 2618334C14DDE4F9004DD37A /* SDL_config_minimal.h */; };
-		2618338914DDE4F9004DD37A /* SDL_config_nintendods.h in Headers */ = {isa = PBXBuildFile; fileRef = 2618334D14DDE4F9004DD37A /* SDL_config_nintendods.h */; };
-		2618338A14DDE4F9004DD37A /* SDL_config_pandora.h in Headers */ = {isa = PBXBuildFile; fileRef = 2618334E14DDE4F9004DD37A /* SDL_config_pandora.h */; };
-		2618338B14DDE4F9004DD37A /* SDL_config_windows.h in Headers */ = {isa = PBXBuildFile; fileRef = 2618334F14DDE4F9004DD37A /* SDL_config_windows.h */; };
-		2618338C14DDE4F9004DD37A /* SDL_config_wiz.h in Headers */ = {isa = PBXBuildFile; fileRef = 2618335014DDE4F9004DD37A /* SDL_config_wiz.h */; };
 		2618338D14DDE4F9004DD37A /* SDL_config.h in Headers */ = {isa = PBXBuildFile; fileRef = 2618335114DDE4F9004DD37A /* SDL_config.h */; };
 		2618338E14DDE4F9004DD37A /* SDL_copying.h in Headers */ = {isa = PBXBuildFile; fileRef = 2618335214DDE4F9004DD37A /* SDL_copying.h */; };
 		2618338F14DDE4F9004DD37A /* SDL_cpuinfo.h in Headers */ = {isa = PBXBuildFile; fileRef = 2618335314DDE4F9004DD37A /* SDL_cpuinfo.h */; };
@@ -408,7 +385,6 @@
 		2618339314DDE4F9004DD37A /* SDL_gesture.h in Headers */ = {isa = PBXBuildFile; fileRef = 2618335714DDE4F9004DD37A /* SDL_gesture.h */; };
 		2618339414DDE4F9004DD37A /* SDL_haptic.h in Headers */ = {isa = PBXBuildFile; fileRef = 2618335814DDE4F9004DD37A /* SDL_haptic.h */; };
 		2618339514DDE4F9004DD37A /* SDL_hints.h in Headers */ = {isa = PBXBuildFile; fileRef = 2618335914DDE4F9004DD37A /* SDL_hints.h */; };
-		2618339614DDE4F9004DD37A /* SDL_input.h in Headers */ = {isa = PBXBuildFile; fileRef = 2618335A14DDE4F9004DD37A /* SDL_input.h */; };
 		2618339714DDE4F9004DD37A /* SDL_joystick.h in Headers */ = {isa = PBXBuildFile; fileRef = 2618335B14DDE4F9004DD37A /* SDL_joystick.h */; };
 		2618339814DDE4F9004DD37A /* SDL_keyboard.h in Headers */ = {isa = PBXBuildFile; fileRef = 2618335C14DDE4F9004DD37A /* SDL_keyboard.h */; };
 		2618339914DDE4F9004DD37A /* SDL_keycode.h in Headers */ = {isa = PBXBuildFile; fileRef = 2618335D14DDE4F9004DD37A /* SDL_keycode.h */; };
@@ -443,12 +419,6 @@
 		261833B614DDE4F9004DD37A /* SDL.h in Headers */ = {isa = PBXBuildFile; fileRef = 2618337A14DDE4F9004DD37A /* SDL.h */; };
 		26184E7213CA0CE6003A9A79 /* CoreAudioKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26184E7113CA0CE6003A9A79 /* CoreAudioKit.framework */; };
 		26184E7613CA0D2E003A9A79 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26184E7513CA0D2E003A9A79 /* IOKit.framework */; };
-		2618B77816A7B25B004BB291 /* view_rtl_effect.c in Sources */ = {isa = PBXBuildFile; fileRef = 2618B77116A7B25B004BB291 /* view_rtl_effect.c */; };
-		2618B77916A7B25B004BB291 /* view_rtl_liquid.c in Sources */ = {isa = PBXBuildFile; fileRef = 2618B77216A7B25B004BB291 /* view_rtl_liquid.c */; };
-		2618B77A16A7B25B004BB291 /* view_rtl_map.c in Sources */ = {isa = PBXBuildFile; fileRef = 2618B77316A7B25B004BB291 /* view_rtl_map.c */; };
-		2618B77B16A7B25B004BB291 /* view_rtl_material.c in Sources */ = {isa = PBXBuildFile; fileRef = 2618B77416A7B25B004BB291 /* view_rtl_material.c */; };
-		2618B77C16A7B25B004BB291 /* view_rtl_model.c in Sources */ = {isa = PBXBuildFile; fileRef = 2618B77516A7B25B004BB291 /* view_rtl_model.c */; };
-		2618B77E16A7B25B004BB291 /* view_rtl_patch.c in Sources */ = {isa = PBXBuildFile; fileRef = 2618B77716A7B25B004BB291 /* view_rtl_patch.c */; };
 		262579141525325A00C371C3 /* singleplayer_option.c in Sources */ = {isa = PBXBuildFile; fileRef = 262579131525325A00C371C3 /* singleplayer_option.c */; };
 		262D75D7158FE8A00086B8BB /* script_obj_label.c in Sources */ = {isa = PBXBuildFile; fileRef = 262D75D6158FE8A00086B8BB /* script_obj_label.c */; };
 		262DD2B0151E32200078FEA4 /* base_iface_score.c in Sources */ = {isa = PBXBuildFile; fileRef = 262DD2AF151E32200078FEA4 /* base_iface_score.c */; };
@@ -464,7 +434,6 @@
 		2649D14813412B2900573F6F /* setup_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 2649D13D13412B2900573F6F /* setup_defs.h */; };
 		2649D14913412B2900573F6F /* sound_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 2649D13E13412B2900573F6F /* sound_defs.h */; };
 		2649D14A13412B2900573F6F /* view_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 2649D13F13412B2900573F6F /* view_defs.h */; };
-		264BBA0216F2BBA5003E622A /* view_rtl_opengl.c in Sources */ = {isa = PBXBuildFile; fileRef = 264BBA0116F2BBA5003E622A /* view_rtl_opengl.c */; };
 		2669FCE7161273A0002292C6 /* mac_os_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 2669FCE6161273A0002292C6 /* mac_os_defs.h */; };
 		2669FCE9161273D5002292C6 /* os_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 2669FCE8161273D5002292C6 /* os_defs.h */; };
 		2669FD1A16127B66002292C6 /* libSDL2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2669FD1916127B66002292C6 /* libSDL2.a */; };
@@ -890,21 +859,6 @@
 		260B42EE1411F8CC006ED023 /* png.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = png.h; sourceTree = "<group>"; };
 		260B42EF1411F8CC006ED023 /* pngconf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pngconf.h; sourceTree = "<group>"; };
 		260B42F01411F8CC006ED023 /* pnglibconf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pnglibconf.h; sourceTree = "<group>"; };
-		26149B6816A8BA86007DB713 /* ray_color.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ray_color.c; path = ../Sources_RTL/ray_color.c; sourceTree = "<group>"; };
-		26149B6916A8BA86007DB713 /* ray_eye.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ray_eye.c; path = ../Sources_RTL/ray_eye.c; sourceTree = "<group>"; };
-		26149B6A16A8BA86007DB713 /* ray_interface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ray_interface.h; path = ../Sources_RTL/ray_interface.h; sourceTree = "<group>"; };
-		26149B6B16A8BA86007DB713 /* ray_light.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ray_light.c; path = ../Sources_RTL/ray_light.c; sourceTree = "<group>"; };
-		26149B6C16A8BA86007DB713 /* ray_main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ray_main.c; path = ../Sources_RTL/ray_main.c; sourceTree = "<group>"; };
-		26149B6D16A8BA86007DB713 /* ray_material.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ray_material.c; path = ../Sources_RTL/ray_material.c; sourceTree = "<group>"; };
-		26149B6E16A8BA86007DB713 /* ray_math.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ray_math.c; path = ../Sources_RTL/ray_math.c; sourceTree = "<group>"; };
-		26149B6F16A8BA86007DB713 /* ray_mesh.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ray_mesh.c; path = ../Sources_RTL/ray_mesh.c; sourceTree = "<group>"; };
-		26149B7016A8BA86007DB713 /* ray_os_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ray_os_defs.h; path = ../Sources_RTL/ray_os_defs.h; sourceTree = "<group>"; };
-		26149B7216A8BA86007DB713 /* ray_precalc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ray_precalc.c; path = ../Sources_RTL/ray_precalc.c; sourceTree = "<group>"; };
-		26149B7316A8BA86007DB713 /* ray_render.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ray_render.c; path = ../Sources_RTL/ray_render.c; sourceTree = "<group>"; };
-		26149B7416A8BA86007DB713 /* ray_scene.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ray_scene.c; path = ../Sources_RTL/ray_scene.c; sourceTree = "<group>"; };
-		26149B7516A8BA86007DB713 /* ray_thread.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ray_thread.c; path = ../Sources_RTL/ray_thread.c; sourceTree = "<group>"; };
-		26149B7616A8BA86007DB713 /* ray_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ray_types.h; path = ../Sources_RTL/ray_types.h; sourceTree = "<group>"; };
-		26149B7716A8BA86007DB713 /* ray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ray.h; path = ../Sources_RTL/ray.h; sourceTree = "<group>"; };
 		26159D2116D191210069B442 /* base_iface_label.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = base_iface_label.c; sourceTree = "<group>"; };
 		2618333F14DDE4F9004DD37A /* begin_code.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = begin_code.h; sourceTree = "<group>"; };
 		2618334014DDE4F9004DD37A /* close_code.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = close_code.h; sourceTree = "<group>"; };
@@ -913,15 +867,7 @@
 		2618334414DDE4F9004DD37A /* SDL_audio.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL_audio.h; sourceTree = "<group>"; };
 		2618334514DDE4F9004DD37A /* SDL_blendmode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL_blendmode.h; sourceTree = "<group>"; };
 		2618334614DDE4F9004DD37A /* SDL_clipboard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL_clipboard.h; sourceTree = "<group>"; };
-		2618334714DDE4F9004DD37A /* SDL_compat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL_compat.h; sourceTree = "<group>"; };
-		2618334814DDE4F9004DD37A /* SDL_config_android.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL_config_android.h; sourceTree = "<group>"; };
-		2618334A14DDE4F9004DD37A /* SDL_config_iphoneos.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL_config_iphoneos.h; sourceTree = "<group>"; };
 		2618334B14DDE4F9004DD37A /* SDL_config_macosx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL_config_macosx.h; sourceTree = "<group>"; };
-		2618334C14DDE4F9004DD37A /* SDL_config_minimal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL_config_minimal.h; sourceTree = "<group>"; };
-		2618334D14DDE4F9004DD37A /* SDL_config_nintendods.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL_config_nintendods.h; sourceTree = "<group>"; };
-		2618334E14DDE4F9004DD37A /* SDL_config_pandora.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL_config_pandora.h; sourceTree = "<group>"; };
-		2618334F14DDE4F9004DD37A /* SDL_config_windows.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL_config_windows.h; sourceTree = "<group>"; };
-		2618335014DDE4F9004DD37A /* SDL_config_wiz.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL_config_wiz.h; sourceTree = "<group>"; };
 		2618335114DDE4F9004DD37A /* SDL_config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL_config.h; sourceTree = "<group>"; };
 		2618335214DDE4F9004DD37A /* SDL_copying.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL_copying.h; sourceTree = "<group>"; };
 		2618335314DDE4F9004DD37A /* SDL_cpuinfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL_cpuinfo.h; sourceTree = "<group>"; };
@@ -931,7 +877,6 @@
 		2618335714DDE4F9004DD37A /* SDL_gesture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL_gesture.h; sourceTree = "<group>"; };
 		2618335814DDE4F9004DD37A /* SDL_haptic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL_haptic.h; sourceTree = "<group>"; };
 		2618335914DDE4F9004DD37A /* SDL_hints.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL_hints.h; sourceTree = "<group>"; };
-		2618335A14DDE4F9004DD37A /* SDL_input.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL_input.h; sourceTree = "<group>"; };
 		2618335B14DDE4F9004DD37A /* SDL_joystick.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL_joystick.h; sourceTree = "<group>"; };
 		2618335C14DDE4F9004DD37A /* SDL_keyboard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL_keyboard.h; sourceTree = "<group>"; };
 		2618335D14DDE4F9004DD37A /* SDL_keycode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL_keycode.h; sourceTree = "<group>"; };
@@ -966,12 +911,6 @@
 		2618337A14DDE4F9004DD37A /* SDL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL.h; sourceTree = "<group>"; };
 		26184E7113CA0CE6003A9A79 /* CoreAudioKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudioKit.framework; path = ../../../../System/Library/Frameworks/CoreAudioKit.framework; sourceTree = "<group>"; };
 		26184E7513CA0D2E003A9A79 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = ../../../../System/Library/Frameworks/IOKit.framework; sourceTree = "<group>"; };
-		2618B77116A7B25B004BB291 /* view_rtl_effect.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = view_rtl_effect.c; sourceTree = "<group>"; };
-		2618B77216A7B25B004BB291 /* view_rtl_liquid.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = view_rtl_liquid.c; sourceTree = "<group>"; };
-		2618B77316A7B25B004BB291 /* view_rtl_map.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = view_rtl_map.c; sourceTree = "<group>"; };
-		2618B77416A7B25B004BB291 /* view_rtl_material.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = view_rtl_material.c; sourceTree = "<group>"; };
-		2618B77516A7B25B004BB291 /* view_rtl_model.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = view_rtl_model.c; sourceTree = "<group>"; };
-		2618B77716A7B25B004BB291 /* view_rtl_patch.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = view_rtl_patch.c; sourceTree = "<group>"; };
 		262579131525325A00C371C3 /* singleplayer_option.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = singleplayer_option.c; sourceTree = "<group>"; };
 		262D75D6158FE8A00086B8BB /* script_obj_label.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_obj_label.c; sourceTree = "<group>"; };
 		262DD2AF151E32200078FEA4 /* base_iface_score.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = base_iface_score.c; sourceTree = "<group>"; };
@@ -987,7 +926,6 @@
 		2649D13D13412B2900573F6F /* setup_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = setup_defs.h; path = Headers/setup_defs.h; sourceTree = "<group>"; };
 		2649D13E13412B2900573F6F /* sound_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = sound_defs.h; path = Headers/sound_defs.h; sourceTree = "<group>"; };
 		2649D13F13412B2900573F6F /* view_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = view_defs.h; path = Headers/view_defs.h; sourceTree = "<group>"; };
-		264BBA0116F2BBA5003E622A /* view_rtl_opengl.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = view_rtl_opengl.c; sourceTree = "<group>"; };
 		2669FCE6161273A0002292C6 /* mac_os_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mac_os_defs.h; path = ../OSXBuild/Common/Headers/mac_os_defs.h; sourceTree = "<group>"; };
 		2669FCE8161273D5002292C6 /* os_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = os_defs.h; path = ../dim3Common/Headers/os_defs.h; sourceTree = "<group>"; };
 		2669FD1916127B66002292C6 /* libSDL2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libSDL2.a; sourceTree = "<group>"; };
@@ -1376,14 +1314,12 @@
 				26188CEE14A1A00400EDF154 /* Video */,
 				26188CEF14A1A01100EDF154 /* Audio */,
 				263A144E149BE25400F31189 /* View */,
-				268BCEBA1623C1E000A18404 /* ViewRTL */,
 				263A144F149BE27500F31189 /* Render */,
 				26188CF014A1A01C00EDF154 /* GUI */,
 				264470E314AED1730099DEE3 /* HUD */,
 				264470E414AED1A00099DEE3 /* Sky */,
 				264470E514AED21D0099DEE3 /* Effects */,
 				264470E614AED2860099DEE3 /* Input */,
-				2669FCF0161274E6002292C6 /* RTL */,
 			);
 			path = Sources_View;
 			sourceTree = "<group>";
@@ -1419,15 +1355,7 @@
 				2618334414DDE4F9004DD37A /* SDL_audio.h */,
 				2618334514DDE4F9004DD37A /* SDL_blendmode.h */,
 				2618334614DDE4F9004DD37A /* SDL_clipboard.h */,
-				2618334714DDE4F9004DD37A /* SDL_compat.h */,
-				2618334814DDE4F9004DD37A /* SDL_config_android.h */,
-				2618334A14DDE4F9004DD37A /* SDL_config_iphoneos.h */,
 				2618334B14DDE4F9004DD37A /* SDL_config_macosx.h */,
-				2618334C14DDE4F9004DD37A /* SDL_config_minimal.h */,
-				2618334D14DDE4F9004DD37A /* SDL_config_nintendods.h */,
-				2618334E14DDE4F9004DD37A /* SDL_config_pandora.h */,
-				2618334F14DDE4F9004DD37A /* SDL_config_windows.h */,
-				2618335014DDE4F9004DD37A /* SDL_config_wiz.h */,
 				2618335114DDE4F9004DD37A /* SDL_config.h */,
 				2618335214DDE4F9004DD37A /* SDL_copying.h */,
 				2618335314DDE4F9004DD37A /* SDL_cpuinfo.h */,
@@ -1437,7 +1365,6 @@
 				2618335714DDE4F9004DD37A /* SDL_gesture.h */,
 				2618335814DDE4F9004DD37A /* SDL_haptic.h */,
 				2618335914DDE4F9004DD37A /* SDL_hints.h */,
-				2618335A14DDE4F9004DD37A /* SDL_input.h */,
 				2618335B14DDE4F9004DD37A /* SDL_joystick.h */,
 				2618335C14DDE4F9004DD37A /* SDL_keyboard.h */,
 				2618335D14DDE4F9004DD37A /* SDL_keycode.h */,
@@ -1639,42 +1566,6 @@
 				260B3F771411F781006ED023 /* player_input.c */,
 			);
 			name = Input;
-			sourceTree = "<group>";
-		};
-		2669FCF0161274E6002292C6 /* RTL */ = {
-			isa = PBXGroup;
-			children = (
-				26149B7716A8BA86007DB713 /* ray.h */,
-				26149B7616A8BA86007DB713 /* ray_types.h */,
-				26149B6A16A8BA86007DB713 /* ray_interface.h */,
-				26149B6816A8BA86007DB713 /* ray_color.c */,
-				26149B6916A8BA86007DB713 /* ray_eye.c */,
-				26149B6B16A8BA86007DB713 /* ray_light.c */,
-				26149B6C16A8BA86007DB713 /* ray_main.c */,
-				26149B6D16A8BA86007DB713 /* ray_material.c */,
-				26149B6E16A8BA86007DB713 /* ray_math.c */,
-				26149B6F16A8BA86007DB713 /* ray_mesh.c */,
-				26149B7016A8BA86007DB713 /* ray_os_defs.h */,
-				26149B7216A8BA86007DB713 /* ray_precalc.c */,
-				26149B7316A8BA86007DB713 /* ray_render.c */,
-				26149B7416A8BA86007DB713 /* ray_scene.c */,
-				26149B7516A8BA86007DB713 /* ray_thread.c */,
-			);
-			name = RTL;
-			sourceTree = "<group>";
-		};
-		268BCEBA1623C1E000A18404 /* ViewRTL */ = {
-			isa = PBXGroup;
-			children = (
-				2618B77116A7B25B004BB291 /* view_rtl_effect.c */,
-				2618B77216A7B25B004BB291 /* view_rtl_liquid.c */,
-				2618B77316A7B25B004BB291 /* view_rtl_map.c */,
-				2618B77416A7B25B004BB291 /* view_rtl_material.c */,
-				2618B77516A7B25B004BB291 /* view_rtl_model.c */,
-				2618B77716A7B25B004BB291 /* view_rtl_patch.c */,
-				264BBA0116F2BBA5003E622A /* view_rtl_opengl.c */,
-			);
-			name = ViewRTL;
 			sourceTree = "<group>";
 		};
 		26A45D051489AD0A00C02936 /* Script API */ = {
@@ -1958,15 +1849,7 @@
 				2618338014DDE4F9004DD37A /* SDL_audio.h in Headers */,
 				2618338114DDE4F9004DD37A /* SDL_blendmode.h in Headers */,
 				2618338214DDE4F9004DD37A /* SDL_clipboard.h in Headers */,
-				2618338314DDE4F9004DD37A /* SDL_compat.h in Headers */,
-				2618338414DDE4F9004DD37A /* SDL_config_android.h in Headers */,
-				2618338614DDE4F9004DD37A /* SDL_config_iphoneos.h in Headers */,
 				2618338714DDE4F9004DD37A /* SDL_config_macosx.h in Headers */,
-				2618338814DDE4F9004DD37A /* SDL_config_minimal.h in Headers */,
-				2618338914DDE4F9004DD37A /* SDL_config_nintendods.h in Headers */,
-				2618338A14DDE4F9004DD37A /* SDL_config_pandora.h in Headers */,
-				2618338B14DDE4F9004DD37A /* SDL_config_windows.h in Headers */,
-				2618338C14DDE4F9004DD37A /* SDL_config_wiz.h in Headers */,
 				2618338D14DDE4F9004DD37A /* SDL_config.h in Headers */,
 				2618338E14DDE4F9004DD37A /* SDL_copying.h in Headers */,
 				2618338F14DDE4F9004DD37A /* SDL_cpuinfo.h in Headers */,
@@ -1976,7 +1859,6 @@
 				2618339314DDE4F9004DD37A /* SDL_gesture.h in Headers */,
 				2618339414DDE4F9004DD37A /* SDL_haptic.h in Headers */,
 				2618339514DDE4F9004DD37A /* SDL_hints.h in Headers */,
-				2618339614DDE4F9004DD37A /* SDL_input.h in Headers */,
 				2618339714DDE4F9004DD37A /* SDL_joystick.h in Headers */,
 				2618339814DDE4F9004DD37A /* SDL_keyboard.h in Headers */,
 				2618339914DDE4F9004DD37A /* SDL_keycode.h in Headers */,
@@ -2012,10 +1894,6 @@
 				26F0C43F1563297300AFE368 /* app_defs.h in Headers */,
 				2669FCE7161273A0002292C6 /* mac_os_defs.h in Headers */,
 				2669FCE9161273D5002292C6 /* os_defs.h in Headers */,
-				26149B7A16A8BA86007DB713 /* ray_interface.h in Headers */,
-				26149B8016A8BA86007DB713 /* ray_os_defs.h in Headers */,
-				26149B8616A8BA86007DB713 /* ray_types.h in Headers */,
-				26149B8716A8BA86007DB713 /* ray.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2464,25 +2342,7 @@
 				26FF359E15A936820010C22E /* gl_shader_execute.c in Sources */,
 				2602769315C88619007B19CD /* label.c in Sources */,
 				26BB48F41685067E00825030 /* script_interface_virtual_control.c in Sources */,
-				2618B77816A7B25B004BB291 /* view_rtl_effect.c in Sources */,
-				2618B77916A7B25B004BB291 /* view_rtl_liquid.c in Sources */,
-				2618B77A16A7B25B004BB291 /* view_rtl_map.c in Sources */,
-				2618B77B16A7B25B004BB291 /* view_rtl_material.c in Sources */,
-				2618B77C16A7B25B004BB291 /* view_rtl_model.c in Sources */,
-				2618B77E16A7B25B004BB291 /* view_rtl_patch.c in Sources */,
-				26149B7816A8BA86007DB713 /* ray_color.c in Sources */,
-				26149B7916A8BA86007DB713 /* ray_eye.c in Sources */,
-				26149B7B16A8BA86007DB713 /* ray_light.c in Sources */,
-				26149B7C16A8BA86007DB713 /* ray_main.c in Sources */,
-				26149B7D16A8BA86007DB713 /* ray_material.c in Sources */,
-				26149B7E16A8BA86007DB713 /* ray_math.c in Sources */,
-				26149B7F16A8BA86007DB713 /* ray_mesh.c in Sources */,
-				26149B8216A8BA86007DB713 /* ray_precalc.c in Sources */,
-				26149B8316A8BA86007DB713 /* ray_render.c in Sources */,
-				26149B8416A8BA86007DB713 /* ray_scene.c in Sources */,
-				26149B8516A8BA86007DB713 /* ray_thread.c in Sources */,
 				26159D2216D191210069B442 /* base_iface_label.c in Sources */,
-				264BBA0216F2BBA5003E622A /* view_rtl_opengl.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
