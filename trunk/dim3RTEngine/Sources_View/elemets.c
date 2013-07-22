@@ -2281,7 +2281,7 @@ void element_scroll_table(element_type *element,bool up)
 
 	high=gl_text_get_char_height(iface.font.text_size_medium)+2;
 	row_high=element_get_table_row_high(element);
-	scroll_cnt=element_get_table_row_count(element)-(((element->high-(high+4))/row_high)+1);
+	scroll_cnt=element_get_table_row_count(element)-((element->high-(high+4))/row_high);
 	if (scroll_cnt<0) scroll_cnt=0;
 
 	element->offset++;
