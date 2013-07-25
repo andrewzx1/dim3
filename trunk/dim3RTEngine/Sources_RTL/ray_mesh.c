@@ -831,7 +831,16 @@ int rtlSceneMeshSetPoly(int sceneId,int meshId,int format,int count,void *poly_d
 			// second is the material
 
 		poly->nvertex=(int)*pp++;
-		poly->material_idx=ray_material_get_index((int)*pp++);		// supergumba -- look up errors here
+		poly->material_idx=ray_material_get_index((int)*pp++);
+		
+			// check for bad materials
+			
+		if (poly->material_idx==-1) {
+			free(mesh->poly_block.polys);
+			mesh->poly_block.count=0;
+			mesh->poly_block.polys=NULL;
+			return(RL_ERROR_UNKNOWN_MATERIAL_ID);
+		}
 
 		poly->col.r=poly->col.g=poly->col.b=poly->col.a=1.0f;
 		
