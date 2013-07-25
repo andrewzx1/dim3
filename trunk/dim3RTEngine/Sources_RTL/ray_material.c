@@ -158,7 +158,7 @@ void ray_get_material_pixel(ray_scene_type *scene,ray_point_type *eye_pnt,ray_po
 
 		// calculate the surface tangent
 		
-	if (mesh->normal_block.normals==NULL) {
+	if (mesh->tangent_block.tangents==NULL) {
 		pixel->surface.tangent.x=pixel->surface.tangent.z=0.0f;
 		pixel->surface.tangent.y=1.0f;
 	}
