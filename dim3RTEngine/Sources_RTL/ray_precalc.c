@@ -100,16 +100,11 @@ void ray_precalc_polygon_normal(ray_mesh_type *mesh,ray_poly_type *poly)
 	float				f;
 	ray_vector_type		*normal;
 	
-	if (mesh->normal_block.count==0) {
-		poly->surface_normal.x=0.0f;
-		poly->surface_normal.y=0.0f;
-		poly->surface_normal.z=0.0f;
-		return;
-	}
-
 	poly->surface_normal.x=0.0f;
 	poly->surface_normal.y=0.0f;
 	poly->surface_normal.z=0.0f;
+	
+	if (mesh->normal_block.count==0) return;
 	
 	for (n=0;n!=poly->nvertex;n++) {
 		normal=&mesh->normal_block.normals[poly->idxs[n].normal];
