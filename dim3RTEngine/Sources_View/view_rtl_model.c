@@ -413,7 +413,7 @@ void view_dim3rtl_map_model_update(void)
 
 		for (n=0;n!=max_weap_list;n++) {
 			weap=obj->weap_list.weaps[n];
-			if (weap!=NULL) view_dim3rtl_model_update_single_model(&weap->draw,(n!=obj->held_weapon.current_idx));
+			if (weap!=NULL) view_dim3rtl_model_update_single_model(&weap->draw,((n!=obj->held_weapon.current_idx)||(map.camera.mode!=cv_fpp)));
 		}
 	}
 }
