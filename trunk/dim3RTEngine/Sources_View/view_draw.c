@@ -196,9 +196,11 @@ void view_draw_dim3rtl(void)
 			zoom_draw(obj,weap);
 		}
 	}
-		
-		// view fading
 
+		// draw tints and fades
+		
+	view_draw_liquid_tint(view.render->camera.under_liquid_idx);
+	view_draw_effect_tint();
 	view_fade_draw();
 }
 

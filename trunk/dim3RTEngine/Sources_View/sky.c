@@ -90,7 +90,8 @@ void sky_release(void)
 void sky_update(void)
 {
 	int				k,idx,poly_count;
-	short			*polys,*vk;
+	short			polys[6*10];
+	short			*vk;
     float			f_radius,txt_fact;
 	float			*vp,*uv;
 	d3fpnt			camera_pos;
@@ -111,7 +112,6 @@ void sky_update(void)
 	idx=0;
 	poly_count=0;
 
-	polys=(short*)malloc(sizeof(short)*(6*10));
 	vk=polys;
 
 		// top
@@ -405,5 +405,4 @@ void sky_update(void)
 		// build the polygons
 
 	rtlSceneMeshSetPoly(view_rtl_draw_scene_id,rtl_sky_mesh_id,RL_MESH_FORMAT_POLY_SHORT_VERTEX_UV,poly_count,polys);
-	free(polys);
 }
