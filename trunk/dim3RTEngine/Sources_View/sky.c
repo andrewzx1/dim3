@@ -94,7 +94,7 @@ void sky_update(void)
     float			f_radius,txt_fact;
 	float			*vp,*uv;
 	d3fpnt			camera_pos;
-
+	
 	if (rtl_sky_mesh_id==-1) return;
 
 		// setup cube quads
@@ -154,10 +154,10 @@ void sky_update(void)
 			// polygon
 
 		*vk++=4;
-		*vk++=map.textures[map.sky.fill].frames[0].bitmap.rl_material_id;
+		*vk++=(short)map.textures[map.sky.fill].frames[0].bitmap.rl_material_id;
 		for (k=0;k!=4;k++) {
-			*vk++=idx;
-			*vk++=idx;
+			*vk++=(short)idx;
+			*vk++=(short)idx;
 			idx++;
 		}
 
@@ -201,10 +201,10 @@ void sky_update(void)
 			// polygon
 
 		*vk++=4;
-		*vk++=map.textures[map.sky.bottom_fill].frames[0].bitmap.rl_material_id;
+		*vk++=(short)map.textures[map.sky.bottom_fill].frames[0].bitmap.rl_material_id;
 		for (k=0;k!=4;k++) {
-			*vk++=idx;
-			*vk++=idx;
+			*vk++=(short)idx;
+			*vk++=(short)idx;
 			idx++;
 		}
 
@@ -248,10 +248,10 @@ void sky_update(void)
 			// polygon
 
 		*vk++=4;
-		*vk++=map.textures[map.sky.north_fill].frames[0].bitmap.rl_material_id;
+		*vk++=(short)map.textures[map.sky.north_fill].frames[0].bitmap.rl_material_id;
 		for (k=0;k!=4;k++) {
-			*vk++=idx;
-			*vk++=idx;
+			*vk++=(short)idx;
+			*vk++=(short)idx;
 			idx++;
 		}
 
@@ -295,10 +295,10 @@ void sky_update(void)
 			// polygon
 
 		*vk++=4;
-		*vk++=map.textures[map.sky.east_fill].frames[0].bitmap.rl_material_id;
+		*vk++=(short)map.textures[map.sky.east_fill].frames[0].bitmap.rl_material_id;
 		for (k=0;k!=4;k++) {
-			*vk++=idx;
-			*vk++=idx;
+			*vk++=(short)idx;
+			*vk++=(short)idx;
 			idx++;
 		}
 
@@ -342,10 +342,10 @@ void sky_update(void)
 			// polygon
 
 		*vk++=4;
-		*vk++=map.textures[map.sky.south_fill].frames[0].bitmap.rl_material_id;
+		*vk++=(short)map.textures[map.sky.south_fill].frames[0].bitmap.rl_material_id;
 		for (k=0;k!=4;k++) {
-			*vk++=idx;
-			*vk++=idx;
+			*vk++=(short)idx;
+			*vk++=(short)idx;
 			idx++;
 		}
 
@@ -389,10 +389,10 @@ void sky_update(void)
 			// polygon
 
 		*vk++=4;
-		*vk++=map.textures[map.sky.west_fill].frames[0].bitmap.rl_material_id;
+		*vk++=(short)map.textures[map.sky.west_fill].frames[0].bitmap.rl_material_id;
 		for (k=0;k!=4;k++) {
-			*vk++=idx;
-			*vk++=idx;
+			*vk++=(short)idx;
+			*vk++=(short)idx;
 			idx++;
 		}
 
