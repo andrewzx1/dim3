@@ -183,9 +183,11 @@ void ray_get_material_pixel(ray_scene_type *scene,ray_point_type *eye_pnt,ray_po
 
 	fx-=floorf(fx);
 	x=(int)(fx*mipmap->wid_scale);
+	if (x>=mipmap->wid) x=mipmap->wid-1;
 
 	fy-=floorf(fy);
 	y=(int)(fy*mipmap->high_scale);
+	if (y>=mipmap->high) y=mipmap->high-1;
 	
 	offset=(mipmap->wid*y)+x;
 
