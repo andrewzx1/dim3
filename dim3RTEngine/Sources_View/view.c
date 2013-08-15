@@ -181,15 +181,9 @@ void view_create_screen_size_list(void)
 
 bool view_initialize_display(char *err_str)
 {
-		// dim3rtl has hard coded window
-		// screen size supergumba -- will need to fix this
-
-	setup.screen_wid=960;
-	setup.screen_high=600;
-
 		// start openGL
 		
-	if (!gl_initialize(setup.screen_wid,setup.screen_high,setup.fsaa_mode,err_str)) {
+	if (!gl_initialize(err_str)) {
 		view_memory_release();
 		SDL_Quit();
 		return(FALSE);
@@ -269,10 +263,6 @@ bool view_initialize(char *err_str)
 #if defined(D3_OS_IPHONE) || defined(D3_OS_ANDRIOD)
 	iface.setup.no_resolution_switch=TRUE;
 #endif
-
-	if ((iface.setup.no_resolution_switch) && (!setup.window)) {
-		setup.screen_wid=setup.screen_high=-1;
-	}
 
 		// determine and cache the
 		// device type

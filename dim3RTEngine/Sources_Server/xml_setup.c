@@ -45,19 +45,11 @@ setup_type					setup;
 
 void setup_xml_default(void)
 {
-	setup.screen_wid=-1;
-	setup.screen_high=-1;
-
 	setup.screen_rtl_wid=320;
 	setup.screen_rtl_high=200;
-	setup.screen_rtl_full_window=TRUE;
-	
+
+	setup.full_screen=TRUE;
 	setup.fsaa_mode=fsaa_mode_none;
-	
-	setup.decal_on=TRUE;
-	setup.shadow_on=TRUE;
-	
-	setup.gamma=0.0f;
 	
 	setup.sound_volume=0.6f;
 	setup.music_on=TRUE;
@@ -94,8 +86,6 @@ void setup_xml_default(void)
 	setup.network.game_reset_secs=15;
 	setup.network.respawn_secs=5;
 	
-	setup.window=FALSE;
-	setup.window_editor=TRUE;
 	setup.no_hud=FALSE;
 	setup.no_draw_weapon=FALSE;
 	setup.metrics_on=FALSE;
@@ -132,12 +122,10 @@ bool setup_xml_read_path(char *path)
 	
 		// keys
 
-	xml_key_read_int(setup_tag,"Screen_Width",&setup.screen_wid);
-	xml_key_read_int(setup_tag,"Screen_Height",&setup.screen_high);
-	xml_key_read_float(setup_tag,"Gamma",&setup.gamma);
+	xml_key_read_int(setup_tag,"Screen_Width",&setup.screen_rtl_wid);
+	xml_key_read_int(setup_tag,"Screen_Height",&setup.screen_rtl_high);
+	xml_key_read_boolean(setup_tag,"Full_Screen",&setup.full_screen);
 	xml_key_read_int(setup_tag,"FSAA_Mode",&setup.fsaa_mode);
-	xml_key_read_boolean(setup_tag,"Decal_On",&setup.decal_on);
-	xml_key_read_boolean(setup_tag,"Shadow_On",&setup.shadow_on);
 	xml_key_read_float(setup_tag,"Sound_Volume",&setup.sound_volume);
 	xml_key_read_boolean(setup_tag,"Music_On",&setup.music_on);
 	xml_key_read_float(setup_tag,"Music_Volume",&setup.music_volume);
@@ -161,16 +149,11 @@ bool setup_xml_read_path(char *path)
 	xml_key_read_int(setup_tag,"Host_Respawn_Secs",&setup.network.respawn_secs);
 	xml_key_read_boolean(setup_tag,"Network_Show_Names",&setup.network.show_names);
 	xml_key_read_boolean(setup_tag,"Network_Map_Rotation",&setup.network.map_rotation);
-	xml_key_read_boolean(setup_tag,"Window",&setup.window);
-	xml_key_read_boolean(setup_tag,"Window_Editor",&setup.window_editor);
 	xml_key_read_boolean(setup_tag,"No_HUD",&setup.no_hud);
 	xml_key_read_boolean(setup_tag,"No_Draw_Weapon",&setup.no_draw_weapon);
 	xml_key_read_boolean(setup_tag,"Metrics_On",&setup.metrics_on);
 	xml_key_read_boolean(setup_tag,"Debug_On",&setup.debug_on);
 	xml_key_read_boolean(setup_tag,"Ignore_FPS_Lock",&setup.ignore_fps_lock);
-	xml_key_read_int(setup_tag,"Screen_dim3RTL_Width",&setup.screen_rtl_wid);
-	xml_key_read_int(setup_tag,"Screen_dim3RTL_Height",&setup.screen_rtl_high);
-	xml_key_read_boolean(setup_tag,"Screen_dim3RTL_Full_Window",&setup.screen_rtl_full_window);
 
 		// actions
 
@@ -279,12 +262,10 @@ bool setup_xml_write(void)
 	
 		// keys
 
-    xml_key_write_int("Screen_Width",setup.screen_wid);
-    xml_key_write_int("Screen_Height",setup.screen_high);
-	xml_key_write_float("Gamma",setup.gamma);
+    xml_key_write_int("Screen_Width",setup.screen_rtl_wid);
+    xml_key_write_int("Screen_Height",setup.screen_rtl_high);
+	xml_key_write_boolean("Full_Screen",setup.full_screen);
 	xml_key_write_int("FSAA_Mode",setup.fsaa_mode);
-	xml_key_write_boolean("Decal_On",setup.decal_on);
-	xml_key_write_boolean("Shadow_On",setup.shadow_on);
 	xml_key_write_float("Sound_Volume",setup.sound_volume);
 	xml_key_write_boolean("Music_On",setup.music_on);
 	xml_key_write_float("Music_Volume",setup.music_volume);
@@ -308,16 +289,11 @@ bool setup_xml_write(void)
 	xml_key_write_int("Host_Respawn_Secs",setup.network.respawn_secs);
 	xml_key_write_boolean("Network_Show_Names",setup.network.show_names);
 	xml_key_write_boolean("Network_Map_Rotation",setup.network.map_rotation);
-	xml_key_write_boolean("Window",setup.window);
-	xml_key_write_boolean("Window_Editor",setup.window_editor);
 	xml_key_write_boolean("No_HUD",setup.no_hud);
 	xml_key_write_boolean("No_Draw_Weapon",setup.no_draw_weapon);
 	xml_key_write_boolean("Metrics_On",setup.metrics_on);
 	xml_key_write_boolean("Debug_On",setup.debug_on);
 	xml_key_write_boolean("Ignore_FPS_Lock",setup.ignore_fps_lock);
-    xml_key_write_int("Screen_dim3RTL_Width",setup.screen_rtl_wid);
-    xml_key_write_int("Screen_dim3RTL_Height",setup.screen_rtl_high);
-	xml_key_write_boolean("Screen_dim3RTL_Full_Window",setup.screen_rtl_full_window);
 
 		// actions
 
@@ -394,19 +370,15 @@ void setup_restore(void)
 {
 		// reset important defaults
 		// to their simpliest form
+
+	setup.screen_rtl_wid=320;
+	setup.screen_rtl_high=200;
 		
-	setup.screen_wid=-1;
-	setup.screen_high=-1;
-	
-	setup.decal_on=FALSE;
-	setup.shadow_on=FALSE;
-	
+	setup.full_screen=FALSE;
 	setup.fsaa_mode=fsaa_mode_none;
 	
 	setup.music_on=FALSE;
 
-	setup.window=FALSE;
-	setup.window_editor=TRUE;
 	setup.no_hud=FALSE;
 	setup.no_draw_weapon=FALSE;
 	setup.metrics_on=FALSE;

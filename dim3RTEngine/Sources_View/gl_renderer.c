@@ -48,20 +48,13 @@ SDL_GLContext				*sdl_gl_ctx;
 
 bool gl_in_window_mode(void)
 {
-		// for now, ray tracing always in
-		// windowed mode
-
-	// supergumba -- will need to fix this
-		
-	return(TRUE);
-	
 		// mobile always full screen,
 		// everything else by settings
 	
 	#if defined(D3_OS_IPHONE) || defined(D3_OS_ANDRIOD)
 		return(FALSE);
 	#else
-		return((setup.window) || ((app.editor_override.on) && (setup.window_editor)));
+		return((!setup.full_screen) || (app.editor_override.on));
 	#endif
 }
 
@@ -100,9 +93,9 @@ void gl_setup_context(void)
       
 ======================================================= */
 
-bool gl_initialize(int screen_wid,int screen_high,int fsaa_mode,char *err_str)
+bool gl_initialize(char *err_str)
 {
-	int						sdl_flags;
+	int						screen_wid,screen_high,sdl_flags;
     GLint					ntxtsize;
 #if defined(D3_OS_LINUX) || defined(D3_OS_WINDOWS)
 	GLenum					glew_error;
@@ -114,9 +107,13 @@ bool gl_initialize(int screen_wid,int screen_high,int fsaa_mode,char *err_str)
 		// reset sizes to the desktop
 		// if they are at default
 		
-	if ((screen_wid==-1) || (screen_high==-1)) {
+	if (setup.full_screen) {
 		screen_wid=render_info.desktop.wid;
 		screen_high=render_info.desktop.high;
+	}
+	else {
+		screen_wid=dim3_window_wid;
+		screen_high=dim3_window_high;
 	}
 
 		// setup rendering sizes
@@ -152,7 +149,7 @@ bool gl_initialize(int screen_wid,int screen_high,int fsaa_mode,char *err_str)
 
 		// full screen anti-aliasing attributes
 		
-	switch (fsaa_mode) {
+	switch (setup.fsaa_mode) {
 		case fsaa_mode_2x:
 			SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS,1);
 			SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES,2);
@@ -214,7 +211,7 @@ bool gl_initialize(int screen_wid,int screen_high,int fsaa_mode,char *err_str)
 	gl_setup_context();
 	
 #ifndef D3_OPENGL_ES
-	if (fsaa_mode!=fsaa_mode_none) glEnable(GL_MULTISAMPLE);
+	if (setup.fsaa_mode!=fsaa_mode_none) glEnable(GL_MULTISAMPLE);
 #endif
 
         // clear the entire window so it doesn't flash

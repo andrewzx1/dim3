@@ -45,6 +45,9 @@ extern setup_type			setup;
 
 void projectile_decals(proj_type *proj,proj_setup_type *proj_setup)
 {
+	/*
+	supergumba -- decals not supported -- to do
+
 	int					mark_idx,size;
 	float				alpha;
 	
@@ -62,6 +65,7 @@ void projectile_decals(proj_type *proj,proj_setup_type *proj_setup)
 	alpha=proj_setup->mark.alpha;
 	
 	decal_add(proj->obj_idx,&proj->pnt,&proj->contact.hit_poly,mark_idx,size,alpha);
+	*/
 }
 
 /* =======================================================
