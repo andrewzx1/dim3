@@ -26,6 +26,13 @@ and can be sold or given away.
 *********************************************************************/
 
 //
+// default window size
+//
+
+#define dim3_window_wid								960
+#define dim3_window_high							600
+
+//
 // setup sizes
 //
 
@@ -36,10 +43,6 @@ and can be sold or given away.
 
 #define max_setup_network_map						32
 #define max_setup_network_option					32
-
-//
-// setup values
-//
 
 // texture quality mode, mipmap mode, and mipmap mode all defined in baseutility.h
 
@@ -121,15 +124,13 @@ typedef struct		{
 //
 					
 typedef struct		{
-						int								screen_wid,screen_high,
-														screen_rtl_wid,screen_rtl_high,
+						int								screen_rtl_wid,screen_rtl_high,
 														fsaa_mode;
-						float							gamma,sound_volume,music_volume;
-						bool							decal_on,lightmap_on,shadow_on,
+						float							sound_volume,music_volume;
+						bool							full_screen,
 														always_run,toggle_run,invert_look,mouse_smooth,
-														music_on,auto_aim,window,window_editor,
-														no_hud,no_draw_weapon,metrics_on,debug_on,
-														ignore_fps_lock,screen_rtl_full_window;
+														music_on,auto_aim,no_hud,no_draw_weapon,
+														metrics_on,debug_on,ignore_fps_lock;
 						setup_path_type					path;
 						setup_axis_type					mouse,joystick;
 						setup_action_list_type			action_list;

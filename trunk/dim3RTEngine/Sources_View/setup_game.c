@@ -38,13 +38,9 @@ and can be sold or given away.
 #define setup_pane_player					4
 #define setup_pane_debug					5
 
-#define ctrl_screen_gl_size_id				0
-#define ctrl_screen_rtl_size_id				1
-#define ctrl_screen_rtl_full_window_id		2
-#define ctrl_fsaa_id						3
-#define ctrl_decal_on_id					4
-#define ctrl_shadow_on_id					5
-#define ctrl_gamma_id						6
+#define ctrl_screen_rtl_size_id				0
+#define ctrl_screen_full_screen_id			1
+#define ctrl_fsaa_id						2
 
 #define ctrl_sound_volume_id				30
 #define ctrl_music_on_id					31
@@ -67,13 +63,11 @@ and can be sold or given away.
 #define ctrl_character_id					62
 #define ctrl_character_model_id				63
 
-#define ctrl_debug_engine_windowed_id		70
-#define ctrl_debug_editor_windowed_id		71
-#define ctrl_debug_no_hud_id				72
-#define ctrl_debug_no_draw_weapon_id		73
-#define ctrl_debug_metrics_on_id			74
-#define ctrl_debug_debug_on_id				75
-#define ctrl_debug_ignore_fps_lock_id		76
+#define ctrl_debug_no_hud_id				70
+#define ctrl_debug_no_draw_weapon_id		71
+#define ctrl_debug_metrics_on_id			72
+#define ctrl_debug_debug_on_id				73
+#define ctrl_debug_ignore_fps_lock_id		74
 
 #define setup_game_frame_id					80
 #define setup_game_tab_id					81
@@ -169,10 +163,10 @@ void setup_game_video_pane(void)
 	element_combo_add("Screen Size",(char*)setup_screen_size_list,idx,ctrl_screen_rtl_size_id,x,y,TRUE);
 	y+=control_y_add;
 
-	element_combo_add("Full-Screen Anti-Aliasing",(char*)setup_fsaa_mode_list,setup.fsaa_mode,ctrl_fsaa_id,x,y,TRUE);
+	element_checkbox_add("Full Screen",setup.full_screen,ctrl_screen_full_screen_id,x,y,TRUE);
 	y+=control_y_add;
 
-	element_checkbox_add("Full Window (Requires Restart)",setup.screen_rtl_full_window,ctrl_screen_rtl_full_window_id,x,y,TRUE);
+	element_combo_add("Full-Screen Anti-Aliasing",(char*)setup_fsaa_mode_list,setup.fsaa_mode,ctrl_fsaa_id,x,y,TRUE);
 }
 
 void setup_game_audio_pane(void)
@@ -399,16 +393,12 @@ void setup_game_debug_pane(void)
 				x,y,control_y_add,control_y_sz;
 	
 	control_y_add=element_get_control_separation_high();
-	control_y_sz=control_y_add*7;
+	control_y_sz=control_y_add*5;
 	
 	element_get_frame_inner_space(setup_game_frame_id,&fx,&fy,&wid,&high);
 	x=fx+(int)(((float)wid)*0.5f);
 	y=(fy+((high-control_y_sz)/2))+control_y_add;
 	
-	element_checkbox_add("Engine Windowed Mode",setup.window,ctrl_debug_engine_windowed_id,x,y,TRUE);
-	y+=control_y_add;
-	element_checkbox_add("Editor Windowed Run Mode",setup.window_editor,ctrl_debug_editor_windowed_id,x,y,TRUE);
-	y+=control_y_add;
 	element_checkbox_add("No HUD",setup.no_hud,ctrl_debug_no_hud_id,x,y,TRUE);
 	y+=control_y_add;
 	element_checkbox_add("No Draw Weapon",setup.no_draw_weapon,ctrl_debug_no_draw_weapon_id,x,y,TRUE);
@@ -683,9 +673,7 @@ void setup_game_close(void)
 		// can't do it in game (not possible, anyway, but just in case)
 		
 	if (!setup_in_game) {
-		display_reset=(setup_backup.screen_wid!=setup.screen_wid);
-		display_reset=display_reset || (setup_backup.screen_high!=setup.screen_high);
-		display_reset=display_reset || (setup_backup.fsaa_mode!=setup.fsaa_mode);
+		display_reset=(setup_backup.fsaa_mode!=setup.fsaa_mode);
 	
 		if (display_reset) {
 			if (!view_reset_display(err_str)) {
@@ -790,41 +778,18 @@ void setup_game_click(void)
 	
 			// video pane
 			
-		case ctrl_screen_gl_size_id:
-			idx=element_get_value(ctrl_screen_gl_size_id);
-			if (idx==0) {
-				setup.screen_wid=setup.screen_high=-1;
-			}
-			else {
-				setup.screen_wid=render_info.screen_sizes[idx-1].wid;
-				setup.screen_high=render_info.screen_sizes[idx-1].high;
-			}
-			break;
-			
 		case ctrl_screen_rtl_size_id:
 			idx=element_get_value(ctrl_screen_rtl_size_id);
 			setup.screen_rtl_wid=view_rtl_screen_sizes[idx][0];
 			setup.screen_rtl_high=view_rtl_screen_sizes[idx][1];
 			break;
 
-		case ctrl_screen_rtl_full_window_id:
-			setup.screen_rtl_full_window=element_get_value(ctrl_screen_rtl_full_window_id);
-			break;
-			
-		case ctrl_decal_on_id:
-			setup.decal_on=element_get_value(ctrl_decal_on_id);
-			break;
-
-		case ctrl_shadow_on_id:
-			setup.shadow_on=element_get_value(ctrl_shadow_on_id);
+		case ctrl_screen_full_screen_id:
+			setup.full_screen=element_get_value(ctrl_screen_full_screen_id);
 			break;
 			
 		case ctrl_fsaa_id:
 			setup.fsaa_mode=element_get_value(ctrl_fsaa_id);
-			break;
-			
-		case ctrl_gamma_id:
-			setup.gamma=element_get_slider_value(ctrl_gamma_id);
 			break;
 			
 			// audio pane
@@ -902,14 +867,6 @@ void setup_game_click(void)
 			break;
 
 			// debug pane
-
-		case ctrl_debug_engine_windowed_id:
-			setup.window=element_get_value(ctrl_debug_engine_windowed_id);
-			break;
-
-		case ctrl_debug_editor_windowed_id:
-			setup.window_editor=element_get_value(ctrl_debug_editor_windowed_id);
-			break;
 
 		case ctrl_debug_no_hud_id:
 			setup.no_hud=element_get_value(ctrl_debug_no_hud_id);

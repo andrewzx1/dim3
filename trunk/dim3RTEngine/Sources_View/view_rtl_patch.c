@@ -39,6 +39,7 @@ extern view_type			view;
 extern iface_type			iface;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
+extern render_info_type		render_info;
 extern file_path_setup_type	file_path_setup;
 
 int								view_rtl_draw_scene_id,
@@ -75,6 +76,8 @@ bool view_dim3rtl_initialize(char *err_str)
 	
 		// we need a texture to transfer
 		// the scene to opengl rastering
+
+	fprintf(stdout,"%d.%d\n",setup.screen_rtl_wid,setup.screen_rtl_high);
 		
 	if (!view_dim3rtl_create_opengl_texture(&view_rtl_draw_gl_id,setup.screen_rtl_wid,setup.screen_rtl_high,err_str)) {
 		rtlShutdown();
@@ -101,17 +104,17 @@ bool view_dim3rtl_initialize(char *err_str)
 		// get the view drawing offsets
 		// and size
 
-	if (setup.screen_rtl_full_window) {
+	if (setup.full_screen) {
 		view_rtl_x=0;
 		view_rtl_y=0;
-		view_rtl_wid=setup.screen_wid;
-		view_rtl_high=setup.screen_high;
+		view_rtl_wid=render_info.desktop.wid;
+		view_rtl_high=render_info.desktop.high;
 	}
 	else {
-		view_rtl_x=(setup.screen_wid-setup.screen_rtl_wid)>>1;
-		view_rtl_y=(setup.screen_high-setup.screen_rtl_high)>>1;
-		view_rtl_wid=setup.screen_rtl_wid;
-		view_rtl_high=setup.screen_rtl_high;
+		view_rtl_x=0;
+		view_rtl_y=0;
+		view_rtl_wid=dim3_window_wid;
+		view_rtl_high=dim3_window_high;
 	}
 
 	return(TRUE);
