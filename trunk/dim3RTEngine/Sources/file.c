@@ -588,7 +588,7 @@ bool game_file_load(char *file_name,bool resume_load,char *err_str)
 	weapon_type			*weap;
 	proj_setup_type		*proj_setup;
 	spot_type			*spot;
-	
+
 		// load and expand
 		
 	if (!resume_load) {
@@ -994,7 +994,7 @@ bool game_file_load(char *file_name,bool resume_load,char *err_str)
 
 	game_time_reset(head.tick);
 	view_game_reset_timing();
-  
+
     return(TRUE);
 }
 

@@ -91,6 +91,8 @@ bool file_new_map(void)
 	
 		// close existing map
 
+	state.map.texture_edit_idx=-1;
+
 	if (!file_close_map()) return(FALSE);
 
 		// get the map name

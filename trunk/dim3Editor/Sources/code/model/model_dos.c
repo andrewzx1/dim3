@@ -142,6 +142,8 @@ bool model_file_new(void)
 
 		// close model
 
+	state.model.texture_edit_idx=-1;
+
 	if (!model_file_close()) return(FALSE);
 	
 		// get name
