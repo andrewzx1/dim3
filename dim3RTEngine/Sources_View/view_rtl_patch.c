@@ -77,8 +77,6 @@ bool view_dim3rtl_initialize(char *err_str)
 		// we need a texture to transfer
 		// the scene to opengl rastering
 
-	fprintf(stdout,"%d.%d\n",setup.screen_rtl_wid,setup.screen_rtl_high);
-		
 	if (!view_dim3rtl_create_opengl_texture(&view_rtl_draw_gl_id,setup.screen_rtl_wid,setup.screen_rtl_high,err_str)) {
 		rtlShutdown();
 		return(FALSE);
