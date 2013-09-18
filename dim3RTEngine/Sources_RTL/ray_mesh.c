@@ -151,6 +151,29 @@ int rtlSceneMeshAdd(int sceneId,unsigned long flags)
 
 /* =======================================================
 
+      Get the count of Meshes in a Scene
+
+	  Returns:
+	   if >=0 then Mesh Count in Scene
+	   RL_ERROR_UNKNOWN_SCENE_ID
+      
+======================================================= */
+
+int rtlSceneMeshCount(int sceneId)
+{
+	int					idx;
+	ray_scene_type		*scene;
+
+	idx=ray_scene_get_index(sceneId);
+	if (idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
+
+	scene=ray_global.scene_list.scenes[idx];
+
+	return(scene->mesh_list.count);
+}
+
+/* =======================================================
+
       Deletes a Mesh from a Scene
 	  
 	  Notes:
@@ -212,6 +235,8 @@ int rtlSceneMeshDelete(int sceneId,int meshId)
 	for (n=idx;n<=count;n++) {
 		scene->mesh_list.meshes[n]=scene->mesh_list.meshes[n+1];
 	}
+
+	scene->mesh_list.meshes[scene->mesh_list.count-1]=NULL;
 
 	scene->mesh_list.count--;
 

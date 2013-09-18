@@ -312,6 +312,20 @@ int rtlSceneAdd(ray_2d_point_type *size,int target,int format,void *attachment,u
 
 /* =======================================================
 
+      Get the count of Scenes
+
+	  Returns:
+	   Scene Count
+      
+======================================================= */
+
+int rtlSceneCount(void)
+{
+	return(ray_global.scene_list.count);
+}
+
+/* =======================================================
+
       Deletes a Scene
 	  
 	  Notes:

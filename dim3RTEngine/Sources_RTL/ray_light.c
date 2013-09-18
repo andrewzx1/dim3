@@ -131,6 +131,29 @@ int rtlSceneLightAdd(int sceneId)
 
 /* =======================================================
 
+      Get the count of Lights in a Scene
+
+	  Returns:
+	   if >=0 then Count of Lights in Scene
+	   RL_ERROR_UNKNOWN_SCENE_ID
+      
+======================================================= */
+
+int rtlSceneLightCount(int sceneId)
+{
+	int					idx;
+	ray_scene_type		*scene;
+
+	idx=ray_scene_get_index(sceneId);
+	if (idx==-1) return(RL_ERROR_UNKNOWN_SCENE_ID);
+
+	scene=ray_global.scene_list.scenes[idx];
+
+	return(scene->light_list.count);
+}
+
+/* =======================================================
+
       Deletes a Light from a Scene
 
 	  Notes:
@@ -177,6 +200,8 @@ int rtlSceneLightDelete(int sceneId,int lightId)
 	for (n=idx;n<=count;n++) {
 		scene->light_list.lights[n]=scene->light_list.lights[n+1];
 	}
+
+	scene->light_list.lights[scene->light_list.count-1]=NULL;
 
 	scene->light_list.count--;
 

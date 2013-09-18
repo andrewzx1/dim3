@@ -415,3 +415,19 @@ void view_dim3rtl_render(void)
 
 	gl_texture_clear(0);
 }
+
+/* =======================================================
+
+      Quick and Dirty Debug
+      
+======================================================= */
+
+void view_dim3rtl_debug(char *title)
+{
+	fprintf(stdout,"%s=================\n",title);
+
+	fprintf(stdout," scene count=%d\n",rtlSceneCount());
+	fprintf(stdout," material count=%d\n",rtlMaterialCount());
+	fprintf(stdout," mesh count=%d\n",rtlSceneMeshCount(view_rtl_draw_scene_id));
+	fprintf(stdout," light count=%d\n",rtlSceneLightCount(view_rtl_draw_scene_id));
+}
