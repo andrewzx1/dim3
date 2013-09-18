@@ -488,6 +488,28 @@ int rtlMaterialAdd(int wid,int high,int alphaType,unsigned long flags)
 
 /* =======================================================
 
+      Get the count of Materials
+
+	  Returns:
+	   Material Count
+      
+======================================================= */
+
+int rtlMaterialCount(void)
+{
+	int				n,count;
+
+	count=0;
+
+	for (n=0;n!=ray_max_material;n++) {
+		if (ray_global.material_list.materials[n]!=NULL) count++;
+	}
+
+	return(count);
+}
+
+/* =======================================================
+
       Delete Material
 
 	  Returns:

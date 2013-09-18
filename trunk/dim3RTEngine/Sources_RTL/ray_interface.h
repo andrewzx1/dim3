@@ -90,6 +90,7 @@ extern int rtlShutdown(void);
 	// materials
 
 extern int rtlMaterialAdd(int wid,int high,int alphaType,unsigned long flags);
+extern int rtlMaterialCount(void);
 extern int rtlMaterialDelete(int materialId);
 extern int rtlMaterialDeleteAll(void);
 extern int rtlMaterialAttachBufferData(int materialId,int target,int format,unsigned char* data);
@@ -102,6 +103,7 @@ extern int rtlMaterialBuildMipMaps(int materialId);
 	// scenes
 
 extern int rtlSceneAdd(rtl2DPoint *size,int target,int format,void *attachment,unsigned long flags);
+extern int rtlSceneCount(void);
 extern int rtlSceneDelete(int sceneId);
 extern int rtlSceneClearBuffer(int sceneId,rtlColor *col);
 extern int rtlSceneGetBuffer(int sceneId,void **buffer);
@@ -118,6 +120,7 @@ extern int rtlSceneEyeTranslatePoint(int sceneId,ray_point_type *pnt3d,ray_2d_po
 
 extern int rtlSceneAmbient(int sceneId,rtlColor *col);
 extern int rtlSceneLightAdd(int sceneId);
+extern int rtlSceneLightCount(int sceneId);
 extern int rtlSceneLightDelete(int sceneId,int lightId);
 extern int rtlSceneLightDeleteAll(int scenedId);
 
@@ -131,6 +134,7 @@ extern int rtlSceneLightSetDirection(int sceneId,int lightId,rtlVector *vector,f
 	// scene meshes
 
 extern int rtlSceneMeshAdd(int sceneId,unsigned long flags);
+extern int rtlSceneMeshCount(int sceneId);
 extern int rtlSceneMeshDelete(int sceneId,int meshId);
 extern int rtlSceneMeshDeleteAll(int scenedId);
 
@@ -167,4 +171,3 @@ extern void rtlMatrixRotateY(rtlMatrix *mat,float ang);
 extern void rtlMatrixRotateZ(rtlMatrix *mat,float ang);
 extern void rtlMatrixScale(rtlMatrix *mat,rtlVector *v);
 extern void rlMatrixTranpose(rtlMatrix *mat);
-

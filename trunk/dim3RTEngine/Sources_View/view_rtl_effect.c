@@ -95,6 +95,40 @@ void view_dim3rtl_effect_mesh_close(effect_type *effect)
 
 /* =======================================================
 
+      Remove and Reload Meshes for Load/Save
+      
+======================================================= */
+
+void view_dim3rtl_effect_mesh_reload_all(void)
+{
+	int					n;
+	effect_type			*effect;
+
+	for (n=0;n!=max_effect_list;n++) {
+		effect=server.effect_list.effects[n];
+		if (effect==NULL) continue;
+
+		if (effect->on) view_dim3rtl_effect_mesh_setup(effect);
+
+		effect->rtl_mesh_id=-1;
+	}
+}
+
+void view_dim3rtl_effect_mesh_close_all(void)
+{
+	int					n;
+	effect_type			*effect;
+
+	for (n=0;n!=max_effect_list;n++) {
+		effect=server.effect_list.effects[n];
+		if (effect==NULL) continue;
+
+		if (effect->on) view_dim3rtl_effect_mesh_close(effect);
+	}
+}
+
+/* =======================================================
+
       Update dim3RTL Particle Meshes
       
 ======================================================= */

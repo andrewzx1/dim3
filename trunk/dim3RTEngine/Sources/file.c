@@ -972,10 +972,23 @@ bool game_file_load(char *file_name,bool resume_load,char *err_str)
 
 		// rebuild map in rtl
 
+	view_dim3rtl_debug("Rebuild Start");
+
+	sky_release();
+	view_dim3rtl_map_liquid_mesh_stop();		// liquid has to go first because mesh_stop() clears materials
 	view_dim3rtl_map_mesh_stop();
-	view_dim3rtl_map_mesh_start();
 	view_dim3rtl_map_model_mesh_stop();
+	view_dim3rtl_effect_mesh_close_all();
+
+	view_dim3rtl_debug("Rebuild Middle");
+
+	sky_init();
+	view_dim3rtl_map_mesh_start();
+	view_dim3rtl_map_liquid_mesh_start();		// liquid has to go second because mesh_start() loads materials
 	view_dim3rtl_map_model_mesh_start();
+	view_dim3rtl_effect_mesh_reload_all();
+
+	view_dim3rtl_debug("Rebuild End");
 
 		// fix some necessary functions
 
