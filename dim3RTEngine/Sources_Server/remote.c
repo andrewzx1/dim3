@@ -102,7 +102,7 @@ bool remote_add(network_request_remote_add *remote)
 	strcpy(obj->draw.name,remote->draw_name);
 	obj->draw.on=TRUE;
 		
-	if (!model_draw_load(&obj->draw,"Remote",obj->name,FALSE,err_str)) {
+	if (!model_draw_initialize(&obj->draw,"Remote",obj->name,err_str)) {
 		console_add_error(err_str);
 		free(server.obj_list.objs[idx]);
 		server.obj_list.objs[idx]=NULL;

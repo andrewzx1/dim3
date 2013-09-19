@@ -32,10 +32,11 @@ and can be sold or given away.
 #include "interface.h"
 #include "objects.h"
 
-extern app_type			app;
-extern server_type		server;
-extern setup_type		setup;
-extern iface_type		iface;
+extern app_type					app;
+extern server_type				server;
+extern setup_type				setup;
+extern iface_type				iface;
+extern file_path_setup_type		file_path_setup;
 
 /* =======================================================
 
@@ -99,23 +100,14 @@ int model_find_index(char *name)
 
 /* =======================================================
 
-      Open Models
+      Load and Dispose Models
       
 ======================================================= */
 
-int model_load(char *name,bool force_opengl_textures)
+int model_load(char *name)
 {
 	int				n,idx;
 	model_type		*mdl;
-	
-		// has model been already loaded?
-		// if so, return model and increment reference count
-	
-	idx=model_find_index(name);
-	if (idx!=-1) {
-		server.model_list.models[idx]->load.reference_count++;
-		return(idx);
-	}
 
 		// find empty spot
 
@@ -147,11 +139,6 @@ int model_load(char *name,bool force_opengl_textures)
 
 	model_animation_effect_setup(mdl);
 
-		// start reference count at 1
-
-	mdl->load.reference_count=1;
-	mdl->load.preloaded=FALSE;
-
 		// put in model list
 
 	server.model_list.models[idx]=mdl;
@@ -159,7 +146,29 @@ int model_load(char *name,bool force_opengl_textures)
 	return(idx);
 }
 
-bool model_draw_load(model_draw *draw,char *item_type,char *item_name,bool force_opengl_textures,char *err_str)
+void model_dispose(int idx)
+{
+	model_type			*mdl;
+
+		// dispose model
+		
+	mdl=server.model_list.models[idx];
+	model_close(mdl);
+
+		// free the data and fix
+		// the list
+
+	free(mdl);
+	server.model_list.models[idx]=NULL;
+}
+
+/* =======================================================
+
+      Open and Close Model Draws
+      
+======================================================= */
+
+bool model_draw_initialize(model_draw *draw,char *item_type,char *item_name,char *err_str)
 {
 	int					n;
 	bool				ok;
@@ -177,7 +186,7 @@ bool model_draw_load(model_draw *draw,char *item_type,char *item_name,bool force
 	mdl=NULL;
 
 	if (draw->name[0]!=0x0) {
-		draw->model_idx=model_load(draw->name,force_opengl_textures);
+		draw->model_idx=model_find_index(draw->name);
 		if (draw->model_idx!=-1) {
 			mdl=server.model_list.models[draw->model_idx];
 			model_get_size(mdl,&draw->size.x,&draw->size.y,&draw->size.z);
@@ -214,49 +223,9 @@ bool model_draw_load(model_draw *draw,char *item_type,char *item_name,bool force
 	return(ok);
 }
 
-/* =======================================================
-
-      Dispose Models
-      
-======================================================= */
-
-void model_dispose(int idx)
+void model_draw_free(model_draw *draw)
 {
-	model_type			*mdl;
-
-		// find model
-		
-	mdl=server.model_list.models[idx];
-
-		// decrement reference count
-
-	mdl->load.reference_count--;
-	if (mdl->load.reference_count>0) return;
-
-		// dispose model
-
-	model_close(mdl);
-
-		// free the data and fix
-		// the list
-
-	free(mdl);
-	server.model_list.models[idx]=NULL;
-}
-
-void model_draw_dispose(model_draw *draw)
-{
-		// find model
-		
-	if (draw->model_idx==-1) return;
-	
-		// clear draw memory
-		
-	model_draw_setup_shutdown(server.model_list.models[draw->model_idx],&draw->setup);
-
-		// dispose model
-
-	model_dispose(draw->model_idx);
+	if (draw->model_idx!=-1) model_draw_setup_shutdown(server.model_list.models[draw->model_idx],&draw->setup);
 }
 
 /* =======================================================
@@ -267,21 +236,26 @@ void model_draw_dispose(model_draw *draw)
 
 void model_reset_single(model_draw *draw)
 {
-	draw->model_idx=model_find_index(draw->name);
+//	int			x;
+
+//	x=draw->model_idx;
+//	draw->model_idx=model_find_index(draw->name);
+
 
 		// if model is loaded, update
 		// reference count
 
-	if (draw->model_idx!=-1) {
-		server.model_list.models[draw->model_idx]->load.reference_count++;
-	}
+//	if (draw->model_idx!=-1) {
+	//	server.model_list.models[draw->model_idx]->load.reference_count++;
+//	}
 
 		// try to load it
 
-	else {
-		draw->model_idx=model_load(draw->name,FALSE);
-		if (draw->model_idx==-1) draw->on=FALSE;
-	}
+//	else {
+	//	draw->model_idx=model_load(draw->name,FALSE);
+	//	if (draw->model_idx==-1) draw->on=FALSE;
+//	}
+//	fprintf(stdout,"%s: original=%d, new=%d\n",draw->name,x,draw->model_idx);
 
 		// and create the draw setup memory
 
@@ -297,23 +271,6 @@ void models_reset(void)
 	weapon_type			*weap;
 	proj_setup_type		*proj_setup;
 	proj_type			*proj;
-	model_type			*mdl;
-
-		// will need to reset all model
-		// reference counts, we don't know
-		// where they are left off after load
-		
-		// special check for preloaded models
-		// so we don't end up losing their
-		// one preload count
-
-	for (n=0;n!=max_model_list;n++) {
-		mdl=server.model_list.models[n];
-		if (mdl!=NULL) {
-			mdl->load.reference_count=0;
-			if (mdl->load.preloaded) mdl->load.reference_count++;
-		}
-	}
 
 		// fix model indexes
 	
@@ -345,17 +302,6 @@ void models_reset(void)
 		
 		model_reset_single(&proj->draw);
 	}
-
-		// now remove all models with zero
-		// reference count, our loaded file
-		// isn't using them
-
-	for (n=0;n!=max_model_list;n++) {
-		mdl=server.model_list.models[n];
-		if (mdl!=NULL) {
-			if (mdl->load.reference_count<=0) model_dispose(n);
-		}
-	}
 }
 
 /* =======================================================
@@ -366,25 +312,24 @@ void models_reset(void)
 
 void model_preload_start(void)
 {
-	int			n,idx;
+	int							n;
+	file_path_directory_type	*fpd;
 	
-	for (n=0;n!=max_preload_model;n++) {
-		if (iface.preload_model.names[n][0]==0x0) continue;
-		
-		idx=model_load(iface.preload_model.names[n],FALSE);
-		if (idx!=-1) server.model_list.models[idx]->load.preloaded=TRUE;
+	fpd=file_paths_read_directory_data_dir(&file_path_setup,"Models","Model.xml");
+
+	for (n=0;n!=fpd->nfile;n++) {
+		if (!fpd->files[n].is_dir) model_load(fpd->files[n].file_name);
 	}
 }
 
 void model_preload_free(void)
 {
-	int			n,idx;
-	
-	for (n=0;n!=max_preload_model;n++) {
-		if (iface.preload_model.names[n][0]==0x0) continue;
-		
-		idx=model_find_index(iface.preload_model.names[n]);
-		if (idx!=-1) model_dispose(idx);
+	int				n;
+	model_type		*mdl;
+
+	for (n=0;n!=max_model_list;n++) {
+		mdl=server.model_list.models[n];
+		if (mdl!=NULL) model_dispose(n);
 	}
 }
 

@@ -492,8 +492,8 @@ void map_end(void)
 	
 		// dim3rtl cleanup
 	
+	view_dim3rtl_map_liquid_mesh_stop();		// need to get rid of liquids first as map stop gets rid of materials
 	view_dim3rtl_map_mesh_stop();
-	view_dim3rtl_map_liquid_mesh_stop();
 	view_dim3rtl_map_model_mesh_stop();
 	
 		// detach objects

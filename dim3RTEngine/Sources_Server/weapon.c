@@ -308,10 +308,10 @@ bool weapon_add(obj_type *obj,char *name,char *err_str)
 		
 	ok=FALSE;
 	if (weapon_start_script(obj,weap,FALSE,err_str)) {
-		ok=model_draw_load(&weap->draw,"Weapon",weap->name,FALSE,err_str);
+		ok=model_draw_initialize(&weap->draw,"Weapon",weap->name,err_str);
 		if ((weap->dual.on) && (ok)) {
 			memmove(&weap->draw_dual,&weap->draw,sizeof(model_draw));
-			ok=model_draw_load(&weap->draw_dual,"Weapon",weap->name,FALSE,err_str);
+			ok=model_draw_initialize(&weap->draw_dual,"Weapon",weap->name,err_str);
 		}
 	}
 	
@@ -359,8 +359,8 @@ void weapon_dispose(obj_type *obj,int idx)
 
 	scripts_dispose(weap->script_idx);
 	
-	model_draw_dispose(&weap->draw);
-	if (weap->dual.on) model_draw_dispose(&weap->draw_dual);
+	model_draw_free(&weap->draw);
+	if (weap->dual.on) model_draw_free(&weap->draw_dual);
 	
 		// free and empty from list
 		

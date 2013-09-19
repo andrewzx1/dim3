@@ -969,7 +969,7 @@ int object_start(spot_type *spot,char *name,int type,int bind,char *err_str)
 
 		// load object model
 
-	if (!model_draw_load(&obj->draw,"Object",obj->name,FALSE,err_str)) {
+	if (!model_draw_initialize(&obj->draw,"Object",obj->name,err_str)) {
 		server.obj_list.objs[idx]=NULL;
 		free(obj);
 		return(-1);
@@ -1013,7 +1013,7 @@ void object_dispose_single(int idx)
 		// clear scripts and models
 
 	scripts_dispose(obj->script_idx);
-	model_draw_dispose(&obj->draw);
+	model_draw_free(&obj->draw);
 
 		// free and empty from list
 

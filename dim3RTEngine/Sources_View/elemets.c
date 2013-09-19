@@ -61,7 +61,7 @@ model_draw* element_load_model(char *name,char *animate,float resize,d3pnt *offs
 	if (draw==NULL) return(NULL);
 	
 	strcpy(draw->name,name);
-	if (!model_draw_load(draw,"Interface","Element",TRUE,err_str)) {
+	if (!model_draw_initialize(draw,"Interface","Element",err_str)) {
 		console_add_error(err_str);
 		free(draw);
 		return(NULL);
@@ -94,7 +94,7 @@ void element_free_model(element_type *element)
 {
 	if (element->setup.model.draw==NULL) return;
 
-	model_draw_dispose(element->setup.model.draw);
+	model_draw_free(element->setup.model.draw);
 	free(element->setup.model.draw);
 
 	element->setup.model.draw=NULL;

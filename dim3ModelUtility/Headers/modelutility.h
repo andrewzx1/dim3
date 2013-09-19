@@ -301,15 +301,6 @@ typedef struct		{
 					} model_ui_type;
 
 //
-// model caching/loading
-//
-
-typedef struct		{
-						int								reference_count;
-						bool							preloaded;
-					} model_load_type;
-
-//
 // model main structures
 //
 
@@ -319,7 +310,6 @@ typedef struct		{
 						bool							comulative_rotation;
 						char							name[name_str_len],load_base_path[1024];
 						d3pnt							center;
-						model_load_type					load;
 						model_box_type					view_box;
 						model_bone_connect_type			bone_connect;
  						model_mesh_type					meshes[max_model_mesh];

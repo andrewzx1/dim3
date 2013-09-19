@@ -99,7 +99,7 @@ void scenery_create(void)
 		
 			// load the model
 			
-		if (!model_draw_load(&obj->draw,"Scenery",obj->name,FALSE,err_str)) {
+		if (!model_draw_initialize(&obj->draw,"Scenery",obj->name,err_str)) {
 			console_add_error(err_str);
 			object_dispose_single(idx);
 			continue;

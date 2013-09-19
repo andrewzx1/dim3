@@ -232,7 +232,7 @@ void view_dim3rtl_map_mesh_start(void)
 
 void view_dim3rtl_map_mesh_stop(void)
 {
-	int					n,err;
+	int					n;
 	map_mesh_type		*mesh;
 	texture_type		*texture;
 	texture_frame_type	*frame;
@@ -243,16 +243,14 @@ void view_dim3rtl_map_mesh_stop(void)
 		mesh=&map.mesh.meshes[n];
 		if (!mesh->flag.on) continue;
 		
-		err=rtlSceneMeshDelete(view_rtl_draw_scene_id,mesh->rtl_mesh_id);
-		if (err!=0) fprintf(stdout,"mesh error=%d\n",err);
+		rtlSceneMeshDelete(view_rtl_draw_scene_id,mesh->rtl_mesh_id);
 		progress_update();
 	}
 
 		// delete lights
 
 	for (n=0;n!=map.nlight;n++) {
-		err=rtlSceneLightDelete(view_rtl_draw_scene_id,map.lights[n].rtl_light_id);
-		if (err!=0) fprintf(stdout,"light error=%d\n",err);
+		rtlSceneLightDelete(view_rtl_draw_scene_id,map.lights[n].rtl_light_id);
 		progress_update();
 	}
 
@@ -266,11 +264,7 @@ void view_dim3rtl_map_mesh_stop(void)
 		frame=&texture->frames[0];
 		if (frame->name[0]==0x0) continue;
 		
-		if (frame->bitmap.rl_material_id!=-1) {
-			err=rtlMaterialDelete(frame->bitmap.rl_material_id);
-			if (err!=0) fprintf(stdout,"material error=%d %s\n",err,frame->name);
-		}
-
+		if (frame->bitmap.rl_material_id!=-1) rtlMaterialDelete(frame->bitmap.rl_material_id);
 		progress_update();
 	}
 }
