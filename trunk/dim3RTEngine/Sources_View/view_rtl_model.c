@@ -275,6 +275,25 @@ void view_dim3rtl_model_close_single_model(model_draw *draw)
 
 /* =======================================================
 
+      Backup and Restore Model RTL IDs
+      
+======================================================= */
+
+void view_dim3rtl_model_clear_draw(model_draw *draw)
+{
+	int				n;
+
+	for (n=0;n!=max_model_mesh;n++) {
+		draw->meshes[n].rtl_mesh_id=-1;
+	}
+		
+	for (n=0;n!=max_model_light;n++) {
+		draw->lights[n].rtl_light_id=-1;
+	}
+}
+
+/* =======================================================
+
       dim3RTL Map Models
       
 ======================================================= */

@@ -568,7 +568,11 @@ bool game_file_save(bool no_progress,bool suspend_save,char *err_str)
 
 	view_clear_fps();
 	rain_reset();
-    
+
+	fprintf(stdout,"SAVE 0.0=%d\n",server.obj_list.objs[0]->draw.meshes[0].rtl_mesh_id);
+  	fprintf(stdout,"SAVE 1.0=%d\n",server.obj_list.objs[1]->draw.meshes[0].rtl_mesh_id);
+	fprintf(stdout,"SAVE 2.0=%d\n",server.obj_list.objs[2]->draw.meshes[0].rtl_mesh_id);
+  
     return(ok);
 }
 
@@ -682,6 +686,11 @@ bool game_file_load(char *file_name,bool resume_load,char *err_str)
 	game_file_get_chunk(&server.time);
 	game_file_get_chunk(&js.timer_tick);
 
+		// free all the model meshes
+		// and rebuild
+
+	view_dim3rtl_map_model_mesh_stop();
+
 		// objects, weapons, and projectile setups
 	
 	if (!resume_load) progress_update();
@@ -693,6 +702,7 @@ bool game_file_load(char *file_name,bool resume_load,char *err_str)
 	game_file_get_chunk(&count);
 
 	for (n=0;n!=count;n++) {
+		if (!resume_load) progress_update();
 
 		game_file_get_chunk(&idx);
 
@@ -703,10 +713,10 @@ bool game_file_load(char *file_name,bool resume_load,char *err_str)
 			return(FALSE);
 		}
 
-		if (!resume_load) progress_update();
-
 		obj=server.obj_list.objs[idx];
+
 		game_file_get_chunk(obj);
+		view_dim3rtl_model_clear_draw(&obj->draw);
 
 			// rebuild object script
 
@@ -735,7 +745,9 @@ bool game_file_load(char *file_name,bool resume_load,char *err_str)
 			}
 
 			weap=obj->weap_list.weaps[idx];
+			
 			game_file_get_chunk(weap);
+			view_dim3rtl_model_clear_draw(&weap->draw);
 
 				// rebuild weapon script
 
@@ -764,7 +776,9 @@ bool game_file_load(char *file_name,bool resume_load,char *err_str)
 				}
 
 				proj_setup=weap->proj_setup_list.proj_setups[idx];
+
 				game_file_get_chunk(proj_setup);
+				view_dim3rtl_model_clear_draw(&proj_setup->draw);
 
 					// rebuild projectile setup script
 
@@ -782,6 +796,9 @@ bool game_file_load(char *file_name,bool resume_load,char *err_str)
 	}
 
 		// projectiles, effects and decals
+
+		// supergumba -- we are cheating on both projectiles
+		// and effects and not re-loading their meshes yet
 	
 	projectile_free_list();
 	projectile_initialize_list();
@@ -800,6 +817,7 @@ bool game_file_load(char *file_name,bool resume_load,char *err_str)
 		if (!resume_load) progress_update();
 
 		game_file_get_chunk(server.proj_list.projs[idx]);
+		view_dim3rtl_model_clear_draw(&server.proj_list.projs[idx]->draw);
 	}
 
 	effect_free_list();
@@ -819,7 +837,14 @@ bool game_file_load(char *file_name,bool resume_load,char *err_str)
 		if (!resume_load) progress_update();
 
 		game_file_get_chunk(server.effect_list.effects[idx]);
+		server.effect_list.effects[idx]->rtl_mesh_id=-1;
 	}
+
+		// rebuild all the model meshes
+
+	view_dim3rtl_map_model_mesh_start();
+
+		// decals
 
 	decal_free_list();
 	decal_initialize_list();
@@ -951,6 +976,11 @@ bool game_file_load(char *file_name,bool resume_load,char *err_str)
 		// model_reset() and fixes the model
 		// indexes and creates new model draw memory
 
+	fprintf(stdout,"LOAD X 0.0=%d\n",server.obj_list.objs[0]->draw.meshes[0].rtl_mesh_id);
+  	fprintf(stdout,"LOAD X 1.0=%d\n",server.obj_list.objs[1]->draw.meshes[0].rtl_mesh_id);
+	fprintf(stdout,"LOAD X 2.0=%d\n",server.obj_list.objs[2]->draw.meshes[0].rtl_mesh_id);
+
+
 	if (!resume_load) progress_update();
 
 	view_images_cached_load();
@@ -970,26 +1000,6 @@ bool game_file_load(char *file_name,bool resume_load,char *err_str)
 	free(game_file_data);
 	if (!resume_load) progress_shutdown();
 
-		// rebuild map in rtl
-
-	view_dim3rtl_debug("Rebuild Start");
-
-	sky_release();
-	view_dim3rtl_map_liquid_mesh_stop();		// liquid has to go first because mesh_stop() clears materials
-	view_dim3rtl_map_mesh_stop();
-	view_dim3rtl_map_model_mesh_stop();
-	view_dim3rtl_effect_mesh_close_all();
-
-	view_dim3rtl_debug("Rebuild Middle");
-
-	sky_init();
-	view_dim3rtl_map_mesh_start();
-	view_dim3rtl_map_liquid_mesh_start();		// liquid has to go second because mesh_start() loads materials
-	view_dim3rtl_map_model_mesh_start();
-	view_dim3rtl_effect_mesh_reload_all();
-
-	view_dim3rtl_debug("Rebuild End");
-
 		// fix some necessary functions
 
 	map.rain.reset=TRUE;
@@ -1007,6 +1017,10 @@ bool game_file_load(char *file_name,bool resume_load,char *err_str)
 
 	game_time_reset(head.tick);
 	view_game_reset_timing();
+
+	fprintf(stdout,"LOAD Z 0.0=%d\n",server.obj_list.objs[0]->draw.meshes[0].rtl_mesh_id);
+  	fprintf(stdout,"LOAD Z 1.0=%d\n",server.obj_list.objs[1]->draw.meshes[0].rtl_mesh_id);
+	fprintf(stdout,"LOAD Z 2.0=%d\n",server.obj_list.objs[2]->draw.meshes[0].rtl_mesh_id);
 
     return(TRUE);
 }
