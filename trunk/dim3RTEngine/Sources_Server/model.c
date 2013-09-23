@@ -264,6 +264,13 @@ void model_reset_single(model_draw *draw)
 	}
 }
 
+void model_rebuild_draw_memory(model_draw *draw)
+{
+	if (draw->model_idx!=-1) {
+		model_draw_setup_initialize(server.model_list.models[draw->model_idx],&draw->setup,TRUE);
+	}
+}
+
 void models_reset(void)
 {
 	int					n,k,i;

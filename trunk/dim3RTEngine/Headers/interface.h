@@ -400,14 +400,6 @@ extern iface_ring_type* ring_find(char *name);
 extern int ring_find_index(char *name);
 extern bool ring_spawn(int ring_idx,int obj_idx,d3pnt *pt,d3ang *ang);
 extern bool ring_line_spawn(int ring_idx,int obj_idx,d3pnt *start_pt,d3pnt *end_pt,int count);
-extern int mark_find(char *name);
-extern bool decal_initialize_list(void);
-extern void decal_free_list(void);
-extern int decal_count_list(void);
-extern void decal_move_with_mesh(int mesh_idx,d3pnt *motion);
-extern void decal_rotate_with_mesh(int mesh_idx,float y);
-extern void decal_add(int obj_idx,d3pnt *pnt,poly_pointer_type *poly_ptr,int mark_idx,int sz,float alpha);
-extern void decal_dispose(void);
 
 //
 // groups
@@ -816,8 +808,6 @@ extern void view_draw_tint_start(d3col *col,float alpha,int fade_in_msec,int lif
 //
 
 extern void draw_weapon_hand_setup(obj_type *obj,weapon_type *weap);
-extern void decal_render(void);
-
 extern void particle_draw_position(effect_type *effect,int count,d3pnt *pnt);
 extern void ring_draw_position(effect_type *effect,int count,d3pnt *pnt);
 

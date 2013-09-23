@@ -163,7 +163,7 @@ void setup_game_video_pane(void)
 	element_combo_add("Screen Size",(char*)setup_screen_size_list,idx,ctrl_screen_rtl_size_id,x,y,TRUE);
 	y+=control_y_add;
 
-	element_checkbox_add("Full Screen",setup.full_screen,ctrl_screen_full_screen_id,x,y,TRUE);
+	element_checkbox_add("Full Screen (requires restart)",setup.full_screen,ctrl_screen_full_screen_id,x,y,TRUE);
 	y+=control_y_add;
 
 	element_combo_add("Full-Screen Anti-Aliasing",(char*)setup_fsaa_mode_list,setup.fsaa_mode,ctrl_fsaa_id,x,y,TRUE);

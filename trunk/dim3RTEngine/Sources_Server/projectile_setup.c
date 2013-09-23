@@ -123,12 +123,6 @@ bool proj_setup_create(obj_type *obj,weapon_type *weap,char *name,char *err_str)
 	
 	strcpy(proj_setup->name,name);
 	
-	proj_setup->mark.on=FALSE;
-	proj_setup->mark.size=150;
-	proj_setup->mark.alpha=1;
-	proj_setup->mark.idx=-1;
-	proj_setup->mark.name[0]=0x0;
-
 	proj_setup->speed=150;
 	proj_setup->decel_speed=0;
 	proj_setup->decel_grace=0;
@@ -201,17 +195,6 @@ void proj_setup_dispose(weapon_type *weap,int idx)
 		
 	free(proj_setup);
 	weap->proj_setup_list.proj_setups[idx]=NULL;
-}
-
-/* =======================================================
-
-      Attaching Mark
-      
-======================================================= */
-
-void proj_setup_attach_mark(proj_setup_type *proj_setup)
-{
-	proj_setup->mark.idx=mark_find(proj_setup->mark.name);
 }
 
 /* =======================================================

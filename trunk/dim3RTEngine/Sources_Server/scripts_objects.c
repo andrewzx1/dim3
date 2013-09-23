@@ -232,7 +232,6 @@ void script_initialize_classes(void)
 	script_init_proj_action_object();
 	script_init_proj_push_object();
 	script_init_proj_size_object();
-	script_init_proj_mark_object();
 	script_init_proj_melee_object();
 }
 
@@ -390,7 +389,6 @@ void script_release_classes(void)
 	script_free_proj_action_object();
 	script_free_proj_push_object();
 	script_free_proj_size_object();
-	script_free_proj_mark_object();
 	script_free_proj_melee_object();
 }
 
@@ -773,7 +771,6 @@ JSObjectRef script_create_main_object(JSContextRef cx,int script_idx)
 			script_add_proj_action_object(cx,j_obj,script_idx);
 			script_add_proj_push_object(cx,j_obj,script_idx);
 			script_add_proj_size_object(cx,j_obj,script_idx);
-			script_add_proj_mark_object(cx,j_obj,script_idx);
 			script_add_proj_melee_object(cx,j_obj,script_idx);
 			script_create_main_object_add_model_object(cx,j_obj,script_idx);
 

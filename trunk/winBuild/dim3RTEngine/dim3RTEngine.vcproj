@@ -718,10 +718,6 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\dim3RTEngine\Sources_Server\script_proj_mark.c"
-						>
-					</File>
-					<File
 						RelativePath="..\..\dim3RTEngine\Sources_Server\script_proj_melee.c"
 						>
 					</File>
@@ -1142,10 +1138,6 @@
 					Name="Effects"
 					>
 					<File
-						RelativePath="..\..\dim3RTEngine\Sources_Server\decals.c"
-						>
-					</File>
-					<File
 						RelativePath="..\..\dim3RTEngine\Sources_Server\effects.c"
 						>
 					</File>
@@ -1425,10 +1417,6 @@
 				<Filter
 					Name="Effects"
 					>
-					<File
-						RelativePath="..\..\dim3RTEngine\Sources_View\decals_draw.c"
-						>
-					</File>
 					<File
 						RelativePath="..\..\dim3RTEngine\Sources_View\effects_draw.c"
 						>
