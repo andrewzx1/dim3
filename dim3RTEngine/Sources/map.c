@@ -299,14 +299,6 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 
 	progress_update();
 
-	if (!decal_initialize_list()) {
-		progress_shutdown();
-		strcpy(err_str,"Out of memory");
-		return(FALSE);
-	}
-
-	progress_update();
-
 	particle_map_initialize();
 	group_move_clear_all();
 
@@ -539,7 +531,6 @@ void map_end(void)
 	progress_update();
 	projectile_free_list();
 	effect_free_list();
-	decal_free_list();
 
         // end course script
 		

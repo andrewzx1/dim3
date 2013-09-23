@@ -39,37 +39,6 @@ extern setup_type			setup;
 
 /* =======================================================
 
-      Projectiles Decals
-      
-======================================================= */
-
-void projectile_decals(proj_type *proj,proj_setup_type *proj_setup)
-{
-	/*
-	supergumba -- decals not supported -- to do
-
-	int					mark_idx,size;
-	float				alpha;
-	
-		// can decal this projectile hit?
-
-	if (!setup.decal_on) return;
-	if (!proj_setup->mark.on) return;
-	if (proj_setup->mark.idx==-1) return;
-	if (proj->contact.hit_poly.mesh_idx==-1) return;
-	
-		// decal hit
-
-	mark_idx=proj_setup->mark.idx;
-	size=proj_setup->mark.size;
-	alpha=proj_setup->mark.alpha;
-	
-	decal_add(proj->obj_idx,&proj->pnt,&proj->contact.hit_poly,mark_idx,size,alpha);
-	*/
-}
-
-/* =======================================================
-
       Projectiles Hit
       
 ======================================================= */
@@ -110,11 +79,7 @@ void projectile_hit(proj_type *proj)
 			
 		if (proj_setup->push.on) object_push(hurt_obj,&proj->pnt,-1,proj_setup->push.force,TRUE);
     }
-	
-		// decals
 		
-	projectile_decals(proj,proj_setup);
-	
 		// dispose of projectile
 		
 	projectile_dispose(proj);

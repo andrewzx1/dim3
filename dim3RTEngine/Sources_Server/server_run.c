@@ -358,10 +358,9 @@ void server_run(void)
 			particle_map_run();
 		}
 
-			// effects and decal time-outs
+			// effects time-outs
 		
 		effect_dispose();
-		decal_dispose();
 	}
 }
 

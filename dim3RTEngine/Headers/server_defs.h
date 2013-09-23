@@ -64,7 +64,6 @@ and can be sold or given away.
 #define max_proj_list							256
 
 #define max_effect_list							512
-#define max_decal_list							128
 
 //
 // maximums
@@ -759,13 +758,6 @@ typedef struct		{
 					} proj_setup_push_type;
 					
 typedef struct		{
-						int						idx,size;
-						char					name[name_str_len];
-						float					alpha;
-						bool					on;
-					} proj_setup_mark_type;
-			
-typedef struct		{
 						int						idx,script_idx,
 												obj_idx,weap_idx,
 												damage,decel_grace;
@@ -779,7 +771,6 @@ typedef struct		{
 						proj_action_type		action;
 						proj_setup_hitscan_type	hitscan;
 						proj_setup_push_type	push;
-						proj_setup_mark_type	mark;
 					} proj_setup_type;
 
 typedef struct		{
@@ -1057,21 +1048,6 @@ typedef struct		{
 					} effect_list_type;
 
 //
-// decal structures
-//
-
-typedef struct		{
-						int						mark_idx,mesh_idx,poly_idx,
-												start_tick,x[4],z[4],y[4];
-                        float					alpha;
-						bool					on,in_view;
-					} decal_type;
-
-typedef struct		{
-						decal_type*				decals[max_decal_list];
-					} decal_list_type;
-					
-//
 // ray trace structures
 //
 
@@ -1149,7 +1125,6 @@ typedef struct		{
 						proj_list_type					proj_list;
 						model_list_type					model_list;
 						effect_list_type				effect_list;
-						decal_list_type					decal_list;
 					} server_type;
 
 

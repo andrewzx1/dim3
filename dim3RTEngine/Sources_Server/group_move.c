@@ -259,18 +259,16 @@ void group_move_and_rotate(group_type *group,d3pnt *move_pnt,d3ang *rot_ang,bool
 
 				mesh->draw.moved=TRUE;
 
-					// move objects and decals with mesh
+					// move objects =with mesh
 
 				if (move_objs) {
 					object_move_with_mesh(unit_list->idx,move_pnt);
-					decal_move_with_mesh(unit_list->idx,move_pnt);
 				}
 
-					// rotate objects and decals with mesh
+					// rotate objects with mesh
 				
 				if (rot_objs) {
 					object_rotate_with_mesh(unit_list->idx,rot_ang->y);
-					decal_rotate_with_mesh(unit_list->idx,rot_ang->y);
 				}
 
 				break;

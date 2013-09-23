@@ -113,11 +113,10 @@ bool game_file_start(void)
 		}
 	}
 
-		// projectiles, effects, and decals
+		// projectiles, effects, spots
 
 	mem_sz+=(projectile_count_list()*(sizeof(proj_type)+sizeof(int)))+sizeof(int);
 	mem_sz+=(effect_count_list()*(sizeof(effect_type)+sizeof(int)))+sizeof(int);
-	mem_sz+=(decal_count_list()*(sizeof(decal_type)+sizeof(int)))+sizeof(int);
 	mem_sz+=(map.nspot*(sizeof(spot_type)+sizeof(int)))+sizeof(int);
 	
 		// HUD
@@ -333,7 +332,6 @@ bool game_file_save(bool no_progress,bool suspend_save,char *err_str)
 	proj_setup_type		*proj_setup;
 	proj_type			*proj;
 	effect_type			*effect;
-	decal_type			*decal;
 	timer_type			*timer;
 	global_type			*global;
 
@@ -344,6 +342,13 @@ bool game_file_save(bool no_progress,bool suspend_save,char *err_str)
 	tick=game_time_get();
 
 	game_file_create_name(tick,file_name);
+
+	if (!suspend_save) {
+		fprintf(stdout,"Saving \"%s\"\n",file_name);
+	}
+	else {
+		fprintf(stdout,"Saving suspended game\n");
+	}
 	
 		// save screen
 		
@@ -422,7 +427,7 @@ bool game_file_save(bool no_progress,bool suspend_save,char *err_str)
 		}
 	}
 
-		// projectiles, effects and decals
+		// projectiles and effects
 
 	count=projectile_count_list();
 	game_file_add_chunk(&count,1,sizeof(int));
@@ -449,20 +454,6 @@ bool game_file_save(bool no_progress,bool suspend_save,char *err_str)
 
 		game_file_add_chunk(&n,1,sizeof(int));
 		game_file_add_chunk(effect,1,sizeof(effect_type));
-	}
-
-	count=decal_count_list();
-	game_file_add_chunk(&count,1,sizeof(int));
-
-	for (n=0;n!=max_decal_list;n++) {
-		if (!no_progress) progress_update();
-
-		decal=server.decal_list.decals[n];
-		if (decal==NULL) continue;
-		if (!decal->on) continue;
-
-		game_file_add_chunk(&n,1,sizeof(int));
-		game_file_add_chunk(decal,1,sizeof(decal_type));
 	}
 
 		// spots (mostly for checkpoint data)
@@ -568,10 +559,6 @@ bool game_file_save(bool no_progress,bool suspend_save,char *err_str)
 
 	view_clear_fps();
 	rain_reset();
-
-	fprintf(stdout,"SAVE 0.0=%d\n",server.obj_list.objs[0]->draw.meshes[0].rtl_mesh_id);
-  	fprintf(stdout,"SAVE 1.0=%d\n",server.obj_list.objs[1]->draw.meshes[0].rtl_mesh_id);
-	fprintf(stdout,"SAVE 2.0=%d\n",server.obj_list.objs[2]->draw.meshes[0].rtl_mesh_id);
   
     return(ok);
 }
@@ -670,6 +657,15 @@ bool game_file_load(char *file_name,bool resume_load,char *err_str)
 		}
 	}
 
+		// restore printout
+
+	if (!resume_load) {
+		fprintf(stdout,"Restoring \"%s\"\n",fname);
+	}
+	else {
+		fprintf(stdout,"Restoring suspended game\n");
+	}
+
 		// start progress
 
 	if (!resume_load) progress_initialize(NULL);
@@ -717,6 +713,7 @@ bool game_file_load(char *file_name,bool resume_load,char *err_str)
 
 		game_file_get_chunk(obj);
 		view_dim3rtl_model_clear_draw(&obj->draw);
+		model_rebuild_draw_memory(&obj->draw);
 
 			// rebuild object script
 
@@ -748,6 +745,7 @@ bool game_file_load(char *file_name,bool resume_load,char *err_str)
 			
 			game_file_get_chunk(weap);
 			view_dim3rtl_model_clear_draw(&weap->draw);
+			model_rebuild_draw_memory(&weap->draw);
 
 				// rebuild weapon script
 
@@ -779,6 +777,7 @@ bool game_file_load(char *file_name,bool resume_load,char *err_str)
 
 				game_file_get_chunk(proj_setup);
 				view_dim3rtl_model_clear_draw(&proj_setup->draw);
+				model_rebuild_draw_memory(&proj_setup->draw);
 
 					// rebuild projectile setup script
 
@@ -796,9 +795,6 @@ bool game_file_load(char *file_name,bool resume_load,char *err_str)
 	}
 
 		// projectiles, effects and decals
-
-		// supergumba -- we are cheating on both projectiles
-		// and effects and not re-loading their meshes yet
 	
 	projectile_free_list();
 	projectile_initialize_list();
@@ -818,6 +814,7 @@ bool game_file_load(char *file_name,bool resume_load,char *err_str)
 
 		game_file_get_chunk(server.proj_list.projs[idx]);
 		view_dim3rtl_model_clear_draw(&server.proj_list.projs[idx]->draw);
+		model_rebuild_draw_memory(&server.proj_list.projs[idx]->draw);
 	}
 
 	effect_free_list();
@@ -838,32 +835,13 @@ bool game_file_load(char *file_name,bool resume_load,char *err_str)
 
 		game_file_get_chunk(server.effect_list.effects[idx]);
 		server.effect_list.effects[idx]->rtl_mesh_id=-1;
+		view_dim3rtl_effect_mesh_setup(server.effect_list.effects[idx]);
 	}
 
-		// rebuild all the model meshes
+		// reload all the model
+		// meshes into the rtl scene
 
 	view_dim3rtl_map_model_mesh_start();
-
-		// decals
-
-	decal_free_list();
-	decal_initialize_list();
-
-	game_file_get_chunk(&count);
-
-	for (n=0;n!=count;n++) {
-		game_file_get_chunk(&idx);
-		server.decal_list.decals[idx]=(decal_type*)malloc(sizeof(decal_type));
-		if (server.decal_list.decals[idx]==NULL) {
-			free(game_file_data);
-			if (!resume_load) progress_shutdown();
-			return(FALSE);
-		}
-
-		if (!resume_load) progress_update();
-
-		game_file_get_chunk(server.decal_list.decals[idx]);
-	}
 
 		// spots (mostly for checkpoint data)
 
@@ -972,19 +950,10 @@ bool game_file_load(char *file_name,bool resume_load,char *err_str)
 		// are shared, this will just return the index of the
 		// already loaded image, or in case the save files are different,
 		// a new image
-	
-		// model_reset() and fixes the model
-		// indexes and creates new model draw memory
-
-	fprintf(stdout,"LOAD X 0.0=%d\n",server.obj_list.objs[0]->draw.meshes[0].rtl_mesh_id);
-  	fprintf(stdout,"LOAD X 1.0=%d\n",server.obj_list.objs[1]->draw.meshes[0].rtl_mesh_id);
-	fprintf(stdout,"LOAD X 2.0=%d\n",server.obj_list.objs[2]->draw.meshes[0].rtl_mesh_id);
-
 
 	if (!resume_load) progress_update();
 
 	view_images_cached_load();
-	models_reset();
 	
 		// fix the script state
 		// and reset indexes on timers
@@ -1017,10 +986,6 @@ bool game_file_load(char *file_name,bool resume_load,char *err_str)
 
 	game_time_reset(head.tick);
 	view_game_reset_timing();
-
-	fprintf(stdout,"LOAD Z 0.0=%d\n",server.obj_list.objs[0]->draw.meshes[0].rtl_mesh_id);
-  	fprintf(stdout,"LOAD Z 1.0=%d\n",server.obj_list.objs[1]->draw.meshes[0].rtl_mesh_id);
-	fprintf(stdout,"LOAD Z 2.0=%d\n",server.obj_list.objs[2]->draw.meshes[0].rtl_mesh_id);
 
     return(TRUE);
 }

@@ -251,7 +251,6 @@ extern void script_init_proj_hit_object(void);
 extern void script_init_proj_action_object(void);
 extern void script_init_proj_push_object(void);
 extern void script_init_proj_size_object(void);
-extern void script_init_proj_mark_object(void);
 extern void script_init_proj_melee_object(void);
 
 //
@@ -400,7 +399,6 @@ extern void script_free_proj_hit_object(void);
 extern void script_free_proj_action_object(void);
 extern void script_free_proj_push_object(void);
 extern void script_free_proj_size_object(void);
-extern void script_free_proj_mark_object(void);
 extern void script_free_proj_melee_object(void);
 
 //
@@ -549,7 +547,6 @@ extern JSObjectRef script_add_proj_hit_object(JSContextRef cx,JSObjectRef parent
 extern JSObjectRef script_add_proj_action_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx);
 extern JSObjectRef script_add_proj_push_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx);
 extern JSObjectRef script_add_proj_size_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx);
-extern JSObjectRef script_add_proj_mark_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx);
 extern JSObjectRef script_add_proj_melee_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx);
 
 //

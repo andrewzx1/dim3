@@ -385,7 +385,6 @@ extern bool proj_setup_start_script(obj_type *obj,weapon_type *weap,proj_setup_t
 extern bool proj_setup_create(obj_type *obj,weapon_type *weap,char *name,char *err_str);
 extern void proj_setup_dispose(weapon_type *weap,int idx);
 
-extern void proj_setup_attach_mark(proj_setup_type *proj_setup);
 extern proj_setup_type* proj_setup_get_attach(JSObjectRef j_obj);
 extern proj_type* proj_get_attach(JSObjectRef j_obj);
 
@@ -403,7 +402,6 @@ extern void projectile_reset_angle_for_flight(proj_type *proj);
 extern void projectile_eject_vector(proj_type *proj,d3vct *vct);
 extern void projectile_reflect_vector(proj_type *proj,d3vct *vct);
 
-extern void projectile_decals(proj_type *proj,proj_setup_type *proj_setup);
 extern void projectile_hit(proj_type *proj);
 extern bool projectile_hit_auto(proj_type *proj);
 
@@ -427,7 +425,7 @@ extern model_type* model_find(char *name);
 extern int model_find_index(char *name);
 extern bool model_draw_initialize(model_draw *draw,char *item_type,char *item_name,char *err_str);
 extern void model_draw_free(model_draw *draw);
-extern void models_reset(void);
+extern void model_rebuild_draw_memory(model_draw *draw);
 
 extern void model_preload_start(void);
 extern void model_preload_free(void);
