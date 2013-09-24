@@ -141,7 +141,8 @@ void setup_game_video_pane(void)
 				x,y,control_y_add,control_y_sz;
 	
 	control_y_add=element_get_control_separation_high();
-	control_y_sz=control_y_add*3;
+//	control_y_sz=control_y_add*3;		// supergumba -- removed full screen for now
+	control_y_sz=control_y_add*1;
 	
 	element_get_frame_inner_space(setup_game_frame_id,&fx,&fy,&wid,&high);
 	x=fx+(int)(((float)wid)*0.4f);
@@ -163,10 +164,10 @@ void setup_game_video_pane(void)
 	element_combo_add("Screen Size",(char*)setup_screen_size_list,idx,ctrl_screen_rtl_size_id,x,y,TRUE);
 	y+=control_y_add;
 
-	element_checkbox_add("Full Screen (requires restart)",setup.full_screen,ctrl_screen_full_screen_id,x,y,TRUE);
-	y+=control_y_add;
+//	element_checkbox_add("Full Screen (requires restart)",setup.full_screen,ctrl_screen_full_screen_id,x,y,TRUE);
+//	y+=control_y_add;
 
-	element_combo_add("Full-Screen Anti-Aliasing",(char*)setup_fsaa_mode_list,setup.fsaa_mode,ctrl_fsaa_id,x,y,TRUE);
+//	element_combo_add("Full-Screen Anti-Aliasing",(char*)setup_fsaa_mode_list,setup.fsaa_mode,ctrl_fsaa_id,x,y,TRUE);
 }
 
 void setup_game_audio_pane(void)
