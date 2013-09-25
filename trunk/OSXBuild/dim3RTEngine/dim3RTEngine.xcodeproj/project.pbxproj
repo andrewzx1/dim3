@@ -110,7 +110,6 @@
 		265A848B17924EA4006C9CA4 /* camera_fpp.c in Sources */ = {isa = PBXBuildFile; fileRef = 265A83CA17924EA3006C9CA4 /* camera_fpp.c */; };
 		265A848C17924EA4006C9CA4 /* camera_static.c in Sources */ = {isa = PBXBuildFile; fileRef = 265A83CB17924EA3006C9CA4 /* camera_static.c */; };
 		265A848D17924EA4006C9CA4 /* camera.c in Sources */ = {isa = PBXBuildFile; fileRef = 265A83CC17924EA3006C9CA4 /* camera.c */; };
-		265A848E17924EA4006C9CA4 /* decals.c in Sources */ = {isa = PBXBuildFile; fileRef = 265A83CD17924EA3006C9CA4 /* decals.c */; };
 		265A848F17924EA4006C9CA4 /* effects_spawn.c in Sources */ = {isa = PBXBuildFile; fileRef = 265A83CE17924EA3006C9CA4 /* effects_spawn.c */; };
 		265A849017924EA4006C9CA4 /* effects.c in Sources */ = {isa = PBXBuildFile; fileRef = 265A83CF17924EA3006C9CA4 /* effects.c */; };
 		265A849117924EA4006C9CA4 /* game_time.c in Sources */ = {isa = PBXBuildFile; fileRef = 265A83D017924EA3006C9CA4 /* game_time.c */; };
@@ -243,7 +242,6 @@
 		265A851017924EA4006C9CA4 /* script_point_angle_vector.c in Sources */ = {isa = PBXBuildFile; fileRef = 265A844F17924EA4006C9CA4 /* script_point_angle_vector.c */; };
 		265A851117924EA4006C9CA4 /* script_proj_action.c in Sources */ = {isa = PBXBuildFile; fileRef = 265A845017924EA4006C9CA4 /* script_proj_action.c */; };
 		265A851217924EA4006C9CA4 /* script_proj_hit.c in Sources */ = {isa = PBXBuildFile; fileRef = 265A845117924EA4006C9CA4 /* script_proj_hit.c */; };
-		265A851317924EA4006C9CA4 /* script_proj_mark.c in Sources */ = {isa = PBXBuildFile; fileRef = 265A845217924EA4006C9CA4 /* script_proj_mark.c */; };
 		265A851417924EA4006C9CA4 /* script_proj_melee.c in Sources */ = {isa = PBXBuildFile; fileRef = 265A845317924EA4006C9CA4 /* script_proj_melee.c */; };
 		265A851517924EA4006C9CA4 /* script_proj_motion_angle.c in Sources */ = {isa = PBXBuildFile; fileRef = 265A845417924EA4006C9CA4 /* script_proj_motion_angle.c */; };
 		265A851617924EA4006C9CA4 /* script_proj_motion_vector.c in Sources */ = {isa = PBXBuildFile; fileRef = 265A845517924EA4006C9CA4 /* script_proj_motion_vector.c */; };
@@ -312,7 +310,6 @@
 		265A859F17924EBF006C9CA4 /* console.c in Sources */ = {isa = PBXBuildFile; fileRef = 265A855517924EBF006C9CA4 /* console.c */; };
 		265A85A017924EBF006C9CA4 /* crosshair_draw.c in Sources */ = {isa = PBXBuildFile; fileRef = 265A855617924EBF006C9CA4 /* crosshair_draw.c */; };
 		265A85A117924EBF006C9CA4 /* cursor.c in Sources */ = {isa = PBXBuildFile; fileRef = 265A855717924EBF006C9CA4 /* cursor.c */; };
-		265A85A217924EBF006C9CA4 /* decals_draw.c in Sources */ = {isa = PBXBuildFile; fileRef = 265A855817924EBF006C9CA4 /* decals_draw.c */; };
 		265A85A317924EBF006C9CA4 /* effects_draw.c in Sources */ = {isa = PBXBuildFile; fileRef = 265A855917924EBF006C9CA4 /* effects_draw.c */; };
 		265A85A417924EBF006C9CA4 /* elemets.c in Sources */ = {isa = PBXBuildFile; fileRef = 265A855A17924EBF006C9CA4 /* elemets.c */; };
 		265A85A517924EBF006C9CA4 /* error.c in Sources */ = {isa = PBXBuildFile; fileRef = 265A855B17924EBF006C9CA4 /* error.c */; };
@@ -592,7 +589,6 @@
 		265A83CA17924EA3006C9CA4 /* camera_fpp.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = camera_fpp.c; sourceTree = "<group>"; };
 		265A83CB17924EA3006C9CA4 /* camera_static.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = camera_static.c; sourceTree = "<group>"; };
 		265A83CC17924EA3006C9CA4 /* camera.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = camera.c; sourceTree = "<group>"; };
-		265A83CD17924EA3006C9CA4 /* decals.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = decals.c; sourceTree = "<group>"; };
 		265A83CE17924EA3006C9CA4 /* effects_spawn.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = effects_spawn.c; sourceTree = "<group>"; };
 		265A83CF17924EA3006C9CA4 /* effects.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = effects.c; sourceTree = "<group>"; };
 		265A83D017924EA3006C9CA4 /* game_time.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = game_time.c; sourceTree = "<group>"; };
@@ -725,7 +721,6 @@
 		265A844F17924EA4006C9CA4 /* script_point_angle_vector.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_point_angle_vector.c; sourceTree = "<group>"; };
 		265A845017924EA4006C9CA4 /* script_proj_action.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_proj_action.c; sourceTree = "<group>"; };
 		265A845117924EA4006C9CA4 /* script_proj_hit.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_proj_hit.c; sourceTree = "<group>"; };
-		265A845217924EA4006C9CA4 /* script_proj_mark.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_proj_mark.c; sourceTree = "<group>"; };
 		265A845317924EA4006C9CA4 /* script_proj_melee.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_proj_melee.c; sourceTree = "<group>"; };
 		265A845417924EA4006C9CA4 /* script_proj_motion_angle.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_proj_motion_angle.c; sourceTree = "<group>"; };
 		265A845517924EA4006C9CA4 /* script_proj_motion_vector.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_proj_motion_vector.c; sourceTree = "<group>"; };
@@ -794,7 +789,6 @@
 		265A855517924EBF006C9CA4 /* console.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = console.c; sourceTree = "<group>"; };
 		265A855617924EBF006C9CA4 /* crosshair_draw.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = crosshair_draw.c; sourceTree = "<group>"; };
 		265A855717924EBF006C9CA4 /* cursor.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cursor.c; sourceTree = "<group>"; };
-		265A855817924EBF006C9CA4 /* decals_draw.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = decals_draw.c; sourceTree = "<group>"; };
 		265A855917924EBF006C9CA4 /* effects_draw.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = effects_draw.c; sourceTree = "<group>"; };
 		265A855A17924EBF006C9CA4 /* elemets.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = elemets.c; sourceTree = "<group>"; };
 		265A855B17924EBF006C9CA4 /* error.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = error.c; sourceTree = "<group>"; };
@@ -1004,7 +998,6 @@
 				265A83CA17924EA3006C9CA4 /* camera_fpp.c */,
 				265A83CB17924EA3006C9CA4 /* camera_static.c */,
 				265A83CC17924EA3006C9CA4 /* camera.c */,
-				265A83CD17924EA3006C9CA4 /* decals.c */,
 				265A83CE17924EA3006C9CA4 /* effects_spawn.c */,
 				265A83CF17924EA3006C9CA4 /* effects.c */,
 				265A83D017924EA3006C9CA4 /* game_time.c */,
@@ -1137,7 +1130,6 @@
 				265A844F17924EA4006C9CA4 /* script_point_angle_vector.c */,
 				265A845017924EA4006C9CA4 /* script_proj_action.c */,
 				265A845117924EA4006C9CA4 /* script_proj_hit.c */,
-				265A845217924EA4006C9CA4 /* script_proj_mark.c */,
 				265A845317924EA4006C9CA4 /* script_proj_melee.c */,
 				265A845417924EA4006C9CA4 /* script_proj_motion_angle.c */,
 				265A845517924EA4006C9CA4 /* script_proj_motion_vector.c */,
@@ -1229,7 +1221,6 @@
 				265A855517924EBF006C9CA4 /* console.c */,
 				265A855617924EBF006C9CA4 /* crosshair_draw.c */,
 				265A855717924EBF006C9CA4 /* cursor.c */,
-				265A855817924EBF006C9CA4 /* decals_draw.c */,
 				265A855917924EBF006C9CA4 /* effects_draw.c */,
 				265A855A17924EBF006C9CA4 /* elemets.c */,
 				265A855B17924EBF006C9CA4 /* error.c */,
@@ -1733,7 +1724,6 @@
 				265A848B17924EA4006C9CA4 /* camera_fpp.c in Sources */,
 				265A848C17924EA4006C9CA4 /* camera_static.c in Sources */,
 				265A848D17924EA4006C9CA4 /* camera.c in Sources */,
-				265A848E17924EA4006C9CA4 /* decals.c in Sources */,
 				265A848F17924EA4006C9CA4 /* effects_spawn.c in Sources */,
 				265A849017924EA4006C9CA4 /* effects.c in Sources */,
 				265A849117924EA4006C9CA4 /* game_time.c in Sources */,
@@ -1866,7 +1856,6 @@
 				265A851017924EA4006C9CA4 /* script_point_angle_vector.c in Sources */,
 				265A851117924EA4006C9CA4 /* script_proj_action.c in Sources */,
 				265A851217924EA4006C9CA4 /* script_proj_hit.c in Sources */,
-				265A851317924EA4006C9CA4 /* script_proj_mark.c in Sources */,
 				265A851417924EA4006C9CA4 /* script_proj_melee.c in Sources */,
 				265A851517924EA4006C9CA4 /* script_proj_motion_angle.c in Sources */,
 				265A851617924EA4006C9CA4 /* script_proj_motion_vector.c in Sources */,
@@ -1935,7 +1924,6 @@
 				265A859F17924EBF006C9CA4 /* console.c in Sources */,
 				265A85A017924EBF006C9CA4 /* crosshair_draw.c in Sources */,
 				265A85A117924EBF006C9CA4 /* cursor.c in Sources */,
-				265A85A217924EBF006C9CA4 /* decals_draw.c in Sources */,
 				265A85A317924EBF006C9CA4 /* effects_draw.c in Sources */,
 				265A85A417924EBF006C9CA4 /* elemets.c in Sources */,
 				265A85A517924EBF006C9CA4 /* error.c in Sources */,
