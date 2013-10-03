@@ -89,14 +89,6 @@ typedef struct		{
 					} ray_eye_type;
 
 //
-// mesh and poly ptr
-//
-
-typedef struct		{
-						int								mesh_idx,poly_idx;
-					} ray_mesh_poly_ptr_type;
-
-//
 // scene meshes
 //
 // these are the meshes inside of each scene object.  They contain
@@ -211,6 +203,10 @@ typedef struct		{
 //
 
 typedef struct		{
+						int										mesh_idx,poly_idx,trig_idx;
+					} ray_scene_slice_likey_block_type;
+
+typedef struct		{
 						int										idx,poly_count;
 						int										*poly_idxs;						// initially ray_max_mesh_poly_per_slice
 					} ray_scene_slice_mesh_type;
@@ -223,8 +219,8 @@ typedef struct		{
 typedef struct		{
 						int										idx;
 						ray_2d_point_type						pixel_start,pixel_end;
-						ray_mesh_poly_ptr_type					likely_block_poly_ptr[ray_max_scene_light];
 						ray_scene_slice_mesh_block				mesh_block;
+						ray_scene_slice_likey_block_type		likely_block[ray_max_scene_light];
 					} ray_scene_slice_type;
 
 typedef struct		{
