@@ -481,7 +481,7 @@ bool ray_block_light(ray_scene_type *scene,ray_scene_slice_type *slice,ray_point
 	ray_poly_type						*poly;
 	ray_trig_type						*trig;
 	ray_collision_type					lit_collision;
-	ray_mesh_poly_ptr_type				*likely_block;
+	ray_scene_slice_likey_block_type	*likely_block;
 	ray_scene_render_light_type			*light;
 	ray_scene_render_light_mesh_type	*light_mesh;
 
@@ -500,26 +500,15 @@ bool ray_block_light(ray_scene_type *scene,ray_scene_slice_type *slice,ray_point
 		// (non-alpha, etc) will not be in this list, so
 		// other checks can be skipped
 
-	likely_block=&slice->likely_block_poly_ptr[light_idx];
+	likely_block=&slice->likely_block[light_idx];
 
 	if (likely_block->mesh_idx!=-1) {
+		mesh=scene->mesh_list.meshes[likely_block->mesh_idx];
+		poly=&mesh->poly_block.polys[likely_block->poly_idx];
+		trig=&poly->trig_block.trigs[likely_block->trig_idx];
 
-		if ((collision->mesh_idx!=likely_block->mesh_idx) || (collision->poly_idx!=likely_block->poly_idx)) {
-			mesh=scene->mesh_list.meshes[likely_block->mesh_idx];
-			
-			if (ray_bound_ray_collision(pnt,vct,&mesh->bound)) {
-				poly=&mesh->poly_block.polys[likely_block->poly_idx];
-				
-				if (ray_bound_ray_collision(pnt,vct,&poly->bound)) {
-					if (ray_plane_ray_collision(pnt,normal_vct,vct_dist,&poly->plane)) {
-						
-						for (trig_idx=0;trig_idx!=poly->trig_block.count;trig_idx++) {
-							if (!ray_intersect_triangle(scene,pnt,vct,mesh,&poly->trig_block.trigs[trig_idx],&t,&u,&v)) continue;
-							if (t<1.0f) return(TRUE);
-						}
-					}
-				}
-			}
+		if (ray_intersect_triangle(scene,pnt,vct,mesh,trig,&t,&u,&v)) {
+			if (t<1.0f) return(TRUE);
 		}
 	}
 
@@ -576,6 +565,7 @@ bool ray_block_light(ray_scene_type *scene,ray_scene_slice_type *slice,ray_point
 				if (ray_global.material_list.materials[poly->material_idx]->no_alpha) {
 					likely_block->mesh_idx=mesh_idx;
 					likely_block->poly_idx=poly_idx;
+					likely_block->trig_idx=trig_idx;
 					return(TRUE);
 				}
 				
@@ -594,6 +584,10 @@ bool ray_block_light(ray_scene_type *scene,ray_scene_slice_type *slice,ray_point
 			}
 		}
 	}
+
+		// reset likely block
+
+	likely_block->mesh_idx=-1;
 
 	return(FALSE);
 }

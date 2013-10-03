@@ -670,7 +670,7 @@ void ray_precalc_render_scene_slice_setup(ray_scene_type *scene,ray_scene_slice_
 		// reset the likely blocking poly list
 
 	for (n=0;n!=ray_max_scene_light;n++) {
-		slice->likely_block_poly_ptr[n].mesh_idx=-1;
+		slice->likely_block[n].mesh_idx=-1;
 	}
 }
 
