@@ -71,7 +71,6 @@ void ray_scene_mesh_precalc(ray_scene_type *scene,ray_mesh_type *mesh)
 			
 		for (k=0;k!=poly->trig_block.count;k++) {
 			ray_precalc_triangle_vectors(mesh,trig);
-			ray_precalc_triangle_bounds(mesh,trig);
 			trig++;
 		}
 

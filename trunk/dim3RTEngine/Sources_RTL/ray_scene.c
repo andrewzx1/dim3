@@ -153,19 +153,6 @@ int rtlSceneAdd(ray_2d_point_type *size,int target,int format,void *attachment,u
 		return(RL_ERROR_OUT_OF_MEMORY);
 	}
 
-		// render view mesh index list
-
-	scene->render.view_mesh_block.indexes=(int*)malloc(sizeof(int)*ray_max_scene_mesh);
-	if (scene->render.view_mesh_block.indexes==NULL) {
-		free(scene->render.lights);
-		free(scene->render.meshes);
-		free(scene->render.threads);
-		free(scene->render.slices);
-		free(scene->buffer.data);
-		free(scene);
-		return(RL_ERROR_OUT_OF_MEMORY);
-	}
-
 		// clear thread states
 
 	ray_render_clear_threads(scene);
@@ -198,20 +185,6 @@ int rtlSceneAdd(ray_2d_point_type *size,int target,int format,void *attachment,u
 		slice->pixel_start.y=y_add*k;
 		slice->pixel_end.y=slice->pixel_start.y+y_add;
 		if (k==(split-1)) slice->pixel_end.y=scene->buffer.high;
-
-			// build the memory for rendering
-			// non-culled mesh/poly list
-
-			// supergumba -- this leaks, will need to fix later
-
-		slice->mesh_block.meshes=(ray_scene_slice_mesh_type*)malloc(sizeof(ray_scene_slice_mesh_type)*ray_max_mesh_per_slice);
-		if (slice->mesh_block.meshes==NULL) return(RL_ERROR_OUT_OF_MEMORY);
-		
-		for (k=0;k!=ray_max_mesh_per_slice;k++) {
-			slice->mesh_block.mesh_count=0;
-			slice->mesh_block.meshes[k].poly_idxs=(int*)malloc(sizeof(int)*ray_max_mesh_poly_per_slice);
-			if (slice->mesh_block.meshes[k].poly_idxs==NULL) return(RL_ERROR_OUT_OF_MEMORY);
-		}
 
 		slice++;
 	}
@@ -342,7 +315,6 @@ int rtlSceneDelete(int sceneId)
 {
 	int							n,k,idx,count;
 	ray_scene_type				*scene;
-	ray_scene_slice_type		*slice;
 	ray_scene_render_light_type	*light;
 	
 		// get scene
@@ -364,16 +336,6 @@ int rtlSceneDelete(int sceneId)
 
 		// free memory
 
-	slice=scene->render.slices;
-
-	for (n=0;n!=ray_global.settings.slice_count;n++) {
-		for (k=0;k!=ray_max_mesh_per_slice;k++) {
-			free(slice->mesh_block.meshes[k].poly_idxs);
-		}
-		free(slice->mesh_block.meshes);
-		slice++;
-	}
-
 	light=scene->render.lights;
 
 	for (n=0;n!=ray_max_scene_light;n++) {
@@ -384,7 +346,6 @@ int rtlSceneDelete(int sceneId)
 		light++;
 	}
 
-	free(scene->render.view_mesh_block.indexes);
 	free(scene->render.meshes);
 	free(scene->render.lights);
 

@@ -302,7 +302,7 @@ bool ray_bound_ray_collision(ray_point_type *p,ray_vector_type *v,ray_bound_type
 	
 		// start with simple bounding
 		// eliminations
-	
+
 	if (v->x<0.0f) {
 		if (p->x<bnd->min.x) return(FALSE);
 	}
@@ -323,7 +323,7 @@ bool ray_bound_ray_collision(ray_point_type *p,ray_vector_type *v,ray_bound_type
 	else {
 		if (p->z>bnd->max.z) return(FALSE);
 	}
-	
+
 		// find set of two X points on line,
 		// and compare them with Y and Z to
 		// see if the vector passes these bounds
