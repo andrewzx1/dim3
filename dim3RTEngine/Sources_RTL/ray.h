@@ -24,16 +24,12 @@
 // ray tracing
 //
 
-#define ray_max_mesh_per_slice						256
-#define ray_max_mesh_poly_per_slice					1024
-
 #define ray_max_mesh_per_light						256
 #define ray_max_mesh_poly_per_light					1024
 
 #define ray_max_ray_bounce							8
 #define ray_max_light_per_mesh						8
 #define ray_max_tint_per_pixel						64
-#define ray_max_likely_block_polys					8
 
 //
 // rendering
@@ -41,7 +37,7 @@
 // note: max_slice_count MUST BE A SQRT!
 //
 
-#define ray_render_max_slice_count					(32*32)
+#define ray_render_max_slice_count					(24*24)
 #define ray_render_max_thread_count					32
 
 //
@@ -94,6 +90,10 @@ typedef struct		{
 // these are the meshes inside of each scene object.  They contain
 // vertex, uv, normal, tangent, and triangle lists.
 //
+// each mesh/poly has a parallel main render and slice structures
+// that are used to store linked lists containing a reduced number
+// of meshes and polys for certain circumstances
+//
 
 typedef struct		{
 						int								count;
@@ -123,13 +123,16 @@ typedef struct		{
 typedef struct		{
 						ray_polygon_index_type			idxs[3];
 						ray_vector_type					v1,v2;
-						ray_bound_type					bound;
 					} ray_trig_type;
 
 typedef struct		{
 						int								count;
 						ray_trig_type					*trigs;
 					} ray_trig_block;
+
+typedef struct		{
+						int								next_link_poly_idx;
+					} ray_poly_slice_type;
 
 typedef struct		{
 						int								material_idx,nvertex,
@@ -140,12 +143,22 @@ typedef struct		{
 						ray_trig_block					trig_block;
 						ray_plane_type					plane;
 						ray_bound_type					bound;
+						ray_poly_slice_type				slice[ray_render_max_slice_count];
 					} ray_poly_type;
 
 typedef struct		{
 						int								count;
 						ray_poly_type					*polys;
 					} ray_poly_block;
+
+typedef struct		{
+						int								next_link_view_mesh_idx;
+					} ray_mesh_link_type;
+
+typedef struct		{
+						int								next_link_mesh_idx,
+														start_link_poly_idx;
+					} ray_mesh_slice_type;
 
 typedef struct		{
 						int								id;
@@ -157,6 +170,8 @@ typedef struct		{
 						ray_tangent_block				tangent_block;
 						ray_poly_block					poly_block;
 						ray_bound_type					bound;
+						ray_mesh_link_type				link;
+						ray_mesh_slice_type				slice[ray_render_max_slice_count];
 					} ray_mesh_type;
 
 typedef struct		{
@@ -203,23 +218,12 @@ typedef struct		{
 //
 
 typedef struct		{
-						int										mesh_idx,poly_idx,trig_idx;
+						int										mesh_idx,poly_idx;
 					} ray_scene_slice_likey_block_type;
 
 typedef struct		{
-						int										idx,poly_count;
-						int										*poly_idxs;						// initially ray_max_mesh_poly_per_slice
-					} ray_scene_slice_mesh_type;
-
-typedef struct		{
-						int										mesh_count;
-						ray_scene_slice_mesh_type				*meshes;						// initially ray_max_mesh_per_slice
-					} ray_scene_slice_mesh_block;
-
-typedef struct		{
-						int										idx;
+						int										idx,start_link_mesh_idx;
 						ray_2d_point_type						pixel_start,pixel_end;
-						ray_scene_slice_mesh_block				mesh_block;
 						ray_scene_slice_likey_block_type		likely_block[ray_max_scene_light];
 					} ray_scene_slice_type;
 
@@ -239,25 +243,20 @@ typedef struct		{
 					} ray_scene_render_light_type;
 
 typedef struct		{
-						int										count,
-																*indexes;						// initially ray_max_scene_mesh;
-					} ray_scene_render_view_mesh_block;
-
-typedef struct		{
 						bool									shutdown_done;
 						void									*parent_scene;					// this is a pointer back to the parent structure, need by threading
 						ray_thread								thread;
 					} ray_scene_thread_type;
 
 typedef struct		{
-						int										next_slice_idx,thread_done_count;
+						int										next_slice_idx,thread_done_count,
+																start_link_view_mesh_idx;
 						ray_mutex								scene_lock,thread_lock;			// thread_lock only needed for pthread con waits
 						ray_cond								thread_cond;					// thread_cond only needed for pthread con waits
 						ray_scene_thread_type					*threads;						// initially ray_render_max_thread_count
 						ray_scene_slice_type					*slices;						// initially ray_render_max_slice_count
 						ray_scene_render_light_type				*lights;						// initially ray_max_scene_light
 						ray_scene_render_mesh_type				*meshes;						// initially ray_max_scene_mesh
-						ray_scene_render_view_mesh_block		view_mesh_block;
 					} ray_scene_render_type;
 
 //
@@ -272,9 +271,9 @@ typedef union		{
 					} ray_attachment_type;
 
 typedef struct		{
-						int									target,format,
-															wid,high;
-						unsigned long						*data;
+						int								target,format,
+														wid,high;
+						unsigned long					*data;
 					} ray_scene_buffer_type;
 
 typedef struct		{
@@ -444,7 +443,6 @@ extern void ray_precalc_mesh_bounds(ray_mesh_type *mesh);
 extern void ray_precalc_polygon_bounds(ray_mesh_type *mesh,ray_poly_type *poly);
 extern void ray_precalc_polygon_normal(ray_mesh_type *mesh,ray_poly_type *poly);
 extern void ray_precalc_polygon_plane(ray_mesh_type *mesh,ray_poly_type *poly);
-extern void ray_precalc_triangle_bounds(ray_mesh_type *mesh,ray_trig_type *trig);
 extern void ray_precalc_light_bounds(ray_light_type *light);
 extern void ray_precalc_triangle_vectors(ray_mesh_type *mesh,ray_trig_type *trig);
 extern void ray_precalc_render_scene_setup(ray_scene_type *scene);
