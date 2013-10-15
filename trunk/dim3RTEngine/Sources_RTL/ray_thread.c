@@ -149,10 +149,6 @@ bool ray_scene_create_threads(ray_scene_type *scene)
 {
 	int				n;
 
-	
-	fprintf(stdout,"%d\n",sizeof(ray_poly_type));
-
-
 		// start in suspended mode
 
 	scene->thread_mode=ray_thread_mode_suspend;

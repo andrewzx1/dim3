@@ -348,7 +348,8 @@ void ray_intersect_mesh_list_pass_through_bounce(ray_scene_type *scene,ray_scene
 
 void ray_intersect_mesh_list_other_bounce(ray_scene_type *scene,ray_scene_slice_type *slice,ray_point_type *eye_point,ray_vector_type *eye_vector,ray_vector_type *eye_normal_vector,ray_collision_type *collision)
 {
-	int							n,mesh_idx,poly_idx,trig_idx;
+	int							n,mesh_idx,poly_idx,trig_idx,
+								list_idx,poly_count;
 	float						it,iu,iv;
 	bool						skip;
 	ray_point_type				trig_pnt;
@@ -374,34 +375,38 @@ void ray_intersect_mesh_list_other_bounce(ray_scene_type *scene,ray_scene_slice_
 		// main scene list because bounces could go
 		// in any direction
 
-	mesh_idx=scene->render.start_link_view_mesh_idx;
+	list_idx=0;
 
-	while (TRUE) {
+	while (list_idx<scene->render.view_mesh_pack_list.idx) {
 
-		if (mesh_idx==-1) break;
+		mesh_idx=scene->render.view_mesh_pack_list.list[list_idx++];
+		poly_count=scene->render.view_mesh_pack_list.list[list_idx++];
+
 		mesh=scene->mesh_list.meshes[mesh_idx];
 
 			// main list isn't pared down
 			// for flags, so we need to do that
 
 		if ((mesh->flags&RL_MESH_FLAG_NON_BOUNCE_TRACE_BLOCKING)!=0) {
-			mesh_idx=mesh->link.next_link_view_mesh_idx;
+			list_idx+=poly_count;
 			continue;
 		}
 
 			// mesh bounds check
 
 		if (!ray_bound_ray_collision(eye_point,eye_vector,&mesh->bound)) {
-			mesh_idx=mesh->link.next_link_view_mesh_idx;
+			list_idx+=poly_count;
 			continue;
 		}
 
 			// run through the polys
+			// the view mesh list is just meshes and all
+			// poly counts are 0
 
 		for (poly_idx=0;poly_idx!=mesh->poly_block.count;poly_idx++) {
 			
 				// bounds check
-				
+
 			poly=&mesh->poly_block.polys[poly_idx];
 			if (!ray_bound_ray_collision(eye_point,eye_vector,&poly->bound)) continue;
 
@@ -491,8 +496,6 @@ void ray_intersect_mesh_list_other_bounce(ray_scene_type *scene,ray_scene_slice_
 				break;
 			}
 		}
-
-		mesh_idx=mesh->link.next_link_view_mesh_idx;
 	}
 }
 
@@ -504,21 +507,21 @@ void ray_intersect_mesh_list_other_bounce(ray_scene_type *scene,ray_scene_slice_
 
 bool ray_block_light(ray_scene_type *scene,ray_scene_slice_type *slice,ray_point_type *pnt,ray_vector_type *vct,ray_vector_type *normal_vct,float vct_dist,ray_collision_type *collision,int light_idx)
 {
-	int									n,k,mesh_idx,poly_idx,trig_idx;
+	int									k,mesh_idx,poly_idx,trig_idx,
+										list_idx,poly_count;
 	float								t,u,v;
 	ray_point_type						trig_pnt;
+	ray_light_type						*light;
 	ray_mesh_type						*mesh;
 	ray_poly_type						*poly;
 	ray_trig_type						*trig;
 	ray_collision_type					lit_collision;
 	ray_scene_slice_likey_block_type	*likely_block;
-	ray_scene_render_light_type			*light;
-	ray_scene_render_light_mesh_type	*light_mesh;
 
 		// any possible blocking polygons?
 
-	light=&scene->render.lights[light_idx];
-	if (light->mesh_count==0) return(FALSE);
+	light=scene->light_list.lights[light_idx];
+	if (light->render.idx==0) return(FALSE);
 	
 		// slices remember the last poly
 		// that blocked them reaching a certain light
@@ -556,22 +559,23 @@ bool ray_block_light(ray_scene_type *scene,ray_scene_slice_type *slice,ray_point
 		// non-hidden, and non-light blocking
 		// and only polygons within the light cone
 
-	for (n=0;n!=light->mesh_count;n++) {
+	list_idx=0;
+
+	while (list_idx<light->render.idx) {
 		
-		light_mesh=&light->meshes[n];
-		mesh_idx=light_mesh->idx;
+		mesh_idx=light->render.list[list_idx++];
+		poly_count=light->render.list[list_idx++];
+
 		mesh=scene->mesh_list.meshes[mesh_idx];
 
-		if (!ray_bound_ray_collision(pnt,vct,&mesh->bound)) continue;
+		if (!ray_bound_ray_collision(pnt,vct,&mesh->bound)) {
+			list_idx+=poly_count;
+			continue;
+		}
 
-		for (k=0;k!=light_mesh->poly_count;k++) {
+		for (k=0;k!=poly_count;k++) {
 
-				// bound collision
-				// do a ray-plane collision here because
-				// this list isn't small and the extra
-				// cost is worth it to avoid the trigs
-
-			poly_idx=light_mesh->poly_idxs[k];
+			poly_idx=light->render.list[list_idx++];
 			poly=&mesh->poly_block.polys[poly_idx];
 
 			if (!ray_bound_ray_collision(pnt,vct,&poly->bound)) continue;

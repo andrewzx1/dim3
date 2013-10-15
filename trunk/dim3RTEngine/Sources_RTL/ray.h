@@ -24,12 +24,12 @@
 // ray tracing
 //
 
-#define ray_max_mesh_per_light						256
-#define ray_max_mesh_poly_per_light					1024
-
 #define ray_max_ray_bounce							8
 #define ray_max_light_per_mesh						8
 #define ray_max_tint_per_pixel						64
+
+#define ray_max_mesh_pack_list						ray_max_scene_mesh
+#define ray_max_mesh_poly_pack_list					10240
 
 //
 // rendering
@@ -83,6 +83,29 @@ typedef struct		{
 						ray_point_type					pnt;
 						ray_matrix_type					matrix;
 					} ray_eye_type;
+
+//
+// packed mesh-poly list
+//
+// these are two structures used to pack arrays of meshes or arrays
+// of meshes or polys, used to optimize what the render has to look at
+//
+// the mesh list is just a list of mesh indexes
+//
+// the mesh-poly list is formated like this:
+//
+// [mesh index][poly count][poly 1][poly 2][...][mesh index][etc]
+//
+
+typedef struct		{
+						int								idx;
+						int								list[ray_max_mesh_pack_list];
+					} ray_mesh_pack_list;
+
+typedef struct		{
+						int								idx;
+						int								list[ray_max_mesh_poly_pack_list];
+					} ray_mesh_poly_pack_list;
 
 //
 // scene meshes
@@ -152,10 +175,6 @@ typedef struct		{
 					} ray_poly_block;
 
 typedef struct		{
-						int								next_link_view_mesh_idx;
-					} ray_mesh_link_type;
-
-typedef struct		{
 						int								next_link_mesh_idx,
 														start_link_poly_idx;
 					} ray_mesh_slice_type;
@@ -170,7 +189,6 @@ typedef struct		{
 						ray_tangent_block				tangent_block;
 						ray_poly_block					poly_block;
 						ray_bound_type					bound;
-						ray_mesh_link_type				link;
 						ray_mesh_slice_type				slice[ray_render_max_slice_count];
 					} ray_mesh_type;
 
@@ -199,6 +217,7 @@ typedef struct		{
 						ray_color_type					col;
 						ray_light_direction_type		direction;
 						ray_bound_type					bound;
+						ray_mesh_poly_pack_list			render;
 					} ray_light_type;
 
 typedef struct		{
@@ -233,30 +252,19 @@ typedef struct		{
 					} ray_scene_render_mesh_type;
 
 typedef struct		{
-						int										idx,poly_count;
-						int										*poly_idxs;						// initially ray_max_mesh_poly_per_light
-					} ray_scene_render_light_mesh_type;
-
-typedef struct		{
-						int										mesh_count;
-						ray_scene_render_light_mesh_type		*meshes;						// initially ray_max_mesh_per_light
-					} ray_scene_render_light_type;
-
-typedef struct		{
 						bool									shutdown_done;
 						void									*parent_scene;					// this is a pointer back to the parent structure, need by threading
 						ray_thread								thread;
 					} ray_scene_thread_type;
 
 typedef struct		{
-						int										next_slice_idx,thread_done_count,
-																start_link_view_mesh_idx;
+						int										next_slice_idx,thread_done_count;
 						ray_mutex								scene_lock,thread_lock;			// thread_lock only needed for pthread con waits
 						ray_cond								thread_cond;					// thread_cond only needed for pthread con waits
 						ray_scene_thread_type					*threads;						// initially ray_render_max_thread_count
 						ray_scene_slice_type					*slices;						// initially ray_render_max_slice_count
-						ray_scene_render_light_type				*lights;						// initially ray_max_scene_light
 						ray_scene_render_mesh_type				*meshes;						// initially ray_max_scene_mesh
+						ray_mesh_pack_list						view_mesh_pack_list;
 					} ray_scene_render_type;
 
 //
