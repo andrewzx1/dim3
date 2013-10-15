@@ -401,14 +401,13 @@ bool ray_precalc_light_normal_cull(ray_scene_type *scene,ray_light_type *light,r
 
 void ray_precalc_render_scene_setup(ray_scene_type *scene)
 {
-	int									n,k,t,mesh_idx,last_mesh_idx;
-	float								d;
-	double								dx,dy,dz;
-	ray_mesh_type						*mesh;
-	ray_poly_type						*poly;
-	ray_light_type						*light;
-	ray_scene_render_light_type			*render_light;
-	ray_scene_render_light_mesh_type	*render_light_mesh;
+	int							n,k,t,mesh_idx,
+								list_poly_count_idx,list_idx;
+	float						d;
+	double						dx,dy,dz;
+	ray_mesh_type				*mesh;
+	ray_poly_type				*poly;
+	ray_light_type				*light;
 
 		// no slices used yet
 
@@ -417,12 +416,16 @@ void ray_precalc_render_scene_setup(ray_scene_type *scene)
 		// create a list of meshes within
 		// the eye max_dist, centered around
 		// the eye point.  These are the drawing
-		// meshes
+		// view meshes
+
+		// this uses the regular packed lists
+		// but it'll only be the meshes, this list
+		// is (currently) assumed to be all polys
 		
-	last_mesh_idx=-1;
-	scene->render.start_link_view_mesh_idx=-1;
+	scene->render.view_mesh_pack_list.idx=0;
 
 	for (n=0;n!=scene->mesh_list.count;n++) {
+
 		mesh=scene->mesh_list.meshes[n];
 		if (mesh->hidden) continue;
 
@@ -433,19 +436,13 @@ void ray_precalc_render_scene_setup(ray_scene_type *scene)
 		d=(float)sqrt((dx*dx)+(dy*dy)+(dz*dz));
 		if (d>scene->eye.max_dist) continue;
 
-			// add to linked list
-
-		if (scene->render.start_link_view_mesh_idx==-1) {
-			scene->render.start_link_view_mesh_idx=n;
-		}
-		else {
-			scene->mesh_list.meshes[last_mesh_idx]->link.next_link_view_mesh_idx=n;
+			// add mesh
+		
+		if (scene->render.view_mesh_pack_list.idx<(ray_max_mesh_pack_list-2)) {
+			scene->render.view_mesh_pack_list.list[scene->render.view_mesh_pack_list.idx++]=n;
 		}
 
-		last_mesh_idx=n;
-		mesh->link.next_link_view_mesh_idx=-1;
-
-			// setup poly mipmapping cache
+			// setup polys in the scene
 
 		poly=mesh->poly_block.polys;
 		
@@ -464,8 +461,8 @@ void ray_precalc_render_scene_setup(ray_scene_type *scene)
 		scene->render.meshes[n].light_count=0;
 	}
 
-	for (n=0;n!=ray_max_scene_light;n++) {
-		scene->render.lights[n].mesh_count=0;
+	for (n=0;n!=scene->light_list.count;n++) {
+		scene->light_list.lights[n]->render.idx=0;
 	}
 	
 		// find the cross collisions
@@ -473,18 +470,19 @@ void ray_precalc_render_scene_setup(ray_scene_type *scene)
 		// we do a quick elimination of
 		// non light trace blocking meshes
 		// and hidden meshes
-		
-	mesh_idx=scene->render.start_link_view_mesh_idx;
 
-	while (TRUE) {
+	list_idx=0;
 
-		if (mesh_idx==-1) break;
+	while (list_idx<scene->render.view_mesh_pack_list.idx) {
+
+		mesh_idx=scene->render.view_mesh_pack_list.list[list_idx++];
+
 		mesh=scene->mesh_list.meshes[mesh_idx];
 
 		for (k=0;k!=scene->light_list.count;k++) {
 			light=scene->light_list.lights[k];
 			if (light->hidden) continue;
-			
+
 			if (ray_bound_bound_collision(&mesh->bound,&light->bound)) {
 
 					// add this mesh to the light
@@ -492,16 +490,7 @@ void ray_precalc_render_scene_setup(ray_scene_type *scene)
 
 				if ((mesh->flags&RL_MESH_FLAG_NON_LIGHT_TRACE_BLOCKING)==0x0) {
 
-						// create the collision mesh
-						// skip out if not enough room
-
-					render_light=&scene->render.lights[k];
-					if (render_light->mesh_count>=ray_max_mesh_per_light) continue;
-
-					render_light_mesh=&render_light->meshes[render_light->mesh_count];
-
-					render_light_mesh->idx=mesh_idx;
-					render_light_mesh->poly_count=0;
+					list_poly_count_idx=-1;
 
 						// determine the polys the light
 						// can hit by bounding and normal culling
@@ -511,20 +500,23 @@ void ray_precalc_render_scene_setup(ray_scene_type *scene)
 					for (t=0;t!=mesh->poly_block.count;t++) {
 						if (ray_bound_bound_collision(&poly->bound,&light->bound)) {
 							if (ray_precalc_light_normal_cull(scene,light,mesh,poly)) {
-								if (render_light_mesh->poly_count<ray_max_mesh_poly_per_light) {
-									render_light_mesh->poly_idxs[render_light_mesh->poly_count]=t;
-									render_light_mesh->poly_count++;
+
+								if (light->render.idx<(ray_max_mesh_poly_pack_list-4)) {
+
+									if (list_poly_count_idx==-1) {
+										light->render.list[light->render.idx++]=mesh_idx;
+										list_poly_count_idx=light->render.idx;
+										light->render.list[light->render.idx++]=0;
+									}
+
+									light->render.list[light->render.idx++]=t;
+									light->render.list[list_poly_count_idx]++;
 								}
 							}
 						}
 
 						poly++;
 					}
-
-						// if we added a poly, then this mesh can be
-						// used to block the light
-
-					if (render_light_mesh->poly_count!=0) render_light->mesh_count++;
 				}
 
 					// the mesh list is by the count, not parallel to
@@ -537,8 +529,6 @@ void ray_precalc_render_scene_setup(ray_scene_type *scene)
 
 			}
 		}
-
-		mesh_idx=mesh->link.next_link_view_mesh_idx;
 	}
 }
 
@@ -557,7 +547,8 @@ void ray_precalc_render_scene_setup(ray_scene_type *scene)
 
 void ray_precalc_render_scene_slice_setup(ray_scene_type *scene,ray_scene_slice_type *slice)
 {
-	int							n,k,mesh_idx,last_mesh_idx,last_poly_idx;
+	int							n,k,mesh_idx,last_mesh_idx,last_poly_idx,
+								list_idx;
 	ray_mesh_type				*mesh;
 	ray_poly_type				*poly;
 	ray_plane_type				planes[6];
@@ -575,26 +566,20 @@ void ray_precalc_render_scene_slice_setup(ray_scene_type *scene,ray_scene_slice_
 	last_mesh_idx=-1;
 	slice->start_link_mesh_idx=-1;
 	
-	mesh_idx=scene->render.start_link_view_mesh_idx;
+	list_idx=0;
 
-	while (TRUE) {
+	while (list_idx<scene->render.view_mesh_pack_list.idx) {
 
-		if (mesh_idx==-1) break;
+		mesh_idx=scene->render.view_mesh_pack_list.list[list_idx++];
 		mesh=scene->mesh_list.meshes[mesh_idx];
 		
 			// special knock-out flags
 			
-		if ((mesh->hidden) || ((mesh->flags&RL_MESH_FLAG_NON_RAY_TRACE_BLOCKING)!=0)) {
-			mesh_idx=mesh->link.next_link_view_mesh_idx;
-			continue;
-		}
+		if ((mesh->hidden) || ((mesh->flags&RL_MESH_FLAG_NON_RAY_TRACE_BLOCKING)!=0)) continue;
 
 			// bound collisions
 
-		if (!ray_precalc_frustum_plane_bound_cull(planes,&mesh->bound)) {
-			mesh_idx=mesh->link.next_link_view_mesh_idx;
-			continue;
-		}
+		if (!ray_precalc_frustum_plane_bound_cull(planes,&mesh->bound)) continue;
 
 			// start running through the polygons
 			// we do this before adding the mesh as
@@ -647,10 +632,6 @@ void ray_precalc_render_scene_slice_setup(ray_scene_type *scene,ray_scene_slice_
 			last_mesh_idx=mesh_idx;
 			mesh->slice[slice->idx].next_link_mesh_idx=-1;
 		}
-
-			// next mesh in view list
-
-		mesh_idx=mesh->link.next_link_view_mesh_idx;
 	}
 	
 		// reset the likely blocking poly list

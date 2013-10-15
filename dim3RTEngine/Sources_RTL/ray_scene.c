@@ -76,7 +76,6 @@ int rtlSceneAdd(ray_2d_point_type *size,int target,int format,void *attachment,u
 	ray_scene_type				*scene;
 	ray_scene_slice_type		*slice;
 	ray_scene_thread_type		*thread;
-	ray_scene_render_light_type	*light;
 
 		// right now only one target/format
 
@@ -130,22 +129,10 @@ int rtlSceneAdd(ray_2d_point_type *size,int target,int format,void *attachment,u
 		return(RL_ERROR_OUT_OF_MEMORY);
 	}
 
-		// rendering parallel light list
-
-	scene->render.lights=(ray_scene_render_light_type*)malloc(sizeof(ray_scene_render_light_type)*ray_max_scene_light);
-	if (scene->render.lights==NULL) {
-		free(scene->render.threads);
-		free(scene->render.slices);
-		free(scene->buffer.data);
-		free(scene);
-		return(RL_ERROR_OUT_OF_MEMORY);
-	}
-
 		// rendering parallel mesh list
 
 	scene->render.meshes=(ray_scene_render_mesh_type*)malloc(sizeof(ray_scene_render_mesh_type)*ray_max_scene_mesh);
 	if (scene->render.meshes==NULL) {
-		free(scene->render.lights);
 		free(scene->render.threads);
 		free(scene->render.slices);
 		free(scene->buffer.data);
@@ -187,28 +174,6 @@ int rtlSceneAdd(ray_2d_point_type *size,int target,int format,void *attachment,u
 		if (k==(split-1)) slice->pixel_end.y=scene->buffer.high;
 
 		slice++;
-	}
-
-		// setup memory for polygons that block
-		// lights in this scene
-
-	light=scene->render.lights;
-
-	for (n=0;n!=ray_max_scene_light;n++) {
-
-			// supergumba -- this leaks, will need to fix later
-
-		light->mesh_count=0;
-		light->meshes=(ray_scene_render_light_mesh_type*)malloc(sizeof(ray_scene_render_light_mesh_type)*ray_max_mesh_per_light);
-		if (light->meshes==NULL) return(RL_ERROR_OUT_OF_MEMORY);
-
-		for (k=0;k!=ray_max_mesh_per_light;k++) {
-			light->mesh_count=0;
-			light->meshes[k].poly_idxs=(int*)malloc(sizeof(int)*ray_max_mesh_poly_per_light);
-			if (light->meshes[k].poly_idxs==NULL) return(RL_ERROR_OUT_OF_MEMORY);
-		}
-
-		light++;
 	}
 
 		// precalc scene threads
@@ -254,7 +219,6 @@ int rtlSceneAdd(ray_2d_point_type *size,int target,int format,void *attachment,u
 		// create the scene lock mutex
 
 	if (!ray_scene_create_mutexes(scene)) {
-		free(scene->render.lights);
 		free(scene->render.meshes);
 		free(scene->render.threads);
 		free(scene->render.slices);
@@ -313,9 +277,8 @@ int rtlSceneCount(void)
 
 int rtlSceneDelete(int sceneId)
 {
-	int							n,k,idx,count;
+	int							n,idx,count;
 	ray_scene_type				*scene;
-	ray_scene_render_light_type	*light;
 	
 		// get scene
 
@@ -336,18 +299,7 @@ int rtlSceneDelete(int sceneId)
 
 		// free memory
 
-	light=scene->render.lights;
-
-	for (n=0;n!=ray_max_scene_light;n++) {
-		for (k=0;k!=ray_max_mesh_per_light;k++) {
-			free(light->meshes[k].poly_idxs);
-		}
-		free(light->meshes);
-		light++;
-	}
-
 	free(scene->render.meshes);
-	free(scene->render.lights);
 
 	free(scene->render.slices);
 	free(scene->render.threads);
