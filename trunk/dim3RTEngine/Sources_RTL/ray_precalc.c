@@ -547,8 +547,8 @@ void ray_precalc_render_scene_setup(ray_scene_type *scene)
 
 void ray_precalc_render_scene_slice_setup(ray_scene_type *scene,ray_scene_slice_type *slice)
 {
-	int							n,k,mesh_idx,last_mesh_idx,last_poly_idx,
-								list_idx;
+	int							n,k,mesh_idx,
+								list_idx,list_poly_count_idx;
 	ray_mesh_type				*mesh;
 	ray_poly_type				*poly;
 	ray_plane_type				planes[6];
@@ -563,8 +563,7 @@ void ray_precalc_render_scene_slice_setup(ray_scene_type *scene,ray_scene_slice_
 		// we use this one for first hits, but then
 		// retreat to the main list for bounces
 
-	last_mesh_idx=-1;
-	slice->start_link_mesh_idx=-1;
+	slice->mesh_pack_list.idx=0;
 	
 	list_idx=0;
 
@@ -585,8 +584,7 @@ void ray_precalc_render_scene_slice_setup(ray_scene_type *scene,ray_scene_slice_
 			// we do this before adding the mesh as
 			// we want to see if we hit any polygons at all
 
-		last_poly_idx=-1;
-		mesh->slice[slice->idx].start_link_poly_idx=-1;
+		list_poly_count_idx=-1;
 
 			// set up the polys that can be seen from the
 			// frustum for this slice and aren't
@@ -600,37 +598,21 @@ void ray_precalc_render_scene_slice_setup(ray_scene_type *scene,ray_scene_slice_
 			if (ray_precalc_frustum_plane_bound_cull(planes,&poly->bound)) {
 				if (ray_precalc_eye_normal_cull(scene,slice,mesh,poly)) {
 
-					if (mesh->slice[slice->idx].start_link_poly_idx==-1) {
-						mesh->slice[slice->idx].start_link_poly_idx=k;
-					}
-					else {
-						mesh->poly_block.polys[last_poly_idx].slice[slice->idx].next_link_poly_idx=k;
-					}
+					if (slice->mesh_pack_list.idx<(ray_max_mesh_poly_pack_list-4)) {
 
-					last_poly_idx=k;
-					poly->slice[slice->idx].next_link_poly_idx=-1;
+						if (list_poly_count_idx==-1) {
+							slice->mesh_pack_list.list[slice->mesh_pack_list.idx++]=mesh_idx;
+							list_poly_count_idx=slice->mesh_pack_list.idx;
+							slice->mesh_pack_list.list[slice->mesh_pack_list.idx++]=0;
+						}
+
+						slice->mesh_pack_list.list[slice->mesh_pack_list.idx++]=k;
+						slice->mesh_pack_list.list[list_poly_count_idx]++;
+					}
 				}
 			}
 			
 			poly++;
-		}
-
-			// if we had no polys, than skip
-
-		if (mesh->slice[slice->idx].start_link_poly_idx!=-1) {
-		
-				// else add mesh to linked list for
-				// this slice
-
-			if (slice->start_link_mesh_idx==-1) {
-				slice->start_link_mesh_idx=mesh_idx;
-			}
-			else {
-				scene->mesh_list.meshes[last_mesh_idx]->slice[slice->idx].next_link_mesh_idx=mesh_idx;
-			}
-
-			last_mesh_idx=mesh_idx;
-			mesh->slice[slice->idx].next_link_mesh_idx=-1;
 		}
 	}
 	

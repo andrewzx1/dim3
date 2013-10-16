@@ -175,9 +175,9 @@ typedef struct		{
 					} ray_poly_block;
 
 typedef struct		{
-						int								next_link_mesh_idx,
-														start_link_poly_idx;
-					} ray_mesh_slice_type;
+						int								count,
+														idxs[ray_max_light_per_mesh];
+					} ray_mesh_light_collide_type;
 
 typedef struct		{
 						int								id;
@@ -189,7 +189,7 @@ typedef struct		{
 						ray_tangent_block				tangent_block;
 						ray_poly_block					poly_block;
 						ray_bound_type					bound;
-						ray_mesh_slice_type				slice[ray_render_max_slice_count];
+						ray_mesh_light_collide_type		light_collide;
 					} ray_mesh_type;
 
 typedef struct		{
@@ -241,9 +241,10 @@ typedef struct		{
 					} ray_scene_slice_likey_block_type;
 
 typedef struct		{
-						int										idx,start_link_mesh_idx;
+						int										idx;
 						ray_2d_point_type						pixel_start,pixel_end;
 						ray_scene_slice_likey_block_type		likely_block[ray_max_scene_light];
+						ray_mesh_poly_pack_list					mesh_pack_list;
 					} ray_scene_slice_type;
 
 typedef struct		{
