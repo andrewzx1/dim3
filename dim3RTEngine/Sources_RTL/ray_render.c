@@ -84,7 +84,8 @@ bool ray_intersect_triangle(ray_scene_type *scene,ray_point_type *eye_point,ray_
 
 void ray_intersect_mesh_list_initial(ray_scene_type *scene,ray_scene_slice_type *slice,ray_point_type *eye_point,ray_vector_type *eye_vector,ray_collision_type *collision)
 {
-	int							mesh_idx,poly_idx,trig_idx;
+	int							n,mesh_idx,poly_idx,trig_idx,
+								list_idx,poly_count;
 	float						it,iu,iv;
 	ray_point_type				trig_pnt;
 	ray_mesh_type				*mesh;
@@ -110,27 +111,27 @@ void ray_intersect_mesh_list_initial(ray_scene_type *scene,ray_scene_slice_type 
 		// down for the slice's pixel box,
 		// hidden, and non-ray trace blocking
 
-	mesh_idx=slice->start_link_mesh_idx;
+		// we don't bound check the meshes because
+		// the slices are small enough that we will
+		// almost always hit this pared down list
 
-	while (TRUE) {
+	list_idx=0;
+
+	while (list_idx<slice->mesh_pack_list.idx) {
 	
-		if (mesh_idx==-1) break;
+		mesh_idx=slice->mesh_pack_list.list[list_idx++];
+		poly_count=slice->mesh_pack_list.list[list_idx++];
+
 		mesh=scene->mesh_list.meshes[mesh_idx];
 
-			// check down the polygon
-			// linked list
+			// check the polygons
 
-		poly_idx=mesh->slice[slice->idx].start_link_poly_idx;
+		for (n=0;n!=poly_count;n++) {
 
-		while (TRUE) {
-
-			if (poly_idx==-1) break;
+			poly_idx=slice->mesh_pack_list.list[list_idx++];
 			poly=&mesh->poly_block.polys[poly_idx];
 
-			if (!ray_bound_ray_collision(eye_point,eye_vector,&poly->bound)) {
-				poly_idx=poly->slice[slice->idx].next_link_poly_idx;
-				continue;
-			}
+			if (!ray_bound_ray_collision(eye_point,eye_vector,&poly->bound)) continue;
 
 				// check triangle/ray intersection
 				// we don't do bound checking as it's
@@ -196,17 +197,14 @@ void ray_intersect_mesh_list_initial(ray_scene_type *scene,ray_scene_slice_type 
 
 				break;
 			}
-
-			poly_idx=poly->slice[slice->idx].next_link_poly_idx;
 		}
-
-		mesh_idx=mesh->slice[slice->idx].next_link_mesh_idx;
 	}
 }
 
 void ray_intersect_mesh_list_pass_through_bounce(ray_scene_type *scene,ray_scene_slice_type *slice,ray_point_type *eye_point,ray_vector_type *eye_vector,ray_collision_type *collision)
 {
-	int							n,mesh_idx,poly_idx,trig_idx;
+	int							n,mesh_idx,poly_idx,trig_idx,
+								list_idx,poly_count;
 	float						it,iu,iv;
 	bool						skip;
 	ray_point_type				trig_pnt;
@@ -232,26 +230,23 @@ void ray_intersect_mesh_list_pass_through_bounce(ray_scene_type *scene,ray_scene
 		// materials that are pass through,
 		// so we can remain on the slice list
 
-	mesh_idx=slice->start_link_mesh_idx;
+	list_idx=0;
 
-	while (TRUE) {
+	while (list_idx<slice->mesh_pack_list.idx) {
 	
-		if (mesh_idx==-1) break;
+		mesh_idx=slice->mesh_pack_list.list[list_idx++];
+		poly_count=slice->mesh_pack_list.list[list_idx++];
+
 		mesh=scene->mesh_list.meshes[mesh_idx];
 
-			// check down the poly linked list
+			// check the polygons
 
-		poly_idx=mesh->slice[slice->idx].start_link_poly_idx;
+		for (n=0;n!=poly_count;n++) {
 
-		while (TRUE) {
-
-			if (poly_idx==-1) break;
+			poly_idx=slice->mesh_pack_list.list[list_idx++];
 			poly=&mesh->poly_block.polys[poly_idx];
 
-			if (!ray_bound_ray_collision(eye_point,eye_vector,&poly->bound)) {
-				poly_idx=poly->slice[slice->idx].next_link_poly_idx;
-				continue;
-			}
+			if (!ray_bound_ray_collision(eye_point,eye_vector,&poly->bound)) continue;
 					
 				// skiping polys, this is used
 				// so reflections or pass throughs
@@ -269,10 +264,7 @@ void ray_intersect_mesh_list_pass_through_bounce(ray_scene_type *scene,ray_scene
 				}
 			}
 			
-			if (skip) {
-				poly_idx=poly->slice[slice->idx].next_link_poly_idx;
-				continue;
-			}
+			if (skip) continue;
 
 				// check triangle/ray intersection
 				// we don't do bound checking as it's
@@ -338,11 +330,7 @@ void ray_intersect_mesh_list_pass_through_bounce(ray_scene_type *scene,ray_scene
 
 				break;
 			}
-			
-			poly_idx=poly->slice[slice->idx].next_link_poly_idx;
 		}
-
-		mesh_idx=mesh->slice[slice->idx].next_link_mesh_idx;
 	}
 }
 
