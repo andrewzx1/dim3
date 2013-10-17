@@ -129,17 +129,6 @@ int rtlSceneAdd(ray_2d_point_type *size,int target,int format,void *attachment,u
 		return(RL_ERROR_OUT_OF_MEMORY);
 	}
 
-		// rendering parallel mesh list
-
-	scene->render.meshes=(ray_scene_render_mesh_type*)malloc(sizeof(ray_scene_render_mesh_type)*ray_max_scene_mesh);
-	if (scene->render.meshes==NULL) {
-		free(scene->render.threads);
-		free(scene->render.slices);
-		free(scene->buffer.data);
-		free(scene);
-		return(RL_ERROR_OUT_OF_MEMORY);
-	}
-
 		// clear thread states
 
 	ray_render_clear_threads(scene);
@@ -219,7 +208,6 @@ int rtlSceneAdd(ray_2d_point_type *size,int target,int format,void *attachment,u
 		// create the scene lock mutex
 
 	if (!ray_scene_create_mutexes(scene)) {
-		free(scene->render.meshes);
 		free(scene->render.threads);
 		free(scene->render.slices);
 		free(scene->buffer.data);
@@ -298,8 +286,6 @@ int rtlSceneDelete(int sceneId)
 	ray_scene_release_mutexes(scene);
 
 		// free memory
-
-	free(scene->render.meshes);
 
 	free(scene->render.slices);
 	free(scene->render.threads);

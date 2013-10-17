@@ -401,13 +401,15 @@ bool ray_precalc_light_normal_cull(ray_scene_type *scene,ray_light_type *light,r
 
 void ray_precalc_render_scene_setup(ray_scene_type *scene)
 {
-	int							n,k,t,mesh_idx,
-								list_poly_count_idx,list_idx;
+	int							n,k,t,mesh_idx,mesh_2_idx,light_idx,
+								list_poly_count_idx,list_idx,list_2_idx,
+								poly_count;
 	float						d;
 	double						dx,dy,dz;
-	ray_mesh_type				*mesh;
+	ray_mesh_type				*mesh,*mesh2;
 	ray_poly_type				*poly;
 	ray_light_type				*light;
+	ray_mesh_poly_pack_list		*pack_list;
 
 		// no slices used yet
 
@@ -452,24 +454,34 @@ void ray_precalc_render_scene_setup(ray_scene_type *scene)
 		}
 	}
 
-		// scene rendering has it's own parallel list
-		// of meshes and lights that contain all
-		// the possible collisions between these objects
-		// to speed up rendering
+		// init some caches
 	
-	for (n=0;n!=ray_max_scene_mesh;n++) {
-		scene->render.meshes[n].light_count=0;
+	for (n=0;n!=scene->mesh_list.count;n++) {
+		scene->mesh_list.meshes[n]->light_collide.count=0;
+		for (k=0;k!=ray_max_light_per_mesh;k++) {
+			scene->mesh_list.meshes[n]->light_collide.lights[k].mesh_poly_pack_block_list.idx=0;
+		}
 	}
 
 	for (n=0;n!=scene->light_list.count;n++) {
-		scene->light_list.lights[n]->render.idx=0;
+		scene->light_list.lights[n]->mesh_poly_pack_collide_list.idx=0;
 	}
 	
-		// find the cross collisions
-		// between lights and meshes
-		// we do a quick elimination of
-		// non light trace blocking meshes
-		// and hidden meshes
+
+
+
+
+
+		// here we build two lists, one for each
+		// mesh which shows what lights fall on them,
+		// the other for all the meshes and polys
+		// that can be seen from each light, we will
+		// later use this list to create a cross list
+		// of what meshes block other meshes from
+		// tracing to a light
+
+		// this list is pared down by light radius
+		// and normal culling
 
 	list_idx=0;
 
@@ -483,50 +495,143 @@ void ray_precalc_render_scene_setup(ray_scene_type *scene)
 			light=scene->light_list.lights[k];
 			if (light->hidden) continue;
 
-			if (ray_bound_bound_collision(&mesh->bound,&light->bound)) {
+			if (!ray_bound_bound_collision(&mesh->bound,&light->bound)) continue;
+			if ((mesh->flags&RL_MESH_FLAG_NON_LIGHT_TRACE_BLOCKING)!=0x0) continue;
 
-					// add this mesh to the light
-					// collision list
+			list_poly_count_idx=-1;
 
-				if ((mesh->flags&RL_MESH_FLAG_NON_LIGHT_TRACE_BLOCKING)==0x0) {
+				// determine the polys the light
+				// can hit by bounding and normal culling
 
-					list_poly_count_idx=-1;
+			poly=mesh->poly_block.polys;
 
-						// determine the polys the light
-						// can hit by bounding and normal culling
+			for (t=0;t!=mesh->poly_block.count;t++) {
+				if (ray_bound_bound_collision(&poly->bound,&light->bound)) {
+					if (ray_precalc_light_normal_cull(scene,light,mesh,poly)) {
 
-					poly=mesh->poly_block.polys;
+						if (light->mesh_poly_pack_collide_list.idx<(ray_max_mesh_poly_pack_list-4)) {
 
-					for (t=0;t!=mesh->poly_block.count;t++) {
-						if (ray_bound_bound_collision(&poly->bound,&light->bound)) {
-							if (ray_precalc_light_normal_cull(scene,light,mesh,poly)) {
-
-								if (light->render.idx<(ray_max_mesh_poly_pack_list-4)) {
-
-									if (list_poly_count_idx==-1) {
-										light->render.list[light->render.idx++]=mesh_idx;
-										list_poly_count_idx=light->render.idx;
-										light->render.list[light->render.idx++]=0;
-									}
-
-									light->render.list[light->render.idx++]=t;
-									light->render.list[list_poly_count_idx]++;
-								}
+							if (list_poly_count_idx==-1) {
+								light->mesh_poly_pack_collide_list.list[light->mesh_poly_pack_collide_list.idx++]=mesh_idx;
+								list_poly_count_idx=light->mesh_poly_pack_collide_list.idx;
+								light->mesh_poly_pack_collide_list.list[light->mesh_poly_pack_collide_list.idx++]=0;
 							}
-						}
 
-						poly++;
+							light->mesh_poly_pack_collide_list.list[light->mesh_poly_pack_collide_list.idx++]=t;
+							light->mesh_poly_pack_collide_list.list[list_poly_count_idx]++;
+						}
 					}
 				}
 
-					// the mesh list is by the count, not parallel to
-					// the scene list (the mesh_idx points to that)
+				poly++;
+			}
 
-				if (scene->render.meshes[mesh_idx].light_count<ray_max_light_per_mesh) {
-					scene->render.meshes[mesh_idx].light_idxs[scene->render.meshes[mesh_idx].light_count]=k;
-					scene->render.meshes[mesh_idx].light_count++;
+				// if there was a hit, add this mesh
+				// to the light collide list
+
+			if (list_poly_count_idx!=-1) {
+				if (mesh->light_collide.count<ray_max_light_per_mesh) {
+					mesh->light_collide.lights[mesh->light_collide.count].idx=k;
+					mesh->light_collide.count++;
+				}
+			}
+		}
+	}
+
+
+
+
+
+
+
+
+
+
+
+		// now build a list of which meshes are possible
+		// light blockers for every mesh-light combo
+
+		// we use the lists created above to speed up
+		// this process
+
+	list_idx=0;
+
+	while (list_idx<scene->render.view_mesh_pack_list.idx) {
+
+		mesh_idx=scene->render.view_mesh_pack_list.list[list_idx++];
+		mesh=scene->mesh_list.meshes[mesh_idx];
+
+		for (k=0;k!=mesh->light_collide.count;k++) {
+
+			light_idx=mesh->light_collide.lights[k].idx;
+			light=scene->light_list.lights[light_idx];
+
+				// now run through the meshes and find
+				// every mesh that is between this light
+				// and this mesh, these are the possible blockers
+
+			list_2_idx=0;
+
+			while (list_2_idx<light->mesh_poly_pack_collide_list.idx) {
+
+				mesh_2_idx=light->mesh_poly_pack_collide_list.list[list_2_idx++];
+				poly_count=light->mesh_poly_pack_collide_list.list[list_2_idx++];
+
+				mesh2=scene->mesh_list.meshes[mesh_2_idx];
+
+					// skip any meshes that aren't between
+					// light and mesh
+
+				if (mesh_2_idx!=mesh_idx) {
+					if (mesh->bound.min.x>light->pnt.x) {
+						if (mesh2->bound.max.x<light->pnt.x) {
+							list_2_idx+=poly_count;
+							continue;
+						}
+					}
+					if (mesh->bound.max.x<light->pnt.x) {
+						if (mesh2->bound.min.x>light->pnt.x) {
+							list_2_idx+=poly_count;
+							continue;
+						}
+					}
+					if (mesh->bound.min.y>light->pnt.y) {
+						if (mesh2->bound.max.y<light->pnt.y) {
+							list_2_idx+=poly_count;
+							continue;
+						}
+					}
+					if (mesh->bound.max.y<light->pnt.y) {
+						if (mesh2->bound.min.y>light->pnt.y) {
+							list_2_idx+=poly_count;
+							continue;
+						}
+					}
+					if (mesh->bound.min.z>light->pnt.z) {
+						if (mesh2->bound.max.z<light->pnt.z) {
+							list_2_idx+=poly_count;
+							continue;
+						}
+					}
+					if (mesh->bound.max.z<light->pnt.z) {
+						if (mesh2->bound.min.z>light->pnt.z) {
+							list_2_idx+=poly_count;
+							continue;
+						}
+					}
 				}
 
+					// add this mesh and all it's polys
+					// to the mesh-light blocking list
+
+				pack_list=&mesh->light_collide.lights[k].mesh_poly_pack_block_list;
+
+				pack_list->list[pack_list->idx++]=mesh_2_idx;
+				pack_list->list[pack_list->idx++]=poly_count;
+						
+				for (t=0;t!=poly_count;t++) {
+					pack_list->list[pack_list->idx++]=light->mesh_poly_pack_collide_list.list[list_2_idx++];
+				}
 			}
 		}
 	}
