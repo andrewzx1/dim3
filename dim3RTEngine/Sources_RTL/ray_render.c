@@ -493,7 +493,7 @@ void ray_intersect_mesh_list_other_bounce(ray_scene_type *scene,ray_scene_slice_
       
 ======================================================= */
 
-bool ray_block_light(ray_scene_type *scene,ray_scene_slice_type *slice,ray_point_type *pnt,ray_vector_type *vct,ray_vector_type *normal_vct,float vct_dist,ray_collision_type *collision,int light_idx)
+bool ray_block_light(ray_scene_type *scene,ray_scene_slice_type *slice,ray_point_type *pnt,ray_vector_type *vct,ray_vector_type *normal_vct,float vct_dist,ray_collision_type *collision,int light_idx,int light_collide_idx)
 {
 	int									k,mesh_idx,poly_idx,trig_idx,
 										list_idx,poly_count;
@@ -505,11 +505,12 @@ bool ray_block_light(ray_scene_type *scene,ray_scene_slice_type *slice,ray_point
 	ray_trig_type						*trig;
 	ray_collision_type					lit_collision;
 	ray_scene_slice_likey_block_type	*likely_block;
+	ray_mesh_poly_pack_list				*pack_list;
 
 		// any possible blocking polygons?
 
 	light=scene->light_list.lights[light_idx];
-	if (light->render.idx==0) return(FALSE);
+	if (light->mesh_poly_pack_collide_list.idx==0) return(FALSE);
 	
 		// slices remember the last poly
 		// that blocked them reaching a certain light
@@ -547,12 +548,15 @@ bool ray_block_light(ray_scene_type *scene,ray_scene_slice_type *slice,ray_point
 		// non-hidden, and non-light blocking
 		// and only polygons within the light cone
 
+	mesh=scene->mesh_list.meshes[collision->mesh_idx];
+	pack_list=&mesh->light_collide.lights[light_collide_idx].mesh_poly_pack_block_list;
+
 	list_idx=0;
 
-	while (list_idx<light->render.idx) {
+	while (list_idx<pack_list->idx) {
 		
-		mesh_idx=light->render.list[list_idx++];
-		poly_count=light->render.list[list_idx++];
+		mesh_idx=pack_list->list[list_idx++];
+		poly_count=pack_list->list[list_idx++];
 
 		mesh=scene->mesh_list.meshes[mesh_idx];
 
@@ -563,7 +567,7 @@ bool ray_block_light(ray_scene_type *scene,ray_scene_slice_type *slice,ray_point
 
 		for (k=0;k!=poly_count;k++) {
 
-			poly_idx=light->render.list[list_idx++];
+			poly_idx=pack_list->list[list_idx++];
 			poly=&mesh->poly_block.polys[poly_idx];
 
 			if (!ray_bound_ray_collision(pnt,vct,&poly->bound)) continue;
@@ -699,8 +703,8 @@ void ray_trace_lights(ray_scene_type *scene,ray_scene_slice_type *slice,ray_poin
 
 	hit=FALSE;
 	
-	for (n=0;n!=scene->render.meshes[collision->mesh_idx].light_count;n++) {
-		light_idx=scene->render.meshes[collision->mesh_idx].light_idxs[n];
+	for (n=0;n!=mesh->light_collide.count;n++) {
+		light_idx=mesh->light_collide.lights[n].idx;
 		light=scene->light_list.lights[light_idx];
 
 			// outside of intensity globe?
@@ -738,7 +742,7 @@ void ray_trace_lights(ray_scene_type *scene,ray_scene_slice_type *slice,ray_poin
 			// check for mesh collides
 			// blocking light
 
-		if (ray_block_light(scene,slice,trig_pnt,&light_vector,&light_vector_normal,light_ray_dist,collision,light_idx)) continue;
+		if (ray_block_light(scene,slice,trig_pnt,&light_vector,&light_vector_normal,light_ray_dist,collision,light_idx,n)) continue;
 
 			// attenuate the light for distance
 

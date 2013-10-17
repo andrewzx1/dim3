@@ -175,9 +175,14 @@ typedef struct		{
 					} ray_poly_block;
 
 typedef struct		{
-						int								count,
-														idxs[ray_max_light_per_mesh];
+						int								idx;
+						ray_mesh_poly_pack_list			mesh_poly_pack_block_list;			// a list of all the mesh/polys that could block parent mesh from this light
 					} ray_mesh_light_collide_type;
+
+typedef struct		{
+						int								count;
+						ray_mesh_light_collide_type		lights[ray_max_light_per_mesh];		// a list of lights that could possibly fall onto this mesh
+					} ray_mesh_light_collide_list;
 
 typedef struct		{
 						int								id;
@@ -189,7 +194,7 @@ typedef struct		{
 						ray_tangent_block				tangent_block;
 						ray_poly_block					poly_block;
 						ray_bound_type					bound;
-						ray_mesh_light_collide_type		light_collide;
+						ray_mesh_light_collide_list		light_collide;
 					} ray_mesh_type;
 
 typedef struct		{
@@ -217,7 +222,7 @@ typedef struct		{
 						ray_color_type					col;
 						ray_light_direction_type		direction;
 						ray_bound_type					bound;
-						ray_mesh_poly_pack_list			render;
+						ray_mesh_poly_pack_list			mesh_poly_pack_collide_list;
 					} ray_light_type;
 
 typedef struct		{
@@ -248,11 +253,6 @@ typedef struct		{
 					} ray_scene_slice_type;
 
 typedef struct		{
-						int										light_count,
-																light_idxs[ray_max_light_per_mesh];
-					} ray_scene_render_mesh_type;
-
-typedef struct		{
 						bool									shutdown_done;
 						void									*parent_scene;					// this is a pointer back to the parent structure, need by threading
 						ray_thread								thread;
@@ -264,7 +264,6 @@ typedef struct		{
 						ray_cond								thread_cond;					// thread_cond only needed for pthread con waits
 						ray_scene_thread_type					*threads;						// initially ray_render_max_thread_count
 						ray_scene_slice_type					*slices;						// initially ray_render_max_slice_count
-						ray_scene_render_mesh_type				*meshes;						// initially ray_max_scene_mesh
 						ray_mesh_pack_list						view_mesh_pack_list;
 					} ray_scene_render_type;
 
