@@ -466,11 +466,6 @@ void ray_precalc_render_scene_setup(ray_scene_type *scene)
 	for (n=0;n!=scene->light_list.count;n++) {
 		scene->light_list.lights[n]->mesh_poly_pack_collide_list.idx=0;
 	}
-	
-
-
-
-
 
 		// here we build two lists, one for each
 		// mesh which shows what lights fall on them,
@@ -496,12 +491,24 @@ void ray_precalc_render_scene_setup(ray_scene_type *scene)
 			if (light->hidden) continue;
 
 			if (!ray_bound_bound_collision(&mesh->bound,&light->bound)) continue;
-			if ((mesh->flags&RL_MESH_FLAG_NON_LIGHT_TRACE_BLOCKING)!=0x0) continue;
 
-			list_poly_count_idx=-1;
+				// add this light to the mesh list so the
+				// mesh knows only the lights that hit it
+
+			if (mesh->light_collide.count<ray_max_light_per_mesh) {
+				mesh->light_collide.lights[mesh->light_collide.count].idx=k;
+				mesh->light_collide.count++;
+			}
+
+				// skip adding any meshes to the light
+				// collision list that don't block light
+
+			if ((mesh->flags&RL_MESH_FLAG_NON_LIGHT_TRACE_BLOCKING)!=0x0) continue;
 
 				// determine the polys the light
 				// can hit by bounding and normal culling
+
+			list_poly_count_idx=-1;
 
 			poly=mesh->poly_block.polys;
 
@@ -525,28 +532,8 @@ void ray_precalc_render_scene_setup(ray_scene_type *scene)
 
 				poly++;
 			}
-
-				// if there was a hit, add this mesh
-				// to the light collide list
-
-			if (list_poly_count_idx!=-1) {
-				if (mesh->light_collide.count<ray_max_light_per_mesh) {
-					mesh->light_collide.lights[mesh->light_collide.count].idx=k;
-					mesh->light_collide.count++;
-				}
-			}
 		}
 	}
-
-
-
-
-
-
-
-
-
-
 
 		// now build a list of which meshes are possible
 		// light blockers for every mesh-light combo
