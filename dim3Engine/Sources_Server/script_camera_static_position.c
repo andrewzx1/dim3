@@ -108,21 +108,9 @@ bool js_camera_static_position_set_follow(JSContextRef cx,JSObjectRef j_obj,JSSt
 
 JSValueRef js_camera_static_position_move_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
-	if (iface.project.modernize) {
-		if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 
-		script_value_to_point(cx,argv[0],&camera.cur_pos.pnt);
-		
-		return(script_null_to_value(cx));
-	}
-
-		// supergumba:modernize -- delete later
-
-	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
-	
-	camera.cur_pos.pnt.x=script_value_to_int(cx,argv[0]);
-	camera.cur_pos.pnt.y=script_value_to_int(cx,argv[2]);
-	camera.cur_pos.pnt.z=script_value_to_int(cx,argv[1]);
+	script_value_to_point(cx,argv[0],&camera.cur_pos.pnt);
 	
 	return(script_null_to_value(cx));
 }

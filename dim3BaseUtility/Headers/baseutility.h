@@ -1469,8 +1469,7 @@ typedef struct		{
 
 typedef struct		{
 						char							name[name_str_len];
-						bool							modernize,
-														simple_save,checkpoints,
+						bool							simple_save,checkpoints,
 														load_requires_click;
 					} iface_project_type;
 

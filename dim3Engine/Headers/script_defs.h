@@ -448,20 +448,6 @@ typedef struct		{
 					} timer_list_type;
 
 //
-// script message structures
-//
-
-typedef struct		{
-						int								type;
-						d3_jsval_data_type				data;
-					} script_msg_type;
-
-typedef struct		{
-						script_msg_type					set[max_script_msg_data],	// supergumba:modernize -- get rid of this after modernize is finished
-														get[max_script_msg_data];
-					} script_message_data_type;
-
-//
 // script structures
 //
 
@@ -471,7 +457,6 @@ typedef struct		{
 					} script_recursive_type;
 
 typedef struct		{
-						bool							on;
 						JSObjectRef						func[event_main_id_count];
 					} script_event_attach_list_type;
 
@@ -488,9 +473,8 @@ typedef struct		{
 						script_event_state_type			event_state;
 						script_recursive_type			recursive;
 						script_event_attach_list_type	event_attach_list;
-						script_message_data_type		msg_data;
 						JSGlobalContextRef				cx;
-						JSObjectRef						obj,global_obj,event_func;
+						JSObjectRef						obj,global_obj;
 					} script_type;
 
 typedef struct		{

@@ -82,28 +82,12 @@ JSValueRef js_utility_point_equal_func(JSContextRef cx,JSObjectRef func,JSObject
 	int				slop;
 	d3pnt			pnt,to_pnt;
 
-	if (iface.project.modernize) {
-		if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
+	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
 
-		script_value_to_point(cx,argv[0],&pnt);
-		script_value_to_point(cx,argv[1],&to_pnt);
-		slop=script_value_to_int(cx,argv[2]);
-	
-		return(script_bool_to_value(cx,!((pnt.x<(to_pnt.x-slop)) || (pnt.x>(to_pnt.x+slop)) || (pnt.y<(to_pnt.y-slop)) || (pnt.y>(to_pnt.y+slop)) || (pnt.z<(to_pnt.z-slop)) || (pnt.z>(to_pnt.z+slop)))));
-	}
+	script_value_to_point(cx,argv[0],&pnt);
+	script_value_to_point(cx,argv[1],&to_pnt);
+	slop=script_value_to_int(cx,argv[2]);
 
-	// supergumba:modernize -- delete later
-
-	if (!script_check_param_count(cx,func,argc,7,exception)) return(script_null_to_value(cx));
-
-	pnt.x=script_value_to_int(cx,argv[0]);
-	pnt.z=script_value_to_int(cx,argv[1]);
-	pnt.y=script_value_to_int(cx,argv[2]);
-	to_pnt.x=script_value_to_int(cx,argv[3]);
-	to_pnt.z=script_value_to_int(cx,argv[4]);
-	to_pnt.y=script_value_to_int(cx,argv[5]);
-	slop=script_value_to_int(cx,argv[6]);
-	
 	return(script_bool_to_value(cx,!((pnt.x<(to_pnt.x-slop)) || (pnt.x>(to_pnt.x+slop)) || (pnt.y<(to_pnt.y-slop)) || (pnt.y>(to_pnt.y+slop)) || (pnt.z<(to_pnt.z-slop)) || (pnt.z>(to_pnt.z+slop)))));
 }
 
@@ -112,25 +96,11 @@ JSValueRef js_utility_point_angle_to_func(JSContextRef cx,JSObjectRef func,JSObj
 	float			ang;
 	d3pnt			pnt,to_pnt;
 	
-	if (iface.project.modernize) {
-		if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
+	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
 
-		script_value_to_2D_point(cx,argv[0],&pnt);
-		script_value_to_2D_point(cx,argv[1],&to_pnt);
-	
-		ang=angle_find(pnt.x,pnt.z,to_pnt.x,to_pnt.z);
-		return(script_float_to_value(cx,ang));
-	}
+	script_value_to_2D_point(cx,argv[0],&pnt);
+	script_value_to_2D_point(cx,argv[1],&to_pnt);
 
-	// supergumba:modernize -- delete later
-
-	if (!script_check_param_count(cx,func,argc,4,exception)) return(script_null_to_value(cx));
-
-	pnt.x=script_value_to_int(cx,argv[0]);
-	pnt.z=script_value_to_int(cx,argv[1]);
-	to_pnt.x=script_value_to_int(cx,argv[2]);
-	to_pnt.z=script_value_to_int(cx,argv[3]);
-	
 	ang=angle_find(pnt.x,pnt.z,to_pnt.x,to_pnt.z);
 	return(script_float_to_value(cx,ang));
 }
@@ -140,26 +110,10 @@ JSValueRef js_utility_point_distance_to_func(JSContextRef cx,JSObjectRef func,JS
 	int				dist;
 	d3pnt			pnt,to_pnt;
 	
-	if (iface.project.modernize) {
-		if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
+	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
 
-		script_value_to_point(cx,argv[0],&pnt);
-		script_value_to_point(cx,argv[1],&to_pnt);
-	
-		dist=distance_get(pnt.x,pnt.y,pnt.z,to_pnt.x,to_pnt.y,to_pnt.z);
-		return(script_int_to_value(cx,dist));
-	}
-
-	// supergumba:modernize -- delete later
-
-	if (!script_check_param_count(cx,func,argc,6,exception)) return(script_null_to_value(cx));
-
-	pnt.x=script_value_to_int(cx,argv[0]);
-	pnt.z=script_value_to_int(cx,argv[1]);
-	pnt.y=script_value_to_int(cx,argv[2]);
-	to_pnt.x=script_value_to_int(cx,argv[3]);
-	to_pnt.z=script_value_to_int(cx,argv[4]);
-	to_pnt.y=script_value_to_int(cx,argv[5]);
+	script_value_to_point(cx,argv[0],&pnt);
+	script_value_to_point(cx,argv[1],&to_pnt);
 
 	dist=distance_get(pnt.x,pnt.y,pnt.z,to_pnt.x,to_pnt.y,to_pnt.z);
 	return(script_int_to_value(cx,dist));
@@ -169,23 +123,9 @@ JSValueRef js_utility_point_transform_3D_to_2D_func(JSContextRef cx,JSObjectRef 
 {
 	d3pnt			pnt;
 	
-	if (iface.project.modernize) {
-		if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 
-		script_value_to_point(cx,argv[0],&pnt);
-		view_script_transform_3D_to_2D(&pnt);
-
-		return(script_point_to_value(cx,&pnt));
-	}
-
-	// supergumba:modernize -- delete later
-	
-	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
-
-	pnt.x=script_value_to_int(cx,argv[0]);
-	pnt.z=script_value_to_int(cx,argv[1]);
-	pnt.y=script_value_to_int(cx,argv[2]);
-	
+	script_value_to_point(cx,argv[0],&pnt);
 	view_script_transform_3D_to_2D(&pnt);
 
 	return(script_point_to_value(cx,&pnt));

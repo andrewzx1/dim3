@@ -139,30 +139,17 @@ JSValueRef js_obj_position_place_func(JSContextRef cx,JSObjectRef func,JSObjectR
 	d3pnt			pnt;
 	obj_type		*obj;
 
-	if (iface.project.modernize) {
-		if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
-			
-		obj=object_get_attach(j_obj);
+	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
 		
-		script_value_to_point(cx,argv[0],&pnt);
-		ang_y=script_value_to_float(cx,argv[1]);
-
-		object_set_position(obj,pnt.x,pnt.y,pnt.z,ang_y,0);
-		object_telefrag_players(obj,FALSE);
-
-		return(script_null_to_value(cx));
-	}
-
-	// supergumba:modernize -- delete later
-	
-	if (!script_check_param_count(cx,func,argc,4,exception)) return(script_null_to_value(cx));
-	
 	obj=object_get_attach(j_obj);
+	
+	script_value_to_point(cx,argv[0],&pnt);
+	ang_y=script_value_to_float(cx,argv[1]);
 
-	object_set_position(obj,script_value_to_int(cx,argv[0]),script_value_to_int(cx,argv[2]),script_value_to_int(cx,argv[1]),script_value_to_float(cx,argv[3]),0);
+	object_set_position(obj,pnt.x,pnt.y,pnt.z,ang_y,0);
 	object_telefrag_players(obj,FALSE);
-    
-    return(script_bool_to_value(cx,TRUE));
+
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_obj_position_place_random_spot_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -238,37 +225,19 @@ JSValueRef js_obj_position_place_network_spot_func(JSContextRef cx,JSObjectRef f
 
 JSValueRef js_obj_position_move_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
-	int				xadd,zadd,yadd;
 	d3pnt			add;
 	obj_type		*obj;
 
-	if (iface.project.modernize) {
-		if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
-			
-		obj=object_get_attach(j_obj);
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 		
-		script_value_to_point(cx,argv[0],&add);
-
-		object_set_position(obj,(obj->pnt.x+add.x),(obj->pnt.y+add.y),(obj->pnt.z+add.z),obj->ang.y,0);
-		object_telefrag_players(obj,FALSE);
-
-		return(script_null_to_value(cx));
-	}
-	
-	// supergumba:modernize -- delete later
-
-	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
-	
 	obj=object_get_attach(j_obj);
 	
-	xadd=script_value_to_int(cx,argv[0]);
-	zadd=script_value_to_int(cx,argv[1]);
-	yadd=script_value_to_int(cx,argv[2]);
-	
-	object_set_position(obj,(obj->pnt.x+xadd),(obj->pnt.y+yadd),(obj->pnt.z+zadd),obj->ang.y,0);
- 	object_telefrag_players(obj,FALSE);
+	script_value_to_point(cx,argv[0],&add);
 
-	return(script_bool_to_value(cx,TRUE));
+	object_set_position(obj,(obj->pnt.x+add.x),(obj->pnt.y+add.y),(obj->pnt.z+add.z),obj->ang.y,0);
+	object_telefrag_players(obj,FALSE);
+
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_obj_position_reset_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
