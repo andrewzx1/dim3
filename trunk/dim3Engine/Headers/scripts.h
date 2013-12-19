@@ -165,7 +165,6 @@ extern void script_init_global_spawn_object(void);
 
 extern void script_init_global_utility_object(void);
 extern void script_init_utility_angle_object(void);
-extern void script_init_utility_pack_object(void);
 extern void script_init_utility_point_object(void);
 extern void script_init_utility_random_object(void);
 
@@ -316,7 +315,6 @@ extern void script_free_global_spawn_object(void);
 
 extern void script_free_global_utility_object(void);
 extern void script_free_utility_angle_object(void);
-extern void script_free_utility_pack_object(void);
 extern void script_free_utility_point_object(void);
 extern void script_free_utility_random_object(void);
 
@@ -467,7 +465,6 @@ extern JSObjectRef script_add_global_spawn_object(JSContextRef cx,JSObjectRef pa
 
 extern JSObjectRef script_add_global_utility_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx);
 extern JSObjectRef script_add_utility_angle_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx);
-extern JSObjectRef script_add_utility_pack_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx);
 extern JSObjectRef script_add_utility_point_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx);
 extern JSObjectRef script_add_utility_random_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx);
 
@@ -562,7 +559,6 @@ extern JSObjectRef script_add_proj_melee_object(JSContextRef cx,JSObjectRef pare
 // event posting, chaining
 //
 
-extern void scripts_setup_events(script_type *script);
 extern bool scripts_setup_event_attach(int script_idx,int main_event,char *func_name,char *err_str);
 extern inline void scripts_lock_events(void);
 extern inline void scripts_unlock_events(void);

@@ -45,16 +45,6 @@ extern iface_type			iface;
       
 ======================================================= */
 
-void scripts_setup_events(script_type *script)
-{
-	if (iface.project.modernize) {
-		script->event_func=NULL;
-		return;
-	}
-
-	script->event_func=script_get_single_function(script->cx,script->global_obj,"event");
-}
-
 bool scripts_setup_event_attach(int script_idx,int main_event,char *func_name,char *err_str)
 {
 	int					idx;
@@ -81,12 +71,10 @@ bool scripts_setup_event_attach(int script_idx,int main_event,char *func_name,ch
 		return(FALSE);
 	}
 
-		// attach, any attachment turns on
-		// this version of event calling
+		// attach
 
 	idx=main_event-event_main_id_start;
 
-	script->event_attach_list.on=TRUE;
 	script->event_attach_list.func[idx]=func;
 
 	return(TRUE);
@@ -163,13 +151,7 @@ bool scripts_post_event_on_attach(int script_idx,int override_proj_idx,int main_
 		// is this an attached event?
 
 	event_idx=main_event-event_main_id_start;
-
-	if (script->event_attach_list.on) {
-		if (script->event_attach_list.func[event_idx]==NULL) return(TRUE);
-	}
-	else {
-		if (script->event_func==NULL) return(TRUE);
-	}
+	if (script->event_attach_list.func[event_idx]==NULL) return(TRUE);
 	
 		// can't re-enter an event we are already in
 		// this is a silent failure as it usually happens
@@ -202,29 +184,14 @@ bool scripts_post_event_on_attach(int script_idx,int override_proj_idx,int main_
 	}
 
 		// run the event function
-		// supergumba -- for now we handle both methods, but
-		// in the future we should replace with a single method
-		
-	if (script->event_attach_list.on) {
-		argv[0]=(JSValueRef)script->obj;
-		argv[1]=script_int_to_value(script->cx,sub_event);
-		argv[2]=script_int_to_value(script->cx,id);
-		argv[3]=script_int_to_value(script->cx,tick);
-		
-		rval=JSObjectCallAsFunction(script->cx,script->event_attach_list.func[event_idx],NULL,4,argv,&exception);
-		if (rval==NULL) script_exception_to_string(script->cx,main_event,exception,err_str,256);
-	}
 
-	else {
-		argv[0]=(JSValueRef)script->obj;
-		argv[1]=script_int_to_value(script->cx,main_event);
-		argv[2]=script_int_to_value(script->cx,sub_event);
-		argv[3]=script_int_to_value(script->cx,id);
-		argv[4]=script_int_to_value(script->cx,tick);
-
-		rval=JSObjectCallAsFunction(script->cx,script->event_func,NULL,5,argv,&exception);
-		if (rval==NULL) script_exception_to_string(script->cx,main_event,exception,err_str,256);
-	}
+	argv[0]=(JSValueRef)script->obj;
+	argv[1]=script_int_to_value(script->cx,sub_event);
+	argv[2]=script_int_to_value(script->cx,id);
+	argv[3]=script_int_to_value(script->cx,tick);
+	
+	rval=JSObjectCallAsFunction(script->cx,script->event_attach_list.func[event_idx],NULL,4,argv,&exception);
+	if (rval==NULL) script_exception_to_string(script->cx,main_event,exception,err_str,256);
 
 		// switch back any saved proj_idx
 
@@ -250,13 +217,7 @@ bool scripts_post_event(int script_idx,int override_proj_idx,int main_event,int 
 
 	if (script_idx==-1) return(TRUE);
 
-		// if not using event attachments,
-		// then we can only call events on the
-		// curent script.
-		// supergumba -- all this needs to be removed
-	
 	script=js.script_list.scripts[script_idx];
-	if (!script->event_attach_list.on) return(scripts_post_event_on_attach(script_idx,override_proj_idx,main_event,sub_event,id,err_str));
 
 	event_idx=main_event-event_main_id_start;
 

@@ -120,32 +120,10 @@ JSValueRef js_spawn_particle_func(JSContextRef cx,JSObjectRef func,JSObjectRef j
 	char			name[name_str_len];
 	d3pnt			pnt;
 
-	if (iface.project.modernize) {
-		if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
+	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
 
-		script_value_to_point(cx,argv[0],&pnt);
-		script_value_to_string(cx,argv[1],name,name_str_len);
-		
-		idx=particle_find_index(name);
-		if (idx==-1) {
-			*exception=js_particle_name_exception(cx,name);
-		}
-		else {
-			script_bool_to_value(cx,particle_spawn(idx,script_get_attached_object_uid(j_obj),&pnt,NULL,NULL));
-		}
-
-		return(script_null_to_value(cx));
-	}
-
-	// supergumba:modernize -- delete later
-	
-	if (!script_check_param_count(cx,func,argc,4,exception)) return(script_null_to_value(cx));
-	
-	pnt.x=script_value_to_int(cx,argv[0]);
-	pnt.z=script_value_to_int(cx,argv[1]);
-	pnt.y=script_value_to_int(cx,argv[2]);
-	
-	script_value_to_string(cx,argv[3],name,name_str_len);
+	script_value_to_point(cx,argv[0],&pnt);
+	script_value_to_string(cx,argv[1],name,name_str_len);
 	
 	idx=particle_find_index(name);
 	if (idx==-1) {
@@ -164,40 +142,13 @@ JSValueRef js_spawn_particle_moving_func(JSContextRef cx,JSObjectRef func,JSObje
 	char			name[name_str_len];
 	d3pnt			pnt;
 	particle_motion	motion;
-	
-	if (iface.project.modernize) {
-		if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
-		
-		motion.bone_idx=-1;
-		script_value_to_point(cx,argv[0],&pnt);
-		script_value_to_vector(cx,argv[1],&motion.vct);
-		script_value_to_string(cx,argv[2],name,name_str_len);
-		
-		idx=particle_find_index(name);
-		if (idx==-1) {
-			*exception=js_particle_name_exception(cx,name);
-		}
-		else {
-			script_bool_to_value(cx,particle_spawn(idx,script_get_attached_object_uid(j_obj),&pnt,NULL,&motion));
-		}
 
-		return(script_null_to_value(cx));
-	}
-
-	// supergumba:modernize -- delete later
-
-	if (!script_check_param_count(cx,func,argc,7,exception)) return(script_null_to_value(cx));
-	
-	pnt.x=script_value_to_int(cx,argv[0]);
-	pnt.z=script_value_to_int(cx,argv[1]);
-	pnt.y=script_value_to_int(cx,argv[2]);
+	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
 	
 	motion.bone_idx=-1;
-	motion.vct.x=script_value_to_float(cx,argv[3]);
-	motion.vct.z=script_value_to_float(cx,argv[4]);
-	motion.vct.y=script_value_to_float(cx,argv[5]);
-
-	script_value_to_string(cx,argv[6],name,name_str_len);
+	script_value_to_point(cx,argv[0],&pnt);
+	script_value_to_vector(cx,argv[1],&motion.vct);
+	script_value_to_string(cx,argv[2],name,name_str_len);
 	
 	idx=particle_find_index(name);
 	if (idx==-1) {
@@ -216,40 +167,12 @@ JSValueRef js_spawn_particle_line_func(JSContextRef cx,JSObjectRef func,JSObject
 	char			name[name_str_len];
 	d3pnt			start_pnt,end_pnt;
 
-	if (iface.project.modernize) {
-		if (!script_check_param_count(cx,func,argc,4,exception)) return(script_null_to_value(cx));
-		
-		script_value_to_point(cx,argv[0],&start_pnt);
-		script_value_to_point(cx,argv[1],&end_pnt);
-		count=script_value_to_int(cx,argv[2]);
-		script_value_to_string(cx,argv[3],name,name_str_len);
-		
-		idx=particle_find_index(name);
-		if (idx==-1) {
-			*exception=js_particle_name_exception(cx,name);
-		}
-		else {
-			script_bool_to_value(cx,particle_line_spawn(idx,script_get_attached_object_uid(j_obj),&start_pnt,&end_pnt,count));
-		}
-
-		return(script_null_to_value(cx));
-	}
-
-	// supergumba:modernize -- delete later
-
-	if (!script_check_param_count(cx,func,argc,8,exception)) return(script_null_to_value(cx));
+	if (!script_check_param_count(cx,func,argc,4,exception)) return(script_null_to_value(cx));
 	
-	start_pnt.x=script_value_to_int(cx,argv[0]);
-	start_pnt.z=script_value_to_int(cx,argv[1]);
-	start_pnt.y=script_value_to_int(cx,argv[2]);
-
-	end_pnt.x=script_value_to_int(cx,argv[3]);
-	end_pnt.z=script_value_to_int(cx,argv[4]);
-	end_pnt.y=script_value_to_int(cx,argv[5]);
-
-	count=script_value_to_int(cx,argv[6]);
-
-	script_value_to_string(cx,argv[7],name,name_str_len);
+	script_value_to_point(cx,argv[0],&start_pnt);
+	script_value_to_point(cx,argv[1],&end_pnt);
+	count=script_value_to_int(cx,argv[2]);
+	script_value_to_string(cx,argv[3],name,name_str_len);
 	
 	idx=particle_find_index(name);
 	if (idx==-1) {
@@ -274,32 +197,10 @@ JSValueRef js_spawn_ring_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj
 	char			name[name_str_len];
 	d3pnt			pnt;
 
-	if (iface.project.modernize) {
-		if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
-		
-		script_value_to_point(cx,argv[0],&pnt);
-		script_value_to_string(cx,argv[1],name,name_str_len);
-		
-		idx=ring_find_index(name);
-		if (idx==-1) {
-			*exception=js_ring_name_exception(cx,name);
-		}
-		else {
-			script_bool_to_value(cx,ring_spawn(idx,script_get_attached_object_uid(j_obj),&pnt,NULL));
-		}
-
-		return(script_null_to_value(cx));
-	}
-
-	// supergumba:modernize -- delete later
+	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
 	
-	if (!script_check_param_count(cx,func,argc,4,exception)) return(script_null_to_value(cx));
-	
-	pnt.x=script_value_to_int(cx,argv[0]);
-	pnt.z=script_value_to_int(cx,argv[1]);
-	pnt.y=script_value_to_int(cx,argv[2]);
-	
-	script_value_to_string(cx,argv[3],name,name_str_len);
+	script_value_to_point(cx,argv[0],&pnt);
+	script_value_to_string(cx,argv[1],name,name_str_len);
 	
 	idx=ring_find_index(name);
 	if (idx==-1) {
@@ -318,40 +219,12 @@ JSValueRef js_spawn_ring_line_func(JSContextRef cx,JSObjectRef func,JSObjectRef 
 	char			name[name_str_len];
 	d3pnt			start_pnt,end_pnt;
 
-	if (iface.project.modernize) {
-		if (!script_check_param_count(cx,func,argc,4,exception)) return(script_null_to_value(cx));
-		
-		script_value_to_point(cx,argv[0],&start_pnt);
-		script_value_to_point(cx,argv[1],&end_pnt);
-		count=script_value_to_int(cx,argv[2]);
-		script_value_to_string(cx,argv[3],name,name_str_len);
-		
-		idx=ring_find_index(name);
-		if (idx==-1) {
-			*exception=js_ring_name_exception(cx,name);
-		}
-		else {
-			script_bool_to_value(cx,ring_line_spawn(idx,script_get_attached_object_uid(j_obj),&start_pnt,&end_pnt,count));
-		}
-
-		return(script_null_to_value(cx));
-	}
-
-	// supergumba:modernize -- delete later
+	if (!script_check_param_count(cx,func,argc,4,exception)) return(script_null_to_value(cx));
 	
-	if (!script_check_param_count(cx,func,argc,8,exception)) return(script_null_to_value(cx));
-	
-	start_pnt.x=script_value_to_int(cx,argv[0]);
-	start_pnt.z=script_value_to_int(cx,argv[1]);
-	start_pnt.y=script_value_to_int(cx,argv[2]);
-
-	end_pnt.x=script_value_to_int(cx,argv[3]);
-	end_pnt.z=script_value_to_int(cx,argv[4]);
-	end_pnt.y=script_value_to_int(cx,argv[5]);
-
-	count=script_value_to_int(cx,argv[6]);
-
-	script_value_to_string(cx,argv[7],name,name_str_len);
+	script_value_to_point(cx,argv[0],&start_pnt);
+	script_value_to_point(cx,argv[1],&end_pnt);
+	count=script_value_to_int(cx,argv[2]);
+	script_value_to_string(cx,argv[3],name,name_str_len);
 	
 	idx=ring_find_index(name);
 	if (idx==-1) {
@@ -376,35 +249,13 @@ JSValueRef js_spawn_flash_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_ob
 	d3pnt			pnt;
 	d3col			col;
 
-	if (iface.project.modernize) {
-		if (!script_check_param_count(cx,func,argc,5,exception)) return(script_null_to_value(cx));
-		
-		script_value_to_point(cx,argv[0],&pnt);
-		script_value_to_color(cx,argv[1],&col);
-		intensity=script_value_to_int(cx,argv[2]);
-		flash_msec=script_value_to_int(cx,argv[3]);
-		fade_msec=script_value_to_int(cx,argv[4]);
-
-		script_bool_to_value(cx,effect_spawn_flash(&pnt,&col,intensity,1.0f,flash_msec,fade_msec));
-	    
-		return(script_null_to_value(cx));
-	}
-
-	// supergumba:modernize -- delete later
+	if (!script_check_param_count(cx,func,argc,5,exception)) return(script_null_to_value(cx));
 	
-	if (!script_check_param_count(cx,func,argc,9,exception)) return(script_null_to_value(cx));
-	
-	pnt.x=script_value_to_int(cx,argv[0]);
-	pnt.z=script_value_to_int(cx,argv[1]);
-	pnt.y=script_value_to_int(cx,argv[2]);
-
-	col.r=script_value_to_float(cx,argv[3]);
-	col.g=script_value_to_float(cx,argv[4]);
-	col.b=script_value_to_float(cx,argv[5]);
-
-	intensity=script_value_to_int(cx,argv[6]);
-	flash_msec=script_value_to_int(cx,argv[7]);
-	fade_msec=script_value_to_int(cx,argv[8]);
+	script_value_to_point(cx,argv[0],&pnt);
+	script_value_to_color(cx,argv[1],&col);
+	intensity=script_value_to_int(cx,argv[2]);
+	flash_msec=script_value_to_int(cx,argv[3]);
+	fade_msec=script_value_to_int(cx,argv[4]);
 
 	script_bool_to_value(cx,effect_spawn_flash(&pnt,&col,intensity,1.0f,flash_msec,fade_msec));
     
@@ -424,41 +275,14 @@ JSValueRef js_spawn_lightning_func(JSContextRef cx,JSObjectRef func,JSObjectRef 
 	d3pnt			start_pnt,end_pnt;
 	d3col			col;
 
-	if (iface.project.modernize) {
-		if (!script_check_param_count(cx,func,argc,6,exception)) return(script_null_to_value(cx));
+	if (!script_check_param_count(cx,func,argc,6,exception)) return(script_null_to_value(cx));
 
-		script_value_to_point(cx,argv[0],&start_pnt);
-		script_value_to_point(cx,argv[1],&end_pnt);
-		wid=script_value_to_int(cx,argv[2]);
-		varient=script_value_to_float(cx,argv[3]);
-		script_value_to_color(cx,argv[4],&col);
-		life_msec=script_value_to_int(cx,argv[5]);
-
-		script_bool_to_value(cx,effect_spawn_lightning(&start_pnt,&end_pnt,wid,varient,&col,life_msec));
-	    
-		return(script_null_to_value(cx));
-	}
-
-	// supergumba:modernize -- delete later
-	
-	if (!script_check_param_count(cx,func,argc,12,exception)) return(script_null_to_value(cx));
-	
-	start_pnt.x=script_value_to_int(cx,argv[0]);
-	start_pnt.z=script_value_to_int(cx,argv[1]);
-	start_pnt.y=script_value_to_int(cx,argv[2]);
-
-	end_pnt.x=script_value_to_int(cx,argv[3]);
-	end_pnt.z=script_value_to_int(cx,argv[4]);
-	end_pnt.y=script_value_to_int(cx,argv[5]);
-	
-	wid=script_value_to_int(cx,argv[6]);
-	varient=script_value_to_float(cx,argv[7]);
-
-	col.r=script_value_to_float(cx,argv[8]);
-	col.g=script_value_to_float(cx,argv[9]);
-	col.b=script_value_to_float(cx,argv[10]);
-
-	life_msec=script_value_to_int(cx,argv[11]);
+	script_value_to_point(cx,argv[0],&start_pnt);
+	script_value_to_point(cx,argv[1],&end_pnt);
+	wid=script_value_to_int(cx,argv[2]);
+	varient=script_value_to_float(cx,argv[3]);
+	script_value_to_color(cx,argv[4],&col);
+	life_msec=script_value_to_int(cx,argv[5]);
 
 	script_bool_to_value(cx,effect_spawn_lightning(&start_pnt,&end_pnt,wid,varient,&col,life_msec));
     
@@ -477,39 +301,13 @@ JSValueRef js_spawn_ray_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,
 	d3pnt			start_pnt,end_pnt;
 	d3col			col;
 
-	if (iface.project.modernize) {
-		if (!script_check_param_count(cx,func,argc,5,exception)) return(script_null_to_value(cx));
-		
-		script_value_to_point(cx,argv[0],&start_pnt);
-		script_value_to_point(cx,argv[1],&end_pnt);
-		wid=script_value_to_int(cx,argv[2]);
-		script_value_to_color(cx,argv[3],&col);
-		life_msec=script_value_to_int(cx,argv[4]);
-
-		script_bool_to_value(cx,effect_spawn_ray(&start_pnt,&end_pnt,wid,&col,life_msec));
-	    
-		return(script_null_to_value(cx));
-	}
-
-	// supergumba:modernize -- delete later
+	if (!script_check_param_count(cx,func,argc,5,exception)) return(script_null_to_value(cx));
 	
-	if (!script_check_param_count(cx,func,argc,11,exception)) return(script_null_to_value(cx));
-	
-	start_pnt.x=script_value_to_int(cx,argv[0]);
-	start_pnt.z=script_value_to_int(cx,argv[1]);
-	start_pnt.y=script_value_to_int(cx,argv[2]);
-
-	end_pnt.x=script_value_to_int(cx,argv[3]);
-	end_pnt.z=script_value_to_int(cx,argv[4]);
-	end_pnt.y=script_value_to_int(cx,argv[5]);
-	
-	wid=script_value_to_int(cx,argv[6]);
-
-	col.r=script_value_to_float(cx,argv[7]);
-	col.g=script_value_to_float(cx,argv[8]);
-	col.b=script_value_to_float(cx,argv[9]);
-
-	life_msec=script_value_to_int(cx,argv[10]);
+	script_value_to_point(cx,argv[0],&start_pnt);
+	script_value_to_point(cx,argv[1],&end_pnt);
+	wid=script_value_to_int(cx,argv[2]);
+	script_value_to_color(cx,argv[3],&col);
+	life_msec=script_value_to_int(cx,argv[4]);
 
 	script_bool_to_value(cx,effect_spawn_ray(&start_pnt,&end_pnt,wid,&col,life_msec));
     
@@ -523,44 +321,12 @@ JSValueRef js_spawn_ray_team_color_func(JSContextRef cx,JSObjectRef func,JSObjec
 	d3col			col;
 	obj_type		*obj;
 
-	if (iface.project.modernize) {
-		if (!script_check_param_count(cx,func,argc,4,exception)) return(script_null_to_value(cx));
-		
-		script_value_to_point(cx,argv[0],&start_pnt);
-		script_value_to_point(cx,argv[1],&end_pnt);
-		wid=script_value_to_int(cx,argv[2]);
-		life_msec=script_value_to_int(cx,argv[3]);
-
-			// team color
-
-		col.r=col.g=col.b=1.0f;
-
-		obj_idx=script_get_attached_object_uid(j_obj);
-		if (obj_idx!=-1) {
-			obj=server.obj_list.objs[obj_idx];
-			if (obj!=NULL) object_get_tint(obj,&col);
-		}
-
-		script_bool_to_value(cx,effect_spawn_ray(&start_pnt,&end_pnt,wid,&col,life_msec));
-	    
-		return(script_null_to_value(cx));
-	}
-
-	// supergumba:modernize -- delete later
+	if (!script_check_param_count(cx,func,argc,4,exception)) return(script_null_to_value(cx));
 	
-	if (!script_check_param_count(cx,func,argc,8,exception)) return(script_null_to_value(cx));
-	
-	start_pnt.x=script_value_to_int(cx,argv[0]);
-	start_pnt.z=script_value_to_int(cx,argv[1]);
-	start_pnt.y=script_value_to_int(cx,argv[2]);
-
-	end_pnt.x=script_value_to_int(cx,argv[3]);
-	end_pnt.z=script_value_to_int(cx,argv[4]);
-	end_pnt.y=script_value_to_int(cx,argv[5]);
-	
-	wid=script_value_to_int(cx,argv[6]);
-
-	life_msec=script_value_to_int(cx,argv[7]);
+	script_value_to_point(cx,argv[0],&start_pnt);
+	script_value_to_point(cx,argv[1],&end_pnt);
+	wid=script_value_to_int(cx,argv[2]);
+	life_msec=script_value_to_int(cx,argv[3]);
 
 		// team color
 
@@ -588,31 +354,12 @@ JSValueRef js_spawn_shake_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_ob
 	int				dist,sz,life_msec;
 	d3pnt			pnt;
 
-	if (iface.project.modernize) {
-		if (!script_check_param_count(cx,func,argc,4,exception)) return(script_null_to_value(cx));
-		
-		script_value_to_point(cx,argv[0],&pnt);
-		dist=script_value_to_int(cx,argv[1]);
-		sz=script_value_to_int(cx,argv[2]);
-		life_msec=script_value_to_int(cx,argv[3]);
-		
-		script_bool_to_value(cx,effect_spawn_shake(&pnt,dist,sz,life_msec));
-	    
-		return(script_null_to_value(cx));
-	}
-
-	// supergumba:modernize -- delete later
+	if (!script_check_param_count(cx,func,argc,4,exception)) return(script_null_to_value(cx));
 	
-	if (!script_check_param_count(cx,func,argc,6,exception)) return(script_null_to_value(cx));
-	
-	pnt.x=script_value_to_int(cx,argv[0]);
-	pnt.z=script_value_to_int(cx,argv[1]);
-	pnt.y=script_value_to_int(cx,argv[2]);
-    
-    dist=script_value_to_int(cx,argv[3]);
-	
-	sz=script_value_to_int(cx,argv[4]);
-	life_msec=script_value_to_int(cx,argv[5]);
+	script_value_to_point(cx,argv[0],&pnt);
+	dist=script_value_to_int(cx,argv[1]);
+	sz=script_value_to_int(cx,argv[2]);
+	life_msec=script_value_to_int(cx,argv[3]);
 	
 	script_bool_to_value(cx,effect_spawn_shake(&pnt,dist,sz,life_msec));
     
@@ -630,27 +377,11 @@ JSValueRef js_spawn_push_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj
 	int				radius,force;
 	d3pnt			push_pnt;
 
-	if (iface.project.modernize) {
-		if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
-		
-		script_value_to_point(cx,argv[0],&push_pnt);
-		radius=script_value_to_int(cx,argv[1]);
-		force=script_value_to_int(cx,argv[2]);
-
-		collide_objects_push(&push_pnt,radius,force);
-		return(script_bool_to_value(cx,TRUE));
-	}
-
-	// supergumba:modernize -- delete later
+	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
 	
-	if (!script_check_param_count(cx,func,argc,5,exception)) return(script_null_to_value(cx));
-	
-	push_pnt.x=script_value_to_int(cx,argv[0]);
-	push_pnt.z=script_value_to_int(cx,argv[1]);
-	push_pnt.y=script_value_to_int(cx,argv[2]);
-	
-	radius=script_value_to_int(cx,argv[3]);
-	force=script_value_to_int(cx,argv[4]);
+	script_value_to_point(cx,argv[0],&push_pnt);
+	radius=script_value_to_int(cx,argv[1]);
+	force=script_value_to_int(cx,argv[2]);
 
 	collide_objects_push(&push_pnt,radius,force);
 	return(script_bool_to_value(cx,TRUE));

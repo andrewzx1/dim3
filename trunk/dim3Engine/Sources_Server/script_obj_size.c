@@ -277,34 +277,15 @@ JSValueRef js_obj_size_grow_over_time_change_size_func(JSContextRef cx,JSObjectR
 	d3pnt			size;
 	obj_type		*obj;
 
-	if (iface.project.modernize) {
-		if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
-			
-		resize=script_value_to_float(cx,argv[0]);
-		script_value_to_point(cx,argv[1],&size);
-		msec=script_value_to_int(cx,argv[2]);
+	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
 		
-		obj=object_get_attach(j_obj);
-		object_grow_start(obj,msec,resize,&size,NULL);
-
-		return(script_null_to_value(cx));
-	}
-
-	// supergumba:modernize -- delete later
-
-	if (!script_check_param_count(cx,func,argc,5,exception)) return(script_null_to_value(cx));
-	
 	resize=script_value_to_float(cx,argv[0]);
-	
-	size.x=script_value_to_int(cx,argv[1]);
-	size.z=script_value_to_int(cx,argv[2]);
-	size.y=script_value_to_int(cx,argv[3]);
-
-	msec=script_value_to_int(cx,argv[4]);
+	script_value_to_point(cx,argv[1],&size);
+	msec=script_value_to_int(cx,argv[2]);
 	
 	obj=object_get_attach(j_obj);
 	object_grow_start(obj,msec,resize,&size,NULL);
-	
+
 	return(script_null_to_value(cx));
 }
 
@@ -315,33 +296,14 @@ JSValueRef js_obj_size_grow_over_time_change_offset_func(JSContextRef cx,JSObjec
 	d3pnt			offset;
 	obj_type		*obj;
 
-	if (iface.project.modernize) {
-		if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
-			
-		resize=script_value_to_float(cx,argv[0]);
-		script_value_to_point(cx,argv[1],&offset);
-		msec=script_value_to_int(cx,argv[2]);
+	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
 		
-		obj=object_get_attach(j_obj);
-		object_grow_start(obj,msec,resize,NULL,&offset);
-
-		return(script_null_to_value(cx));
-	}
-
-	// supergumba:modernize -- delete later
-
-	if (!script_check_param_count(cx,func,argc,5,exception)) return(script_null_to_value(cx));
-	
 	resize=script_value_to_float(cx,argv[0]);
-	
-	offset.x=script_value_to_int(cx,argv[1]);
-	offset.z=script_value_to_int(cx,argv[2]);
-	offset.y=script_value_to_int(cx,argv[3]);
-
-	msec=script_value_to_int(cx,argv[4]);
+	script_value_to_point(cx,argv[1],&offset);
+	msec=script_value_to_int(cx,argv[2]);
 	
 	obj=object_get_attach(j_obj);
 	object_grow_start(obj,msec,resize,NULL,&offset);
-	
+
 	return(script_null_to_value(cx));
 }

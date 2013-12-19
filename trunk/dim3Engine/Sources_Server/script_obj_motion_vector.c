@@ -181,32 +181,13 @@ JSValueRef js_obj_motion_vector_shove_direct_func(JSContextRef cx,JSObjectRef fu
 	d3vct			vct;
 	obj_type		*obj;
 	
-	if (iface.project.modernize) {
-		if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
-			
-		script_value_to_vector(cx,argv[0],&vct);
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 		
-		obj=object_get_attach(j_obj);
-		object_shove_direct(obj,&vct);
-
-		return(script_null_to_value(cx));
-	}
-
-	// supergumba:modernize -- delete later
-	
-	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
+	script_value_to_vector(cx,argv[0],&vct);
 	
 	obj=object_get_attach(j_obj);
-	
-		// get direction
-		
-	vct.x=script_value_to_float(cx,argv[0]);
-	vct.z=script_value_to_float(cx,argv[1]);
-	vct.y=script_value_to_float(cx,argv[2]);
-	
-		// shove object
-		
 	object_shove_direct(obj,&vct);
+
 	return(script_null_to_value(cx));
 }
 
@@ -356,28 +337,13 @@ JSValueRef js_obj_motion_vector_walk_to_position_func(JSContextRef cx,JSObjectRe
 	d3pnt			pnt;
 	obj_type		*obj;
 	
-	if (iface.project.modernize) {
-		if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
-			
-		script_value_to_point(cx,argv[0],&pnt);
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 		
-		obj=object_get_attach(j_obj);
-		object_auto_walk_position_setup(obj,&pnt);
-
-		return(script_null_to_value(cx));
-	}
-
-	// supergumba:modernize -- delete later
-	
-	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
-	
-	pnt.x=script_value_to_int(cx,argv[0]);
-	pnt.z=script_value_to_int(cx,argv[1]);
-	pnt.y=script_value_to_int(cx,argv[2]);
+	script_value_to_point(cx,argv[0],&pnt);
 	
 	obj=object_get_attach(j_obj);
 	object_auto_walk_position_setup(obj,&pnt);
-	
+
 	return(script_null_to_value(cx));
 }
 

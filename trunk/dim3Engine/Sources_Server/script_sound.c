@@ -184,30 +184,14 @@ JSValueRef js_sound_play_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj
 	char			name[name_str_len];
 	d3pnt			pnt;
 
-	if (iface.project.modernize) {
-		if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
+	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
 
-		script_value_to_string(cx,argv[0],name,name_str_len);
-		script_value_to_point(cx,argv[1],&pnt);
-		pitch=script_value_to_float(cx,argv[2]);
-
-		script_sound_play(cx,j_obj,name,&pnt,pitch,FALSE,FALSE,exception);
-
-		return(script_null_to_value(cx));
-	}
-
-	// supergumba:modernize -- delete later
-	
-	if (!script_check_param_count(cx,func,argc,5,exception)) return(script_null_to_value(cx));
-	
 	script_value_to_string(cx,argv[0],name,name_str_len);
-	pnt.x=script_value_to_int(cx,argv[1]);
-	pnt.z=script_value_to_int(cx,argv[2]);
-	pnt.y=script_value_to_int(cx,argv[3]);
-	pitch=script_value_to_float(cx,argv[4]);
+	script_value_to_point(cx,argv[1],&pnt);
+	pitch=script_value_to_float(cx,argv[2]);
 
 	script_sound_play(cx,j_obj,name,&pnt,pitch,FALSE,FALSE,exception);
-	
+
 	return(script_null_to_value(cx));
 }
 

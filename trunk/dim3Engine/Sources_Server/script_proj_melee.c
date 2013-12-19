@@ -55,19 +55,8 @@ bool js_proj_melee_set_fallOff(JSContextRef cx,JSObjectRef j_obj,JSStringRef nam
 JSValueRef js_proj_melee_spawn_from_projectile_bone_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_proj_melee_spawn_from_position_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
-JSStaticValue 		proj_melee_props_modernize[]={
-							{"strikeBoneName",			js_proj_melee_get_strikeBoneName,		js_proj_melee_set_strikeBoneName,	kJSPropertyAttributeDontDelete},
-							{"strikePoseName",			js_proj_melee_get_strikePoseName,		js_proj_melee_set_strikePoseName,	kJSPropertyAttributeDontDelete},
-							{"radius",					js_proj_melee_get_radius,				js_proj_melee_set_radius,			kJSPropertyAttributeDontDelete},
-							{"distance",				js_proj_melee_get_distance,				js_proj_melee_set_distance,			kJSPropertyAttributeDontDelete},
-							{"damage",					js_proj_melee_get_damage,				js_proj_melee_set_damage,			kJSPropertyAttributeDontDelete},
-							{"force",					js_proj_melee_get_force,				js_proj_melee_set_force,			kJSPropertyAttributeDontDelete},
-							{"fallOff",					js_proj_melee_get_fallOff,				js_proj_melee_set_fallOff,			kJSPropertyAttributeDontDelete},
-							{0,0,0,0}};
-
-// supergumba:modernize -- remove this all after modernization is finialized
 JSStaticValue 		proj_melee_props[]={
-							{"strikeBoneTag",			js_proj_melee_get_strikeBoneName,		js_proj_melee_set_strikeBoneName,	kJSPropertyAttributeDontDelete},
+							{"strikeBoneName",			js_proj_melee_get_strikeBoneName,		js_proj_melee_set_strikeBoneName,	kJSPropertyAttributeDontDelete},
 							{"strikePoseName",			js_proj_melee_get_strikePoseName,		js_proj_melee_set_strikePoseName,	kJSPropertyAttributeDontDelete},
 							{"radius",					js_proj_melee_get_radius,				js_proj_melee_set_radius,			kJSPropertyAttributeDontDelete},
 							{"distance",				js_proj_melee_get_distance,				js_proj_melee_set_distance,			kJSPropertyAttributeDontDelete},
@@ -91,12 +80,7 @@ JSClassRef			proj_melee_class;
 
 void script_init_proj_melee_object(void)
 {
-	if (iface.project.modernize) {
-		proj_melee_class=script_create_class("proj_melee_class",proj_melee_props_modernize,proj_melee_functions);
-	}
-	else {
-		proj_melee_class=script_create_class("proj_melee_class",proj_melee_props,proj_melee_functions);
-	}
+	proj_melee_class=script_create_class("proj_melee_class",proj_melee_props,proj_melee_functions);
 }
 
 void script_free_proj_melee_object(void)
@@ -305,41 +289,18 @@ JSValueRef js_proj_melee_spawn_from_position_func(JSContextRef cx,JSObjectRef fu
 	proj_type			*proj;
 	proj_setup_type		*proj_setup;
 
-	if (iface.project.modernize) {
-		if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 
-		proj=proj_get_attach(j_obj);
-		if (proj==NULL) return(script_null_to_value(cx));
-		
-		obj=server.obj_list.objs[proj->obj_idx];
-		weap=obj->weap_list.weaps[proj->weap_idx];
-
-		proj_setup=weap->proj_setup_list.proj_setups[proj->proj_setup_idx];
-		if (proj_setup==NULL) return(script_null_to_value(cx));
-
-		script_value_to_point(cx,argv[0],&pnt);
-		
-		melee_add(obj,weap,&pnt,&proj->ang,&proj_setup->melee,-1);
-
-		return(script_null_to_value(cx));
-	}
-
-	// supergumba:modernize -- delete later
-
-	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
-	
 	proj=proj_get_attach(j_obj);
 	if (proj==NULL) return(script_null_to_value(cx));
 	
-    obj=server.obj_list.objs[proj->obj_idx];
+	obj=server.obj_list.objs[proj->obj_idx];
 	weap=obj->weap_list.weaps[proj->weap_idx];
 
 	proj_setup=weap->proj_setup_list.proj_setups[proj->proj_setup_idx];
 	if (proj_setup==NULL) return(script_null_to_value(cx));
-	
-	pnt.x=script_value_to_int(cx,argv[0]);
-	pnt.z=script_value_to_int(cx,argv[1]);
-	pnt.y=script_value_to_int(cx,argv[2]);
+
+	script_value_to_point(cx,argv[0],&pnt);
 	
 	melee_add(obj,weap,&pnt,&proj->ang,&proj_setup->melee,-1);
 

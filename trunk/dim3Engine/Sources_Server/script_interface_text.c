@@ -131,25 +131,11 @@ JSValueRef js_interface_text_move_func(JSContextRef cx,JSObjectRef func,JSObject
 {
 	iface_text_type			*text;
 
-	if (iface.project.modernize) {
-		if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
+	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
 
-		text=script_find_text_from_name(cx,argv[0],exception);
-		if (text!=NULL) script_value_to_2D_point(cx,argv[1],&text->pnt);
-		
-		return(script_null_to_value(cx));
-	}
-
-	// supergumba:modernize -- delete later
-	
-	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
-	
 	text=script_find_text_from_name(cx,argv[0],exception);
-	if (text!=NULL) {
-		text->pnt.x=script_value_to_int(cx,argv[1]);
-		text->pnt.y=script_value_to_int(cx,argv[2]);
-	}
-
+	if (text!=NULL) script_value_to_2D_point(cx,argv[1],&text->pnt);
+	
 	return(script_null_to_value(cx));
 }
 
@@ -158,29 +144,15 @@ JSValueRef js_interface_text_move_relative_func(JSContextRef cx,JSObjectRef func
 	d3pnt					pnt;
 	iface_text_type			*text;
 
-	if (iface.project.modernize) {
-		if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
+	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
 
-		text=script_find_text_from_name(cx,argv[0],exception);
-		if (text!=NULL) {
-			script_value_to_2D_point(cx,argv[1],&pnt);
-			text->pnt.x+=pnt.x;
-			text->pnt.y+=pnt.y;
-		}
-		
-		return(script_null_to_value(cx));
-	}
-
-	// supergumba:modernize -- delete later
-	
-	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
-	
 	text=script_find_text_from_name(cx,argv[0],exception);
 	if (text!=NULL) {
-		text->pnt.x+=script_value_to_int(cx,argv[1]);
-		text->pnt.y+=script_value_to_int(cx,argv[2]);
+		script_value_to_2D_point(cx,argv[1],&pnt);
+		text->pnt.x+=pnt.x;
+		text->pnt.y+=pnt.y;
 	}
-
+	
 	return(script_null_to_value(cx));
 }
 
@@ -216,26 +188,11 @@ JSValueRef js_interface_text_set_color_func(JSContextRef cx,JSObjectRef func,JSO
 {
 	iface_text_type			*text;
 
-	if (iface.project.modernize) {
-		if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
+	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
 
-		text=script_find_text_from_name(cx,argv[0],exception);
-		if (text!=NULL) script_value_to_color(cx,argv[1],&text->color);
-		
-		return(script_null_to_value(cx));
-	}
-
-	// supergumba:modernize -- delete later
-	
-	if (!script_check_param_count(cx,func,argc,4,exception)) return(script_null_to_value(cx));
-	
 	text=script_find_text_from_name(cx,argv[0],exception);
-	if (text!=NULL) {
-		text->color.r=script_value_to_float(cx,argv[1]);
-		text->color.g=script_value_to_float(cx,argv[2]);
-		text->color.b=script_value_to_float(cx,argv[3]);
-	}
-
+	if (text!=NULL) script_value_to_color(cx,argv[1],&text->color);
+	
 	return(script_null_to_value(cx));
 }
 

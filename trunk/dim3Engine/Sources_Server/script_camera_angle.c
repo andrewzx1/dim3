@@ -133,25 +133,10 @@ JSValueRef js_camera_angle_turn_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 {
 	d3ang			ang;
 	
-	if (iface.project.modernize) {
-		if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
-			
-		script_value_to_angle(cx,argv[0],&ang);
-		camera_auto_turn_set_angle_offset(&ang,script_value_to_int(cx,argv[1]));
+	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
+		
+	script_value_to_angle(cx,argv[0],&ang);
+	camera_auto_turn_set_angle_offset(&ang,script_value_to_int(cx,argv[1]));
 
-		return(script_null_to_value(cx));
-	}
-	
-	// supergumba:modernize -- delete later
-
-
-	if (!script_check_param_count(cx,func,argc,4,exception)) return(script_null_to_value(cx));
-	
-	ang.x=script_value_to_float(cx,argv[0]);
-	ang.z=script_value_to_float(cx,argv[1]);
-	ang.y=script_value_to_float(cx,argv[2]);
-
-	camera_auto_turn_set_angle_offset(&ang,script_value_to_int(cx,argv[3]));
-	
 	return(script_null_to_value(cx));
 }

@@ -241,24 +241,10 @@ JSValueRef js_obj_status_tint_view_func(JSContextRef cx,JSObjectRef func,JSObjec
 {
 	d3col			col;
 
-	if (iface.project.modernize) {
-		if (!script_check_param_count(cx,func,argc,5,exception)) return(script_null_to_value(cx));
-			
-		script_value_to_color(cx,argv[0],&col);
-		view_draw_tint_start(&col,script_value_to_float(cx,argv[1]),script_value_to_int(cx,argv[2]),script_value_to_int(cx,argv[3]),script_value_to_int(cx,argv[4]));
+	if (!script_check_param_count(cx,func,argc,5,exception)) return(script_null_to_value(cx));
+		
+	script_value_to_color(cx,argv[0],&col);
+	view_draw_tint_start(&col,script_value_to_float(cx,argv[1]),script_value_to_int(cx,argv[2]),script_value_to_int(cx,argv[3]),script_value_to_int(cx,argv[4]));
 
-		return(script_null_to_value(cx));
-	}
-	
-	// supergumba:modernize -- delete later
-	
-	if (!script_check_param_count(cx,func,argc,7,exception)) return(script_null_to_value(cx));
-	
-	col.r=script_value_to_float(cx,argv[0]);
-	col.g=script_value_to_float(cx,argv[1]);
-	col.b=script_value_to_float(cx,argv[2]);
-
-	view_draw_tint_start(&col,script_value_to_float(cx,argv[3]),script_value_to_int(cx,argv[4]),script_value_to_int(cx,argv[5]),script_value_to_int(cx,argv[6]));
- 
-	return(script_bool_to_value(cx,TRUE));
+	return(script_null_to_value(cx));
 }

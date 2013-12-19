@@ -144,7 +144,6 @@ void script_initialize_classes(void)
 
 	script_init_global_utility_object();
 	script_init_utility_angle_object();
-	script_init_utility_pack_object();
 	script_init_utility_point_object();
 	script_init_utility_random_object();
 
@@ -304,7 +303,6 @@ void script_release_classes(void)
 
 	script_free_global_utility_object();
 	script_free_utility_angle_object();
-	script_free_utility_pack_object();
 	script_free_utility_point_object();
 	script_free_utility_random_object();
 
@@ -488,10 +486,6 @@ bool script_add_global_object(script_type *script,char *err_str)
 	script_add_utility_angle_object(script->cx,j_sub_obj,script->idx);
 	script_add_utility_point_object(script->cx,j_sub_obj,script->idx);
 	script_add_utility_random_object(script->cx,j_sub_obj,script->idx);
-
-	if (!iface.project.modernize) {
-		script_add_utility_pack_object(script->cx,j_sub_obj,script->idx);		// depreciated in modernize
-	}
 
 	return(TRUE);
 }

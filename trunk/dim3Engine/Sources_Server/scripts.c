@@ -109,8 +109,6 @@ void scripts_setup_data(script_type *script,int thing_type,int obj_idx,int weap_
 
 		// clear attached event list
 
-	script->event_attach_list.on=FALSE;
-
 	for (n=0;n!=event_main_id_count;n++) {
 		script->event_attach_list.func[n]=NULL;
 	}
@@ -137,15 +135,6 @@ void scripts_setup_data(script_type *script,int thing_type,int obj_idx,int weap_
 	script->event_state.sub_event=-1;
 	script->event_state.id=0;
 	script->event_state.tick=0;
-
-		// messages
-		
-	for (n=0;n!=max_script_msg_data;n++) {
-		script->msg_data.set[n].type=d3_jsval_type_number;
-		script->msg_data.set[n].data.d3_number=0.0f;
-		script->msg_data.get[n].type=d3_jsval_type_number;
-		script->msg_data.get[n].data.d3_number=0.0f;
-	}
 }
 
 /* =======================================================
@@ -312,7 +301,6 @@ int scripts_add(int thing_type,char *sub_dir,char *name,int obj_idx,int weap_idx
 		// setup the events
 		
 	script=js.script_list.scripts[script_idx];
-	scripts_setup_events(script);
 	
 		// setup any implemented parent scripts
 		
@@ -329,11 +317,6 @@ int scripts_add(int thing_type,char *sub_dir,char *name,int obj_idx,int weap_idx
 
 		parent_script=js.script_list.scripts[parent_script_idx];
 		parent_script->child_idx=script_idx;
-		
-			// scripts with implements automatically
-			// turn into attached scripts.  supergumba -- remove in the future
-			
-		script->event_attach_list.on=TRUE;
 	}
 
 	return(script_idx);

@@ -58,23 +58,10 @@ bool js_weap_melee_set_fallOff(JSContextRef cx,JSObjectRef j_obj,JSStringRef nam
 JSValueRef js_weap_melee_spawn_from_weapon_bone_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_weap_melee_spawn_from_object_bone_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
-JSStaticValue 		weap_melee_props_modernize[]={
+JSStaticValue 		weap_melee_props[]={
 							{"strikeBoneName",			js_weap_melee_get_strikeBoneName,			js_weap_melee_set_strikeBoneName,			kJSPropertyAttributeDontDelete},
 							{"strikePoseName",			js_weap_melee_get_strikePoseName,			js_weap_melee_set_strikePoseName,			kJSPropertyAttributeDontDelete},
 							{"objectStrikeBoneName",	js_weap_melee_get_objectStrikeBoneName,		js_weap_melee_set_objectStrikeBoneName,		kJSPropertyAttributeDontDelete},
-							{"objectStrikePoseName",	js_weap_melee_get_objectStrikePoseName,		js_weap_melee_set_objectStrikePoseName,		kJSPropertyAttributeDontDelete},
-							{"radius",					js_weap_melee_get_radius,					js_weap_melee_set_radius,					kJSPropertyAttributeDontDelete},
-							{"distance",				js_weap_melee_get_distance,					js_weap_melee_set_distance,					kJSPropertyAttributeDontDelete},
-							{"damage",					js_weap_melee_get_damage,					js_weap_melee_set_damage,					kJSPropertyAttributeDontDelete},
-							{"force",					js_weap_melee_get_force,					js_weap_melee_set_force,					kJSPropertyAttributeDontDelete},
-							{"fallOff",					js_weap_melee_get_fallOff,					js_weap_melee_set_fallOff,					kJSPropertyAttributeDontDelete},
-							{0,0,0,0}};
-
-// supergumba:modernize -- remove this all after modernization is finialized
-JSStaticValue 		weap_melee_props[]={
-							{"strikeBoneTag",			js_weap_melee_get_strikeBoneName,			js_weap_melee_set_strikeBoneName,			kJSPropertyAttributeDontDelete},
-							{"strikePoseName",			js_weap_melee_get_strikePoseName,			js_weap_melee_set_strikePoseName,			kJSPropertyAttributeDontDelete},
-							{"objectStrikeBoneTag",		js_weap_melee_get_objectStrikeBoneName,		js_weap_melee_set_objectStrikeBoneName,		kJSPropertyAttributeDontDelete},
 							{"objectStrikePoseName",	js_weap_melee_get_objectStrikePoseName,		js_weap_melee_set_objectStrikePoseName,		kJSPropertyAttributeDontDelete},
 							{"radius",					js_weap_melee_get_radius,					js_weap_melee_set_radius,					kJSPropertyAttributeDontDelete},
 							{"distance",				js_weap_melee_get_distance,					js_weap_melee_set_distance,					kJSPropertyAttributeDontDelete},
@@ -98,12 +85,7 @@ JSClassRef			weap_melee_class;
 
 void script_init_weap_melee_object(void)
 {
-	if (iface.project.modernize) {
-		weap_melee_class=script_create_class("weap_melee_class",weap_melee_props_modernize,weap_melee_functions);
-	}
-	else {
-		weap_melee_class=script_create_class("weap_melee_class",weap_melee_props,weap_melee_functions);
-	}
+	weap_melee_class=script_create_class("weap_melee_class",weap_melee_props,weap_melee_functions);
 }
 
 void script_free_weap_melee_object(void)

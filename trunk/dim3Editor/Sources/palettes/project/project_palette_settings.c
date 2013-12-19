@@ -33,7 +33,6 @@ and can be sold or given away.
 #include "interface.h"
 
 #define kSettingsProjectName					0
-#define kSettingsProjectModernize				1
 #define kSettingsProjectSimpleSave				2
 #define kSettingsProjectCheckpoint				3
 #define kSettingsProjectLoadRequiresClick		4
@@ -62,7 +61,6 @@ void project_palette_fill_project(void)
 		
 	list_palette_add_header(&project_palette,0,"Project");
 	list_palette_add_string(&project_palette,kSettingsProjectName,"Name",iface.project.name,name_str_len,FALSE);
-	list_palette_add_checkbox(&project_palette,kSettingsProjectModernize,"Modernize",&iface.project.modernize,FALSE);
 	list_palette_add_checkbox(&project_palette,kSettingsProjectSimpleSave,"Use Simple Saves",&iface.project.simple_save,FALSE);
 	list_palette_add_checkbox(&project_palette,kSettingsProjectCheckpoint,"Use Check Points",&iface.project.checkpoints,FALSE);
 	list_palette_add_checkbox(&project_palette,kSettingsProjectLoadRequiresClick,"Loads Require Click to Continue",&iface.project.load_requires_click,FALSE);

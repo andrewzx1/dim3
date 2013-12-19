@@ -38,8 +38,6 @@ extern js_type			js;
 
 JSValueRef js_obj_sight_get_sideFieldAngle(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_obj_sight_get_lookFieldAngle(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
-JSValueRef js_obj_sight_get_sideFieldDivision(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
-JSValueRef js_obj_sight_get_lookFieldDivision(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_obj_sight_get_distance(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 bool js_obj_sight_set_sideFieldAngle(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 bool js_obj_sight_set_lookFieldAngle(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
@@ -49,18 +47,9 @@ bool js_obj_sight_set_distance(JSContextRef cx,JSObjectRef j_obj,JSStringRef nam
 JSValueRef js_obj_sight_test_object_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_sight_test_player_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
-JSStaticValue 		obj_sight_props_modernize[]={
-							{"sideFieldAngle",		js_obj_sight_get_sideFieldAngle,	js_obj_sight_set_sideFieldAngle,		kJSPropertyAttributeDontDelete},
-							{"lookFieldAngle",		js_obj_sight_get_lookFieldAngle,	js_obj_sight_set_lookFieldAngle,		kJSPropertyAttributeDontDelete},
-							{"distance",			js_obj_sight_get_distance,			js_obj_sight_set_distance,				kJSPropertyAttributeDontDelete},
-							{0,0,0,0}};
-
-// supergumba:modernize -- remove this all after modernization is finialized
 JSStaticValue 		obj_sight_props[]={
 							{"sideFieldAngle",		js_obj_sight_get_sideFieldAngle,	js_obj_sight_set_sideFieldAngle,		kJSPropertyAttributeDontDelete},
 							{"lookFieldAngle",		js_obj_sight_get_lookFieldAngle,	js_obj_sight_set_lookFieldAngle,		kJSPropertyAttributeDontDelete},
-							{"sideFieldDivision",	js_obj_sight_get_sideFieldDivision,	js_obj_sight_set_sideFieldDivision,		kJSPropertyAttributeDontDelete},
-							{"lookFieldDivision",	js_obj_sight_get_lookFieldDivision,	js_obj_sight_set_lookFieldDivision,		kJSPropertyAttributeDontDelete},
 							{"distance",			js_obj_sight_get_distance,			js_obj_sight_set_distance,				kJSPropertyAttributeDontDelete},
 							{0,0,0,0}};
 
@@ -79,12 +68,7 @@ JSClassRef			obj_sight_class;
 
 void script_init_obj_sight_object(void)
 {
-	if (iface.project.modernize) {
-		obj_sight_class=script_create_class("obj_sight_class",obj_sight_props_modernize,obj_sight_functions);
-	}
-	else {
-		obj_sight_class=script_create_class("obj_sight_class",obj_sight_props,obj_sight_functions);
-	}
+	obj_sight_class=script_create_class("obj_sight_class",obj_sight_props,obj_sight_functions);
 }
 
 void script_free_obj_sight_object(void)
@@ -117,18 +101,6 @@ JSValueRef js_obj_sight_get_lookFieldAngle(JSContextRef cx,JSObjectRef j_obj,JSS
 
 	obj=object_get_attach(j_obj);
 	return(script_float_to_value(cx,obj->sight.look_angle));
-}
-
-JSValueRef js_obj_sight_get_sideFieldDivision(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
-{
-// supergumba -- depreciated
-	return(script_int_to_value(cx,0));
-}
-
-JSValueRef js_obj_sight_get_lookFieldDivision(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
-{
-// supergumba -- depreciated
-	return(script_int_to_value(cx,0));
 }
 
 JSValueRef js_obj_sight_get_distance(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
