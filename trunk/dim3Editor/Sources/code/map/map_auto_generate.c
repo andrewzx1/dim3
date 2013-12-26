@@ -1038,6 +1038,171 @@ bool ag_generate_run(char *err_str)
 	return(TRUE);
 }
 
+
+
+
+
+
+
+
+
+
+
+
+bool ag_generate_run2(char *err_str)
+{
+	int				n,idx,x,z,sz,room_count,
+					mesh_idx;
+	int				px[4],py[4],pz[4];
+	float			gx[4],gy[4];
+	map_mesh_type	*mesh;
+
+		// clear the VBOs
+		// and map data
+
+	view_vbo_map_free();
+	ag_map_clear();
+
+		// build the boxes
+
+	room_count=50;
+	sz=500;
+
+	for (n=0;n!=room_count;n++) {
+
+			// box location
+
+		if (n==0) {
+			x=map_max_size>>1;
+			z=map_max_size>>1;
+		}
+		else {
+			idx=ag_random_int(n);
+			mesh=&map.mesh.meshes[idx];
+
+			switch (ag_random_int(4)) {
+				case 0:
+					x=mesh->box.min.x;
+					z=mesh->box.min.z-sz;
+					break;
+				case 1:
+					x=mesh->box.max.x;
+					z=mesh->box.min.z;
+					break;
+				case 2:
+					x=mesh->box.min.x;
+					z=mesh->box.max.z;
+					break;
+				case 3:
+					x=mesh->box.min.x-sz;
+					z=mesh->box.min.z;
+					break;
+			}
+		}
+
+			// add in the box
+	
+		mesh_idx=map_mesh_add(&map);
+
+
+			// build the wall
+			// first the story wall
+
+		px[0]=px[3]=x;
+		px[1]=px[2]=x;
+		pz[0]=pz[3]=z;
+		pz[1]=pz[2]=z+sz;
+		py[0]=py[1]=10000;
+		py[2]=py[3]=15000;
+
+		gx[0]=gx[3]=0.0f;
+		gx[1]=gx[2]=1.0f;
+		gy[0]=gy[1]=0.0f;
+		gy[2]=gy[3]=1.0f;
+	
+		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,0);
+
+		px[0]=px[3]=x+sz;
+		px[1]=px[2]=x+sz;
+		pz[0]=pz[3]=z;
+		pz[1]=pz[2]=z+sz;
+		py[0]=py[1]=10000;
+		py[2]=py[3]=15000;
+
+		gx[0]=gx[3]=0.0f;
+		gx[1]=gx[2]=1.0f;
+		gy[0]=gy[1]=0.0f;
+		gy[2]=gy[3]=1.0f;
+	
+		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,0);
+
+		px[0]=px[3]=x;
+		px[1]=px[2]=x+sz;
+		pz[0]=pz[3]=z;
+		pz[1]=pz[2]=z;
+		py[0]=py[1]=10000;
+		py[2]=py[3]=15000;
+
+		gx[0]=gx[3]=0.0f;
+		gx[1]=gx[2]=1.0f;
+		gy[0]=gy[1]=0.0f;
+		gy[2]=gy[3]=1.0f;
+	
+		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,0);
+
+		px[0]=px[3]=x;
+		px[1]=px[2]=x+sz;
+		pz[0]=pz[3]=z+sz;
+		pz[1]=pz[2]=z+sz;
+		py[0]=py[1]=10000;
+		py[2]=py[3]=15000;
+
+		gx[0]=gx[3]=0.0f;
+		gx[1]=gx[2]=1.0f;
+		gy[0]=gy[1]=0.0f;
+		gy[2]=gy[3]=1.0f;
+	
+		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,0);
+
+
+
+
+		px[0]=px[3]=x;
+		px[1]=px[2]=x+sz;
+		pz[0]=pz[1]=z;
+		pz[2]=pz[3]=z+sz;
+		py[0]=py[1]=15000;
+		py[2]=py[3]=15000;
+
+		gx[0]=gx[3]=0.0f;
+		gx[1]=gx[2]=1.0f;
+		gy[0]=gy[1]=0.0f;
+		gy[2]=gy[3]=1.0f;
+	
+		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,1);
+
+
+	}
+
+
+		// restore the VBOs,
+		// center view, reset UVs
+		// and redraw
+
+	view_vbo_map_initialize();
+
+	map_recalc_normals(&map,FALSE);
+	map_mesh_reset_uv_all();
+	map_view_goto_map_center_all();
+
+	main_wind_draw();
+
+	return(TRUE);
+}
+
+
+
+
 bool auto_generate_map(char *err_str)
 {
 		// choose an auto generate XML file
