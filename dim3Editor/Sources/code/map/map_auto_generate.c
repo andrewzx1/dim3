@@ -57,8 +57,6 @@ extern void ag_generate_additional_stories(void);
 
 void ag_map_clear(void)
 {
-	int				n;
-
 		// clear all selections
 
 	select_clear();
@@ -74,48 +72,26 @@ void ag_map_clear(void)
 
 		// meshes and liquids
 
-	if (map.mesh.meshes!=NULL) {
-		for (n=0;n!=map.mesh.nmesh;n++) {
-			if (map.mesh.meshes[n].polys!=NULL) free(map.mesh.meshes[n].polys);
-		}
-
-		free(map.mesh.meshes);
-		map.mesh.nmesh=0;
-		map.mesh.meshes=NULL;
+	while (map.mesh.nmesh!=0) {
+		map_mesh_delete(&map,0);
 	}
 
-	if (map.liquid.liquids!=NULL) {
-		free(map.liquid.liquids);
-		map.liquid.nliquid=0;
-		map.liquid.liquids=NULL;
+	while (map.liquid.nliquid!=0) {
+		map_liquid_delete(&map,0);
 	}
-	
+
 		// groups, movements, cinemas
 
-	if (map.group.groups!=NULL) {
-		free(map.group.groups);
-		map.group.ngroup=0;
-		map.group.groups=NULL;
+	while (map.group.ngroup!=0) {
+		map_group_delete(&map,0);
 	}
 
-	if (map.movement.movements!=NULL) {
-		for (n=0;n!=map.movement.nmovement;n++) {
-			if (map.movement.movements[n].moves!=NULL) free(map.movement.movements[n].moves);
-		}
-
-		free(map.movement.movements);
-		map.movement.nmovement=0;
-		map.movement.movements=NULL;
+	while (map.movement.nmovement!=0) {
+		map_movement_delete(&map,0);
 	}
-		
-	if (map.cinema.cinemas!=NULL) {
-		for (n=0;n!=map.cinema.ncinema;n++) {
-			if (map.cinema.cinemas[n].actions!=NULL) free(map.cinema.cinemas[n].actions);
-		}
 
-		free(map.cinema.cinemas);
-		map.cinema.ncinema=0;
-		map.cinema.cinemas=NULL;
+	while (map.cinema.ncinema!=0) {
+		map_cinema_delete(&map,0);
 	}
 }
 
@@ -1051,7 +1027,7 @@ bool ag_generate_run(char *err_str)
 
 bool ag_generate_run2(char *err_str)
 {
-	int				n,idx,x,z,sz,room_count,
+	int				n,idx,x,z,ty,by,sz,room_count,
 					mesh_idx;
 	int				px[4],py[4],pz[4];
 	float			gx[4],gy[4];
@@ -1065,8 +1041,11 @@ bool ag_generate_run2(char *err_str)
 
 		// build the boxes
 
-	room_count=50;
-	sz=500;
+	room_count=1;
+	sz=50000;
+
+	ty=100000;
+	by=180000;
 
 	for (n=0;n!=room_count;n++) {
 
@@ -1104,7 +1083,6 @@ bool ag_generate_run2(char *err_str)
 	
 		mesh_idx=map_mesh_add(&map);
 
-
 			// build the wall
 			// first the story wall
 
@@ -1112,8 +1090,8 @@ bool ag_generate_run2(char *err_str)
 		px[1]=px[2]=x;
 		pz[0]=pz[3]=z;
 		pz[1]=pz[2]=z+sz;
-		py[0]=py[1]=10000;
-		py[2]=py[3]=15000;
+		py[0]=py[1]=ty;
+		py[2]=py[3]=by;
 
 		gx[0]=gx[3]=0.0f;
 		gx[1]=gx[2]=1.0f;
@@ -1126,8 +1104,8 @@ bool ag_generate_run2(char *err_str)
 		px[1]=px[2]=x+sz;
 		pz[0]=pz[3]=z;
 		pz[1]=pz[2]=z+sz;
-		py[0]=py[1]=10000;
-		py[2]=py[3]=15000;
+		py[0]=py[1]=ty;
+		py[2]=py[3]=by;
 
 		gx[0]=gx[3]=0.0f;
 		gx[1]=gx[2]=1.0f;
@@ -1140,8 +1118,8 @@ bool ag_generate_run2(char *err_str)
 		px[1]=px[2]=x+sz;
 		pz[0]=pz[3]=z;
 		pz[1]=pz[2]=z;
-		py[0]=py[1]=10000;
-		py[2]=py[3]=15000;
+		py[0]=py[1]=ty;
+		py[2]=py[3]=by;
 
 		gx[0]=gx[3]=0.0f;
 		gx[1]=gx[2]=1.0f;
@@ -1154,8 +1132,8 @@ bool ag_generate_run2(char *err_str)
 		px[1]=px[2]=x+sz;
 		pz[0]=pz[3]=z+sz;
 		pz[1]=pz[2]=z+sz;
-		py[0]=py[1]=10000;
-		py[2]=py[3]=15000;
+		py[0]=py[1]=ty;
+		py[2]=py[3]=by;
 
 		gx[0]=gx[3]=0.0f;
 		gx[1]=gx[2]=1.0f;
@@ -1171,8 +1149,8 @@ bool ag_generate_run2(char *err_str)
 		px[1]=px[2]=x+sz;
 		pz[0]=pz[1]=z;
 		pz[2]=pz[3]=z+sz;
-		py[0]=py[1]=15000;
-		py[2]=py[3]=15000;
+		py[0]=py[1]=by;
+		py[2]=py[3]=by;
 
 		gx[0]=gx[3]=0.0f;
 		gx[1]=gx[2]=1.0f;
@@ -1200,9 +1178,16 @@ bool ag_generate_run2(char *err_str)
 	return(TRUE);
 }
 
+bool auto_generate_map(char *err_str)
+{
+	ag_random_seed();
+	return(ag_generate_run2(err_str));
+}
 
 
 
+
+/*
 bool auto_generate_map(char *err_str)
 {
 		// choose an auto generate XML file
@@ -1215,6 +1200,7 @@ bool auto_generate_map(char *err_str)
 	ag_random_seed();
 	return(ag_generate_run(err_str));
 }
+*/
 
 bool auto_generate_previous_map(char *err_str)
 {
