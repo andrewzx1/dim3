@@ -185,7 +185,7 @@ void texture_palette_draw(void)
 			
 		for (n=0;n!=per_page_count;n++) {
 			texture=&txt_list[n+(txt_palette_cur_page*per_page_count)];
-			
+
 				// the textures
 				
 			if (texture->frames[0].bitmap.gl_id!=-1) {
@@ -201,7 +201,7 @@ void texture_palette_draw(void)
 
 				glDrawArrays(GL_QUADS,0,4);
 			}
-			
+
 			x+=pixel_sz;
 		}
 
@@ -252,7 +252,7 @@ void texture_palette_draw(void)
 	glDrawArrays(GL_LINES,0,2);
 	
 		// selection
-		
+	
 	if (sel==-1) return;
 	if ((sel<(txt_palette_cur_page*per_page_count)) || (sel>=((txt_palette_cur_page+1)*per_page_count))) return;
 	
