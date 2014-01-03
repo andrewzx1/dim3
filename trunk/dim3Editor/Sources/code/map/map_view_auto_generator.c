@@ -282,6 +282,7 @@ void map_view_auto_generate_draw(void)
 	int					n,k,t,sz,wid,high;
 	float				xf,zf,x_off;
 	float				*vp,vertexes[8*2];
+	char				str[256];
 	d3pnt				*pnt,min,max;
 	d3rect				wbox,box,bbox;
 	map_mesh_type		*mesh;
@@ -373,6 +374,14 @@ void map_view_auto_generate_draw(void)
 
 		mesh++;
 	}
+
+		// info text
+
+	sprintf(str,"Mesh Count: %d",map.mesh.nmesh);
+	text_draw(5,25,20.0f,NULL,str);
+
+	sprintf(str,"Poly Count: %d",map_mesh_count_total_poly(&map));
+	text_draw(5,45,20.0f,NULL,str);
 
 		// buttons
 

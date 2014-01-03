@@ -1025,13 +1025,74 @@ bool ag_generate_run(char *err_str)
 
 
 
+bool ag_generate_find_open_spot(int *px,int *pz,int sz)
+{
+	int			n,k,mesh_idx,x,z;
+	bool		hit;
+	d3pnt		min,max;
+
+		// try a number of times to find an empty
+		// spot for new block
+
+	for (n=0;n!=100;n++) {
+
+			// find a random location
+
+		mesh_idx=ag_random_int(map.mesh.nmesh);
+		map_mesh_calculate_extent(&map,mesh_idx,&min,&max);
+
+		switch (ag_random_int(4)) {
+			case 0:
+				x=min.x;
+				z=min.z-sz;
+				break;
+			case 1:
+				x=max.x;
+				z=min.z;
+				break;
+			case 2:
+				x=min.x;
+				z=max.z;
+				break;
+			case 3:
+				x=min.x-sz;
+				z=min.z;
+				break;
+		}
+
+			// overlapping any other meshes?
+
+		hit=FALSE;
+
+		for (k=0;k!=map.mesh.nmesh;k++) {
+
+			if (k==mesh_idx) continue;
+
+			map_mesh_calculate_extent(&map,k,&min,&max);
+			if ((x==min.x) && (z==min.z)) {
+				hit=TRUE;
+				break;
+			}
+		}
+
+		if (!hit) {
+			*px=x;
+			*pz=z;
+			return(TRUE);
+		}
+	}
+
+	return(FALSE);
+}
+
+
+
 bool ag_generate_run2(char *err_str)
 {
-	int				n,idx,x,z,ty,by,sz,room_count,
+	int				n,x,z,ty,by,sz,room_count,
 					mesh_idx;
 	int				px[4],py[4],pz[4];
 	float			gx[4],gy[4];
-	map_mesh_type	*mesh;
 
 		// clear the VBOs
 		// and map data
@@ -1041,10 +1102,10 @@ bool ag_generate_run2(char *err_str)
 
 		// build the boxes
 
-	room_count=1;
+	room_count=20;
 	sz=50000;
 
-	ty=100000;
+	ty=150000;
 	by=180000;
 
 	for (n=0;n!=room_count;n++) {
@@ -1056,27 +1117,7 @@ bool ag_generate_run2(char *err_str)
 			z=map_max_size>>1;
 		}
 		else {
-			idx=ag_random_int(n);
-			mesh=&map.mesh.meshes[idx];
-
-			switch (ag_random_int(4)) {
-				case 0:
-					x=mesh->box.min.x;
-					z=mesh->box.min.z-sz;
-					break;
-				case 1:
-					x=mesh->box.max.x;
-					z=mesh->box.min.z;
-					break;
-				case 2:
-					x=mesh->box.min.x;
-					z=mesh->box.max.z;
-					break;
-				case 3:
-					x=mesh->box.min.x-sz;
-					z=mesh->box.min.z;
-					break;
-			}
+			if (!ag_generate_find_open_spot(&x,&z,sz)) break;
 		}
 
 			// add in the box
@@ -1162,6 +1203,10 @@ bool ag_generate_run2(char *err_str)
 
 	}
 
+		// delete any polygons that end
+		// up being shared
+
+	ag_generate_delete_shared_polygons();
 
 		// restore the VBOs,
 		// center view, reset UVs
@@ -1171,6 +1216,7 @@ bool ag_generate_run2(char *err_str)
 
 	map_recalc_normals(&map,FALSE);
 	map_mesh_reset_uv_all();
+	map_view_reset_uv_layers();
 	map_view_goto_map_center_all();
 
 	main_wind_draw();
