@@ -187,7 +187,7 @@ void texture_palette_draw(void)
 			texture=&txt_list[n+(txt_palette_cur_page*per_page_count)];
 
 				// the textures
-				
+	
 			if (texture->frames[0].bitmap.gl_id!=-1) {
 				glBindTexture(GL_TEXTURE_2D,texture->frames[0].bitmap.gl_id);
 

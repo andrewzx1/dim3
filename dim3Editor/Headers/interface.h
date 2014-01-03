@@ -709,6 +709,7 @@ extern void map_view_calculate_bounds(d3pnt *min_pnt,d3pnt *max_pnt);
 extern void map_view_calculate_center(d3pnt *center_pnt);
 extern void map_view_goto_map_center(editor_view_type *view);
 extern void map_view_goto_map_center_all(void);
+extern void map_view_reset_uv_layers(void);
 extern void view_flip_clip(void);
 extern int view_get_uv_layer(void);
 extern void view_set_uv_layer(int uv_layer);

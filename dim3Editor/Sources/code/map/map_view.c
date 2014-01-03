@@ -978,6 +978,15 @@ void map_view_goto_map_center_all(void)
 	}
 }
 
+void map_view_reset_uv_layers(void)
+{
+	int			n;
+
+	for (n=0;n!=map.editor_views.count;n++) {
+		map.editor_views.views[n].uv_layer=uv_layer_normal;
+	}
+}
+
 /* =======================================================
 
       View Facing

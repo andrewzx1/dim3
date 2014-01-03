@@ -81,7 +81,7 @@ int view_get_movement_scale(editor_view_type *view,d3pnt *pnt)
 		
 	mesh_idx=map_mesh_find_closest(&map,pnt);
 	if (mesh_idx==-1) return(move_mouse_min_scale);
-	
+
 	map_mesh_calculate_center(&map,mesh_idx,&mpnt);
 	
 	dist=distance_get(view->pnt.x,view->pnt.y,view->pnt.z,mpnt.x,mpnt.y,mpnt.z);
@@ -192,12 +192,12 @@ void view_mouse_scroll_movement(editor_view_type *view,d3pnt *pnt)
 {
 	int						x,y,scale;
 	d3pnt					old_pnt,move_pnt;
-    
+
     os_set_hand_cursor();
-	
+
 	scale=view_get_movement_scale(view,pnt);
 	memmove(&old_pnt,pnt,sizeof(d3pnt));
-	
+
 	while (!os_track_mouse_location(pnt,NULL)) {
 		
 		if ((pnt->x==old_pnt.x) && (pnt->y==old_pnt.y)) continue;

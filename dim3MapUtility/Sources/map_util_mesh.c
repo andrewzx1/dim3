@@ -890,8 +890,9 @@ int map_mesh_find_closest(map_type *map,d3pnt *pnt)
 	map_mesh_type	*mesh;
 
 		// find closest by distance to center
+		// or -1 if no mesh
 
-	mesh_idx=0;
+	mesh_idx=-1;
 	
 	dist=(float)map_max_size;
 	dist=dist*dist;
