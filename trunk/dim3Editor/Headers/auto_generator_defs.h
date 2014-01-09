@@ -51,6 +51,12 @@ and can be sold or given away.
 #define ag_story_place_all						5
 
 //
+// generation constants
+//
+
+#define ag_story_change_chance					30			// out of 100
+
+//
 // textures
 //
 

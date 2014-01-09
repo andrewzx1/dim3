@@ -270,6 +270,8 @@ int ag_get_room_position(int shape_idx,d3pnt *pnt,d3vct *size,bool prefered)
 					break;
 			}
 
+			pnt->y=room2->max.y;
+
 				// is this position clear?
 
 			min.x=pnt->x;
@@ -807,7 +809,7 @@ int ag_generate_random_stub_shape(void)
       
 ======================================================= */
 
-int ag_generate_position_room_first(d3pnt *pnt)
+int ag_generate_position_room_first(d3pnt *pnt,d3vct *size)
 {
 	int			shape_idx;
 
@@ -820,7 +822,7 @@ int ag_generate_position_room_first(d3pnt *pnt)
 	return(shape_idx);
 }
 
-bool ag_generate_position_room_connection(int *p_shape_idx,int *p_connect_idx,d3pnt *pnt,d3vct *size,bool stubs)
+bool ag_generate_position_room_connection(int *p_shape_idx,int *p_connect_idx,d3pnt *pnt,d3vct *size,bool story_change,bool stubs)
 {
 	int			shape_idx,connect_idx,try_count;
 
@@ -858,6 +860,13 @@ bool ag_generate_position_room_connection(int *p_shape_idx,int *p_connect_idx,d3
 	*p_shape_idx=shape_idx;
 	*p_connect_idx=connect_idx;
 
+		// stubs always connect directly to room
+		// but non-stubs can change story
+
+	if ((!stubs) && (story_change)) {
+		pnt->y=10000-(int)(100.0f*size->y);
+	}
+
 	return(TRUE);
 }
 
@@ -893,6 +902,7 @@ bool ag_generate_run(char *err_str)
 {
 	int				n,room_count,
 					shape_idx,connect_idx;
+	bool			story_change;
 	d3pnt			pnt;
 	d3vct			size;
 
@@ -916,7 +926,11 @@ bool ag_generate_run(char *err_str)
 		// create the rooms
 
 	for (n=0;n!=room_count;n++) {
-			
+
+			// time to change story?
+
+		story_change=(ag_random_int(100)<ag_story_change_chance);
+
 			// the default size
 
 		size.x=size.z=(float)ag_state.size.room_sz;
@@ -941,7 +955,7 @@ bool ag_generate_run(char *err_str)
 				// gain their size from connecting to this room
 
 			if (n==0) {
-				shape_idx=ag_generate_position_room_first(&pnt);
+				shape_idx=ag_generate_position_room_first(&pnt,&size);
 				connect_idx=-1;
 			}
 
@@ -949,7 +963,7 @@ bool ag_generate_run(char *err_str)
 				// connect it to an existing room
 
 			else {
-				if (!ag_generate_position_room_connection(&shape_idx,&connect_idx,&pnt,&size,FALSE)) break;
+				if (!ag_generate_position_room_connection(&shape_idx,&connect_idx,&pnt,&size,story_change,FALSE)) break;
 			}
 		}
 
@@ -961,7 +975,7 @@ bool ag_generate_run(char *err_str)
 		// add any stubs
 
 	for (n=0;n!=ag_state.size.room_stub_count;n++) {
-		if (!ag_generate_position_room_connection(&shape_idx,&connect_idx,&pnt,&size,TRUE)) break;
+		if (!ag_generate_position_room_connection(&shape_idx,&connect_idx,&pnt,&size,FALSE,TRUE)) break;
 		ag_add_room(shape_idx,connect_idx,&pnt,&size);
 	}
 
@@ -970,21 +984,21 @@ bool ag_generate_run(char *err_str)
 		// other and not blocked
 
 	if (ag_state.option.auto_connect) {
-		while (ag_generate_extra_corridors()) {}
+	//	while (ag_generate_extra_corridors()) {}
 	}
 
 		// add additional stories for rooms
 		// that are connected to other rooms
-
+/*
 	if (ag_state.size.story_count>1) ag_state.size.story_count--;		// story count is 0 based, but XML is 1 based
 
 	for (n=0;n!=ag_state.size.story_count;n++) {
 		ag_generate_additional_stories();
 	}
-
+*/
 		// add ceilings
 
-	ag_generate_ceilings();
+//	ag_generate_ceilings();
 
 		// delete any polygons that share the
 		// same space
@@ -1014,226 +1028,6 @@ bool ag_generate_run(char *err_str)
 	return(TRUE);
 }
 
-
-
-
-
-
-
-
-
-
-
-
-bool ag_generate_find_open_spot(int *px,int *pz,int sz)
-{
-	int			n,k,mesh_idx,x,z;
-	bool		hit;
-	d3pnt		min,max;
-
-		// try a number of times to find an empty
-		// spot for new block
-
-	for (n=0;n!=100;n++) {
-
-			// find a random location
-
-		mesh_idx=ag_random_int(map.mesh.nmesh);
-		map_mesh_calculate_extent(&map,mesh_idx,&min,&max);
-
-		switch (ag_random_int(4)) {
-			case 0:
-				x=min.x;
-				z=min.z-sz;
-				break;
-			case 1:
-				x=max.x;
-				z=min.z;
-				break;
-			case 2:
-				x=min.x;
-				z=max.z;
-				break;
-			case 3:
-				x=min.x-sz;
-				z=min.z;
-				break;
-		}
-
-			// overlapping any other meshes?
-
-		hit=FALSE;
-
-		for (k=0;k!=map.mesh.nmesh;k++) {
-
-			if (k==mesh_idx) continue;
-
-			map_mesh_calculate_extent(&map,k,&min,&max);
-			if ((x==min.x) && (z==min.z)) {
-				hit=TRUE;
-				break;
-			}
-		}
-
-		if (!hit) {
-			*px=x;
-			*pz=z;
-			return(TRUE);
-		}
-	}
-
-	return(FALSE);
-}
-
-
-
-bool ag_generate_run2(char *err_str)
-{
-	int				n,x,z,ty,by,sz,room_count,
-					mesh_idx;
-	int				px[4],py[4],pz[4];
-	float			gx[4],gy[4];
-
-		// clear the VBOs
-		// and map data
-
-	view_vbo_map_free();
-	ag_map_clear();
-
-		// build the boxes
-
-	room_count=20;
-	sz=50000;
-
-	ty=150000;
-	by=180000;
-
-	for (n=0;n!=room_count;n++) {
-
-			// box location
-
-		if (n==0) {
-			x=map_max_size>>1;
-			z=map_max_size>>1;
-		}
-		else {
-			if (!ag_generate_find_open_spot(&x,&z,sz)) break;
-		}
-
-			// add in the box
-	
-		mesh_idx=map_mesh_add(&map);
-
-			// build the wall
-			// first the story wall
-
-		px[0]=px[3]=x;
-		px[1]=px[2]=x;
-		pz[0]=pz[3]=z;
-		pz[1]=pz[2]=z+sz;
-		py[0]=py[1]=ty;
-		py[2]=py[3]=by;
-
-		gx[0]=gx[3]=0.0f;
-		gx[1]=gx[2]=1.0f;
-		gy[0]=gy[1]=0.0f;
-		gy[2]=gy[3]=1.0f;
-	
-		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,0);
-
-		px[0]=px[3]=x+sz;
-		px[1]=px[2]=x+sz;
-		pz[0]=pz[3]=z;
-		pz[1]=pz[2]=z+sz;
-		py[0]=py[1]=ty;
-		py[2]=py[3]=by;
-
-		gx[0]=gx[3]=0.0f;
-		gx[1]=gx[2]=1.0f;
-		gy[0]=gy[1]=0.0f;
-		gy[2]=gy[3]=1.0f;
-	
-		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,0);
-
-		px[0]=px[3]=x;
-		px[1]=px[2]=x+sz;
-		pz[0]=pz[3]=z;
-		pz[1]=pz[2]=z;
-		py[0]=py[1]=ty;
-		py[2]=py[3]=by;
-
-		gx[0]=gx[3]=0.0f;
-		gx[1]=gx[2]=1.0f;
-		gy[0]=gy[1]=0.0f;
-		gy[2]=gy[3]=1.0f;
-	
-		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,0);
-
-		px[0]=px[3]=x;
-		px[1]=px[2]=x+sz;
-		pz[0]=pz[3]=z+sz;
-		pz[1]=pz[2]=z+sz;
-		py[0]=py[1]=ty;
-		py[2]=py[3]=by;
-
-		gx[0]=gx[3]=0.0f;
-		gx[1]=gx[2]=1.0f;
-		gy[0]=gy[1]=0.0f;
-		gy[2]=gy[3]=1.0f;
-	
-		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,0);
-
-
-
-
-		px[0]=px[3]=x;
-		px[1]=px[2]=x+sz;
-		pz[0]=pz[1]=z;
-		pz[2]=pz[3]=z+sz;
-		py[0]=py[1]=by;
-		py[2]=py[3]=by;
-
-		gx[0]=gx[3]=0.0f;
-		gx[1]=gx[2]=1.0f;
-		gy[0]=gy[1]=0.0f;
-		gy[2]=gy[3]=1.0f;
-	
-		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,1);
-
-
-	}
-
-		// delete any polygons that end
-		// up being shared
-
-	ag_generate_delete_shared_polygons();
-
-		// restore the VBOs,
-		// center view, reset UVs
-		// and redraw
-
-	view_vbo_map_initialize();
-
-	map_recalc_normals(&map,FALSE);
-	map_mesh_reset_uv_all();
-	map_view_reset_uv_layers();
-	map_view_goto_map_center_all();
-
-	main_wind_draw();
-
-	return(TRUE);
-}
-
-bool auto_generate_map(char *err_str)
-{
-	ag_random_seed();
-	return(ag_generate_run2(err_str));
-}
-
-
-
-
-/*
 bool auto_generate_map(char *err_str)
 {
 		// choose an auto generate XML file
@@ -1246,7 +1040,6 @@ bool auto_generate_map(char *err_str)
 	ag_random_seed();
 	return(ag_generate_run(err_str));
 }
-*/
 
 bool auto_generate_previous_map(char *err_str)
 {
