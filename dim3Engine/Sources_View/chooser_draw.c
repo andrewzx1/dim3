@@ -292,9 +292,11 @@ bool chooser_is_key_down(iface_chooser_piece_type *piece)
 			return(input_get_keyboard_escape());
 		case chooser_key_space:
 			return(input_get_keyboard_key(SDL_SCANCODE_SPACE));
+		case chooser_key_0:
+			return(input_get_keyboard_key(SDL_SCANCODE_0));
 	}
 
-	if ((piece->key>=chooser_key_0) && (piece->key<=chooser_key_9)) return(input_get_keyboard_key(SDL_SCANCODE_0+(piece->key-chooser_key_0)));
+	if ((piece->key>=chooser_key_1) && (piece->key<=chooser_key_9)) return(input_get_keyboard_key(SDL_SCANCODE_1+(piece->key-chooser_key_1)));
 	if ((piece->key>=chooser_key_A) && (piece->key<=chooser_key_Z)) return(input_get_keyboard_key(SDL_SCANCODE_A+(piece->key-chooser_key_A)));
 
 	return(FALSE);

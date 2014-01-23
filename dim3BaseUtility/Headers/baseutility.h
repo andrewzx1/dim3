@@ -831,8 +831,12 @@ typedef struct		{
 #define chooser_key_Y									37
 #define chooser_key_Z									38
 #define chooser_key_space								39
+#define chooser_key_left								40
+#define chooser_key_right								41
+#define chooser_key_up									42
+#define chooser_key_down								43
 
-#define chooser_key_list_def							{"none","return","escape","0","1","2","3","4","5","6","7","8","9","A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z","Space"}
+#define chooser_key_list_def							{"none","return","escape","0","1","2","3","4","5","6","7","8","9","A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z","space","left","right","up","down",""}
 
 typedef struct		{
 						int								size,just;
