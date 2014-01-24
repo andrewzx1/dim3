@@ -898,6 +898,146 @@ int ag_generate_position_room_grid(int room_idx,int room_count,d3pnt *pnt,d3vct 
       
 ======================================================= */
 
+
+
+
+
+
+
+
+
+
+void ag_add_room_get_point_from_angle(d3pnt *center_pnt,float radius,float ang,d3pnt *pnt)
+{
+	float			rad;
+
+	rad=ang*ANG_to_RAD;
+	pnt->x=center_pnt->x+(int)(radius*sinf(rad));
+	pnt->z=center_pnt->z-(int)(radius*cosf(rad));
+}
+
+void ag_add_room_2(void)
+{
+
+	int					n,poly_sz,mesh_idx,nvertex,floor_nvertex,
+						random_ang,try_count;
+	int					px[4],py[4],pz[4],f_px[8],f_py[8],f_pz[8];
+	float				last_ang,next_ang,gx[4],gy[4];
+	bool				hit;
+	d3pnt				pnt,p1,p2,min,max,mesh_min,mesh_max;
+
+		// radium size
+
+	poly_sz=10000+ag_random_int(10000);
+
+		// find an open spot
+
+	try_count=0;
+
+	while (TRUE) {
+
+		pnt.x=(map_max_size>>1)+(50000-ag_random_int(100000));
+		pnt.z=(map_max_size>>1)+(50000-ag_random_int(100000));
+
+		min.x=pnt.x-poly_sz;
+		max.x=pnt.x+poly_sz;
+
+		min.z=pnt.z-poly_sz;
+		max.z=pnt.z+poly_sz;
+
+		hit=FALSE;
+
+		for (n=0;n!=map.mesh.nmesh;n++) {
+			map_mesh_calculate_extent(&map,n,&mesh_min,&mesh_max);
+
+			if (max.x<=mesh_min.x) continue;
+			if (min.x>=mesh_max.x) continue;
+			if (max.z<=mesh_min.z) continue;
+			if (min.z>=mesh_max.z) continue;
+
+			hit=TRUE;
+			break;
+		}
+
+		if (!hit) break;
+
+		try_count++;
+		if (try_count==100) return;
+	}
+
+		// create mesh
+
+	mesh_idx=map_mesh_add(&map);
+
+		// create random polygon
+
+	nvertex=4+random_int(4);
+	random_ang=(int)(360.0f/(float)nvertex);
+
+	floor_nvertex=0;
+
+	last_ang=0.0f;
+
+	for (n=0;n!=nvertex;n++) {
+
+			// get next angle
+
+		if (n==(nvertex-1)) {
+			next_ang=0.0f;
+		}
+		else {
+			next_ang=last_ang+(30.0f+(float)ag_random_int(random_ang));
+			if (next_ang>360.0f) next_ang=0.0f;
+		}
+
+		ag_add_room_get_point_from_angle(&pnt,(float)poly_sz,last_ang,&p1);
+		ag_add_room_get_point_from_angle(&pnt,(float)poly_sz,next_ang,&p2);
+
+		last_ang=next_ang;
+
+			// build the wall
+
+		px[0]=px[3]=p1.x;
+		px[1]=px[2]=p2.x;
+		pz[0]=pz[3]=p1.z;
+		pz[1]=pz[2]=p2.z;
+		py[0]=py[1]=10000;
+		py[2]=py[3]=20000;
+
+		gx[0]=gx[3]=0.0f;
+		gx[1]=gx[2]=1.0f;
+		gy[0]=gy[1]=0.0f;
+		gy[2]=gy[3]=1.0f;
+	
+		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_wall);
+
+			// add to floor vertexes
+
+		f_px[floor_nvertex]=p1.x;
+		f_py[floor_nvertex]=20000;
+		f_pz[floor_nvertex]=p1.z;
+
+		floor_nvertex++;
+
+			// early exit if random lines
+			// finished too early
+
+		if (last_ang==0.0f) break;
+	}
+
+		// add the floor
+
+	for (n=0;n!=floor_nvertex;n++) {
+		gx[n]=gy[n]=0.0f;
+	}
+		
+	map_mesh_add_poly(&map,mesh_idx,floor_nvertex,f_px,f_py,f_pz,gx,gy,ag_texture_floor);
+
+}
+
+
+
+
 bool ag_generate_run(char *err_str)
 {
 	int				n,room_count,
@@ -908,10 +1048,10 @@ bool ag_generate_run(char *err_str)
 
 		// initialize auto generate structures
 
-	if (!ag_initialize(err_str)) {
-		ag_release();
-		return(FALSE);
-	}
+//	if (!ag_initialize(err_str)) {
+//		ag_release();
+//		return(FALSE);
+//	}
 
 		// clear the VBOs
 		// and map data
@@ -923,8 +1063,14 @@ bool ag_generate_run(char *err_str)
 
 	room_count=ag_state.size.room_min_count+ag_random_int(ag_state.size.room_max_count-ag_state.size.room_min_count);
 
-		// create the rooms
+	for (n=0;n!=10;n++) {
+		ag_add_room_2();
+	}
 
+
+
+		// create the rooms
+/*
 	for (n=0;n!=room_count;n++) {
 
 			// time to change story?
@@ -984,21 +1130,21 @@ bool ag_generate_run(char *err_str)
 		// other and not blocked
 
 	if (ag_state.option.auto_connect) {
-	//	while (ag_generate_extra_corridors()) {}
+		while (ag_generate_extra_corridors()) {}
 	}
 
 		// add additional stories for rooms
 		// that are connected to other rooms
-/*
+
 	if (ag_state.size.story_count>1) ag_state.size.story_count--;		// story count is 0 based, but XML is 1 based
 
 	for (n=0;n!=ag_state.size.story_count;n++) {
 		ag_generate_additional_stories();
 	}
-*/
+
 		// add ceilings
 
-//	ag_generate_ceilings();
+	ag_generate_ceilings();
 
 		// delete any polygons that share the
 		// same space
@@ -1008,10 +1154,10 @@ bool ag_generate_run(char *err_str)
 		// add spots and nodes
 
 	ag_generate_spots_add();
-
+*/
 		// free auto generate structures
 
-	ag_release();
+//	ag_release();
 
 		// restore the VBOs,
 		// center view, reset UVs
@@ -1032,7 +1178,7 @@ bool auto_generate_map(char *err_str)
 {
 		// choose an auto generate XML file
 
-	if (!os_load_file("Select an Auto Generator XML File",ag_state.xml_path,"xml")) return(FALSE);
+//	if (!os_load_file("Select an Auto Generator XML File",ag_state.xml_path,"xml")) return(FALSE);
 
 		// run the auto generator
 		// with a new unique seed
