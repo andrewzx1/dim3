@@ -74,6 +74,11 @@ int ag_random_int(int max)
 	return((int)(f*(float)max));
 }
 
+bool ag_random_bool(void)
+{
+	return(ag_random_int(100)>=50);
+}
+
 /* =======================================================
 
       Polygon Utilies

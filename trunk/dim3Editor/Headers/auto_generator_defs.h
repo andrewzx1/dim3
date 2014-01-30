@@ -50,6 +50,11 @@ and can be sold or given away.
 #define ag_story_place_bottom					4
 #define ag_story_place_all						5
 
+#define ag_connect_side_top						0
+#define ag_connect_side_bottom					1
+#define ag_connect_side_left					2
+#define ag_connect_side_right					3
+
 //
 // generation constants
 //
@@ -90,12 +95,24 @@ typedef struct		{
 						ag_shape_connector_type	connectors[ag_max_shape_connector];
 					} ag_shape_type;
 
+
 typedef struct		{
-						int						shape_idx,mesh_idx;
+						int						p1_idx,p2_idx;
+						bool					on;
+					} ag_room_flat_type;
+
+typedef struct		{
+						ag_room_flat_type		lft,rgt,top,bot;
+					} ag_room_flat_side_type;
+
+typedef struct		{
+						int						nvertex,shape_idx,mesh_idx;
 						bool					clip,multi_story,extra,
 												connectors_used[ag_max_shape_connector];
 						d3pnt					min,max;
+						d3pnt					vertexes[8];
 						d3vct					size;
+						ag_room_flat_side_type	flat;
 					} ag_room_type;
 
 typedef struct		{
