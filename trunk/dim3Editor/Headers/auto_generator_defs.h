@@ -29,11 +29,6 @@ and can be sold or given away.
 // constants
 //
 
-#define ag_max_shape							256
-#define ag_max_shape_point						64
-#define ag_max_shape_connector					32
-#define ag_max_shape_poly						64
-
 #define ag_max_room								256
 
 #define ag_max_position_room_try				8
@@ -49,6 +44,10 @@ and can be sold or given away.
 #define ag_story_place_top						3
 #define ag_story_place_bottom					4
 #define ag_story_place_all						5
+
+//
+// connection sides
+//
 
 #define ag_connect_side_top						0
 #define ag_connect_side_bottom					1
@@ -75,28 +74,6 @@ and can be sold or given away.
 //
 
 typedef struct		{
-						int						npt,v[4];
-						bool					top,bottom;
-					} ag_shape_poly_type;
-
-typedef struct		{
-						int						type,dist,v[2];
-						bool					prefer;
-						d3pnt					top_left;
-					} ag_shape_connector_type;
-
-typedef struct		{
-						int						nvertex,npoly,nconnector;
-						char					name[name_str_len];
-						bool					single_floor,stub,spawn_spots;
-						d3pnt					extent,
-												vertexes[ag_max_shape_point];
-						ag_shape_poly_type		polys[ag_max_shape_poly];
-						ag_shape_connector_type	connectors[ag_max_shape_connector];
-					} ag_shape_type;
-
-
-typedef struct		{
 						int						p1_idx,p2_idx;
 						bool					on;
 					} ag_room_flat_type;
@@ -106,9 +83,7 @@ typedef struct		{
 					} ag_room_flat_side_type;
 
 typedef struct		{
-						int						nvertex,shape_idx,mesh_idx;
-						bool					clip,multi_story,extra,
-												connectors_used[ag_max_shape_connector];
+						int						nvertex,mesh_idx;
 						d3pnt					min,max;
 						d3pnt					vertexes[8];
 						d3vct					size;
@@ -116,22 +91,12 @@ typedef struct		{
 					} ag_room_type;
 
 typedef struct		{
-						int						room_min_count,room_max_count,
-												room_stub_count,room_sz,room_high,
-												story_count;
-					} ag_size_type;
-
-typedef struct		{
-						bool					auto_connect,grid;
+						int						room_count,story_count;
 					} ag_option_type;
 
 typedef struct		{
-						int						nshape,nroom,
-												seed;
-						char					xml_path[1024];
-						ag_size_type			size;
+						int						seed;
 						ag_option_type			option;
-						ag_shape_type			*shapes;
 						ag_room_type			*rooms;
 					} ag_state_type;
 
