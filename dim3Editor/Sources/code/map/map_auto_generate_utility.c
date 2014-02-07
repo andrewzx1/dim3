@@ -81,21 +81,6 @@ bool ag_random_bool(void)
 
 /* =======================================================
 
-      Polygon Utilies
-      
-======================================================= */
-
-bool ag_generate_is_poly_straight_wall(int mesh_idx,int poly_idx)
-{
-	map_mesh_poly_type		*poly;
-
-	poly=&map.mesh.meshes[mesh_idx].polys[poly_idx];
-	if (!poly->box.wall_like) return(FALSE);
-	return((poly->box.min.x==poly->box.max.x) || (poly->box.min.z==poly->box.max.z));
-}
-
-/* =======================================================
-
       Delete Shared Polygons
       
 ======================================================= */
@@ -193,7 +178,7 @@ void ag_generate_delete_shared_polygons(void)
 
 void ag_generate_spots_add_single(char *name,int spot_obj_type,char *script_name)
 {
-	int					idx,count,mx,mz;
+	int					idx,mx,mz;
 	ag_room_type		*room;
 	spot_type			*spot;
 
@@ -202,48 +187,9 @@ void ag_generate_spots_add_single(char *name,int spot_obj_type,char *script_name
 	spot=&map.spots[map.nspot];
 	map.nspot++;
 
-		// find random position
-
-	count=ag_random_int(ag_state.nroom);
-
-	idx=0;
-
-	while (TRUE) {
-
-		if (idx==ag_state.nroom) {
-			idx=0;
-			break;
-		}
-
-			// skip rooms that don't	
-			// allow spawn spots
-			// decriment count just in case there
-			// are no other rooms
-
-		room=&ag_state.rooms[idx];
-
-		if (room->shape_idx==-1)  {
-			count--;
-			idx++;
-			continue;
-		}
-
-		if (!ag_state.shapes[room->shape_idx].spawn_spots) {
-			count--;
-			idx++;
-			continue;
-		}
-
-			// have we hit the right one?
-
-		if (count<=0) break;
-		count--;
-
-		idx++;
-	}
-
 		// randomize location
 
+	idx=ag_random_int(map.mesh.nmesh);
 	room=&ag_state.rooms[idx];
 
 	mx=(room->min.x+room->max.x)>>1;
