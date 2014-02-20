@@ -911,7 +911,8 @@ typedef struct		{
 												side_step,crawl,floating,single_speed,no_slide,
 												open_doors,hide_all_weapons,
 												find_on,in_collide_event,in_construct_event,
-												quick_reverse,death_trigger,death_telefrag;
+												quick_reverse,death_trigger,death_telefrag,
+												script_spawned,dispose_trigger;
 						d3pnt					pnt,org_pnt,last_pnt;
 						d3ang					ang,view_ang,org_ang,last_ang;
 						obj_motion				motion;

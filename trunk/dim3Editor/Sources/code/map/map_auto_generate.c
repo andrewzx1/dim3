@@ -597,7 +597,7 @@ bool ag_generate_run(char *err_str)
 
 		// get room count
 
-	room_count=20;
+	room_count=30;
 
 	for (n=0;n!=room_count;n++) {
 		ag_add_room_2(n==0);

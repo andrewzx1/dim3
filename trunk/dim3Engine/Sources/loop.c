@@ -89,6 +89,12 @@ void loop_server_run(void)
 
 	timers_run();
 	server_run();
+
+		// objects disposed within scripts
+		// have to be triggered outside of
+		// other scripts and triggers
+
+	object_dispose_triggered();
 	
 		// sending network updates
 		// only clients send group synchs

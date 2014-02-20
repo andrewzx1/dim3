@@ -39,7 +39,7 @@ extern setup_type			setup;
 extern file_path_setup_type	file_path_setup;
 
 int							chooser_idx;
-bool						chooser_key_down;
+bool						chooser_key_held_down;
 char						chooser_sub_txt[max_chooser_sub_txt][max_chooser_text_data_sz];
 
 /* =======================================================
@@ -236,7 +236,7 @@ void chooser_create_elements(void)
 
 		// no key downs
 
-	chooser_key_down=FALSE;
+	chooser_key_held_down=FALSE;
 }
 
 void chooser_open(void)
@@ -327,8 +327,8 @@ void chooser_input(void)
 		if (chooser_is_key_down(piece)) id=piece->id;
 	}
 
-	if (chooser_key_down) {
-		if (id==-1) chooser_key_down=FALSE;
+	if (chooser_key_held_down) {
+		if (id==-1) chooser_key_held_down=FALSE;
 		id=-1;
 	}
 
