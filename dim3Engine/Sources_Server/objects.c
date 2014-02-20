@@ -523,6 +523,9 @@ int object_create(char *name,int type,int bind)
 	obj->find_on=TRUE;
 	obj->hit_box.on=FALSE;
 
+	obj->script_spawned=FALSE;
+	obj->dispose_trigger=FALSE;
+
 	obj->contact.object_on=TRUE;
 	obj->contact.projectile_on=TRUE;
 	obj->contact.force_on=TRUE;
@@ -1040,6 +1043,19 @@ void object_dispose_2(int bind)
 	}
 }
 
+void object_dispose_triggered(void)
+{
+	int				n;
+	obj_type		*obj;
+
+	for (n=0;n!=max_obj_list;n++) {
+		obj=server.obj_list.objs[n];
+		if (obj==NULL) continue;
+
+		if (obj->dispose_trigger) object_dispose_single(n);
+	}
+}
+
 void object_dispose_all(void)
 {
 	int				n;
@@ -1106,6 +1122,8 @@ int object_script_spawn(char *name,char *script,char *params,d3pnt *pnt,d3ang *a
 	
 	obj=server.obj_list.objs[idx];
 
+	obj->script_spawned=TRUE;
+
 		// hide object
 
 	if (hide) {
@@ -1132,6 +1150,8 @@ int object_script_spawn(char *name,char *script,char *params,d3pnt *pnt,d3ang *a
 
 bool object_script_remove(int idx,char *err_str)
 {
+	obj_type			*obj;
+
 		// can not dispose player object
 
 	if (idx==server.player_obj_idx) {
@@ -1146,9 +1166,21 @@ bool object_script_remove(int idx,char *err_str)
 		return(FALSE);
 	}
 
-		// dispose object
+		// can only delete objects spawned by
+		// a script
 
-	object_dispose_single(idx);
+	obj=server.obj_list.objs[idx];
+
+	if (!obj->script_spawned) {
+		strcpy(err_str,"Can only delete objects spawned by scripts");
+		return(FALSE);
+	}
+
+		// trigger the object to be
+		// disposed when outside of scripting
+		// loops
+
+	obj->dispose_trigger=TRUE;
 
 	return(TRUE);
 }

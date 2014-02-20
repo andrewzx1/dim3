@@ -44,6 +44,7 @@ extern int object_create(char *name,int type,int bind);
 extern int object_start(spot_type *spot,char *name,int type,int bind,char *err_str);
 extern void object_dispose_single(int idx);
 extern void object_dispose_2(int bind);
+extern void object_dispose_triggered(void);
 extern void object_dispose_all(void);
 
 extern int object_script_count(void);
