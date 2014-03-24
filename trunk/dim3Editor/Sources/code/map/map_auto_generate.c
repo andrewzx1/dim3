@@ -283,14 +283,14 @@ void ag_add_room_get_point_from_angle(d3pnt *center_pnt,float radius,float ang,d
       
 ======================================================= */
 
-void ag_add_room_2(bool first_room)
+void ag_add_room(bool first_room)
 {
 	int				n,k,poly_sz,mesh_idx,
 					connect_mesh_idx,org_connect_mesh_idx,connect_side,org_connect_side,
-					nvertex,random_ang;
+					nvertex,random_ang,box_offset;
 	int				px[8],py[8],pz[8];
 	float			last_ang,next_ang,gx[8],gy[8];
-	bool			hit;
+	bool			hit,flat;
 	d3pnt			pnt,p1,p2,min,max,mesh_min,mesh_max;
 	ag_room_type	*room,*connect_room;
 
@@ -421,6 +421,9 @@ void ag_add_room_2(bool first_room)
 
 	room=&ag_state.rooms[mesh_idx];
 
+	min.y=10000;
+	max.y=20000;
+
 	memmove(&room->min,&min,sizeof(d3pnt));
 	memmove(&room->max,&max,sizeof(d3pnt));
 
@@ -502,37 +505,56 @@ void ag_add_room_2(bool first_room)
 		// if connecting, then fix
 		// the vertexes to line up
 
+		// if the lines are still flat (they can get
+		// altered by other hookups) then insert
+		// a box
+
 	if (connect_mesh_idx!=-1) {
+
+		flat=FALSE;
+		box_offset=0;
 
 		connect_room=&ag_state.rooms[connect_mesh_idx];
 
 		switch (connect_side) {
 
 			case ag_connect_side_top:
+				flat=(connect_room->vertexes[connect_room->flat.top.p1_idx].z==connect_room->vertexes[connect_room->flat.top.p2_idx].z);
+				if (flat) box_offset=1000;
+
 				room->vertexes[room->flat.bot.p1_idx].x=connect_room->vertexes[connect_room->flat.top.p1_idx].x;
-				room->vertexes[room->flat.bot.p1_idx].z=connect_room->vertexes[connect_room->flat.top.p1_idx].z;
+				room->vertexes[room->flat.bot.p1_idx].z=connect_room->vertexes[connect_room->flat.top.p1_idx].z-box_offset;
 				room->vertexes[room->flat.bot.p2_idx].x=connect_room->vertexes[connect_room->flat.top.p2_idx].x;
-				room->vertexes[room->flat.bot.p2_idx].z=connect_room->vertexes[connect_room->flat.top.p2_idx].z;
+				room->vertexes[room->flat.bot.p2_idx].z=connect_room->vertexes[connect_room->flat.top.p2_idx].z-box_offset;
 				break;
 
 			case ag_connect_side_bottom:
+				flat=(connect_room->vertexes[connect_room->flat.bot.p1_idx].z==connect_room->vertexes[connect_room->flat.bot.p2_idx].z);
+				if (flat) box_offset=1000;
+
 				room->vertexes[room->flat.top.p1_idx].x=connect_room->vertexes[connect_room->flat.bot.p1_idx].x;
-				room->vertexes[room->flat.top.p1_idx].z=connect_room->vertexes[connect_room->flat.bot.p1_idx].z;
+				room->vertexes[room->flat.top.p1_idx].z=connect_room->vertexes[connect_room->flat.bot.p1_idx].z+box_offset;
 				room->vertexes[room->flat.top.p2_idx].x=connect_room->vertexes[connect_room->flat.bot.p2_idx].x;
-				room->vertexes[room->flat.top.p2_idx].z=connect_room->vertexes[connect_room->flat.bot.p2_idx].z;
+				room->vertexes[room->flat.top.p2_idx].z=connect_room->vertexes[connect_room->flat.bot.p2_idx].z+box_offset;
 				break;
 
 			case ag_connect_side_left:
-				room->vertexes[room->flat.rgt.p1_idx].x=connect_room->vertexes[connect_room->flat.lft.p1_idx].x;
+				flat=(connect_room->vertexes[connect_room->flat.lft.p1_idx].x==connect_room->vertexes[connect_room->flat.lft.p2_idx].x);
+				if (flat) box_offset=1000;
+
+				room->vertexes[room->flat.rgt.p1_idx].x=connect_room->vertexes[connect_room->flat.lft.p1_idx].x-box_offset;
 				room->vertexes[room->flat.rgt.p1_idx].z=connect_room->vertexes[connect_room->flat.lft.p1_idx].z;
-				room->vertexes[room->flat.rgt.p2_idx].x=connect_room->vertexes[connect_room->flat.lft.p2_idx].x;
+				room->vertexes[room->flat.rgt.p2_idx].x=connect_room->vertexes[connect_room->flat.lft.p2_idx].x-box_offset;
 				room->vertexes[room->flat.rgt.p2_idx].z=connect_room->vertexes[connect_room->flat.lft.p2_idx].z;
 				break;
 
 			case ag_connect_side_right:
-				room->vertexes[room->flat.lft.p1_idx].x=connect_room->vertexes[connect_room->flat.rgt.p1_idx].x;
+				flat=(connect_room->vertexes[connect_room->flat.rgt.p1_idx].x==connect_room->vertexes[connect_room->flat.rgt.p2_idx].x);
+				if (flat) box_offset=1000;
+
+				room->vertexes[room->flat.lft.p1_idx].x=connect_room->vertexes[connect_room->flat.rgt.p1_idx].x+box_offset;
 				room->vertexes[room->flat.lft.p1_idx].z=connect_room->vertexes[connect_room->flat.rgt.p1_idx].z;
-				room->vertexes[room->flat.lft.p2_idx].x=connect_room->vertexes[connect_room->flat.rgt.p2_idx].x;
+				room->vertexes[room->flat.lft.p2_idx].x=connect_room->vertexes[connect_room->flat.rgt.p2_idx].x+box_offset;
 				room->vertexes[room->flat.lft.p2_idx].z=connect_room->vertexes[connect_room->flat.rgt.p2_idx].z;
 				break;
 
@@ -572,6 +594,10 @@ void ag_add_room_2(bool first_room)
 	}
 		
 	map_mesh_add_poly(&map,mesh_idx,room->nvertex,px,py,pz,gx,gy,ag_texture_floor);
+
+		// if a box was added, put that in
+
+
 }
 
 /* =======================================================
@@ -600,7 +626,7 @@ bool ag_generate_run(char *err_str)
 	room_count=30;
 
 	for (n=0;n!=room_count;n++) {
-		ag_add_room_2(n==0);
+		ag_add_room(n==0);
 	}
 
 		// delete any polygons that share the
