@@ -432,6 +432,8 @@ void ag_add_room(bool first_room)
 	room->flat.lft.on=FALSE;
 	room->flat.rgt.on=FALSE;
 
+	room->connect_box.on=FALSE;
+
 		// create random polygon
 
 	nvertex=4+random_int(4);
@@ -520,7 +522,14 @@ void ag_add_room(bool first_room)
 
 			case ag_connect_side_top:
 				flat=(connect_room->vertexes[connect_room->flat.top.p1_idx].z==connect_room->vertexes[connect_room->flat.top.p2_idx].z);
-				if (flat) box_offset=1000;
+				if (flat) {
+					box_offset=2000+ag_random_int(5000);
+					room->connect_box.on=TRUE;
+					room->connect_box.min.x=connect_room->vertexes[connect_room->flat.top.p1_idx].x;
+					room->connect_box.max.x=connect_room->vertexes[connect_room->flat.top.p2_idx].x;
+					room->connect_box.min.z=connect_room->vertexes[connect_room->flat.top.p1_idx].z-box_offset;
+					room->connect_box.max.z=connect_room->vertexes[connect_room->flat.top.p1_idx].z;
+				}
 
 				room->vertexes[room->flat.bot.p1_idx].x=connect_room->vertexes[connect_room->flat.top.p1_idx].x;
 				room->vertexes[room->flat.bot.p1_idx].z=connect_room->vertexes[connect_room->flat.top.p1_idx].z-box_offset;
@@ -530,7 +539,14 @@ void ag_add_room(bool first_room)
 
 			case ag_connect_side_bottom:
 				flat=(connect_room->vertexes[connect_room->flat.bot.p1_idx].z==connect_room->vertexes[connect_room->flat.bot.p2_idx].z);
-				if (flat) box_offset=1000;
+				if (flat) {
+					box_offset=2000+ag_random_int(5000);
+					room->connect_box.on=TRUE;
+					room->connect_box.min.x=connect_room->vertexes[connect_room->flat.bot.p1_idx].x;
+					room->connect_box.max.x=connect_room->vertexes[connect_room->flat.bot.p2_idx].x;
+					room->connect_box.min.z=connect_room->vertexes[connect_room->flat.bot.p1_idx].z;
+					room->connect_box.max.z=connect_room->vertexes[connect_room->flat.bot.p1_idx].z+box_offset;
+				}
 
 				room->vertexes[room->flat.top.p1_idx].x=connect_room->vertexes[connect_room->flat.bot.p1_idx].x;
 				room->vertexes[room->flat.top.p1_idx].z=connect_room->vertexes[connect_room->flat.bot.p1_idx].z+box_offset;
@@ -540,7 +556,14 @@ void ag_add_room(bool first_room)
 
 			case ag_connect_side_left:
 				flat=(connect_room->vertexes[connect_room->flat.lft.p1_idx].x==connect_room->vertexes[connect_room->flat.lft.p2_idx].x);
-				if (flat) box_offset=1000;
+				if (flat) {
+					box_offset=2000+ag_random_int(5000);
+					room->connect_box.on=TRUE;
+					room->connect_box.min.x=connect_room->vertexes[connect_room->flat.lft.p1_idx].x-box_offset;
+					room->connect_box.max.x=connect_room->vertexes[connect_room->flat.lft.p1_idx].x;
+					room->connect_box.min.z=connect_room->vertexes[connect_room->flat.lft.p1_idx].z;
+					room->connect_box.max.z=connect_room->vertexes[connect_room->flat.lft.p2_idx].z;
+				}
 
 				room->vertexes[room->flat.rgt.p1_idx].x=connect_room->vertexes[connect_room->flat.lft.p1_idx].x-box_offset;
 				room->vertexes[room->flat.rgt.p1_idx].z=connect_room->vertexes[connect_room->flat.lft.p1_idx].z;
@@ -550,7 +573,14 @@ void ag_add_room(bool first_room)
 
 			case ag_connect_side_right:
 				flat=(connect_room->vertexes[connect_room->flat.rgt.p1_idx].x==connect_room->vertexes[connect_room->flat.rgt.p2_idx].x);
-				if (flat) box_offset=1000;
+				if (flat) {
+					box_offset=2000+ag_random_int(5000);
+					room->connect_box.on=TRUE;
+					room->connect_box.min.x=connect_room->vertexes[connect_room->flat.rgt.p1_idx].x;
+					room->connect_box.max.x=connect_room->vertexes[connect_room->flat.rgt.p1_idx].x+box_offset;
+					room->connect_box.min.z=connect_room->vertexes[connect_room->flat.rgt.p1_idx].z;
+					room->connect_box.max.z=connect_room->vertexes[connect_room->flat.rgt.p2_idx].z;
+				}
 
 				room->vertexes[room->flat.lft.p1_idx].x=connect_room->vertexes[connect_room->flat.rgt.p1_idx].x+box_offset;
 				room->vertexes[room->flat.lft.p1_idx].z=connect_room->vertexes[connect_room->flat.rgt.p1_idx].z;
@@ -558,6 +588,11 @@ void ag_add_room(bool first_room)
 				room->vertexes[room->flat.lft.p2_idx].z=connect_room->vertexes[connect_room->flat.rgt.p2_idx].z;
 				break;
 
+		}
+
+		if (flat) {
+			room->connect_box.min.y=10000;
+			room->connect_box.max.y=20000;
 		}
 
 	}
@@ -594,10 +629,108 @@ void ag_add_room(bool first_room)
 	}
 		
 	map_mesh_add_poly(&map,mesh_idx,room->nvertex,px,py,pz,gx,gy,ag_texture_floor);
+}
 
-		// if a box was added, put that in
+/* =======================================================
 
+      Square Connector Rooms
+      
+======================================================= */
 
+void ag_generate_add_connector_rooms(void)
+{
+	int				n,nmesh,mesh_idx;
+	int				px[8],py[8],pz[8];
+	float			gx[8],gy[8];
+	ag_room_type	*room;
+
+	nmesh=map.mesh.nmesh;
+
+	for (n=0;n!=nmesh;n++) {
+
+			// did this room have a connection box?
+
+		room=&ag_state.rooms[n];
+		if (!room->connect_box.on) continue;
+
+			// add the mesh
+
+		mesh_idx=map_mesh_add(&map);
+
+			// walls
+
+		px[0]=px[3]=room->connect_box.min.x;
+		px[1]=px[2]=room->connect_box.min.x;
+		pz[0]=pz[3]=room->connect_box.min.z;
+		pz[1]=pz[2]=room->connect_box.max.z;
+		py[0]=py[1]=room->connect_box.min.y;
+		py[2]=py[3]=room->connect_box.max.y;
+
+		gx[0]=gx[3]=0.0f;
+		gx[1]=gx[2]=1.0f;
+		gy[0]=gy[1]=0.0f;
+		gy[2]=gy[3]=1.0f;
+
+		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_wall_2);
+
+		px[0]=px[3]=room->connect_box.max.x;
+		px[1]=px[2]=room->connect_box.max.x;
+		pz[0]=pz[3]=room->connect_box.min.z;
+		pz[1]=pz[2]=room->connect_box.max.z;
+		py[0]=py[1]=room->connect_box.min.y;
+		py[2]=py[3]=room->connect_box.max.y;
+
+		gx[0]=gx[3]=0.0f;
+		gx[1]=gx[2]=1.0f;
+		gy[0]=gy[1]=0.0f;
+		gy[2]=gy[3]=1.0f;
+
+		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_wall_2);
+
+		px[0]=px[3]=room->connect_box.min.x;
+		px[1]=px[2]=room->connect_box.max.x;
+		pz[0]=pz[3]=room->connect_box.min.z;
+		pz[1]=pz[2]=room->connect_box.min.z;
+		py[0]=py[1]=room->connect_box.min.y;
+		py[2]=py[3]=room->connect_box.max.y;
+
+		gx[0]=gx[3]=0.0f;
+		gx[1]=gx[2]=1.0f;
+		gy[0]=gy[1]=0.0f;
+		gy[2]=gy[3]=1.0f;
+
+		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_wall_2);
+
+		px[0]=px[3]=room->connect_box.min.x;
+		px[1]=px[2]=room->connect_box.max.x;
+		pz[0]=pz[3]=room->connect_box.max.z;
+		pz[1]=pz[2]=room->connect_box.max.z;
+		py[0]=py[1]=room->connect_box.min.y;
+		py[2]=py[3]=room->connect_box.max.y;
+
+		gx[0]=gx[3]=0.0f;
+		gx[1]=gx[2]=1.0f;
+		gy[0]=gy[1]=0.0f;
+		gy[2]=gy[3]=1.0f;
+
+		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_wall_2);
+
+			// floor
+
+		px[0]=px[3]=room->connect_box.min.x;
+		px[1]=px[2]=room->connect_box.max.x;
+		pz[0]=pz[1]=room->connect_box.min.z;
+		pz[2]=pz[3]=room->connect_box.max.z;
+		py[0]=py[1]=room->connect_box.max.y;
+		py[2]=py[3]=room->connect_box.max.y;
+
+		gx[0]=gx[3]=0.0f;
+		gx[1]=gx[2]=1.0f;
+		gy[0]=gy[1]=0.0f;
+		gy[2]=gy[3]=1.0f;
+
+		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_floor_2);
+	}
 }
 
 /* =======================================================
@@ -621,13 +754,19 @@ bool ag_generate_run(char *err_str)
 	view_vbo_map_free();
 	ag_map_clear();
 
-		// get room count
+		// add rooms
 
 	room_count=30;
 
 	for (n=0;n!=room_count;n++) {
 		ag_add_room(n==0);
 	}
+
+		// add square connector
+		// rooms that happen when connected rooms
+		// are squared off
+
+	ag_generate_add_connector_rooms();
 
 		// delete any polygons that share the
 		// same space
