@@ -66,37 +66,45 @@ and can be sold or given away.
 
 #define ag_texture_wall							0
 #define ag_texture_floor						1
-#define ag_texture_additional_floor				2
-#define ag_texture_ceiling						3
+#define ag_texture_ceiling						2
+#define ag_texture_wall_2						3
+#define ag_texture_floor_2						4
+#define ag_texture_ceiling_2					5
 
 //
 // structures
 //
 
 typedef struct		{
-						int						p1_idx,p2_idx;
-						bool					on;
+						int							p1_idx,p2_idx;
+						bool						on;
 					} ag_room_flat_type;
 
 typedef struct		{
-						ag_room_flat_type		lft,rgt,top,bot;
+						ag_room_flat_type			lft,rgt,top,bot;
 					} ag_room_flat_side_type;
 
 typedef struct		{
-						int						nvertex,mesh_idx;
-						d3pnt					min,max;
-						d3pnt					vertexes[8];
-						d3vct					size;
-						ag_room_flat_side_type	flat;
+						bool						on;
+						d3pnt						min,max;
+					} ag_room_connect_box_type;
+
+typedef struct		{
+						int							nvertex,mesh_idx;
+						d3pnt						min,max;
+						d3pnt						vertexes[8];
+						d3vct						size;
+						ag_room_flat_side_type		flat;
+						ag_room_connect_box_type	connect_box;
 					} ag_room_type;
 
 typedef struct		{
-						int						room_count,story_count;
+						int							room_count,story_count;
 					} ag_option_type;
 
 typedef struct		{
-						int						seed;
-						ag_option_type			option;
-						ag_room_type			*rooms;
+						int							seed;
+						ag_option_type				option;
+						ag_room_type				*rooms;
 					} ag_state_type;
 
