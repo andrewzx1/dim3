@@ -70,6 +70,20 @@ and can be sold or given away.
 #define ag_texture_wall_2						3
 #define ag_texture_floor_2						4
 #define ag_texture_ceiling_2					5
+#define ag_texture_door							6
+
+#define ag_texture_required_count				7			// number of textures that must be present to run
+
+//
+// dimensions and positions
+//
+
+#define ag_size_room_width_start				20000
+#define ag_size_room_width_extra				10000
+
+#define ag_map_bottom_y							20000
+#define ag_size_room_high						10000
+#define ag_size_floor_high						1000
 
 //
 // structures
@@ -91,6 +105,7 @@ typedef struct		{
 
 typedef struct		{
 						int							nvertex,mesh_idx;
+						bool						second_story;
 						d3pnt						min,max;
 						d3pnt						vertexes[8];
 						d3vct						size;

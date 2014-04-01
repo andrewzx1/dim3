@@ -131,6 +131,7 @@ void script_initialize_classes(void)
 	script_init_global_interface_object();
 	script_init_interface_bar_object();
 	script_init_interface_bitmap_object();
+	script_init_interface_interaction_object();
 	script_init_interface_console_object();
 	script_init_interface_interaction_object();
 	script_init_interface_radar_object();
@@ -290,6 +291,7 @@ void script_release_classes(void)
 	script_free_global_interface_object();
 	script_free_interface_bar_object();
 	script_free_interface_bitmap_object();
+	script_free_interface_chooser_object();
 	script_free_interface_console_object();
 	script_free_interface_interaction_object();
 	script_free_interface_radar_object();
@@ -466,6 +468,7 @@ bool script_add_global_object(script_type *script,char *err_str)
 		
 	j_sub_obj=script_add_global_interface_object(script->cx,j_parent_obj,script->idx);
 	script_add_interface_screen_object(script->cx,j_sub_obj,script->idx);
+	script_add_interface_chooser_object(script->cx,j_sub_obj,script->idx);
 	script_add_interface_console_object(script->cx,j_sub_obj,script->idx);
 	script_add_interface_text_object(script->cx,j_sub_obj,script->idx);
 	script_add_interface_bitmap_object(script->cx,j_sub_obj,script->idx);

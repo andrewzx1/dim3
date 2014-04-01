@@ -61,3 +61,24 @@ void ag_release(void)
 	ag_state.rooms=NULL;
 }
 
+/* =======================================================
+
+      Check Required Textures
+      
+======================================================= */
+
+bool ag_check_required_textures(char *err_str)
+{
+	int			n;
+
+	for (n=0;n!=ag_texture_required_count;n++) {
+		if (map.textures[n].frames[0].bitmap.gl_id==-1) {
+			sprintf(err_str,"Auto Generator requires at least the first %d texture spots to be filled",ag_texture_required_count);
+			return(FALSE);
+		}
+	}
+
+	return(TRUE);
+}
+
+

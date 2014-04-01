@@ -38,6 +38,7 @@ ag_state_type					ag_state;
 
 extern bool ag_initialize(char *err_str);
 extern void ag_release(void);
+extern bool ag_check_required_textures(char *err_str);
 extern void ag_random_seed(void);
 extern void ag_random_previous_seed(void);
 extern void ag_random_next_seed(void);
@@ -296,7 +297,7 @@ void ag_add_room(bool first_room)
 
 		// radium size
 
-	poly_sz=10000+ag_random_int(10000);
+	poly_sz=ag_size_room_width_start+ag_random_int(ag_size_room_width_extra);
 
 		// if first room, in center of map
 
@@ -421,9 +422,6 @@ void ag_add_room(bool first_room)
 
 	room=&ag_state.rooms[mesh_idx];
 
-	min.y=10000;
-	max.y=20000;
-
 	memmove(&room->min,&min,sizeof(d3pnt));
 	memmove(&room->max,&max,sizeof(d3pnt));
 
@@ -433,6 +431,8 @@ void ag_add_room(bool first_room)
 	room->flat.rgt.on=FALSE;
 
 	room->connect_box.on=FALSE;
+
+	room->second_story=ag_random_bool();
 
 		// create random polygon
 
@@ -466,7 +466,7 @@ void ag_add_room(bool first_room)
 			// polygon points
 
 		room->vertexes[room->nvertex].x=p1.x;
-		room->vertexes[room->nvertex].y=20000;
+		room->vertexes[room->nvertex].y=ag_map_bottom_y;
 		room->vertexes[room->nvertex].z=p1.z;
 
 		room->nvertex++;
@@ -591,13 +591,14 @@ void ag_add_room(bool first_room)
 		}
 
 		if (flat) {
-			room->connect_box.min.y=10000;
-			room->connect_box.max.y=20000;
+			room->connect_box.min.y=ag_map_bottom_y-ag_size_room_high;
+			room->connect_box.max.y=ag_map_bottom_y;
 		}
 
 	}
 
-		// add the walls
+		// add the walls and short
+		// ceiling/second-story walls
 
 	for (n=0;n!=room->nvertex;n++) {
 
@@ -608,8 +609,8 @@ void ag_add_room(bool first_room)
 		px[1]=px[2]=room->vertexes[k].x;
 		pz[0]=pz[3]=room->vertexes[n].z;
 		pz[1]=pz[2]=room->vertexes[k].z;
-		py[0]=py[1]=10000;
-		py[2]=py[3]=20000;
+		py[0]=py[1]=ag_map_bottom_y-ag_size_room_high;
+		py[2]=py[3]=ag_map_bottom_y;
 
 		gx[0]=gx[3]=0.0f;
 		gx[1]=gx[2]=1.0f;
@@ -617,18 +618,39 @@ void ag_add_room(bool first_room)
 		gy[2]=gy[3]=1.0f;
 
 		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_wall);
+
+		py[0]=py[1]=ag_map_bottom_y-(ag_size_room_high+ag_size_floor_high);
+		py[2]=py[3]=ag_map_bottom_y-ag_size_room_high;
+
+		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_wall);
+
+		if (room->second_story) {
+			py[0]=py[1]=ag_map_bottom_y-(ag_size_room_high+ag_size_floor_high+ag_size_room_high);
+			py[2]=py[3]=ag_map_bottom_y-(ag_size_room_high+ag_size_floor_high);
+
+			map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_wall);
+		}
 	}
 
 		// add the floor
 
 	for (n=0;n!=room->nvertex;n++) {
 		px[n]=room->vertexes[n].x;
-		py[n]=20000;
+		py[n]=ag_map_bottom_y;
 		pz[n]=room->vertexes[n].z;
 		gx[n]=gy[n]=0.0f;
 	}
 		
 	map_mesh_add_poly(&map,mesh_idx,room->nvertex,px,py,pz,gx,gy,ag_texture_floor);
+
+		// add the ceiling
+
+	for (n=0;n!=room->nvertex;n++) {
+		py[n]=ag_map_bottom_y-(ag_size_room_high+ag_size_floor_high);
+		if (room->second_story) py[n]-=ag_size_room_high;
+	}
+
+	map_mesh_add_poly(&map,mesh_idx,room->nvertex,px,py,pz,gx,gy,ag_texture_ceiling);
 }
 
 /* =======================================================
@@ -715,7 +737,7 @@ void ag_generate_add_connector_rooms(void)
 
 		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_wall_2);
 
-			// floor
+			// floor and ceiling
 
 		px[0]=px[3]=room->connect_box.min.x;
 		px[1]=px[2]=room->connect_box.max.x;
@@ -730,6 +752,11 @@ void ag_generate_add_connector_rooms(void)
 		gy[2]=gy[3]=1.0f;
 
 		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_floor_2);
+
+		py[0]=py[1]=room->connect_box.min.y;
+		py[2]=py[3]=room->connect_box.min.y;
+
+		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_ceiling_2);
 	}
 }
 
@@ -742,6 +769,11 @@ void ag_generate_add_connector_rooms(void)
 bool ag_generate_run(char *err_str)
 {
 	int				n,room_count;
+
+		// check if auto generator has
+		// required textures
+
+	if (!ag_check_required_textures(err_str)) return(FALSE);
 
 		// initialize auto generate structures
 
