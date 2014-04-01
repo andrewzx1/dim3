@@ -3872,12 +3872,10 @@ void element_get_table_row(int id,int idx,char *row_str)
 
 bool element_replace_model(int id,char *name,char *animate,float resize,d3pnt *offset,d3ang *rot)
 {
-	bool			hit;
 	element_type	*element;
 
 	SDL_mutexP(element_thread_lock);
 
-	hit=FALSE;
 	element=element_find(id);
 
 	if (element!=NULL) {
@@ -3887,7 +3885,43 @@ bool element_replace_model(int id,char *name,char *animate,float resize,d3pnt *o
 	
 	SDL_mutexV(element_thread_lock);
 
-	return(hit);
+	return(element!=NULL);
+}
+
+bool element_model_show_mesh(int id,char *name)
+{
+	int				idx;
+	element_type	*element;
+
+	SDL_mutexP(element_thread_lock);
+
+	element=element_find(id);
+	if (element!=NULL) {
+		idx=model_find_mesh_from_draw(element->setup.model.draw,name);
+		if (idx!=-1) element->setup.model.draw->mesh_mask|=(0x1<<idx);
+	}
+
+	SDL_mutexV(element_thread_lock);
+
+	return(element!=NULL);
+}
+
+bool element_model_hide_mesh(int id,char *name)
+{
+	int				idx;
+	element_type	*element;
+
+	SDL_mutexP(element_thread_lock);
+
+	element=element_find(id);
+	if (element!=NULL) {
+		idx=model_find_mesh_from_draw(element->setup.model.draw,name);
+		if (idx!=-1) element->setup.model.draw->mesh_mask&=((0x1<<idx)^0xFFFF);
+	}
+
+	SDL_mutexV(element_thread_lock);
+
+	return(element!=NULL);
 }
 
 /* =======================================================

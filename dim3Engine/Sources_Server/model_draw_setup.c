@@ -460,10 +460,6 @@ void model_draw_setup_interface_models(model_type *mdl,model_draw *draw,int x,in
 
 	memmove(&draw->setup.ang,&draw->rot,sizeof(d3ang));
 
-		// only draw first mesh
-
-	draw->mesh_mask=0x1;
-
 		// fix any animation or frames
 
 	for (n=0;n!=mdl->nmesh;n++) {

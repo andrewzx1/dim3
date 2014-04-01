@@ -265,6 +265,8 @@ extern bool element_get_table_checkbox(int id,int idx);
 extern bool element_has_table_check(int id);
 extern void element_get_table_row(int id,int idx,char *row_str);
 extern bool element_replace_model(int id,char *name,char *animate,float resize,d3pnt *offset,d3ang *rot);
+extern bool element_model_show_mesh(int id,char *name);
+extern bool element_model_hide_mesh(int id,char *name);
 
 extern int element_get_scroll_position(int id);
 extern void element_set_scroll_position(int id,int pos);
