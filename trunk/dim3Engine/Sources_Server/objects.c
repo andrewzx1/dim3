@@ -1005,6 +1005,14 @@ void object_dispose_single(int idx)
 
 	obj=server.obj_list.objs[idx];
 
+		// call the dispose event
+
+	scripts_post_event_console(obj->script_idx,-1,sd_event_dispose,0,0);
+
+		// destroy any live projectiles
+
+	projectile_dispose_object(obj);
+
 		// dispose weapons
 
 	for (n=0;n!=max_weap_list;n++) {

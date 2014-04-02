@@ -348,6 +348,10 @@ void weapon_dispose(obj_type *obj,int idx)
 
 	weap=obj->weap_list.weaps[idx];
 	if (weap==NULL) return;
+
+		// call the dispose event
+
+	scripts_post_event_console(weap->script_idx,-1,sd_event_dispose,0,0);
 	
 		// clear projectile setups
 		

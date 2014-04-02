@@ -100,7 +100,6 @@ void app_end(void)
 	console_add_system("Closing App");
 	
 		// shutdown view
-		// and ray tracing
 		
 	if (!app.dedicated_host) view_shutdown();
 	

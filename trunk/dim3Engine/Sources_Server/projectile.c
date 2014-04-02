@@ -252,9 +252,8 @@ void projectile_dispose(proj_type *proj)
 
 		// delete all timers
 		
-	timers_clear(proj->script_idx,timer_mode_repeat);
-	timers_clear(proj->script_idx,timer_mode_single);
-	
+	timers_trigger_dispose_all(proj->script_idx);
+
 		// remove any effects attached
 		// to a bone
 		
@@ -269,9 +268,10 @@ void projectile_dispose_object(obj_type *obj)
 {
 	int				n;
 	proj_type		*proj;
-	
+
 	for (n=0;n!=max_proj_list;n++) {
 		proj=server.proj_list.projs[n];
+		if (proj==NULL) continue;			// sometimes the list can be cleaned up if disposing objects game bound
 		if (!proj->on) continue;
 		
 		if (proj->obj_idx==obj->idx) projectile_dispose(proj);
@@ -285,6 +285,9 @@ void projectile_dispose_all(void)
 	
 	for (n=0;n!=max_proj_list;n++) {
 		proj=server.proj_list.projs[n];
-		if (proj->on) projectile_dispose(proj);
+		if (proj==NULL) continue;
+		if (!proj->on) continue;
+		
+		projectile_dispose(proj);
 	}
 }

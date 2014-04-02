@@ -123,7 +123,7 @@ JSValueRef js_event_clear_timer_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 
 	script_idx=(int)JSObjectGetPrivate(j_obj);
 	
-	timers_clear(script_idx,timer_mode_repeat);
+	timers_trigger_dispose(script_idx,timer_mode_repeat);
     return(script_null_to_value(cx));
 }
 
@@ -182,7 +182,7 @@ JSValueRef js_event_clear_wait_func(JSContextRef cx,JSObjectRef func,JSObjectRef
 	
 	script_idx=(int)JSObjectGetPrivate(j_obj);
 	
-	timers_clear(script_idx,timer_mode_single);
+	timers_trigger_dispose(script_idx,timer_mode_single);
     return(script_null_to_value(cx));
 }
 
@@ -220,7 +220,7 @@ JSValueRef js_event_clear_chain_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 
 	script_idx=(int)JSObjectGetPrivate(j_obj);
 	
-	timers_clear(script_idx,timer_mode_chain);
+	timers_trigger_dispose(script_idx,timer_mode_chain);
     return(script_null_to_value(cx));
 }
 

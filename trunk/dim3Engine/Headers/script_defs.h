@@ -258,7 +258,7 @@ and can be sold or given away.
 #define sd_event_dispose								2038
 
 #define event_main_id_start								sd_event_construct
-#define event_main_id_end								sd_event_score
+#define event_main_id_end								sd_event_dispose
 
 #define event_main_id_count								((event_main_id_end-event_main_id_start)+1)
 

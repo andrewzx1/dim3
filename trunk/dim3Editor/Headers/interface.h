@@ -552,6 +552,7 @@ extern bool liquid_reflection_maps_create(void);
 extern bool auto_generate_map(char *err_str);
 extern bool auto_generate_previous_map(char *err_str);
 extern bool auto_generate_next_map(char *err_str);
+extern int auto_generate_get_seed(void);
 
 //
 // selection routines
