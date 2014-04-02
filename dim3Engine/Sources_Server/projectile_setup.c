@@ -192,6 +192,10 @@ void proj_setup_dispose(weapon_type *weap,int idx)
 	proj_setup=weap->proj_setup_list.proj_setups[idx];
 	if (proj_setup==NULL) return;
 
+		// call the dispose event
+
+	scripts_post_event_console(proj_setup->script_idx,-1,sd_event_dispose,0,0);
+
 		// clear scripts and models
 
 	scripts_dispose(proj_setup->script_idx);

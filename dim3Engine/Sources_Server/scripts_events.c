@@ -134,7 +134,7 @@ bool scripts_post_event_on_attach(int script_idx,int override_proj_idx,int main_
 	int						event_idx,tick,old_proj_idx;
 	JSValueRef				rval,exception,argv[5];
 	script_type				*script;
-	
+
 		// no error
 		
 	err_str[0]=0x0;

@@ -45,6 +45,7 @@ extern void ag_random_next_seed(void);
 extern int ag_random_int(int max);
 extern bool ag_random_bool(void);
 extern void ag_generate_delete_shared_polygons(void);
+extern void ag_generate_decoration_box_stack(void);
 extern void ag_generate_spots_add(void);
 
 /* =======================================================
@@ -649,8 +650,8 @@ void ag_add_room(bool first_room)
 		py[n]=ag_map_bottom_y-(ag_size_room_high+ag_size_floor_high);
 		if (room->second_story) py[n]-=ag_size_room_high;
 	}
-
-	map_mesh_add_poly(&map,mesh_idx,room->nvertex,px,py,pz,gx,gy,ag_texture_ceiling);
+// supergumba -- testing decorations
+//	map_mesh_add_poly(&map,mesh_idx,room->nvertex,px,py,pz,gx,gy,ag_texture_ceiling);
 }
 
 /* =======================================================
@@ -768,7 +769,13 @@ void ag_generate_add_connector_rooms(void)
 
 bool ag_generate_run(char *err_str)
 {
-	int				n,room_count;
+	int				n,
+					decoration_count;
+
+		// supergumba -- hard coded
+
+	ag_state.room_count=30;
+	decoration_count=20;
 
 		// check if auto generator has
 		// required textures
@@ -788,9 +795,7 @@ bool ag_generate_run(char *err_str)
 
 		// add rooms
 
-	room_count=30;
-
-	for (n=0;n!=room_count;n++) {
+	for (n=0;n!=ag_state.room_count;n++) {
 		ag_add_room(n==0);
 	}
 
@@ -804,6 +809,12 @@ bool ag_generate_run(char *err_str)
 		// same space
 
 	ag_generate_delete_shared_polygons();
+
+		// decorations
+
+	for (n=0;n!=decoration_count;n++) {
+		ag_generate_decoration_box_stack();
+	}
 
 		// add spots and nodes
 
@@ -849,3 +860,7 @@ bool auto_generate_next_map(char *err_str)
 	return(ag_generate_run(err_str));
 }
 
+int auto_generate_get_seed(void)
+{
+	return(ag_state.seed);
+}

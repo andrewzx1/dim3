@@ -596,7 +596,7 @@ void map_end(void)
 	progress_update();
 	
 	map_object_detach_all();
-	
+
 		// map close event
 	
 	progress_update();
@@ -632,6 +632,8 @@ void map_end(void)
 		fog_draw_release();
 		rain_draw_release();
 	}
+	fprintf(stdout,"6");
+	fflush(stdout);
 
 		// free some map lists
 

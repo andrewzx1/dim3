@@ -71,8 +71,9 @@ and can be sold or given away.
 #define ag_texture_floor_2						4
 #define ag_texture_ceiling_2					5
 #define ag_texture_door							6
+#define ag_texture_decoration					7
 
-#define ag_texture_required_count				7			// number of textures that must be present to run
+#define ag_texture_required_count				8			// number of textures that must be present to run
 
 //
 // dimensions and positions
@@ -84,6 +85,10 @@ and can be sold or given away.
 #define ag_map_bottom_y							20000
 #define ag_size_room_high						10000
 #define ag_size_floor_high						1000
+
+#define ag_size_decoration_margin				5000
+
+#define ag_size_stack_box						2500
 
 //
 // structures
@@ -118,7 +123,7 @@ typedef struct		{
 					} ag_option_type;
 
 typedef struct		{
-						int							seed;
+						int							seed,room_count;
 						ag_option_type				option;
 						ag_room_type				*rooms;
 					} ag_state_type;

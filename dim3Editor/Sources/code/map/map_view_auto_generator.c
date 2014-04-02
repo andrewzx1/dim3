@@ -377,11 +377,14 @@ void map_view_auto_generate_draw(void)
 
 		// info text
 
-	sprintf(str,"Mesh Count: %d",map.mesh.nmesh);
+	sprintf(str,"Seed: %d",auto_generate_get_seed());
 	text_draw(5,25,20.0f,NULL,str);
 
-	sprintf(str,"Poly Count: %d",map_mesh_count_total_poly(&map));
+	sprintf(str,"Mesh Count: %d",map.mesh.nmesh);
 	text_draw(5,45,20.0f,NULL,str);
+
+	sprintf(str,"Poly Count: %d",map_mesh_count_total_poly(&map));
+	text_draw(5,65,20.0f,NULL,str);
 
 		// buttons
 

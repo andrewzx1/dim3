@@ -189,16 +189,29 @@ void timers_remove(int idx)
 
 /* =======================================================
 
-      Timer Clear
+      Trigger Dispose of Timer outside Scripting Loop
       
 ======================================================= */
 
-void timers_clear(int script_idx,int mode)
+void timers_trigger_dispose(int script_idx,int mode)
 {
 	int				idx;
 	
 	idx=timers_find(script_idx,mode);
 	if (idx!=-1) js.timer_list.timers[idx]->mode=timer_mode_dispose;
+}
+
+void timers_trigger_dispose_all(int script_idx)
+{
+	int				n;
+	timer_type		*timer;
+	
+	for (n=0;n!=max_timer_list;n++) {
+		timer=js.timer_list.timers[n];
+		if (timer==NULL) continue;
+
+		if (timer->script_idx==script_idx) timer->mode=timer_mode_dispose;
+	}
 }
 
 /* =======================================================

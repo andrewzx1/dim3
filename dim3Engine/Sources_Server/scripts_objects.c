@@ -132,6 +132,7 @@ void script_initialize_classes(void)
 	script_init_interface_bar_object();
 	script_init_interface_bitmap_object();
 	script_init_interface_interaction_object();
+	script_init_interface_chooser_object();
 	script_init_interface_console_object();
 	script_init_interface_interaction_object();
 	script_init_interface_radar_object();

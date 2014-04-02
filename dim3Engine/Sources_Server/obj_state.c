@@ -111,6 +111,7 @@ void object_score_update(obj_type *obj)
 
 void object_score_death(obj_type *obj)
 {
+	bool			no_kill;
 	obj_type		*source_obj;
 	
 		// suicide
@@ -130,9 +131,16 @@ void object_score_death(obj_type *obj)
 		
 		if (obj->damage_obj_idx!=-1) {
 			source_obj=server.obj_list.objs[obj->damage_obj_idx];
+
+			no_kill=FALSE;
+			if (iface.multiplayer.game_list.games[net_setup.game_idx].use_teams) {		// skip if same team on team games
+				if (obj->team_idx==source_obj->team_idx) no_kill=TRUE;
+			}
 		
-			source_obj->score.kill++;
-			object_score_update(source_obj);
+			if (!no_kill) {
+				source_obj->score.kill++;
+				object_score_update(source_obj);
+			}
 		}
 	}
 }

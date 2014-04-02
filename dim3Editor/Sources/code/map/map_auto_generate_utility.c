@@ -172,6 +172,197 @@ void ag_generate_delete_shared_polygons(void)
 
 /* =======================================================
 
+      Collisions
+      
+======================================================= */
+
+bool ag_generate_mesh_collision(d3pnt *min,d3pnt *max,int start_cmp_mesh_idx,int end_cmp_mesh_idx)
+{
+	int				n;
+	d3pnt			cmp_min,cmp_max;
+
+	for (n=start_cmp_mesh_idx;n<end_cmp_mesh_idx;n++) {
+
+		map_mesh_calculate_extent(&map,n,&cmp_min,&cmp_max);
+		if ((min->x>=cmp_max.x) || (max->x<=cmp_min.x)) continue;
+		if ((min->y>=cmp_max.y) || (max->y<=cmp_min.y)) continue;
+		if ((min->z>=cmp_max.z) || (max->z<=cmp_min.z)) continue;
+		
+		return(TRUE);
+	}
+
+	return(FALSE);
+}
+
+/* =======================================================
+
+      Decorations
+      
+======================================================= */
+
+void ag_generate_decoration_box(d3pnt *pnt,int start_cmp_mesh_idx)
+{
+	int				n,mesh_idx,x,z,sz;
+	int				px[8],py[8],pz[8];
+	float			gx[8],gy[8];
+	bool			hit;
+	d3pnt			mpt,min,max;
+	d3ang			ang;
+
+		// find a random start position
+	
+	hit=FALSE;
+	sz=ag_size_stack_box>>1;
+
+	for (n=0;n!=10;n++) {
+		x=pnt->x+(ag_random_int(4000)-8000);
+		z=pnt->z+(ag_random_int(4000)-8000);
+
+		min.x=x-sz;
+		max.x=x+sz;
+		min.y=pnt->y-ag_size_stack_box;
+		max.y=pnt->y;
+		min.z=z-sz;
+		max.z=z+sz;
+
+		if (!ag_generate_mesh_collision(&min,&max,start_cmp_mesh_idx,map.mesh.nmesh)) {
+			hit=TRUE;
+			break;
+		}
+	}
+
+	if (!hit) return;
+
+		// box mesh
+
+	mesh_idx=map_mesh_add(&map);
+
+	map.mesh.meshes[mesh_idx].flag.lock_uv=TRUE;
+
+		// sides
+
+	px[0]=px[3]=min.x;
+	px[1]=px[2]=min.x;
+	pz[0]=pz[3]=min.z;
+	pz[1]=pz[2]=max.z;
+	py[0]=py[1]=min.y;
+	py[2]=py[3]=max.y;
+
+	gx[0]=gx[3]=0.0f;
+	gx[1]=gx[2]=1.0f;
+	gy[0]=gy[1]=0.0f;
+	gy[2]=gy[3]=1.0f;
+
+	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_decoration);
+
+	px[0]=px[3]=max.x;
+	px[1]=px[2]=max.x;
+	pz[0]=pz[3]=min.z;
+	pz[1]=pz[2]=max.z;
+	py[0]=py[1]=min.y;
+	py[2]=py[3]=max.y;
+
+	gx[0]=gx[3]=0.0f;
+	gx[1]=gx[2]=1.0f;
+	gy[0]=gy[1]=0.0f;
+	gy[2]=gy[3]=1.0f;
+
+	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_decoration);
+
+	px[0]=px[3]=min.x;
+	px[1]=px[2]=max.x;
+	pz[0]=pz[3]=min.z;
+	pz[1]=pz[2]=min.z;
+	py[0]=py[1]=min.y;
+	py[2]=py[3]=max.y;
+
+	gx[0]=gx[3]=0.0f;
+	gx[1]=gx[2]=1.0f;
+	gy[0]=gy[1]=0.0f;
+	gy[2]=gy[3]=1.0f;
+
+	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_decoration);
+
+	px[0]=px[3]=min.x;
+	px[1]=px[2]=max.x;
+	pz[0]=pz[3]=max.z;
+	pz[1]=pz[2]=max.z;
+	py[0]=py[1]=min.y;
+	py[2]=py[3]=max.y;
+
+	gx[0]=gx[3]=0.0f;
+	gx[1]=gx[2]=1.0f;
+	gy[0]=gy[1]=0.0f;
+	gy[2]=gy[3]=1.0f;
+
+	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_decoration);
+
+		// top and bottom
+
+	px[0]=px[3]=min.x;
+	px[1]=px[2]=max.x;
+	pz[0]=pz[1]=min.z;
+	pz[2]=pz[3]=max.z;
+	py[0]=py[1]=py[2]=py[3]=max.y;
+
+	gx[0]=gx[3]=0.0f;
+	gx[1]=gx[2]=1.0f;
+	gy[0]=gy[1]=0.0f;
+	gy[2]=gy[3]=1.0f;
+
+	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_decoration);
+
+	py[0]=py[1]=py[2]=py[3]=min.y;
+
+	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_decoration);
+
+		// possibly rotate box
+
+	if (ag_random_bool()) {
+		ang.x=ang.z=0.0f;
+		ang.y=(float)ag_random_int(30);
+
+		map_mesh_calculate_center(&map,mesh_idx,&mpt);
+		map_mesh_rotate(&map,mesh_idx,&mpt,&ang);
+	}
+}
+
+void ag_generate_decoration_box_stack(void)
+{
+	int				n,idx,cmp_mesh_idx,
+					stack_level,stack_count;
+	d3pnt			pnt;
+	ag_room_type	*room;
+
+		// randomize location
+
+	idx=ag_random_int(ag_state.room_count);
+	room=&ag_state.rooms[idx];
+
+	pnt.x=(room->min.x+ag_size_decoration_margin)+(ag_random_int(room->max.x-room->min.x)-(ag_size_decoration_margin*2));
+	pnt.y=ag_map_bottom_y;
+	pnt.z=(room->min.z+ag_size_decoration_margin)+(ag_random_int(room->max.z-room->min.z)-(ag_size_decoration_margin*2));
+
+		// box stack
+
+	stack_count=5;
+	cmp_mesh_idx=map.mesh.nmesh;
+
+	for (stack_level=0;stack_level!=3;stack_level++) {
+
+		for (n=0;n!=stack_count;n++) {
+			ag_generate_decoration_box(&pnt,cmp_mesh_idx);
+		}
+
+		cmp_mesh_idx+=stack_count;
+		stack_count--;
+
+		pnt.y-=ag_size_stack_box;
+	}
+}
+
+/* =======================================================
+
       Add Spots
       
 ======================================================= */
@@ -189,7 +380,7 @@ void ag_generate_spots_add_single(char *name,int spot_obj_type,char *script_name
 
 		// randomize location
 
-	idx=ag_random_int(map.mesh.nmesh);
+	idx=ag_random_int(ag_state.room_count);
 	room=&ag_state.rooms[idx];
 
 	mx=(room->min.x+room->max.x)>>1;
