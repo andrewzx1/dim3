@@ -200,7 +200,38 @@ bool ag_generate_mesh_collision(d3pnt *min,d3pnt *max,int start_cmp_mesh_idx,int
       
 ======================================================= */
 
-void ag_generate_decoration_box(d3pnt *pnt,int start_cmp_mesh_idx)
+void ag_generate_decoration_location(d3pnt *pnt)
+{
+	int				idx;
+	d3pnt			min,max,sz,margin;
+
+		// get current room dimensions
+
+	idx=ag_random_int(ag_state.room_count);
+	map_mesh_calculate_extent(&map,idx,&min,&max);
+
+		// room size and margin
+
+	sz.x=max.x-min.x;
+	sz.z=max.z-min.z;
+
+	margin.x=(int)(((float)sz.x)*0.25f);
+	margin.z=(int)(((float)sz.z)*0.25f);
+
+		// get random location
+
+	pnt->x=(min.x+margin.x)+(ag_random_int(sz.x-(margin.x*2)));
+	pnt->y=max.y;
+	pnt->z=(min.z+margin.z)+(ag_random_int(sz.z-(margin.z*2)));
+}
+
+/* =======================================================
+
+      Box Stack Decorations
+      
+======================================================= */
+
+void ag_generate_decoration_box(d3pnt *pnt,int stack_offset,int start_cmp_mesh_idx)
 {
 	int				n,mesh_idx,x,z,sz;
 	int				px[8],py[8],pz[8];
@@ -215,8 +246,8 @@ void ag_generate_decoration_box(d3pnt *pnt,int start_cmp_mesh_idx)
 	sz=ag_size_stack_box>>1;
 
 	for (n=0;n!=10;n++) {
-		x=pnt->x+(ag_random_int(4000)-8000);
-		z=pnt->z+(ag_random_int(4000)-8000);
+		x=pnt->x+(ag_random_int(stack_offset>>1)-stack_offset);
+		z=pnt->z+(ag_random_int(stack_offset>>1)-stack_offset);
 
 		min.x=x-sz;
 		max.x=x+sz;
@@ -329,33 +360,36 @@ void ag_generate_decoration_box(d3pnt *pnt,int start_cmp_mesh_idx)
 
 void ag_generate_decoration_box_stack(void)
 {
-	int				n,idx,cmp_mesh_idx,
-					stack_level,stack_count;
+	int				n,cmp_mesh_idx,
+					stack_count,stack_offset;
 	d3pnt			pnt;
-	ag_room_type	*room;
+
+		// get random stack count
+		// and size
+
+	stack_count=ag_count_stack_box_start+ag_random_int(ag_count_stack_box_extra);
+	stack_offset=ag_size_stack_box*(stack_count+2);
 
 		// randomize location
+		// move it so within stack of boxes
 
-	idx=ag_random_int(ag_state.room_count);
-	room=&ag_state.rooms[idx];
+	ag_generate_decoration_location(&pnt);
 
-	pnt.x=(room->min.x+ag_size_decoration_margin)+(ag_random_int(room->max.x-room->min.x)-(ag_size_decoration_margin*2));
-	pnt.y=ag_map_bottom_y;
-	pnt.z=(room->min.z+ag_size_decoration_margin)+(ag_random_int(room->max.z-room->min.z)-(ag_size_decoration_margin*2));
+	pnt.x+=(stack_offset>>1);
+	pnt.z+=(stack_offset>>1);
 
 		// box stack
 
-	stack_count=5;
 	cmp_mesh_idx=map.mesh.nmesh;
 
-	for (stack_level=0;stack_level!=3;stack_level++) {
+	while (stack_count>ag_count_stack_box_min) {
 
 		for (n=0;n!=stack_count;n++) {
-			ag_generate_decoration_box(&pnt,cmp_mesh_idx);
+			ag_generate_decoration_box(&pnt,stack_offset,cmp_mesh_idx);
 		}
 
-		cmp_mesh_idx+=stack_count;
 		stack_count--;
+		stack_offset-=ag_size_stack_box;
 
 		pnt.y-=ag_size_stack_box;
 	}
@@ -369,8 +403,6 @@ void ag_generate_decoration_box_stack(void)
 
 void ag_generate_spots_add_single(char *name,int spot_obj_type,char *script_name)
 {
-	int					idx,mx,mz;
-	ag_room_type		*room;
 	spot_type			*spot;
 
 		// add the spot
@@ -380,18 +412,10 @@ void ag_generate_spots_add_single(char *name,int spot_obj_type,char *script_name
 
 		// randomize location
 
-	idx=ag_random_int(ag_state.room_count);
-	room=&ag_state.rooms[idx];
-
-	mx=(room->min.x+room->max.x)>>1;
-	mz=(room->min.z+room->max.z)>>1;
-
-	spot->pnt.x=mx+(ag_random_int((int)(room->size.x*50.0f))-((int)(room->size.x*25.0f)));
-	spot->pnt.y=room->max.y;
-	spot->pnt.z=mz+(ag_random_int((int)(room->size.z*50.0f))-((int)(room->size.z*25.0f)));
+	ag_generate_decoration_location(&spot->pnt);
 
 	spot->ang.x=0.0f;
-	spot->ang.y=angle_find(spot->pnt.x,spot->pnt.z,mx,mz);
+	spot->ang.y=0.0f;
 	spot->ang.z=0.0f;
 
 		// name and type

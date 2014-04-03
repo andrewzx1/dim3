@@ -662,7 +662,7 @@ void ag_add_room(bool first_room)
 
 void ag_generate_add_connector_rooms(void)
 {
-	int				n,nmesh,mesh_idx;
+	int				n,nmesh,mesh_idx,dx,dz;
 	int				px[8],py[8],pz[8];
 	float			gx[8],gy[8];
 	ag_room_type	*room;
@@ -758,6 +758,51 @@ void ag_generate_add_connector_rooms(void)
 		py[2]=py[3]=room->connect_box.min.y;
 
 		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_ceiling_2);
+
+			// add in a door?
+
+		dx=room->connect_box.max.x-room->connect_box.min.x;
+		if (dx>ag_size_door_min_width) continue;
+
+		dz=room->connect_box.max.z-room->connect_box.min.z;
+		if (dz>ag_size_door_min_width) continue;
+
+			// create door
+
+		mesh_idx=map_mesh_add(&map);
+
+		if (dx>dz) {
+			px[0]=px[3]=room->connect_box.min.x;
+			px[1]=px[2]=room->connect_box.max.x;
+			pz[0]=pz[3]=room->connect_box.min.z;
+			pz[1]=pz[2]=room->connect_box.min.z;
+			py[0]=py[1]=room->connect_box.min.y;
+			py[2]=py[3]=room->connect_box.max.y;
+
+			gx[0]=gx[3]=0.0f;
+			gx[1]=gx[2]=1.0f;
+			gy[0]=gy[1]=0.0f;
+			gy[2]=gy[3]=1.0f;
+
+			map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_door);
+
+
+		}
+		else {
+			px[0]=px[3]=room->connect_box.min.x;
+			px[1]=px[2]=room->connect_box.min.x;
+			pz[0]=pz[3]=room->connect_box.min.z;
+			pz[1]=pz[2]=room->connect_box.max.z;
+			py[0]=py[1]=room->connect_box.min.y;
+			py[2]=py[3]=room->connect_box.max.y;
+
+			gx[0]=gx[3]=0.0f;
+			gx[1]=gx[2]=1.0f;
+			gy[0]=gy[1]=0.0f;
+			gy[2]=gy[3]=1.0f;
+
+			map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_door);
+		}
 	}
 }
 

@@ -86,9 +86,12 @@ and can be sold or given away.
 #define ag_size_room_high						10000
 #define ag_size_floor_high						1000
 
-#define ag_size_decoration_margin				5000
+#define ag_size_door_min_width					25000
 
 #define ag_size_stack_box						2500
+#define ag_count_stack_box_start				3
+#define ag_count_stack_box_extra				3
+#define ag_count_stack_box_min					2
 
 //
 // structures
