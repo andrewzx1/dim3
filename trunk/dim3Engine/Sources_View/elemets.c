@@ -67,6 +67,7 @@ model_draw* element_load_model(char *name,char *animate,float resize,d3pnt *offs
 		return(NULL);
 	}
 
+	draw->mesh_mask=0x1;
 	draw->resize=resize;
 	draw->shadow.on=FALSE;
 	

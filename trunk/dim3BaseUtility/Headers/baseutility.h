@@ -867,7 +867,8 @@ typedef union		{
 typedef struct		{
 						int								type,id,key,
 														x,y,wid,high;
-						bool							clickable,used_in_override;
+						bool							clickable,used_in_override,
+														no_close;
 						char							goto_name[name_str_len];
 						iface_chooser_piece_data_type	data;
 					} iface_chooser_piece_type;

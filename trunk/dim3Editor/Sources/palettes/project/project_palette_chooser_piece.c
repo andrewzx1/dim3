@@ -35,8 +35,9 @@ and can be sold or given away.
 #define kChooserPieceSettingsType				0
 #define kChooserPieceSettingsId					1
 #define kChooserPieceSettingsClickable			2
-#define kChooserPieceSettingsKey				3
-#define kChooserPieceSettingsGoto				4
+#define kChooserPieceSettingsNoClose			3
+#define kChooserPieceSettingsKey				4
+#define kChooserPieceSettingsGoto				5
 
 #define kChooserPiecePositionX					10
 #define kChooserPiecePositionY					11
@@ -82,6 +83,7 @@ void project_palette_fill_chooser_piece(int chooser_idx,int chooser_piece_idx)
 	list_palette_add_picker_list_int(&project_palette,kChooserPieceSettingsType,"Type",(char*)chooser_type_str,-1,name_str_len,0,FALSE,FALSE,&piece->type,FALSE);
 	list_palette_add_int(&project_palette,kChooserPieceSettingsId,"Id",&piece->id,FALSE);
 	list_palette_add_checkbox(&project_palette,kChooserPieceSettingsClickable,"Clickable",&piece->clickable,FALSE);
+	list_palette_add_checkbox(&project_palette,kChooserPieceSettingsNoClose,"No Close",&piece->no_close,FALSE);
 	list_palette_add_picker_list_int(&project_palette,kChooserPieceSettingsKey,"Key",(char*)chooser_key_str,-1,name_str_len,0,FALSE,FALSE,&piece->key,FALSE);
 	list_palette_add_string(&project_palette,kChooserPieceSettingsGoto,"Goto Chooser",piece->goto_name,name_str_len,FALSE);
 

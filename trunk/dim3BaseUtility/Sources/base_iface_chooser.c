@@ -62,6 +62,7 @@ iface_chooser_piece_type* read_setting_interface_chooser_common(iface_chooser_ty
 	piece->wid=xml_get_attribute_int_default(item_tag,"width",-1);
 	piece->high=xml_get_attribute_int_default(item_tag,"height",-1);
 	piece->clickable=xml_get_attribute_boolean(item_tag,"clickable");
+	piece->no_close=xml_get_attribute_boolean(item_tag,"no_close");
 	piece->key=xml_get_attribute_list(item_tag,"key",(char*)chooser_key_str);
 	xml_get_attribute_text(item_tag,"goto",piece->goto_name,name_str_len);
 	
@@ -258,6 +259,7 @@ void iface_write_settings_chooser_piece_type(iface_chooser_type *chooser,int pie
 		if (chooser_piece->wid!=-1) xml_add_attribute_int("width",chooser_piece->wid);
 		if (chooser_piece->high!=-1) xml_add_attribute_int("height",chooser_piece->high);
 		xml_add_attribute_boolean("clickable",chooser_piece->clickable);
+		xml_add_attribute_boolean("no_close",chooser_piece->no_close);
 		xml_add_attribute_list("key",(char*)chooser_key_str,chooser_piece->key);
 		xml_add_attribute_text("goto",chooser_piece->goto_name);
 
