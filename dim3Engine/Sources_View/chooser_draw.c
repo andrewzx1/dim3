@@ -311,6 +311,7 @@ bool chooser_is_key_down(iface_chooser_piece_type *piece)
 void chooser_input(void)
 {
 	int							n,id,idx,next_idx,template_idx;
+	bool						leave_chooser;
 	iface_chooser_type			*chooser;
 	iface_chooser_piece_type	*piece;
 	
@@ -345,7 +346,6 @@ void chooser_input(void)
 	
 		// check for any goto clicks
 
-		
 	piece=NULL;
 
 	template_idx=iface_chooser_find_idx(&iface,chooser->template_name);
@@ -370,11 +370,20 @@ void chooser_input(void)
 			return;
 		}
 	}
+
+		// check if this item leaves
+		// the chooser
+
+	leave_chooser=TRUE;
+
+	if (piece!=NULL) {
+		leave_chooser=!piece->no_close;
+	}
 	
 		// set the state here as event
 		// might reset it to something else
 		
-	server.next_state=gs_running;
+	if (leave_chooser) server.next_state=gs_running;
 	
 	scripts_post_event_console(js.game_script_idx,-1,sd_event_chooser,0,id);
 }
