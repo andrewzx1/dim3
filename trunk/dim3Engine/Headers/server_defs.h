@@ -92,16 +92,6 @@ and can be sold or given away.
 #define object_type_remote_object				5
 
 //
-// input modes
-//
-
-#define im_fpp									0
-#define im_side_scroll							1
-#define im_top_down								2
-#define im_fly									3
-#define im_thrust								4
-
-//
 // effect types
 //
 

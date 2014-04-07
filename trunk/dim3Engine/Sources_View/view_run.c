@@ -108,7 +108,7 @@ void view_run(void)
 
 			// listener position
 			
-		if (map.camera.mode==cv_fpp) {
+		if (map.camera.camera_mode==cv_fpp) {
 			al_set_listener(&obj->pnt,obj->ang.y);
 		}
 		else {

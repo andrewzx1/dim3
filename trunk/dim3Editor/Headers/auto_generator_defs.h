@@ -127,7 +127,9 @@ typedef struct		{
 					} ag_option_type;
 
 typedef struct		{
-						int							seed,room_count;
+						int							seed,room_count,
+													decoration_count,
+													current_door_idx;
 						ag_option_type				option;
 						ag_room_type				*rooms;
 					} ag_state_type;

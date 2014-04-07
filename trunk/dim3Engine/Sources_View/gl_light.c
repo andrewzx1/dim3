@@ -363,7 +363,7 @@ void gl_lights_setup_cache(void)
 		// if in FPP, then hand weapon needs
 		// light cache
 
-	if (map.camera.mode==cv_fpp) {
+	if (map.camera.camera_mode==cv_fpp) {
 
 		obj=server.obj_list.objs[server.player_obj_idx];
 

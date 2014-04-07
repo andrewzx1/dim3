@@ -33,6 +33,7 @@ extern file_path_setup_type	file_path_setup;
 
 char					media_type_str[][32]={"none","chooser","title","movie",""},
 						camera_mode_str[][32]={"fpp","chase","static","chase_static",""},
+						camera_input_str[][32]={"fpp","side_scroll","top_down","fly","thrust"},
 						sky_type_str[][32]={"dome_panoramic","dome_hemisphere","cube",""},
 						gl_fog_type_str[][32]={"linear","exp","exp2",""},
 						mesh_hide_mode_str[][32]={"never","single_player","multiplayer",""},
@@ -435,7 +436,8 @@ void decode_map_camera_xml(map_type *map,int map_head)
     camera_tag=xml_findfirstchild("Camera",map_head);
     if (camera_tag==-1) return;
 	
-	map->camera.mode=xml_get_attribute_list(camera_tag,"mode",(char*)camera_mode_str);
+	map->camera.camera_mode=xml_get_attribute_list(camera_tag,"mode",(char*)camera_mode_str);
+	map->camera.input_mode=xml_get_attribute_list(camera_tag,"input",(char*)camera_input_str);
 	xml_get_attribute_3_coord_float(camera_tag,"ang",&map->camera.ang_offset.x,&map->camera.ang_offset.y,&map->camera.ang_offset.z);
 	xml_get_attribute_3_coord_int(camera_tag,"pnt",&map->camera.pnt_offset.x,&map->camera.pnt_offset.y,&map->camera.pnt_offset.z);
 	

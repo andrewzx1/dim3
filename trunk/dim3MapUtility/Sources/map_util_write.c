@@ -31,6 +31,7 @@ and can be sold or given away.
 
 extern char					media_type_str[][32],
 							camera_mode_str[][32],
+							camera_input_str[][32],
 							sky_type_str[][32],
 							gl_fog_type_str[][32],
 							mesh_hide_mode_str[][32],
@@ -478,7 +479,8 @@ void write_map_cinemas_xml(map_type *map)
 void write_map_camera_xml(map_type *map)
 {
     xml_add_tagstart("Camera");
-	xml_add_attribute_list("mode",(char*)camera_mode_str,map->camera.mode);
+	xml_add_attribute_list("mode",(char*)camera_mode_str,map->camera.camera_mode);
+	xml_add_attribute_list("input",(char*)camera_input_str,map->camera.input_mode);
 	xml_add_attribute_3_coord_float("ang",map->camera.ang_offset.x,map->camera.ang_offset.y,map->camera.ang_offset.z);
 	xml_add_attribute_3_coord_int("pnt",map->camera.pnt_offset.x,map->camera.pnt_offset.y,map->camera.pnt_offset.z);
 	xml_add_tagend(FALSE);
