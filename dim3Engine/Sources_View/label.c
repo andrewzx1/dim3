@@ -81,7 +81,7 @@ void label_draw_setup_single(obj_type *obj,int bone_idx,obj_label_draw *label_dr
 	
 	hit=ray_trace_map_by_point(&label_draw->pnt,&ept,&contact);
 	
-	if (map.camera.mode==cv_fpp) {
+	if (map.camera.camera_mode==cv_fpp) {
 		if (!hit) return;
 		if (contact.obj.idx!=server.player_obj_idx) return;
 	}

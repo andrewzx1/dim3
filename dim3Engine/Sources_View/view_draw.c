@@ -306,7 +306,7 @@ void view_draw_scene_render(obj_type *obj,weapon_type *weap)
 		// weapon in hand
 
 	if ((obj!=NULL) && (weap!=NULL)) {
-		if ((map.camera.mode==cv_fpp) && (!setup.no_draw_weapon)) draw_weapon_hand(obj,weap);
+		if ((map.camera.camera_mode==cv_fpp) && (!setup.no_draw_weapon)) draw_weapon_hand(obj,weap);
 	}
 	
 		// setup halos, crosshairs, zoom masks
@@ -369,7 +369,7 @@ void view_draw(void)
 
 		// camera adjustments
 	
-	if (map.camera.mode==cv_fpp) {
+	if (map.camera.camera_mode==cv_fpp) {
 		view_calculate_scope(obj,camera_obj);
 		view_calculate_recoil(obj);
 	}

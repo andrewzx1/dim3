@@ -111,7 +111,7 @@ bool halo_draw_setup_cull(iface_halo_type *halo,int obj_idx,d3pnt *pnt,int *p_pi
 		// player
 
 	if (hit) {
-		if ((contact.poly.mesh_idx!=-1) || (map.camera.mode!=cv_fpp)) return(FALSE);
+		if ((contact.poly.mesh_idx!=-1) || (map.camera.camera_mode!=cv_fpp)) return(FALSE);
 		if (contact.obj.idx!=server.player_obj_idx) return(FALSE);
 	}
 

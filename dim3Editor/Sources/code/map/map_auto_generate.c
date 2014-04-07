@@ -662,7 +662,8 @@ void ag_add_room(bool first_room)
 
 void ag_generate_add_connector_rooms(void)
 {
-	int				n,nmesh,mesh_idx,dx,dz;
+	int				n,nmesh,mesh_idx,dx,dz,
+					group_idx;
 	int				px[8],py[8],pz[8];
 	float			gx[8],gy[8];
 	ag_room_type	*room;
@@ -816,6 +817,24 @@ void ag_generate_add_connector_rooms(void)
 
 			map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_door);
 		}
+
+			// add door group
+
+		group_idx=map_group_add(&map);
+		sprintf(map.group.groups[group_idx].name,"Door %d",ag_state.current_door_idx);
+
+		map.mesh.meshes[mesh_idx].group_idx=group_idx;
+
+			// add in door movement
+
+
+
+//extern int map_movement_add(map_type *map);
+//extern int map_movement_move_add(map_type *map,int movement_idx);
+
+			// next door
+
+		ag_state.current_door_idx++;
 	}
 }
 
@@ -827,13 +846,13 @@ void ag_generate_add_connector_rooms(void)
 
 bool ag_generate_run(char *err_str)
 {
-	int				n,
-					decoration_count;
+	int				n;
 
 		// supergumba -- hard coded
 
 	ag_state.room_count=30;
-	decoration_count=20;
+	ag_state.decoration_count=20;
+	ag_state.current_door_idx=0;
 
 		// check if auto generator has
 		// required textures
@@ -870,7 +889,7 @@ bool ag_generate_run(char *err_str)
 
 		// decorations
 
-	for (n=0;n!=decoration_count;n++) {
+	for (n=0;n!=ag_state.decoration_count;n++) {
 		ag_generate_decoration_box_stack();
 	}
 

@@ -33,6 +33,7 @@ and can be sold or given away.
 #include "interface.h"
 
 #define kMapPropertyCameraMode						0
+#define kMapPropertyInputMode						1
 
 #define kMapPropertyCameraAngle						10
 #define kMapPropertyCameraPoint						11
@@ -55,7 +56,8 @@ extern map_type					map;
 
 extern list_palette_type		map_palette;
 
-char							map_map_camera_mode_list[][name_str_len]={"FPP","Chase","Static","Chase Static",""};
+char							map_map_camera_mode_list[][name_str_len]={"FPP","Chase","Static","Chase Static",""},
+								map_map_camera_input_list[][name_str_len]={"FPP","Side Scroll","Top Down","Fly","Thrust",""};
 
 /* =======================================================
 
@@ -70,7 +72,8 @@ void map_palette_fill_camera(void)
 		// camera settings
 
 	list_palette_add_header(&map_palette,0,"Map Camera Settings");
-	list_palette_add_picker_list_int(&map_palette,kMapPropertyCameraMode,"Mode",(char*)map_map_camera_mode_list,-1,name_str_len,0,FALSE,FALSE,&map.camera.mode,FALSE);
+	list_palette_add_picker_list_int(&map_palette,kMapPropertyCameraMode,"Camera Mode",(char*)map_map_camera_mode_list,-1,name_str_len,0,FALSE,FALSE,&map.camera.camera_mode,FALSE);
+	list_palette_add_picker_list_int(&map_palette,kMapPropertyInputMode,"Input Mode",(char*)map_map_camera_input_list,-1,name_str_len,0,FALSE,FALSE,&map.camera.input_mode,FALSE);
 
 		// camera settings
 

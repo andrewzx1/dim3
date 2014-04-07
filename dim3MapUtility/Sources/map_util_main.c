@@ -94,7 +94,8 @@ bool map_new(map_type *map,char *name)
 
 		// camera
 
-	map->camera.mode=cv_fpp;
+	map->camera.camera_mode=cv_fpp;
+	map->camera.input_mode=im_fpp;
 	
 	map->camera.pnt_offset.x=0;
 	map->camera.pnt_offset.y=0;

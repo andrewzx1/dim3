@@ -136,6 +136,16 @@ and can be sold or given away.
 #define cv_chase_static										3
 
 //
+// input modes
+//
+
+#define im_fpp												0
+#define im_side_scroll										1
+#define im_top_down											2
+#define im_fly												3
+#define im_thrust											4
+
+//
 // group types
 //
 
@@ -710,7 +720,7 @@ typedef struct		{
 					} map_camera_setup_static_type;
 
 typedef struct		{
-						int									mode;
+						int									camera_mode,input_mode;
 						d3pnt								pnt_offset;
 						d3ang								ang_offset;
 						map_camera_plane_type				plane;
