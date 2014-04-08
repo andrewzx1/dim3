@@ -157,7 +157,7 @@ int effect_spawn(int effecttype,d3pnt *pt,int life_tick)
       
 ======================================================= */
 
-inline void effect_dispose_single(effect_type *effect)
+static inline void effect_dispose_single(effect_type *effect)
 {
 		// turn off effect
 

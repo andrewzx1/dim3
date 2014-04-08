@@ -903,7 +903,7 @@ void gl_shader_texture_override(GLuint gl_id,float alpha)
       
 ======================================================= */
 
-inline void gl_shader_frame_start_per_shader(shader_type *shader)
+static inline void gl_shader_frame_start_per_shader(shader_type *shader)
 {
 		// this flag marks when we need to reset
 		// the matrixes (projection, model view, etc)

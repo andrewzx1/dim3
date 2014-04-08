@@ -490,6 +490,8 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 		if (!in_file_load) {
 			obj=server.obj_list.objs[server.player_obj_idx];
 			camera_connect(obj);
+
+			obj->input.mode=map.camera.input_mode;		// set any map input mode
 		}
 	}
 	

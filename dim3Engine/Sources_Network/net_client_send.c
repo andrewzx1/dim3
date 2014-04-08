@@ -53,7 +53,7 @@ extern network_setup_type		net_setup;
       
 ======================================================= */
 
-inline void net_client_send_generic(int action,unsigned char *msg,int msg_len)
+static inline void net_client_send_generic(int action,unsigned char *msg,int msg_len)
 {
 	if (net_setup.mode==net_mode_client) {
 		net_sendto_msg(client_socket,&net_setup.client.host_addr,action,msg,msg_len);

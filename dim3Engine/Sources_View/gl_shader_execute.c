@@ -199,7 +199,7 @@ void gl_shader_draw_execute_simple_bitmap_end(void)
       
 ======================================================= */
 
-inline void gl_shader_draw_execute_reset_cached_offsets_shader(shader_type *shader)
+static inline void gl_shader_draw_execute_reset_cached_offsets_shader(shader_type *shader)
 {
 	shader->var_values.attrib.vertex_offset=-1;
 	shader->var_values.attrib.color_offset=-1;
@@ -248,7 +248,7 @@ void gl_shader_draw_execute_disable_attributes(shader_type *shader)
 	if (shader->var_locs.dim3VertexTangent!=-1) glDisableVertexAttribArray(shader->var_locs.dim3VertexTangent);
 }
 
-inline void gl_shader_draw_execute_set_vertex_offset(shader_type *shader,int vertex_offset,int stride)
+static inline void gl_shader_draw_execute_set_vertex_offset(shader_type *shader,int vertex_offset,int stride)
 {
 	if (shader->var_values.attrib.vertex_offset!=vertex_offset) {
 		shader->var_values.attrib.vertex_offset=vertex_offset;
@@ -256,7 +256,7 @@ inline void gl_shader_draw_execute_set_vertex_offset(shader_type *shader,int ver
 	}
 }
 
-inline void gl_shader_draw_execute_set_uv_offset(shader_type *shader,int uv_offset,int stride)
+static inline void gl_shader_draw_execute_set_uv_offset(shader_type *shader,int uv_offset,int stride)
 {
 	if (shader->var_values.attrib.uv_offset!=uv_offset) {
 		shader->var_values.attrib.uv_offset=uv_offset;
@@ -264,7 +264,7 @@ inline void gl_shader_draw_execute_set_uv_offset(shader_type *shader,int uv_offs
 	}
 }
 
-inline void gl_shader_draw_execute_set_lmap_uv_offset(shader_type *shader,int lmap_uv_offset,int stride)
+static inline void gl_shader_draw_execute_set_lmap_uv_offset(shader_type *shader,int lmap_uv_offset,int stride)
 {
 	if (shader->var_values.attrib.lmap_uv_offset!=lmap_uv_offset) {
 		shader->var_values.attrib.lmap_uv_offset=lmap_uv_offset;
@@ -272,7 +272,7 @@ inline void gl_shader_draw_execute_set_lmap_uv_offset(shader_type *shader,int lm
 	}
 }
 
-inline void gl_shader_draw_execute_set_normal_offset(shader_type *shader,int normal_offset,int stride)
+static inline void gl_shader_draw_execute_set_normal_offset(shader_type *shader,int normal_offset,int stride)
 {
 	if (shader->var_values.attrib.normal_offset!=normal_offset) {
 		shader->var_values.attrib.normal_offset=normal_offset;
@@ -280,7 +280,7 @@ inline void gl_shader_draw_execute_set_normal_offset(shader_type *shader,int nor
 	}
 }
 
-inline void gl_shader_draw_execute_set_tangent_offset(shader_type *shader,int tangent_offset,int stride)
+static inline void gl_shader_draw_execute_set_tangent_offset(shader_type *shader,int tangent_offset,int stride)
 {
 	if (shader->var_locs.dim3VertexTangent==-1) return;
 

@@ -72,7 +72,7 @@ void ray_trace_shutdown(void)
       
 ======================================================= */
 
-inline void ray_trace_contact_clear(d3pnt *ept,ray_trace_contact_type *contact)
+static inline void ray_trace_contact_clear(d3pnt *ept,ray_trace_contact_type *contact)
 {
 	contact->hit=FALSE;
 
@@ -91,7 +91,7 @@ inline void ray_trace_contact_clear(d3pnt *ept,ray_trace_contact_type *contact)
       
 ======================================================= */
 
-inline ray_trace_check_item_type* ray_trace_get_last_item_list(int *item_count)
+static inline ray_trace_check_item_type* ray_trace_get_last_item_list(int *item_count)
 {
 	*item_count=ray_item_count;
 	return(ray_item_list);
@@ -528,7 +528,7 @@ void ray_trace_plane(d3pnt *spt,d3vct *vct,d3pnt *hpt,d3pnt *ppt_0,d3pnt *ppt_1,
       
 ======================================================= */
 
-inline void ray_trace_get_single_ray_bounds(d3pnt *spt,d3pnt *ept,d3pnt *min,d3pnt *max)
+static inline void ray_trace_get_single_ray_bounds(d3pnt *spt,d3pnt *ept,d3pnt *min,d3pnt *max)
 {
 	if (spt->x<ept->x) {
 		min->x=spt->x;
