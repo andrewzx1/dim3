@@ -925,7 +925,6 @@ int object_start(spot_type *spot,char *name,int type,int bind,char *err_str)
 		obj->spawn_spot.name[0]=0x0;
 		
 		obj->hidden=FALSE;
-		obj->input.mode=map.camera.input_mode;
 		
 		obj->tint_color_idx=setup.network.tint_color_idx;
 		obj->character_idx=setup.network.character_idx;

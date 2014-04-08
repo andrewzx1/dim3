@@ -108,8 +108,8 @@ extern void view_map_vbo_rebuild(void);
 extern void game_time_initialize(void);
 extern void game_time_calculate(void);
 extern void game_time_reset(int tick);
-extern inline int game_time_get_raw(void);
-extern inline int game_time_get(void);
+extern int game_time_get_raw(void);
+extern int game_time_get(void);
 extern float game_time_fequency_second_get(int start_tick);
 extern void game_time_pause_start(void);
 extern void game_time_pause_end(void);
@@ -212,21 +212,21 @@ extern void element_initialize(void);
 extern void element_shutdown(void);
 extern void element_clear(void);
 
-extern inline int element_get_control_separation_high(void);
-extern inline int element_get_padding(void);
-extern inline int element_get_margin(void);
-extern inline int element_get_tab_control_high(void);
-extern inline int element_get_control_short_wid(void);
-extern inline int element_get_control_long_wid(void);
-extern inline int element_get_control_high(void);
-extern inline void element_get_tab_button_bottom_left(int *x,int *y);
-extern inline void element_get_tab_button_bottom_right(int *x,int *y);
-extern inline void element_get_frame_button_bottom_right(int fx,int fy,int wid,int high,int *x,int *y);
-extern inline int element_get_button_short_wid(void);
-extern inline int element_get_button_long_wid(void);
-extern inline int element_get_button_high(void);
-extern inline int element_get_control_scroll_size(void);
-extern inline int element_get_frame_title_high(void);
+extern int element_get_control_separation_high(void);
+extern int element_get_padding(void);
+extern int element_get_margin(void);
+extern int element_get_tab_control_high(void);
+extern int element_get_control_short_wid(void);
+extern int element_get_control_long_wid(void);
+extern int element_get_control_high(void);
+extern void element_get_tab_button_bottom_left(int *x,int *y);
+extern void element_get_tab_button_bottom_right(int *x,int *y);
+extern void element_get_frame_button_bottom_right(int fx,int fy,int wid,int high,int *x,int *y);
+extern int element_get_button_short_wid(void);
+extern int element_get_button_long_wid(void);
+extern int element_get_button_high(void);
+extern int element_get_control_scroll_size(void);
+extern int element_get_frame_title_high(void);
 
 extern void element_button_text_add(char *name,int id,int x,int y,int wid,int high,int x_pos,int y_pos);
 extern void element_button_bitmap_add(char *path,char *path2,int id,int x,int y,int wid,int high,int x_pos,int y_pos);
@@ -596,7 +596,7 @@ extern void input_shutdown(void);
 extern void input_clear(void);
 extern void input_set_key_start(void);
 extern bool input_set_key_wait(char *name);
-extern inline bool input_app_active(void);
+extern bool input_app_active(void);
 extern bool input_event_pump(void);
 
 extern void input_action_clear(void);
@@ -616,7 +616,7 @@ extern void input_event_mouse_button(int button,bool down);
 extern void input_event_mouse_motion(int x,int y);
 extern void input_event_mouse_wheel(int y);
 extern void input_get_mouse_movement(float *x,float *y);
-extern inline bool input_get_mouse_button(int button);
+extern bool input_get_mouse_button(int button);
 extern void input_mouse_wheel_reset(void);
 extern void input_mouse_gui_set_position(int x,int y);
 extern void input_mouse_gui_get_position(int *x,int *y);
@@ -628,8 +628,8 @@ extern bool input_mouse_gui_wheel_down(void);
 extern void input_gui_set_position(int x,int y);
 extern void input_gui_get_position(int *x,int *y);
 extern void input_gui_get_hilite_position(int *x,int *y);
-extern inline bool input_gui_is_click_down(void);
-extern inline void input_gui_wait_click_up(void);
+extern bool input_gui_is_click_down(void);
+extern void input_gui_wait_click_up(void);
 
 extern void input_keyboard_clear(void);
 extern void input_event_key(int key_idx,bool down);
@@ -643,12 +643,12 @@ extern char input_get_text_input_key(void);
 
 extern bool input_joystick_initialize(void);
 extern void input_joystick_shutdown(void);
-extern inline bool input_check_joystick_ok(void);
+extern bool input_check_joystick_ok(void);
 extern void input_joystick_clear(void);
 extern void input_event_joystick_button(int button,bool down);
-extern inline float input_joystick_get_axis(int axis);
-extern inline bool input_joystick_get_axis_as_button_min(int axis);
-extern inline bool input_joystick_get_axis_as_button_max(int axis);
+extern float input_joystick_get_axis(int axis);
+extern bool input_joystick_get_axis_as_button_min(int axis);
+extern bool input_joystick_get_axis_as_button_max(int axis);
 extern bool input_joystick_get_button(int button);
 
 extern void input_touch_initialize(void);
@@ -660,9 +660,9 @@ extern void input_touch_get_point(int idx,int *x,int *y);
 extern void input_touch_event_up(int finger_id);
 extern void input_touch_event_down(int touch_id,int finger_id,float x,float y);
 extern void input_touch_event_move(int touch_id,int finger_id,float x,float y);
-extern inline float input_touch_get_axis(int axis);
-extern inline bool input_touch_get_axis_as_button_min(int axis);
-extern inline bool input_touch_get_axis_as_button_max(int axis);
+extern float input_touch_get_axis(int axis);
+extern bool input_touch_get_axis_as_button_min(int axis);
+extern bool input_touch_get_axis_as_button_max(int axis);
 extern void input_touch_gui_get_position(int *x,int *y);
 extern void input_touch_gui_get_hilite_position(int *x,int *y);
 extern bool input_touch_gui_is_click_down(void);
@@ -671,7 +671,7 @@ extern bool input_touch_gui_is_click_down(void);
 // gl init and shutdown
 //
 
-extern inline bool gl_in_window_mode(void);
+extern bool gl_in_window_mode(void);
 extern void gl_setup_context(void);
 extern bool gl_initialize(int screen_wid,int screen_high,int fsaa_mode,char *err_str);
 extern void gl_shutdown(void);
@@ -688,10 +688,10 @@ extern bool gl_screen_shot(int lft_x,int top_y,int wid,int high,bool thumbnail,c
 //
 
 extern bool gl_check_initialize(char *err_str);
-extern inline bool gl_check_frame_buffer_ok(void);
-extern inline bool gl_check_fsaa_ok(void);
-extern inline bool gl_check_texture_generate_mipmaps_ok(void);
-extern inline bool gl_check_npot_textures_ok(void);
+extern bool gl_check_frame_buffer_ok(void);
+extern bool gl_check_fsaa_ok(void);
+extern bool gl_check_texture_generate_mipmaps_ok(void);
+extern bool gl_check_npot_textures_ok(void);
 
 //
 // lights
@@ -715,73 +715,73 @@ extern void gl_lights_build_model_glsl_light_list(model_type *mdl,model_draw *dr
 
 extern void view_create_mesh_liquid_vertex_object(map_vbo_type *vbo,int vertex_count,int vertex_stride,int index_count);
 extern void view_dispose_mesh_liquid_vertex_object(map_vbo_type *vbo);
-extern inline void view_bind_mesh_liquid_vertex_object(map_vbo_type *vbo);
-extern inline unsigned char* view_map_mesh_liquid_vertex_object(map_vbo_type *vbo);
-extern inline void view_unmap_mesh_liquid_vertex_object(void);
-extern inline void view_unbind_mesh_liquid_vertex_object(void);
-extern inline void view_bind_mesh_liquid_index_object(map_vbo_type *vbo);
-extern inline unsigned short* view_map_mesh_liquid_index_object(void);
-extern inline void view_unmap_mesh_liquid_index_object(void);
-extern inline void view_unbind_mesh_liquid_index_object(void);
+extern void view_bind_mesh_liquid_vertex_object(map_vbo_type *vbo);
+extern unsigned char* view_map_mesh_liquid_vertex_object(map_vbo_type *vbo);
+extern void view_unmap_mesh_liquid_vertex_object(void);
+extern void view_unbind_mesh_liquid_vertex_object(void);
+extern void view_bind_mesh_liquid_index_object(map_vbo_type *vbo);
+extern unsigned short* view_map_mesh_liquid_index_object(void);
+extern void view_unmap_mesh_liquid_index_object(void);
+extern void view_unbind_mesh_liquid_index_object(void);
 
 extern void view_create_model_vertex_object(model_draw *draw);
 extern void view_dispose_model_vertex_object(model_draw *draw);
-extern inline void view_bind_model_vertex_object(model_draw *draw,int mesh_idx);
-extern inline unsigned char* view_map_model_vertex_object(void);
-extern inline void view_unmap_model_vertex_object(void);
-extern inline void view_unbind_model_vertex_object(void);
-extern inline void view_bind_model_shadow_vertex_object(model_draw *draw,int mesh_idx);
-extern inline unsigned char* view_map_model_shadow_vertex_object(void);
-extern inline void view_unmap_model_shadow_vertex_object(void);
-extern inline void view_unbind_model_shadow_vertex_object(void);
+extern void view_bind_model_vertex_object(model_draw *draw,int mesh_idx);
+extern unsigned char* view_map_model_vertex_object(void);
+extern void view_unmap_model_vertex_object(void);
+extern void view_unbind_model_vertex_object(void);
+extern void view_bind_model_shadow_vertex_object(model_draw *draw,int mesh_idx);
+extern unsigned char* view_map_model_shadow_vertex_object(void);
+extern void view_unmap_model_shadow_vertex_object(void);
+extern void view_unbind_model_shadow_vertex_object(void);
 
 extern void view_create_sky_vertex_object(int vertex_mem_sz);
 extern void view_dispose_sky_vertex_object(void);
-extern inline void view_bind_sky_vertex_object(void);
-extern inline unsigned char* view_map_sky_vertex_object(void);
-extern inline void view_unmap_sky_vertex_object(void);
-extern inline void view_unbind_sky_vertex_object(void);
+extern void view_bind_sky_vertex_object(void);
+extern unsigned char* view_map_sky_vertex_object(void);
+extern void view_unmap_sky_vertex_object(void);
+extern void view_unbind_sky_vertex_object(void);
 
 extern void view_create_fog_vertex_object(int vertex_mem_sz);
 extern void view_dispose_fog_vertex_object(void);
-extern inline void view_bind_fog_vertex_object(void);
-extern inline unsigned char* view_map_fog_vertex_object(void);
-extern inline void view_unmap_fog_vertex_object(void);
-extern inline void view_unbind_fog_vertex_object(void);
+extern void view_bind_fog_vertex_object(void);
+extern unsigned char* view_map_fog_vertex_object(void);
+extern void view_unmap_fog_vertex_object(void);
+extern void view_unbind_fog_vertex_object(void);
 
 extern void view_create_rain_vertex_object(int vertex_mem_sz);
 extern void view_dispose_rain_vertex_object(void);
-extern inline void view_bind_rain_vertex_object(void);
-extern inline unsigned char* view_map_rain_vertex_object(void);
-extern inline void view_unmap_rain_vertex_object(void);
-extern inline void view_unbind_rain_vertex_object(void);
+extern void view_bind_rain_vertex_object(void);
+extern unsigned char* view_map_rain_vertex_object(void);
+extern void view_unmap_rain_vertex_object(void);
+extern void view_unbind_rain_vertex_object(void);
 
 extern void view_clear_effect_vertex_object(effect_type *effect);
 extern void view_create_effect_vertex_object(effect_type *effect,int vertex_mem_sz,int index_mem_sz);
 extern void view_dispose_effect_vertex_object(effect_type *effect);
-extern inline void view_bind_effect_vertex_object(effect_type *effect);
-extern inline unsigned char* view_map_effect_vertex_object(void);
-extern inline void view_unmap_effect_vertex_object(void);
-extern inline void view_unbind_effect_vertex_object(void);
-extern inline void view_bind_effect_index_object(effect_type *effect);
-extern inline unsigned short* view_map_effect_index_object(void);
-extern inline void view_unmap_effect_index_object(void);
-extern inline void view_unbind_effect_index_object(void);
+extern void view_bind_effect_vertex_object(effect_type *effect);
+extern unsigned char* view_map_effect_vertex_object(void);
+extern void view_unmap_effect_vertex_object(void);
+extern void view_unbind_effect_vertex_object(void);
+extern void view_bind_effect_index_object(effect_type *effect);
+extern unsigned short* view_map_effect_index_object(void);
+extern void view_unmap_effect_index_object(void);
+extern void view_unbind_effect_index_object(void);
 
 extern void view_create_text_vertex_object(void);
 extern void view_dispose_text_vertex_object(void);
-extern inline void view_bind_text_vertex_object(void);
-extern inline unsigned char* view_map_text_vertex_object(void);
-extern inline void view_unmap_text_vertex_object(void);
-extern inline void view_unbind_text_vertex_object(void);
+extern void view_bind_text_vertex_object(void);
+extern unsigned char* view_map_text_vertex_object(void);
+extern void view_unmap_text_vertex_object(void);
+extern void view_unbind_text_vertex_object(void);
 
 extern void view_initialize_utility_vertex_object(void);
 extern void view_create_utility_vertex_object(void);
 extern void view_dispose_utility_vertex_object(void);
-extern inline void view_bind_utility_vertex_object(void);
-extern inline unsigned char* view_map_utility_vertex_object(void);
-extern inline void view_unmap_utility_vertex_object(void);
-extern inline void view_unbind_utility_vertex_object(void);
+extern void view_bind_utility_vertex_object(void);
+extern unsigned char* view_map_utility_vertex_object(void);
+extern void view_unmap_utility_vertex_object(void);
+extern void view_unbind_utility_vertex_object(void);
 
 extern void view_primitive_2D_tint_screen(d3col *col,float alpha);
 extern void view_primitive_2D_color_poly(int x0,int y0,d3col *col0,int x1,int y1,d3col *col1,int x2,int y2,d3col *col2,int x3,int y3,d3col *col3,float alpha);
@@ -827,20 +827,20 @@ extern void gl_shader_force_matrix_resets(void);
 // shader execution
 //
 
-extern inline void gl_shader_draw_execute_simple_color_set_color(d3col *col,float alpha);
-extern inline void gl_shader_draw_execute_simple_color_start(int vertex_size,int vertex_offset,d3col *col,float alpha);
-extern inline void gl_shader_draw_execute_simple_color_end(void);
+extern void gl_shader_draw_execute_simple_color_set_color(d3col *col,float alpha);
+extern void gl_shader_draw_execute_simple_color_start(int vertex_size,int vertex_offset,d3col *col,float alpha);
+extern void gl_shader_draw_execute_simple_color_end(void);
 
-extern inline void gl_shader_draw_execute_simple_gradient_start(int vertex_size,int vertex_offset,int color_offset);
-extern inline void gl_shader_draw_execute_simple_gradient_end(void);
+extern void gl_shader_draw_execute_simple_gradient_start(int vertex_size,int vertex_offset,int color_offset);
+extern void gl_shader_draw_execute_simple_gradient_end(void);
 
-extern inline void gl_shader_draw_execute_simple_black_start(int vertex_size,int vertex_offset,float alpha);
-extern inline void gl_shader_draw_execute_simple_black_end(void);
+extern void gl_shader_draw_execute_simple_black_start(int vertex_size,int vertex_offset,float alpha);
+extern void gl_shader_draw_execute_simple_black_end(void);
 
-extern inline void gl_shader_draw_execute_simple_bitmap_set_color(d3col *col,float alpha);
-extern inline void gl_shader_draw_execute_simple_bitmap_set_texture(unsigned long gl_id);
-extern inline void gl_shader_draw_execute_simple_bitmap_start(int vertex_size,int vertex_offset,int uv_offset,int stride,d3col *col,float alpha);
-extern inline void gl_shader_draw_execute_simple_bitmap_end(void);
+extern void gl_shader_draw_execute_simple_bitmap_set_color(d3col *col,float alpha);
+extern void gl_shader_draw_execute_simple_bitmap_set_texture(unsigned long gl_id);
+extern void gl_shader_draw_execute_simple_bitmap_start(int vertex_size,int vertex_offset,int uv_offset,int stride,d3col *col,float alpha);
+extern void gl_shader_draw_execute_simple_bitmap_end(void);
 
 extern void gl_shader_draw_execute_reset_cached_offsets(void);
 
@@ -925,11 +925,11 @@ extern void gl_3D_view_interface_model(void);
 extern void gl_2D_scissor_start(int lx,int rx,int ty,int by);
 extern void gl_2D_scissor_end(void);
 
-extern inline bool gl_project_in_view_z(d3pnt *pnt);
-extern inline void gl_project_point(d3pnt *pnt);
-extern inline void gl_project_point_f(d3pnt *pnt,d3fpnt *f_pnt);
-extern inline float gl_project_get_depth(d3pnt *pnt);
-extern inline void gl_project_to_eye_coordinates(d3vct *vct);
+extern bool gl_project_in_view_z(d3pnt *pnt);
+extern void gl_project_point(d3pnt *pnt);
+extern void gl_project_point_f(d3pnt *pnt,d3fpnt *f_pnt);
+extern float gl_project_get_depth(d3pnt *pnt);
+extern void gl_project_to_eye_coordinates(d3vct *vct);
 
 //
 // view culling
@@ -959,8 +959,8 @@ extern void view_obscure_run(void);
 
 extern void gl_texture_initialize(void);
 extern void gl_texture_shutdown(void);
-extern inline void gl_texture_bind(int unit,GLuint txt_id);
-extern inline void gl_texture_clear(int unit);
+extern void gl_texture_bind(int unit,GLuint txt_id);
+extern void gl_texture_clear(int unit);
 
 //
 // text
@@ -968,7 +968,7 @@ extern inline void gl_texture_clear(int unit);
 
 extern void gl_text_initialize(void);
 extern void gl_text_shutdown(void);
-extern inline int gl_text_get_char_height(int text_size);
+extern int gl_text_get_char_height(int text_size);
 extern int gl_text_get_string_width(int text_font,int text_size,bool monospaced,char *str);
 extern void gl_text_start(int text_font,int text_size,bool monospaced);
 extern void gl_text_end(void);
@@ -984,9 +984,9 @@ extern int view_images_load_single(char *path,bool npot,bool simple);
 extern void view_images_free_single(int idx);
 extern void view_images_cached_load(void);
 extern void view_images_cached_free(void);
-extern inline bool view_images_is_empty(int idx);
+extern bool view_images_is_empty(int idx);
 extern bitmap_type* view_images_get_bitmap(int idx);
-extern inline unsigned long view_images_get_gl_id(int idx);
+extern unsigned long view_images_get_gl_id(int idx);
 
 //
 // map rendering
@@ -1021,7 +1021,7 @@ extern void sky_draw_release(void);
 extern void sky_draw_background(void);
 extern void sky_draw(void);
 
-extern inline bool fog_solid_on(void);
+extern bool fog_solid_on(void);
 extern void fog_draw_init(void);
 extern void fog_draw_release(void);
 extern void fog_draw_textured(void);

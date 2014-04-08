@@ -43,7 +43,7 @@ extern setup_type			setup;
       
 ======================================================= */
 
-inline int render_model_get_texture_frame(model_type *mdl,model_draw *draw,int txt_idx)
+static inline int render_model_get_texture_frame(model_type *mdl,model_draw *draw,int txt_idx)
 {
 	texture_type		*texture;
 
@@ -59,7 +59,7 @@ inline int render_model_get_texture_frame(model_type *mdl,model_draw *draw,int t
 	return(draw->textures[txt_idx].frame);
 }
 
-inline float render_model_get_mesh_alpha(model_draw *draw,int mesh_idx)
+static inline float render_model_get_mesh_alpha(model_draw *draw,int mesh_idx)
 {
 	if (!draw->meshes[mesh_idx].fade.on) return(draw->alpha);
 	return(draw->meshes[mesh_idx].fade.alpha);

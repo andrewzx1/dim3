@@ -172,6 +172,52 @@ void ag_generate_delete_shared_polygons(void)
 
 /* =======================================================
 
+      Delete Polygons in Box
+      
+======================================================= */
+
+void ag_generate_remove_polygons_in_box(int mesh_idx,d3pnt *min,d3pnt *max)
+{
+	int					n,poly_idx;
+	bool				out;
+	d3pnt				*pnt;
+	map_mesh_type		*mesh;
+	map_mesh_poly_type	*poly;
+
+	mesh=&map.mesh.meshes[mesh_idx];
+
+	poly_idx=0;
+
+	while (poly_idx<mesh->npoly) {
+
+			// any vertexes outside the box?
+
+		out=FALSE;
+		poly=&mesh->polys[poly_idx];
+
+		for (n=0;n!=poly->ptsz;n++) {
+
+			pnt=&mesh->vertexes[poly->v[n]];
+
+			if ((pnt->x<min->x) || (pnt->x>max->x) || (pnt->z<min->z) || (pnt->z>max->z)) {
+				out=TRUE;
+				break;
+			}
+		}
+
+		if (out) {
+			poly_idx++;
+			continue;
+		}
+
+			// delete this mesh
+
+		map_mesh_delete_poly(&map,mesh_idx,poly_idx);
+	}
+}
+
+/* =======================================================
+
       Collisions
       
 ======================================================= */
@@ -356,6 +402,10 @@ void ag_generate_decoration_box(d3pnt *pnt,int stack_offset,int start_cmp_mesh_i
 		map_mesh_calculate_center(&map,mesh_idx,&mpt);
 		map_mesh_rotate(&map,mesh_idx,&mpt,&ang);
 	}
+
+		// reset normals
+
+	map_recalc_normals_mesh(&map,&map.mesh.meshes[mesh_idx],normal_mode_out,FALSE);
 }
 
 void ag_generate_decoration_box_stack(void)

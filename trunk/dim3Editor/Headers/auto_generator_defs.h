@@ -108,6 +108,7 @@ typedef struct		{
 					} ag_room_flat_side_type;
 
 typedef struct		{
+						int							other_mesh_idx,wid;
 						bool						on;
 						d3pnt						min,max;
 					} ag_room_connect_box_type;
@@ -120,7 +121,7 @@ typedef struct		{
 						d3vct						size;
 						ag_room_flat_side_type		flat;
 						ag_room_connect_box_type	connect_box;
-					} ag_room_type;
+					} ag_room_type;				// these are parallel to the meshes, as the first meshes are always the rooms
 
 typedef struct		{
 						int							room_count,story_count;

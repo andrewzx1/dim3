@@ -357,7 +357,7 @@ bool view_cull_halo(d3pnt *pnt)
       
 ======================================================= */
 
-inline bool view_cull_poly(map_mesh_type *mesh,map_mesh_poly_type *poly)
+static inline bool view_cull_poly(map_mesh_type *mesh,map_mesh_poly_type *poly)
 {
 		// view culling
 
