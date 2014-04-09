@@ -316,63 +316,36 @@ void ag_generate_decoration_box(d3pnt *pnt,int stack_offset,int start_cmp_mesh_i
 
 	map.mesh.meshes[mesh_idx].flag.lock_uv=TRUE;
 
+	gx[0]=gx[3]=0.0f;
+	gx[1]=gx[2]=1.0f;
+	gy[0]=gy[1]=0.0f;
+	gy[2]=gy[3]=1.0f;
+
 		// sides
 
-	px[0]=px[3]=min.x;
-	px[1]=px[2]=min.x;
+	px[0]=px[1]=px[2]=px[3]=min.x;
 	pz[0]=pz[3]=min.z;
 	pz[1]=pz[2]=max.z;
 	py[0]=py[1]=min.y;
 	py[2]=py[3]=max.y;
 
-	gx[0]=gx[3]=0.0f;
-	gx[1]=gx[2]=1.0f;
-	gy[0]=gy[1]=0.0f;
-	gy[2]=gy[3]=1.0f;
+	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_decoration_box);
 
-	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_decoration);
+	px[0]=px[1]=px[2]=px[3]=max.x;
 
-	px[0]=px[3]=max.x;
-	px[1]=px[2]=max.x;
-	pz[0]=pz[3]=min.z;
-	pz[1]=pz[2]=max.z;
-	py[0]=py[1]=min.y;
-	py[2]=py[3]=max.y;
-
-	gx[0]=gx[3]=0.0f;
-	gx[1]=gx[2]=1.0f;
-	gy[0]=gy[1]=0.0f;
-	gy[2]=gy[3]=1.0f;
-
-	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_decoration);
+	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_decoration_box);
 
 	px[0]=px[3]=min.x;
 	px[1]=px[2]=max.x;
-	pz[0]=pz[3]=min.z;
-	pz[1]=pz[2]=min.z;
+	pz[0]=pz[1]=pz[2]=pz[3]=min.z;
 	py[0]=py[1]=min.y;
 	py[2]=py[3]=max.y;
 
-	gx[0]=gx[3]=0.0f;
-	gx[1]=gx[2]=1.0f;
-	gy[0]=gy[1]=0.0f;
-	gy[2]=gy[3]=1.0f;
+	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_decoration_box);
 
-	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_decoration);
+	pz[0]=pz[1]=pz[2]=pz[3]=max.z;
 
-	px[0]=px[3]=min.x;
-	px[1]=px[2]=max.x;
-	pz[0]=pz[3]=max.z;
-	pz[1]=pz[2]=max.z;
-	py[0]=py[1]=min.y;
-	py[2]=py[3]=max.y;
-
-	gx[0]=gx[3]=0.0f;
-	gx[1]=gx[2]=1.0f;
-	gy[0]=gy[1]=0.0f;
-	gy[2]=gy[3]=1.0f;
-
-	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_decoration);
+	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_decoration_box);
 
 		// top and bottom
 
@@ -382,16 +355,11 @@ void ag_generate_decoration_box(d3pnt *pnt,int stack_offset,int start_cmp_mesh_i
 	pz[2]=pz[3]=max.z;
 	py[0]=py[1]=py[2]=py[3]=max.y;
 
-	gx[0]=gx[3]=0.0f;
-	gx[1]=gx[2]=1.0f;
-	gy[0]=gy[1]=0.0f;
-	gy[2]=gy[3]=1.0f;
-
-	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_decoration);
+	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_decoration_box);
 
 	py[0]=py[1]=py[2]=py[3]=min.y;
 
-	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_decoration);
+	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_decoration_box);
 
 		// possibly rotate box
 

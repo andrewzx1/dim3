@@ -949,6 +949,10 @@
 							>
 						</File>
 						<File
+							RelativePath="..\..\dim3Editor\Sources\code\map\map_auto_generate_connect.c"
+							>
+						</File>
+						<File
 							RelativePath="..\..\dim3Editor\Sources\code\map\map_auto_generate_setup.c"
 							>
 						</File>
