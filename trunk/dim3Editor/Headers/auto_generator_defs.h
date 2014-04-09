@@ -67,13 +67,12 @@ and can be sold or given away.
 #define ag_texture_wall							0
 #define ag_texture_floor						1
 #define ag_texture_ceiling						2
-#define ag_texture_wall_2						3
-#define ag_texture_floor_2						4
-#define ag_texture_ceiling_2					5
-#define ag_texture_door							6
-#define ag_texture_decoration					7
+#define ag_texture_connect						3
+#define ag_texture_door							4
+#define ag_texture_decoration_pillar			5
+#define ag_texture_decoration_box				6
 
-#define ag_texture_required_count				8			// number of textures that must be present to run
+#define ag_texture_required_count				7			// number of textures that must be present to run
 
 //
 // dimensions and positions
@@ -87,7 +86,9 @@ and can be sold or given away.
 #define ag_size_floor_high						1000
 
 #define ag_size_door_min_width					25000
-#define ag_size_door_margin						300
+#define ag_size_door_margin						400
+
+#define ag_size_bump_high						400
 
 #define ag_size_stack_box						2500
 #define ag_count_stack_box_start				3

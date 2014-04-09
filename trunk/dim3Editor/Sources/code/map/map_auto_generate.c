@@ -44,8 +44,8 @@ extern void ag_random_previous_seed(void);
 extern void ag_random_next_seed(void);
 extern int ag_random_int(int max);
 extern bool ag_random_bool(void);
+extern void ag_generate_add_connector_rooms(void);
 extern void ag_generate_delete_shared_polygons(void);
-extern void ag_generate_remove_polygons_in_box(int mesh_idx,d3pnt *min,d3pnt *max);
 extern void ag_generate_decoration_box_stack(void);
 extern void ag_generate_spots_add(void);
 
@@ -123,10 +123,10 @@ void ag_add_room_flatten_top(ag_room_type *room)
 	next_idx=top_idx+1;
 	if (next_idx==room->nvertex) next_idx=0;
 
-		// flatten top
-
 	other_idx=next_idx;
 	if (room->vertexes[prev_idx].z<room->vertexes[next_idx].z) other_idx=prev_idx;
+
+		// flatten top
 
 	room->vertexes[other_idx].z=room->vertexes[top_idx].z;
 
@@ -164,10 +164,10 @@ void ag_add_room_flatten_bottom(ag_room_type *room)
 	next_idx=bot_idx+1;
 	if (next_idx==room->nvertex) next_idx=0;
 
-		// flatten bottom
-
 	other_idx=next_idx;
 	if (room->vertexes[prev_idx].z>room->vertexes[next_idx].z) other_idx=prev_idx;
+
+		// flatten bottom
 
 	room->vertexes[other_idx].z=room->vertexes[bot_idx].z;
 
@@ -205,10 +205,10 @@ void ag_add_room_flatten_left(ag_room_type *room)
 	next_idx=lft_idx+1;
 	if (next_idx==room->nvertex) next_idx=0;
 
-		// flatten left
-
 	other_idx=next_idx;
 	if (room->vertexes[prev_idx].x<room->vertexes[next_idx].x) other_idx=prev_idx;
+
+		// flatten left
 
 	room->vertexes[other_idx].x=room->vertexes[lft_idx].x;
 
@@ -246,10 +246,10 @@ void ag_add_room_flatten_right(ag_room_type *room)
 	next_idx=rgt_idx+1;
 	if (next_idx==room->nvertex) next_idx=0;
 
-		// flatten right
-
 	other_idx=next_idx;
 	if (room->vertexes[prev_idx].x>room->vertexes[next_idx].x) other_idx=prev_idx;
+
+		// flatten right
 
 	room->vertexes[other_idx].x=room->vertexes[rgt_idx].x;
 
@@ -663,313 +663,6 @@ void ag_add_room(bool first_room)
 
 /* =======================================================
 
-      Square Connector Rooms
-      
-======================================================= */
-
-void ag_generate_add_connector_room_door(int org_mesh_idx)
-{
-	int					mesh_idx,dx,dz,
-						group_idx,movement_idx,move_idx;
-	int					px[8],py[8],pz[8];
-	float				gx[8],gy[8];
-	movement_type		*movement;
-	movement_move_type	*move;
-	ag_room_type		*room;
-
-	room=&ag_state.rooms[org_mesh_idx];
-
-		// remove unused polygons
-
-	ag_generate_remove_polygons_in_box(org_mesh_idx,&room->connect_box.min,&room->connect_box.max);
-	ag_generate_remove_polygons_in_box(room->connect_box.other_mesh_idx,&room->connect_box.min,&room->connect_box.max);
-
-		// add the mesh
-
-	mesh_idx=map_mesh_add(&map);
-
-		// walls
-
-	px[0]=px[3]=room->connect_box.min.x;
-	px[1]=px[2]=room->connect_box.min.x;
-	pz[0]=pz[3]=room->connect_box.min.z;
-	pz[1]=pz[2]=room->connect_box.max.z;
-	py[0]=py[1]=room->connect_box.min.y;
-	py[2]=py[3]=room->connect_box.max.y;
-
-	gx[0]=gx[3]=0.0f;
-	gx[1]=gx[2]=1.0f;
-	gy[0]=gy[1]=0.0f;
-	gy[2]=gy[3]=1.0f;
-
-	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_wall_2);
-
-	px[0]=px[3]=room->connect_box.max.x;
-	px[1]=px[2]=room->connect_box.max.x;
-	pz[0]=pz[3]=room->connect_box.min.z;
-	pz[1]=pz[2]=room->connect_box.max.z;
-	py[0]=py[1]=room->connect_box.min.y;
-	py[2]=py[3]=room->connect_box.max.y;
-
-	gx[0]=gx[3]=0.0f;
-	gx[1]=gx[2]=1.0f;
-	gy[0]=gy[1]=0.0f;
-	gy[2]=gy[3]=1.0f;
-
-	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_wall_2);
-
-	px[0]=px[3]=room->connect_box.min.x;
-	px[1]=px[2]=room->connect_box.max.x;
-	pz[0]=pz[3]=room->connect_box.min.z;
-	pz[1]=pz[2]=room->connect_box.min.z;
-	py[0]=py[1]=room->connect_box.min.y;
-	py[2]=py[3]=room->connect_box.max.y;
-
-	gx[0]=gx[3]=0.0f;
-	gx[1]=gx[2]=1.0f;
-	gy[0]=gy[1]=0.0f;
-	gy[2]=gy[3]=1.0f;
-
-	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_wall_2);
-
-	px[0]=px[3]=room->connect_box.min.x;
-	px[1]=px[2]=room->connect_box.max.x;
-	pz[0]=pz[3]=room->connect_box.max.z;
-	pz[1]=pz[2]=room->connect_box.max.z;
-	py[0]=py[1]=room->connect_box.min.y;
-	py[2]=py[3]=room->connect_box.max.y;
-
-	gx[0]=gx[3]=0.0f;
-	gx[1]=gx[2]=1.0f;
-	gy[0]=gy[1]=0.0f;
-	gy[2]=gy[3]=1.0f;
-
-	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_wall_2);
-
-		// floor and ceiling
-
-	px[0]=px[3]=room->connect_box.min.x;
-	px[1]=px[2]=room->connect_box.max.x;
-	pz[0]=pz[1]=room->connect_box.min.z;
-	pz[2]=pz[3]=room->connect_box.max.z;
-	py[0]=py[1]=py[2]=py[3]=room->connect_box.max.y;
-
-	gx[0]=gx[3]=0.0f;
-	gx[1]=gx[2]=1.0f;
-	gy[0]=gy[1]=0.0f;
-	gy[2]=gy[3]=1.0f;
-
-	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_floor_2);
-
-	py[0]=py[1]=py[2]=py[3]=room->connect_box.min.y;
-
-	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_ceiling_2);
-
-	map_recalc_normals_mesh(&map,&map.mesh.meshes[mesh_idx],normal_mode_in,FALSE);
-
-		// add in a door?
-
-	dx=room->connect_box.max.x-room->connect_box.min.x;
-	if (dx>ag_size_door_min_width) return;
-
-	dz=room->connect_box.max.z-room->connect_box.min.z;
-	if (dz>ag_size_door_min_width) return;
-
-		// create door
-
-	mesh_idx=map_mesh_add(&map);
-
-	gx[0]=gx[3]=0.0f;
-	gx[1]=gx[2]=1.0f;
-	gy[0]=gy[1]=0.0f;
-	gy[2]=gy[3]=1.0f;
-
-	if (dx>dz) {
-		px[0]=px[3]=room->connect_box.min.x;
-		px[1]=px[2]=room->connect_box.max.x;
-		pz[0]=pz[3]=pz[1]=pz[2]=room->connect_box.min.z+ag_size_door_margin;
-		py[0]=py[1]=room->connect_box.min.y;
-		py[2]=py[3]=room->connect_box.max.y;
-
-		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_door);
-
-		pz[0]=pz[3]=pz[1]=pz[2]=room->connect_box.max.z-ag_size_door_margin;
-
-		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_door);
-
-		px[0]=px[3]=room->connect_box.min.x;
-		px[1]=px[2]=room->connect_box.max.x;
-		pz[0]=pz[1]=room->connect_box.min.z+ag_size_door_margin;
-		pz[2]=pz[3]=room->connect_box.max.z-ag_size_door_margin;
-		py[0]=py[1]=py[2]=py[3]=room->connect_box.max.y;
-
-		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_door);
-	}
-	else {
-		px[0]=px[3]=px[1]=px[2]=room->connect_box.min.x+ag_size_door_margin;
-		pz[0]=pz[3]=room->connect_box.min.z;
-		pz[1]=pz[2]=room->connect_box.max.z;
-		py[0]=py[1]=room->connect_box.min.y;
-		py[2]=py[3]=room->connect_box.max.y;
-
-		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_door);
-
-		px[0]=px[3]=px[1]=px[2]=room->connect_box.max.x-ag_size_door_margin;
-
-		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_door);
-
-		px[0]=px[3]=room->connect_box.min.x+ag_size_door_margin;
-		px[1]=px[2]=room->connect_box.max.x-ag_size_door_margin;
-		pz[0]=pz[1]=room->connect_box.min.z;
-		pz[2]=pz[3]=room->connect_box.max.z;
-		py[0]=py[1]=py[2]=py[3]=room->connect_box.max.y;
-
-		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_door);
-	}
-
-	map_recalc_normals_mesh(&map,&map.mesh.meshes[mesh_idx],normal_mode_out,FALSE);
-
-		// add door group
-
-	group_idx=map_group_add(&map);
-	sprintf(map.group.groups[group_idx].name,"Door %d",ag_state.current_door_idx);
-
-	map.mesh.meshes[mesh_idx].group_idx=group_idx;
-	map.mesh.meshes[mesh_idx].flag.moveable=TRUE;
-
-		// add in door movement
-
-	movement_idx=map_movement_add(&map);
-
-	movement=&map.movement.movements[movement_idx];
-
-	sprintf(movement->name,"Door %d",ag_state.current_door_idx);
-	movement->group_idx=group_idx;
-	movement->auto_open=TRUE;
-
-	move_idx=map_movement_move_add(&map,movement_idx);
-
-	move=&movement->moves[move_idx];
-	move->msec=2500;
-	move->mov.y=-((room->connect_box.max.y-room->connect_box.min.y)-ag_size_door_margin);
-	strcpy(move->sound_name,"Door");
-
-		// next door
-
-	ag_state.current_door_idx++;
-}
-
-void ag_generate_add_connector_room_pillar(int org_mesh_idx)
-{
-	int					mesh_idx,dx,dz;
-	int					px[8],py[8],pz[8];
-	float				gx[8],gy[8];
-	ag_room_type		*room;
-
-	room=&ag_state.rooms[org_mesh_idx];
-
-		// pillars go to the top
-
-	room->connect_box.min.y-=(ag_size_room_high+ag_size_floor_high);
-
-		// remove unused polygons
-
-	ag_generate_remove_polygons_in_box(org_mesh_idx,&room->connect_box.min,&room->connect_box.max);
-	ag_generate_remove_polygons_in_box(room->connect_box.other_mesh_idx,&room->connect_box.min,&room->connect_box.max);
-
-		// get pillar direction
-
-	dx=room->connect_box.max.x-room->connect_box.min.x;
-	dz=room->connect_box.max.z-room->connect_box.min.z;
-
-		// add the mesh
-
-	mesh_idx=map_mesh_add(&map);
-
-		// walls
-
-	if (dx>dz) {
-		gx[0]=gx[3]=0.0f;
-		gx[1]=gx[2]=1.0f;
-		gy[0]=gy[1]=0.0f;
-		gy[2]=gy[3]=1.0f;
-
-		px[0]=px[3]=room->connect_box.min.x;
-		px[1]=px[2]=room->connect_box.min.x+room->connect_box.wid;
-		pz[0]=pz[1]=pz[2]=pz[3]=room->connect_box.min.z;
-		py[0]=room->connect_box.min.y;
-		py[1]=room->connect_box.min.y+room->connect_box.wid;
-		py[2]=py[3]=room->connect_box.max.y;
-
-		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_wall_2);
-
-		pz[0]=pz[1]=pz[2]=pz[3]=room->connect_box.max.z;
-
-		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_wall_2);
-
-		px[0]=px[3]=room->connect_box.max.x-room->connect_box.wid;
-		px[1]=px[2]=room->connect_box.max.x;
-		pz[0]=pz[1]=pz[2]=pz[3]=room->connect_box.min.z;
-		py[0]=room->connect_box.min.y+room->connect_box.wid;
-		py[1]=room->connect_box.min.y;
-		py[2]=py[3]=room->connect_box.max.y;
-
-		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_wall_2);
-
-		pz[0]=pz[1]=pz[2]=pz[3]=room->connect_box.max.z;
-
-		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_wall_2);
-
-		px[0]=room->connect_box.min.x;
-		px[1]=room->connect_box.max.x;
-		px[2]=room->connect_box.max.x-room->connect_box.wid;
-		px[3]=room->connect_box.min.x+room->connect_box.wid;
-		pz[0]=pz[1]=pz[2]=pz[3]=room->connect_box.min.z;
-		py[0]=py[1]=room->connect_box.min.y;
-		py[2]=py[3]=room->connect_box.min.y+room->connect_box.wid;
-
-		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_wall_2);
-
-		pz[0]=pz[1]=pz[2]=pz[3]=room->connect_box.max.z;
-
-		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_wall_2);
-	}
-
-//	map_recalc_normals_mesh(&map,&map.mesh.meshes[mesh_idx],normal_mode_out,FALSE);
-}
-
-void ag_generate_add_connector_rooms(void)
-{
-	int				n,nmesh;
-	ag_room_type	*room,*room2;
-
-	nmesh=map.mesh.nmesh;
-
-	for (n=0;n!=nmesh;n++) {
-
-			// did this room have a connection box?
-
-		room=&ag_state.rooms[n];
-		if (!room->connect_box.on) continue;
-
-			// if both rooms have second story,
-			// then connect directly
-
-		room2=&ag_state.rooms[room->connect_box.other_mesh_idx];
-		if ((room->second_story) && (room2->second_story)) {
-			ag_generate_add_connector_room_pillar(n);
-			continue;
-		}
-
-			// connect with box and
-			// possible door
-
-		ag_generate_add_connector_room_door(n);
-	}
-}
-
-/* =======================================================
-
       Generate Map
       
 ======================================================= */
@@ -979,6 +672,8 @@ bool ag_generate_run(char *err_str)
 	int				n;
 
 		// supergumba -- hard coded
+
+	srandom(5);		// supergumba -- testing
 
 	ag_state.room_count=30;
 	ag_state.decoration_count=20;
@@ -1015,7 +710,7 @@ bool ag_generate_run(char *err_str)
 		// delete any polygons that share the
 		// same space
 
-	// ag_generate_delete_shared_polygons();
+	ag_generate_delete_shared_polygons();
 
 		// decorations
 
