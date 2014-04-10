@@ -254,10 +254,10 @@ void ag_generate_add_connector_room_pillar(int org_mesh_idx)
 			// outside walls
 
 		px[0]=px[3]=room->connect_box.min.x;
-		px[1]=px[2]=room->connect_box.min.x+room->connect_box.wid;
+		px[1]=px[2]=room->connect_box.min.x+ag_size_pillar_wid;
 		pz[0]=pz[1]=pz[2]=pz[3]=room->connect_box.min.z;
 		py[0]=room->connect_box.min.y;
-		py[1]=room->connect_box.min.y+room->connect_box.wid;
+		py[1]=room->connect_box.min.y+ag_size_pillar_wid;
 		py[2]=room->connect_box.max.y-ag_size_bump_high;
 		py[3]=room->connect_box.max.y;
 
@@ -267,10 +267,10 @@ void ag_generate_add_connector_room_pillar(int org_mesh_idx)
 
 		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_connect);
 
-		px[0]=px[3]=room->connect_box.max.x-room->connect_box.wid;
+		px[0]=px[3]=room->connect_box.max.x-ag_size_pillar_wid;
 		px[1]=px[2]=room->connect_box.max.x;
 		pz[0]=pz[1]=pz[2]=pz[3]=room->connect_box.min.z;
-		py[0]=room->connect_box.min.y+room->connect_box.wid;
+		py[0]=room->connect_box.min.y+ag_size_pillar_wid;
 		py[1]=room->connect_box.min.y;
 		py[2]=room->connect_box.max.y;
 		py[3]=room->connect_box.max.y-ag_size_bump_high;
@@ -281,15 +281,15 @@ void ag_generate_add_connector_room_pillar(int org_mesh_idx)
 
 		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_connect);
 
-		px[0]=px[1]=px[2]=px[3]=room->connect_box.min.x+room->connect_box.wid;
+		px[0]=px[1]=px[2]=px[3]=room->connect_box.min.x+ag_size_pillar_wid;
 		pz[0]=pz[3]=room->connect_box.min.z;
 		pz[1]=pz[2]=room->connect_box.max.z;
-		py[0]=py[1]=room->connect_box.min.y+room->connect_box.wid;
+		py[0]=py[1]=room->connect_box.min.y+ag_size_pillar_wid;
 		py[2]=py[3]=room->connect_box.max.y-ag_size_bump_high;
 
 		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_connect);
 
-		px[0]=px[1]=px[2]=px[3]=room->connect_box.max.x-room->connect_box.wid;
+		px[0]=px[1]=px[2]=px[3]=room->connect_box.max.x-ag_size_pillar_wid;
 
 		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_connect);
 
@@ -297,11 +297,11 @@ void ag_generate_add_connector_room_pillar(int org_mesh_idx)
 
 		px[0]=room->connect_box.min.x;
 		px[1]=room->connect_box.max.x;
-		px[2]=room->connect_box.max.x-room->connect_box.wid;
-		px[3]=room->connect_box.min.x+room->connect_box.wid;
+		px[2]=room->connect_box.max.x-ag_size_pillar_wid;
+		px[3]=room->connect_box.min.x+ag_size_pillar_wid;
 		pz[0]=pz[1]=pz[2]=pz[3]=room->connect_box.min.z;
 		py[0]=py[1]=room->connect_box.min.y;
-		py[2]=py[3]=room->connect_box.min.y+room->connect_box.wid;
+		py[2]=py[3]=room->connect_box.min.y+ag_size_pillar_wid;
 
 		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_connect);
 
@@ -311,8 +311,8 @@ void ag_generate_add_connector_room_pillar(int org_mesh_idx)
 
 			// bottom bump
 
-		px[0]=room->connect_box.min.x+room->connect_box.wid;
-		px[1]=room->connect_box.max.x-room->connect_box.wid;
+		px[0]=room->connect_box.min.x+ag_size_pillar_wid;
+		px[1]=room->connect_box.max.x-ag_size_pillar_wid;
 		px[2]=room->connect_box.max.x;
 		px[3]=room->connect_box.min.x;
 		pz[0]=pz[1]=pz[2]=pz[3]=room->connect_box.min.z;
@@ -327,15 +327,15 @@ void ag_generate_add_connector_room_pillar(int org_mesh_idx)
 
 			// ceiling and floor
 
-		px[0]=px[3]=room->connect_box.min.x+room->connect_box.wid;
-		px[1]=px[2]=room->connect_box.max.x-room->connect_box.wid;
+		px[0]=px[3]=room->connect_box.min.x+ag_size_pillar_wid;
+		px[1]=px[2]=room->connect_box.max.x-ag_size_pillar_wid;
 		pz[0]=pz[1]=room->connect_box.min.z;
 		pz[2]=pz[3]=room->connect_box.max.z;
 		py[0]=py[1]=py[2]=py[3]=room->connect_box.max.y-ag_size_bump_high;
 
 		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_connect);
 
-		py[0]=py[1]=py[2]=py[3]=room->connect_box.min.y+room->connect_box.wid;
+		py[0]=py[1]=py[2]=py[3]=room->connect_box.min.y+ag_size_pillar_wid;
 
 		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_connect);
 	}
@@ -345,9 +345,9 @@ void ag_generate_add_connector_room_pillar(int org_mesh_idx)
 
 		px[0]=px[1]=px[2]=px[3]=room->connect_box.min.x;
 		pz[0]=pz[3]=room->connect_box.min.z;
-		pz[1]=pz[2]=room->connect_box.min.z+room->connect_box.wid;
+		pz[1]=pz[2]=room->connect_box.min.z+ag_size_pillar_wid;
 		py[0]=room->connect_box.min.y;
-		py[1]=room->connect_box.min.y+room->connect_box.wid;
+		py[1]=room->connect_box.min.y+ag_size_pillar_wid;
 		py[2]=room->connect_box.max.y-ag_size_bump_high;
 		py[3]=room->connect_box.max.y;
 
@@ -358,9 +358,9 @@ void ag_generate_add_connector_room_pillar(int org_mesh_idx)
 		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_connect);
 
 		px[0]=px[1]=px[2]=px[3]=room->connect_box.min.x;
-		pz[0]=pz[3]=room->connect_box.max.z-room->connect_box.wid;
+		pz[0]=pz[3]=room->connect_box.max.z-ag_size_pillar_wid;
 		pz[1]=pz[2]=room->connect_box.max.z;
-		py[0]=room->connect_box.min.y+room->connect_box.wid;
+		py[0]=room->connect_box.min.y+ag_size_pillar_wid;
 		py[1]=room->connect_box.min.y;
 		py[2]=room->connect_box.max.y;
 		py[3]=room->connect_box.max.y-ag_size_bump_high;
@@ -373,13 +373,13 @@ void ag_generate_add_connector_room_pillar(int org_mesh_idx)
 
 		px[0]=px[3]=room->connect_box.min.x;
 		px[1]=px[2]=room->connect_box.max.x;
-		pz[0]=pz[1]=pz[2]=pz[3]=room->connect_box.min.z+room->connect_box.wid;
-		py[0]=py[1]=room->connect_box.min.y+room->connect_box.wid;
+		pz[0]=pz[1]=pz[2]=pz[3]=room->connect_box.min.z+ag_size_pillar_wid;
+		py[0]=py[1]=room->connect_box.min.y+ag_size_pillar_wid;
 		py[2]=py[3]=room->connect_box.max.y-ag_size_bump_high;
 
 		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_connect);
 
-		pz[0]=pz[1]=pz[2]=pz[3]=room->connect_box.max.z-room->connect_box.wid;
+		pz[0]=pz[1]=pz[2]=pz[3]=room->connect_box.max.z-ag_size_pillar_wid;
 
 		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_connect);
 
@@ -388,10 +388,10 @@ void ag_generate_add_connector_room_pillar(int org_mesh_idx)
 		px[0]=px[1]=px[2]=px[3]=room->connect_box.min.x;
 		pz[0]=room->connect_box.min.z;
 		pz[1]=room->connect_box.max.z;
-		pz[2]=room->connect_box.max.z-room->connect_box.wid;
-		pz[3]=room->connect_box.min.z+room->connect_box.wid;
+		pz[2]=room->connect_box.max.z-ag_size_pillar_wid;
+		pz[3]=room->connect_box.min.z+ag_size_pillar_wid;
 		py[0]=py[1]=room->connect_box.min.y;
-		py[2]=py[3]=room->connect_box.min.y+room->connect_box.wid;
+		py[2]=py[3]=room->connect_box.min.y+ag_size_pillar_wid;
 
 		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_connect);
 
@@ -402,8 +402,8 @@ void ag_generate_add_connector_room_pillar(int org_mesh_idx)
 			// bottom bump
 
 		px[0]=px[1]=px[2]=px[3]=room->connect_box.min.x;
-		pz[0]=room->connect_box.min.z+room->connect_box.wid;
-		pz[1]=room->connect_box.max.z-room->connect_box.wid;
+		pz[0]=room->connect_box.min.z+ag_size_pillar_wid;
+		pz[1]=room->connect_box.max.z-ag_size_pillar_wid;
 		pz[2]=room->connect_box.max.z;
 		pz[3]=room->connect_box.min.z;
 		py[0]=py[1]=room->connect_box.max.y-ag_size_bump_high;
@@ -419,13 +419,13 @@ void ag_generate_add_connector_room_pillar(int org_mesh_idx)
 
 		px[0]=px[1]=room->connect_box.min.x;
 		px[2]=px[3]=room->connect_box.max.x;
-		pz[0]=pz[3]=room->connect_box.min.z+room->connect_box.wid;
-		pz[1]=pz[2]=room->connect_box.max.z-room->connect_box.wid;
+		pz[0]=pz[3]=room->connect_box.min.z+ag_size_pillar_wid;
+		pz[1]=pz[2]=room->connect_box.max.z-ag_size_pillar_wid;
 		py[0]=py[1]=py[2]=py[3]=room->connect_box.max.y-ag_size_bump_high;
 
 		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_connect);
 
-		py[0]=py[1]=py[2]=py[3]=room->connect_box.min.y+room->connect_box.wid;
+		py[0]=py[1]=py[2]=py[3]=room->connect_box.min.y+ag_size_pillar_wid;
 
 		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_connect);
 	}

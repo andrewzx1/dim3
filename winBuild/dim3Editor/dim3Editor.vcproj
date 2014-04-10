@@ -953,6 +953,10 @@
 							>
 						</File>
 						<File
+							RelativePath="..\..\dim3Editor\Sources\code\map\map_auto_generate_decoration.c"
+							>
+						</File>
+						<File
 							RelativePath="..\..\dim3Editor\Sources\code\map\map_auto_generate_setup.c"
 							>
 						</File>
