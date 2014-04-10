@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		260719FA18F6501C00FF3C94 /* script_interface_chooser.c in Sources */ = {isa = PBXBuildFile; fileRef = 260719F918F6501C00FF3C94 /* script_interface_chooser.c */; };
 		260B41CD1411F812006ED023 /* app.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B40B31411F812006ED023 /* app.c */; };
 		260B41CE1411F812006ED023 /* debug.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B40B41411F812006ED023 /* debug.c */; };
 		260B41CF1411F812006ED023 /* file.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B40B51411F812006ED023 /* file.c */; };
@@ -166,7 +167,6 @@
 		260B426B1411F812006ED023 /* script_spawn.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B41531411F812006ED023 /* script_spawn.c */; };
 		260B426C1411F812006ED023 /* script_utility.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B41541411F812006ED023 /* script_utility.c */; };
 		260B426D1411F812006ED023 /* script_utility_angle.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B41551411F812006ED023 /* script_utility_angle.c */; };
-		260B426E1411F812006ED023 /* script_utility_pack.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B41561411F812006ED023 /* script_utility_pack.c */; };
 		260B426F1411F812006ED023 /* script_utility_point.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B41571411F812006ED023 /* script_utility_point.c */; };
 		260B42701411F812006ED023 /* script_utility_random.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B41581411F812006ED023 /* script_utility_random.c */; };
 		260B42711411F812006ED023 /* script_weap_alt_ammo.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B41591411F812006ED023 /* script_weap_alt_ammo.c */; };
@@ -403,6 +403,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		260719F918F6501C00FF3C94 /* script_interface_chooser.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_interface_chooser.c; sourceTree = "<group>"; };
 		260B40B31411F812006ED023 /* app.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = app.c; sourceTree = "<group>"; };
 		260B40B41411F812006ED023 /* debug.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = debug.c; sourceTree = "<group>"; };
 		260B40B51411F812006ED023 /* file.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = file.c; sourceTree = "<group>"; };
@@ -562,7 +563,6 @@
 		260B41531411F812006ED023 /* script_spawn.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_spawn.c; sourceTree = "<group>"; };
 		260B41541411F812006ED023 /* script_utility.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_utility.c; sourceTree = "<group>"; };
 		260B41551411F812006ED023 /* script_utility_angle.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_utility_angle.c; sourceTree = "<group>"; };
-		260B41561411F812006ED023 /* script_utility_pack.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_utility_pack.c; sourceTree = "<group>"; };
 		260B41571411F812006ED023 /* script_utility_point.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_utility_point.c; sourceTree = "<group>"; };
 		260B41581411F812006ED023 /* script_utility_random.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_utility_random.c; sourceTree = "<group>"; };
 		260B41591411F812006ED023 /* script_weap_alt_ammo.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_weap_alt_ammo.c; sourceTree = "<group>"; };
@@ -1385,6 +1385,7 @@
 				260B40FE1411F812006ED023 /* script_interface.c */,
 				260B40FF1411F812006ED023 /* script_interface_bar.c */,
 				260B41001411F812006ED023 /* script_interface_bitmap.c */,
+				260719F918F6501C00FF3C94 /* script_interface_chooser.c */,
 				260B41011411F812006ED023 /* script_interface_console.c */,
 				260B41021411F812006ED023 /* script_interface_interaction.c */,
 				260B41031411F812006ED023 /* script_interface_radar.c */,
@@ -1477,7 +1478,6 @@
 				260B41531411F812006ED023 /* script_spawn.c */,
 				260B41541411F812006ED023 /* script_utility.c */,
 				260B41551411F812006ED023 /* script_utility_angle.c */,
-				260B41561411F812006ED023 /* script_utility_pack.c */,
 				260B41571411F812006ED023 /* script_utility_point.c */,
 				260B41581411F812006ED023 /* script_utility_random.c */,
 				260B41591411F812006ED023 /* script_weap_alt_ammo.c */,
@@ -1870,7 +1870,6 @@
 				260B426B1411F812006ED023 /* script_spawn.c in Sources */,
 				260B426C1411F812006ED023 /* script_utility.c in Sources */,
 				260B426D1411F812006ED023 /* script_utility_angle.c in Sources */,
-				260B426E1411F812006ED023 /* script_utility_pack.c in Sources */,
 				260B426F1411F812006ED023 /* script_utility_point.c in Sources */,
 				260B42701411F812006ED023 /* script_utility_random.c in Sources */,
 				260B42711411F812006ED023 /* script_weap_alt_ammo.c in Sources */,
@@ -1938,6 +1937,7 @@
 				260B42B01411F812006ED023 /* gl_shader_core.c in Sources */,
 				260B42B11411F812006ED023 /* gl_shader_fullscreen.c in Sources */,
 				260B42B21411F812006ED023 /* gl_shader_user.c in Sources */,
+				260719FA18F6501C00FF3C94 /* script_interface_chooser.c in Sources */,
 				260B42B31411F812006ED023 /* gl_text.c in Sources */,
 				260B42B41411F812006ED023 /* gl_texture.c in Sources */,
 				260B42B51411F812006ED023 /* gui.c in Sources */,

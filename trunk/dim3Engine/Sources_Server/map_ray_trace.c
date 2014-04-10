@@ -91,7 +91,7 @@ static inline void ray_trace_contact_clear(d3pnt *ept,ray_trace_contact_type *co
       
 ======================================================= */
 
-static inline ray_trace_check_item_type* ray_trace_get_last_item_list(int *item_count)
+ray_trace_check_item_type* ray_trace_get_last_item_list(int *item_count)
 {
 	*item_count=ray_item_count;
 	return(ray_item_list);

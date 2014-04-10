@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		260719F818F64E5400FF3C94 /* map_auto_generate_connect.c in Sources */ = {isa = PBXBuildFile; fileRef = 260719F718F64E5400FF3C94 /* map_auto_generate_connect.c */; };
 		26159D2016D191050069B442 /* base_iface_label.c in Sources */ = {isa = PBXBuildFile; fileRef = 26159D1F16D191050069B442 /* base_iface_label.c */; };
 		26159D2716D1AA6D0069B442 /* project_palette_label.c in Sources */ = {isa = PBXBuildFile; fileRef = 26159D2516D1AA6C0069B442 /* project_palette_label.c */; };
 		26159D2816D1AA6D0069B442 /* project_palette_labels.c in Sources */ = {isa = PBXBuildFile; fileRef = 26159D2616D1AA6D0069B442 /* project_palette_labels.c */; };
@@ -186,7 +187,6 @@
 		26F7E051160045A900E739C4 /* tool_tip.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F7E049160045A900E739C4 /* tool_tip.c */; };
 		26F7E052160045A900E739C4 /* xml_setup.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F7E04A160045A900E739C4 /* xml_setup.c */; };
 		26F7E06E160045BA00E739C4 /* map_auto_generate_setup.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F7E053160045BA00E739C4 /* map_auto_generate_setup.c */; };
-		26F7E06F160045BA00E739C4 /* map_auto_generate_story.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F7E054160045BA00E739C4 /* map_auto_generate_story.c */; };
 		26F7E070160045BA00E739C4 /* map_auto_generate_utility.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F7E055160045BA00E739C4 /* map_auto_generate_utility.c */; };
 		26F7E071160045BA00E739C4 /* map_auto_generate.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F7E056160045BA00E739C4 /* map_auto_generate.c */; };
 		26F7E072160045BA00E739C4 /* map_dos.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F7E057160045BA00E739C4 /* map_dos.c */; };
@@ -479,6 +479,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		260719F718F64E5400FF3C94 /* map_auto_generate_connect.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = map_auto_generate_connect.c; path = Sources/code/map/map_auto_generate_connect.c; sourceTree = "<group>"; };
 		26159D1F16D191050069B442 /* base_iface_label.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = base_iface_label.c; path = Sources/base_iface_label.c; sourceTree = "<group>"; };
 		26159D2516D1AA6C0069B442 /* project_palette_label.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = project_palette_label.c; path = Sources/palettes/project/project_palette_label.c; sourceTree = "<group>"; };
 		26159D2616D1AA6D0069B442 /* project_palette_labels.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = project_palette_labels.c; path = Sources/palettes/project/project_palette_labels.c; sourceTree = "<group>"; };
@@ -675,7 +676,6 @@
 		26F7E049160045A900E739C4 /* tool_tip.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tool_tip.c; path = Sources/code/common/tool_tip.c; sourceTree = "<group>"; };
 		26F7E04A160045A900E739C4 /* xml_setup.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = xml_setup.c; path = Sources/code/common/xml_setup.c; sourceTree = "<group>"; };
 		26F7E053160045BA00E739C4 /* map_auto_generate_setup.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = map_auto_generate_setup.c; path = Sources/code/map/map_auto_generate_setup.c; sourceTree = "<group>"; };
-		26F7E054160045BA00E739C4 /* map_auto_generate_story.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = map_auto_generate_story.c; path = Sources/code/map/map_auto_generate_story.c; sourceTree = "<group>"; };
 		26F7E055160045BA00E739C4 /* map_auto_generate_utility.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = map_auto_generate_utility.c; path = Sources/code/map/map_auto_generate_utility.c; sourceTree = "<group>"; };
 		26F7E056160045BA00E739C4 /* map_auto_generate.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = map_auto_generate.c; path = Sources/code/map/map_auto_generate.c; sourceTree = "<group>"; };
 		26F7E057160045BA00E739C4 /* map_dos.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = map_dos.c; path = Sources/code/map/map_dos.c; sourceTree = "<group>"; };
@@ -1295,8 +1295,8 @@
 		26F7E0411600458300E739C4 /* Map */ = {
 			isa = PBXGroup;
 			children = (
+				260719F718F64E5400FF3C94 /* map_auto_generate_connect.c */,
 				26F7E053160045BA00E739C4 /* map_auto_generate_setup.c */,
-				26F7E054160045BA00E739C4 /* map_auto_generate_story.c */,
 				26F7E055160045BA00E739C4 /* map_auto_generate_utility.c */,
 				26F7E056160045BA00E739C4 /* map_auto_generate.c */,
 				26F7E057160045BA00E739C4 /* map_dos.c */,
@@ -1707,7 +1707,6 @@
 				26F7E051160045A900E739C4 /* tool_tip.c in Sources */,
 				26F7E052160045A900E739C4 /* xml_setup.c in Sources */,
 				26F7E06E160045BA00E739C4 /* map_auto_generate_setup.c in Sources */,
-				26F7E06F160045BA00E739C4 /* map_auto_generate_story.c in Sources */,
 				26F7E070160045BA00E739C4 /* map_auto_generate_utility.c in Sources */,
 				26F7E071160045BA00E739C4 /* map_auto_generate.c in Sources */,
 				26F7E072160045BA00E739C4 /* map_dos.c in Sources */,
@@ -1746,6 +1745,7 @@
 				26F7E0A5160045C900E739C4 /* model_piece.c in Sources */,
 				26F7E0A6160045C900E739C4 /* model_play.c in Sources */,
 				26F7E0A7160045C900E739C4 /* model_poly_masks.c in Sources */,
+				260719F818F64E5400FF3C94 /* map_auto_generate_connect.c in Sources */,
 				26F7E0A8160045C900E739C4 /* model_texture_import.c in Sources */,
 				26F7E0A9160045C900E739C4 /* model_texture_palette.c in Sources */,
 				26F7E0AA160045C900E739C4 /* model_undo.c in Sources */,
