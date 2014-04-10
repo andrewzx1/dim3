@@ -250,7 +250,6 @@
 		260B40361411F781006ED023 /* script_spawn.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B3F1D1411F781006ED023 /* script_spawn.c */; };
 		260B40371411F781006ED023 /* script_utility.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B3F1E1411F781006ED023 /* script_utility.c */; };
 		260B40381411F781006ED023 /* script_utility_angle.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B3F1F1411F781006ED023 /* script_utility_angle.c */; };
-		260B40391411F781006ED023 /* script_utility_pack.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B3F201411F781006ED023 /* script_utility_pack.c */; };
 		260B403A1411F781006ED023 /* script_utility_point.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B3F211411F781006ED023 /* script_utility_point.c */; };
 		260B403B1411F781006ED023 /* script_utility_random.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B3F221411F781006ED023 /* script_utility_random.c */; };
 		260B403C1411F781006ED023 /* script_weap_alt_ammo.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B3F231411F781006ED023 /* script_weap_alt_ammo.c */; };
@@ -422,6 +421,7 @@
 		262579141525325A00C371C3 /* singleplayer_option.c in Sources */ = {isa = PBXBuildFile; fileRef = 262579131525325A00C371C3 /* singleplayer_option.c */; };
 		262D75D7158FE8A00086B8BB /* script_obj_label.c in Sources */ = {isa = PBXBuildFile; fileRef = 262D75D6158FE8A00086B8BB /* script_obj_label.c */; };
 		262DD2B0151E32200078FEA4 /* base_iface_score.c in Sources */ = {isa = PBXBuildFile; fileRef = 262DD2AF151E32200078FEA4 /* base_iface_score.c */; };
+		2631C94218F39D6500202235 /* script_interface_chooser.c in Sources */ = {isa = PBXBuildFile; fileRef = 2631C94118F39D6500202235 /* script_interface_chooser.c */; };
 		264470E814AF95250099DEE3 /* script_camera_chase_track_angle.c in Sources */ = {isa = PBXBuildFile; fileRef = 264470E714AF95250099DEE3 /* script_camera_chase_track_angle.c */; };
 		2649D14013412B2900573F6F /* gui_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 2649D13513412B2900573F6F /* gui_defs.h */; };
 		2649D14113412B2900573F6F /* input_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 2649D13613412B2900573F6F /* input_defs.h */; };
@@ -742,7 +742,6 @@
 		260B3F1D1411F781006ED023 /* script_spawn.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_spawn.c; sourceTree = "<group>"; };
 		260B3F1E1411F781006ED023 /* script_utility.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_utility.c; sourceTree = "<group>"; };
 		260B3F1F1411F781006ED023 /* script_utility_angle.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_utility_angle.c; sourceTree = "<group>"; };
-		260B3F201411F781006ED023 /* script_utility_pack.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_utility_pack.c; sourceTree = "<group>"; };
 		260B3F211411F781006ED023 /* script_utility_point.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_utility_point.c; sourceTree = "<group>"; };
 		260B3F221411F781006ED023 /* script_utility_random.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_utility_random.c; sourceTree = "<group>"; };
 		260B3F231411F781006ED023 /* script_weap_alt_ammo.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_weap_alt_ammo.c; sourceTree = "<group>"; };
@@ -914,6 +913,7 @@
 		262579131525325A00C371C3 /* singleplayer_option.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = singleplayer_option.c; sourceTree = "<group>"; };
 		262D75D6158FE8A00086B8BB /* script_obj_label.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_obj_label.c; sourceTree = "<group>"; };
 		262DD2AF151E32200078FEA4 /* base_iface_score.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = base_iface_score.c; sourceTree = "<group>"; };
+		2631C94118F39D6500202235 /* script_interface_chooser.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_interface_chooser.c; sourceTree = "<group>"; };
 		264470E714AF95250099DEE3 /* script_camera_chase_track_angle.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_camera_chase_track_angle.c; sourceTree = "<group>"; };
 		2649D13513412B2900573F6F /* gui_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gui_defs.h; path = Headers/gui_defs.h; sourceTree = "<group>"; };
 		2649D13613412B2900573F6F /* input_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = input_defs.h; path = Headers/input_defs.h; sourceTree = "<group>"; };
@@ -1589,6 +1589,7 @@
 				260B3EC81411F781006ED023 /* script_interface.c */,
 				260B3EC91411F781006ED023 /* script_interface_bar.c */,
 				260B3ECA1411F781006ED023 /* script_interface_bitmap.c */,
+				2631C94118F39D6500202235 /* script_interface_chooser.c */,
 				260B3ECB1411F781006ED023 /* script_interface_console.c */,
 				260B3ECC1411F781006ED023 /* script_interface_interaction.c */,
 				260B3ECD1411F781006ED023 /* script_interface_radar.c */,
@@ -1681,7 +1682,6 @@
 				260B3F1D1411F781006ED023 /* script_spawn.c */,
 				260B3F1E1411F781006ED023 /* script_utility.c */,
 				260B3F1F1411F781006ED023 /* script_utility_angle.c */,
-				260B3F201411F781006ED023 /* script_utility_pack.c */,
 				260B3F211411F781006ED023 /* script_utility_point.c */,
 				260B3F221411F781006ED023 /* script_utility_random.c */,
 				260B3F231411F781006ED023 /* script_weap_alt_ammo.c */,
@@ -2201,12 +2201,12 @@
 				260B40311411F781006ED023 /* script_proj_setting.c in Sources */,
 				260B40321411F781006ED023 /* script_proj_size.c in Sources */,
 				260B40331411F781006ED023 /* script_proj_speed.c in Sources */,
+				2631C94218F39D6500202235 /* script_interface_chooser.c in Sources */,
 				260B40341411F781006ED023 /* script_script.c in Sources */,
 				260B40351411F781006ED023 /* script_sound.c in Sources */,
 				260B40361411F781006ED023 /* script_spawn.c in Sources */,
 				260B40371411F781006ED023 /* script_utility.c in Sources */,
 				260B40381411F781006ED023 /* script_utility_angle.c in Sources */,
-				260B40391411F781006ED023 /* script_utility_pack.c in Sources */,
 				260B403A1411F781006ED023 /* script_utility_point.c in Sources */,
 				260B403B1411F781006ED023 /* script_utility_random.c in Sources */,
 				260B403C1411F781006ED023 /* script_weap_alt_ammo.c in Sources */,
