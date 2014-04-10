@@ -46,7 +46,7 @@ extern int ag_random_int(int max);
 extern bool ag_random_bool(void);
 extern void ag_generate_add_connector_rooms(void);
 extern void ag_generate_delete_shared_polygons(void);
-extern void ag_generate_decoration_box_stack(void);
+extern void ag_generate_decorations_add(void);
 extern void ag_generate_spots_add(void);
 
 /* =======================================================
@@ -263,6 +263,22 @@ void ag_add_room_flatten_right(ag_room_type *room)
 	}
 
 	room->flat.rgt.on=TRUE;
+}
+
+void ag_add_room_fix_flat_flags(ag_room_type *room)
+{
+	if (room->flat.top.on) {
+		if ((room->vertexes[room->flat.top.p1_idx].z!=room->vertexes[room->flat.top.p2_idx].z)) room->flat.top.on=FALSE;
+	}
+	if (room->flat.bot.on) {
+		if ((room->vertexes[room->flat.bot.p1_idx].z!=room->vertexes[room->flat.bot.p2_idx].z)) room->flat.bot.on=FALSE;
+	}
+	if (room->flat.lft.on) {
+		if ((room->vertexes[room->flat.lft.p1_idx].x!=room->vertexes[room->flat.lft.p2_idx].x)) room->flat.lft.on=FALSE;
+	}
+	if (room->flat.rgt.on) {
+		if ((room->vertexes[room->flat.rgt.p1_idx].x!=room->vertexes[room->flat.rgt.p2_idx].x)) room->flat.rgt.on=FALSE;
+	}
 }
 
 /* =======================================================
@@ -599,6 +615,10 @@ void ag_add_room(bool first_room)
 			room->connect_box.max.y=ag_map_bottom_y;
 		}
 
+			// need to rebuild what's a flat connecting side as
+			// deformations might break flat sides
+
+		ag_add_room_fix_flat_flags(room);
 	}
 
 		// add the walls and short
@@ -673,10 +693,11 @@ bool ag_generate_run(char *err_str)
 
 		// supergumba -- hard coded
 
-	srandom(5);		// supergumba -- testing
+//	srandom(5);		// supergumba -- testing
 
 	ag_state.room_count=30;
-	ag_state.decoration_count=20;
+	ag_state.decoration_column_count=20;
+	ag_state.decoration_box_stack_count=20;
 	ag_state.current_door_idx=0;
 
 		// check if auto generator has
@@ -714,9 +735,7 @@ bool ag_generate_run(char *err_str)
 
 		// decorations
 
-	for (n=0;n!=ag_state.decoration_count;n++) {
-		ag_generate_decoration_box_stack();
-	}
+	ag_generate_decorations_add();
 
 		// add spots and nodes
 

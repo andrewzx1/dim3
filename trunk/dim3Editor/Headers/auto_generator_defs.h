@@ -55,10 +55,12 @@ and can be sold or given away.
 #define ag_connect_side_right					3
 
 //
-// generation constants
+// decorations
 //
 
-#define ag_story_change_chance					30			// out of 100
+#define ag_decoration_none						0
+#define ag_decoration_columns					1
+#define ag_decoration_box_stacks				2
 
 //
 // textures
@@ -78,6 +80,8 @@ and can be sold or given away.
 // dimensions and positions
 //
 
+#define ag_flat_connector_min_width				100000
+
 #define ag_size_room_width_start				20000
 #define ag_size_room_width_extra				10000
 
@@ -88,12 +92,18 @@ and can be sold or given away.
 #define ag_size_door_min_width					25000
 #define ag_size_door_margin						400
 
+#define ag_size_pillar_wid						1500
 #define ag_size_bump_high						400
 
 #define ag_size_stack_box						2500
-#define ag_count_stack_box_start				3
-#define ag_count_stack_box_extra				3
-#define ag_count_stack_box_min					2
+#define ag_count_stack_box_start				2
+#define ag_count_stack_box_extra				2
+#define ag_count_stack_box_row_start			3
+#define ag_count_stack_box_row_extra			3
+#define ag_count_stack_box_row_min				2
+
+#define ag_count_column_start					2
+#define ag_count_column_extra					6
 
 //
 // structures
@@ -130,7 +140,8 @@ typedef struct		{
 
 typedef struct		{
 						int							seed,room_count,
-													decoration_count,
+													decoration_column_count,
+													decoration_box_stack_count,
 													current_door_idx;
 						ag_option_type				option;
 						ag_room_type				*rooms;
