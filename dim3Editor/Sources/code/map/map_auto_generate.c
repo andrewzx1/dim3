@@ -46,7 +46,9 @@ extern int ag_random_int(int max);
 extern bool ag_random_bool(void);
 extern void ag_generate_add_connector_rooms(void);
 extern void ag_generate_delete_shared_polygons(void);
+extern void ag_generate_windows_add(void);
 extern void ag_generate_decorations_add(void);
+extern void ag_generate_lights_add(void);
 extern void ag_generate_spots_add(void);
 
 /* =======================================================
@@ -674,7 +676,7 @@ void ag_add_room(bool first_room)
 		if (room->second_story) py[n]-=ag_size_room_high;
 	}
 // supergumba -- testing decorations
-//	map_mesh_add_poly(&map,mesh_idx,room->nvertex,px,py,pz,gx,gy,ag_texture_ceiling);
+	map_mesh_add_poly(&map,mesh_idx,room->nvertex,px,py,pz,gx,gy,ag_texture_ceiling);
 
 		// reset the normals
 
@@ -733,9 +735,11 @@ bool ag_generate_run(char *err_str)
 
 	ag_generate_delete_shared_polygons();
 
-		// decorations
+		// other items
 
+	ag_generate_windows_add();
 	ag_generate_decorations_add();
+	ag_generate_lights_add();
 
 		// add spots and nodes
 

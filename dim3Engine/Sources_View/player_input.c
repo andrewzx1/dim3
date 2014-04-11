@@ -892,37 +892,37 @@ void player_top_down_input(obj_type *obj)
 		
 	if (go_left) {
 		if (go_up) {
-			object_player_turn_direct(obj,angle_add(obj->turn.top_down_ang_offset,135.0f));
-			return;
-		}
-		if (go_down) {
-			object_player_turn_direct(obj,angle_add(obj->turn.top_down_ang_offset,45.0f));
-			return;
-		}
-		object_player_turn_direct(obj,angle_add(obj->turn.top_down_ang_offset,90.0f));
-		return;
-	}
-	
-	if (go_right) {
-		if (go_up) {
-			object_player_turn_direct(obj,angle_add(obj->turn.top_down_ang_offset,225.0f));
-			return;
-		}
-		if (go_down) {
 			object_player_turn_direct(obj,angle_add(obj->turn.top_down_ang_offset,315.0f));
+			return;
+		}
+		if (go_down) {
+			object_player_turn_direct(obj,angle_add(obj->turn.top_down_ang_offset,225.0f));
 			return;
 		}
 		object_player_turn_direct(obj,angle_add(obj->turn.top_down_ang_offset,270.0f));
 		return;
 	}
 	
+	if (go_right) {
+		if (go_up) {
+			object_player_turn_direct(obj,angle_add(obj->turn.top_down_ang_offset,45.0f));
+			return;
+		}
+		if (go_down) {
+			object_player_turn_direct(obj,angle_add(obj->turn.top_down_ang_offset,135.0f));
+			return;
+		}
+		object_player_turn_direct(obj,angle_add(obj->turn.top_down_ang_offset,90.0f));
+		return;
+	}
+	
 	if (go_up) {
-		object_player_turn_direct(obj,angle_add(obj->turn.top_down_ang_offset,180.0f));
+		object_player_turn_direct(obj,angle_add(obj->turn.top_down_ang_offset,0.0f));
 		return;
 	}
 	
 	if (go_down) {
-		object_player_turn_direct(obj,angle_add(obj->turn.top_down_ang_offset,0.0f));
+		object_player_turn_direct(obj,angle_add(obj->turn.top_down_ang_offset,180.0f));
 		return;
 	}
 

@@ -250,9 +250,12 @@ void projectile_dispose(proj_type *proj)
 
 	if (!proj->on) return;
 
-		// delete all timers
+		// delete all projectile times
+		// associated with this projectile
+		// (can't search by script index because
+		// projectiles shared scripts from setup)
 		
-	timers_trigger_dispose_all(proj->script_idx);
+	timers_trigger_dispose_projectile_all(proj->script_idx);
 
 		// remove any effects attached
 		// to a bone
