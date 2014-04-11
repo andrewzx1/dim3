@@ -199,7 +199,7 @@ void ag_generate_remove_polygons_in_box(int mesh_idx,d3pnt *min,d3pnt *max)
 
 			pnt=&mesh->vertexes[poly->v[n]];
 
-			if ((pnt->x<min->x) || (pnt->x>max->x) || (pnt->z<min->z) || (pnt->z>max->z)) {
+			if ((pnt->x<min->x) || (pnt->x>max->x) || (pnt->y<min->y) || (pnt->y>max->y) || (pnt->z<min->z) || (pnt->z>max->z)) {
 				out=TRUE;
 				break;
 			}
@@ -221,6 +221,37 @@ void ag_generate_remove_polygons_in_box(int mesh_idx,d3pnt *min,d3pnt *max)
       Windows
       
 ======================================================= */
+
+void ag_generate_windows_add(void)
+{
+	int				n,mesh_idx,poly_idx;
+	d3pnt			min,max;
+	map_mesh_type	*mesh;
+
+	for (n=0;n!=30;n++) {
+
+			// mesh and room indexes
+			// are parellel
+
+		mesh_idx=ag_random_int(ag_state.room_count);
+
+		mesh=&map.mesh.meshes[mesh_idx];
+		if (mesh->npoly==0) continue;
+
+			// get polygon to open
+			// to a window and check if
+			// right type
+
+		poly_idx=ag_random_int(mesh->npoly);
+
+		map_mesh_poly_calculate_extent(&map,mesh_idx,poly_idx,&min,&max);
+		if (abs(max.y-min.y)<ag_window_min_high) continue;
+
+			// punch the window
+
+		map_mesh_poly_punch_hole(&map,mesh_idx,poly_idx,NULL);
+	}
+}
 
 
 

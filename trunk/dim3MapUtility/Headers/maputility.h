@@ -328,8 +328,7 @@ typedef struct		{
 
 typedef struct		{
 						int									nvertex,npoly,group_idx,
-															hide_mode,harm,
-															rtl_mesh_id;
+															hide_mode,harm;
 						d3pnt								rot_off;
 						d3pnt								*vertexes;
 						map_mesh_poly_type					*polys;
@@ -397,8 +396,7 @@ typedef struct		{
 
 typedef struct		{
 						int									y,depth,lft,rgt,top,bot,group_idx,
-															txt_idx,lmap_txt_idx,
-															rtl_mesh_id;
+															txt_idx,lmap_txt_idx;
 						float								speed_alter,tint_alpha;
 						char								camera[name_str_len];
 						d3uv								shift;
@@ -469,7 +467,6 @@ typedef struct		{
 					} map_light_setting_type;
 
 typedef struct		{
-						int									rtl_light_id;
 						char								name[name_str_len];
 						d3pnt								pnt;
 						map_light_setting_type				setting;

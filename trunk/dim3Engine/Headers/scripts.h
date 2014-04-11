@@ -614,7 +614,7 @@ extern int timers_find(int script_idx,int mode);
 extern bool timers_add(int script_idx,int freq,int user_id,char *chain_func_name,int mode,char *err_str);
 extern void timers_remove(int idx);
 extern void timers_trigger_dispose(int script_idx,int mode);
-extern void timers_trigger_dispose_all(int script_idx);
+extern void timers_trigger_dispose_projectile_all(int proj_idx);
 extern void timers_script_dispose(int script_idx);
 extern void timers_fix_script_indexes(void);
 extern void timers_run(void);

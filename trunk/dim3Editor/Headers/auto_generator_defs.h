@@ -58,9 +58,13 @@ and can be sold or given away.
 // decorations
 //
 
-#define ag_decoration_none						0
-#define ag_decoration_columns					1
-#define ag_decoration_box_stacks				2
+#define ag_decoration_type_none					0
+#define ag_decoration_type_columns				1
+#define ag_decoration_type_box_stacks			2
+
+#define ag_dectoration_column_config_square		0
+#define ag_dectoration_column_config_diamond	1
+#define ag_dectoration_column_config_vertex		2
 
 //
 // textures
@@ -102,8 +106,14 @@ and can be sold or given away.
 #define ag_count_stack_box_row_extra			3
 #define ag_count_stack_box_row_min				2
 
-#define ag_count_column_start					2
-#define ag_count_column_extra					6
+#define ag_size_column_normal_wid				1500
+#define ag_size_column_vertex_wid				2500
+
+#define ag_size_light_width_start				17500
+#define ag_size_light_width_extra				5000
+
+#define ag_window_min_wid						10000
+#define ag_window_min_high						10000
 
 //
 // structures

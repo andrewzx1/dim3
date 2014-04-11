@@ -201,7 +201,15 @@ void timers_trigger_dispose(int script_idx,int mode)
 	if (idx!=-1) js.timer_list.timers[idx]->mode=timer_mode_dispose;
 }
 
-void timers_trigger_dispose_all(int script_idx)
+/* =======================================================
+
+      Dispose of All Projectile Timers
+	  This is special as projectiles share scripts
+	  so we need to remove by projectile attachment
+      
+======================================================= */
+
+void timers_trigger_dispose_projectile_all(int proj_idx)
 {
 	int				n;
 	timer_type		*timer;
@@ -210,7 +218,9 @@ void timers_trigger_dispose_all(int script_idx)
 		timer=js.timer_list.timers[n];
 		if (timer==NULL) continue;
 
-		if (timer->script_idx==script_idx) timer->mode=timer_mode_dispose;
+		if (timer->attach.thing_type==thing_type_projectile) {
+			if (timer->attach.proj_idx==proj_idx) timer->mode=timer_mode_dispose;
+		}
 	}
 }
 

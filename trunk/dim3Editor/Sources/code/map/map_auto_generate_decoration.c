@@ -69,7 +69,7 @@ bool ag_generate_mesh_collision(d3pnt *min,d3pnt *max,int start_cmp_mesh_idx,int
       
 ======================================================= */
 
-void ag_generate_decoration_location(int room_idx,d3pnt *pnt)
+void ag_generate_decoration_location_random(int room_idx,d3pnt *pnt)
 {
 	d3pnt			min,max,sz,margin;
 
@@ -92,6 +92,36 @@ void ag_generate_decoration_location(int room_idx,d3pnt *pnt)
 	pnt->y=max.y;
 	pnt->z=(min.z+margin.z)+(ag_random_int(sz.z-(margin.z*2)));
 }
+
+void ag_generate_decoration_location_angle(int room_idx,float ang,d3pnt *pnt)
+{
+	d3pnt			min,max,sz;
+	float			fx,fz,rang;
+
+		// get current room dimensions
+		// room and mesh indexes are parellel
+
+	map_mesh_calculate_extent(&map,room_idx,&min,&max);
+
+		// room size and radius
+
+	sz.x=max.x-min.x;
+	sz.z=max.z-min.z;
+
+	fx=((float)sz.x)*0.33f;
+	fz=((float)sz.z)*0.33f;
+
+		// get point
+
+	pnt->x=(min.x+max.x)>>1;
+	pnt->z=(min.z+max.z)>>1;
+
+	rang=ang*ANG_to_RAD;
+
+	pnt->x+=(int)(fx*sinf(rang));
+	pnt->z-=(int)(fz*cosf(rang));
+}
+
 
 /* =======================================================
 
@@ -212,7 +242,7 @@ void ag_generate_decoration_box_stack(int room_idx,int cmp_mesh_idx)
 		// randomize location
 		// move it so within stack of boxes
 
-	ag_generate_decoration_location(room_idx,&pnt);
+	ag_generate_decoration_location_random(room_idx,&pnt);
 
 	pnt.x+=(stack_offset>>1);
 	pnt.z+=(stack_offset>>1);
@@ -251,66 +281,101 @@ void ag_generate_decoration_box_stacks(int room_idx)
       
 ======================================================= */
 
+void ag_generate_decoration_column(d3pnt *pnt,float radius,int high)
+{
+	int				n,mesh_idx;
+	int				px[4],py[4],pz[4];
+	float			ang,next_ang,ang_add;
+	float			gx[4],gy[4];
+
+		// the mesh
+
+	mesh_idx=map_mesh_add(&map);
+
+		// column
+
+	gx[0]=gx[3]=0.0f;
+	gx[1]=gx[2]=1.0f;
+	gy[0]=gy[1]=0.0f;
+	gy[2]=gy[3]=1.0f;
+
+	ang=0.0f;
+	ang_add=(2.0f*TRIG_PI)/10.0f;
+
+	for (n=0;n!=10;n++) {
+
+		next_ang=ang+ang_add;
+		if (n==9) next_ang=0.0f;
+
+		px[0]=px[3]=pnt->x+(int)(radius*sinf(ang));
+		px[1]=px[2]=pnt->x+(int)(radius*sinf(next_ang));
+		pz[0]=pz[3]=pnt->z-(int)(radius*cosf(ang));
+		pz[1]=pz[2]=pnt->z-(int)(radius*cosf(next_ang));
+
+		py[0]=py[1]=ag_map_bottom_y-high;
+		py[2]=py[3]=ag_map_bottom_y;
+
+		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_decoration_pillar);
+
+			// exit early if we reconnect early
+
+		ang=next_ang;
+	}
+
+		// reset normals
+
+	map_recalc_normals_mesh(&map,&map.mesh.meshes[mesh_idx],normal_mode_out,FALSE);
+}
+
 void ag_generate_decoration_columns(int room_idx)
 {
-	int				k,n,mesh_idx,column_count,high;
-	int				px[4],py[4],pz[4];
-	float			radius,ang,next_ang,ang_add;
-	float			gx[4],gy[4];
+	int				n,high;
+	float			radius;
 	d3pnt			pnt;
+	ag_room_type	*room;
 
-		// get random size
-
-	radius=(float)ag_size_pillar_wid;
+		// get height
 
 	high=ag_size_room_high+ag_size_floor_high;
 	if (ag_state.rooms[room_idx].second_story) high+=ag_size_room_high;
 
 		// create columns
 
-	column_count=ag_count_column_start+ag_random_int(ag_count_column_extra);
+	switch (ag_random_int(3)) {
 
-	for (k=0;k!=column_count;k++) {
+		case ag_dectoration_column_config_square:
+			radius=(float)ag_size_column_normal_wid;
+			ag_generate_decoration_location_angle(room_idx,45.0f,&pnt);
+			ag_generate_decoration_column(&pnt,radius,high);
+			ag_generate_decoration_location_angle(room_idx,135.0f,&pnt);
+			ag_generate_decoration_column(&pnt,radius,high);
+			ag_generate_decoration_location_angle(room_idx,225.0f,&pnt);
+			ag_generate_decoration_column(&pnt,radius,high);
+			ag_generate_decoration_location_angle(room_idx,315.0f,&pnt);
+			ag_generate_decoration_column(&pnt,radius,high);
+			break;
 
-		ag_generate_decoration_location(room_idx,&pnt);
+		case ag_dectoration_column_config_diamond:
+			radius=(float)ag_size_column_normal_wid;
+			ag_generate_decoration_location_angle(room_idx,0.0f,&pnt);
+			ag_generate_decoration_column(&pnt,radius,high);
+			ag_generate_decoration_location_angle(room_idx,90.0f,&pnt);
+			ag_generate_decoration_column(&pnt,radius,high);
+			ag_generate_decoration_location_angle(room_idx,180.0f,&pnt);
+			ag_generate_decoration_column(&pnt,radius,high);
+			ag_generate_decoration_location_angle(room_idx,270.0f,&pnt);
+			ag_generate_decoration_column(&pnt,radius,high);
+			break;
 
-			// the mesh
+		case ag_dectoration_column_config_vertex:
+			radius=(float)ag_size_column_vertex_wid;
 
-		mesh_idx=map_mesh_add(&map);
+			room=&ag_state.rooms[room_idx];
+			for (n=0;n!=room->nvertex;n++) {
+				ag_generate_decoration_column(&room->vertexes[n],radius,high);
+			}
+			break;
 
-			// column
-
-		gx[0]=gx[3]=0.0f;
-		gx[1]=gx[2]=1.0f;
-		gy[0]=gy[1]=0.0f;
-		gy[2]=gy[3]=1.0f;
-
-		ang=0.0f;
-		ang_add=(2.0f*TRIG_PI)/10.0f;
-
-		for (n=0;n!=10;n++) {
-
-			next_ang=ang+ang_add;
-			if (n==9) next_ang=0.0f;
-
-			px[0]=px[3]=pnt.x+(int)(radius*sinf(ang));
-			px[1]=px[2]=pnt.x+(int)(radius*sinf(next_ang));
-			pz[0]=pz[3]=pnt.z-(int)(radius*cosf(ang));
-			pz[1]=pz[2]=pnt.z-(int)(radius*cosf(next_ang));
-
-			py[0]=py[1]=ag_map_bottom_y-high;
-			py[2]=py[3]=ag_map_bottom_y;
-
-			map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_decoration_pillar);
-
-				// exit early if we reconnect early
-
-			ang=next_ang;
-		}
-
-			// reset normals
-
-		map_recalc_normals_mesh(&map,&map.mesh.meshes[mesh_idx],normal_mode_out,FALSE);
 	}
 }
 
@@ -330,19 +395,71 @@ void ag_generate_decorations_add(void)
 
 		switch (ag_random_int(3)) {
 
-			case ag_decoration_none:
+			case ag_decoration_type_none:
 				break;
 
-			case ag_decoration_columns:
+			case ag_decoration_type_columns:
 				ag_generate_decoration_columns(n);
 				break;
 
-			case ag_decoration_box_stacks:
+			case ag_decoration_type_box_stacks:
 				ag_generate_decoration_box_stacks(n);
 				break;
 
 		}
 
+	}
+}
+
+/* =======================================================
+
+      Add Lights
+      
+======================================================= */
+
+void ag_generate_lights_add(void)
+{
+	int				n;
+	d3pnt			min,max;
+	map_light_type	*lit;
+	ag_room_type	*room;
+
+	return;
+
+	for (n=0;n!=ag_state.room_count;n++) {
+
+			// add the light
+
+		lit=&map.lights[map.nlight];
+		map.nlight++;
+			
+			// set the light
+
+		room=&ag_state.rooms[n];
+
+		map_mesh_calculate_extent(&map,n,&min,&max);
+
+		sprintf(lit->name,"light %d",n);
+
+		lit->pnt.x=(min.x+max.x)>>1;
+		lit->pnt.y=ag_map_bottom_y-(ag_size_room_high-ag_size_floor_high);
+		if (room->second_story) lit->pnt.y-=ag_size_room_high;
+		lit->pnt.z=(min.z+max.z)>>1;
+		
+		lit->setting.on=TRUE;
+		lit->setting.light_map=TRUE;
+		lit->setting.halo_idx=-1;
+		lit->setting.halo_name[0]=0x0;
+
+		lit->setting.type=lt_normal;
+		lit->setting.direction=ld_all;
+
+		lit->setting.intensity=ag_size_light_width_start+ag_random_int(ag_size_light_width_extra);
+		lit->setting.exponent=0.0f;
+
+		lit->setting.col.r=1.0f-(((float)ag_random_int(25))/100.0f);
+		lit->setting.col.g=1.0f-(((float)ag_random_int(25))/100.0f);
+		lit->setting.col.b=1.0f-(((float)ag_random_int(25))/100.0f);
 	}
 }
 
@@ -365,7 +482,7 @@ void ag_generate_spots_add_single(char *name,int spot_obj_type,char *script_name
 		// randomize location
 
 	room_idx=ag_random_int(ag_state.room_count);
-	ag_generate_decoration_location(room_idx,&spot->pnt);
+	ag_generate_decoration_location_random(room_idx,&spot->pnt);
 
 	spot->ang.x=0.0f;
 	spot->ang.y=0.0f;

@@ -200,7 +200,7 @@ bool weapon_get_projectile_position_angle_weapon_model(obj_type *obj,weapon_type
 	if (draw->flip_x) fire_pnt->x=-fire_pnt->x;
 	
 	fire_pnt->x+=draw->pnt.x;
-	fire_pnt->y+=draw->pnt.y;
+	fire_pnt->y+=(draw->pnt.y+obj->duck.y_move);
 	fire_pnt->z+=draw->pnt.z;
 	
 		// fire angle
@@ -266,7 +266,7 @@ bool weapon_get_projectile_position_angle_weapon_barrel(obj_type *obj,weapon_typ
 	if (draw->flip_x) fire_pnt->x=-fire_pnt->x;
 
 	fire_pnt->x+=draw->pnt.x;
-	fire_pnt->y+=draw->pnt.y;
+	fire_pnt->y+=(draw->pnt.y+obj->duck.y_move);
 	fire_pnt->z+=draw->pnt.z;
 
 		// get 'barrel' bone offset (draw bones already calced above)
@@ -282,7 +282,7 @@ bool weapon_get_projectile_position_angle_weapon_barrel(obj_type *obj,weapon_typ
 	if (draw->flip_x) barrel_pnt.x=-barrel_pnt.x;
 
 	barrel_pnt.x+=draw->pnt.x;
-	barrel_pnt.y+=draw->pnt.y;
+	barrel_pnt.y+=(draw->pnt.y+obj->duck.y_move);
 	barrel_pnt.z+=draw->pnt.z;
 
 		// angles between them
@@ -338,7 +338,7 @@ bool weapon_get_projectile_position_angle_object_model(obj_type *obj,weapon_type
 		// move fire point in front of obj
 
 	fire_pnt->x+=obj->draw.pnt.x;
-	fire_pnt->y+=obj->draw.pnt.y;
+	fire_pnt->y+=(obj->draw.pnt.y+obj->duck.y_move);
 	fire_pnt->z+=obj->draw.pnt.z;
 	
 		// angle from object

@@ -112,7 +112,7 @@ void camera_chase_calc_position(void)
 	obj=server.obj_list.objs[camera.obj_idx];
 	
 		// get camera starting position
-	
+
 	radius=object_get_radius(obj);
 	
 	fx=0;
@@ -179,7 +179,7 @@ void camera_chase_calc_position(void)
 
 void camera_chase_static_calc_position(void)
 {
-	float			fx,fy,fz,x_ang,y_ang;
+	float			fx,fy,fz;
 	obj_type		*obj;
 	matrix_type		mat;
 
@@ -191,12 +191,7 @@ void camera_chase_static_calc_position(void)
 	fy=0;
 	fz=(float)map.camera.chase.distance;
 	
-	x_ang=map.camera.chase.track_ang.x;
-	if (x_ang>180.0f) x_ang-=360.0f;
-	
-	y_ang=angle_add(map.camera.chase.track_ang.y,180.0f);
-	
-	matrix_rotate_zyx(&mat,x_ang,y_ang,map.camera.chase.track_ang.z);
+	matrix_rotate_zyx(&mat,map.camera.chase.track_ang.x,map.camera.chase.track_ang.y,map.camera.chase.track_ang.z);
 	matrix_vertex_multiply(&mat,&fx,&fy,&fz);
 
 	camera.cur_pos.pnt.x=(obj->pnt.x+((int)fx))+map.camera.pnt_offset.x;
@@ -205,8 +200,8 @@ void camera_chase_static_calc_position(void)
 	
 		// looking angles
 
-	camera.cur_pos.ang.x=x_ang+map.camera.ang_offset.x;
-	camera.cur_pos.ang.y=angle_add(y_ang,map.camera.ang_offset.y);
+	camera.cur_pos.ang.x=map.camera.chase.track_ang.x+map.camera.ang_offset.x;
+	camera.cur_pos.ang.y=map.camera.chase.track_ang.y+map.camera.ang_offset.y;
 	camera.cur_pos.ang.z=map.camera.chase.track_ang.z+map.camera.ang_offset.z;
 }
 
