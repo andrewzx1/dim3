@@ -55,6 +55,24 @@ and can be sold or given away.
 #define ag_connect_side_right					3
 
 //
+// connection types
+//
+
+#define ag_connect_type_normal					0
+#define ag_connect_type_door					1
+#define ag_connect_type_pillar					2
+#define ag_connect_type_stairs					3
+
+//
+// stair directions
+//
+
+#define ag_stair_dir_top						0
+#define ag_stair_dir_bottom						1
+#define ag_stair_dir_left						2
+#define ag_stair_dir_right						3
+
+//
 // decorations
 //
 
@@ -89,12 +107,16 @@ and can be sold or given away.
 #define ag_size_room_width_start				20000
 #define ag_size_room_width_extra				10000
 
-#define ag_map_bottom_y							20000
+#define ag_map_bottom_start_y					20000
 #define ag_size_room_high						10000
 #define ag_size_floor_high						1000
 
 #define ag_size_door_min_width					25000
 #define ag_size_door_margin						400
+
+#define ag_size_stair_length_start				20000
+#define ag_size_stair_length_extra				5000
+#define ag_size_stair_count						8
 
 #define ag_size_pillar_wid						1500
 #define ag_size_bump_high						400
@@ -109,8 +131,8 @@ and can be sold or given away.
 #define ag_size_column_normal_wid				1500
 #define ag_size_column_vertex_wid				2500
 
-#define ag_size_light_width_start				17500
-#define ag_size_light_width_extra				5000
+#define ag_size_light_width_start				25000
+#define ag_size_light_width_extra				15000
 
 #define ag_window_min_wid						10000
 #define ag_window_min_high						10000
@@ -129,8 +151,9 @@ typedef struct		{
 					} ag_room_flat_side_type;
 
 typedef struct		{
-						int							other_mesh_idx,wid;
-						bool						on;
+						int							connect_type,
+													other_mesh_idx,wid;
+						bool						on,stair_dir;
 						d3pnt						min,max;
 					} ag_room_connect_box_type;
 

@@ -114,6 +114,7 @@ void ag_generate_decoration_location_angle(int room_idx,float ang,d3pnt *pnt)
 		// get point
 
 	pnt->x=(min.x+max.x)>>1;
+	pnt->y=max.y;
 	pnt->z=(min.z+max.z)>>1;
 
 	rang=ang*ANG_to_RAD;
@@ -312,8 +313,8 @@ void ag_generate_decoration_column(d3pnt *pnt,float radius,int high)
 		pz[0]=pz[3]=pnt->z-(int)(radius*cosf(ang));
 		pz[1]=pz[2]=pnt->z-(int)(radius*cosf(next_ang));
 
-		py[0]=py[1]=ag_map_bottom_y-high;
-		py[2]=py[3]=ag_map_bottom_y;
+		py[0]=py[1]=pnt->y-high;
+		py[2]=py[3]=pnt->y;
 
 		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_decoration_pillar);
 
@@ -424,38 +425,38 @@ void ag_generate_lights_add(void)
 	map_light_type	*lit;
 	ag_room_type	*room;
 
-	return;
-
 	for (n=0;n!=ag_state.room_count;n++) {
+
+			// exit if we run out of lights
+
+		if (map.nlight==max_map_light) return;
 
 			// add the light
 
 		lit=&map.lights[map.nlight];
 		map.nlight++;
+
+		sprintf(lit->name,"light %d",n);
 			
 			// set the light
 
 		room=&ag_state.rooms[n];
-
 		map_mesh_calculate_extent(&map,n,&min,&max);
 
-		sprintf(lit->name,"light %d",n);
-
 		lit->pnt.x=(min.x+max.x)>>1;
-		lit->pnt.y=ag_map_bottom_y-(ag_size_room_high-ag_size_floor_high);
+		lit->pnt.y=max.y-(ag_size_room_high-ag_size_floor_high);
 		if (room->second_story) lit->pnt.y-=ag_size_room_high;
 		lit->pnt.z=(min.z+max.z)>>1;
 		
 		lit->setting.on=TRUE;
 		lit->setting.light_map=TRUE;
-		lit->setting.halo_idx=-1;
 		lit->setting.halo_name[0]=0x0;
 
 		lit->setting.type=lt_normal;
 		lit->setting.direction=ld_all;
 
 		lit->setting.intensity=ag_size_light_width_start+ag_random_int(ag_size_light_width_extra);
-		lit->setting.exponent=0.0f;
+		lit->setting.exponent=1.0f;
 
 		lit->setting.col.r=1.0f-(((float)ag_random_int(25))/100.0f);
 		lit->setting.col.g=1.0f-(((float)ag_random_int(25))/100.0f);
