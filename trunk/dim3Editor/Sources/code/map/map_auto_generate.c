@@ -44,6 +44,7 @@ extern void ag_random_previous_seed(void);
 extern void ag_random_next_seed(void);
 extern int ag_random_int(int max);
 extern bool ag_random_bool(void);
+extern void ag_generate_set_connector_type(int room_idx);
 extern void ag_generate_add_connector_rooms(void);
 extern void ag_generate_delete_shared_polygons(void);
 extern void ag_generate_windows_add(void);
@@ -308,11 +309,11 @@ void ag_add_room(bool first_room)
 {
 	int				n,k,poly_sz,mesh_idx,
 					connect_mesh_idx,org_connect_mesh_idx,connect_side,org_connect_side,
-					nvertex,random_ang,box_offset;
+					nvertex,random_ang,box_offset,stair_len;
 	int				px[8],py[8],pz[8];
 	float			last_ang,next_ang,gx[8],gy[8];
 	bool			hit,flat;
-	d3pnt			pnt,p1,p2,min,max,mesh_min,mesh_max;
+	d3pnt			pnt,p1,p2,min,max,mesh_min,mesh_max,move_pnt;
 	ag_room_type	*room,*connect_room;
 
 		// radium size
@@ -326,6 +327,8 @@ void ag_add_room(bool first_room)
 		
 		min.x=pnt.x-poly_sz;
 		max.x=pnt.x+poly_sz;
+
+		max.y=ag_map_bottom_start_y;
 
 		min.z=pnt.z-poly_sz;
 		max.z=pnt.z+poly_sz;
@@ -411,8 +414,12 @@ void ag_add_room(bool first_room)
 			}
 
 				// got a hit, we can use this spot
+				// make sure we are on same Y level
 
-			if (hit) break;
+			if (hit) {
+				max.y=ag_state.rooms[connect_mesh_idx].max.y;
+				break;
+			}
 
 				// if no hit, then move on to the
 				// next side or mesh
@@ -486,7 +493,7 @@ void ag_add_room(bool first_room)
 			// polygon points
 
 		room->vertexes[room->nvertex].x=p1.x;
-		room->vertexes[room->nvertex].y=ag_map_bottom_y;
+		room->vertexes[room->nvertex].y=max.y;
 		room->vertexes[room->nvertex].z=p1.z;
 
 		room->nvertex++;
@@ -613,8 +620,56 @@ void ag_add_room(bool first_room)
 		if (flat) {
 			room->connect_box.wid=box_offset;
 			room->connect_box.other_mesh_idx=connect_mesh_idx;
-			room->connect_box.min.y=ag_map_bottom_y-ag_size_room_high;
-			room->connect_box.max.y=ag_map_bottom_y;
+			room->connect_box.min.y=max.y-ag_size_room_high;
+			room->connect_box.max.y=max.y;
+		}
+
+			// determine what type of connector
+			// and move down and out if stairs
+
+		if (room->connect_box.on) {
+			ag_generate_set_connector_type(mesh_idx);
+
+			if (room->connect_box.connect_type==ag_connect_type_stairs) {
+				room->min.y+=ag_size_room_high;
+				room->max.y+=ag_size_room_high;
+
+				move_pnt.x=move_pnt.z=0;
+				stair_len=ag_size_stair_length_start+ag_random_int(ag_size_stair_length_extra);
+
+				switch (connect_side) {
+
+					case ag_connect_side_top:
+						room->connect_box.stair_dir=ag_stair_dir_top;
+						room->connect_box.min.z-=stair_len;
+						move_pnt.z=-stair_len;
+						break;
+
+					case ag_connect_side_bottom:
+						room->connect_box.stair_dir=ag_stair_dir_bottom;
+						room->connect_box.max.z+=stair_len;
+						move_pnt.z=stair_len;
+						break;
+					
+					case ag_connect_side_left:
+						room->connect_box.stair_dir=ag_stair_dir_left;
+						room->connect_box.min.x-=stair_len;
+						move_pnt.x=-stair_len;
+						break;
+
+					case ag_connect_side_right:
+						room->connect_box.stair_dir=ag_stair_dir_right;
+						room->connect_box.max.x+=stair_len;
+						move_pnt.x=stair_len;
+						break;
+				}
+
+				for (n=0;n!=room->nvertex;n++) {
+					room->vertexes[n].x+=move_pnt.x;
+					room->vertexes[n].y+=ag_size_room_high;
+					room->vertexes[n].z+=move_pnt.z;
+				}
+			}
 		}
 
 			// need to rebuild what's a flat connecting side as
@@ -635,8 +690,8 @@ void ag_add_room(bool first_room)
 		px[1]=px[2]=room->vertexes[k].x;
 		pz[0]=pz[3]=room->vertexes[n].z;
 		pz[1]=pz[2]=room->vertexes[k].z;
-		py[0]=py[1]=ag_map_bottom_y-ag_size_room_high;
-		py[2]=py[3]=ag_map_bottom_y;
+		py[0]=py[1]=room->max.y-ag_size_room_high;
+		py[2]=py[3]=room->max.y;
 
 		gx[0]=gx[3]=0.0f;
 		gx[1]=gx[2]=1.0f;
@@ -645,14 +700,14 @@ void ag_add_room(bool first_room)
 
 		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_wall);
 
-		py[0]=py[1]=ag_map_bottom_y-(ag_size_room_high+ag_size_floor_high);
-		py[2]=py[3]=ag_map_bottom_y-ag_size_room_high;
+		py[0]=py[1]=room->max.y-(ag_size_room_high+ag_size_floor_high);
+		py[2]=py[3]=room->max.y-ag_size_room_high;
 
 		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_wall);
 
 		if (room->second_story) {
-			py[0]=py[1]=ag_map_bottom_y-(ag_size_room_high+ag_size_floor_high+ag_size_room_high);
-			py[2]=py[3]=ag_map_bottom_y-(ag_size_room_high+ag_size_floor_high);
+			py[0]=py[1]=room->max.y-(ag_size_room_high+ag_size_floor_high+ag_size_room_high);
+			py[2]=py[3]=room->max.y-(ag_size_room_high+ag_size_floor_high);
 
 			map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_wall);
 		}
@@ -662,7 +717,7 @@ void ag_add_room(bool first_room)
 
 	for (n=0;n!=room->nvertex;n++) {
 		px[n]=room->vertexes[n].x;
-		py[n]=ag_map_bottom_y;
+		py[n]=room->max.y;
 		pz[n]=room->vertexes[n].z;
 		gx[n]=gy[n]=0.0f;
 	}
@@ -672,11 +727,11 @@ void ag_add_room(bool first_room)
 		// add the ceiling
 
 	for (n=0;n!=room->nvertex;n++) {
-		py[n]=ag_map_bottom_y-(ag_size_room_high+ag_size_floor_high);
+		py[n]=room->max.y-(ag_size_room_high+ag_size_floor_high);
 		if (room->second_story) py[n]-=ag_size_room_high;
 	}
 // supergumba -- testing decorations
-	map_mesh_add_poly(&map,mesh_idx,room->nvertex,px,py,pz,gx,gy,ag_texture_ceiling);
+//	map_mesh_add_poly(&map,mesh_idx,room->nvertex,px,py,pz,gx,gy,ag_texture_ceiling);
 
 		// reset the normals
 

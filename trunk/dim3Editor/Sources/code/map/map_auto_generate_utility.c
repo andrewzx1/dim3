@@ -224,32 +224,33 @@ void ag_generate_remove_polygons_in_box(int mesh_idx,d3pnt *min,d3pnt *max)
 
 void ag_generate_windows_add(void)
 {
-	int				n,mesh_idx,poly_idx;
+	int				n,k,poly_idx;
 	d3pnt			min,max;
 	map_mesh_type	*mesh;
 
-	for (n=0;n!=30;n++) {
+	for (n=0;n!=ag_state.room_count;n++) {
 
 			// mesh and room indexes
 			// are parellel
 
-		mesh_idx=ag_random_int(ag_state.room_count);
-
-		mesh=&map.mesh.meshes[mesh_idx];
+		mesh=&map.mesh.meshes[n];
 		if (mesh->npoly==0) continue;
 
-			// get polygon to open
-			// to a window and check if
-			// right type
+			// try a couple times to get
+			// a polygon that would make a
+			// good window candidate
 
-		poly_idx=ag_random_int(mesh->npoly);
+		for (k=0;k!=10;k++) {
+			poly_idx=ag_random_int(mesh->npoly);
 
-		map_mesh_poly_calculate_extent(&map,mesh_idx,poly_idx,&min,&max);
-		if (abs(max.y-min.y)<ag_window_min_high) continue;
+			map_mesh_poly_calculate_extent(&map,n,poly_idx,&min,&max);
+			if (abs(max.y-min.y)<ag_window_min_high) continue;
 
-			// punch the window
+				// punch the window
 
-		map_mesh_poly_punch_hole(&map,mesh_idx,poly_idx,NULL);
+			map_mesh_poly_punch_hole(&map,n,poly_idx,NULL);
+			break;
+		}
 	}
 }
 
