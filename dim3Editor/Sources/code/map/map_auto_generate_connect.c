@@ -56,7 +56,7 @@ void ag_generate_set_connector_type(int room_idx)
 		// if both rooms have second story,
 		// then connect with pillar
 
-	room2=&ag_state.rooms[room->connect_box.other_mesh_idx];
+	room2=&ag_state.rooms[room->connect_box.other_room_idx];
 	if ((room->second_story) && (room2->second_story)) {
 		room->connect_box.connect_type=ag_connect_type_pillar;
 		return;
@@ -90,7 +90,7 @@ void ag_generate_set_connector_type(int room_idx)
       
 ======================================================= */
 
-void ag_generate_add_connector_room_normal(int org_mesh_idx,bool has_door)
+void ag_generate_add_connector_room_normal(int org_room_idx,bool has_door)
 {
 	int					mesh_idx,dx,dz,
 						group_idx,movement_idx,move_idx;
@@ -98,14 +98,15 @@ void ag_generate_add_connector_room_normal(int org_mesh_idx,bool has_door)
 	float				gx[8],gy[8];
 	movement_type		*movement;
 	movement_move_type	*move;
-	ag_room_type		*room;
+	ag_room_type		*room,*room2;
 
-	room=&ag_state.rooms[org_mesh_idx];
+	room=&ag_state.rooms[org_room_idx];
+	room2=&ag_state.rooms[room->connect_box.other_room_idx];
 
 		// remove unused polygons
 
-	ag_generate_remove_polygons_in_box(org_mesh_idx,&room->connect_box.min,&room->connect_box.max);
-	ag_generate_remove_polygons_in_box(room->connect_box.other_mesh_idx,&room->connect_box.min,&room->connect_box.max);
+	ag_generate_remove_polygons_in_box(room->mesh_idx,&room->connect_box.min,&room->connect_box.max);
+	ag_generate_remove_polygons_in_box(room2->mesh_idx,&room->connect_box.min,&room->connect_box.max);
 
 		// get dimensions
 
@@ -255,14 +256,15 @@ void ag_generate_add_connector_room_normal(int org_mesh_idx,bool has_door)
       
 ======================================================= */
 
-void ag_generate_add_connector_room_pillar(int org_mesh_idx)
+void ag_generate_add_connector_room_pillar(int org_room_idx)
 {
 	int					mesh_idx,dx,dz;
 	int					px[8],py[8],pz[8];
 	float				gx[8],gy[8];
-	ag_room_type		*room;
+	ag_room_type		*room,*room2;
 
-	room=&ag_state.rooms[org_mesh_idx];
+	room=&ag_state.rooms[org_room_idx];
+	room2=&ag_state.rooms[room->connect_box.other_room_idx];
 
 		// pillars go to the top
 
@@ -270,8 +272,8 @@ void ag_generate_add_connector_room_pillar(int org_mesh_idx)
 
 		// remove unused polygons
 
-	ag_generate_remove_polygons_in_box(org_mesh_idx,&room->connect_box.min,&room->connect_box.max);
-	ag_generate_remove_polygons_in_box(room->connect_box.other_mesh_idx,&room->connect_box.min,&room->connect_box.max);
+	ag_generate_remove_polygons_in_box(room->mesh_idx,&room->connect_box.min,&room->connect_box.max);
+	ag_generate_remove_polygons_in_box(room2->mesh_idx,&room->connect_box.min,&room->connect_box.max);
 
 		// get pillar direction
 
@@ -481,16 +483,17 @@ void ag_generate_add_connector_room_pillar(int org_mesh_idx)
       
 ======================================================= */
 
-void ag_generate_add_connector_room_stairs(int org_mesh_idx)
+void ag_generate_add_connector_room_stairs(int org_room_idx)
 {
 	int					mesh_idx,
 						stair_len,step_len;
 	int					px[8],py[8],pz[8];
 	float				gx[8],gy[8];
 	d3pnt				min,max;
-	ag_room_type		*room;
+	ag_room_type		*room,*room2;
 
-	room=&ag_state.rooms[org_mesh_idx];
+	room=&ag_state.rooms[org_room_idx];
+	room2=&ag_state.rooms[room->connect_box.other_room_idx];
 
 		// remove unused polygons
 		// since they are on different levels, we
@@ -498,11 +501,11 @@ void ag_generate_add_connector_room_stairs(int org_mesh_idx)
 
 	memmove(&min,&room->connect_box.min,sizeof(d3pnt));
 	memmove(&max,&room->connect_box.max,sizeof(d3pnt));
-	ag_generate_remove_polygons_in_box(room->connect_box.other_mesh_idx,&min,&max);
+	ag_generate_remove_polygons_in_box(room2->mesh_idx,&min,&max);
 
 	min.y+=ag_size_room_high;
 	max.y+=ag_size_room_high;
-	ag_generate_remove_polygons_in_box(org_mesh_idx,&min,&max);
+	ag_generate_remove_polygons_in_box(room->mesh_idx,&min,&max);
 
 		// add the mesh
 
@@ -628,12 +631,10 @@ void ag_generate_add_connector_room_stairs(int org_mesh_idx)
 
 void ag_generate_add_connector_rooms(void)
 {
-	int				n,nmesh;
+	int				n;
 	ag_room_type	*room;
 
-	nmesh=map.mesh.nmesh;
-
-	for (n=0;n!=nmesh;n++) {
+	for (n=0;n!=ag_state.nroom;n++) {
 
 			// did this room have a connection box?
 

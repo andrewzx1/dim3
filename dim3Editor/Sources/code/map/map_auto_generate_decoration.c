@@ -72,11 +72,12 @@ bool ag_generate_mesh_collision(d3pnt *min,d3pnt *max,int start_cmp_mesh_idx,int
 void ag_generate_decoration_location_random(int room_idx,d3pnt *pnt)
 {
 	d3pnt			min,max,sz,margin;
+	ag_room_type	*room;
 
 		// get current room dimensions
-		// room and mesh indexes are parellel
 
-	map_mesh_calculate_extent(&map,room_idx,&min,&max);
+	room=&ag_state.rooms[room_idx];
+	map_mesh_calculate_extent(&map,room->mesh_idx,&min,&max);
 
 		// room size and margin
 
@@ -97,11 +98,12 @@ void ag_generate_decoration_location_angle(int room_idx,float ang,d3pnt *pnt)
 {
 	d3pnt			min,max,sz;
 	float			fx,fz,rang;
+	ag_room_type	*room;
 
 		// get current room dimensions
-		// room and mesh indexes are parellel
 
-	map_mesh_calculate_extent(&map,room_idx,&min,&max);
+	room=&ag_state.rooms[room_idx];
+	map_mesh_calculate_extent(&map,room->mesh_idx,&min,&max);
 
 		// room size and radius
 
@@ -391,7 +393,7 @@ void ag_generate_decorations_add(void)
 	int				n;
 	ag_room_type	*room;
 
-	for (n=0;n!=ag_state.room_count;n++) {
+	for (n=0;n!=ag_state.nroom;n++) {
 		room=&ag_state.rooms[n];
 
 		switch (ag_random_int(3)) {
@@ -425,7 +427,7 @@ void ag_generate_lights_add(void)
 	map_light_type	*lit;
 	ag_room_type	*room;
 
-	for (n=0;n!=ag_state.room_count;n++) {
+	for (n=0;n!=ag_state.nroom;n++) {
 
 			// exit if we run out of lights
 
@@ -441,7 +443,7 @@ void ag_generate_lights_add(void)
 			// set the light
 
 		room=&ag_state.rooms[n];
-		map_mesh_calculate_extent(&map,n,&min,&max);
+		map_mesh_calculate_extent(&map,room->mesh_idx,&min,&max);
 
 		lit->pnt.x=(min.x+max.x)>>1;
 		lit->pnt.y=max.y-(ag_size_room_high-ag_size_floor_high);
@@ -482,7 +484,7 @@ void ag_generate_spots_add_single(char *name,int spot_obj_type,char *script_name
 
 		// randomize location
 
-	room_idx=ag_random_int(ag_state.room_count);
+	room_idx=ag_random_int(ag_state.nroom);
 	ag_generate_decoration_location_random(room_idx,&spot->pnt);
 
 	spot->ang.x=0.0f;
