@@ -255,13 +255,13 @@ void ag_generate_windows_add(void)
 			
 			extrude_vct.x=(float)(mesh_mid.x-poly_mid.x);
 			extrude_vct.y=0.0f;
-			extrude_vct.x=(float)(mesh_mid.z-poly_mid.z);
+			extrude_vct.z=(float)(mesh_mid.z-poly_mid.z);
 			
 			vector_normalize(&extrude_vct);
 			
-			extrude_pnt.x=(int)(extrude_vct.x*(float)ag_window_depth);
+			extrude_pnt.x=-(int)(extrude_vct.x*(float)ag_window_depth);
 			extrude_pnt.y=0;
-			extrude_pnt.z=(int)(extrude_vct.z*(float)ag_window_depth);
+			extrude_pnt.z=-(int)(extrude_vct.z*(float)ag_window_depth);
 
 				// punch the window
 

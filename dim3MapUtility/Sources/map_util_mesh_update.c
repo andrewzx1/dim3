@@ -629,7 +629,7 @@ bool map_mesh_tesselate(map_type *map,int mesh_idx)
 
 bool map_mesh_poly_punch_hole(map_type *map,int mesh_idx,int poly_idx,d3pnt *extrude_pnt)
 {
-	int						n,ptsz,mx,my,mz,
+	int						n,ptsz,next_poly_idx,mx,my,mz,
 							px[8],py[8],pz[8],
 							k,kx[4],ky[4],kz[4];
 	float					gx[8],gy[8],mgx,mgy,
@@ -721,7 +721,10 @@ bool map_mesh_poly_punch_hole(map_type *map,int mesh_idx,int poly_idx,d3pnt *ext
 		k_gx[3]=gx[n];
 		k_gy[3]=gy[n];
 
-		if (map_mesh_add_poly(map,mesh_idx,4,kx,ky,kz,k_gx,k_gy,poly->txt_idx)==-1) return(FALSE);
+		next_poly_idx=map_mesh_add_poly(map,mesh_idx,4,kx,ky,kz,k_gx,k_gy,poly->txt_idx);
+		if (next_poly_idx==-1) return(FALSE);
+
+		memmove(&mesh->polys[next_poly_idx].tangent_space,&mesh->polys[poly_idx].tangent_space,sizeof(tangent_space_type));		// preserve original tangent space
 	}
 	
 		// extruded polys
@@ -763,7 +766,10 @@ bool map_mesh_poly_punch_hole(map_type *map,int mesh_idx,int poly_idx,d3pnt *ext
 			k_gx[3]=0.0f;
 			k_gy[3]=1.0f;
 
-			if (map_mesh_add_poly(map,mesh_idx,4,kx,ky,kz,k_gx,k_gy,poly->txt_idx)==-1) return(FALSE);
+			next_poly_idx=map_mesh_add_poly(map,mesh_idx,4,kx,ky,kz,k_gx,k_gy,poly->txt_idx);
+			if (next_poly_idx==-1) return(FALSE);
+
+			map_recalc_normals_mesh_poly(map,mesh,next_poly_idx,normal_mode_in,FALSE);		// build a new tangent space
 		}
 	}
 
