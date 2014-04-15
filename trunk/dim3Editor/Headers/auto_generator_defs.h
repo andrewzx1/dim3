@@ -131,11 +131,13 @@ and can be sold or given away.
 #define ag_size_column_normal_wid				1500
 #define ag_size_column_vertex_wid				2500
 
-#define ag_size_light_width_start				25000
+#define ag_size_light_width_start				30000
 #define ag_size_light_width_extra				15000
 
 #define ag_window_min_wid						10000
 #define ag_window_min_high						10000
+
+#define ag_window_depth							2500
 
 //
 // structures
@@ -152,8 +154,9 @@ typedef struct		{
 
 typedef struct		{
 						int							connect_type,
-													other_mesh_idx,wid;
-						bool						on,stair_dir;
+													other_room_idx,wid,
+													stair_dir;
+						bool						on;
 						d3pnt						min,max;
 					} ag_room_connect_box_type;
 
@@ -165,18 +168,11 @@ typedef struct		{
 						d3vct						size;
 						ag_room_flat_side_type		flat;
 						ag_room_connect_box_type	connect_box;
-					} ag_room_type;				// these are parallel to the meshes, as the first meshes are always the rooms
+					} ag_room_type;
 
 typedef struct		{
-						int							room_count,story_count;
-					} ag_option_type;
-
-typedef struct		{
-						int							seed,room_count,
-													decoration_column_count,
-													decoration_box_stack_count,
+						int							seed,nroom,
 													current_door_idx;
-						ag_option_type				option;
 						ag_room_type				*rooms;
 					} ag_state_type;
 

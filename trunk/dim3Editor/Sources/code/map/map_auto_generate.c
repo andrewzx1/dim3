@@ -272,15 +272,19 @@ void ag_add_room_fix_flat_flags(ag_room_type *room)
 {
 	if (room->flat.top.on) {
 		if ((room->vertexes[room->flat.top.p1_idx].z!=room->vertexes[room->flat.top.p2_idx].z)) room->flat.top.on=FALSE;
+		if (abs(room->vertexes[room->flat.top.p1_idx].z-room->vertexes[room->flat.top.p2_idx].z)<15000) room->flat.top.on=FALSE;
 	}
 	if (room->flat.bot.on) {
 		if ((room->vertexes[room->flat.bot.p1_idx].z!=room->vertexes[room->flat.bot.p2_idx].z)) room->flat.bot.on=FALSE;
+		if (abs(room->vertexes[room->flat.bot.p1_idx].z-room->vertexes[room->flat.bot.p2_idx].z)<15000) room->flat.top.on=FALSE;
 	}
 	if (room->flat.lft.on) {
 		if ((room->vertexes[room->flat.lft.p1_idx].x!=room->vertexes[room->flat.lft.p2_idx].x)) room->flat.lft.on=FALSE;
+		if (abs(room->vertexes[room->flat.lft.p1_idx].z-room->vertexes[room->flat.lft.p2_idx].z)<15000) room->flat.top.on=FALSE;
 	}
 	if (room->flat.rgt.on) {
 		if ((room->vertexes[room->flat.rgt.p1_idx].x!=room->vertexes[room->flat.rgt.p2_idx].x)) room->flat.rgt.on=FALSE;
+		if (abs(room->vertexes[room->flat.rgt.p1_idx].z-room->vertexes[room->flat.rgt.p2_idx].z)<15000) room->flat.top.on=FALSE;
 	}
 }
 
@@ -308,7 +312,7 @@ void ag_add_room_get_point_from_angle(d3pnt *center_pnt,float radius,float ang,d
 void ag_add_room(bool first_room)
 {
 	int				n,k,poly_sz,mesh_idx,
-					connect_mesh_idx,org_connect_mesh_idx,connect_side,org_connect_side,
+					connect_room_idx,org_connect_room_idx,connect_side,org_connect_side,
 					nvertex,random_ang,box_offset,stair_len;
 	int				px[8],py[8],pz[8];
 	float			last_ang,next_ang,gx[8],gy[8];
@@ -333,7 +337,7 @@ void ag_add_room(bool first_room)
 		min.z=pnt.z-poly_sz;
 		max.z=pnt.z+poly_sz;
 
-		connect_mesh_idx=-1;
+		connect_room_idx=-1;
 		connect_side=-1;
 	}
 
@@ -346,48 +350,48 @@ void ag_add_room(bool first_room)
 
 	else {
 
-		org_connect_mesh_idx=connect_mesh_idx=ag_random_int(map.mesh.nmesh);
+		org_connect_room_idx=connect_room_idx=ag_random_int(ag_state.nroom);
 		org_connect_side=connect_side=ag_random_int(4);
 
 		while (TRUE) {
 
-			pnt.x=(ag_state.rooms[connect_mesh_idx].min.x+ag_state.rooms[connect_mesh_idx].max.x)>>1;
-			pnt.z=(ag_state.rooms[connect_mesh_idx].min.z+ag_state.rooms[connect_mesh_idx].max.z)>>1;
+			pnt.x=(ag_state.rooms[connect_room_idx].min.x+ag_state.rooms[connect_room_idx].max.x)>>1;
+			pnt.z=(ag_state.rooms[connect_room_idx].min.z+ag_state.rooms[connect_room_idx].max.z)>>1;
 
 			hit=FALSE;
 
 			switch (connect_side) {
 				case ag_connect_side_top:
-					if (ag_state.rooms[connect_mesh_idx].flat.top.on) {
+					if (ag_state.rooms[connect_room_idx].flat.top.on) {
 						min.x=pnt.x-poly_sz;
 						max.x=pnt.x+poly_sz;
-						min.z=ag_state.rooms[connect_mesh_idx].min.z-(poly_sz<<1);
-						max.z=ag_state.rooms[connect_mesh_idx].min.z;
+						min.z=ag_state.rooms[connect_room_idx].min.z-(poly_sz<<1);
+						max.z=ag_state.rooms[connect_room_idx].min.z;
 						hit=TRUE;
 					}
 					break;
 				case ag_connect_side_bottom:
-					if (ag_state.rooms[connect_mesh_idx].flat.bot.on) {
+					if (ag_state.rooms[connect_room_idx].flat.bot.on) {
 						min.x=pnt.x-poly_sz;
 						max.x=pnt.x+poly_sz;
-						min.z=ag_state.rooms[connect_mesh_idx].max.z;
-						max.z=ag_state.rooms[connect_mesh_idx].max.z+(poly_sz<<1);
+						min.z=ag_state.rooms[connect_room_idx].max.z;
+						max.z=ag_state.rooms[connect_room_idx].max.z+(poly_sz<<1);
 						hit=TRUE;
 					}
 					break;
 				case ag_connect_side_left:
-					if (ag_state.rooms[connect_mesh_idx].flat.lft.on) {
-						min.x=ag_state.rooms[connect_mesh_idx].min.x-(poly_sz<<1);
-						max.x=ag_state.rooms[connect_mesh_idx].min.x;
+					if (ag_state.rooms[connect_room_idx].flat.lft.on) {
+						min.x=ag_state.rooms[connect_room_idx].min.x-(poly_sz<<1);
+						max.x=ag_state.rooms[connect_room_idx].min.x;
 						min.z=pnt.z-poly_sz;
 						max.z=pnt.z+poly_sz;
 						hit=TRUE;
 					}
 					break;
 				case ag_connect_side_right:
-					if (ag_state.rooms[connect_mesh_idx].flat.rgt.on) {
-						min.x=ag_state.rooms[connect_mesh_idx].max.x;
-						max.x=ag_state.rooms[connect_mesh_idx].max.x+(poly_sz<<1);
+					if (ag_state.rooms[connect_room_idx].flat.rgt.on) {
+						min.x=ag_state.rooms[connect_room_idx].max.x;
+						max.x=ag_state.rooms[connect_room_idx].max.x+(poly_sz<<1);
 						min.z=pnt.z-poly_sz;
 						max.z=pnt.z+poly_sz;
 						hit=TRUE;
@@ -417,7 +421,7 @@ void ag_add_room(bool first_room)
 				// make sure we are on same Y level
 
 			if (hit) {
-				max.y=ag_state.rooms[connect_mesh_idx].max.y;
+				max.y=ag_state.rooms[connect_room_idx].max.y;
 				break;
 			}
 
@@ -429,12 +433,12 @@ void ag_add_room(bool first_room)
 				if (connect_side>=4) connect_side=0;
 
 				if (connect_side==org_connect_side) {
-					connect_mesh_idx++;
-					if (connect_mesh_idx>=map.mesh.nmesh) connect_mesh_idx=0;
+					connect_room_idx++;
+					if (connect_room_idx>=ag_state.nroom) connect_room_idx=0;
 
 						// no where to place room, exit out
 
-					if (connect_mesh_idx==org_connect_mesh_idx) return;
+					if (connect_room_idx==org_connect_room_idx) return;
 				}
 			}
 		}
@@ -447,7 +451,8 @@ void ag_add_room(bool first_room)
 		// parallel room structure
 		// used to track changes
 
-	room=&ag_state.rooms[mesh_idx];
+	room=&ag_state.rooms[ag_state.nroom++];
+	room->mesh_idx=mesh_idx;
 
 	memmove(&room->min,&min,sizeof(d3pnt));
 	memmove(&room->max,&max,sizeof(d3pnt));
@@ -538,12 +543,12 @@ void ag_add_room(bool first_room)
 		// altered by other hookups) then insert
 		// a box
 
-	if (connect_mesh_idx!=-1) {
+	if (connect_room_idx!=-1) {
 
 		flat=FALSE;
 		box_offset=0;
 
-		connect_room=&ag_state.rooms[connect_mesh_idx];
+		connect_room=&ag_state.rooms[connect_room_idx];
 
 		switch (connect_side) {
 
@@ -619,7 +624,7 @@ void ag_add_room(bool first_room)
 
 		if (flat) {
 			room->connect_box.wid=box_offset;
-			room->connect_box.other_mesh_idx=connect_mesh_idx;
+			room->connect_box.other_room_idx=connect_room_idx;
 			room->connect_box.min.y=max.y-ag_size_room_high;
 			room->connect_box.max.y=max.y;
 		}
@@ -731,7 +736,7 @@ void ag_add_room(bool first_room)
 		if (room->second_story) py[n]-=ag_size_room_high;
 	}
 // supergumba -- testing decorations
-//	map_mesh_add_poly(&map,mesh_idx,room->nvertex,px,py,pz,gx,gy,ag_texture_ceiling);
+	map_mesh_add_poly(&map,mesh_idx,room->nvertex,px,py,pz,gx,gy,ag_texture_ceiling);
 
 		// reset the normals
 
@@ -746,15 +751,13 @@ void ag_add_room(bool first_room)
 
 bool ag_generate_run(char *err_str)
 {
-	int				n;
-
-		// supergumba -- hard coded
+	int				n,room_count;
 
 //	srandom(5);		// supergumba -- testing
 
-	ag_state.room_count=30;
-	ag_state.decoration_column_count=20;
-	ag_state.decoration_box_stack_count=20;
+	room_count=30;
+
+	ag_state.nroom=0;
 	ag_state.current_door_idx=0;
 
 		// check if auto generator has
@@ -774,9 +777,13 @@ bool ag_generate_run(char *err_str)
 	ag_map_clear();
 
 		// add rooms
+		// sometimes it fails because of randomness
+		// so give it a chance to built up to room_count
+		// rooms
 
-	for (n=0;n!=ag_state.room_count;n++) {
-		ag_add_room(n==0);
+	for (n=0;n!=(room_count*10);n++) {
+		ag_add_room(ag_state.nroom==0);
+		if (ag_state.nroom==room_count) break;
 	}
 
 		// add square connector

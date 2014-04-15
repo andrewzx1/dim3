@@ -224,16 +224,18 @@ void ag_generate_remove_polygons_in_box(int mesh_idx,d3pnt *min,d3pnt *max)
 
 void ag_generate_windows_add(void)
 {
-	int				n,k,poly_idx;
-	d3pnt			min,max;
+	int				n,k,mesh_idx,poly_idx;
+	d3pnt			min,max,mesh_mid,poly_mid,extrude_pnt;
+	d3vct			extrude_vct;
 	map_mesh_type	*mesh;
+	ag_room_type	*room;
+	
+	for (n=0;n!=ag_state.nroom;n++) {
 
-	for (n=0;n!=ag_state.room_count;n++) {
+		room=&ag_state.rooms[n];
+		mesh_idx=room->mesh_idx;
 
-			// mesh and room indexes
-			// are parellel
-
-		mesh=&map.mesh.meshes[n];
+		mesh=&map.mesh.meshes[mesh_idx];
 		if (mesh->npoly==0) continue;
 
 			// try a couple times to get
@@ -243,12 +245,27 @@ void ag_generate_windows_add(void)
 		for (k=0;k!=10;k++) {
 			poly_idx=ag_random_int(mesh->npoly);
 
-			map_mesh_poly_calculate_extent(&map,n,poly_idx,&min,&max);
+			map_mesh_poly_calculate_extent(&map,mesh_idx,poly_idx,&min,&max);
 			if (abs(max.y-min.y)<ag_window_min_high) continue;
+			
+				// get extrude
+				
+			map_mesh_calculate_center(&map,mesh_idx,&mesh_mid);
+			map_mesh_poly_calculate_center(&map,mesh_idx,poly_idx,&poly_mid);
+			
+			extrude_vct.x=(float)(mesh_mid.x-poly_mid.x);
+			extrude_vct.y=0.0f;
+			extrude_vct.x=(float)(mesh_mid.z-poly_mid.z);
+			
+			vector_normalize(&extrude_vct);
+			
+			extrude_pnt.x=(int)(extrude_vct.x*(float)ag_window_depth);
+			extrude_pnt.y=0;
+			extrude_pnt.z=(int)(extrude_vct.z*(float)ag_window_depth);
 
 				// punch the window
 
-			map_mesh_poly_punch_hole(&map,n,poly_idx,NULL);
+			map_mesh_poly_punch_hole(&map,mesh_idx,poly_idx,&extrude_pnt);
 			break;
 		}
 	}
