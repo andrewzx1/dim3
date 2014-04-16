@@ -753,7 +753,7 @@ bool ag_generate_run(char *err_str)
 {
 	int				n,room_count;
 
-//	srandom(5);		// supergumba -- testing
+//	srandom(518375708);		// supergumba -- testing
 
 	room_count=30;
 

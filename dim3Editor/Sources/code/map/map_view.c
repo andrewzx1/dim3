@@ -916,39 +916,13 @@ void map_view_calculate_bounds(d3pnt *min_pnt,d3pnt *max_pnt)
 
 void map_view_calculate_center(d3pnt *center_pnt)
 {
-	int					n,k,count;
-	d3pnt				*pnt;
-	map_mesh_type		*mesh;
-	
-	count=0;
-	center_pnt->x=center_pnt->y=center_pnt->z=0;
-	
-	mesh=map.mesh.meshes;
-	
-	for (n=0;n!=map.mesh.nmesh;n++) {
-	
-		pnt=mesh->vertexes;
-		for (k=0;k!=mesh->nvertex;k++) {
-			center_pnt->x+=pnt->x;
-			center_pnt->y+=pnt->y;
-			center_pnt->z+=pnt->z;
-			pnt++;
-			count++;
-		}
-		
-		mesh++;
-	}
-	
-	if (count==0) {
-		center_pnt->x=map_max_size/2;
-		center_pnt->y=map_max_size/2;
-		center_pnt->z=map_max_size/2;
-		return;
-	}
+	d3pnt				min,max;
 
-	center_pnt->x/=count;
-	center_pnt->y/=count;
-	center_pnt->z/=count;
+	map_view_calculate_bounds(&min,&max);
+
+	center_pnt->x=(min.x+max.x)>>1;
+	center_pnt->y=(min.y+max.y)>>1;
+	center_pnt->z=(min.z+max.z)>>1;
 }
 
 void map_view_goto_map_center(editor_view_type *view)
