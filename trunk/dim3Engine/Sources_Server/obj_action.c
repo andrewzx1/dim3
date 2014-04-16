@@ -667,16 +667,29 @@ bool object_enter_vehicle(obj_type *obj,int vehicle_idx,char *err_str)
 
 	vehicle->attach_obj_idx=obj->idx;
 
+		// move over team and score
+
+	vehicle_obj->team_idx=obj->team_idx;
+	memmove(&vehicle_obj->score,&obj->score,sizeof(obj_score));
+
 		// if this object was the camera object, then reconnect
 
 	if (camera.obj_idx==obj->idx) camera_connect(vehicle_obj);
 	
-		// if this object was the player object, move to vehicle
+		// if this object was the player object
+		// move player pointer to vehicle
 
 	if (server.player_obj_idx==obj->idx) {
 		vehicle_obj->type=object_type_player;
 		obj->type=object_type_object;
 		server.player_obj_idx=vehicle_obj->idx;
+	}
+		// if this object is a remote player or bot
+		// switch types so vehicle becomes player/bot
+
+	if ((obj->type==object_type_remote_player) && (obj->type==object_type_bot_multiplayer)) {
+		vehicle_obj->type=obj->type;
+		obj->type=object_type_object;
 	}
 
 	return(TRUE);
@@ -771,16 +784,31 @@ bool object_exit_vehicle(obj_type *vehicle_obj,bool ignore_errors,char *err_str)
 	vehicle->attach_obj_idx=-1;
 	object_stop(vehicle_obj);
 
+		// move score and team
+		// back to original object
+
+	orig_obj->team_idx=vehicle_obj->team_idx;
+	memmove(&orig_obj->score,&vehicle_obj->score,sizeof(obj_score));
+
 		// if this vehicle was the camera object, then reconnect
 
 	if (camera.obj_idx==vehicle_obj->idx) camera_connect(orig_obj);
 
-		// if this vehicle was the player object, move to object
+		// if this vehicle was the player object
+		// move player pointer back to object
 
 	if (server.player_obj_idx==vehicle_obj->idx) {
 		vehicle_obj->type=object_type_object;
 		orig_obj->type=object_type_player;
 		server.player_obj_idx=orig_obj->idx;
+	}
+
+		// if this vehicle was entered by
+		// a remote player or bot, switch back
+
+	if ((vehicle_obj->type==object_type_remote_player) && (vehicle_obj->type==object_type_bot_multiplayer)) {
+		orig_obj->type=vehicle_obj->type;
+		vehicle_obj->type=object_type_object;
 	}
 
 		// unhide the original object

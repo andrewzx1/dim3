@@ -1184,6 +1184,15 @@ bool object_script_remove(int idx,char *err_str)
 		return(FALSE);
 	}
 
+		// is this a vehicle?  If so auto-eject
+		// any object
+
+	if (obj->vehicle.on) {
+		if (obj->vehicle.attach_obj_idx!=-1) {
+			object_exit_vehicle(obj,TRUE,NULL);
+		}
+	}
+
 		// trigger the object to be
 		// disposed when outside of scripting
 		// loops
