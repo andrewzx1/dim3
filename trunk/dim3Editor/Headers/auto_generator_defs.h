@@ -102,7 +102,7 @@ and can be sold or given away.
 // dimensions and positions
 //
 
-#define ag_flat_connector_min_width				100000
+#define ag_flat_connector_min_width				10000
 
 #define ag_size_room_width_start				20000
 #define ag_size_room_width_extra				10000
@@ -114,9 +114,9 @@ and can be sold or given away.
 #define ag_size_door_min_width					25000
 #define ag_size_door_margin						400
 
-#define ag_size_stair_length_start				20000
-#define ag_size_stair_length_extra				5000
-#define ag_size_stair_count						8
+#define ag_size_stair_length_start				25000
+#define ag_size_stair_length_extra				10000
+#define ag_size_stair_count						15
 
 #define ag_size_pillar_wid						1500
 #define ag_size_bump_high						400
@@ -138,6 +138,8 @@ and can be sold or given away.
 #define ag_window_min_high						10000
 
 #define ag_window_depth							2500
+
+#define ag_story_walkway_width					10000
 
 //
 // structures

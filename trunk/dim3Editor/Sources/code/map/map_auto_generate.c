@@ -46,6 +46,7 @@ extern int ag_random_int(int max);
 extern bool ag_random_bool(void);
 extern void ag_generate_set_connector_type(int room_idx);
 extern void ag_generate_add_connector_rooms(void);
+extern void ag_generate_add_room_second_story(void);
 extern void ag_generate_delete_shared_polygons(void);
 extern void ag_generate_windows_add(void);
 extern void ag_generate_decorations_add(void);
@@ -104,7 +105,7 @@ void ag_map_clear(void)
       
 ======================================================= */
 
-void ag_add_room_flatten_top(ag_room_type *room)
+bool ag_add_room_flatten_top(ag_room_type *room)
 {
 	int				n,top_idx,other_idx,
 					prev_idx,next_idx;
@@ -129,6 +130,11 @@ void ag_add_room_flatten_top(ag_room_type *room)
 	other_idx=next_idx;
 	if (room->vertexes[prev_idx].z<room->vertexes[next_idx].z) other_idx=prev_idx;
 
+		// do not flatten if wall
+		// gets too small
+
+	if (abs(room->vertexes[other_idx].x-room->vertexes[top_idx].x)<ag_flat_connector_min_width) return(FALSE);
+
 		// flatten top
 
 	room->vertexes[other_idx].z=room->vertexes[top_idx].z;
@@ -143,9 +149,11 @@ void ag_add_room_flatten_top(ag_room_type *room)
 	}
 
 	room->flat.top.on=TRUE;
+
+	return(TRUE);
 }
 
-void ag_add_room_flatten_bottom(ag_room_type *room)
+bool ag_add_room_flatten_bottom(ag_room_type *room)
 {
 	int				n,bot_idx,other_idx,
 					prev_idx,next_idx;
@@ -170,6 +178,11 @@ void ag_add_room_flatten_bottom(ag_room_type *room)
 	other_idx=next_idx;
 	if (room->vertexes[prev_idx].z>room->vertexes[next_idx].z) other_idx=prev_idx;
 
+		// do not flatten if wall
+		// gets too small
+
+	if (abs(room->vertexes[other_idx].x-room->vertexes[bot_idx].x)<ag_flat_connector_min_width) return(FALSE);
+
 		// flatten bottom
 
 	room->vertexes[other_idx].z=room->vertexes[bot_idx].z;
@@ -184,9 +197,11 @@ void ag_add_room_flatten_bottom(ag_room_type *room)
 	}
 
 	room->flat.bot.on=TRUE;
+
+	return(TRUE);
 }
 
-void ag_add_room_flatten_left(ag_room_type *room)
+bool ag_add_room_flatten_left(ag_room_type *room)
 {
 	int				n,lft_idx,other_idx,
 					prev_idx,next_idx;
@@ -211,6 +226,11 @@ void ag_add_room_flatten_left(ag_room_type *room)
 	other_idx=next_idx;
 	if (room->vertexes[prev_idx].x<room->vertexes[next_idx].x) other_idx=prev_idx;
 
+		// do not flatten if wall
+		// gets too small
+
+	if (abs(room->vertexes[other_idx].z-room->vertexes[lft_idx].z)<ag_flat_connector_min_width) return(FALSE);
+
 		// flatten left
 
 	room->vertexes[other_idx].x=room->vertexes[lft_idx].x;
@@ -225,9 +245,11 @@ void ag_add_room_flatten_left(ag_room_type *room)
 	}
 
 	room->flat.lft.on=TRUE;
+
+	return(TRUE);
 }
 
-void ag_add_room_flatten_right(ag_room_type *room)
+bool ag_add_room_flatten_right(ag_room_type *room)
 {
 	int				n,rgt_idx,other_idx,
 					prev_idx,next_idx;
@@ -252,6 +274,11 @@ void ag_add_room_flatten_right(ag_room_type *room)
 	other_idx=next_idx;
 	if (room->vertexes[prev_idx].x>room->vertexes[next_idx].x) other_idx=prev_idx;
 
+		// do not flatten if wall
+		// gets too small
+
+	if (abs(room->vertexes[other_idx].z-room->vertexes[rgt_idx].z)<ag_flat_connector_min_width) return(FALSE);
+
 		// flatten right
 
 	room->vertexes[other_idx].x=room->vertexes[rgt_idx].x;
@@ -266,6 +293,8 @@ void ag_add_room_flatten_right(ag_room_type *room)
 	}
 
 	room->flat.rgt.on=TRUE;
+
+	return(TRUE);
 }
 
 void ag_add_room_fix_flat_flags(ag_room_type *room)
@@ -444,12 +473,11 @@ void ag_add_room(bool first_room)
 		}
 	}
 
-		// create mesh
+		// room structure
+		// used to track main rooms
 
 	mesh_idx=map_mesh_add(&map);
-
-		// parallel room structure
-		// used to track changes
+	if (mesh_idx==-1) return;
 
 	room=&ag_state.rooms[ag_state.nroom++];
 	room->mesh_idx=mesh_idx;
@@ -508,42 +536,88 @@ void ag_add_room(bool first_room)
 		if (last_ang==0.0f) break;
 	}
 
+		// if not connecting,
 		// flatten top/bottom or
 		// left/right randomly, and
 		// then possible either of the other
 		// so there's always at least one pass-through
 
-	if (ag_random_bool()) {
-		ag_add_room_flatten_top(room);
-		ag_add_room_flatten_bottom(room);
+	if (connect_room_idx==-1) {
+		if (ag_random_bool()) {
+			ag_add_room_flatten_top(room);
+			ag_add_room_flatten_bottom(room);
 
-		if (ag_random_bool()) ag_add_room_flatten_left(room);
-		if (ag_random_bool()) ag_add_room_flatten_right(room);
-	}
-	else {
-		ag_add_room_flatten_left(room);
-		ag_add_room_flatten_right(room);
+			if (ag_random_bool()) ag_add_room_flatten_left(room);
+			if (ag_random_bool()) ag_add_room_flatten_right(room);
+		}
+		else {
+			ag_add_room_flatten_left(room);
+			ag_add_room_flatten_right(room);
 
-		if (ag_random_bool()) ag_add_room_flatten_top(room);
-		if (ag_random_bool()) ag_add_room_flatten_bottom(room);
+			if (ag_random_bool()) ag_add_room_flatten_top(room);
+			if (ag_random_bool()) ag_add_room_flatten_bottom(room);
+		}
 	}
 
 		// if connecting, make sure to flatten
-		// the opposite side if not already done
+		// the opposite side and another random side
+		// skip if we can't flatten
 
-	if ((connect_side==ag_connect_side_bottom) && (!room->flat.top.on)) ag_add_room_flatten_top(room);
-	if ((connect_side==ag_connect_side_top) && (!room->flat.bot.on)) ag_add_room_flatten_bottom(room);
-	if ((connect_side==ag_connect_side_right) && (!room->flat.lft.on)) ag_add_room_flatten_left(room);
-	if ((connect_side==ag_connect_side_left) && (!room->flat.rgt.on)) ag_add_room_flatten_right(room);
+	else {
 
-		// if connecting, then fix
-		// the vertexes to line up
+		switch (connect_side) {
+		
+			case ag_connect_side_bottom:
+			 if (!ag_add_room_flatten_top(room)) {
+					map_mesh_delete(&map,mesh_idx);
+					ag_state.nroom--;
+					return;
+				}
+				ag_add_room_flatten_bottom(room);
+				if (ag_random_bool()) ag_add_room_flatten_left(room);
+				if (ag_random_bool()) ag_add_room_flatten_right(room);
+				break;
 
-		// if the lines are still flat (they can get
-		// altered by other hookups) then insert
-		// a box
+			case ag_connect_side_top:
+				if (!ag_add_room_flatten_bottom(room)) {
+					map_mesh_delete(&map,mesh_idx);
+					ag_state.nroom--;
+					return;
+				}
+				ag_add_room_flatten_top(room);
+				if (ag_random_bool()) ag_add_room_flatten_left(room);
+				if (ag_random_bool()) ag_add_room_flatten_right(room);
+				break;
+			
+			case ag_connect_side_right:
+				if (!ag_add_room_flatten_left(room)) {
+					map_mesh_delete(&map,mesh_idx);
+					ag_state.nroom--;
+					return;
+				}
+				ag_add_room_flatten_right(room);
+				if (ag_random_bool()) ag_add_room_flatten_top(room);
+				if (ag_random_bool()) ag_add_room_flatten_bottom(room);
+				break;
 
-	if (connect_room_idx!=-1) {
+			case ag_connect_side_left:
+				if (!ag_add_room_flatten_right(room)) {
+					map_mesh_delete(&map,mesh_idx);
+					ag_state.nroom--;
+					return;
+				}
+				ag_add_room_flatten_left(room);
+				if (ag_random_bool()) ag_add_room_flatten_top(room);
+				if (ag_random_bool()) ag_add_room_flatten_bottom(room);
+				break;
+
+		}
+
+			// fix the vertexes to line up
+
+			// if the lines are still flat (they can get
+			// altered by other hookups) then insert
+			// a box
 
 		flat=FALSE;
 		box_offset=0;
@@ -753,7 +827,7 @@ bool ag_generate_run(char *err_str)
 {
 	int				n,room_count;
 
-//	srandom(518375708);		// supergumba -- testing
+//	srandom(601881436);		// supergumba -- testing
 
 	room_count=30;
 
@@ -791,6 +865,11 @@ bool ag_generate_run(char *err_str)
 		// are squared off
 
 	ag_generate_add_connector_rooms();
+
+		// add second story items to
+		// rooms
+
+	ag_generate_add_room_second_story();
 
 		// delete any polygons that share the
 		// same space
