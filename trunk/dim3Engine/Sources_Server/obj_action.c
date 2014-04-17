@@ -713,6 +713,10 @@ bool object_exit_vehicle(obj_type *vehicle_obj,bool ignore_errors,char *err_str)
 		vehicle_obj->vehicle.in_exit=TRUE;
 		return(TRUE);
 	}
+		
+		// if nobody in vehicle, ignore
+		
+	if (vehicle_obj->vehicle.attach_obj_idx==-1) return(TRUE);
 
 		// don't exit moving vehicles
 
