@@ -961,6 +961,10 @@
 							>
 						</File>
 						<File
+							RelativePath="..\..\dim3Editor\Sources\code\map\map_auto_generate_story.c"
+							>
+						</File>
+						<File
 							RelativePath="..\..\dim3Editor\Sources\code\map\map_auto_generate_utility.c"
 							>
 						</File>
