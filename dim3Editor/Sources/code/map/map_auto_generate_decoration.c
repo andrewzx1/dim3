@@ -157,9 +157,11 @@ void ag_generate_decoration_box(d3pnt *pnt,int stack_offset,int start_cmp_mesh_i
 		min.z=z-sz;
 		max.z=z+sz;
 
-		if (!ag_generate_mesh_collision(&min,&max,start_cmp_mesh_idx,map.mesh.nmesh)) {
-			hit=TRUE;
-			break;
+		if (start_cmp_mesh_idx!=-1) {
+			if (!ag_generate_mesh_collision(&min,&max,start_cmp_mesh_idx,map.mesh.nmesh)) {
+				hit=TRUE;
+				break;
+			}
 		}
 	}
 
@@ -384,6 +386,114 @@ void ag_generate_decoration_columns(int room_idx)
 
 /* =======================================================
 
+      Equipment Decorations
+      
+======================================================= */
+
+void ag_gnerate_decoration_equipment_piece(d3pnt *pnt,int wid_x,int wid_z,int high)
+{
+	int				mesh_idx,sx,sz;
+	int				px[8],py[8],pz[8];
+	float			gx[8],gy[8];
+
+		// equipment mesh
+
+	mesh_idx=map_mesh_add(&map);
+
+	map.mesh.meshes[mesh_idx].flag.lock_uv=TRUE;
+
+	gx[0]=gx[3]=0.0f;
+	gx[1]=gx[2]=1.0f;
+	gy[0]=gy[1]=0.0f;
+	gy[2]=gy[3]=1.0f;
+
+	sx=wid_x>>1;
+	sz=wid_z>>1;
+
+		// sides
+
+	px[0]=px[1]=px[2]=px[3]=pnt->x-sx;
+	pz[0]=pz[3]=pnt->z-sz;
+	pz[1]=pz[2]=pnt->z+sz;
+	py[0]=py[1]=pnt->y-high;
+	py[2]=py[3]=pnt->y;
+
+	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_decoration_box);
+
+	px[0]=px[1]=px[2]=px[3]=pnt->x+sx;
+
+	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_decoration_box);
+
+	px[0]=px[3]=pnt->x-sx;
+	px[1]=px[2]=pnt->x+sx;
+	pz[0]=pz[1]=pz[2]=pz[3]=pnt->z-sz;
+
+	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_decoration_box);
+
+	pz[0]=pz[1]=pz[2]=pz[3]=pnt->z+sz;
+
+	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_decoration_box);
+
+		// top
+
+	px[0]=px[3]=pnt->x-sx;
+	px[1]=px[2]=pnt->x+sx;
+	pz[0]=pz[1]=pnt->z-sz;
+	pz[2]=pz[3]=pnt->z+sz;
+	py[0]=py[1]=py[2]=py[3]=pnt->y;
+
+	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_decoration_box);
+
+		// reset normals
+
+	map_recalc_normals_mesh(&map,&map.mesh.meshes[mesh_idx],normal_mode_out,FALSE);
+}
+
+void ag_gnerate_decoration_equipment(int room_idx)
+{
+	int				x,z,high,count,
+					wid_x,wid_z;
+	d3pnt			pnt,start_pnt,min,max;
+	ag_room_type	*room;
+
+	room=&ag_state.rooms[room_idx];
+
+		// get height
+
+	high=3000+ag_random_int(1000);
+
+		// get equipment count
+		// will be square
+
+	count=(ag_random_int(2)+1)^2;
+
+	count=2;		// supergumba
+	
+	map_mesh_calculate_extent(&map,room->mesh_idx,&min,&max);
+	wid_x=(max.x-min.x)/(count*2);
+	wid_z=(max.z-min.z)/(count*2);
+
+	start_pnt.x=min.x+((min.x+max.x)-(wid_x*count));
+	start_pnt.z=min.z+((min.z+max.z)-(wid_z*count));
+
+		// pad
+
+		// create equipment
+
+	for (x=0;x!=count;x++) {
+		for (z=0;z!=count;z++) {
+			pnt.x=start_pnt.x+(x*(wid_x*2));
+			pnt.x=max.y;
+			pnt.z=start_pnt.z+(z*(wid_z*2));
+
+			ag_gnerate_decoration_equipment_piece(&pnt,wid_x,wid_z,high);
+		}
+	}
+}
+
+
+/* =======================================================
+
       Decorations
       
 ======================================================= */
@@ -396,7 +506,7 @@ void ag_generate_decorations_add(void)
 	for (n=0;n!=ag_state.nroom;n++) {
 		room=&ag_state.rooms[n];
 
-		switch (ag_random_int(3)) {
+		switch (ag_random_int(4)) {
 
 			case ag_decoration_type_none:
 				break;
@@ -407,6 +517,10 @@ void ag_generate_decorations_add(void)
 
 			case ag_decoration_type_box_stacks:
 				ag_generate_decoration_box_stacks(n);
+				break;
+
+			case ag_decoration_type_equipment:
+				ag_gnerate_decoration_equipment(n);
 				break;
 
 		}
