@@ -810,7 +810,7 @@ void ag_add_room(bool first_room)
 		if (room->second_story) py[n]-=ag_size_room_high;
 	}
 // supergumba -- testing decorations
-	map_mesh_add_poly(&map,mesh_idx,room->nvertex,px,py,pz,gx,gy,ag_texture_ceiling);
+//	map_mesh_add_poly(&map,mesh_idx,room->nvertex,px,py,pz,gx,gy,ag_texture_ceiling);
 
 		// reset the normals
 
@@ -869,7 +869,7 @@ bool ag_generate_run(char *err_str)
 		// add second story items to
 		// rooms
 
-	ag_generate_add_room_second_story();
+	// ag_generate_add_room_second_story();
 
 		// delete any polygons that share the
 		// same space

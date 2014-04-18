@@ -79,6 +79,7 @@ and can be sold or given away.
 #define ag_decoration_type_none					0
 #define ag_decoration_type_columns				1
 #define ag_decoration_type_box_stacks			2
+#define ag_decoration_type_equipment			3
 
 #define ag_dectoration_column_config_square		0
 #define ag_dectoration_column_config_diamond	1
