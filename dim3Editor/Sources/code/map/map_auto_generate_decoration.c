@@ -407,13 +407,13 @@ void ag_gnerate_decoration_equipment_piece(d3pnt *pnt,int wid_x,int wid_z,int hi
 	gy[0]=gy[1]=0.0f;
 	gy[2]=gy[3]=1.0f;
 
-	sx=wid_x>>1;
-	sz=wid_z>>1;
+	sx=wid_x-ag_size_equipment_separate_width;
+	sz=wid_z-ag_size_equipment_separate_width;
 
 		// sides
 
-	px[0]=px[1]=px[2]=px[3]=pnt->x-sx;
-	pz[0]=pz[3]=pnt->z-sz;
+	px[0]=px[1]=px[2]=px[3]=pnt->x;
+	pz[0]=pz[3]=pnt->z;
 	pz[1]=pz[2]=pnt->z+sz;
 	py[0]=py[1]=pnt->y-high;
 	py[2]=py[3]=pnt->y;
@@ -424,9 +424,9 @@ void ag_gnerate_decoration_equipment_piece(d3pnt *pnt,int wid_x,int wid_z,int hi
 
 	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_decoration_box);
 
-	px[0]=px[3]=pnt->x-sx;
+	px[0]=px[3]=pnt->x;
 	px[1]=px[2]=pnt->x+sx;
-	pz[0]=pz[1]=pz[2]=pz[3]=pnt->z-sz;
+	pz[0]=pz[1]=pz[2]=pz[3]=pnt->z;
 
 	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_decoration_box);
 
@@ -436,11 +436,11 @@ void ag_gnerate_decoration_equipment_piece(d3pnt *pnt,int wid_x,int wid_z,int hi
 
 		// top
 
-	px[0]=px[3]=pnt->x-sx;
+	px[0]=px[3]=pnt->x;
 	px[1]=px[2]=pnt->x+sx;
-	pz[0]=pz[1]=pnt->z-sz;
+	pz[0]=pz[1]=pnt->z;
 	pz[2]=pz[3]=pnt->z+sz;
-	py[0]=py[1]=py[2]=py[3]=pnt->y;
+	py[0]=py[1]=py[2]=py[3]=pnt->y-high;
 
 	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_decoration_box);
 
@@ -460,31 +460,34 @@ void ag_gnerate_decoration_equipment(int room_idx)
 
 		// get height
 
-	high=3000+ag_random_int(1000);
+	high=ag_size_equipment_high_start+ag_random_int(ag_size_equipment_high_extra);
 
 		// get equipment count
-		// will be square
 
-	count=(ag_random_int(2)+1)^2;
-
-	count=2;		// supergumba
+	count=ag_random_int(3)+1;
 	
 	map_mesh_calculate_extent(&map,room->mesh_idx,&min,&max);
-	wid_x=(max.x-min.x)/(count*2);
-	wid_z=(max.z-min.z)/(count*2);
+	wid_x=(max.x-min.x)/(count*4);
+	wid_z=(max.z-min.z)/(count*4);
 
-	start_pnt.x=min.x+((min.x+max.x)-(wid_x*count));
-	start_pnt.z=min.z+((min.z+max.z)-(wid_z*count));
+	start_pnt.x=((min.x+max.x)>>1)-((wid_x*count)>>1);
+	start_pnt.z=((min.z+max.z)>>1)-((wid_z*count)>>1);
 
 		// pad
+		
+	pnt.x=start_pnt.x-ag_size_equipment_separate_width;
+	pnt.y=max.y;
+	pnt.z=start_pnt.z-ag_size_equipment_separate_width;
+		
+	ag_gnerate_decoration_equipment_piece(&pnt,((wid_x*count)+(ag_size_equipment_separate_width*2)),((wid_z*count)+(ag_size_equipment_separate_width*2)),ag_size_floor_high);
 
 		// create equipment
 
 	for (x=0;x!=count;x++) {
 		for (z=0;z!=count;z++) {
-			pnt.x=start_pnt.x+(x*(wid_x*2));
-			pnt.x=max.y;
-			pnt.z=start_pnt.z+(z*(wid_z*2));
+			pnt.x=start_pnt.x+(x*wid_x);
+			pnt.y=max.y-ag_size_floor_high;
+			pnt.z=start_pnt.z+(z*wid_z);
 
 			ag_gnerate_decoration_equipment_piece(&pnt,wid_x,wid_z,high);
 		}

@@ -122,7 +122,24 @@ void network_score_single_name_draw(char *name,int score,int lx,int rx,int ty,in
 	gl_text_start(font_hud_index,((fnt_sz*2)/3),FALSE);
 	gl_text_draw(x,y,"Winner!",tx_center,TRUE,&col2,1.0f);
 	gl_text_end();
+}
 
+void network_score_single_object_draw(obj_type *obj,int lx,int rx,int ty,int by,d3col *col,int fnt_sz,bool header,bool winner)
+{
+	obj_type		*obj2;
+	
+		// if it's a vehicle, we need to
+		// substitute the entered object's name
+		
+	if ((!obj->vehicle.on) || (!obj->vehicle.attach_obj_idx==-1)) {
+		network_score_single_name_draw(obj->name,obj->score.score,lx,rx,ty,by,col,fnt_sz,header,winner);
+		return;
+	}
+	
+	obj2=server.obj_list.objs[obj->vehicle.attach_obj_idx];
+	if (obj2==NULL) return;
+	
+	network_score_single_name_draw(obj2->name,obj->score.score,lx,rx,ty,by,col,fnt_sz,header,winner);
 }
 
 /* =======================================================
@@ -167,7 +184,7 @@ int network_score_players_draw(bool use_teams)
 	for (n=0;n!=nscore;n++) {
 		obj=server.obj_list.objs[sort_idx[n]];
 		object_get_tint(obj,&col);
-		network_score_single_name_draw(obj->name,obj->score.score,lx,rx,y,(y+yadd),&col,fnt_sz,FALSE,((server.state==gs_score_limit)&&(n==0)));
+		network_score_single_object_draw(obj,lx,rx,y,(y+yadd),&col,fnt_sz,FALSE,((server.state==gs_score_limit)&&(n==0)));
 		y+=(yadd+3);
 	}
 	
@@ -211,7 +228,7 @@ void network_score_teams_draw_single_team(int team_idx,char *team_name,int team_
 		if (sort_idx[n]!=-1) {
 			y+=(yadd+3);
 			obj=server.obj_list.objs[sort_idx[n]];
-			network_score_single_name_draw(obj->name,obj->score.score,lx,rx,y,(y+yadd),team_col,fnt_sz,FALSE,FALSE);
+			network_score_single_object_draw(obj,lx,rx,y,(y+yadd),team_col,fnt_sz,FALSE,FALSE);
 		}
 	}
 }

@@ -718,66 +718,72 @@ bool object_exit_vehicle(obj_type *vehicle_obj,bool ignore_errors,char *err_str)
 		
 	if (vehicle_obj->vehicle.attach_obj_idx==-1) return(TRUE);
 
-		// don't exit moving vehicles
-
-	if (!ignore_errors) {
-		if ((vehicle_obj->forward_move.moving) || (vehicle_obj->side_move.moving) || (vehicle_obj->vert_move.moving)) {
-			if (err_str!=NULL) strcpy(err_str,"Can not exit moving vehicle");
-			return(FALSE);
-		}
-	}
-
 		// get original object
 	
 	orig_obj=server.obj_list.objs[vehicle_obj->vehicle.attach_obj_idx];
 	
 		// find exit point
 		// if we entered directly, we just leave the object
-		// where it was
-		
+		// where it was, if the vehicle is hidden, we
+		// direct exit where the vehicle was, otherwise
+		// we try to exit as we entered
+
 	vehicle=&vehicle_obj->vehicle;
+		
+	if (vehicle_obj->hidden) {
+		memmove(&orig_obj->pnt,&vehicle_obj->pnt,sizeof(d3pnt));
+		memmove(&orig_obj->ang,&vehicle_obj->ang,sizeof(d3ang));
+	}
 	
-	if (orig_obj->vehicle.offset_exit) {
-		x=vehicle->attach_offset.x;
-		z=vehicle->attach_offset.z;
-		y=vehicle->attach_offset.y;
-		
-		rotate_2D_point_center(&x,&z,vehicle_obj->ang.y);
-		
-		orig_obj->pnt.x=vehicle_obj->pnt.x-x;
-		orig_obj->pnt.z=vehicle_obj->pnt.z-z;
-		orig_obj->pnt.y=vehicle_obj->pnt.y-y;
+	else {
+		if (orig_obj->vehicle.offset_exit) {
+			x=vehicle->attach_offset.x;
+			z=vehicle->attach_offset.z;
+			y=vehicle->attach_offset.y;
+			
+			rotate_2D_point_center(&x,&z,vehicle_obj->ang.y);
+			
+			orig_obj->pnt.x=vehicle_obj->pnt.x-x;
+			orig_obj->pnt.z=vehicle_obj->pnt.z-z;
+			orig_obj->pnt.y=vehicle_obj->pnt.y-y;
 
-		orig_obj->ang.y=angle_find(orig_obj->pnt.x,orig_obj->pnt.z,vehicle_obj->pnt.x,vehicle_obj->pnt.z);
-	
-			// is there enough empty space to exit?
-			// go from center of vehicle to obj + radius
-
-		spt.x=vehicle_obj->pnt.x;
-		spt.y=vehicle_obj->pnt.y;
-		spt.z=vehicle_obj->pnt.z;
-
-		ept.x=orig_obj->pnt.x;
-		ept.y=orig_obj->pnt.y;
-		ept.z=orig_obj->pnt.z;
-
-		radius=object_get_radius(orig_obj);
-		ray_push_to_end(&ept,&spt,-radius);
+			orig_obj->ang.y=angle_find(orig_obj->pnt.x,orig_obj->pnt.z,vehicle_obj->pnt.x,vehicle_obj->pnt.z);
 		
-		contact.obj.on=TRUE;
-		contact.proj.on=FALSE;
-		contact.obj.ignore_idx=vehicle_obj->idx;
+				// is there enough empty space to exit?
+				// go from center of vehicle to obj + radius
 
-		contact.origin=poly_ray_trace_origin_object;
-		
-		empty=!ray_trace_map_by_point(&spt,&ept,&contact);
-		
-		if ((!empty) && (!ignore_errors)) {
-			if (err_str!=NULL) strcpy(err_str,"No space in map to exit");
-			return(FALSE);
+			spt.x=vehicle_obj->pnt.x;
+			spt.y=vehicle_obj->pnt.y;
+			spt.z=vehicle_obj->pnt.z;
+
+			ept.x=orig_obj->pnt.x;
+			ept.y=orig_obj->pnt.y;
+			ept.z=orig_obj->pnt.z;
+
+			radius=object_get_radius(orig_obj);
+			ray_push_to_end(&ept,&spt,-radius);
+			
+			contact.obj.on=TRUE;
+			contact.proj.on=FALSE;
+			contact.obj.ignore_idx=vehicle_obj->idx;
+
+			contact.origin=poly_ray_trace_origin_object;
+			
+			empty=!ray_trace_map_by_point(&spt,&ept,&contact);
+			
+			if (!empty) {
+				if (ignore_errors) {
+					memmove(&orig_obj->pnt,&vehicle_obj->pnt,sizeof(d3pnt));
+					memmove(&orig_obj->ang,&vehicle_obj->ang,sizeof(d3ang));
+				}
+				else {
+					if (err_str!=NULL) strcpy(err_str,"No space in map to exit");
+					return(FALSE);
+				}
+			}
 		}
 	}
-
+	
 		// send events
 		
 	scripts_post_event_console(vehicle_obj->script_idx,-1,sd_event_vehicle,sd_event_vehicle_exit,0);

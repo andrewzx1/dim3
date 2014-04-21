@@ -177,6 +177,7 @@
 		26E4021714F4721D0059C798 /* libPNG.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 26E4021514F4721D0059C798 /* libPNG.a */; };
 		26E4022714F4B3ED0059C798 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26E4022614F4B3ED0059C798 /* Foundation.framework */; };
 		26E5DA461611552B003D7755 /* dialog_bone_attach_duplicate.c in Sources */ = {isa = PBXBuildFile; fileRef = 26E5DA451611552B003D7755 /* dialog_bone_attach_duplicate.c */; };
+		26F0B2991903982700CF4493 /* map_auto_generate_story.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F0B2981903982700CF4493 /* map_auto_generate_story.c */; };
 		26F278F41606CB96007470ED /* DialogView.m in Sources */ = {isa = PBXBuildFile; fileRef = 26F278F31606CB96007470ED /* DialogView.m */; };
 		26F7D34F167175D400E51363 /* dialog_distort.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F7D34E167175D400E51363 /* dialog_distort.c */; };
 		26F7E04B160045A900E739C4 /* import_text_decode.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F7E043160045A900E739C4 /* import_text_decode.c */; };
@@ -665,6 +666,7 @@
 		26E4021614F4721D0059C798 /* png.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = png.h; path = ../../Common/Libraries/PNG/png.h; sourceTree = "<group>"; };
 		26E4022614F4B3ED0059C798 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		26E5DA451611552B003D7755 /* dialog_bone_attach_duplicate.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_bone_attach_duplicate.c; path = Sources/dialogs/model/dialog_bone_attach_duplicate.c; sourceTree = "<group>"; };
+		26F0B2981903982700CF4493 /* map_auto_generate_story.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = map_auto_generate_story.c; path = Sources/code/map/map_auto_generate_story.c; sourceTree = "<group>"; };
 		26F278F21606CB96007470ED /* DialogView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DialogView.h; path = dim3Editor/DialogView.h; sourceTree = SOURCE_ROOT; };
 		26F278F31606CB96007470ED /* DialogView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DialogView.m; path = dim3Editor/DialogView.m; sourceTree = SOURCE_ROOT; };
 		26F278F91607CE53007470ED /* glue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = glue.h; path = Headers/glue.h; sourceTree = "<group>"; };
@@ -1300,6 +1302,7 @@
 				260719F718F64E5400FF3C94 /* map_auto_generate_connect.c */,
 				26918E1218F79BAA0053C09B /* map_auto_generate_decoration.c */,
 				26F7E053160045BA00E739C4 /* map_auto_generate_setup.c */,
+				26F0B2981903982700CF4493 /* map_auto_generate_story.c */,
 				26F7E055160045BA00E739C4 /* map_auto_generate_utility.c */,
 				26F7E056160045BA00E739C4 /* map_auto_generate.c */,
 				26F7E057160045BA00E739C4 /* map_dos.c */,
@@ -1797,6 +1800,7 @@
 				26F7E1281600468600E739C4 /* project_palette_logo.c in Sources */,
 				26F7E1291600468600E739C4 /* project_palette_main.c in Sources */,
 				26F7E12A1600468600E739C4 /* project_palette_mark.c in Sources */,
+				26F0B2991903982700CF4493 /* map_auto_generate_story.c in Sources */,
 				26F7E12B1600468600E739C4 /* project_palette_marks.c in Sources */,
 				26F7E12C1600468600E739C4 /* project_palette_menu_item.c in Sources */,
 				26F7E12D1600468600E739C4 /* project_palette_menu.c in Sources */,
