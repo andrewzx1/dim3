@@ -390,7 +390,7 @@ void ag_generate_decoration_columns(int room_idx)
       
 ======================================================= */
 
-void ag_gnerate_decoration_equipment_piece(d3pnt *pnt,int wid_x,int wid_z,int high)
+void ag_gnerate_decoration_equipment_piece(d3pnt *pnt,int wid_x,int wid_z,int high,int texture_idx)
 {
 	int				mesh_idx,sx,sz;
 	int				px[8],py[8],pz[8];
@@ -418,21 +418,21 @@ void ag_gnerate_decoration_equipment_piece(d3pnt *pnt,int wid_x,int wid_z,int hi
 	py[0]=py[1]=pnt->y-high;
 	py[2]=py[3]=pnt->y;
 
-	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_decoration_box);
+	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,texture_idx);
 
 	px[0]=px[1]=px[2]=px[3]=pnt->x+sx;
 
-	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_decoration_box);
+	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,texture_idx);
 
 	px[0]=px[3]=pnt->x;
 	px[1]=px[2]=pnt->x+sx;
 	pz[0]=pz[1]=pz[2]=pz[3]=pnt->z;
 
-	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_decoration_box);
+	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,texture_idx);
 
 	pz[0]=pz[1]=pz[2]=pz[3]=pnt->z+sz;
 
-	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_decoration_box);
+	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,texture_idx);
 
 		// top
 
@@ -442,7 +442,7 @@ void ag_gnerate_decoration_equipment_piece(d3pnt *pnt,int wid_x,int wid_z,int hi
 	pz[2]=pz[3]=pnt->z+sz;
 	py[0]=py[1]=py[2]=py[3]=pnt->y-high;
 
-	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_decoration_box);
+	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,texture_idx);
 
 		// reset normals
 
@@ -479,7 +479,7 @@ void ag_gnerate_decoration_equipment(int room_idx)
 	pnt.y=max.y;
 	pnt.z=start_pnt.z-ag_size_equipment_separate_width;
 		
-	ag_gnerate_decoration_equipment_piece(&pnt,((wid_x*count)+(ag_size_equipment_separate_width*2)),((wid_z*count)+(ag_size_equipment_separate_width*2)),ag_size_floor_high);
+	ag_gnerate_decoration_equipment_piece(&pnt,((wid_x*count)+(ag_size_equipment_separate_width*2)),((wid_z*count)+(ag_size_equipment_separate_width*2)),ag_size_floor_high,ag_texture_connect);
 
 		// create equipment
 
@@ -489,7 +489,7 @@ void ag_gnerate_decoration_equipment(int room_idx)
 			pnt.y=max.y-ag_size_floor_high;
 			pnt.z=start_pnt.z+(z*wid_z);
 
-			ag_gnerate_decoration_equipment_piece(&pnt,wid_x,wid_z,high);
+			ag_gnerate_decoration_equipment_piece(&pnt,wid_x,wid_z,high,ag_texture_equipment);
 		}
 	}
 }
