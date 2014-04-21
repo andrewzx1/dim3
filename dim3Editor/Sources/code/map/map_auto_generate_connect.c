@@ -491,6 +491,61 @@ void ag_generate_add_connector_room_pillar(int org_room_idx)
       
 ======================================================= */
 
+
+void ag_generate_add_connector_room_step(d3pnt *min,d3pnt *max)
+{
+	int				mesh_idx,sx,sz;
+	int				px[8],py[8],pz[8];
+	float			gx[8],gy[8];
+
+		// step mesh
+
+	mesh_idx=map_mesh_add(&map);
+
+	gx[0]=gx[3]=0.0f;
+	gx[1]=gx[2]=1.0f;
+	gy[0]=gy[1]=0.0f;
+	gy[2]=gy[3]=1.0f;
+
+		// sides
+
+	px[0]=px[1]=px[2]=px[3]=min->x;
+	pz[0]=pz[3]=min->z;
+	pz[1]=pz[2]=max->z;
+	py[0]=py[1]=min->y;
+	py[2]=py[3]=max->y;
+
+	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_floor);
+
+	px[0]=px[1]=px[2]=px[3]=max->x;
+
+	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_floor);
+
+	px[0]=px[3]=min->x;
+	px[1]=px[2]=max->x;
+	pz[0]=pz[1]=pz[2]=pz[3]=min->z;
+
+	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_floor);
+
+	pz[0]=pz[1]=pz[2]=pz[3]=max->z;
+
+	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_floor);
+
+		// top
+
+	px[0]=px[3]=min->x;
+	px[1]=px[2]=max->x;
+	pz[0]=pz[1]=min->z;
+	pz[2]=pz[3]=max->z;
+	py[0]=py[1]=py[2]=py[3]=min->y;
+
+	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_floor);
+
+		// reset normals
+
+	map_recalc_normals_mesh(&map,&map.mesh.meshes[mesh_idx],normal_mode_out,FALSE);
+}
+
 void ag_generate_add_connector_room_stairs(int org_room_idx)
 {
 	int					n,mesh_idx,

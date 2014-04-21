@@ -96,8 +96,9 @@ and can be sold or given away.
 #define ag_texture_door							4
 #define ag_texture_decoration_pillar			5
 #define ag_texture_decoration_box				6
+#define ag_texture_equipment					7
 
-#define ag_texture_required_count				7			// number of textures that must be present to run
+#define ag_texture_required_count				8			// number of textures that must be present to run
 
 //
 // dimensions and positions
