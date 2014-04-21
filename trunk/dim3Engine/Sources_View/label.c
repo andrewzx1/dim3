@@ -134,7 +134,7 @@ void label_draw_setup(void)
 		if (obj->label.text.str[0]!=0x0) label_draw_setup_single(obj,mdl->label.text.bone_idx,&obj->label.text.draw);
 		if (obj->label.bitmap.idx!=-1) label_draw_setup_single(obj,mdl->label.bitmap.bone_idx,&obj->label.bitmap.draw);
 		if (obj->label.bar.value>=0.0f) label_draw_setup_single(obj,mdl->label.bar.bone_idx,&obj->label.bar.draw);
-		if ((net_setup.mode!=net_mode_none) && (setup.network.show_names)) label_draw_setup_single(obj,mdl->bone_connect.name_bone_idx,&obj->label.remote_name.draw);
+		if ((net_setup.mode!=net_mode_none) && (setup.network.show_names) && (obj->type==object_type_remote_player)) label_draw_setup_single(obj,mdl->bone_connect.name_bone_idx,&obj->label.remote_name.draw);
 	}
 }
 
@@ -154,7 +154,7 @@ void label_draw_render_remote_icon(obj_type *obj,model_type *mdl,int image_idx)
 
 	lft=obj->label.remote_name.draw.pnt.x-(sz>>1);
 	rgt=lft+sz;
-	top=(view.screen.y_sz-obj->label.remote_name.draw.pnt.y)-(sz>>1);
+	top=obj->label.remote_name.draw.pnt.y-(sz>>1);
 	bot=top+sz;
 
 	col.r=col.g=col.b=1.0f;

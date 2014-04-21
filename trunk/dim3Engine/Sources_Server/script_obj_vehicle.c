@@ -167,7 +167,7 @@ JSValueRef js_obj_vehicle_exit_func(JSContextRef cx,JSObjectRef func,JSObjectRef
 	
 	obj=object_get_attach(j_obj);
 
-	if (!object_exit_vehicle(obj,FALSE,err_str)) {
+	if (!object_exit_vehicle(obj,TRUE,err_str)) {
 		*exception=script_create_exception(cx,err_str);
 	}
 
