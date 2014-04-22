@@ -491,10 +491,9 @@ void ag_generate_add_connector_room_pillar(int org_room_idx)
       
 ======================================================= */
 
-
 void ag_generate_add_connector_room_step(d3pnt *min,d3pnt *max)
 {
-	int				mesh_idx,sx,sz;
+	int				mesh_idx;
 	int				px[8],py[8],pz[8];
 	float			gx[8],gy[8];
 
@@ -549,11 +548,11 @@ void ag_generate_add_connector_room_step(d3pnt *min,d3pnt *max)
 void ag_generate_add_connector_room_stairs(int org_room_idx)
 {
 	int					n,mesh_idx,
-						stair_len,step_len,step_high,
-						step_x,step_y,step_z,step_y_add;
+						stair_type,stair_len,step_len,step_high,
+						step_x_add,step_z_add,sz;
 	int					px[8],py[8],pz[8];
 	float				gx[8],gy[8];
-	d3pnt				min,max;
+	d3pnt				min,max,step_min,step_max;
 	ag_room_type		*room,*room2;
 
 	room=&ag_state.rooms[org_room_idx];
@@ -571,7 +570,7 @@ void ag_generate_add_connector_room_stairs(int org_room_idx)
 	max.y+=ag_size_room_high;
 	ag_generate_remove_polygons_in_box(room->mesh_idx,&min,&max);
 
-		// add the mesh
+		// outside walls/floor/ceiling
 
 	mesh_idx=map_mesh_add(&map);
 
@@ -580,13 +579,7 @@ void ag_generate_add_connector_room_stairs(int org_room_idx)
 	gy[0]=gy[1]=0.0f;
 	gy[2]=gy[3]=1.0f;
 
-		// stairs going across the Z
-
 	if ((room->connect_box.stair_dir==ag_stair_dir_top) || (room->connect_box.stair_dir==ag_stair_dir_bottom)) {
-
-		stair_len=room->connect_box.max.z-room->connect_box.min.z;
-		step_len=stair_len/ag_size_stair_count;
-		step_high=(room->connect_box.max.y-room->connect_box.min.y)/ag_size_stair_count;
 
 			// walls
 
@@ -596,51 +589,20 @@ void ag_generate_add_connector_room_stairs(int org_room_idx)
 		py[0]=py[1]=room->connect_box.min.y;
 		py[2]=py[3]=room->connect_box.max.y+ag_size_room_high;
 
-		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_wall);
+		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_connect);
 
 		px[0]=px[1]=px[2]=px[3]=room->connect_box.max.x;
 
-		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_wall);
+		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_connect);
 
-			// steps
+		px[0]=px[3]=room->connect_box.min.x;
+		px[1]=px[2]=room->connect_box.max.x;
+		py[0]=py[1]=room->connect_box.max.y;
+		py[2]=py[3]=room->connect_box.max.y+ag_size_room_high;
 
-		step_z=room->connect_box.min.z;
+		pz[0]=pz[1]=pz[2]=pz[3]=((room->connect_box.stair_dir==ag_stair_dir_top)?room->connect_box.max.z:room->connect_box.min.z);
 
-		px[0]=px[1]=room->connect_box.min.x;
-		px[2]=px[3]=room->connect_box.max.x;
-
-		if (room->connect_box.stair_dir==ag_stair_dir_top) {
-			step_y=(room->connect_box.max.y+ag_size_room_high)-step_high;
-			step_y_add=-step_high;
-		}
-		else {
-			step_y=(room->connect_box.min.y+ag_size_room_high)+step_high;
-			step_y_add=step_high;
-		}
-
-		for (n=0;n!=ag_size_stair_count;n++) {
-
-					// wall
-
-			pz[0]=pz[1]=pz[2]=pz[3]=step_z;
-			py[1]=py[2]=step_y-step_y_add;
-			py[0]=py[3]=step_y;
-
-			map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_floor);
-
-				// floor
-
-			pz[0]=pz[3]=step_z;
-			pz[1]=pz[2]=step_z+step_len;
-			if (n==(ag_size_stair_count-1)) pz[1]=pz[2]=room->connect_box.max.z;
-
-			py[0]=py[1]=py[2]=py[3]=step_y;
-
-			map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_floor);
-		
-			step_z+=step_len;
-			step_y+=step_y_add;
-		}
+		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_connect);
 
 			// ceilings
 
@@ -658,16 +620,9 @@ void ag_generate_add_connector_room_stairs(int org_room_idx)
 			py[2]=py[3]=room->connect_box.min.y+ag_size_room_high;
 		}
 
-		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_ceiling);
+		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_connect);
 	}
-
-		// stairs going across the X
-
 	else {
-		stair_len=room->connect_box.max.x-room->connect_box.min.x;
-		step_len=stair_len/ag_size_stair_count;
-		step_high=(room->connect_box.max.y-room->connect_box.min.y)/ag_size_stair_count;
-
 			// walls
 
 		px[0]=px[3]=room->connect_box.min.x;
@@ -676,51 +631,20 @@ void ag_generate_add_connector_room_stairs(int org_room_idx)
 		py[0]=py[1]=room->connect_box.min.y;
 		py[2]=py[3]=room->connect_box.max.y+ag_size_room_high;
 
-		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_wall);
+		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_connect);
 
 		pz[0]=pz[1]=pz[2]=pz[3]=room->connect_box.max.z;
 
-		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_wall);
+		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_connect);
 
-			// steps
+		py[0]=py[1]=room->connect_box.max.y;
+		py[2]=py[3]=room->connect_box.max.y+ag_size_room_high;
+		pz[0]=pz[3]=room->connect_box.min.z;
+		pz[1]=pz[2]=room->connect_box.max.z;
 
-		step_x=room->connect_box.min.x;
+		px[0]=px[1]=px[2]=px[3]=((room->connect_box.stair_dir==ag_stair_dir_left)?room->connect_box.max.x:room->connect_box.min.x);
 
-		pz[0]=pz[1]=room->connect_box.min.z;
-		pz[2]=pz[3]=room->connect_box.max.z;
-
-		if (room->connect_box.stair_dir==ag_stair_dir_left) {
-			step_y=(room->connect_box.max.y+ag_size_room_high)-step_high;
-			step_y_add=-step_high;
-		}
-		else {
-			step_y=(room->connect_box.min.y+ag_size_room_high)+step_high;
-			step_y_add=step_high;
-		}
-
-		for (n=0;n!=ag_size_stair_count;n++) {
-
-					// wall
-
-			px[0]=px[1]=px[2]=px[3]=step_x;
-			py[1]=py[2]=step_y-step_y_add;
-			py[0]=py[3]=step_y;
-
-			map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_floor);
-
-				// floor
-
-			px[0]=px[3]=step_x;
-			px[1]=px[2]=step_x+step_len;
-			if (n==(ag_size_stair_count-1)) px[1]=px[2]=room->connect_box.max.x;
-
-			py[0]=py[1]=py[2]=py[3]=step_y;
-
-			map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_floor);
-		
-			step_x+=step_len;
-			step_y+=step_y_add;
-		}
+		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_connect);
 
 			// ceilings
 
@@ -738,12 +662,128 @@ void ag_generate_add_connector_room_stairs(int org_room_idx)
 			py[1]=py[2]=room->connect_box.min.y+ag_size_room_high;
 		}
 
-		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_ceiling);
+		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_connect);
+
 	}
 
-		// recalc normals
+		// floor
+
+	px[0]=px[3]=room->connect_box.min.x;
+	px[1]=px[2]=room->connect_box.max.x;
+	py[0]=py[2]=py[1]=py[3]=room->connect_box.max.y+ag_size_room_high;
+	pz[0]=pz[1]=room->connect_box.min.z;
+	pz[2]=pz[3]=room->connect_box.max.z;
+
+	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_connect);
 
 	map_recalc_normals_mesh(&map,&map.mesh.meshes[mesh_idx],normal_mode_in,FALSE);
+
+		// get stair type
+
+	stair_type=ag_random_int(3);
+
+		// stairs going across the Z
+
+	if ((room->connect_box.stair_dir==ag_stair_dir_top) || (room->connect_box.stair_dir==ag_stair_dir_bottom)) {
+
+		stair_len=room->connect_box.max.z-room->connect_box.min.z;
+		step_len=stair_len/ag_size_stair_count;
+		step_high=(room->connect_box.max.y-room->connect_box.min.y)/ag_size_stair_count;
+
+			// steps
+
+		if (room->connect_box.stair_dir==ag_stair_dir_top) {
+			step_min.z=room->connect_box.min.z;
+			step_max.z=room->connect_box.min.z+step_len;
+			step_z_add=step_len;
+		}
+		else {
+			step_min.z=room->connect_box.max.z-step_len;
+			step_max.z=room->connect_box.max.z;
+			step_z_add=-step_len;
+		}
+
+		switch (stair_type) {
+			
+			case ag_stair_type_one_side:
+				step_min.x=room->connect_box.min.x;
+				step_max.x=room->connect_box.min.x+((room->connect_box.max.x-room->connect_box.min.x)>>1);
+				break;
+
+			case ag_stair_type_middle:
+				sz=(room->connect_box.max.x-room->connect_box.min.x)>>2;
+				step_min.x=room->connect_box.min.x+sz;
+				step_max.x=room->connect_box.max.x-sz;
+				break;
+
+			case ag_stair_type_full:
+				step_min.x=room->connect_box.min.x;
+				step_max.x=room->connect_box.max.x;
+				break;
+
+		}
+
+		step_min.y=(room->connect_box.max.y+ag_size_room_high)-step_high;
+		step_max.y=(room->connect_box.max.y+ag_size_room_high);
+
+		for (n=0;n!=ag_size_stair_count;n++) {
+			ag_generate_add_connector_room_step(&step_min,&step_max);
+			step_min.y-=step_high;
+			step_min.z+=step_z_add;
+			step_max.z+=step_z_add;
+		}
+	}
+
+		// stairs going across the X
+
+	else {
+		stair_len=room->connect_box.max.x-room->connect_box.min.x;
+		step_len=stair_len/ag_size_stair_count;
+		step_high=(room->connect_box.max.y-room->connect_box.min.y)/ag_size_stair_count;
+
+			// steps
+
+		if (room->connect_box.stair_dir==ag_stair_dir_left) {
+			step_min.x=room->connect_box.min.x;
+			step_max.x=room->connect_box.min.x+step_len;
+			step_x_add=step_len;
+		}
+		else {
+			step_min.x=room->connect_box.max.x-step_len;
+			step_max.x=room->connect_box.max.x;
+			step_x_add=-step_len;
+		}
+
+		switch (stair_type) {
+			
+			case ag_stair_type_one_side:
+				step_min.z=room->connect_box.min.z;
+				step_max.z=room->connect_box.min.z+((room->connect_box.max.z-room->connect_box.min.z)>>1);
+				break;
+
+			case ag_stair_type_middle:
+				sz=(room->connect_box.max.z-room->connect_box.min.z)>>2;
+				step_min.z=room->connect_box.min.z+sz;
+				step_max.z=room->connect_box.max.z-sz;
+				break;
+
+			case ag_stair_type_full:
+				step_min.z=room->connect_box.min.z;
+				step_max.z=room->connect_box.max.z;
+				break;
+
+		}
+
+		step_min.y=(room->connect_box.max.y+ag_size_room_high)-step_high;
+		step_max.y=(room->connect_box.max.y+ag_size_room_high);
+
+		for (n=0;n!=ag_size_stair_count;n++) {
+			ag_generate_add_connector_room_step(&step_min,&step_max);
+			step_min.y-=step_high;
+			step_min.x+=step_x_add;
+			step_max.x+=step_x_add;
+		}
+	}
 }
 
 /* =======================================================
