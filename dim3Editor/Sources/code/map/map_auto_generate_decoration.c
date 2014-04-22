@@ -460,13 +460,14 @@ void ag_gnerate_decoration_equipment(int room_idx)
 
 		// get height
 
-	high=ag_size_equipment_high_start+ag_random_int(ag_size_equipment_high_extra);
+	map_mesh_calculate_extent(&map,room->mesh_idx,&min,&max);
+
+	high=((max.y-min.y)>>1)+ag_random_int((max.y-min.y)>>2);
 
 		// get equipment count
 
 	count=ag_random_int(3)+1;
 	
-	map_mesh_calculate_extent(&map,room->mesh_idx,&min,&max);
 	wid_x=(max.x-min.x)/(count*4);
 	wid_z=(max.z-min.z)/(count*4);
 
@@ -564,7 +565,7 @@ void ag_generate_lights_add(void)
 
 		lit->pnt.x=(min.x+max.x)>>1;
 		lit->pnt.y=max.y-(ag_size_room_high-ag_size_floor_high);
-		if (room->second_story) lit->pnt.y-=ag_size_room_high;
+		if (room->second_story) lit->pnt.y-=(ag_size_room_high<<1);
 		lit->pnt.z=(min.z+max.z)>>1;
 		
 		lit->setting.on=TRUE;

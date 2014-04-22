@@ -73,6 +73,14 @@ and can be sold or given away.
 #define ag_stair_dir_right						3
 
 //
+// stair types
+//
+
+#define ag_stair_type_one_side					0
+#define ag_stair_type_middle					1
+#define ag_stair_type_full						2
+
+//
 // decorations
 //
 
@@ -132,9 +140,6 @@ and can be sold or given away.
 
 #define ag_size_column_normal_wid				1500
 #define ag_size_column_vertex_wid				2500
-
-#define ag_size_equipment_high_start			5000
-#define ag_size_equipment_high_extra			5000
 
 #define ag_size_equipment_separate_width		1000
 
