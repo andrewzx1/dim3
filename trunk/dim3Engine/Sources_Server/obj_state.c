@@ -338,6 +338,13 @@ void object_touch(obj_type *obj)
 	
 	idx=obj->contact.obj_idx;
 	if (idx==-1) idx=obj->contact.stand_obj_idx;
+	
+		// objects can get despawned between
+		// touching, so we need to check for that
+		
+	if (idx!=-1) {
+		if (server.obj_list.objs[idx]==NULL) idx=-1;
+	}
 
 		// if we are touching nothing, only reset
 		// the last touch if we are over a threshold wait
