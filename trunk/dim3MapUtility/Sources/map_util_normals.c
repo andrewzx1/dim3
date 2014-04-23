@@ -261,6 +261,17 @@ bool map_recalc_normals_determine_vector_in_out(map_mesh_poly_type *poly,d3pnt *
       
 ======================================================= */
 
+void map_flip_normals_mesh_poly(map_type *map,map_mesh_type *mesh,int poly_idx)
+{
+	map_mesh_poly_type	*poly;
+	
+	poly=&mesh->polys[poly_idx];
+
+	poly->tangent_space.normal.x=-poly->tangent_space.normal.x;
+	poly->tangent_space.normal.y=-poly->tangent_space.normal.y;
+	poly->tangent_space.normal.z=-poly->tangent_space.normal.z;
+}
+
 void map_recalc_normals_mesh_poly(map_type *map,map_mesh_type *mesh,int poly_idx,int normal_mode,bool only_tangent)
 {
 	int					k,neg_idx,pos_idx;

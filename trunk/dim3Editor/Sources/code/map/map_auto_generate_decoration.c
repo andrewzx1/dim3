@@ -457,12 +457,11 @@ void ag_gnerate_decoration_equipment(int room_idx)
 	ag_room_type	*room;
 
 	room=&ag_state.rooms[room_idx];
+	map_mesh_calculate_extent(&map,room->mesh_idx,&min,&max);
 
 		// get height
 
-	map_mesh_calculate_extent(&map,room->mesh_idx,&min,&max);
-
-	high=((max.y-min.y)>>1)+ag_random_int((max.y-min.y)>>2);
+	high=ag_size_equipment_high_start+ag_random_int(ag_size_equipment_high_extra);
 
 		// get equipment count
 
@@ -538,6 +537,67 @@ void ag_generate_decorations_add(void)
       
 ======================================================= */
 
+void ag_generate_lights_add_fixture(d3pnt *pnt)
+{
+	int				mesh_idx,ty,by;
+	int				px[8],py[8],pz[8];
+	float			gx[8],gy[8];
+
+		// get top and bottom y
+
+	ty=pnt->y-(ag_size_floor_high*3);
+	by=ty+ag_size_floor_high;
+
+		// fixture mesh
+
+	mesh_idx=map_mesh_add(&map);
+
+	map.mesh.meshes[mesh_idx].flag.lock_uv=TRUE;
+
+	gx[0]=gx[3]=0.0f;
+	gx[1]=gx[2]=1.0f;
+	gy[0]=gy[1]=0.0f;
+	gy[2]=gy[3]=1.0f;
+
+		// sides
+
+	px[0]=px[1]=px[2]=px[3]=pnt->x-ag_size_light_fixture_wid;
+	pz[0]=pz[3]=pnt->z-ag_size_light_fixture_wid;
+	pz[1]=pz[2]=pnt->z+ag_size_light_fixture_wid;
+	py[0]=py[1]=ty;
+	py[2]=py[3]=by;
+
+	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_decoration_pillar);
+
+	px[0]=px[1]=px[2]=px[3]=pnt->x+ag_size_light_fixture_wid;
+
+	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_decoration_pillar);
+
+	px[0]=px[3]=pnt->x-ag_size_light_fixture_wid;
+	px[1]=px[2]=pnt->x+ag_size_light_fixture_wid;
+	pz[0]=pz[1]=pz[2]=pz[3]=pnt->z-ag_size_light_fixture_wid;
+
+	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_decoration_pillar);
+
+	pz[0]=pz[1]=pz[2]=pz[3]=pnt->z+ag_size_light_fixture_wid;
+
+	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_decoration_pillar);
+
+		// bottom
+
+	px[0]=px[3]=pnt->x-ag_size_light_fixture_wid;
+	px[1]=px[2]=pnt->x+ag_size_light_fixture_wid;
+	pz[0]=pz[1]=pnt->z-ag_size_light_fixture_wid;
+	pz[2]=pz[3]=pnt->z+ag_size_light_fixture_wid;
+	py[0]=py[1]=py[2]=py[3]=by;
+
+	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_decoration_pillar);
+
+		// reset normals
+
+	map_recalc_normals_mesh(&map,&map.mesh.meshes[mesh_idx],normal_mode_out,FALSE);
+}
+
 void ag_generate_lights_add(void)
 {
 	int				n;
@@ -564,8 +624,8 @@ void ag_generate_lights_add(void)
 		map_mesh_calculate_extent(&map,room->mesh_idx,&min,&max);
 
 		lit->pnt.x=(min.x+max.x)>>1;
-		lit->pnt.y=max.y-(ag_size_room_high-ag_size_floor_high);
-		if (room->second_story) lit->pnt.y-=(ag_size_room_high<<1);
+		lit->pnt.y=max.y-(ag_size_room_high-(ag_size_floor_high<<1));
+		if (room->second_story) lit->pnt.y-=ag_size_room_high;
 		lit->pnt.z=(min.z+max.z)>>1;
 		
 		lit->setting.on=TRUE;
@@ -581,6 +641,10 @@ void ag_generate_lights_add(void)
 		lit->setting.col.r=1.0f-(((float)ag_random_int(25))/100.0f);
 		lit->setting.col.g=1.0f-(((float)ag_random_int(25))/100.0f);
 		lit->setting.col.b=1.0f-(((float)ag_random_int(25))/100.0f);
+
+			// add the fixture
+
+		ag_generate_lights_add_fixture(&lit->pnt);
 	}
 }
 

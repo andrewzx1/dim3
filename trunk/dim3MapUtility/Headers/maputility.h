@@ -954,6 +954,7 @@ extern bool map_delete_texture_frame(map_type *map,int txt);
 extern bool map_replace_texture(map_type *map,int txt,char *bitmap_name);
 extern bool map_delete_texture(map_type *map,int start_txt,int end_txt);
 
+extern void map_flip_normals_mesh_poly(map_type *map,map_mesh_type *mesh,int poly_idx);
 extern void map_recalc_normals_mesh_poly(map_type *map,map_mesh_type *mesh,int poly_idx,int normal_mode,bool only_tangent);
 extern void map_recalc_normals_mesh(map_type *map,map_mesh_type *mesh,int normal_mode,bool only_tangent);
 extern void map_recalc_normals(map_type *map,bool only_tangent);

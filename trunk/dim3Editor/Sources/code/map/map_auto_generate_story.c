@@ -42,140 +42,29 @@ extern void ag_generate_remove_polygons_in_box(int mesh_idx,d3pnt *min,d3pnt *ma
 
 /* =======================================================
 
-      Walkways
-      
-======================================================= */
-
-void ag_generate_add_room_second_story_walkway_horz(int room_idx)
-{
-	int					mesh_idx,z,tz,bz;
-	int					px[8],py[8],pz[8];
-	float				gx[8],gy[8];
-	d3pnt				min,max;
-	ag_room_type		*room;
-
-	room=&ag_state.rooms[room_idx];
-
-		// get midpoint
-	
-	map_mesh_calculate_extent(&map,room->mesh_idx,&min,&max);
-
-	z=(max.z+min.z)>>1;
-	tz=z-(ag_story_walkway_width>>1);
-	bz=z+(ag_story_walkway_width>>1);
-
-		// add the mesh
-
-	mesh_idx=map_mesh_add(&map);
-
-		// walls
-
-	gx[0]=gx[3]=0.0f;
-	gx[1]=gx[2]=1.0f;
-	gy[0]=gy[1]=0.0f;
-	gy[2]=gy[3]=1.0f;
-
-	px[0]=px[3]=min.x;
-	px[1]=px[2]=max.x;
-	pz[0]=pz[2]=pz[1]=pz[3]=tz;
-	py[0]=py[1]=max.y-(ag_size_room_high+ag_size_floor_high);
-	py[2]=py[3]=max.y-ag_size_room_high;
-
-	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_connect);
-
-	pz[0]=pz[2]=pz[1]=pz[3]=bz;
-
-	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_connect);
-	
-		// floor and ceiling
-
-	px[0]=px[3]=min.x;
-	px[1]=px[2]=max.x;
-	pz[0]=pz[1]=tz;
-	pz[2]=pz[3]=bz;
-	py[0]=py[1]=py[2]=py[3]=max.y-ag_size_room_high;
-
-	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_connect);
-
-	py[0]=py[1]=py[2]=py[3]=max.y-(ag_size_room_high+ag_size_floor_high);
-
-	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_connect);
-
-		// recalc normals
-
-	map_recalc_normals_mesh(&map,&map.mesh.meshes[mesh_idx],normal_mode_out,FALSE);
-}
-
-void ag_generate_add_room_second_story_walkway_vert(int room_idx)
-{
-	int					mesh_idx,x,lx,rx;
-	int					px[8],py[8],pz[8];
-	float				gx[8],gy[8];
-	d3pnt				min,max;
-	ag_room_type		*room;
-
-	room=&ag_state.rooms[room_idx];
-
-		// get midpoint
-	
-	map_mesh_calculate_extent(&map,room->mesh_idx,&min,&max);
-
-	x=(max.x+min.x)>>1;
-	lx=x-(ag_story_walkway_width>>1);
-	rx=x+(ag_story_walkway_width>>1);
-
-		// add the mesh
-
-	mesh_idx=map_mesh_add(&map);
-
-		// walls
-
-	gx[0]=gx[3]=0.0f;
-	gx[1]=gx[2]=1.0f;
-	gy[0]=gy[1]=0.0f;
-	gy[2]=gy[3]=1.0f;
-
-	px[0]=px[2]=px[1]=px[3]=lx;
-	pz[0]=pz[3]=min.z;
-	pz[1]=pz[2]=max.z;
-	py[0]=py[1]=max.y-(ag_size_room_high+ag_size_floor_high);
-	py[2]=py[3]=max.y-ag_size_room_high;
-
-	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_connect);
-
-	px[0]=px[2]=px[1]=px[3]=rx;
-
-	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_connect);
-	
-		// floor and ceiling
-
-	px[0]=px[1]=lx;
-	px[2]=px[3]=rx;
-	pz[0]=pz[3]=min.z;
-	pz[1]=pz[2]=max.z;
-	py[0]=py[1]=py[2]=py[3]=room->connect_box.max.y-ag_size_room_high;
-
-	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_connect);
-
-	py[0]=py[1]=py[2]=py[3]=room->connect_box.max.y-(ag_size_room_high+ag_size_floor_high);
-
-	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_connect);
-
-		// recalc normals
-
-	map_recalc_normals_mesh(&map,&map.mesh.meshes[mesh_idx],normal_mode_out,FALSE);
-}
-
-/* =======================================================
-
       Add Room Second Story Pieces
       
 ======================================================= */
 
 void ag_generate_add_room_second_story(void)
 {
-	int				n;
+	int				n,k,k2,mesh_idx,
+					floor_poly_idx,ceiling_poly_idx,
+					extrude_poly_idx;
+	int				px[8],py[8],pz[8];
+	float			gx[8],gy[8];
+	d3pnt			extrude_pnt;
 	ag_room_type	*room;
+
+		// setup extruding point
+		// for second stories with
+		// holes punched in them
+
+	extrude_pnt.x=0;
+	extrude_pnt.y=ag_size_floor_high;
+	extrude_pnt.z=0;
+
+		// build second stories
 
 	for (n=0;n!=ag_state.nroom;n++) {
 
@@ -184,23 +73,71 @@ void ag_generate_add_room_second_story(void)
 
 		room=&ag_state.rooms[n];
 		if (!room->second_story) continue;
+		if (!room->require_top_floor) continue;
 
-			// possibly second story
-			// additions
+			// needs more than 4 vertexes
 
-		switch (ag_random_int(3)) {
+		if (room->nvertex<=4) continue;
 
-			case 0:
-				break;
+			// add the mesh
 
-			case 1:
-				ag_generate_add_room_second_story_walkway_horz(n);
-				break;
+		mesh_idx=map_mesh_add(&map);
 
-			case 2:
-				ag_generate_add_room_second_story_walkway_vert(n);
-				break;
+		gx[0]=gx[3]=0.0f;
+		gx[1]=gx[2]=1.0f;
+		gy[0]=gy[1]=0.0f;
+		gy[2]=gy[3]=1.0f;
 
+			// walls
+
+		for (k=0;k!=4;k++) {
+			k2=k+1;
+			if (k2==4) k2=0;
+
+			px[0]=px[3]=room->vertexes[k].x;
+			px[1]=px[2]=room->vertexes[k2].x;
+			py[0]=py[1]=room->max.y-(ag_size_room_high+ag_size_floor_high);
+			py[2]=py[3]=room->max.y-ag_size_room_high;
+			pz[0]=pz[3]=room->vertexes[k].z;
+			pz[1]=pz[2]=room->vertexes[k2].z;
+			
+			map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_connect);
+		}
+
+			// floor and ceiling
+
+		for (k=0;k!=4;k++) {
+			px[k]=room->vertexes[k].x;
+			py[k]=room->max.y-ag_size_room_high;
+			pz[k]=room->vertexes[k].z;
+		}
+
+		ceiling_poly_idx=map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_connect);
+
+		for (k=0;k!=4;k++) {
+			py[k]-=ag_size_floor_high;
+		}
+
+		floor_poly_idx=map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_connect);
+		
+			// recalc normals
+
+		map_recalc_normals_mesh(&map,&map.mesh.meshes[mesh_idx],normal_mode_out,FALSE);
+
+			// add in the hole
+
+		if (ag_random_bool()) {
+			
+			map_mesh_poly_punch_hole(&map,mesh_idx,ceiling_poly_idx,NULL);
+
+			floor_poly_idx--;			// punch deletes original polygon, so we need to move it back
+			map_mesh_poly_punch_hole(&map,mesh_idx,floor_poly_idx,&extrude_pnt);
+
+			extrude_poly_idx=map.mesh.meshes[mesh_idx].npoly-4;		// the last 4 polygons will be the extruded ones
+
+			for (k=extrude_poly_idx;k!=map.mesh.meshes[mesh_idx].npoly;k++) {
+				map_recalc_normals_mesh_poly(&map,&map.mesh.meshes[mesh_idx],k,normal_mode_in,FALSE);
+			}
 		}
 	}
 }

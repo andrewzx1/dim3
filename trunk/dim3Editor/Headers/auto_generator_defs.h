@@ -142,9 +142,12 @@ and can be sold or given away.
 #define ag_size_column_vertex_wid				2500
 
 #define ag_size_equipment_separate_width		1000
+#define ag_size_equipment_high_start			5000
+#define ag_size_equipment_high_extra			2000
 
 #define ag_size_light_width_start				30000
 #define ag_size_light_width_extra				15000
+#define ag_size_light_fixture_wid				500
 
 #define ag_window_min_wid						10000
 #define ag_window_min_high						10000
@@ -176,7 +179,7 @@ typedef struct		{
 
 typedef struct		{
 						int							nvertex,mesh_idx;
-						bool						second_story;
+						bool						second_story,require_top_floor;
 						d3pnt						min,max;
 						d3pnt						vertexes[8];
 						d3vct						size;

@@ -70,6 +70,8 @@ void ambient_add_objects(void)
 		obj=server.obj_list.objs[n];
 		if (obj==NULL) continue;
 
+		if (obj->hidden) continue;		// no ambients for hidden objects
+
 		ambient=&obj->ambient;
 		if ((ambient->on) && (ambient->buffer_idx!=-1)) {
 			al_ambient_list_add(ambient->buffer_idx,&obj->pnt,ambient->pitch);

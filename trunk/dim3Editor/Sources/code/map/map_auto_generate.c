@@ -493,6 +493,7 @@ void ag_add_room(bool first_room)
 	room->connect_box.on=FALSE;
 
 	room->second_story=ag_random_bool();
+	room->require_top_floor=FALSE;
 
 		// create random polygon
 
@@ -703,6 +704,16 @@ void ag_add_room(bool first_room)
 			room->connect_box.max.y=max.y;
 		}
 
+			// if connecting, check if two second
+			// story rooms, these can require a top floor
+
+		if (room->connect_box.on) {
+			if ((room->second_story) && (connect_room->second_story)) {
+				room->require_top_floor=TRUE;
+				connect_room->require_top_floor=TRUE;
+			}
+		}
+
 			// determine what type of connector
 			// and move down and out if stairs
 
@@ -869,7 +880,7 @@ bool ag_generate_run(char *err_str)
 		// add second story items to
 		// rooms
 
-	// ag_generate_add_room_second_story();
+	ag_generate_add_room_second_story();
 
 		// delete any polygons that share the
 		// same space
