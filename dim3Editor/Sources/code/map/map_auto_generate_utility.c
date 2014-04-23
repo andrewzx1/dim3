@@ -224,8 +224,9 @@ void ag_generate_remove_polygons_in_box(int mesh_idx,d3pnt *min,d3pnt *max)
 
 void ag_generate_windows_add(void)
 {
-	int				n,k,mesh_idx,poly_idx;
-	d3pnt			min,max,mesh_mid,poly_mid,extrude_pnt;
+	int				n,k,t,mesh_idx,poly_idx,
+					extrude_poly_idx;
+	d3pnt			min,max,extrude_pnt;
 	d3vct			extrude_vct;
 	map_mesh_type	*mesh;
 	ag_room_type	*room;
@@ -248,16 +249,12 @@ void ag_generate_windows_add(void)
 			map_mesh_poly_calculate_extent(&map,mesh_idx,poly_idx,&min,&max);
 			if (abs(max.y-min.y)<ag_window_min_high) continue;
 			
-				// get extrude
+				// get extrude from the
+				// normal of the wall
 				
-			map_mesh_calculate_center(&map,mesh_idx,&mesh_mid);
-			map_mesh_poly_calculate_center(&map,mesh_idx,poly_idx,&poly_mid);
-			
-			extrude_vct.x=(float)(mesh_mid.x-poly_mid.x);
-			extrude_vct.y=0.0f;
-			extrude_vct.z=(float)(mesh_mid.z-poly_mid.z);
-			
-			vector_normalize(&extrude_vct);
+			extrude_vct.x=map.mesh.meshes[mesh_idx].polys[poly_idx].tangent_space.normal.x;
+			extrude_vct.y=map.mesh.meshes[mesh_idx].polys[poly_idx].tangent_space.normal.y;
+			extrude_vct.z=map.mesh.meshes[mesh_idx].polys[poly_idx].tangent_space.normal.z;
 			
 			extrude_pnt.x=-(int)(extrude_vct.x*(float)ag_window_depth);
 			extrude_pnt.y=0;
@@ -266,6 +263,15 @@ void ag_generate_windows_add(void)
 				// punch the window
 
 			map_mesh_poly_punch_hole(&map,mesh_idx,poly_idx,&extrude_pnt);
+
+				// fix the extruded normals
+
+			extrude_poly_idx=map.mesh.meshes[mesh_idx].npoly-4;		// the last 4 polygons will be the extruded ones
+
+			for (t=extrude_poly_idx;t!=map.mesh.meshes[mesh_idx].npoly;t++) {
+				map_recalc_normals_mesh_poly(&map,&map.mesh.meshes[mesh_idx],t,normal_mode_in,FALSE);
+			}
+
 			break;
 		}
 	}

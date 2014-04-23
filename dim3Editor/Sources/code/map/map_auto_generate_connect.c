@@ -479,9 +479,7 @@ void ag_generate_add_connector_room_pillar(int org_room_idx)
 		// we need to flip some normals
 
 	for (n=0;n!=4;n++) {
-		map.mesh.meshes[mesh_idx].polys[flip_poly_idx[n]].tangent_space.normal.x=-map.mesh.meshes[mesh_idx].polys[flip_poly_idx[n]].tangent_space.normal.x;
-		map.mesh.meshes[mesh_idx].polys[flip_poly_idx[n]].tangent_space.normal.y=-map.mesh.meshes[mesh_idx].polys[flip_poly_idx[n]].tangent_space.normal.y;
-		map.mesh.meshes[mesh_idx].polys[flip_poly_idx[n]].tangent_space.normal.z=-map.mesh.meshes[mesh_idx].polys[flip_poly_idx[n]].tangent_space.normal.z;
+		map_flip_normals_mesh_poly(&map,&map.mesh.meshes[mesh_idx],flip_poly_idx[n]);
 	}
 }
 
