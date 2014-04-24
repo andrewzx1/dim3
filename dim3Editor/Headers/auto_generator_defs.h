@@ -88,10 +88,15 @@ and can be sold or given away.
 #define ag_decoration_type_columns				1
 #define ag_decoration_type_box_stacks			2
 #define ag_decoration_type_equipment			3
+#define ag_decoration_type_trench				4
+
+#define ag_decoration_type_vertex_none			0
+#define ag_decoration_type_vertex_column_circle	1
+#define ag_decoration_type_vertex_column_square	2
 
 #define ag_dectoration_column_config_square		0
 #define ag_dectoration_column_config_diamond	1
-#define ag_dectoration_column_config_vertex		2
+#define ag_dectoration_column_config_circle		2
 
 //
 // textures
@@ -139,11 +144,14 @@ and can be sold or given away.
 #define ag_count_stack_box_row_min				2
 
 #define ag_size_column_normal_wid				1500
-#define ag_size_column_vertex_wid				2500
+#define ag_size_column_vertex_wid_start			2000
+#define ag_size_column_vertex_wid_extra			1000
 
 #define ag_size_equipment_separate_width		1000
 #define ag_size_equipment_high_start			5000
 #define ag_size_equipment_high_extra			2000
+
+#define ag_size_trench_high						800
 
 #define ag_size_light_width_start				30000
 #define ag_size_light_width_extra				15000

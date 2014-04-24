@@ -460,9 +460,11 @@ void element_bitmap_add(char *path,int id,int x,int y,int wid,int high,bool fram
 	
 	element->id=id;
 	element->type=element_type_bitmap;
-	
-	bitmap_open(&element->setup.button.bitmap,path,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE);
+
+	element->setup.button.bitmap.gl_id=-1;
 	element->setup.button.select_bitmap.gl_id=-1;
+
+	if (path!=NULL) bitmap_open(&element->setup.button.bitmap,path,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE);
 	
 	element->x=x;
 	element->y=y;
@@ -1291,13 +1293,29 @@ void element_draw_button(element_type *element,int sel_id)
 void element_draw_bitmap(element_type *element)
 {
 	int				lft,rgt,top,bot;
+	d3col			col,col2;
 	
 	element_get_box(element,&lft,&rgt,&top,&bot);
 
-		// the picture
-		
-	view_primitive_2D_texture_quad(element->setup.button.bitmap.gl_id,NULL,1.0f,lft,rgt,top,bot,0.0f,1.0f,0.0f,1.0f,TRUE);
-	
+		// the bitmap or ? for missing
+
+	if (element->setup.button.bitmap.gl_id==-1) {
+		col.r=col.g=col.b=0.6f;
+		col2.r=col2.g=col2.b=0.4f;
+
+		view_primitive_2D_color_poly(lft,top,&col,rgt,top,&col,rgt,bot,&col2,lft,bot,&col2,1.0f);
+		view_primitive_2D_line_quad(&iface.color.control.outline,1.0f,lft,rgt,top,bot);
+
+		col.r=col.g=col.b=1.0f;
+
+		gl_text_start(font_interface_index,iface.font.text_size_large,FALSE);
+		gl_text_draw(((lft+rgt)>>1),((top+bot)>>1),"?",tx_center,TRUE,&col,1.0f);
+		gl_text_end();
+	}
+	else {
+		view_primitive_2D_texture_quad(element->setup.button.bitmap.gl_id,NULL,1.0f,lft,rgt,top,bot,0.0f,1.0f,0.0f,1.0f,TRUE);
+	}
+
 		// the frame
 		
 	if (element->framed) {
@@ -3778,8 +3796,14 @@ void element_set_bitmap(int id,char *path)
 
 	element=element_find(id);
 	if (element!=NULL) {
-		bitmap_close(&element->setup.button.bitmap);
-		bitmap_open(&element->setup.button.bitmap,path,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE);
+		if (element->setup.button.bitmap.gl_id!=-1) bitmap_close(&element->setup.button.bitmap);
+
+		if (path==NULL) {
+			element->setup.button.bitmap.gl_id=-1;
+		}
+		else {
+			bitmap_open(&element->setup.button.bitmap,path,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE);
+		}
 	}
 
 	SDL_mutexV(element_thread_lock);

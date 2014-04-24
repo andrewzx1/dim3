@@ -353,6 +353,10 @@ void ag_add_room(bool first_room)
 
 	poly_sz=ag_size_room_width_start+ag_random_int(ag_size_room_width_extra);
 
+		// 10% of rooms are double sized
+
+	if (ag_random_int(100)<10) poly_sz*=2;
+
 		// if first room, in center of map
 
 	if (first_room) {

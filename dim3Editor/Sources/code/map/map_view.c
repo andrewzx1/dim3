@@ -718,6 +718,7 @@ void view_key(char ch)
 		state.map.view_select_idx++;
 		if (state.map.view_select_idx>=map.editor_views.count) state.map.view_select_idx=0;
 		main_wind_draw();
+		map_menu_update();
 		return;
 	}
 	
@@ -1061,7 +1062,10 @@ void map_view_select_view(d3pnt *pnt)
 	
 	for (n=0;n!=map.editor_views.count;n++) {
 		if (view_point_in_view(&map.editor_views.views[n],pnt)) {
-			state.map.view_select_idx=n;
+			if (state.map.view_select_idx!=n) {
+				state.map.view_select_idx=n;
+				map_menu_update();
+			}
 			break;
 		}
 	}
