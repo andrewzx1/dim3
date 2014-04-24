@@ -48,11 +48,12 @@ extern void ag_generate_remove_polygons_in_box(int mesh_idx,d3pnt *min,d3pnt *ma
 
 void ag_generate_add_room_second_story(void)
 {
-	int				n,k,k2,mesh_idx,
+	int				n,k,k2,nvertex,mesh_idx,
 					floor_poly_idx,ceiling_poly_idx,
 					extrude_poly_idx;
 	int				px[8],py[8],pz[8];
 	float			gx[8],gy[8];
+	bool			punch_hole;
 	d3pnt			extrude_pnt;
 	ag_room_type	*room;
 
@@ -79,6 +80,18 @@ void ag_generate_add_room_second_story(void)
 
 		if (room->nvertex<=4) continue;
 
+			// hole in the middle take up
+			// the entire room
+
+		punch_hole=ag_random_bool();
+
+		if (punch_hole) {
+			nvertex=room->nvertex;
+		}
+		else {
+			nvertex=3;
+		}
+
 			// add the mesh
 
 		mesh_idx=map_mesh_add(&map);
@@ -90,35 +103,37 @@ void ag_generate_add_room_second_story(void)
 
 			// walls
 
-		for (k=0;k!=4;k++) {
-			k2=k+1;
-			if (k2==4) k2=0;
+		if (!punch_hole) {
+			for (k=0;k!=nvertex;k++) {
+				k2=k+1;
+				if (k2==nvertex) k2=0;
 
-			px[0]=px[3]=room->vertexes[k].x;
-			px[1]=px[2]=room->vertexes[k2].x;
-			py[0]=py[1]=room->max.y-(ag_size_room_high+ag_size_floor_high);
-			py[2]=py[3]=room->max.y-ag_size_room_high;
-			pz[0]=pz[3]=room->vertexes[k].z;
-			pz[1]=pz[2]=room->vertexes[k2].z;
-			
-			map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_connect);
+				px[0]=px[3]=room->vertexes[k].x;
+				px[1]=px[2]=room->vertexes[k2].x;
+				py[0]=py[1]=room->max.y-(ag_size_room_high+ag_size_floor_high);
+				py[2]=py[3]=room->max.y-ag_size_room_high;
+				pz[0]=pz[3]=room->vertexes[k].z;
+				pz[1]=pz[2]=room->vertexes[k2].z;
+				
+				map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_connect);
+			}
 		}
 
 			// floor and ceiling
 
-		for (k=0;k!=4;k++) {
+		for (k=0;k!=nvertex;k++) {
 			px[k]=room->vertexes[k].x;
 			py[k]=room->max.y-ag_size_room_high;
 			pz[k]=room->vertexes[k].z;
 		}
 
-		ceiling_poly_idx=map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_connect);
+		ceiling_poly_idx=map_mesh_add_poly(&map,mesh_idx,nvertex,px,py,pz,gx,gy,ag_texture_connect);
 
-		for (k=0;k!=4;k++) {
+		for (k=0;k!=nvertex;k++) {
 			py[k]-=ag_size_floor_high;
 		}
 
-		floor_poly_idx=map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_connect);
+		floor_poly_idx=map_mesh_add_poly(&map,mesh_idx,nvertex,px,py,pz,gx,gy,ag_texture_connect);
 		
 			// recalc normals
 
@@ -126,14 +141,14 @@ void ag_generate_add_room_second_story(void)
 
 			// add in the hole
 
-		if (ag_random_bool()) {
+		if (punch_hole) {
 			
-			map_mesh_poly_punch_hole(&map,mesh_idx,ceiling_poly_idx,NULL);
+			map_mesh_poly_punch_hole(&map,mesh_idx,ceiling_poly_idx,NULL,FALSE);
 
 			floor_poly_idx--;			// punch deletes original polygon, so we need to move it back
-			map_mesh_poly_punch_hole(&map,mesh_idx,floor_poly_idx,&extrude_pnt);
+			map_mesh_poly_punch_hole(&map,mesh_idx,floor_poly_idx,&extrude_pnt,FALSE);
 
-			extrude_poly_idx=map.mesh.meshes[mesh_idx].npoly-4;		// the last 4 polygons will be the extruded ones
+			extrude_poly_idx=map.mesh.meshes[mesh_idx].npoly-nvertex;		// the last nvertex polygons will be the extruded ones
 
 			for (k=extrude_poly_idx;k!=map.mesh.meshes[mesh_idx].npoly;k++) {
 				map_recalc_normals_mesh_poly(&map,&map.mesh.meshes[mesh_idx],k,normal_mode_in,FALSE);

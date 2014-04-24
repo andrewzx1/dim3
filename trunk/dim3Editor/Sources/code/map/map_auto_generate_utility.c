@@ -262,7 +262,7 @@ void ag_generate_windows_add(void)
 
 				// punch the window
 
-			map_mesh_poly_punch_hole(&map,mesh_idx,poly_idx,&extrude_pnt);
+			map_mesh_poly_punch_hole(&map,mesh_idx,poly_idx,&extrude_pnt,FALSE);
 
 				// fix the extruded normals
 

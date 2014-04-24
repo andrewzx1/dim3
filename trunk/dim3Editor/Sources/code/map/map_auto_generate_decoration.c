@@ -286,11 +286,11 @@ void ag_generate_decoration_box_stacks(int room_idx)
       
 ======================================================= */
 
-void ag_generate_decoration_column(d3pnt *pnt,float radius,int high)
+void ag_generate_decoration_column(d3pnt *pnt,int radius,int high,bool circular)
 {
 	int				n,mesh_idx;
 	int				px[4],py[4],pz[4];
-	float			ang,next_ang,ang_add;
+	float			ang,next_ang,ang_add,f_radius;
 	float			gx[4],gy[4];
 
 		// the mesh
@@ -304,27 +304,60 @@ void ag_generate_decoration_column(d3pnt *pnt,float radius,int high)
 	gy[0]=gy[1]=0.0f;
 	gy[2]=gy[3]=1.0f;
 
-	ang=0.0f;
-	ang_add=(2.0f*TRIG_PI)/10.0f;
+		// square columns
 
-	for (n=0;n!=10;n++) {
-
-		next_ang=ang+ang_add;
-		if (n==9) next_ang=0.0f;
-
-		px[0]=px[3]=pnt->x+(int)(radius*sinf(ang));
-		px[1]=px[2]=pnt->x+(int)(radius*sinf(next_ang));
-		pz[0]=pz[3]=pnt->z-(int)(radius*cosf(ang));
-		pz[1]=pz[2]=pnt->z-(int)(radius*cosf(next_ang));
+	if (!circular) {
 
 		py[0]=py[1]=pnt->y-high;
 		py[2]=py[3]=pnt->y;
 
+		px[0]=px[1]=px[2]=px[3]=pnt->x-radius;
+		pz[0]=pz[3]=pnt->z-radius;
+		pz[1]=pz[2]=pnt->z+radius;
+
 		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_decoration_pillar);
 
-			// exit early if we reconnect early
+		px[0]=px[1]=px[2]=px[3]=pnt->x+radius;
+		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_decoration_pillar);
 
-		ang=next_ang;
+		px[0]=px[3]=pnt->x-radius;
+		px[1]=px[2]=pnt->x+radius;
+		pz[0]=pz[1]=pz[2]=pz[3]=pnt->z-radius;
+
+		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_decoration_pillar);
+
+		pz[0]=pz[1]=pz[2]=pz[3]=pnt->z+radius;
+		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_decoration_pillar);
+	}
+
+		// circular columns
+
+	else {
+
+		ang=0.0f;
+		ang_add=(2.0f*TRIG_PI)/10.0f;
+
+		f_radius=(float)radius;
+
+		for (n=0;n!=10;n++) {
+
+			next_ang=ang+ang_add;
+			if (n==9) next_ang=0.0f;
+
+			px[0]=px[3]=pnt->x+(int)(f_radius*sinf(ang));
+			px[1]=px[2]=pnt->x+(int)(f_radius*sinf(next_ang));
+			pz[0]=pz[3]=pnt->z-(int)(f_radius*cosf(ang));
+			pz[1]=pz[2]=pnt->z-(int)(f_radius*cosf(next_ang));
+
+			py[0]=py[1]=pnt->y-high;
+			py[2]=py[3]=pnt->y;
+
+			map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_decoration_pillar);
+
+				// exit early if we reconnect early
+
+			ang=next_ang;
+		}
 	}
 
 		// reset normals
@@ -334,10 +367,9 @@ void ag_generate_decoration_column(d3pnt *pnt,float radius,int high)
 
 void ag_generate_decoration_columns(int room_idx)
 {
-	int				n,high;
-	float			radius;
+	int				high,
+					ang,start_ang,end_ang,ang_add;
 	d3pnt			pnt;
-	ag_room_type	*room;
 
 		// get height
 
@@ -349,38 +381,28 @@ void ag_generate_decoration_columns(int room_idx)
 	switch (ag_random_int(3)) {
 
 		case ag_dectoration_column_config_square:
-			radius=(float)ag_size_column_normal_wid;
-			ag_generate_decoration_location_angle(room_idx,45.0f,&pnt);
-			ag_generate_decoration_column(&pnt,radius,high);
-			ag_generate_decoration_location_angle(room_idx,135.0f,&pnt);
-			ag_generate_decoration_column(&pnt,radius,high);
-			ag_generate_decoration_location_angle(room_idx,225.0f,&pnt);
-			ag_generate_decoration_column(&pnt,radius,high);
-			ag_generate_decoration_location_angle(room_idx,315.0f,&pnt);
-			ag_generate_decoration_column(&pnt,radius,high);
+			start_ang=45;
+			end_ang=315;
+			ang_add=90;
 			break;
 
 		case ag_dectoration_column_config_diamond:
-			radius=(float)ag_size_column_normal_wid;
-			ag_generate_decoration_location_angle(room_idx,0.0f,&pnt);
-			ag_generate_decoration_column(&pnt,radius,high);
-			ag_generate_decoration_location_angle(room_idx,90.0f,&pnt);
-			ag_generate_decoration_column(&pnt,radius,high);
-			ag_generate_decoration_location_angle(room_idx,180.0f,&pnt);
-			ag_generate_decoration_column(&pnt,radius,high);
-			ag_generate_decoration_location_angle(room_idx,270.0f,&pnt);
-			ag_generate_decoration_column(&pnt,radius,high);
+			start_ang=0;
+			end_ang=270;
+			ang_add=90;
 			break;
 
-		case ag_dectoration_column_config_vertex:
-			radius=(float)ag_size_column_vertex_wid;
-
-			room=&ag_state.rooms[room_idx];
-			for (n=0;n!=room->nvertex;n++) {
-				ag_generate_decoration_column(&room->vertexes[n],radius,high);
-			}
+		case ag_dectoration_column_config_circle:
+			start_ang=0;
+			end_ang=315;
+			ang_add=45;
 			break;
-
+	
+	}
+	
+	for (ang=start_ang;ang<=end_ang;ang+=ang_add) {
+		ag_generate_decoration_location_angle(room_idx,(float)ang,&pnt);
+		ag_generate_decoration_column(&pnt,ag_size_column_normal_wid,high,TRUE);
 	}
 }
 
@@ -465,7 +487,7 @@ void ag_gnerate_decoration_equipment(int room_idx)
 
 		// get equipment count
 
-	count=ag_random_int(3)+1;
+	count=ag_random_int(2)+2;
 	
 	wid_x=(max.x-min.x)/(count*4);
 	wid_z=(max.z-min.z)/(count*4);
@@ -494,6 +516,101 @@ void ag_gnerate_decoration_equipment(int room_idx)
 	}
 }
 
+/* =======================================================
+
+      Trench Decorations
+      
+======================================================= */
+
+void ag_gnerate_decoration_trench(int room_idx)
+{
+	int					n,k,t,depth_count,poly_idx;
+	bool				flat;
+	d3pnt				min,max,extrude_pnt;
+	map_mesh_type		*mesh;
+	map_mesh_poly_type	*poly;
+	ag_room_type		*room;
+
+	room=&ag_state.rooms[room_idx];
+
+		// find the floor
+
+	map_mesh_calculate_extent(&map,room->mesh_idx,&min,&max);
+
+	poly_idx=-1;
+	mesh=&map.mesh.meshes[room->mesh_idx];
+
+	for (n=0;n!=mesh->npoly;n++) {
+		poly=&mesh->polys[n];
+
+		if (poly->txt_idx!=ag_texture_floor) continue;
+
+		flat=TRUE;
+
+		for (t=0;t!=poly->ptsz;t++) {
+			if (mesh->vertexes[mesh->polys[n].v[t]].y!=max.y) {
+				flat=FALSE;
+				break;
+			}
+		}
+
+		if (!flat) continue;
+
+		poly_idx=n;
+		break;
+	}
+
+	if (poly_idx==-1) return;
+
+		// run to random depth
+
+	depth_count=1+ag_random_int(3);
+
+	for (k=0;k!=depth_count;k++) {
+
+			// extrude it
+
+		extrude_pnt.x=0;
+		extrude_pnt.y=ag_random_bool()?ag_size_trench_high:-ag_size_trench_high;
+		extrude_pnt.z=0;
+
+			// extrude it
+
+		map_mesh_poly_punch_hole(&map,room->mesh_idx,poly_idx,&extrude_pnt,TRUE);
+
+			// last polygon is always
+			// the new extrude
+
+		poly_idx=map.mesh.meshes[room->mesh_idx].npoly-1;
+	}
+}
+
+/* =======================================================
+
+      Vertex Decorations
+      
+======================================================= */
+
+void ag_gnerate_decoration_vertex_column(int room_idx,bool circular)
+{
+	int				n,high,radius;
+	ag_room_type	*room;
+
+	room=&ag_state.rooms[room_idx];
+
+		// get height and size
+
+	high=ag_size_room_high+ag_size_floor_high;
+	if (ag_state.rooms[room_idx].second_story) high+=ag_size_room_high;
+
+	radius=ag_size_column_vertex_wid_start+ag_random_int(ag_size_column_vertex_wid_extra);
+
+		// vertex columns
+
+	for (n=0;n!=room->nvertex;n++) {
+		ag_generate_decoration_column(&room->vertexes[n],radius,high,circular);
+	}
+}
 
 /* =======================================================
 
@@ -509,7 +626,9 @@ void ag_generate_decorations_add(void)
 	for (n=0;n!=ag_state.nroom;n++) {
 		room=&ag_state.rooms[n];
 
-		switch (ag_random_int(4)) {
+			// middle decorations
+
+		switch (ag_random_int(5)) {
 
 			case ag_decoration_type_none:
 				break;
@@ -526,8 +645,28 @@ void ag_generate_decorations_add(void)
 				ag_gnerate_decoration_equipment(n);
 				break;
 
+			case ag_decoration_type_trench:
+				ag_gnerate_decoration_trench(n);
+				break;
+
 		}
 
+			// vertex decorations
+
+		switch (ag_random_int(3)) {
+
+			case ag_decoration_type_vertex_none:
+				break;
+
+			case ag_decoration_type_vertex_column_circle:
+				ag_gnerate_decoration_vertex_column(n,TRUE);
+				break;
+
+			case ag_decoration_type_vertex_column_square:
+				ag_gnerate_decoration_vertex_column(n,FALSE);
+				break;
+
+		}
 	}
 }
 

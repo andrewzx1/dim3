@@ -34,21 +34,26 @@ and can be sold or given away.
 #define max_file_count					256
 
 #define file_frame_id					0
-#define file_button_save_id				1
-#define file_button_load_id				2
-#define file_button_delete_id			3
-#define file_button_cancel_id			4
-#define file_directory_id				5
-#define file_load_checkpoint_id			6
+#define file_directory_id				1
+#define file_info_bitmap_id				2
+#define file_info_name_id				3
+#define file_info_time_id				4
+#define file_info_elapsed_id			5
 
-extern server_type			server;
-extern iface_type			iface;
-extern setup_type			setup;
-extern file_path_setup_type	file_path_setup;
+#define file_button_save_id				10
+#define file_button_load_id				11
+#define file_button_delete_id			12
+#define file_button_cancel_id			13
+#define file_load_checkpoint_id			14
 
-int							file_last_state;
-char						*file_table_data,*file_name_data;
-bool						file_is_save;
+extern server_type				server;
+extern iface_type				iface;
+extern setup_type				setup;
+extern file_path_setup_type		file_path_setup;
+
+int								file_last_state;
+char							*file_table_data,*file_name_data;
+bool							file_is_save,file_has_list;
 			
 /* =======================================================
 
@@ -126,7 +131,7 @@ void file_dir_name_to_elapsed(char *dir_name,char *elapse_str)
 void file_build_list(void)
 {
 	int							n,k,idx,cnt,sz,sort_idx[max_file_count+1];
-	char						*c,name_str[64],time_str[64],elapse_str[64];
+	char						*c,name_str[64];
 	file_path_directory_type	*fpd;
 	
 		// data for maximum number of files
@@ -189,14 +194,12 @@ void file_build_list(void)
 			// table data
 			
 		file_dir_name_to_name(fpd->files[idx].file_name,name_str);
-		file_dir_name_to_time(fpd->files[idx].file_name,time_str);
-		file_dir_name_to_elapsed(fpd->files[idx].file_name,elapse_str);
-		
-		c=file_table_data+(128*n);
-		sprintf(c,"Saved Games;%s;%s\t%s\t%s",fpd->files[idx].file_name,name_str,time_str,elapse_str);
+		strcpy((file_table_data+(128*n)),name_str);
 	}
 
 	file_paths_close_directory(fpd);
+
+	file_has_list=(cnt!=0);
 }
 
 void file_close_list(void)
@@ -234,6 +237,7 @@ void file_get_checkpoint_file_name(char *checkpoint_name)
 void file_save_selected(void)
 {
 	int				idx;
+	char			*c,str[256],path[1024];
 	
 	idx=element_get_value(file_directory_id);
 	
@@ -241,12 +245,21 @@ void file_save_selected(void)
 		
 	if (idx==-1) {
 
+			// buttons
+
 		if (!file_is_save) {
 			element_enable(file_button_load_id,FALSE);
 			element_enable(file_button_load_id,FALSE);
 		}
 
 		element_enable(file_button_delete_id,FALSE);
+
+			// info
+		
+		element_set_bitmap(file_info_bitmap_id,NULL);
+		element_text_change(file_info_name_id,"[No Game Selected]");
+		element_text_change(file_info_time_id,"");
+		element_text_change(file_info_elapsed_id,"");
 		return;
 	}
 	
@@ -254,6 +267,26 @@ void file_save_selected(void)
 
 	if (!file_is_save) element_enable(file_button_load_id,TRUE);
 	element_enable(file_button_delete_id,TRUE);
+
+		// info
+
+	c=file_name_data+(128*idx);
+
+	file_paths_app_data(&file_path_setup,path,"Saved Games",NULL,NULL);
+	strcat(path,"/");
+	strcat(path,c);
+	strcat(path,".png");
+
+	element_set_bitmap(file_info_bitmap_id,path);
+
+	file_dir_name_to_name(c,str);
+	element_text_change(file_info_name_id,str);
+
+	file_dir_name_to_time(c,str);
+	element_text_change(file_info_time_id,str);
+
+	file_dir_name_to_elapsed(c,str);
+	element_text_change(file_info_elapsed_id,str);
 }
 
 /* =======================================================
@@ -302,11 +335,11 @@ void file_save_delete(void)
 
 void file_open(void)
 {
-	int							x,y,fx,fy,ty,wid,high,
+	int							x,y,fx,fy,ty,wid,high,mx,tx,half_wid,pic_high,
 								table_high,butt_wid,butt_high,
 								margin,padding,control_y_add;
 	char						checkpoint_name[256];
-	element_frame_button_type	butts_save[3]={{file_button_delete_id,"Delete",FALSE},{file_button_cancel_id,"Cancel",TRUE},{file_button_save_id,"Save",TRUE}},
+	element_frame_button_type	butts_save[3]={{file_button_delete_id,"Delete",FALSE},{file_button_cancel_id,"Cancel",TRUE},{file_button_save_id,"New Save",TRUE}},
 								butts_load[3]={{file_button_delete_id,"Delete",FALSE},{file_button_cancel_id,"Cancel",TRUE},{file_button_load_id,"Load",TRUE}};
 	element_column_type	cols[4];
 	
@@ -319,6 +352,7 @@ void file_open(void)
 		// the frame
 
 	margin=element_get_margin();
+	padding=element_get_padding();
 
 	fx=margin;
 	fy=margin;
@@ -333,6 +367,9 @@ void file_open(void)
 	}
 
 	element_get_frame_inner_space(file_frame_id,&x,&y,&wid,&table_high);
+
+	half_wid=(wid>>1)-padding;
+	mx=((x+wid)-half_wid)-padding;
 	
 		// make the file list
 		
@@ -346,7 +383,6 @@ void file_open(void)
 		butt_high=element_get_button_high();
 
 		control_y_add=element_get_control_separation_high();
-		padding=element_get_padding();
 
 		file_get_checkpoint_file_name(checkpoint_name);
 	
@@ -360,16 +396,37 @@ void file_open(void)
 		table_high-=(butt_high+padding);
 	}
 
+		// info
+
+	pic_high=(half_wid*3)/4;
+	ty=y+((table_high-(pic_high+margin+iface.font.text_size_medium+(element_get_control_high()*2)))>>1);
+
+	element_bitmap_add(NULL,file_info_bitmap_id,x,ty,half_wid,pic_high,TRUE);
+
+	tx=x+(half_wid>>2);
+	ty+=(pic_high+margin+iface.font.text_size_medium);
+
+	element_text_add("Map:",-1,tx,ty,iface.font.text_size_medium,tx_right,&iface.color.control.text,FALSE);
+	element_text_add("",file_info_name_id,(tx+10),ty,iface.font.text_size_medium,tx_left,&iface.color.control.text,FALSE);
+
+	ty+=element_get_control_high();
+	element_text_add("Time:",-1,tx,ty,iface.font.text_size_medium,tx_right,&iface.color.control.text,FALSE);
+	element_text_add("",file_info_time_id,(tx+10),ty,iface.font.text_size_medium,tx_left,&iface.color.control.text,FALSE);
+
+	ty+=element_get_control_high();
+	element_text_add("Elapsed:",-1,tx,ty,iface.font.text_size_medium,tx_right,&iface.color.control.text,FALSE);
+	element_text_add("",file_info_elapsed_id,(tx+10),ty,iface.font.text_size_medium,tx_left,&iface.color.control.text,FALSE);
+
 		// files
 
-	strcpy(cols[0].name,"Map");
-	cols[0].percent_size=0.50f;
-	strcpy(cols[1].name,"Save Time");
-	cols[1].percent_size=0.32f;
-	strcpy(cols[2].name,"Elapsed Time");
-	cols[2].percent_size=0.18f;
+	strcpy(cols[0].name,"Saved Games");
+	cols[0].percent_size=1.0f;
 
-	element_table_add(cols,file_table_data,file_directory_id,3,x,y,wid,table_high,FALSE,element_table_bitmap_document);
+	element_table_add(cols,file_table_data,file_directory_id,1,(mx+padding),y,half_wid,table_high,FALSE,element_table_bitmap_none);
+
+		// if a first item, select it
+
+	if (file_has_list) element_set_value(file_directory_id,0);
 
 		// enable buttons
 
