@@ -102,6 +102,7 @@ JSValueRef js_interface_console_open_func(JSContextRef cx,JSObjectRef func,JSObj
 	
 	if (iface.setup.game_debug) {
 		view.console.on=TRUE;
+		view.console.focus=TRUE;
 		input_clear_text_input();
 	}
 

@@ -35,6 +35,7 @@ and can be sold or given away.
 
 #define singleplayer_option_skill_id			10
 #define singleplayer_option_map_table_id		11
+#define singleplayer_option_map_bitmap_id		12
 
 #define singleplayer_option_button_ok_id		20
 #define singleplayer_option_button_cancel_id	21
@@ -50,7 +51,8 @@ extern network_setup_type	net_setup;
 extern file_path_setup_type	file_path_setup;
 
 char						skill_list[6][32]={"Easy","Medium","Hard",""};
-char						*singleplayer_option_table_map_list;
+char						*singleplayer_option_name_data,
+							*singleplayer_option_table_data;
 
 /* =======================================================
 
@@ -60,13 +62,14 @@ char						*singleplayer_option_table_map_list;
 
 void singleplayer_option_map_list_initialize(void)
 {
-	singleplayer_option_table_map_list=NULL;
+	singleplayer_option_name_data=NULL;
+	singleplayer_option_table_data=NULL;
 }
 
 void singleplayer_option_map_list_fill(void)
 {
 	int							n,nfile,sz;
-	char						*c;
+	char						*name,*data;
 	char						info_name[name_str_len],game_list[256];
 	bool						singleplayer_map_picker;
 	file_path_directory_type	*map_pick_fpd;
@@ -84,24 +87,32 @@ void singleplayer_option_map_list_fill(void)
 		// data for maps
 
 	sz=(nfile+1)*128;
-	singleplayer_option_table_map_list=malloc(sz);
-	bzero(singleplayer_option_table_map_list,sz);
+
+	singleplayer_option_table_data=malloc(sz);
+	bzero(singleplayer_option_table_data,sz);
+
+	singleplayer_option_name_data=malloc(sz);
+	bzero(singleplayer_option_name_data,sz);
 
 		// load the maps
 
-	c=singleplayer_option_table_map_list;
+	name=singleplayer_option_name_data;
+	data=singleplayer_option_table_data;
 	
 	for (n=0;n!=nfile;n++) {
 		if (!map_host_load_info(map_pick_fpd->files[n].file_name,info_name,&singleplayer_map_picker,game_list)) continue;
 		if (!singleplayer_map_picker) continue;
 
-		sprintf(c,"Bitmaps/Icons_Map;%s;%s",map_pick_fpd->files[n].file_name,info_name);
-		c+=128;
+		strcpy(name,map_pick_fpd->files[n].file_name);
+		name+=128;
+
+		strcpy(data,info_name);
+		data+=128;
 	}
 
-	*c=0x0;
+	*data=0x0;
 
-	element_set_table_data(singleplayer_option_map_table_id,TRUE,singleplayer_option_table_map_list);
+	element_set_table_data(singleplayer_option_map_table_id,FALSE,singleplayer_option_table_data);
 
 		// close the directory scan
 
@@ -110,32 +121,8 @@ void singleplayer_option_map_list_fill(void)
 
 void singleplayer_option_map_list_release(void)
 {
-	if (singleplayer_option_table_map_list!=NULL) free(singleplayer_option_table_map_list);
-}
-
-void singleplayer_option_map_list_get_name(int idx,char *name)
-{
-	char			*c;
-	char			row_str[128],str[128];
-
-	name[0]=0x0;
-
-		// get the name from between the ;; markers
-		
-	element_get_table_row(singleplayer_option_map_table_id,idx,row_str);
-	c=row_str;
-	
-	c=strchr(c,';');
-	if (c!=NULL) {
-		strncpy(str,(c+1),128);
-		str[127]=0x0;
-
-		c=strchr(str,';');
-		if (c!=NULL) *c=0x0;
-
-		strncpy(name,str,name_str_len);
-		name[name_str_len-1]=0x0;
-	}
+	if (singleplayer_option_name_data!=NULL) free(singleplayer_option_name_data);
+	if (singleplayer_option_table_data!=NULL) free(singleplayer_option_table_data);
 }
 
 /* =======================================================
@@ -181,10 +168,25 @@ int singleplayer_option_count(int simple_save_idx)
 void singleplayer_option_map_selected(void)
 {
 	int				idx;
+	char			*c,path[1024];
 
-	if (!singleplayer_map_pick_on(intro_simple_save_idx)) return;
-	
+		// set picture
+
 	idx=element_get_value(singleplayer_option_map_table_id);
+
+	if (idx==-1) {
+		element_set_bitmap(singleplayer_option_map_bitmap_id,NULL);
+	}
+	else {
+		c=singleplayer_option_name_data+(128*idx);
+
+		file_paths_data(&file_path_setup,path,"Bitmaps/Icons_Map",c,"png");
+		fprintf(stdout,"%s = %s\n",c,path);
+		element_set_bitmap(singleplayer_option_map_bitmap_id,path);
+	}
+
+		// enable OK
+	
 	element_enable(singleplayer_option_button_ok_id,(idx!=-1));
 }
 
@@ -196,8 +198,8 @@ void singleplayer_option_map_selected(void)
 
 void singleplayer_option_open(void)
 {
-	int							n,fx,fy,bx,by,wid,high,title_high,table_high,
-								margin,padding,control_y_add;
+	int							n,fx,fy,bx,by,mx,ty,wid,high,title_high,table_high,
+								half_wid,pic_high,margin,padding,control_y_add;
 	iface_sp_option_type		*sp_option;
 	element_frame_button_type	butts[2]={{singleplayer_option_button_cancel_id,"Cancel",TRUE},{singleplayer_option_button_ok_id,"Play",TRUE}};
 	element_column_type			cols[1];
@@ -261,19 +263,31 @@ void singleplayer_option_open(void)
 		// map pick
 
 	if (singleplayer_map_pick_on(intro_simple_save_idx)) {
+
+		table_high=high-(by-fy);
+		
+		half_wid=(wid>>1)-padding;
+		mx=((fx+wid)-half_wid)-padding;
+
+			// picture
+
+		pic_high=(half_wid*3)/4;
+		ty=by+((table_high-pic_high)>>1);
+
+		element_bitmap_add(NULL,singleplayer_option_map_bitmap_id,fx,ty,half_wid,pic_high,TRUE);
+
+			// table
+
 		strcpy(cols[0].name,"Map");
 		cols[0].percent_size=1.0f;
 		
-		table_high=high-(by-fy);
-
-		element_table_add(cols,NULL,singleplayer_option_map_table_id,1,fx,by,wid,table_high,FALSE,element_table_bitmap_data);
+		element_table_add(cols,NULL,singleplayer_option_map_table_id,1,(mx+padding),by,half_wid,table_high,FALSE,element_table_bitmap_none);
 	
 		singleplayer_option_map_list_fill();
 		
 		element_set_value(singleplayer_option_map_table_id,0);
+		singleplayer_option_map_selected();
 	}
-	
-	singleplayer_option_map_selected();
 }
 
 void singleplayer_option_close(void)
@@ -336,7 +350,7 @@ void singleplayer_option_click(void)
 			
 			if (singleplayer_map_pick_on(intro_simple_save_idx)) {
 				idx=element_get_value(singleplayer_option_map_table_id);
-				if (idx!=-1) singleplayer_option_map_list_get_name(idx,map_name);
+				if (idx!=-1) strcpy(map_name,(singleplayer_option_name_data+(128*idx)));
 			}
 
 				// start game
