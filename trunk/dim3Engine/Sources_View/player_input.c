@@ -1068,9 +1068,9 @@ void player_get_input(void)
 	
 	obj=server.obj_list.objs[server.player_obj_idx];
 
-		// no input if menu or console is on
+		// no input if menu or console typing is on
 
-	if ((view.menu.active) || (view.menu.fade_in) || (view.menu.fade_out) || (view.console.on)) {
+	if ((view.menu.active) || (view.menu.fade_in) || (view.menu.fade_out) || ((view.console.on) && (view.console.focus))) {
 	    obj->forward_move.moving=FALSE;
 		obj->side_move.moving=FALSE;
 		obj->vert_move.moving=FALSE;

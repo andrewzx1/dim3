@@ -329,7 +329,7 @@ typedef struct		{
 					
 typedef struct		{
 						int									nline;
-						bool								on;
+						bool								on,focus;
 						view_console_line_type				*lines;
 					} view_console_type;
 

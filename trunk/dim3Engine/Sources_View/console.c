@@ -176,6 +176,7 @@ void console_add_error(char *txt)
 		
 	if ((!app.dedicated_host) && (iface.setup.game_debug)) {
 		view.console.on=TRUE;
+		view.console.focus=FALSE;
 		input_clear_text_input();
 	}
 }

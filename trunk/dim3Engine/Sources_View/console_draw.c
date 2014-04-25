@@ -98,13 +98,15 @@ void console_draw(void)
 	}
 	
 		// input line
-		
-	strcpy(str,"]");
-	strcat(str,console_input_str);
-	if (((game_time_get_raw()>>8)&0x1)==0x0) strcat(str,"_");
 	
-	col.r=col.g=col.b=0.8f;
-	gl_text_draw(5,y,str,tx_left,FALSE,&col,1.0f);
+	if (view.console.focus) {
+		strcpy(str,"]");
+		strcat(str,console_input_str);
+		if (((game_time_get_raw()>>8)&0x1)==0x0) strcat(str,"_");
+		
+		col.r=col.g=col.b=0.8f;
+		gl_text_draw(5,y,str,tx_left,FALSE,&col,1.0f);
+	}
 
 		// version
 
@@ -161,6 +163,7 @@ void console_input(void)
 	if (!view.console.on) {
 		if (input_action_get_state_single(nc_console)) {
 			view.console.on=TRUE;
+			view.console.focus=TRUE;
 			input_clear_text_input();
 		}
 		return;
@@ -172,6 +175,10 @@ void console_input(void)
 		view.console.on=FALSE;
 		return;
 	}
+
+		// check if focused
+
+	if (!view.console.focus) return;
 	
 		// typing
 	
