@@ -494,7 +494,7 @@ bool player_message_input(obj_type *obj)
 				msg[len-1]=0x0;
 				net_client_send_chat(obj,msg);
 				object_get_tint(obj,&col);
-				chat_add_message(obj->name,msg,&col);
+				chat_add_message(obj,msg,&col);
 			}
 			return(FALSE);
 		}
@@ -531,7 +531,7 @@ bool player_message_input(obj_type *obj)
 			msg[len-1]=0x0;
 			net_client_send_chat(obj,msg);
 			object_get_tint(obj,&col);
-			chat_add_message(obj->name,msg,&col);
+			chat_add_message(obj,msg,&col);
 			
 			strcpy(msg,nstr);
 			len=strlen(msg);

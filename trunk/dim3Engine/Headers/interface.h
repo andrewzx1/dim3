@@ -1047,7 +1047,7 @@ extern void ring_draw_position(effect_type *effect,int count,d3pnt *pnt);
 // chats
 //
 
-extern void chat_add_message(char *name,char *str,d3col *col);
+extern void chat_add_message(obj_type *obj,char *str,d3col *col);
 
 //
 // tints
