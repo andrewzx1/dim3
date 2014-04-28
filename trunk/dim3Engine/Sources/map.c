@@ -288,8 +288,9 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 		map_textures_read_setup(&map);
 		
 		for (n=0;n!=max_map_texture;n++) {
-			progress_update();
 			map_textures_read_texture(&map,n);
+			
+			if ((n%4)==0) progress_update();
 		}
 	}
 
@@ -634,8 +635,6 @@ void map_end(void)
 		fog_draw_release();
 		rain_draw_release();
 	}
-	fprintf(stdout,"6");
-	fflush(stdout);
 
 		// free some map lists
 

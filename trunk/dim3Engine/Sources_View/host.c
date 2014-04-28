@@ -230,24 +230,6 @@ void host_map_list_shutdown(void)
       
 ======================================================= */
 
-void host_map_list_get_name(int idx,char *name)
-{
-	char			*c;
-	char			row_str[128];
-
-	name[0]=0x0;
-
-	element_get_table_row(host_table_id,idx,row_str);
-	c=row_str;
-		
-	c=strchr(c,';');
-	if (c!=NULL) {
-		strcpy(name,(c+1));
-		c=strchr(name,';');
-		if (c!=NULL) *c=0x0;
-	}
-}
-
 void host_map_list_to_table(void)
 {
 	int				n,k;
@@ -262,7 +244,7 @@ void host_map_list_to_table(void)
 		if (setup.network.map_list.count==0) return;
 
 		for (n=0;n!=host_table_map_count;n++) {
-			host_map_list_get_name(n,name);
+			element_get_table_column_data(host_table_id,n,1,name,256);
 			if (strcmp(setup.network.map_list.maps[0].name,name)==0) {
 				host_first_map_idx=n;
 				return;
@@ -280,7 +262,7 @@ void host_map_list_to_table(void)
 
 			// get map name
 
-		host_map_list_get_name(n,name);
+		element_get_table_column_data(host_table_id,n,1,name,256);
 
 			// find if map is in list
 
@@ -316,7 +298,7 @@ void host_map_table_to_list(void)
 		idx=element_get_value(host_table_id);
 		if (idx==-1) return;
 
-		host_map_list_get_name(idx,name);
+		element_get_table_column_data(host_table_id,idx,1,name,256);
 
 		setup.network.map_list.count=1;
 		strcpy(setup.network.map_list.maps[0].name,name);
@@ -331,7 +313,7 @@ void host_map_table_to_list(void)
 	for (n=0;n!=host_table_map_count;n++) {
 		if (!element_get_table_checkbox(host_table_id,n)) continue;
 	
-		host_map_list_get_name(n,name);
+		element_get_table_column_data(host_table_id,n,1,name,256);
 		strcpy(setup.network.map_list.maps[count++].name,name);
 	}
 
