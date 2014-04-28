@@ -263,7 +263,7 @@ extern void element_enable_table_checkboxes(int id,bool enable);
 extern void element_set_table_checkbox(int id,int idx,bool on);
 extern bool element_get_table_checkbox(int id,int idx);
 extern bool element_has_table_check(int id);
-extern void element_get_table_row(int id,int idx,char *row_str);
+extern void element_get_table_column_data(int id,int row_idx,int col_idx,char *str,int str_len);
 extern bool element_replace_model(int id,char *name,char *animate,float resize,d3pnt *offset,d3ang *rot);
 extern bool element_model_show_mesh(int id,char *name);
 extern bool element_model_hide_mesh(int id,char *name);

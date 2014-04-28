@@ -2378,13 +2378,13 @@ unsigned long element_draw_table_get_image_gl_id(element_type *element,int row_i
 	c=element->data+(row_idx*128);
 	
 	strcpy(subdir,c);
-	c2=strchr(subdir,';');
+	c2=strchr(subdir,'\t');
 	if (c2==NULL) return(-1);
 
 	*c2=0x0;
 	strcpy(filename,(c2+1));
 
-	c2=strchr(filename,';');
+	c2=strchr(filename,'\t');
 	if (c2==NULL) return(-1);
 
 	*c2=0x0;
@@ -2545,9 +2545,9 @@ void element_draw_table_line_data(element_type *element,int x,int y,int row,int 
 
 				// get to correct text
 
-			c2=strchr(txt,';');
+			c2=strchr(txt,'\t');
 			if (c2!=NULL) {
-				c2=strchr((c2+1),';');
+				c2=strchr((c2+1),'\t');
 				if (c2!=NULL) {
 					strcpy(txt,(c2+1));
 				}
@@ -3711,7 +3711,7 @@ void element_set_value_string(int id,char *str)
 void element_sort_table_data(element_type *element)
 {
 	int				n,k,idx,row_count,sz,m_sz;
-	char			*c,*c_cmp,*c2,*c2_cmp,*data;
+	char			*c,*c2,*data;
 
 	row_count=element_get_table_row_count(element);
 	if (row_count==0) return;
@@ -3724,19 +3724,13 @@ void element_sort_table_data(element_type *element)
 	for (n=0;n!=row_count;n++) {
 		c=element->data+(n*128);
 
-		c_cmp=strrchr(c,';');
-		if (c_cmp==NULL) c_cmp=c;
-
 		idx=-1;
 
 		for (k=0;k!=n;k++) {
 
 			c2=data+(k*128);
 
-			c2_cmp=strrchr(c2,';');
-			if (c2_cmp==NULL) c2_cmp=c;
-
-			if (strcasecmp(c_cmp,c2_cmp)<=0) {
+			if (strcasecmp(c,c2)<=0) {
 				idx=k;
 				break;
 			}
@@ -3875,15 +3869,37 @@ bool element_has_table_check(int id)
 	return(hit);
 }
 
-void element_get_table_row(int id,int idx,char *row_str)
+void element_get_table_column_data(int id,int row_idx,int col_idx,char *str,int str_len)
 {
+	char			*c,row_str[128];
 	element_type	*element;
+	
+	*str=0x0;
 	
 	SDL_mutexP(element_thread_lock);
 
 	element=element_find(id);
 	if (element!=NULL) {
-		strcpy(row_str,(element->data+(idx*128)));
+	
+		strcpy(row_str,(element->data+(row_idx*128)));
+		
+		c=row_str;
+		
+		while (col_idx>0) {
+			c=strchr(c,'\t');
+			if (c==NULL) break;
+			
+			c++;
+			col_idx--;
+		}
+		
+		if (c!=NULL) {
+			strncpy(str,c,str_len);
+			str[str_len-1]=0x0;
+			
+			c=strchr(str,'\t');
+			if (c!=NULL) *c=0x0;
+		}
 	}
 	
 	SDL_mutexV(element_thread_lock);

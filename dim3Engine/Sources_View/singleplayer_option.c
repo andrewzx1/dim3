@@ -51,8 +51,7 @@ extern network_setup_type	net_setup;
 extern file_path_setup_type	file_path_setup;
 
 char						skill_list[6][32]={"Easy","Medium","Hard",""};
-char						*singleplayer_option_name_data,
-							*singleplayer_option_table_data;
+char						*singleplayer_option_table_data;
 
 /* =======================================================
 
@@ -62,14 +61,13 @@ char						*singleplayer_option_name_data,
 
 void singleplayer_option_map_list_initialize(void)
 {
-	singleplayer_option_name_data=NULL;
 	singleplayer_option_table_data=NULL;
 }
 
 void singleplayer_option_map_list_fill(void)
 {
 	int							n,nfile,sz;
-	char						*name,*data;
+	char						*data;
 	char						info_name[name_str_len],game_list[256];
 	bool						singleplayer_map_picker;
 	file_path_directory_type	*map_pick_fpd;
@@ -91,28 +89,21 @@ void singleplayer_option_map_list_fill(void)
 	singleplayer_option_table_data=malloc(sz);
 	bzero(singleplayer_option_table_data,sz);
 
-	singleplayer_option_name_data=malloc(sz);
-	bzero(singleplayer_option_name_data,sz);
-
 		// load the maps
 
-	name=singleplayer_option_name_data;
 	data=singleplayer_option_table_data;
 	
 	for (n=0;n!=nfile;n++) {
 		if (!map_host_load_info(map_pick_fpd->files[n].file_name,info_name,&singleplayer_map_picker,game_list)) continue;
 		if (!singleplayer_map_picker) continue;
 
-		strcpy(name,map_pick_fpd->files[n].file_name);
-		name+=128;
-
-		strcpy(data,info_name);
+		sprintf(data,"%s\t%s",info_name,map_pick_fpd->files[n].file_name);
 		data+=128;
 	}
 
 	*data=0x0;
 
-	element_set_table_data(singleplayer_option_map_table_id,FALSE,singleplayer_option_table_data);
+	element_set_table_data(singleplayer_option_map_table_id,TRUE,singleplayer_option_table_data);
 
 		// close the directory scan
 
@@ -121,7 +112,6 @@ void singleplayer_option_map_list_fill(void)
 
 void singleplayer_option_map_list_release(void)
 {
-	if (singleplayer_option_name_data!=NULL) free(singleplayer_option_name_data);
 	if (singleplayer_option_table_data!=NULL) free(singleplayer_option_table_data);
 }
 
@@ -168,7 +158,7 @@ int singleplayer_option_count(int simple_save_idx)
 void singleplayer_option_map_selected(void)
 {
 	int				idx;
-	char			*c,path[1024];
+	char			name[name_str_len],path[1024];
 
 		// set picture
 
@@ -178,10 +168,9 @@ void singleplayer_option_map_selected(void)
 		element_set_bitmap(singleplayer_option_map_bitmap_id,NULL);
 	}
 	else {
-		c=singleplayer_option_name_data+(128*idx);
+		element_get_table_column_data(singleplayer_option_map_table_id,idx,1,name,name_str_len);
 
-		file_paths_data(&file_path_setup,path,"Bitmaps/Icons_Map",c,"png");
-		fprintf(stdout,"%s = %s\n",c,path);
+		file_paths_data(&file_path_setup,path,"Bitmaps/Icons_Map",name,"png");
 		element_set_bitmap(singleplayer_option_map_bitmap_id,path);
 	}
 
@@ -350,7 +339,7 @@ void singleplayer_option_click(void)
 			
 			if (singleplayer_map_pick_on(intro_simple_save_idx)) {
 				idx=element_get_value(singleplayer_option_map_table_id);
-				if (idx!=-1) strcpy(map_name,(singleplayer_option_name_data+(128*idx)));
+				if (idx!=-1) element_get_table_column_data(singleplayer_option_map_table_id,idx,1,map_name,name_str_len);
 			}
 
 				// start game

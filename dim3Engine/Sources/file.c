@@ -379,11 +379,11 @@ bool game_file_save(bool no_progress,bool suspend_save,char *err_str)
 		
 	game_file_add_chunk(&view.time,1,sizeof(view_time_type));
 	game_file_add_chunk(&camera,1,sizeof(camera_type));
-
-	if (!no_progress) progress_update();
 	
 	game_file_add_chunk(&server.time,1,sizeof(server_time_type));
 	game_file_add_chunk(&js.timer_tick,1,sizeof(int));
+
+	if (!no_progress) progress_update();
 	
 		// objects, weapons, and projectile setups
 
@@ -391,8 +391,6 @@ bool game_file_save(bool no_progress,bool suspend_save,char *err_str)
 	game_file_add_chunk(&count,1,sizeof(int));
 
 	for (n=0;n!=max_obj_list;n++) {
-		if (!no_progress) progress_update();
-
 		obj=server.obj_list.objs[n];
 		if (obj==NULL) continue;
 
@@ -420,6 +418,8 @@ bool game_file_save(bool no_progress,bool suspend_save,char *err_str)
 				game_file_add_chunk(proj_setup,1,sizeof(proj_setup_type));
 			}
 		}
+		
+		if (!no_progress) progress_update();
 	}
 
 		// projectiles, effects and decals
@@ -428,41 +428,41 @@ bool game_file_save(bool no_progress,bool suspend_save,char *err_str)
 	game_file_add_chunk(&count,1,sizeof(int));
 
 	for (n=0;n!=max_proj_list;n++) {
-		if (!no_progress) progress_update();
-
 		proj=server.proj_list.projs[n];
 		if (!proj->on) continue;
 
 		game_file_add_chunk(&n,1,sizeof(int));
 		game_file_add_chunk(proj,1,sizeof(proj_type));
+		
+		if (!no_progress) progress_update();
 	}
 
 	count=effect_count_list();
 	game_file_add_chunk(&count,1,sizeof(int));
 
 	for (n=0;n!=max_effect_list;n++) {
-		if (!no_progress) progress_update();
-
 		effect=server.effect_list.effects[n];
 		if (effect==NULL) continue;
 		if (!effect->on) continue;
 
 		game_file_add_chunk(&n,1,sizeof(int));
 		game_file_add_chunk(effect,1,sizeof(effect_type));
+		
+		if (!no_progress) progress_update();
 	}
 
 	count=decal_count_list();
 	game_file_add_chunk(&count,1,sizeof(int));
 
 	for (n=0;n!=max_decal_list;n++) {
-		if (!no_progress) progress_update();
-
 		decal=server.decal_list.decals[n];
 		if (decal==NULL) continue;
 		if (!decal->on) continue;
 
 		game_file_add_chunk(&n,1,sizeof(int));
 		game_file_add_chunk(decal,1,sizeof(decal_type));
+		
+		if (!no_progress) progress_update();
 	}
 
 		// spots (mostly for checkpoint data)

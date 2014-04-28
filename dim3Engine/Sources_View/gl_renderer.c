@@ -282,10 +282,10 @@ bool gl_screen_shot(int lft_x,int top_y,int wid,int high,bool thumbnail,char *pa
 	dsz=(wid*3)*high;
 	
 	if (thumbnail) {
-		x_skip=wid/256;
-		ss_wid=256;
+		x_skip=wid/512;
+		ss_wid=512;
 
-		ss_high=(high*256)/wid;
+		ss_high=(high*512)/wid;
 		y_skip=high/ss_high;
 
 		dsz=(ss_wid*3)*ss_high;
