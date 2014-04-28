@@ -719,6 +719,7 @@ int element_table_add_get_data_size(char *row_data)
 void element_table_add(element_column_type* cols,char *row_data,int id,int ncolumn,int x,int y,int wid,int high,bool checkbox,int bitmap_mode)
 {
 	int				n,sz;
+	float			checkbox_percent;
 	element_type	*element;
 
 	SDL_mutexP(element_thread_lock);
@@ -776,10 +777,12 @@ void element_table_add(element_column_type* cols,char *row_data,int id,int ncolu
 		element->setup.table.ncolumn=ncolumn+1;
 		memmove(&element->setup.table.cols[1],cols,(sizeof(element_column_type)*ncolumn));
 
-		element->setup.table.cols[0].percent_size=element_table_check_column_size;
+		checkbox_percent=((float)element_get_control_short_wid())/((float)wid);
+
+		element->setup.table.cols[0].percent_size=checkbox_percent;
 		element->setup.table.cols[0].name[0]=0x0;
 
-		element->setup.table.cols[1].percent_size-=element_table_check_column_size;
+		element->setup.table.cols[1].percent_size-=checkbox_percent;
 	}
 	
 	SDL_mutexV(element_thread_lock);
@@ -2494,7 +2497,7 @@ void element_draw_table_line_data(element_type *element,int x,int y,int row,int 
 			checked=FALSE;
 			if ((row>=0) && (row<element_table_max_check)) checked=element->setup.table.checks[row];
 
-			element_draw_checkbox_control((dx+4),dy,(col_wid-20),checked,TRUE,FALSE);
+			element_draw_checkbox_control((dx-4),(dy+2),col_wid,checked,TRUE,FALSE);
 
 			dx+=col_wid;
 			continue;

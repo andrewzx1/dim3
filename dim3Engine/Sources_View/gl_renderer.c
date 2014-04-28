@@ -261,8 +261,8 @@ bool gl_is_size_widescreen(int wid,int high)
 
 bool gl_screen_shot(int lft_x,int top_y,int wid,int high,bool thumbnail,char *path)
 {
-	int					x,y,x_skip,y_skip,
-						ss_wid,ss_high,dsz;
+	int					x,y,ss_wid,ss_high,dsz;
+	float				x_off,y_off,x_add,y_add;
 	unsigned char		*pixel_buffer,*data,*sptr,*dptr,*s2ptr,*d2ptr;
 	bool				ok;
 	
@@ -275,18 +275,18 @@ bool gl_screen_shot(int lft_x,int top_y,int wid,int high,bool thumbnail,char *pa
 		// then reduce the picture (but keep
 		// the dimensions)
 		
-	x_skip=y_skip=1;
+	x_add=y_add=1.0f;
 	ss_wid=wid;
 	ss_high=high;
 
 	dsz=(wid*3)*high;
 	
 	if (thumbnail) {
-		x_skip=wid/512;
+		x_add=((float)wid)/512.0f;
 		ss_wid=512;
 
 		ss_high=(high*512)/wid;
-		y_skip=high/ss_high;
+		y_add=((float)high)/((float)ss_high);
 
 		dsz=(ss_wid*3)*ss_high;
 	}
@@ -300,25 +300,31 @@ bool gl_screen_shot(int lft_x,int top_y,int wid,int high,bool thumbnail,char *pa
 	}
 	
 	bzero(data,dsz);
+
+	y_off=0.0f;
 	
-	sptr=pixel_buffer;
 	dptr=data+((ss_high-1)*(ss_wid*3));
 
 	for (y=0;y!=ss_high;y++) {
+
+		x_off=0.0f;
 	
-		s2ptr=sptr;
+		sptr=pixel_buffer+(((int)y_off)*(wid*3));
 		d2ptr=dptr;
 		
 		for (x=0;x!=ss_wid;x++) {
-			*d2ptr++=*s2ptr++;
-			*d2ptr++=*s2ptr++;
-			*d2ptr++=*s2ptr++;
+
+			s2ptr=sptr+(((int)x_off)*3);
+
+			*d2ptr++=*s2ptr;
+			*d2ptr++=*(s2ptr+1);
+			*d2ptr++=*(s2ptr+2);
 			
-			s2ptr+=((x_skip-1)*3);
+			x_off+=x_add;
 		}
 			
-		sptr+=((wid*3)*y_skip);
 		dptr-=(ss_wid*3);
+		y_off+=y_add;
 	}
 
 	free(pixel_buffer);

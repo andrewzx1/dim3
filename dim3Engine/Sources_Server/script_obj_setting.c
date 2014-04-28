@@ -948,7 +948,7 @@ JSValueRef js_obj_chat_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,s
 	
 	if ((net_setup.mode!=net_mode_none) && (object_networkable(obj))) net_client_send_chat(obj,msg);
 	object_get_tint(obj,&col);
-	chat_add_message(obj->name,msg,&col);
+	chat_add_message(obj,msg,&col);
 
 	return(script_null_to_value(cx));
 }

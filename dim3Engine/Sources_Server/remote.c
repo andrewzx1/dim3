@@ -673,7 +673,7 @@ void remote_chat(network_request_remote_chat *chat)
 		// update chat
 
 	object_get_tint(obj,&col);
-	chat_add_message(obj->name,chat->str,&col);
+	chat_add_message(obj,chat->str,&col);
 }
 
 void remote_sound(network_request_remote_sound *sound)

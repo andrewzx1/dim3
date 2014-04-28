@@ -32,6 +32,7 @@ and can be sold or given away.
 #include "interface.h"
 
 extern app_type				app;
+extern server_type			server;
 extern view_type			view;
 extern iface_type			iface;
 
@@ -49,10 +50,23 @@ void chat_clear_messages(void)
 	view.chat.type_str[0]=0x0;
 }
 
-void chat_add_message(char *name,char *str,d3col *col)
+void chat_add_message(obj_type *obj,char *str,d3col *col)
 {
 	int					idx;
+	char				name[name_str_len];
+	obj_type			*obj2;
 	view_chat_line_type	*line;
+
+		// get name
+		// if it's a vehicle, we need to
+		// substitute the entered object's name
+	
+	strcpy(name,obj->name);
+
+	if ((obj->vehicle.on) && (obj->vehicle.attach_obj_idx!=-1)) {
+		obj2=server.obj_list.objs[obj->vehicle.attach_obj_idx];
+		if (obj2!=NULL) strcpy(name,obj2->name);
+	}
 
 		// if a dedicated host,
 		// then just stdout chats
