@@ -43,8 +43,13 @@ and can be sold or given away.
 #define join_button_cancel_id			11
 #define join_button_rescan_id			12
 
-#define join_lan_table_id				20
-#define join_wan_table_id				21
+#define join_map_bitmap_id				20
+#define join_lan_table_id				21
+#define join_wan_table_id				22
+#define join_game_name_id				23
+#define join_map_name_id				24
+#define join_player_count_id			25
+#define join_ping_id					26
 
 #define join_status_id					30
 
@@ -431,7 +436,8 @@ void join_news_pane(void)
 void join_lan_internet_hosts(void)
 {
 	int						fx,fy,y,wid,high,table_high,
-							err_high,padding;
+							mx,tx,ty,half_wid,pic_high,err_high,
+							padding,margin;
 	char					str[1024],nstr[32];
 	element_column_type		cols[4];
 
@@ -442,12 +448,46 @@ void join_lan_internet_hosts(void)
 	element_enable(join_button_join_id,FALSE);
 	element_text_change(join_status_id,"");
 	
-		// hosts tables
-		
 	padding=element_get_padding();
+	margin=element_get_margin();
 
 	element_get_frame_inner_space(join_frame_id,&fx,&fy,&wid,&high);
+	
+		// join bitmap
 
+	half_wid=(wid>>1)-padding;
+	mx=((fx+wid)-half_wid)-padding;
+
+		// picture
+
+	pic_high=(half_wid*3)/4;
+	ty=fy+((high-(pic_high+margin+iface.font.text_size_medium+(element_get_control_high()*3)))>>1);
+
+	element_bitmap_add(NULL,join_map_bitmap_id,fx,ty,half_wid,pic_high,TRUE);
+	
+	tx=fx+(half_wid>>2);
+	ty+=(pic_high+margin+iface.font.text_size_medium);
+
+	element_text_add("Game:",-1,tx,ty,iface.font.text_size_medium,tx_right,&iface.color.control.text,FALSE);
+	element_text_add("",join_game_name_id,(tx+10),ty,iface.font.text_size_medium,tx_left,&iface.color.control.text,FALSE);
+
+	ty+=element_get_control_high();
+	element_text_add("Map:",-1,tx,ty,iface.font.text_size_medium,tx_right,&iface.color.control.text,FALSE);
+	element_text_add("",join_map_name_id,(tx+10),ty,iface.font.text_size_medium,tx_left,&iface.color.control.text,FALSE);
+
+	ty+=element_get_control_high();
+	element_text_add("Players:",-1,tx,ty,iface.font.text_size_medium,tx_right,&iface.color.control.text,FALSE);
+	element_text_add("",join_player_count_id,(tx+10),ty,iface.font.text_size_medium,tx_left,&iface.color.control.text,FALSE);
+	
+	ty+=element_get_control_high();
+	element_text_add("Ping:",-1,tx,ty,iface.font.text_size_medium,tx_right,&iface.color.control.text,FALSE);
+	element_text_add("",join_ping_id,(tx+10),ty,iface.font.text_size_medium,tx_left,&iface.color.control.text,FALSE);
+	
+		// hosts tables
+		
+	table_high=((high-padding)/2);
+		
+/*
 	table_high=high;
 
 	switch (join_mode) {
@@ -459,23 +499,25 @@ void join_lan_internet_hosts(void)
 			table_high-=(err_high+padding);
 			break;
 	}
-
-	strcpy(cols[0].name,"Local Hosts");
-	cols[0].percent_size=0.4f;
-	strcpy(cols[1].name,"Game");
-	cols[1].percent_size=0.35f;
-	strcpy(cols[2].name,"Players");
-	cols[2].percent_size=0.10f;
-	strcpy(cols[3].name,"Ping");
-	cols[3].percent_size=0.15f;
+*/
 
 		// lan list
 
+	strcpy(cols[0].name,"Local Hosts");
+	cols[0].percent_size=1.0f;
+	
 	y=fy;
+	element_table_add(cols,NULL,join_lan_table_id,1,(mx+padding),y,half_wid,table_high,FALSE,element_table_bitmap_none);
 
-	element_table_add(cols,NULL,join_lan_table_id,4,fx,y,wid,table_high,FALSE,element_table_bitmap_data);
+		// wan list
+		
+	strcpy(cols[0].name,"Internet Hosts");
+	cols[0].percent_size=1.0f;
 
-		// wan list (if on),
+	y+=(table_high+padding);
+	element_table_add(cols,NULL,join_wan_table_id,1,(mx+padding),y,half_wid,table_high,FALSE,element_table_bitmap_none);
+	
+	/*(if on),
 		// or error if problem gathering list
 
 	if (join_mode==join_mode_wan_lan) {
@@ -501,10 +543,10 @@ void join_lan_internet_hosts(void)
 			element_text_box_add(str,-1,fx,y,wid,err_high,TRUE);
 		}
 	}
-
+*/
 		// start the thread to build the table
 		
-	join_ping_thread_start();
+//	join_ping_thread_start();
 }
 
 void join_create_pane(void)

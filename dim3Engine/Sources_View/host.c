@@ -291,6 +291,8 @@ void host_map_table_to_list(void)
 	char			path[1024];
 
 	setup.network.map_list.count=0;
+	
+	fprintf(stdout,"HERE\n");
 
 		// single map?
 
@@ -317,6 +319,8 @@ void host_map_table_to_list(void)
 
 		setup.network.map_list.count=count;
 	}
+	
+	fprintf(stdout,"count=%d\n",setup.network.map_list.count);
 
 		// picture
 
@@ -387,11 +391,13 @@ void host_game_pane(void)
 		// fill table with maps
 
 	host_fill_map_table(iface.multiplayer.game_list.games[setup.network.game_type].name);
+	
+	host_map_list_to_table();
 
 	element_set_value(host_table_id,host_first_map_idx);
 	element_make_selection_visible(host_table_id);
 
-	host_map_list_to_table();
+	host_map_table_to_list();
 }
 
 void host_options_pane(void)
