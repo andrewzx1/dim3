@@ -291,8 +291,6 @@ void host_map_table_to_list(void)
 	char			path[1024];
 
 	setup.network.map_list.count=0;
-	
-	fprintf(stdout,"HERE\n");
 
 		// single map?
 
@@ -319,8 +317,6 @@ void host_map_table_to_list(void)
 
 		setup.network.map_list.count=count;
 	}
-	
-	fprintf(stdout,"count=%d\n",setup.network.map_list.count);
 
 		// picture
 
