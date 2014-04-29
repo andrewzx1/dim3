@@ -224,7 +224,7 @@ void file_save_selected(void)
 			// info
 		
 		element_set_bitmap(file_info_bitmap_id,NULL);
-		element_text_change(file_info_name_id,"[No Game Selected]");
+		element_text_change(file_info_name_id,"");
 		element_text_change(file_info_time_id,"");
 		element_text_change(file_info_elapsed_id,"");
 		return;
