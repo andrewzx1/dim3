@@ -46,14 +46,16 @@ and can be sold or given away.
 #define join_map_bitmap_id				20
 #define join_lan_table_id				21
 #define join_wan_table_id				22
-#define join_game_name_id				23
-#define join_map_name_id				24
-#define join_player_count_id			25
-#define join_ping_id					26
 
-#define join_status_id					30
+#define join_host_status_id				30
+#define join_game_name_id				31
+#define join_map_name_id				32
+#define join_player_count_id			33
+#define join_ping_id					34
 
-#define join_news_id					40
+#define join_status_id					40
+
+#define join_news_id					50
 
 #define join_mode_wan_lan				0
 #define join_mode_lan					1
@@ -64,6 +66,7 @@ extern server_type			server;
 extern iface_type			iface;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
+extern file_path_setup_type	file_path_setup;
 
 int							join_mode,join_tab_value,join_thread_lan_start_tick;
 char						*join_table_data,*join_news;
@@ -71,15 +74,15 @@ bool						join_thread_started,
 							join_thread_quit,join_run_wan;
 SDL_Thread					*join_lan_thread,*join_wan_thread;
 
-join_server_host_list_type	*join_host_lan_list,*join_host_wan_list;
+join_server_host_list_type	*join_lan_list,*join_wan_list;
 			
 /* =======================================================
 
-      Build Join List
+      Fill Table Join List
       
 ======================================================= */
 
-void join_create_list(join_server_host_list_type *list,int table_id)
+void join_fill_table_with_host_list(join_server_host_list_type *list,int table_id)
 {
 	int						n,sz;
 	char					*c,*row_data;
@@ -98,17 +101,7 @@ void join_create_list(join_server_host_list_type *list,int table_id)
 	c=row_data;
 	
 	for (n=0;n!=list->count;n++) {
-		if (host->pinged) {
-			if (!host->unreachable) {
-				snprintf(c,128,"Bitmaps/Icons_Map;%s;%s\n%s\tType:%s\nMap:%s\t%d/%d\t%dms",host->map_name,host->name,host->ip,host->game_name,host->map_name,host->player_list.count,host->player_list.max_count,host->ping_msec);
-			}
-			else {
-				snprintf(c,128,"Bitmaps/Icons_Map;;%s\n%s\tUnreachable\t--\t--",host->name,host->ip);
-			}
-		}
-		else {
-			snprintf(c,128,"Bitmaps/Icons_Map;;%s\n%s\tQuerying...\t--\t--",host->name,host->ip);
-		}
+		snprintf(c,128,"%s [%s]",host->name,host->ip);
 		c[127]=0x0;
 		
 		c+=128;
@@ -250,8 +243,8 @@ int join_ping_thread_lan(void *arg)
 		
 		if (net_recvfrom_mesage(broadcast_sock,NULL,&action,msg,NULL)) {
 			if (action==net_action_reply_info) {
-				good_reply=join_ping_thread_add_host(join_host_lan_list,join_thread_lan_start_tick,(network_reply_info*)msg);
-				if (good_reply) join_create_list(join_host_lan_list,join_lan_table_id);
+				good_reply=join_ping_thread_add_host(join_lan_list,join_thread_lan_start_tick,(network_reply_info*)msg);
+				if (good_reply) join_fill_table_with_host_list(join_lan_list,join_lan_table_id);
 			}
 		}
 		
@@ -337,12 +330,12 @@ int join_ping_thread_wan(void *arg)
 		// run ping until finished or
 		// join page ends
 		
-	for (n=0;n!=join_host_wan_list->count;n++) {
+	for (n=0;n!=join_wan_list->count;n++) {
 		if (join_thread_quit) break;
 		
 			// ping the host
 			
-		host=&join_host_wan_list->hosts[n];
+		host=&join_wan_list->hosts[n];
 			
 		msec=time_get();
 
@@ -355,7 +348,7 @@ int join_ping_thread_wan(void *arg)
 		
 			// update list
 
-		join_create_list(join_host_wan_list,join_wan_table_id);
+		join_fill_table_with_host_list(join_wan_list,join_wan_table_id);
 	}
 
 	element_table_busy(join_wan_table_id,FALSE);
@@ -379,12 +372,12 @@ void join_ping_thread_start(void)
 		// wan table OK
 
 	join_run_wan=FALSE;
-	if (join_mode==join_mode_wan_lan) join_run_wan=join_host_wan_list->count!=0;
+	if (join_mode==join_mode_wan_lan) join_run_wan=join_wan_list->count!=0;
 	
 		// tables are busy
 		// local table is always cleared
 
-	join_host_lan_list->count=0;
+	join_lan_list->count=0;
 
 	element_set_table_data(join_lan_table_id,FALSE,NULL);
 	element_table_busy(join_lan_table_id,TRUE);
@@ -409,6 +402,85 @@ void join_ping_thread_end(void)
 	if (join_run_wan) SDL_WaitThread(join_wan_thread,NULL);
 	
 	join_thread_started=FALSE;
+}
+
+/* =======================================================
+
+      Join Bitmap and Info
+      
+======================================================= */
+
+void join_table_host_selected(join_server_host_list_type *join_list,int table_id)
+{
+	int						idx;
+	char					str[256],path[1024];
+	join_server_host_type	*host;
+
+	idx=element_get_value(table_id);
+
+		// nothing selected
+
+	if (idx==-1) {
+		element_set_bitmap(join_map_bitmap_id,NULL);
+		element_enable(join_button_join_id,FALSE);
+		element_text_change(join_host_status_id,"No Selection");
+		element_text_change(join_game_name_id,"");
+		element_text_change(join_map_name_id,"");
+		element_text_change(join_player_count_id,"");
+		element_text_change(join_ping_id,"");
+		return;
+	}
+
+	host=&join_list->hosts[idx];
+
+		// pinging
+
+	if (!host->pinged) {
+		element_set_bitmap(join_map_bitmap_id,NULL);
+		element_enable(join_button_join_id,FALSE);
+		element_text_change(join_host_status_id,"Pinging...");
+		element_text_change(join_game_name_id,"");
+		element_text_change(join_map_name_id,"");
+		element_text_change(join_player_count_id,"");
+		element_text_change(join_ping_id,"");
+		return;
+	}
+
+		// selected item but bad read
+
+	if (host->unreachable) {
+		element_enable(join_map_bitmap_id,FALSE);
+		element_text_change(join_host_status_id,"Unreachable");
+		element_text_change(join_game_name_id,"");
+		element_text_change(join_map_name_id,"");
+		element_text_change(join_player_count_id,"");
+		element_text_change(join_ping_id,"");
+		element_text_change(join_ping_id,"");
+		return;
+	}
+
+		// good item
+
+	file_paths_data(&file_path_setup,path,"Bitmaps/Icons_Map",host->map_name,"png");
+	element_set_bitmap(join_map_bitmap_id,path);
+
+	if (host->player_list.count<host->player_list.max_count) {
+		element_text_change(join_host_status_id,"OK");
+	}
+	else {
+		element_text_change(join_host_status_id,"Full");
+	}
+
+	element_text_change(join_game_name_id,host->game_name);
+	element_text_change(join_map_name_id,host->map_name);
+
+	sprintf(str,"%d/%d",host->player_list.count,host->player_list.max_count);
+	element_text_change(join_player_count_id,str);
+
+	sprintf(str,"%d msec",host->ping_msec);
+	element_text_change(join_ping_id,str);
+
+	element_enable(join_button_join_id,TRUE);
 }
 
 /* =======================================================
@@ -461,13 +533,17 @@ void join_lan_internet_hosts(void)
 		// picture
 
 	pic_high=(half_wid*3)/4;
-	ty=fy+((high-(pic_high+margin+iface.font.text_size_medium+(element_get_control_high()*3)))>>1);
+	ty=fy+((high-(pic_high+margin+iface.font.text_size_medium+(element_get_control_high()*4)))>>1);
 
 	element_bitmap_add(NULL,join_map_bitmap_id,fx,ty,half_wid,pic_high,TRUE);
 	
 	tx=fx+(half_wid>>2);
 	ty+=(pic_high+margin+iface.font.text_size_medium);
 
+	element_text_add("Status:",-1,tx,ty,iface.font.text_size_medium,tx_right,&iface.color.control.text,FALSE);
+	element_text_add("",join_host_status_id,(tx+10),ty,iface.font.text_size_medium,tx_left,&iface.color.control.text,FALSE);
+
+	ty+=element_get_control_high();
 	element_text_add("Game:",-1,tx,ty,iface.font.text_size_medium,tx_right,&iface.color.control.text,FALSE);
 	element_text_add("",join_game_name_id,(tx+10),ty,iface.font.text_size_medium,tx_left,&iface.color.control.text,FALSE);
 
@@ -516,6 +592,9 @@ void join_lan_internet_hosts(void)
 
 	y+=(table_high+padding);
 	element_table_add(cols,NULL,join_wan_table_id,1,(mx+padding),y,half_wid,table_high,FALSE,element_table_bitmap_none);
+
+	join_fill_table_with_host_list(join_wan_list,join_wan_table_id);
+
 	
 	/*(if on),
 		// or error if problem gathering list
@@ -526,7 +605,7 @@ void join_lan_internet_hosts(void)
 
 		element_table_add(cols,NULL,join_wan_table_id,4,fx,y,wid,table_high,FALSE,element_table_bitmap_data);
 
-		join_create_list(join_host_wan_list,join_wan_table_id);
+		join_fill_table_with_host_list(join_wan_list,join_wan_table_id);
 	}
 	else {
 		if (join_mode==join_mode_lan_error) {
@@ -617,11 +696,11 @@ void join_reset_for_rescan(void)
 	
 	if (join_mode!=join_mode_wan_lan) return;
 
-	for (n=0;n!=join_host_wan_list->count;n++) {
-		join_host_wan_list->hosts[n].pinged=FALSE;
+	for (n=0;n!=join_wan_list->count;n++) {
+		join_wan_list->hosts[n].pinged=FALSE;
 	}
 	
-	join_create_list(join_host_wan_list,join_wan_table_id);
+	join_fill_table_with_host_list(join_wan_list,join_wan_table_id);
 }
 
 /* =======================================================
@@ -641,11 +720,11 @@ void join_open(void)
 
 		// host lists
 
-	join_host_lan_list=(join_server_host_list_type*)malloc(sizeof(join_server_host_list_type));
-	join_host_wan_list=(join_server_host_list_type*)malloc(sizeof(join_server_host_list_type));
+	join_lan_list=(join_server_host_list_type*)malloc(sizeof(join_server_host_list_type));
+	join_wan_list=(join_server_host_list_type*)malloc(sizeof(join_server_host_list_type));
 
-	join_host_lan_list->count=0;
-	join_host_wan_list->count=0;
+	join_lan_list->count=0;
+	join_wan_list->count=0;
 
 		// get the project hash
 
@@ -660,12 +739,12 @@ void join_open(void)
 
 			// load the news
 
-		if (!net_load_news(join_host_wan_list,join_news)) join_mode=join_mode_lan_error;
+		if (!net_load_news(join_wan_list,join_news)) join_mode=join_mode_lan_error;
 
 			// nothing queried yet
 
-		for (n=0;n!=join_host_wan_list->count;n++) {
-			join_host_wan_list->hosts[n].pinged=FALSE;
+		for (n=0;n!=join_wan_list->count;n++) {
+			join_wan_list->hosts[n].pinged=FALSE;
 		}
 	}
 
@@ -692,8 +771,8 @@ void join_close(void)
 		// free lists
 
 	free(join_news);
-	free(join_host_lan_list);
-	free(join_host_wan_list);
+	free(join_lan_list);
+	free(join_wan_list);
 
 		// shutdown gui
 	
@@ -752,13 +831,13 @@ void join_game(void)
 
 	idx=element_get_value(join_lan_table_id);
 	if (idx!=-1) {
-		host=&join_host_lan_list->hosts[idx];
+		host=&join_lan_list->hosts[idx];
 	}
 	else {
 		if (join_mode!=join_mode_wan_lan) return;
 		
 		idx=element_get_value(join_wan_table_id);
-		host=&join_host_wan_list->hosts[idx];
+		host=&join_wan_list->hosts[idx];
 	}
 
 		// reject if server is full
@@ -908,15 +987,13 @@ void join_click(void)
 			break;
 
 		case join_lan_table_id:
-			enable=(element_get_value(join_lan_table_id)!=-1);
+			join_table_host_selected(join_lan_list,join_lan_table_id);
 			element_set_value(join_wan_table_id,-1);
-			element_enable(join_button_join_id,enable);
 			break;
 
 		case join_wan_table_id:
-			enable=(element_get_value(join_wan_table_id)!=-1);
+			join_table_host_selected(join_wan_list,join_wan_table_id);
 			element_set_value(join_lan_table_id,-1);
-			element_enable(join_button_join_id,enable);
 			break;
 	}
 }
