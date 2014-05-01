@@ -524,7 +524,8 @@ void ag_gnerate_decoration_equipment(int room_idx)
 
 void ag_gnerate_decoration_trench(int room_idx)
 {
-	int					n,k,t,depth_count,poly_idx;
+	int					n,k,t,depth_count,
+						mesh_idx,poly_idx;
 	bool				flat;
 	d3pnt				min,max,extrude_pnt;
 	map_mesh_type		*mesh;
@@ -564,6 +565,7 @@ void ag_gnerate_decoration_trench(int room_idx)
 
 		// run to random depth
 
+	mesh_idx=room->mesh_idx;
 	depth_count=1+ag_random_int(3);
 
 	for (k=0;k!=depth_count;k++) {
@@ -576,12 +578,13 @@ void ag_gnerate_decoration_trench(int room_idx)
 
 			// extrude it
 
-		map_mesh_poly_punch_hole(&map,room->mesh_idx,poly_idx,&extrude_pnt,TRUE);
+		map_mesh_poly_punch_hole(&map,mesh_idx,poly_idx,&extrude_pnt,TRUE,((extrude_pnt.y>0)?normal_mode_in:normal_mode_out));
 
-			// last polygon is always
+			// last mesh and polygon is always
 			// the new extrude
 
-		poly_idx=map.mesh.meshes[room->mesh_idx].npoly-1;
+		mesh_idx=map.mesh.nmesh-1;
+		poly_idx=map.mesh.meshes[mesh_idx].npoly-1;
 	}
 }
 

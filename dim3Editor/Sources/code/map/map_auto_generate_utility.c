@@ -224,8 +224,7 @@ void ag_generate_remove_polygons_in_box(int mesh_idx,d3pnt *min,d3pnt *max)
 
 void ag_generate_windows_add(void)
 {
-	int				n,k,t,mesh_idx,poly_idx,
-					extrude_poly_idx;
+	int				n,k,mesh_idx,poly_idx;
 	d3pnt			min,max,extrude_pnt;
 	d3vct			extrude_vct;
 	map_mesh_type	*mesh;
@@ -262,15 +261,7 @@ void ag_generate_windows_add(void)
 
 				// punch the window
 
-			map_mesh_poly_punch_hole(&map,mesh_idx,poly_idx,&extrude_pnt,FALSE);
-
-				// fix the extruded normals
-
-			extrude_poly_idx=map.mesh.meshes[mesh_idx].npoly-4;		// the last 4 polygons will be the extruded ones
-
-			for (t=extrude_poly_idx;t!=map.mesh.meshes[mesh_idx].npoly;t++) {
-				map_recalc_normals_mesh_poly(&map,&map.mesh.meshes[mesh_idx],t,normal_mode_in,FALSE);
-			}
+			map_mesh_poly_punch_hole(&map,mesh_idx,poly_idx,&extrude_pnt,FALSE,normal_mode_in);
 
 			break;
 		}

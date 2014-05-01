@@ -932,7 +932,7 @@ void piece_poly_hole(void)
 	for (n=0;n!=sel_count;n++) {
 		select_get(n,&type,&mesh_idx,&poly_idx);
 		if (type==item_map_mesh) {
-			map_mesh_poly_punch_hole(&map,mesh_idx,poly_idx,NULL,FALSE);
+			map_mesh_poly_punch_hole(&map,mesh_idx,poly_idx,NULL,FALSE,normal_mode_in);
 			view_vbo_mesh_rebuild(mesh_idx);
 		}
 	}

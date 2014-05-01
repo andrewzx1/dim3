@@ -49,8 +49,7 @@ extern void ag_generate_remove_polygons_in_box(int mesh_idx,d3pnt *min,d3pnt *ma
 void ag_generate_add_room_second_story(void)
 {
 	int				n,k,k2,nvertex,mesh_idx,
-					floor_poly_idx,ceiling_poly_idx,
-					extrude_poly_idx;
+					floor_poly_idx,ceiling_poly_idx;
 	int				px[8],py[8],pz[8];
 	float			gx[8],gy[8];
 	bool			punch_hole;
@@ -142,17 +141,10 @@ void ag_generate_add_room_second_story(void)
 			// add in the hole
 
 		if (punch_hole) {
-			
-			map_mesh_poly_punch_hole(&map,mesh_idx,ceiling_poly_idx,NULL,FALSE);
+			map_mesh_poly_punch_hole(&map,mesh_idx,ceiling_poly_idx,NULL,FALSE,normal_mode_in);
 
 			floor_poly_idx--;			// punch deletes original polygon, so we need to move it back
-			map_mesh_poly_punch_hole(&map,mesh_idx,floor_poly_idx,&extrude_pnt,FALSE);
-
-			extrude_poly_idx=map.mesh.meshes[mesh_idx].npoly-nvertex;		// the last nvertex polygons will be the extruded ones
-
-			for (k=extrude_poly_idx;k!=map.mesh.meshes[mesh_idx].npoly;k++) {
-				map_recalc_normals_mesh_poly(&map,&map.mesh.meshes[mesh_idx],k,normal_mode_in,FALSE);
-			}
+			map_mesh_poly_punch_hole(&map,mesh_idx,floor_poly_idx,&extrude_pnt,FALSE,normal_mode_in);
 		}
 	}
 }

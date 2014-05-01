@@ -627,15 +627,16 @@ bool map_mesh_tesselate(map_type *map,int mesh_idx)
       
 ======================================================= */
 
-bool map_mesh_poly_punch_hole(map_type *map,int mesh_idx,int poly_idx,d3pnt *extrude_pnt,bool extrude_close)
+bool map_mesh_poly_punch_hole(map_type *map,int mesh_idx,int poly_idx,d3pnt *extrude_pnt,bool extrude_close,int extrude_normal_mode)
 {
 	int						n,ptsz,next_poly_idx,mx,my,mz,
-							px[8],py[8],pz[8],
+							extrude_mesh_idx,extrude_poly_idx;
+	int						px[8],py[8],pz[8],
 							k,kx[8],ky[8],kz[8];
 	float					gx[8],gy[8],mgx,mgy,
 							k_gx[4],k_gy[4];
 	d3pnt					*pt;
-	map_mesh_type			*mesh;
+	map_mesh_type			*mesh,*extrude_mesh;
 	map_mesh_poly_type		*poly;
 
 	mesh=&map->mesh.meshes[mesh_idx];
@@ -730,6 +731,9 @@ bool map_mesh_poly_punch_hole(map_type *map,int mesh_idx,int poly_idx,d3pnt *ext
 		// extruded polys
 		
 	if (extrude_pnt!=NULL) {
+
+		extrude_mesh_idx=map_mesh_add(map);
+		if (extrude_mesh_idx==-1) return(FALSE);
 	
 		for (n=0;n!=ptsz;n++) {
 
@@ -766,10 +770,8 @@ bool map_mesh_poly_punch_hole(map_type *map,int mesh_idx,int poly_idx,d3pnt *ext
 			k_gx[3]=0.0f;
 			k_gy[3]=1.0f;
 
-			next_poly_idx=map_mesh_add_poly(map,mesh_idx,4,kx,ky,kz,k_gx,k_gy,poly->txt_idx);
-			if (next_poly_idx==-1) return(FALSE);
-
-			map_recalc_normals_mesh_poly(map,mesh,next_poly_idx,normal_mode_in,FALSE);		// build a new tangent space
+			extrude_poly_idx=map_mesh_add_poly(map,extrude_mesh_idx,4,kx,ky,kz,k_gx,k_gy,poly->txt_idx);
+			if (extrude_poly_idx==-1) return(FALSE);
 		}
 
 			// extruded close
@@ -784,11 +786,17 @@ bool map_mesh_poly_punch_hole(map_type *map,int mesh_idx,int poly_idx,d3pnt *ext
 				kz[n]=pz[n]+extrude_pnt->z;
 			}
 
-			next_poly_idx=map_mesh_add_poly(map,mesh_idx,ptsz,kx,ky,kz,gx,gy,poly->txt_idx);
-			if (next_poly_idx==-1) return(FALSE);
-		
-			memmove(&mesh->polys[next_poly_idx].tangent_space,&mesh->polys[poly_idx].tangent_space,sizeof(tangent_space_type));		// preserve original tangent space
+			extrude_poly_idx=map_mesh_add_poly(map,extrude_mesh_idx,ptsz,kx,ky,kz,gx,gy,poly->txt_idx);
+			if (extrude_poly_idx==-1) return(FALSE);
 		}
+
+			// rebuild normals
+			// if an close, it needs same normals as original polygon
+
+		extrude_mesh=&map->mesh.meshes[extrude_mesh_idx];
+
+		map_recalc_normals_mesh(map,extrude_mesh,extrude_normal_mode,FALSE);
+		if (extrude_close) memmove(&extrude_mesh->polys[extrude_poly_idx].tangent_space,&mesh->polys[poly_idx].tangent_space,sizeof(tangent_space_type));
 	}
 
 		// finish by deleting original polygon
