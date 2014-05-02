@@ -42,27 +42,199 @@ extern void ag_generate_remove_polygons_in_box(int mesh_idx,d3pnt *min,d3pnt *ma
 
 /* =======================================================
 
+      Full Room Hole Second Stories
+      
+======================================================= */
+
+void ag_generate_add_room_second_story_hole(int room_idx)
+{
+	int				n,n2,mesh_idx,
+					floor_poly_idx,ceiling_poly_idx;
+	int				px[8],py[8],pz[8];
+	float			gx[8],gy[8];
+	d3pnt			extrude_pnt;
+	ag_room_type	*room;
+
+	room=&ag_state.rooms[room_idx];
+
+		// add the mesh
+
+	mesh_idx=map_mesh_add(&map);
+
+	gx[0]=gx[3]=0.0f;
+	gx[1]=gx[2]=1.0f;
+	gy[0]=gy[1]=0.0f;
+	gy[2]=gy[3]=1.0f;
+
+		// walls
+
+	for (n=0;n!=room->nvertex;n++) {
+		n2=n+1;
+		if (n2==room->nvertex) n2=0;
+
+		px[0]=px[3]=room->vertexes[n].x;
+		px[1]=px[2]=room->vertexes[n2].x;
+		py[0]=py[1]=room->max.y-(ag_size_room_high+ag_size_floor_high);
+		py[2]=py[3]=room->max.y-ag_size_room_high;
+		pz[0]=pz[3]=room->vertexes[n].z;
+		pz[1]=pz[2]=room->vertexes[n2].z;
+		
+		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_connect);
+	}
+
+		// floor and ceiling
+
+	for (n=0;n!=room->nvertex;n++) {
+		px[n]=room->vertexes[n].x;
+		py[n]=room->max.y-ag_size_room_high;
+		pz[n]=room->vertexes[n].z;
+	}
+
+	ceiling_poly_idx=map_mesh_add_poly(&map,mesh_idx,room->nvertex,px,py,pz,gx,gy,ag_texture_connect);
+
+	for (n=0;n!=room->nvertex;n++) {
+		py[n]-=ag_size_floor_high;
+	}
+
+	floor_poly_idx=map_mesh_add_poly(&map,mesh_idx,room->nvertex,px,py,pz,gx,gy,ag_texture_connect);
+	
+		// recalc normals
+
+	map_recalc_normals_mesh(&map,&map.mesh.meshes[mesh_idx],normal_mode_out,FALSE);
+
+		// add in the hole
+
+	extrude_pnt.x=0;
+	extrude_pnt.y=ag_size_floor_high;
+	extrude_pnt.z=0;
+
+	map_mesh_poly_punch_hole(&map,mesh_idx,ceiling_poly_idx,NULL,FALSE,normal_mode_in);
+
+	floor_poly_idx--;			// punch deletes original polygon, so we need to move it back
+	map_mesh_poly_punch_hole(&map,mesh_idx,floor_poly_idx,&extrude_pnt,FALSE,normal_mode_in);
+}
+
+/* =======================================================
+
+      Platform Second Stories
+      
+======================================================= */
+
+void ag_generate_add_room_second_story_platform(int room_idx)
+{
+	int				n,n2,mesh_idx,
+					v1_idx,v2_idx;
+	int				px[8],py[8],pz[8];
+	float			gx[8],gy[8];
+	bool			horz;
+	d3pnt			mid,vs[4];
+	ag_room_type	*room;
+
+	room=&ag_state.rooms[room_idx];
+
+		// find line segments that are
+		// on opposite ends of room
+
+	mid.x=(room->min.x+room->max.x)>>1;
+	mid.z=(room->min.z+room->max.z)>>1;
+
+	v1_idx=v2_idx=-1;
+	horz=ag_random_bool();
+
+	for (n=0;n!=room->nvertex;n++) {
+		n2=n+1;
+		if (n2==room->nvertex) n2=0;
+
+		if (horz) {
+			if (v1_idx==-1) {
+				if ((room->vertexes[n].z<mid.z) && (room->vertexes[n2].z<mid.z)) v1_idx=n;
+			}
+			if (v2_idx==-1) {
+				if ((room->vertexes[n].z>mid.z) && (room->vertexes[n2].z>mid.z)) v2_idx=n;
+			}
+		}
+		else {
+			if (v1_idx==-1) {
+				if ((room->vertexes[n].x<mid.x) && (room->vertexes[n2].x<mid.x)) v1_idx=n;
+			}
+			if (v2_idx==-1) {
+				if ((room->vertexes[n].x>mid.x) && (room->vertexes[n2].x>mid.x)) v2_idx=n;
+			}
+		}
+	}
+
+	if ((v1_idx==-1) || (v2_idx==-1)) return;
+
+		// build the polygon
+
+	memmove(&vs[0],&room->vertexes[v1_idx],sizeof(d3pnt));
+
+	n2=v1_idx+1;
+	if (n2==4) n2=0;
+	memmove(&vs[1],&room->vertexes[n2],sizeof(d3pnt));
+
+	memmove(&vs[2],&room->vertexes[v2_idx],sizeof(d3pnt));
+
+	n2=v2_idx+1;
+	if (n2==4) n2=0;
+	memmove(&vs[3],&room->vertexes[n2],sizeof(d3pnt));
+
+		// add the mesh
+
+	mesh_idx=map_mesh_add(&map);
+
+	gx[0]=gx[3]=0.0f;
+	gx[1]=gx[2]=1.0f;
+	gy[0]=gy[1]=0.0f;
+	gy[2]=gy[3]=1.0f;
+
+		// walls
+
+	for (n=0;n!=4;n++) {
+		n2=n+1;
+		if (n2==4) n2=0;
+
+		px[0]=px[3]=vs[n].x;
+		px[1]=px[2]=vs[n2].x;
+		py[0]=py[1]=room->max.y-(ag_size_room_high+ag_size_floor_high);
+		py[2]=py[3]=room->max.y-ag_size_room_high;
+		pz[0]=pz[3]=vs[n].z;
+		pz[1]=pz[2]=vs[n2].z;
+		
+		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_connect);
+	}
+
+		// floor and ceiling
+
+	for (n=0;n!=4;n++) {
+		px[n]=vs[n].x;
+		py[n]=room->max.y-ag_size_room_high;
+		pz[n]=vs[n].z;
+	}
+
+	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_connect);
+
+	for (n=0;n!=4;n++) {
+		py[n]-=ag_size_floor_high;
+	}
+
+	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_connect);
+
+		// recalc normals
+
+	map_recalc_normals_mesh(&map,&map.mesh.meshes[mesh_idx],normal_mode_out,FALSE);
+}
+
+/* =======================================================
+
       Add Room Second Story Pieces
       
 ======================================================= */
 
 void ag_generate_add_room_second_story(void)
 {
-	int				n,k,k2,nvertex,mesh_idx,
-					floor_poly_idx,ceiling_poly_idx;
-	int				px[8],py[8],pz[8];
-	float			gx[8],gy[8];
-	bool			punch_hole;
-	d3pnt			extrude_pnt;
+	int				n;
 	ag_room_type	*room;
-
-		// setup extruding point
-		// for second stories with
-		// holes punched in them
-
-	extrude_pnt.x=0;
-	extrude_pnt.y=ag_size_floor_high;
-	extrude_pnt.z=0;
 
 		// build second stories
 
@@ -82,69 +254,11 @@ void ag_generate_add_room_second_story(void)
 			// hole in the middle take up
 			// the entire room
 
-		punch_hole=ag_random_bool();
-
-		if (punch_hole) {
-			nvertex=room->nvertex;
+		if (ag_random_bool()) {
+			ag_generate_add_room_second_story_hole(n);
 		}
 		else {
-			nvertex=3;
-		}
-
-			// add the mesh
-
-		mesh_idx=map_mesh_add(&map);
-
-		gx[0]=gx[3]=0.0f;
-		gx[1]=gx[2]=1.0f;
-		gy[0]=gy[1]=0.0f;
-		gy[2]=gy[3]=1.0f;
-
-			// walls
-
-		if (!punch_hole) {
-			for (k=0;k!=nvertex;k++) {
-				k2=k+1;
-				if (k2==nvertex) k2=0;
-
-				px[0]=px[3]=room->vertexes[k].x;
-				px[1]=px[2]=room->vertexes[k2].x;
-				py[0]=py[1]=room->max.y-(ag_size_room_high+ag_size_floor_high);
-				py[2]=py[3]=room->max.y-ag_size_room_high;
-				pz[0]=pz[3]=room->vertexes[k].z;
-				pz[1]=pz[2]=room->vertexes[k2].z;
-				
-				map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_connect);
-			}
-		}
-
-			// floor and ceiling
-
-		for (k=0;k!=nvertex;k++) {
-			px[k]=room->vertexes[k].x;
-			py[k]=room->max.y-ag_size_room_high;
-			pz[k]=room->vertexes[k].z;
-		}
-
-		ceiling_poly_idx=map_mesh_add_poly(&map,mesh_idx,nvertex,px,py,pz,gx,gy,ag_texture_connect);
-
-		for (k=0;k!=nvertex;k++) {
-			py[k]-=ag_size_floor_high;
-		}
-
-		floor_poly_idx=map_mesh_add_poly(&map,mesh_idx,nvertex,px,py,pz,gx,gy,ag_texture_connect);
-		
-			// recalc normals
-
-		map_recalc_normals_mesh(&map,&map.mesh.meshes[mesh_idx],normal_mode_out,FALSE);
-
-			// add in the hole
-
-		if (punch_hole) {
-			map_mesh_poly_punch_hole(&map,mesh_idx,ceiling_poly_idx,NULL,FALSE,normal_mode_in);
-
-			floor_poly_idx--;			// punch deletes original polygon, so we need to move it back
-			map_mesh_poly_punch_hole(&map,mesh_idx,floor_poly_idx,&extrude_pnt,FALSE,normal_mode_in);
+			ag_generate_add_room_second_story_platform(n);
 		}
 	}
 }
