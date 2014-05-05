@@ -565,7 +565,7 @@ void join_news_pane(void)
 void join_lan_internet_hosts(void)
 {
 	int						fx,fy,y,wid,high,table_high,
-							mx,tx,ty,half_wid,pic_high,err_high,
+							mx,tx,ty,half_wid,pic_high,
 							padding,margin;
 	char					str[1024],nstr[32];
 	element_column_type		cols[4];
@@ -617,42 +617,38 @@ void join_lan_internet_hosts(void)
 	element_text_add("",join_ping_id,(tx+10),ty,iface.font.text_size_medium,tx_left,&iface.color.control.text,FALSE);
 
 		// lan list
-		
-	table_high=((high-padding)/2);
+	
+	if (join_mode==join_mode_lan) {
+		table_high=high-padding;
+	}
+	else {
+		table_high=((high-padding)/2);
+	}
 
 	strcpy(cols[0].name,"Local Hosts");
 	cols[0].percent_size=1.0f;
 	
 	y=fy;
 	element_table_add(cols,NULL,join_lan_table_id,1,(mx+padding),y,half_wid,table_high,FALSE,element_table_bitmap_none);
+	
+	y+=(table_high+padding);
 
 		// wan list
-		
-	strcpy(cols[0].name,"Internet Hosts");
-	cols[0].percent_size=1.0f;
-
-	y+=(table_high+padding);
-	element_table_add(cols,NULL,join_wan_table_id,1,(mx+padding),y,half_wid,table_high,FALSE,element_table_bitmap_none);
-
-	join_fill_table_with_host_list(join_wan_list,join_wan_table_id);
-
 	
-	/*(if on),
-		// or error if problem gathering list
-
 	if (join_mode==join_mode_wan_lan) {
-		y+=(table_high+padding);
 		strcpy(cols[0].name,"Internet Hosts");
+		cols[0].percent_size=1.0f;
 
-		element_table_add(cols,NULL,join_wan_table_id,4,fx,y,wid,table_high,FALSE,element_table_bitmap_data);
+		element_table_add(cols,NULL,join_wan_table_id,1,(mx+padding),y,half_wid,table_high,FALSE,element_table_bitmap_none);
 
 		join_fill_table_with_host_list(join_wan_list,join_wan_table_id);
 	}
+
+		// any wan error state
+
 	else {
 		if (join_mode==join_mode_lan_error) {
-			y+=(high+padding);
-
-			strcpy(str,"No internet hosts available, could not retrieve host data from:\n");
+			strcpy(str,"No internet hosts available.\nCould not retrieve host data from:\n");
 			strcat(str,iface.multiplayer.news.host);
 			if (iface.multiplayer.news.port!=80) {
 				sprintf(nstr,":%d",iface.multiplayer.news.port);
@@ -660,10 +656,10 @@ void join_lan_internet_hosts(void)
 			}
 			strcat(str,iface.multiplayer.news.url);
 
-			element_text_box_add(str,-1,fx,y,wid,err_high,TRUE);
+			element_text_box_add(str,-1,(mx+padding),y,half_wid,table_high,TRUE);
 		}
 	}
-*/
+
 		// start the local broadcast
 		// LAN thread
 		
