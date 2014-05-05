@@ -2603,9 +2603,9 @@ void element_draw_table_line_background(element_type *element,int idx,int lft,in
 
 void element_draw_table_busy(element_type *element)
 {
-	int				n,idx,lft,rgt,top,bot,high;
+	int				n,idx,ty,lft,rgt,top,bot,high;
 	float			start_perc,end_perc;
-	d3col			in_hilite,in_background;
+	d3col			back_col;
 
 	element_get_box(element,&lft,&rgt,&top,&bot);
 
@@ -2613,22 +2613,20 @@ void element_draw_table_busy(element_type *element)
 	
 	lft=((lft+rgt)>>1)-(high/2);
 	rgt=lft+high;
-	top=((top+bot)>>1)-(high/2);
+
+	ty=top+element_get_table_row_high(element);
+	top=((ty+bot)>>1)-(high/2);
 	bot=top+high;
 
 		// selected arc
 
 	idx=(game_time_get_raw()>>7)&0xF;
 	
-		// inner colors
+		// gradients
 	
-	in_hilite.r=iface.color.control.hilite.r*element_gradient_factor_foreground;
-	in_hilite.g=iface.color.control.hilite.g*element_gradient_factor_foreground;
-	in_hilite.b=iface.color.control.hilite.b*element_gradient_factor_foreground;
-	
-	in_background.r=iface.color.control.fill.r*element_gradient_factor_foreground;
-	in_background.g=iface.color.control.fill.g*element_gradient_factor_foreground;
-	in_background.b=iface.color.control.fill.b*element_gradient_factor_foreground;
+	back_col.r=iface.color.control.hilite.r*element_gradient_factor_darken;
+	back_col.g=iface.color.control.hilite.g*element_gradient_factor_darken;
+	back_col.b=iface.color.control.hilite.b*element_gradient_factor_darken;
 
 		// spinning busy wheel
 
@@ -2637,10 +2635,10 @@ void element_draw_table_busy(element_type *element)
 		end_perc=((float)(n+1))/16.0f;
 
 		if (n==idx) {
-			view_primitive_2D_color_arc(&iface.color.control.hilite,&in_hilite,0.7f,lft,rgt,top,bot,start_perc,end_perc);
+			view_primitive_2D_color_arc(&iface.color.control.hilite,&iface.color.control.hilite,0.7f,lft,rgt,top,bot,start_perc,end_perc);
 		}
 		else {
-			view_primitive_2D_color_arc(&iface.color.control.fill,&in_background,0.7f,lft,rgt,top,bot,start_perc,end_perc);
+			view_primitive_2D_color_arc(&iface.color.control.hilite,&back_col,0.7f,lft,rgt,top,bot,start_perc,end_perc);
 		}
 	}
 }
