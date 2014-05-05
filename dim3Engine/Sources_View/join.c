@@ -70,8 +70,10 @@ extern file_path_setup_type	file_path_setup;
 
 int							join_mode,join_tab_value,join_thread_lan_start_tick;
 char						*join_table_data,*join_news;
-bool						join_thread_started,
-							join_thread_quit,join_run_wan;
+bool						join_thread_lan_started,
+							join_thread_wan_started,
+							join_wan_updated,
+							join_thread_lan_trigger_quit;
 SDL_Thread					*join_lan_thread,*join_wan_thread;
 
 join_server_host_list_type	*join_lan_list,*join_wan_list;
@@ -294,7 +296,10 @@ bool join_ping_thread_add_host(join_server_host_list_type *list,int start_tick,n
 
 /* =======================================================
 
-      Join Ping LAN Threads
+      Join Ping LAN Hosts
+	  
+	  This is done by a thread that gathers up
+	  all the hosts found in a local broadcast
       
 ======================================================= */
 
@@ -332,7 +337,7 @@ int join_ping_thread_lan(void *arg)
 		
 	net_socket_blocking(broadcast_sock,FALSE);
 	
-	while (((join_thread_lan_start_tick+max_tick)>time_get()) && (!join_thread_quit)) {
+	while (((join_thread_lan_start_tick+max_tick)>time_get()) && (!join_thread_lan_trigger_quit)) {
 
 			// any replies?
 			
@@ -360,15 +365,51 @@ int join_ping_thread_lan(void *arg)
 	return(0);
 }
 
+void join_ping_thread_lan_start(void)
+{
+		// empty join list
+		
+	join_thread_lan_trigger_quit=FALSE;
+	
+		// clear table and set
+		// as busy
+
+	join_lan_list->count=0;
+
+	element_set_table_data(join_lan_table_id,FALSE,NULL);
+	element_table_busy(join_lan_table_id,TRUE);
+
+		// start pinging hosts
+		
+	join_thread_lan_started=TRUE;
+
+	join_lan_thread=SDL_CreateThread(join_ping_thread_lan,"join_lan",NULL);
+}
+
+void join_ping_thread_lan_end(void)
+{
+	if (!join_thread_lan_started) return;
+	
+	join_thread_lan_trigger_quit=TRUE;
+	
+	SDL_WaitThread(join_lan_thread,NULL);
+	
+	join_thread_lan_started=FALSE;
+}
+
 /* =======================================================
 
-      Join Ping WAN Threads
+      Join Ping WAN Hosts
+	  
+	  This is also done in a thread so the UI
+	  continues to function but only done as
+	  WAN hosts are clicked
       
 ======================================================= */
 
-bool join_ping_wan_host_call(join_server_host_type *host,unsigned char *msg)
+bool join_ping_thread_wan_internal(join_server_host_type *host,int msec,unsigned char *msg)
 {
-	int						msec,action,max_tick;
+	int						action;
 	unsigned long			nip_addr;
 	bool					got_reply;
 	net_address_type		addr,recv_addr;
@@ -376,7 +417,7 @@ bool join_ping_wan_host_call(join_server_host_type *host,unsigned char *msg)
 	
 		// get socket, translate IP
 		// and call host
-	
+		
 	sock=net_open_udp_socket();
 	if (sock==D3_NULL_SOCKET) return(FALSE);
 	
@@ -399,9 +440,7 @@ bool join_ping_wan_host_call(join_server_host_type *host,unsigned char *msg)
 	
 	got_reply=FALSE;
 	
-	max_tick=client_query_timeout_wait_msec;
-	
-	while ((msec+max_tick)>time_get()) {
+	while ((msec+client_query_timeout_wait_msec)>time_get()) {
 		if (net_recvfrom_mesage(sock,&recv_addr,&action,msg,NULL)) {
 			if ((recv_addr.ip==addr.ip) && (action==net_action_reply_info)) {
 				got_reply=TRUE;
@@ -418,11 +457,37 @@ bool join_ping_wan_host_call(join_server_host_type *host,unsigned char *msg)
 	return(got_reply);
 }
 
-void join_ping_wan_host(void)
+int join_ping_thread_wan(void *arg)
 {
 	int						idx,msec;
-	bool					reply_ok;
 	unsigned char			msg[net_max_msg_size];
+	join_server_host_type	*host;
+	
+	idx=(int)arg;
+	host=&join_wan_list->hosts[idx];
+	
+		// ping the host
+		
+	msec=time_get();
+	
+	if (join_ping_thread_wan_internal(host,msec,msg)) {
+		join_ping_thread_update_host(host,msec,(network_reply_info*)msg);
+	}
+	else {
+		join_ping_thread_update_host(host,msec,NULL);
+	}
+	
+		// can't update OpenGL in thread
+		// so we trigger for later
+		
+	join_wan_updated=TRUE;
+	
+	return(0);
+}
+
+void join_ping_wan_host(void)
+{
+	int						idx;
 	join_server_host_type	*host;
 		
 		// blank if no selection
@@ -440,69 +505,39 @@ void join_ping_wan_host(void)
 	host->pinging=TRUE;
 	join_update_host_information(join_wan_table_id);
 	
-		// get socket, translate IP
-		// and call host
+	element_table_busy(join_wan_table_id,TRUE);
 	
-	msec=time_get();
+		// start pinging single WAN host
+		
+	join_thread_wan_started=TRUE;
+	join_wan_updated=FALSE;
+
+	join_wan_thread=SDL_CreateThread(join_ping_thread_wan,"join_wan",(void*)idx);
+}
+
+void join_ping_thread_wan_end(void)
+{
+	if (!join_thread_wan_started) return;
 	
-	reply_ok=join_ping_wan_host_call(host,msg);
+	SDL_WaitThread(join_wan_thread,NULL);
 	
-	if (reply_ok) {
-		join_ping_thread_update_host(host,msec,(network_reply_info*)msg);
-	}
-	else {
-		join_ping_thread_update_host(host,msec,NULL);
-	}
-	
+	join_thread_wan_started=FALSE;
+}
+
+void join_ping_wan_host_update(void)
+{
+	int						idx;
+	join_server_host_type	*host;
+
+	idx=element_get_value(join_wan_table_id);
+	if (idx==-1) return;
+
+	host=&join_wan_list->hosts[idx];
+
 	host->pinging=FALSE;
 	join_update_host_information(join_wan_table_id);
-}
-
-/* =======================================================
-
-      Join Ping Threads Mainline
-      
-======================================================= */
-
-void join_ping_thread_start(void)
-{
-		// empty join list
-		
-	join_thread_quit=FALSE;
-
-		// wan table OK
-
-	join_run_wan=FALSE;
-	if (join_mode==join_mode_wan_lan) join_run_wan=join_wan_list->count!=0;
 	
-		// tables are busy
-		// local table is always cleared
-
-	join_lan_list->count=0;
-
-	element_set_table_data(join_lan_table_id,FALSE,NULL);
-	element_table_busy(join_lan_table_id,TRUE);
-
-	if (join_run_wan) element_table_busy(join_wan_table_id,TRUE);
-
-		// start pinging hosts
-		
-	join_thread_started=TRUE;
-
-	join_lan_thread=SDL_CreateThread(join_ping_thread_lan,"join_lan",NULL);
-//	if (join_run_wan) join_wan_thread=SDL_CreateThread(join_ping_thread_wan,"join_wan",NULL);
-}
-
-void join_ping_thread_end(void)
-{
-	if (!join_thread_started) return;
-	
-	join_thread_quit=TRUE;
-	
-	SDL_WaitThread(join_lan_thread,NULL);
-//	if (join_run_wan) SDL_WaitThread(join_wan_thread,NULL);
-	
-	join_thread_started=FALSE;
+	element_table_busy(join_wan_table_id,FALSE);
 }
 
 /* =======================================================
@@ -580,26 +615,10 @@ void join_lan_internet_hosts(void)
 	ty+=element_get_control_high();
 	element_text_add("Ping:",-1,tx,ty,iface.font.text_size_medium,tx_right,&iface.color.control.text,FALSE);
 	element_text_add("",join_ping_id,(tx+10),ty,iface.font.text_size_medium,tx_left,&iface.color.control.text,FALSE);
-	
-		// hosts tables
-		
-	table_high=((high-padding)/2);
-		
-/*
-	table_high=high;
-
-	switch (join_mode) {
-		case join_mode_wan_lan:
-			table_high=((high-padding)/2);
-			break;
-		case join_mode_lan_error:
-			err_high=(gl_text_get_char_height(iface.font.text_size_medium)*2)+(padding*2);
-			table_high-=(err_high+padding);
-			break;
-	}
-*/
 
 		// lan list
+		
+	table_high=((high-padding)/2);
 
 	strcpy(cols[0].name,"Local Hosts");
 	cols[0].percent_size=1.0f;
@@ -645,9 +664,10 @@ void join_lan_internet_hosts(void)
 		}
 	}
 */
-		// start the thread to build the table
+		// start the local broadcast
+		// LAN thread
 		
-//	join_ping_thread_start();
+	join_ping_thread_lan_start();
 }
 
 void join_create_pane(void)
@@ -658,7 +678,8 @@ void join_create_pane(void)
 	
 		// turn off any scanning threads
 		
-	join_ping_thread_end();
+	join_ping_thread_lan_end();
+	join_ping_thread_wan_end();
 
 		// controls
 
@@ -747,7 +768,9 @@ void join_open(void)
 		// start with first tab
 		
 	join_tab_value=join_pane_hosts;
-	join_thread_started=FALSE;
+	join_thread_lan_started=FALSE;
+	join_thread_wan_started=FALSE;
+	join_wan_updated=FALSE;
 	
 		// create panes
 		
@@ -758,7 +781,8 @@ void join_close(void)
 {
 		// stop any pinging
 
-	join_ping_thread_end();
+	join_ping_thread_lan_end();
+	join_ping_thread_lan_end();
 
 		// free lists
 
@@ -781,7 +805,8 @@ void join_activity_start(void)
 {
 		// stop any pinging
 		
-	join_ping_thread_end();
+	join_ping_thread_lan_end();
+	join_ping_thread_wan_end();
 		
 		// disable buttons and redraw
 		
@@ -972,8 +997,9 @@ void join_click(void)
 			
 		case join_button_rescan_id:
 			element_enable(join_button_rescan_id,FALSE);
-			join_ping_thread_end();
-			join_ping_thread_start();
+			join_ping_thread_lan_end();
+			join_ping_thread_wan_end();
+			join_ping_thread_lan_start();
 			break;
 
 		case join_lan_table_id:
@@ -994,6 +1020,16 @@ void join_click(void)
 
 void join_run(void)
 {
+		// wan thread finishes can't draw from
+		// thread so we trigger than here
+		
+	if (join_wan_updated) {
+		join_ping_wan_host_update();
+		join_wan_updated=FALSE;
+	}
+	
+		// draw and click
+		
 	gui_draw(1.0f,TRUE);
 	join_click();
 }

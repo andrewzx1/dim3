@@ -2246,11 +2246,15 @@ int element_get_table_row_high(element_type *element)
 	return((int)(((float)iface.scale_x)*element_table_bitmap_size)+4);
 }
 
-void element_click_table(element_type *element,int x,int y)
+bool element_click_table(element_type *element,int x,int y)
 {
 	int				high,row_high,row_cnt,cnt,vis_cnt,
 					scroll_dir;
 	bool			up_ok,down_ok;
+	
+		// busy tables can't be clicked
+		
+	if (element->setup.table.busy) return(FALSE);
 	
 		// get text sizes
 		
@@ -2271,7 +2275,7 @@ void element_click_table(element_type *element,int x,int y)
 	
 	if (scroll_dir!=0) {
 		element->offset+=((cnt+1)*scroll_dir);
-		return;
+		return(TRUE);
 	}
 	
 		// select cliked on element
@@ -2290,6 +2294,8 @@ void element_click_table(element_type *element,int x,int y)
 		element->setup.table.checks[element->value]^=0x1;
 		element->value=-1;
 	}
+	
+	return(TRUE);
 }
 
 void element_scroll_table(element_type *element,bool up)
@@ -3460,7 +3466,10 @@ int element_click_up_lock(int x,int y)
 			element_click_slider(element,x,y);
 			break;
 		case element_type_table:
-			element_click_table(element,x,y);
+			if (!element_click_table(element,x,y)) {
+				element_click_down_id=-1;
+				return(-1);
+			}
 			break;
 		case element_type_tab:
 			if (!element_click_tab(element,x,y)) {
