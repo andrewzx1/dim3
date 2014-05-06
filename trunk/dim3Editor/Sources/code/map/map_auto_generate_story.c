@@ -114,6 +114,9 @@ void ag_generate_add_room_second_story_chunk(int mesh_idx,int poly_idx,int start
 		story_mesh=&map.mesh.meshes[story_mesh_idx];
 
 			// get internal points
+		
+		mesh=&map.mesh.meshes[mesh_idx];			// adding a mesh could change these pointers
+		poly=&mesh->polys[poly_idx];
 
 		k=n+1;
 		if (k==ptsz) k=0;
