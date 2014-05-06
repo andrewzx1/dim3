@@ -38,6 +38,7 @@ extern ag_state_type			ag_state;
 
 extern int ag_random_int(int max);
 extern bool ag_random_bool(void);
+extern int ag_generate_find_floor_polygon(int room_idx);
 
 /* =======================================================
 
@@ -524,43 +525,16 @@ void ag_gnerate_decoration_equipment(int room_idx)
 
 void ag_gnerate_decoration_trench(int room_idx)
 {
-	int					n,k,t,depth_count,
+	int					n,depth_count,
 						mesh_idx,poly_idx;
-	bool				flat;
-	d3pnt				min,max,extrude_pnt;
-	map_mesh_type		*mesh;
-	map_mesh_poly_type	*poly;
+	d3pnt				extrude_pnt;
 	ag_room_type		*room;
 
 	room=&ag_state.rooms[room_idx];
 
 		// find the floor
 
-	map_mesh_calculate_extent(&map,room->mesh_idx,&min,&max);
-
-	poly_idx=-1;
-	mesh=&map.mesh.meshes[room->mesh_idx];
-
-	for (n=0;n!=mesh->npoly;n++) {
-		poly=&mesh->polys[n];
-
-		if (poly->txt_idx!=ag_texture_floor) continue;
-
-		flat=TRUE;
-
-		for (t=0;t!=poly->ptsz;t++) {
-			if (mesh->vertexes[mesh->polys[n].v[t]].y!=max.y) {
-				flat=FALSE;
-				break;
-			}
-		}
-
-		if (!flat) continue;
-
-		poly_idx=n;
-		break;
-	}
-
+	poly_idx=ag_generate_find_floor_polygon(room_idx);
 	if (poly_idx==-1) return;
 
 		// run to random depth
@@ -568,7 +542,7 @@ void ag_gnerate_decoration_trench(int room_idx)
 	mesh_idx=room->mesh_idx;
 	depth_count=1+ag_random_int(3);
 
-	for (k=0;k!=depth_count;k++) {
+	for (n=0;n!=depth_count;n++) {
 
 			// extrude it
 
