@@ -165,6 +165,7 @@ void ag_generate_add_connector_room_normal(int org_room_idx,bool has_door)
 
 	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,(has_door?ag_texture_connect:ag_texture_ceiling));
 
+	map_mesh_reset_uv(&map,mesh_idx);
 	map_recalc_normals_mesh(&map,&map.mesh.meshes[mesh_idx],normal_mode_in,FALSE);
 
 		// add in a door?
@@ -218,6 +219,7 @@ void ag_generate_add_connector_room_normal(int org_room_idx,bool has_door)
 		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_door);
 	}
 
+	map_mesh_reset_uv(&map,mesh_idx);
 	map_recalc_normals_mesh(&map,&map.mesh.meshes[mesh_idx],normal_mode_out,FALSE);
 
 		// add door group
@@ -471,8 +473,9 @@ void ag_generate_add_connector_room_pillar(int org_room_idx)
 		flip_poly_idx[3]=map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_connect);
 	}
 
-		// recalc normals
+		// recalc UVs and normals
 
+	map_mesh_reset_uv(&map,mesh_idx);
 	map_recalc_normals_mesh(&map,&map.mesh.meshes[mesh_idx],normal_mode_out,FALSE);
 
 		// because of the inside-out nature,
@@ -538,8 +541,9 @@ void ag_generate_add_connector_room_step(d3pnt *min,d3pnt *max)
 
 	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_floor);
 
-		// reset normals
+		// reset UVs and normals
 
+	map_mesh_reset_uv(&map,mesh_idx);
 	map_recalc_normals_mesh(&map,&map.mesh.meshes[mesh_idx],normal_mode_out,FALSE);
 }
 
@@ -674,6 +678,7 @@ void ag_generate_add_connector_room_stairs(int org_room_idx)
 
 	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_connect);
 
+	map_mesh_reset_uv(&map,mesh_idx);
 	map_recalc_normals_mesh(&map,&map.mesh.meshes[mesh_idx],normal_mode_in,FALSE);
 
 		// get stair type

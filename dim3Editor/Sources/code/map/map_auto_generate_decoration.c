@@ -229,7 +229,8 @@ void ag_generate_decoration_box(d3pnt *pnt,int stack_offset,int start_cmp_mesh_i
 		map_mesh_rotate(&map,mesh_idx,&mpt,&ang);
 	}
 
-		// reset normals
+		// reset just normals
+		// as UVs are locked
 
 	map_recalc_normals_mesh(&map,&map.mesh.meshes[mesh_idx],normal_mode_out,FALSE);
 }
@@ -361,8 +362,9 @@ void ag_generate_decoration_column(d3pnt *pnt,int radius,int high,bool circular)
 		}
 	}
 
-		// reset normals
+		// reset UVs and normals
 
+	map_mesh_reset_uv(&map,mesh_idx);
 	map_recalc_normals_mesh(&map,&map.mesh.meshes[mesh_idx],normal_mode_out,FALSE);
 }
 
@@ -467,7 +469,8 @@ void ag_gnerate_decoration_equipment_piece(d3pnt *pnt,int wid_x,int wid_z,int hi
 
 	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,texture_idx);
 
-		// reset normals
+		// reset just normals
+		// as UVs are locked
 
 	map_recalc_normals_mesh(&map,&map.mesh.meshes[mesh_idx],normal_mode_out,FALSE);
 }
@@ -709,8 +712,9 @@ void ag_generate_lights_add_fixture(d3pnt *pnt)
 
 	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_decoration_pillar);
 
-		// reset normals
+		// reset UVs and normals
 
+	map_mesh_reset_uv(&map,mesh_idx);
 	map_recalc_normals_mesh(&map,&map.mesh.meshes[mesh_idx],normal_mode_out,FALSE);
 }
 

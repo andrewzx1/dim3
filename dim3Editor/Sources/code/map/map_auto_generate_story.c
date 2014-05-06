@@ -198,8 +198,9 @@ void ag_generate_add_room_second_story_chunk(int mesh_idx,int poly_idx,int start
 		story_poly_idx=map_mesh_add_poly(&map,story_mesh_idx,4,kx,ky,kz,k_gx,k_gy,ag_texture_connect);
 		story_poly_idx=map_mesh_add_poly(&map,story_mesh_idx,4,kx,ky2,kz,k_gx,k_gy,ag_texture_connect);
 
-			// recalc normals
+			// recalc UVs and normals
 
+		map_mesh_reset_uv(&map,story_mesh_idx);
 		map_recalc_normals_mesh(&map,story_mesh,normal_mode_out,FALSE);
 	}
 }
