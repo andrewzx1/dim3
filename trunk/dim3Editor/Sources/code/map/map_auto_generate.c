@@ -827,8 +827,9 @@ void ag_add_room(bool first_room)
 // supergumba -- testing decorations
 	map_mesh_add_poly(&map,mesh_idx,room->nvertex,px,py,pz,gx,gy,ag_texture_ceiling);
 
-		// reset the normals
+		// reset the UV and normals
 
+	map_mesh_reset_uv(&map,mesh_idx);
 	map_recalc_normals_mesh(&map,&map.mesh.meshes[mesh_idx],normal_mode_in,FALSE);
 }
 
@@ -911,7 +912,6 @@ bool ag_generate_run(char *err_str)
 
 	view_vbo_map_initialize();
 
-	map_mesh_reset_uv_all();
 	map_view_goto_map_center_all();
 
 	main_wind_draw();
