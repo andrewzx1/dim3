@@ -218,6 +218,49 @@ void ag_generate_remove_polygons_in_box(int mesh_idx,d3pnt *min,d3pnt *max)
 
 /* =======================================================
 
+      Find Specific Polygons
+      
+======================================================= */
+
+int ag_generate_find_floor_polygon(int room_idx)
+{
+	int					n,k;
+	bool				flat;
+	d3pnt				min,max;
+	map_mesh_type		*mesh;
+	map_mesh_poly_type	*poly;
+	ag_room_type		*room;
+
+	room=&ag_state.rooms[room_idx];
+
+		// find the floor
+
+	map_mesh_calculate_extent(&map,room->mesh_idx,&min,&max);
+
+	mesh=&map.mesh.meshes[room->mesh_idx];
+
+	for (n=0;n!=mesh->npoly;n++) {
+		poly=&mesh->polys[n];
+
+		if (poly->txt_idx!=ag_texture_floor) continue;
+
+		flat=TRUE;
+
+		for (k=0;k!=poly->ptsz;k++) {
+			if (mesh->vertexes[mesh->polys[n].v[k]].y!=max.y) {
+				flat=FALSE;
+				break;
+			}
+		}
+
+		if (flat) return(n);
+	}
+
+	return(-1);
+}
+
+/* =======================================================
+
       Windows
       
 ======================================================= */
