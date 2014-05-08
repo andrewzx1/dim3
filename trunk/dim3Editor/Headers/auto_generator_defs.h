@@ -60,7 +60,7 @@ and can be sold or given away.
 
 #define ag_connect_type_normal					0
 #define ag_connect_type_door					1
-#define ag_connect_type_pillar					2
+#define ag_connect_type_arch					2
 #define ag_connect_type_stairs					3
 
 //

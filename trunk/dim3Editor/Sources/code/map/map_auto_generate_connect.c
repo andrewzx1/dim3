@@ -58,7 +58,7 @@ void ag_generate_set_connector_type(int room_idx)
 
 	room2=&ag_state.rooms[room->connect_box.other_room_idx];
 	if ((room->second_story) && (room2->second_story)) {
-		room->connect_box.connect_type=ag_connect_type_pillar;
+		room->connect_box.connect_type=ag_connect_type_arch;
 		return;
 	}
 
@@ -254,29 +254,16 @@ void ag_generate_add_connector_room_normal(int org_room_idx,bool has_door)
 
 /* =======================================================
 
-      Pillar Room Connectors
+      Arch Room Connectors
       
 ======================================================= */
 
-void ag_generate_add_connector_room_pillar(int org_room_idx)
+void ag_generate_add_connector_room_arch_add(ag_room_type *room,int ty,int by,int by2)
 {
 	int					n,mesh_idx,dx,dz;
 	int					px[8],py[8],pz[8],
 						flip_poly_idx[4];
 	float				gx[8],gy[8];
-	ag_room_type		*room,*room2;
-
-	room=&ag_state.rooms[org_room_idx];
-	room2=&ag_state.rooms[room->connect_box.other_room_idx];
-
-		// pillars go to the top
-
-	room->connect_box.min.y-=(ag_size_room_high+ag_size_floor_high);
-
-		// remove unused polygons
-
-	ag_generate_remove_polygons_in_box(room->mesh_idx,&room->connect_box.min,&room->connect_box.max);
-	ag_generate_remove_polygons_in_box(room2->mesh_idx,&room->connect_box.min,&room->connect_box.max);
 
 		// get pillar direction
 
@@ -299,10 +286,10 @@ void ag_generate_add_connector_room_pillar(int org_room_idx)
 		px[0]=px[3]=room->connect_box.min.x;
 		px[1]=px[2]=room->connect_box.min.x+ag_size_pillar_wid;
 		pz[0]=pz[1]=pz[2]=pz[3]=room->connect_box.min.z;
-		py[0]=room->connect_box.min.y;
-		py[1]=room->connect_box.min.y+ag_size_pillar_wid;
-		py[2]=room->connect_box.max.y-ag_size_bump_high;
-		py[3]=room->connect_box.max.y;
+		py[0]=ty;
+		py[1]=ty+ag_size_pillar_wid;
+		py[2]=by;
+		py[3]=by2;
 
 		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_connect);
 
@@ -313,10 +300,10 @@ void ag_generate_add_connector_room_pillar(int org_room_idx)
 		px[0]=px[3]=room->connect_box.max.x-ag_size_pillar_wid;
 		px[1]=px[2]=room->connect_box.max.x;
 		pz[0]=pz[1]=pz[2]=pz[3]=room->connect_box.min.z;
-		py[0]=room->connect_box.min.y+ag_size_pillar_wid;
-		py[1]=room->connect_box.min.y;
-		py[2]=room->connect_box.max.y;
-		py[3]=room->connect_box.max.y-ag_size_bump_high;
+		py[0]=ty+ag_size_pillar_wid;
+		py[1]=ty;
+		py[2]=by2;
+		py[3]=by;
 
 		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_connect);
 
@@ -327,8 +314,8 @@ void ag_generate_add_connector_room_pillar(int org_room_idx)
 		px[0]=px[1]=px[2]=px[3]=room->connect_box.min.x+ag_size_pillar_wid;
 		pz[0]=pz[3]=room->connect_box.min.z;
 		pz[1]=pz[2]=room->connect_box.max.z;
-		py[0]=py[1]=room->connect_box.min.y+ag_size_pillar_wid;
-		py[2]=py[3]=room->connect_box.max.y-ag_size_bump_high;
+		py[0]=py[1]=ty+ag_size_pillar_wid;
+		py[2]=py[3]=by;
 
 		flip_poly_idx[0]=map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_connect);
 
@@ -343,8 +330,8 @@ void ag_generate_add_connector_room_pillar(int org_room_idx)
 		px[2]=room->connect_box.max.x-ag_size_pillar_wid;
 		px[3]=room->connect_box.min.x+ag_size_pillar_wid;
 		pz[0]=pz[1]=pz[2]=pz[3]=room->connect_box.min.z;
-		py[0]=py[1]=room->connect_box.min.y;
-		py[2]=py[3]=room->connect_box.min.y+ag_size_pillar_wid;
+		py[0]=py[1]=ty;
+		py[2]=py[3]=ty+ag_size_pillar_wid;
 
 		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_connect);
 
@@ -359,8 +346,8 @@ void ag_generate_add_connector_room_pillar(int org_room_idx)
 		px[2]=room->connect_box.max.x;
 		px[3]=room->connect_box.min.x;
 		pz[0]=pz[1]=pz[2]=pz[3]=room->connect_box.min.z;
-		py[0]=py[1]=room->connect_box.max.y-ag_size_bump_high;
-		py[2]=py[3]=room->connect_box.max.y;
+		py[0]=py[1]=by;
+		py[2]=py[3]=by2;
 
 		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_connect);
 
@@ -374,11 +361,11 @@ void ag_generate_add_connector_room_pillar(int org_room_idx)
 		px[1]=px[2]=room->connect_box.max.x-ag_size_pillar_wid;
 		pz[0]=pz[1]=room->connect_box.min.z;
 		pz[2]=pz[3]=room->connect_box.max.z;
-		py[0]=py[1]=py[2]=py[3]=room->connect_box.max.y-ag_size_bump_high;
+		py[0]=py[1]=py[2]=py[3]=by;
 
 		flip_poly_idx[2]=map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_connect);
 
-		py[0]=py[1]=py[2]=py[3]=room->connect_box.min.y+ag_size_pillar_wid;
+		py[0]=py[1]=py[2]=py[3]=ty+ag_size_pillar_wid;
 
 		flip_poly_idx[3]=map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_connect);
 	}
@@ -389,10 +376,10 @@ void ag_generate_add_connector_room_pillar(int org_room_idx)
 		px[0]=px[1]=px[2]=px[3]=room->connect_box.min.x;
 		pz[0]=pz[3]=room->connect_box.min.z;
 		pz[1]=pz[2]=room->connect_box.min.z+ag_size_pillar_wid;
-		py[0]=room->connect_box.min.y;
-		py[1]=room->connect_box.min.y+ag_size_pillar_wid;
-		py[2]=room->connect_box.max.y-ag_size_bump_high;
-		py[3]=room->connect_box.max.y;
+		py[0]=ty;
+		py[1]=ty+ag_size_pillar_wid;
+		py[2]=by;
+		py[3]=by2;
 
 		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_connect);
 
@@ -403,10 +390,10 @@ void ag_generate_add_connector_room_pillar(int org_room_idx)
 		px[0]=px[1]=px[2]=px[3]=room->connect_box.min.x;
 		pz[0]=pz[3]=room->connect_box.max.z-ag_size_pillar_wid;
 		pz[1]=pz[2]=room->connect_box.max.z;
-		py[0]=room->connect_box.min.y+ag_size_pillar_wid;
-		py[1]=room->connect_box.min.y;
-		py[2]=room->connect_box.max.y;
-		py[3]=room->connect_box.max.y-ag_size_bump_high;
+		py[0]=ty+ag_size_pillar_wid;
+		py[1]=ty;
+		py[2]=by2;
+		py[3]=by;
 
 		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_connect);
 
@@ -417,8 +404,8 @@ void ag_generate_add_connector_room_pillar(int org_room_idx)
 		px[0]=px[3]=room->connect_box.min.x;
 		px[1]=px[2]=room->connect_box.max.x;
 		pz[0]=pz[1]=pz[2]=pz[3]=room->connect_box.min.z+ag_size_pillar_wid;
-		py[0]=py[1]=room->connect_box.min.y+ag_size_pillar_wid;
-		py[2]=py[3]=room->connect_box.max.y-ag_size_bump_high;
+		py[0]=py[1]=ty+ag_size_pillar_wid;
+		py[2]=py[3]=by;
 
 		flip_poly_idx[0]=map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_connect);
 
@@ -433,8 +420,8 @@ void ag_generate_add_connector_room_pillar(int org_room_idx)
 		pz[1]=room->connect_box.max.z;
 		pz[2]=room->connect_box.max.z-ag_size_pillar_wid;
 		pz[3]=room->connect_box.min.z+ag_size_pillar_wid;
-		py[0]=py[1]=room->connect_box.min.y;
-		py[2]=py[3]=room->connect_box.min.y+ag_size_pillar_wid;
+		py[0]=py[1]=ty;
+		py[2]=py[3]=ty+ag_size_pillar_wid;
 
 		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_connect);
 
@@ -449,8 +436,8 @@ void ag_generate_add_connector_room_pillar(int org_room_idx)
 		pz[1]=room->connect_box.max.z-ag_size_pillar_wid;
 		pz[2]=room->connect_box.max.z;
 		pz[3]=room->connect_box.min.z;
-		py[0]=py[1]=room->connect_box.max.y-ag_size_bump_high;
-		py[2]=py[3]=room->connect_box.max.y;
+		py[0]=py[1]=by;
+		py[2]=py[3]=by2;
 
 		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_connect);
 
@@ -464,11 +451,11 @@ void ag_generate_add_connector_room_pillar(int org_room_idx)
 		px[2]=px[3]=room->connect_box.max.x;
 		pz[0]=pz[3]=room->connect_box.min.z+ag_size_pillar_wid;
 		pz[1]=pz[2]=room->connect_box.max.z-ag_size_pillar_wid;
-		py[0]=py[1]=py[2]=py[3]=room->connect_box.max.y-ag_size_bump_high;
+		py[0]=py[1]=py[2]=py[3]=by;
 
 		flip_poly_idx[2]=map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_connect);
 
-		py[0]=py[1]=py[2]=py[3]=room->connect_box.min.y+ag_size_pillar_wid;
+		py[0]=py[1]=py[2]=py[3]=ty+ag_size_pillar_wid;
 
 		flip_poly_idx[3]=map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_connect);
 	}
@@ -484,6 +471,39 @@ void ag_generate_add_connector_room_pillar(int org_room_idx)
 	for (n=0;n!=4;n++) {
 		map_flip_normals_mesh_poly(&map,&map.mesh.meshes[mesh_idx],flip_poly_idx[n]);
 	}
+}
+
+void ag_generate_add_connector_room_arch(int org_room_idx)
+{
+	int					ty,by,by2;
+	ag_room_type		*room,*room2;
+
+	room=&ag_state.rooms[org_room_idx];
+	room2=&ag_state.rooms[room->connect_box.other_room_idx];
+
+		// pillars go to the top
+
+	room->connect_box.min.y-=(ag_size_room_high+ag_size_floor_high);
+
+		// remove unused polygons
+
+	ag_generate_remove_polygons_in_box(room->mesh_idx,&room->connect_box.min,&room->connect_box.max);
+	ag_generate_remove_polygons_in_box(room2->mesh_idx,&room->connect_box.min,&room->connect_box.max);
+
+		// add in upper and lower arches
+
+
+	ty=room->connect_box.max.y-ag_size_room_high;
+	by=room->connect_box.max.y-ag_size_bump_high;
+	by2=room->connect_box.max.y;
+
+	ag_generate_add_connector_room_arch_add(room,ty,by,by2);
+
+	ty=room->connect_box.max.y-((ag_size_room_high*2)+ag_size_floor_high);
+	by=room->connect_box.max.y-(ag_size_room_high+ag_size_floor_high);
+	by2=room->connect_box.max.y-ag_size_room_high;
+
+	ag_generate_add_connector_room_arch_add(room,ty,by,by2);
 }
 
 /* =======================================================
@@ -817,8 +837,8 @@ void ag_generate_add_connector_rooms(void)
 				ag_generate_add_connector_room_normal(n,TRUE);
 				break;
 
-			case ag_connect_type_pillar:
-				ag_generate_add_connector_room_pillar(n);
+			case ag_connect_type_arch:
+				ag_generate_add_connector_room_arch(n);
 				break;
 
 			case ag_connect_type_stairs:
