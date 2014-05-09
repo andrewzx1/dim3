@@ -90,14 +90,134 @@ void ag_generate_set_connector_type(int room_idx)
       
 ======================================================= */
 
-void ag_generate_add_connector_room_normal(int org_room_idx,bool has_door)
+void ag_generate_add_connector_door(char *name,d3pnt *min,d3pnt *max,char *name2,d3pnt *min2,d3pnt *max2,d3pnt *mov)
 {
-	int					mesh_idx,dx,dz,
-						group_idx,movement_idx,move_idx;
+	int					mesh_idx,
+						group_idx,reverse_group_idx,
+						movement_idx,move_idx;
 	int					px[8],py[8],pz[8];
 	float				gx[8],gy[8];
 	movement_type		*movement;
 	movement_move_type	*move;
+
+		// create first door
+
+	mesh_idx=map_mesh_add(&map);
+
+	px[0]=px[3]=min->x;
+	px[1]=px[2]=max->x;
+	pz[0]=pz[3]=pz[1]=pz[2]=min->z;
+	py[0]=py[1]=min->y;
+	py[2]=py[3]=max->y;
+	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_door);
+
+	pz[0]=pz[3]=pz[1]=pz[2]=max->z;
+	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_door);
+
+	px[0]=px[3]=px[1]=px[2]=min->x;
+	pz[0]=pz[3]=min->z;
+	pz[1]=pz[2]=max->z;
+	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_door);
+
+	px[0]=px[3]=px[1]=px[2]=max->x;
+	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_door);
+
+	px[0]=px[3]=min->x;
+	px[1]=px[2]=max->x;
+	pz[0]=pz[1]=min->z;
+	pz[2]=pz[3]=max->z;
+	py[0]=py[1]=py[2]=py[3]=min->y;
+	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_door);
+
+	py[0]=py[1]=py[2]=py[3]=max->y;
+	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_door);
+
+	map_mesh_reset_uv(&map,mesh_idx);
+	map_recalc_normals_mesh(&map,&map.mesh.meshes[mesh_idx],normal_mode_out,FALSE);
+
+		// add door group
+
+	group_idx=map_group_add(&map);
+	strcpy(map.group.groups[group_idx].name,name);
+
+	map.mesh.meshes[mesh_idx].group_idx=group_idx;
+	map.mesh.meshes[mesh_idx].flag.moveable=TRUE;
+
+		// create optional second door
+
+	reverse_group_idx=-1;
+
+	if (name2!=NULL) {
+		mesh_idx=map_mesh_add(&map);
+
+		px[0]=px[3]=min2->x;
+		px[1]=px[2]=max2->x;
+		pz[0]=pz[3]=pz[1]=pz[2]=min2->z;
+		py[0]=py[1]=min2->y;
+		py[2]=py[3]=max2->y;
+		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_door);
+
+		pz[0]=pz[3]=pz[1]=pz[2]=max2->z;
+		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_door);
+
+		px[0]=px[3]=px[1]=px[2]=min2->x;
+		pz[0]=pz[3]=min2->z;
+		pz[1]=pz[2]=max2->z;
+		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_door);
+
+		px[0]=px[3]=px[1]=px[2]=max2->x;
+		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_door);
+
+		px[0]=px[3]=min2->x;
+		px[1]=px[2]=max2->x;
+		pz[0]=pz[1]=min2->z;
+		pz[2]=pz[3]=max2->z;
+		py[0]=py[1]=py[2]=py[3]=min2->y;
+		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_door);
+
+		py[0]=py[1]=py[2]=py[3]=max2->y;
+		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_door);
+
+		map_mesh_reset_uv(&map,mesh_idx);
+		map_recalc_normals_mesh(&map,&map.mesh.meshes[mesh_idx],normal_mode_out,FALSE);
+
+			// add door group
+
+		reverse_group_idx=map_group_add(&map);
+		strcpy(map.group.groups[reverse_group_idx].name,name2);
+
+		map.mesh.meshes[mesh_idx].group_idx=reverse_group_idx;
+		map.mesh.meshes[mesh_idx].flag.moveable=TRUE;
+	}
+
+		// add in door movement
+
+	movement_idx=map_movement_add(&map);
+
+	movement=&map.movement.movements[movement_idx];
+
+	strcpy(movement->name,name);
+	movement->group_idx=group_idx;
+	movement->reverse_group_idx=reverse_group_idx;
+	movement->auto_open=TRUE;
+
+	move_idx=map_movement_move_add(&map,movement_idx);
+
+	move=&movement->moves[move_idx];
+	move->msec=2500;
+	memmove(&move->mov,mov,sizeof(d3pnt));
+
+	strcpy(move->sound_name,"Door");
+}
+
+void ag_generate_add_connector_room_normal(int org_room_idx,bool has_door)
+{
+	int					mesh_idx,dx,dz,mx,mz;
+	int					px[8],py[8],pz[8];
+	float				gx[8],gy[8];
+	char				door_name[32],door2_name[32];
+	d3pnt				door_min,door_max,door_mov,
+						door2_min,door2_max;
 	ag_room_type		*room,*room2;
 
 	room=&ag_state.rooms[org_room_idx];
@@ -172,80 +292,83 @@ void ag_generate_add_connector_room_normal(int org_room_idx,bool has_door)
 
 	if (!has_door) return;
 
-		// create door
+		// up door
 
-	mesh_idx=map_mesh_add(&map);
+	if (ag_random_bool()) {
+		sprintf(door_name,"Door %d",ag_state.current_door_idx);
 
-	if (dx>dz) {
-		px[0]=px[3]=room->connect_box.min.x;
-		px[1]=px[2]=room->connect_box.max.x;
-		pz[0]=pz[3]=pz[1]=pz[2]=room->connect_box.min.z+ag_size_door_margin;
-		py[0]=py[1]=room->connect_box.min.y;
-		py[2]=py[3]=room->connect_box.max.y;
+		if (dx>dz) {
+			door_min.x=room->connect_box.min.x;
+			door_max.x=room->connect_box.max.x;
+			door_min.z=room->connect_box.min.z+ag_size_door_margin;
+			door_max.z=room->connect_box.max.z-ag_size_door_margin;
+		}
+		else {
+			door_min.x=room->connect_box.min.x+ag_size_door_margin;
+			door_max.x=room->connect_box.max.x-ag_size_door_margin;
+			door_min.z=room->connect_box.min.z;
+			door_max.z=room->connect_box.max.z;
+		}
 
-		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_door);
+		door_min.y=room->connect_box.min.y;
+		door_max.y=room->connect_box.max.y;
 
-		pz[0]=pz[3]=pz[1]=pz[2]=room->connect_box.max.z-ag_size_door_margin;
+		door_mov.x=0;
+		door_mov.y=-((room->connect_box.max.y-room->connect_box.min.y)-ag_size_door_margin);
+		door_mov.z=0;
 
-		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_door);
-
-		px[0]=px[3]=room->connect_box.min.x;
-		px[1]=px[2]=room->connect_box.max.x;
-		pz[0]=pz[1]=room->connect_box.min.z+ag_size_door_margin;
-		pz[2]=pz[3]=room->connect_box.max.z-ag_size_door_margin;
-		py[0]=py[1]=py[2]=py[3]=room->connect_box.max.y;
-
-		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_door);
+		ag_generate_add_connector_door(door_name,&door_min,&door_max,NULL,NULL,NULL,&door_mov);
 	}
+
+		// split door
+
 	else {
-		px[0]=px[3]=px[1]=px[2]=room->connect_box.min.x+ag_size_door_margin;
-		pz[0]=pz[3]=room->connect_box.min.z;
-		pz[1]=pz[2]=room->connect_box.max.z;
-		py[0]=py[1]=room->connect_box.min.y;
-		py[2]=py[3]=room->connect_box.max.y;
 
-		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_door);
+		if (dx>dz) {
+			mx=(room->connect_box.min.x+room->connect_box.max.x)>>1;
 
-		px[0]=px[3]=px[1]=px[2]=room->connect_box.max.x-ag_size_door_margin;
-
-		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_door);
-
-		px[0]=px[3]=room->connect_box.min.x+ag_size_door_margin;
-		px[1]=px[2]=room->connect_box.max.x-ag_size_door_margin;
-		pz[0]=pz[1]=room->connect_box.min.z;
-		pz[2]=pz[3]=room->connect_box.max.z;
-		py[0]=py[1]=py[2]=py[3]=room->connect_box.max.y;
-
-		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_door);
+			door_min.x=room->connect_box.min.x;
+			door_max.x=mx;
+			door_min.z=room->connect_box.min.z+ag_size_door_margin;
+			door_max.z=room->connect_box.max.z-ag_size_door_margin;
+			
+			door2_min.x=mx;
+			door2_max.x=room->connect_box.max.x;
+			door2_min.z=room->connect_box.min.z+ag_size_door_margin;
+			door2_max.z=room->connect_box.max.z-ag_size_door_margin;
+			
+			door_mov.x=-(((room->connect_box.max.x-room->connect_box.min.x)>>1)-ag_size_door_margin);
+			door_mov.y=0;
+			door_mov.z=0;
 	}
+		else {
+			mz=(room->connect_box.min.z+room->connect_box.max.z)>>1;
 
-	map_mesh_reset_uv(&map,mesh_idx);
-	map_recalc_normals_mesh(&map,&map.mesh.meshes[mesh_idx],normal_mode_out,FALSE);
+			door_min.x=room->connect_box.min.x+ag_size_door_margin;
+			door_max.x=room->connect_box.max.x-ag_size_door_margin;
+			door_min.z=room->connect_box.min.z;
+			door_max.z=mz;
 
-		// add door group
+			door2_min.x=room->connect_box.min.x+ag_size_door_margin;
+			door2_max.x=room->connect_box.max.x-ag_size_door_margin;
+			door2_min.z=mz;
+			door2_max.z=room->connect_box.max.z;
 
-	group_idx=map_group_add(&map);
-	sprintf(map.group.groups[group_idx].name,"Door %d",ag_state.current_door_idx);
+			door_mov.x=0;
+			door_mov.y=0;
+			door_mov.z=-(((room->connect_box.max.z-room->connect_box.min.z)>>1)-ag_size_door_margin);
+		}
 
-	map.mesh.meshes[mesh_idx].group_idx=group_idx;
-	map.mesh.meshes[mesh_idx].flag.moveable=TRUE;
+		door_min.y=room->connect_box.min.y;
+		door_max.y=room->connect_box.max.y;
+		door2_min.y=room->connect_box.min.y;
+		door2_max.y=room->connect_box.max.y;
 
-		// add in door movement
+		sprintf(door_name,"Door %d",ag_state.current_door_idx);
+		sprintf(door2_name,"Door %dR",ag_state.current_door_idx);
 
-	movement_idx=map_movement_add(&map);
-
-	movement=&map.movement.movements[movement_idx];
-
-	sprintf(movement->name,"Door %d",ag_state.current_door_idx);
-	movement->group_idx=group_idx;
-	movement->auto_open=TRUE;
-
-	move_idx=map_movement_move_add(&map,movement_idx);
-
-	move=&movement->moves[move_idx];
-	move->msec=2500;
-	move->mov.y=-((room->connect_box.max.y-room->connect_box.min.y)-ag_size_door_margin);
-	strcpy(move->sound_name,"Door");
+		ag_generate_add_connector_door(door_name,&door_min,&door_max,door2_name,&door2_min,&door2_max,&door_mov);
+	}
 
 		// next door
 

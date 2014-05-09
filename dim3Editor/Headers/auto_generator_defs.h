@@ -187,7 +187,8 @@ typedef struct		{
 
 typedef struct		{
 						int							nvertex,mesh_idx;
-						bool						second_story,require_top_floor;
+						bool						second_story,require_top_floor,
+													has_stairs;
 						d3pnt						min,max;
 						d3pnt						vertexes[8];
 						d3vct						size;

@@ -600,15 +600,22 @@ void ag_gnerate_decoration_vertex_column(int room_idx,bool circular)
 
 void ag_generate_decorations_add(void)
 {
-	int				n;
+	int				n,dec_idx;
 	ag_room_type	*room;
 
 	for (n=0;n!=ag_state.nroom;n++) {
 		room=&ag_state.rooms[n];
 
+			// if the room added
+			// stairs, then skip
+			// decorations
+
+		dec_idx=ag_random_int(5);
+		if (room->has_stairs) dec_idx=ag_decoration_type_none;
+
 			// middle decorations
 
-		switch (ag_random_int(5)) {
+		switch (dec_idx) {
 
 			case ag_decoration_type_none:
 				break;

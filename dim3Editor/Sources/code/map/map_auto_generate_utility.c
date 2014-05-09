@@ -137,6 +137,9 @@ void ag_generate_delete_shared_polygons(void)
 	for (mesh_1_idx=0;mesh_1_idx!=map.mesh.nmesh;mesh_1_idx++) {
 
 		mesh_1=&map.mesh.meshes[mesh_1_idx];
+		if (mesh_1->npoly==0) continue;
+
+		if (mesh_1->polys[0].txt_idx==ag_texture_door) continue;		// special skip out for doors, as they will be moving and so can't assume textures remain hidden
 
 		poly_1_idx=0;
 
