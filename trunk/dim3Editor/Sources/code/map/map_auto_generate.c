@@ -498,6 +498,7 @@ void ag_add_room(bool first_room)
 
 	room->second_story=ag_random_bool();
 	room->require_top_floor=FALSE;
+	room->has_stairs=FALSE;
 
 		// create random polygon
 
