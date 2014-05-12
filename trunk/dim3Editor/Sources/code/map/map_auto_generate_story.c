@@ -50,21 +50,47 @@ extern void ag_generate_add_connector_room_step(d3pnt *min,d3pnt *max);
 
 void ag_generate_add_room_second_story_steps(d3pnt *min,d3pnt *max,d3pnt *mov)
 {
-	if (mov->x<0) {
-		min->x=max->x+mov->x;
-	}
-	else {
-		max->x=min->x+mov->x;
-	}
+	int				n,step_high,step_count;
 
-	if (mov->z<0) {
-		min->z=max->z+mov->z;
-	}
-	else {
-		max->z=min->z+mov->z;
-	}
+	step_high=(ag_size_room_high+ag_size_floor_high)/ag_size_stair_count;
+	step_count=ag_size_stair_count-1;
 
-	ag_generate_add_connector_room_step(min,max);
+	for (n=0;n!=step_count;n++) {
+
+			// down one
+
+		min->y+=step_high;
+		if (min->y>=max->y) break;
+
+			// step length
+
+		if (mov->x!=0) {
+			if (mov->x<0) {
+				min->x=max->x+mov->x;
+			}
+			else {
+				max->x=min->x+mov->x;
+			}
+		}
+
+		if (mov->z!=0) {
+			if (mov->z<0) {
+				min->z=max->z+mov->z;
+			}
+			else {
+				max->z=min->z+mov->z;
+			}
+		}
+
+		ag_generate_add_connector_room_step(min,max);
+
+			// next step
+
+		min->x+=mov->x;
+		max->x+=mov->x;
+		min->z+=mov->z;
+		max->z+=mov->z;
+	}
 }
 
 /* =======================================================
@@ -82,6 +108,7 @@ void ag_generate_add_room_second_story_chunk(int room_idx,int mesh_idx,int poly_
 							wx[4],wy[4],wz[4];
 	float					gx[8],gy[8],mgx,mgy,
 							k_gx[4],k_gy[4];
+	bool					no_stairs;
 	d3pnt					step_min,step_max,step_mov;
 	d3pnt					*pt;
 	ag_room_type			*room;
@@ -94,6 +121,11 @@ void ag_generate_add_room_second_story_chunk(int room_idx,int mesh_idx,int poly_
 	poly=&mesh->polys[poly_idx];
 
 	ptsz=poly->ptsz;
+
+		// randomly eliminate
+		// steps from some rooms
+
+	no_stairs=ag_random_bool();
 
 		// new hole vertexes
 
@@ -236,11 +268,25 @@ void ag_generate_add_room_second_story_chunk(int room_idx,int mesh_idx,int poly_
 			// if this segment is straight,
 			// then make it a stair
 
+		if (no_stairs) continue;
 		if (room->has_stairs) continue;
+
+			// setup step dimensions
+
+		step_min.y=pt->y+y_add;
+		step_max.y=step_min.y+(ag_size_room_high+ag_size_floor_high);
+		
+		step_mov.x=0;
+		step_mov.y=0;
+		step_mov.z=0;
+
+			// steps across the X
 
 		if (px[n]==px[k]) {
 			room->has_stairs=TRUE;
+
 			step_min.x=step_max.x=px[n];
+
 			if (pz[n]<pz[k]) {
 				step_min.z=pz[n];
 				step_max.z=pz[k];
@@ -249,19 +295,18 @@ void ag_generate_add_room_second_story_chunk(int room_idx,int mesh_idx,int poly_
 				step_min.z=pz[k];
 				step_max.z=pz[n];
 			}
-			step_min.y=pt->y+y_add;
-			step_max.y=step_min.y+ag_size_room_high;
 
-			step_mov.x=(px[n]<mx)?1000:-1000;
-			step_mov.y=0;
-			step_mov.z=0;
+			step_mov.x=(px[n]<mx)?ag_size_story_stair_tread_len:-ag_size_story_stair_tread_len;
 
 			ag_generate_add_room_second_story_steps(&step_min,&step_max,&step_mov);
 			continue;
 		}
 
+			// steps across the Z
+
 		if (pz[n]==pz[k]) {
 			room->has_stairs=TRUE;
+
 			if (px[n]<px[k]) {
 				step_min.x=px[n];
 				step_max.x=px[k];
@@ -270,13 +315,10 @@ void ag_generate_add_room_second_story_chunk(int room_idx,int mesh_idx,int poly_
 				step_min.x=px[k];
 				step_max.x=px[n];
 			}
-			step_min.y=pt->y+y_add;
-			step_max.y=step_min.y+ag_size_room_high;
+
 			step_min.z=step_max.z=pz[n];
 
-			step_mov.x=0;
-			step_mov.y=0;
-			step_mov.z=(pz[n]<mz)?1000:-1000;
+			step_mov.z=(pz[n]<mz)?ag_size_story_stair_tread_len:-ag_size_story_stair_tread_len;
 
 			ag_generate_add_room_second_story_steps(&step_min,&step_max,&step_mov);
 			continue;

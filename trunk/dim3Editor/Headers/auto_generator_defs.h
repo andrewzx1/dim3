@@ -110,8 +110,9 @@ and can be sold or given away.
 #define ag_texture_decoration_pillar			5
 #define ag_texture_decoration_box				6
 #define ag_texture_equipment					7
+#define ag_texture_window						8
 
-#define ag_texture_required_count				8			// number of textures that must be present to run
+#define ag_texture_required_count				9			// number of textures that must be present to run
 
 //
 // dimensions and positions
@@ -132,6 +133,7 @@ and can be sold or given away.
 #define ag_size_stair_length_start				25000
 #define ag_size_stair_length_extra				10000
 #define ag_size_stair_count						15
+#define ag_size_story_stair_tread_len			1200
 
 #define ag_size_pillar_wid						1500
 #define ag_size_bump_high						400
@@ -160,9 +162,10 @@ and can be sold or given away.
 #define ag_window_min_wid						10000
 #define ag_window_min_high						10000
 
-#define ag_window_depth							2500
-
-#define ag_story_walkway_width					10000
+#define ag_window_random_percent				30
+#define ag_window_count_start					2
+#define ag_window_count_extra					3
+#define ag_window_depth							3000
 
 //
 // structures
@@ -188,7 +191,7 @@ typedef struct		{
 typedef struct		{
 						int							nvertex,mesh_idx;
 						bool						second_story,require_top_floor,
-													has_stairs;
+													has_stairs,has_windows;
 						d3pnt						min,max;
 						d3pnt						vertexes[8];
 						d3vct						size;
