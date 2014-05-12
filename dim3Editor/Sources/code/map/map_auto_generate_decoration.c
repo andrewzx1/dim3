@@ -725,53 +725,68 @@ void ag_generate_lights_add_fixture(d3pnt *pnt)
 	map_recalc_normals_mesh(&map,&map.mesh.meshes[mesh_idx],normal_mode_out,FALSE);
 }
 
+void ag_generate_lights_add_spot(d3pnt *pnt)
+{
+	map_light_type	*lit;
+
+		// exit if we run out of lights
+
+	if (map.nlight==max_map_light) return;
+		
+		// add the light
+
+	lit=&map.lights[map.nlight];
+	sprintf(lit->name,"light %d",map.nlight);
+
+	map.nlight++;
+			
+		// set the light
+
+	memmove(&lit->pnt,pnt,sizeof(d3pnt));
+	
+	lit->setting.on=TRUE;
+	lit->setting.light_map=TRUE;
+	lit->setting.halo_name[0]=0x0;
+
+	lit->setting.type=lt_normal;
+	lit->setting.direction=ld_all;
+
+	lit->setting.intensity=ag_size_light_width_start+ag_random_int(ag_size_light_width_extra);
+	lit->setting.exponent=1.0f;
+
+	lit->setting.col.r=1.0f-(((float)ag_random_int(25))/100.0f);
+	lit->setting.col.g=1.0f-(((float)ag_random_int(25))/100.0f);
+	lit->setting.col.b=1.0f-(((float)ag_random_int(25))/100.0f);
+}
+
 void ag_generate_lights_add(void)
 {
 	int				n;
-	d3pnt			min,max;
-	map_light_type	*lit;
+	d3pnt			pnt,min,max;
 	ag_room_type	*room;
 
 	for (n=0;n!=ag_state.nroom;n++) {
 
-			// exit if we run out of lights
+			// skip rooms that are lit
+			// by windows
 
-		if (map.nlight==max_map_light) return;
+		room=&ag_state.rooms[n];
+		if (room->has_windows) continue;
 
 			// add the light
 
-		lit=&map.lights[map.nlight];
-		map.nlight++;
-
-		sprintf(lit->name,"light %d",n);
-			
-			// set the light
-
-		room=&ag_state.rooms[n];
 		map_mesh_calculate_extent(&map,room->mesh_idx,&min,&max);
 
-		lit->pnt.x=(min.x+max.x)>>1;
-		lit->pnt.y=max.y-(ag_size_room_high-(ag_size_floor_high<<1));
-		if (room->second_story) lit->pnt.y-=ag_size_room_high;
-		lit->pnt.z=(min.z+max.z)>>1;
-		
-		lit->setting.on=TRUE;
-		lit->setting.light_map=TRUE;
-		lit->setting.halo_name[0]=0x0;
+		pnt.x=(min.x+max.x)>>1;
+		pnt.y=max.y-(ag_size_room_high-(ag_size_floor_high<<1));
+		if (room->second_story) pnt.y-=ag_size_room_high;
+		pnt.z=(min.z+max.z)>>1;
 
-		lit->setting.type=lt_normal;
-		lit->setting.direction=ld_all;
-
-		lit->setting.intensity=ag_size_light_width_start+ag_random_int(ag_size_light_width_extra);
-		lit->setting.exponent=1.0f;
-
-		lit->setting.col.r=1.0f-(((float)ag_random_int(25))/100.0f);
-		lit->setting.col.g=1.0f-(((float)ag_random_int(25))/100.0f);
-		lit->setting.col.b=1.0f-(((float)ag_random_int(25))/100.0f);
+		ag_generate_lights_add_spot(&pnt);
 
 			// add the fixture
 
-		ag_generate_lights_add_fixture(&lit->pnt);
+		ag_generate_lights_add_fixture(&pnt);
 	}
 }
 

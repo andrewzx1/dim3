@@ -37,6 +37,8 @@ extern file_path_setup_type		file_path_setup;
 
 extern ag_state_type			ag_state;
 
+extern void ag_generate_lights_add_spot(d3pnt *pnt);
+
 /* =======================================================
 
       Random Utilities
@@ -270,8 +272,9 @@ int ag_generate_find_floor_polygon(int room_idx)
 
 void ag_generate_windows_add(void)
 {
-	int				n,k,mesh_idx,poly_idx;
-	d3pnt			min,max,extrude_pnt;
+	int				n,k,t,mesh_idx,poly_idx,
+					window_count;
+	d3pnt			min,max,extrude_pnt,lit_pnt;
 	d3vct			extrude_vct;
 	map_mesh_type	*mesh;
 	ag_room_type	*room;
@@ -284,32 +287,52 @@ void ag_generate_windows_add(void)
 		mesh=&map.mesh.meshes[mesh_idx];
 		if (mesh->npoly==0) continue;
 
+			// is this a windowed room?
+
+		if (ag_random_int(100)>ag_window_random_percent) continue;
+
+		room->has_windows=TRUE;
+
+		window_count=ag_window_count_start+ag_random_int(ag_window_count_extra);
+
 			// try a couple times to get
 			// a polygon that would make a
 			// good window candidate
 
-		for (k=0;k!=10;k++) {
-			poly_idx=ag_random_int(mesh->npoly);
+		for (t=0;t!=window_count;t++) {
+			for (k=0;k!=10;k++) {
+				poly_idx=ag_random_int(mesh->npoly);
 
-			map_mesh_poly_calculate_extent(&map,mesh_idx,poly_idx,&min,&max);
-			if (abs(max.y-min.y)<ag_window_min_high) continue;
-			
-				// get extrude from the
-				// normal of the wall
+				map_mesh_poly_calculate_extent(&map,mesh_idx,poly_idx,&min,&max);
+				if (abs(max.y-min.y)<ag_window_min_high) continue;
 				
-			extrude_vct.x=map.mesh.meshes[mesh_idx].polys[poly_idx].tangent_space.normal.x;
-			extrude_vct.y=map.mesh.meshes[mesh_idx].polys[poly_idx].tangent_space.normal.y;
-			extrude_vct.z=map.mesh.meshes[mesh_idx].polys[poly_idx].tangent_space.normal.z;
-			
-			extrude_pnt.x=-(int)(extrude_vct.x*(float)ag_window_depth);
-			extrude_pnt.y=0;
-			extrude_pnt.z=-(int)(extrude_vct.z*(float)ag_window_depth);
+					// get extrude from the
+					// normal of the wall
+					
+				extrude_vct.x=map.mesh.meshes[mesh_idx].polys[poly_idx].tangent_space.normal.x;
+				extrude_vct.y=map.mesh.meshes[mesh_idx].polys[poly_idx].tangent_space.normal.y;
+				extrude_vct.z=map.mesh.meshes[mesh_idx].polys[poly_idx].tangent_space.normal.z;
+				
+				extrude_pnt.x=-(int)(extrude_vct.x*(float)ag_window_depth);
+				extrude_pnt.y=0;
+				extrude_pnt.z=-(int)(extrude_vct.z*(float)ag_window_depth);
 
-				// punch the window
+					// punch the window
 
-			map_mesh_poly_punch_hole(&map,mesh_idx,poly_idx,&extrude_pnt,FALSE,normal_mode_in);
+				map_mesh_poly_punch_hole(&map,mesh_idx,poly_idx,&extrude_pnt,TRUE,normal_mode_in);
 
-			break;
+					// last polygon is always the extruded poly
+
+				poly_idx=map.mesh.meshes[mesh_idx].npoly-1;
+				map.mesh.meshes[mesh_idx].polys[poly_idx].txt_idx=ag_texture_window;
+
+					// add in the light
+
+				map_mesh_calculate_center(&map,mesh_idx,&lit_pnt);
+				ag_generate_lights_add_spot(&lit_pnt);
+
+				break;
+			}
 		}
 	}
 }
