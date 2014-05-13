@@ -264,6 +264,29 @@ int ag_generate_find_floor_polygon(int room_idx)
 	return(-1);
 }
 
+bool ag_generate_is_polygon_window_target(int mesh_idx,int poly_idx)
+{
+	d3pnt				min,max;
+	map_mesh_type		*mesh;
+	map_mesh_poly_type	*poly;
+
+		// is Y high enough?
+
+	map_mesh_poly_calculate_extent(&map,mesh_idx,poly_idx,&min,&max);
+	if (abs(max.y-min.y)<ag_window_min_high) return(FALSE);
+
+		// only items with 5 vertexes
+
+	mesh=&map.mesh.meshes[mesh_idx];
+	if (mesh->nvertex!=4) return(FALSE);
+
+		// pairs of Ys
+
+	poly=&mesh->polys[poly_idx];
+	if (mesh->vertexes[poly->v[0]].y!=mesh->vertexes[poly->v[1]].y) return(FALSE);
+	return(mesh->vertexes[poly->v[2]].y==mesh->vertexes[poly->v[3]].y);
+}
+
 /* =======================================================
 
       Windows
