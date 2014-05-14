@@ -264,6 +264,43 @@ int ag_generate_find_floor_polygon(int room_idx)
 	return(-1);
 }
 
+int ag_generate_find_ceiling_polygon(int room_idx)
+{
+	int					n,k;
+	bool				flat;
+	d3pnt				min,max;
+	map_mesh_type		*mesh;
+	map_mesh_poly_type	*poly;
+	ag_room_type		*room;
+
+	room=&ag_state.rooms[room_idx];
+
+		// find the ceiling
+
+	map_mesh_calculate_extent(&map,room->mesh_idx,&min,&max);
+
+	mesh=&map.mesh.meshes[room->mesh_idx];
+
+	for (n=0;n!=mesh->npoly;n++) {
+		poly=&mesh->polys[n];
+
+		if (poly->txt_idx!=ag_texture_ceiling) continue;
+
+		flat=TRUE;
+
+		for (k=0;k!=poly->ptsz;k++) {
+			if (mesh->vertexes[mesh->polys[n].v[k]].y!=min.y) {
+				flat=FALSE;
+				break;
+			}
+		}
+
+		if (flat) return(n);
+	}
+
+	return(-1);
+}
+
 bool ag_generate_is_polygon_window_target(int mesh_idx,int poly_idx)
 {
 	d3pnt				min,max;
@@ -295,8 +332,8 @@ bool ag_generate_is_polygon_window_target(int mesh_idx,int poly_idx)
 
 void ag_generate_windows_add(void)
 {
-	int				n,k,t,mesh_idx,poly_idx,
-					window_count;
+	int				n,k,t,poly_idx,
+					window_count,extrude_mesh_idx;
 	d3pnt			extrude_pnt,lit_pnt;
 	d3vct			extrude_vct;
 	map_mesh_type	*mesh;
@@ -342,20 +379,23 @@ void ag_generate_windows_add(void)
 
 					// punch the window
 
-				map_mesh_poly_punch_hole(&map,room->mesh_idx,poly_idx,&extrude_pnt,TRUE,normal_mode_in);
+				extrude_mesh_idx=map_mesh_poly_punch_hole(&map,room->mesh_idx,poly_idx,&extrude_pnt,TRUE,normal_mode_in);
+				if (extrude_mesh_idx==-1) break;
 
-					// last mesh/polygon is always the extruded poly
+					// last mesh/polygon is always the
+					// extruded poly close
 
-				mesh_idx=map.mesh.nmesh-1;
-				poly_idx=map.mesh.meshes[mesh_idx].npoly-1;
-				map.mesh.meshes[mesh_idx].polys[poly_idx].txt_idx=ag_texture_window;
+				map_mesh_reset_uv(&map,extrude_mesh_idx);
+
+				poly_idx=map.mesh.meshes[extrude_mesh_idx].npoly-1;
+				map.mesh.meshes[extrude_mesh_idx].polys[poly_idx].txt_idx=ag_texture_window;
 				
-				map_mesh_single_poly_uv(&map,mesh_idx,poly_idx);
-				map.mesh.meshes[mesh_idx].flag.lock_uv=TRUE;
+				map_mesh_single_poly_uv(&map,extrude_mesh_idx,poly_idx);
+				map.mesh.meshes[extrude_mesh_idx].flag.lock_uv=TRUE;
 
 					// add in the light
 
-				map_mesh_calculate_center(&map,mesh_idx,&lit_pnt);
+				map_mesh_calculate_center(&map,extrude_mesh_idx,&lit_pnt);
 				ag_generate_lights_add_spot(&lit_pnt);
 
 				break;

@@ -111,6 +111,10 @@ bool model_start_animation(model_draw *draw,char *name,int tick)
 	
 	draw_animation=&draw->animations[draw->script_animation_idx];
 
+		// cancel any rag doll
+
+	model_rag_doll_clear(draw);
+
 		// smooth out changes in animations
 		
 	draw_animation->smooth_animate_idx=-1;
@@ -151,6 +155,8 @@ void model_stop_animation(model_draw *draw)
 {
 	model_draw_animation	*draw_animation;
 	
+		// stop animation
+
 	draw_animation=&draw->animations[draw->script_animation_idx];
 	
 	draw_animation->animate_idx=-1;
@@ -161,6 +167,10 @@ void model_stop_animation(model_draw *draw)
 	draw_animation->smooth_pose_move_idx=0;
     
     draw_animation->mode=am_stopped;
+
+		// cancel any rag doll
+
+	model_rag_doll_clear(draw);
 }
 
 void model_stop_all_animation(model_draw *draw)
@@ -168,6 +178,8 @@ void model_stop_all_animation(model_draw *draw)
 	int						n;
 	model_draw_animation	*draw_animation;
 	
+		// stop animations
+
 	for (n=0;n!=max_model_blend_animation;n++) {
 		draw_animation=&draw->animations[n];
 		
@@ -180,6 +192,10 @@ void model_stop_all_animation(model_draw *draw)
 		
 		draw_animation->mode=am_stopped;
 	}
+
+		// cancel any rag doll
+
+	model_rag_doll_clear(draw);
 }
 
 bool model_cancel_animation(model_draw *draw,char *name)
@@ -213,6 +229,10 @@ bool model_change_animation(model_draw *draw,char *name,int tick)
 	if (idx==-1) return(FALSE);
 
 	draw_animation->animate_next_idx=idx;
+
+		// cancel any rag doll
+
+	model_rag_doll_clear(draw);
 	
 	return(TRUE);
 }
@@ -235,6 +255,10 @@ bool model_interrupt_animation(model_draw *draw,char *name,int tick)
 		// old animation is chained to new one
 
 	draw_animation->animate_next_idx=old_animate_idx;
+
+		// cancel any rag doll
+
+	model_rag_doll_clear(draw);
 	
 	return(TRUE);
 }

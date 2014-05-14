@@ -39,6 +39,7 @@ extern ag_state_type			ag_state;
 extern int ag_random_int(int max);
 extern bool ag_random_bool(void);
 extern int ag_generate_find_floor_polygon(int room_idx);
+extern int ag_generate_find_ceiling_polygon(int room_idx);
 
 /* =======================================================
 
@@ -133,7 +134,7 @@ void ag_generate_decoration_location_angle(int room_idx,float ang,d3pnt *pnt)
       
 ======================================================= */
 
-void ag_generate_decoration_box(d3pnt *pnt,int stack_offset,int start_cmp_mesh_idx)
+void ag_generate_decoration_box(d3pnt *pnt,d3pnt *room_sz,int start_cmp_mesh_idx)
 {
 	int				n,mesh_idx,x,z,sz;
 	int				px[8],py[8],pz[8];
@@ -148,8 +149,8 @@ void ag_generate_decoration_box(d3pnt *pnt,int stack_offset,int start_cmp_mesh_i
 	sz=ag_size_stack_box>>1;
 
 	for (n=0;n!=10;n++) {
-		x=pnt->x+(ag_random_int(stack_offset>>1)-stack_offset);
-		z=pnt->z+(ag_random_int(stack_offset>>1)-stack_offset);
+		x=pnt->x+(ag_random_int(room_sz->x)-(room_sz->x>>1));
+		z=pnt->z+(ag_random_int(room_sz->z)-(room_sz->z>>1));
 
 		min.x=x-sz;
 		max.x=x+sz;
@@ -235,50 +236,62 @@ void ag_generate_decoration_box(d3pnt *pnt,int stack_offset,int start_cmp_mesh_i
 	map_recalc_normals_mesh(&map,&map.mesh.meshes[mesh_idx],normal_mode_out,FALSE);
 }
 
-void ag_generate_decoration_box_stack(int room_idx,int cmp_mesh_idx)
+void ag_generate_decoration_box_stacks(int room_idx)
 {
-	int				n,row_count,stack_offset;
-	d3pnt			pnt;
+	int				n,row_count,cmp_mesh_idx;
+	bool			horz;
+	d3pnt			pnt,room_sz,min,max;
+	ag_room_type	*room;
 
 		// get random stack count
-		// and size
 
 	row_count=ag_count_stack_box_row_start+ag_random_int(ag_count_stack_box_row_extra);
-	stack_offset=ag_size_stack_box*(row_count+2);
 
 		// randomize location
 		// move it so within stack of boxes
 
-	ag_generate_decoration_location_random(room_idx,&pnt);
+	room=&ag_state.rooms[room_idx];
 
-	pnt.x+=(stack_offset>>1);
-	pnt.z+=(stack_offset>>1);
+	map_mesh_calculate_center(&map,room->mesh_idx,&pnt);
+	map_mesh_calculate_extent(&map,room->mesh_idx,&min,&max);
+
+	pnt.y=max.y;
+
+	room_sz.x=max.x-min.x;
+	room_sz.z=max.z-min.z;
+
+	if (room_sz.x>room_sz.z) {
+		horz=TRUE;
+		room_sz.x=room_sz.x/3;
+		room_sz.z=ag_size_stack_box*3;
+	}
+	else {
+		horz=FALSE;
+		room_sz.x=ag_size_stack_box*3;
+		room_sz.z=room_sz.z/3;
+	}
 
 		// box stack
+
+	cmp_mesh_idx=map.mesh.nmesh;
 
 	while (row_count>ag_count_stack_box_row_min) {
 
 		for (n=0;n!=row_count;n++) {
-			ag_generate_decoration_box(&pnt,stack_offset,cmp_mesh_idx);
+			ag_generate_decoration_box(&pnt,&room_sz,cmp_mesh_idx);
+		}
+
+		if (horz) {
+			room_sz.x-=ag_size_stack_box;
+			if (room_sz.x<ag_size_stack_box) break;
+		}
+		else {
+			room_sz.z-=ag_size_stack_box;
+			if (room_sz.z<ag_size_stack_box) break;
 		}
 
 		row_count--;
-		stack_offset-=ag_size_stack_box;
-
 		pnt.y-=ag_size_stack_box;
-	}
-}
-
-void ag_generate_decoration_box_stacks(int room_idx)
-{
-	int				n,box_stack_count,cmp_mesh_idx;
-	
-	box_stack_count=ag_count_stack_box_start+ag_random_int(ag_count_stack_box_extra);
-
-	cmp_mesh_idx=map.mesh.nmesh;
-
-	for (n=0;n!=box_stack_count;n++) {
-		ag_generate_decoration_box_stack(room_idx,cmp_mesh_idx);
 	}
 }
 
@@ -522,14 +535,14 @@ void ag_gnerate_decoration_equipment(int room_idx)
 
 /* =======================================================
 
-      Trench Decorations
+      Floor Trench Decorations
       
 ======================================================= */
 
-void ag_gnerate_decoration_trench(int room_idx)
+void ag_gnerate_decoration_floor_trench(int room_idx)
 {
 	int					n,depth_count,
-						mesh_idx,poly_idx;
+						mesh_idx,poly_idx,extrude_mesh_idx;
 	d3pnt				extrude_pnt;
 	ag_room_type		*room;
 
@@ -555,14 +568,46 @@ void ag_gnerate_decoration_trench(int room_idx)
 
 			// extrude it
 
-		map_mesh_poly_punch_hole(&map,mesh_idx,poly_idx,&extrude_pnt,TRUE,((extrude_pnt.y>0)?normal_mode_in:normal_mode_out));
+		extrude_mesh_idx=map_mesh_poly_punch_hole(&map,mesh_idx,poly_idx,&extrude_pnt,TRUE,((extrude_pnt.y>0)?normal_mode_in:normal_mode_out));
+		if (extrude_mesh_idx!=-1) map_mesh_reset_uv(&map,extrude_mesh_idx);
 
-			// last mesh and polygon is always
+			// last polygon in extrude mesh is always
 			// the new extrude
 
-		mesh_idx=map.mesh.nmesh-1;
+		mesh_idx=extrude_mesh_idx;
 		poly_idx=map.mesh.meshes[mesh_idx].npoly-1;
 	}
+}
+
+/* =======================================================
+
+      Open Ceiling Decorations
+      
+======================================================= */
+
+void ag_decoration_open_ceiling(int room_idx)
+{
+	int					extrude_mesh_idx,poly_idx;
+	d3pnt				extrude_pnt;
+	ag_room_type		*room;
+
+	room=&ag_state.rooms[room_idx];
+
+		// find the ceiling
+
+	poly_idx=ag_generate_find_ceiling_polygon(room_idx);
+	if (poly_idx==-1) return;
+
+		// extrude it
+
+	extrude_pnt.x=0;
+	extrude_pnt.y=-(ag_size_floor_high*2);
+	extrude_pnt.z=0;
+
+		// extrude it
+
+	extrude_mesh_idx=map_mesh_poly_punch_hole(&map,room->mesh_idx,poly_idx,&extrude_pnt,FALSE,normal_mode_in);
+	if (extrude_mesh_idx!=-1) map_mesh_reset_uv(&map,extrude_mesh_idx);
 }
 
 /* =======================================================
@@ -633,7 +678,7 @@ void ag_generate_decorations_add(void)
 				break;
 
 			case ag_decoration_type_trench:
-				ag_gnerate_decoration_trench(n);
+				ag_gnerate_decoration_floor_trench(n);
 				break;
 
 		}
@@ -653,6 +698,14 @@ void ag_generate_decorations_add(void)
 				ag_gnerate_decoration_vertex_column(n,FALSE);
 				break;
 
+		}
+
+			// ceiling decorations
+
+		if ((room->second_story) && (room->has_windows)) {
+			if (ag_random_bool()) {
+				ag_decoration_open_ceiling(n);
+			}
 		}
 	}
 }

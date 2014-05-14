@@ -45,6 +45,7 @@ JSValueRef js_model_animation_change_func(JSContextRef cx,JSObjectRef func,JSObj
 JSValueRef js_model_animation_interrupt_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_model_animation_start_then_change_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_model_animation_fade_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_model_animation_rag_doll_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_model_animation_cancel_attached_particles_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 extern js_type			js;
@@ -64,6 +65,7 @@ JSStaticFunction	model_animation_functions[]={
 							{"interrupt",				js_model_animation_interrupt_func,					kJSPropertyAttributeDontDelete},
 							{"startThenChange",			js_model_animation_start_then_change_func,			kJSPropertyAttributeDontDelete},
 							{"fade",					js_model_animation_fade_func,						kJSPropertyAttributeDontDelete},
+							{"ragDoll",					js_model_animation_rag_doll_func,					kJSPropertyAttributeDontDelete},
 							{"cancelAttachedParticles",	js_model_animation_cancel_attached_particles_func,	kJSPropertyAttributeDontDelete},
 							{0,0,0}};
 
@@ -302,6 +304,27 @@ JSValueRef js_model_animation_fade_func(JSContextRef cx,JSObjectRef func,JSObjec
 	
 	draw=script_find_model_draw(j_obj);
 	model_fade_start(draw,script_value_to_int(cx,argv[1]),script_value_to_float(cx,argv[0]));
+	
+	return(script_null_to_value(cx));
+}
+
+/* =======================================================
+
+      Rag Dolls
+      
+======================================================= */
+
+JSValueRef js_model_animation_rag_doll_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+{
+	d3pnt			force_pnt;
+	model_draw		*draw;
+	
+	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
+	if (!script_check_fail_in_construct(cx,func,j_obj,exception)) return(script_null_to_value(cx));
+	
+	draw=script_find_model_draw(j_obj);
+	script_value_to_point(cx,argv[0],&force_pnt);
+	model_rag_doll_start(draw,&force_pnt,script_value_to_int(cx,argv[1]),script_value_to_int(cx,argv[2]));
 	
 	return(script_null_to_value(cx));
 }

@@ -2690,6 +2690,10 @@
 							/>
 						</FileConfiguration>
 					</File>
+					<File
+						RelativePath="..\..\dim3Engine\Sources_Server\model_rag_doll.c"
+						>
+					</File>
 				</Filter>
 				<Filter
 					Name="Server"

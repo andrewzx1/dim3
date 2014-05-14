@@ -237,6 +237,12 @@ typedef struct		{
 					} model_draw_fade;
 
 typedef struct		{
+						int								start_tick,tick,force;
+						bool							on;
+						d3pnt							force_pnt;
+					} model_draw_rag_doll;
+
+typedef struct		{
 						int								type,direction,intensity,
 														rtl_light_id;
 						float							exponent;
@@ -325,6 +331,7 @@ typedef struct		{
 						model_draw_dynamic_bone			dynamic_bones[max_model_dynamic_bone];
 						model_draw_shadow				shadow;
 						model_draw_fade					fade;
+						model_draw_rag_doll				rag_doll;
 						model_light_cache				light_cache;
 						model_texture_type				textures[max_model_texture];
 						model_vbo_type					vbo[max_model_mesh];
