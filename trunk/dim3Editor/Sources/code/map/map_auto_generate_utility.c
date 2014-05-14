@@ -278,7 +278,7 @@ bool ag_generate_is_polygon_window_target(int mesh_idx,int poly_idx)
 		// only items with 5 vertexes
 
 	mesh=&map.mesh.meshes[mesh_idx];
-	if (mesh->nvertex!=4) return(FALSE);
+	if (mesh->nvertex<4) return(FALSE);
 
 		// pairs of Ys
 
@@ -297,7 +297,7 @@ void ag_generate_windows_add(void)
 {
 	int				n,k,t,mesh_idx,poly_idx,
 					window_count;
-	d3pnt			min,max,extrude_pnt,lit_pnt;
+	d3pnt			extrude_pnt,lit_pnt;
 	d3vct			extrude_vct;
 	map_mesh_type	*mesh;
 	ag_room_type	*room;
@@ -305,9 +305,8 @@ void ag_generate_windows_add(void)
 	for (n=0;n!=ag_state.nroom;n++) {
 
 		room=&ag_state.rooms[n];
-		mesh_idx=room->mesh_idx;
 
-		mesh=&map.mesh.meshes[mesh_idx];
+		mesh=&map.mesh.meshes[room->mesh_idx];
 		if (mesh->npoly==0) continue;
 
 			// is this a windowed room?
@@ -324,17 +323,18 @@ void ag_generate_windows_add(void)
 
 		for (t=0;t!=window_count;t++) {
 			for (k=0;k!=10;k++) {
+			
+				mesh=&map.mesh.meshes[room->mesh_idx];		// pointers might change as meshes are being added
 				poly_idx=ag_random_int(mesh->npoly);
-
-				map_mesh_poly_calculate_extent(&map,mesh_idx,poly_idx,&min,&max);
-				if (abs(max.y-min.y)<ag_window_min_high) continue;
+				
+				if (!ag_generate_is_polygon_window_target(room->mesh_idx,poly_idx)) continue;
 				
 					// get extrude from the
 					// normal of the wall
 					
-				extrude_vct.x=map.mesh.meshes[mesh_idx].polys[poly_idx].tangent_space.normal.x;
-				extrude_vct.y=map.mesh.meshes[mesh_idx].polys[poly_idx].tangent_space.normal.y;
-				extrude_vct.z=map.mesh.meshes[mesh_idx].polys[poly_idx].tangent_space.normal.z;
+				extrude_vct.x=map.mesh.meshes[room->mesh_idx].polys[poly_idx].tangent_space.normal.x;
+				extrude_vct.y=map.mesh.meshes[room->mesh_idx].polys[poly_idx].tangent_space.normal.y;
+				extrude_vct.z=map.mesh.meshes[room->mesh_idx].polys[poly_idx].tangent_space.normal.z;
 				
 				extrude_pnt.x=-(int)(extrude_vct.x*(float)ag_window_depth);
 				extrude_pnt.y=0;
@@ -342,12 +342,16 @@ void ag_generate_windows_add(void)
 
 					// punch the window
 
-				map_mesh_poly_punch_hole(&map,mesh_idx,poly_idx,&extrude_pnt,TRUE,normal_mode_in);
+				map_mesh_poly_punch_hole(&map,room->mesh_idx,poly_idx,&extrude_pnt,TRUE,normal_mode_in);
 
-					// last polygon is always the extruded poly
+					// last mesh/polygon is always the extruded poly
 
+				mesh_idx=map.mesh.nmesh-1;
 				poly_idx=map.mesh.meshes[mesh_idx].npoly-1;
 				map.mesh.meshes[mesh_idx].polys[poly_idx].txt_idx=ag_texture_window;
+				
+				map_mesh_single_poly_uv(&map,mesh_idx,poly_idx);
+				map.mesh.meshes[mesh_idx].flag.lock_uv=TRUE;
 
 					// add in the light
 
