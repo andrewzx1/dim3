@@ -139,8 +139,6 @@ and can be sold or given away.
 #define ag_size_bump_high						400
 
 #define ag_size_stack_box						2500
-#define ag_count_stack_box_start				2
-#define ag_count_stack_box_extra				2
 #define ag_count_stack_box_row_start			3
 #define ag_count_stack_box_row_extra			3
 #define ag_count_stack_box_row_min				2

@@ -186,6 +186,10 @@ void run_object_single(obj_type *obj)
 		// auto-growing
 
 	object_grow_run(obj);
+
+		// rag dolls
+
+	model_rag_doll_run(&obj->draw);
 	
 		// animation events
 

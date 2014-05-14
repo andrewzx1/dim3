@@ -627,7 +627,7 @@ bool map_mesh_tesselate(map_type *map,int mesh_idx)
       
 ======================================================= */
 
-bool map_mesh_poly_punch_hole(map_type *map,int mesh_idx,int poly_idx,d3pnt *extrude_pnt,bool extrude_close,int extrude_normal_mode)
+int map_mesh_poly_punch_hole(map_type *map,int mesh_idx,int poly_idx,d3pnt *extrude_pnt,bool extrude_close,int extrude_normal_mode)
 {
 	int						n,ptsz,next_poly_idx,mx,my,mz,
 							extrude_mesh_idx,extrude_poly_idx;
@@ -723,17 +723,19 @@ bool map_mesh_poly_punch_hole(map_type *map,int mesh_idx,int poly_idx,d3pnt *ext
 		k_gy[3]=gy[n];
 
 		next_poly_idx=map_mesh_add_poly(map,mesh_idx,4,kx,ky,kz,k_gx,k_gy,poly->txt_idx);
-		if (next_poly_idx==-1) return(FALSE);
+		if (next_poly_idx==-1) return(-1);
 
 		memmove(&mesh->polys[next_poly_idx].tangent_space,&mesh->polys[poly_idx].tangent_space,sizeof(tangent_space_type));		// preserve original tangent space
 	}
 	
 		// extruded polys
+
+	extrude_mesh_idx=-1;
 		
 	if (extrude_pnt!=NULL) {
 
 		extrude_mesh_idx=map_mesh_add(map);
-		if (extrude_mesh_idx==-1) return(FALSE);
+		if (extrude_mesh_idx==-1) return(-1);
 	
 		for (n=0;n!=ptsz;n++) {
 
@@ -771,7 +773,7 @@ bool map_mesh_poly_punch_hole(map_type *map,int mesh_idx,int poly_idx,d3pnt *ext
 			k_gy[3]=1.0f;
 
 			extrude_poly_idx=map_mesh_add_poly(map,extrude_mesh_idx,4,kx,ky,kz,k_gx,k_gy,poly->txt_idx);
-			if (extrude_poly_idx==-1) return(FALSE);
+			if (extrude_poly_idx==-1) return(-1);
 		}
 
 			// extruded close
@@ -787,7 +789,7 @@ bool map_mesh_poly_punch_hole(map_type *map,int mesh_idx,int poly_idx,d3pnt *ext
 			}
 
 			extrude_poly_idx=map_mesh_add_poly(map,extrude_mesh_idx,ptsz,kx,ky,kz,gx,gy,poly->txt_idx);
-			if (extrude_poly_idx==-1) return(FALSE);
+			if (extrude_poly_idx==-1) return(-1);
 		}
 
 			// rebuild normals
@@ -801,7 +803,10 @@ bool map_mesh_poly_punch_hole(map_type *map,int mesh_idx,int poly_idx,d3pnt *ext
 
 		// finish by deleting original polygon
 
-	return(map_mesh_delete_poly(map,mesh_idx,poly_idx));
+	if (!map_mesh_delete_poly(map,mesh_idx,poly_idx)) return(-1);
+
+	if (extrude_mesh_idx==-1) return(mesh_idx);
+	return(extrude_mesh_idx);
 }
 
 /* =======================================================

@@ -215,6 +215,7 @@ bool model_draw_load(model_draw *draw,char *item_type,char *item_name,bool force
 	draw->script_animation_idx=0;
 
 	model_fade_clear(draw);
+	model_rag_doll_clear(draw);
 
 		// create the VBO
 

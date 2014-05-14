@@ -467,6 +467,10 @@ extern void model_fade_run(model_draw *draw);
 extern void model_mesh_fade_start(model_draw *draw,int mesh_idx,int fade_in_msec,int fade_life_msec,int fade_out_msec);
 extern void model_mesh_fade_run(model_draw *draw);
 
+extern void model_rag_doll_clear(model_draw *draw);
+extern void model_rag_doll_start(model_draw *draw,d3pnt *force_pnt,int force,int force_msec);
+extern void model_rag_doll_run(model_draw *draw);
+
 extern int model_find_mesh_from_draw(model_draw *draw,char *name);
 extern bool model_show_mesh(model_draw *draw,char *name);
 extern bool model_show_all_mesh(model_draw *draw);
