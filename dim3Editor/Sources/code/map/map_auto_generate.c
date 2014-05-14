@@ -827,7 +827,7 @@ void ag_add_room(bool first_room)
 		if (room->second_story) py[n]-=ag_size_room_high;
 	}
 // supergumba -- testing decorations
-//	map_mesh_add_poly(&map,mesh_idx,room->nvertex,px,py,pz,gx,gy,ag_texture_ceiling);
+	map_mesh_add_poly(&map,mesh_idx,room->nvertex,px,py,pz,gx,gy,ag_texture_ceiling);
 
 		// reset the UV and normals
 
