@@ -40,6 +40,8 @@ extern int ag_random_int(int max);
 extern bool ag_random_bool(void);
 extern int ag_generate_find_floor_polygon(int room_idx);
 extern int ag_generate_find_ceiling_polygon(int room_idx);
+extern bool ag_generate_is_polygon_window_target(int mesh_idx,int poly_idx);
+extern void ag_generate_get_wall_line(int mesh_idx,int poly_idx,d3pnt *p1,d3pnt *p2);
 
 /* =======================================================
 
@@ -396,19 +398,19 @@ void ag_generate_decoration_columns(int room_idx)
 
 	switch (ag_random_int(3)) {
 
-		case ag_dectoration_column_config_square:
+		case ag_decoration_column_config_square:
 			start_ang=45;
 			end_ang=315;
 			ang_add=90;
 			break;
 
-		case ag_dectoration_column_config_diamond:
+		case ag_decoration_column_config_diamond:
 			start_ang=0;
 			end_ang=270;
 			ang_add=90;
 			break;
 
-		case ag_dectoration_column_config_circle:
+		case ag_decoration_column_config_circle:
 			start_ang=0;
 			end_ang=315;
 			ang_add=45;
@@ -428,9 +430,9 @@ void ag_generate_decoration_columns(int room_idx)
       
 ======================================================= */
 
-void ag_gnerate_decoration_equipment_piece(d3pnt *pnt,int wid_x,int wid_z,int high,int texture_idx)
+void ag_generate_decoration_equipment_piece(d3pnt *pnt,int wid_x,int wid_z,int high,int texture_idx)
 {
-	int				mesh_idx,sx,sz;
+	int				mesh_idx;
 	int				px[8],py[8],pz[8];
 	float			gx[8],gy[8];
 
@@ -445,39 +447,36 @@ void ag_gnerate_decoration_equipment_piece(d3pnt *pnt,int wid_x,int wid_z,int hi
 	gy[0]=gy[1]=0.0f;
 	gy[2]=gy[3]=1.0f;
 
-	sx=wid_x-ag_size_equipment_separate_width;
-	sz=wid_z-ag_size_equipment_separate_width;
-
 		// sides
 
 	px[0]=px[1]=px[2]=px[3]=pnt->x;
 	pz[0]=pz[3]=pnt->z;
-	pz[1]=pz[2]=pnt->z+sz;
+	pz[1]=pz[2]=pnt->z+wid_z;
 	py[0]=py[1]=pnt->y-high;
 	py[2]=py[3]=pnt->y;
 
 	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,texture_idx);
 
-	px[0]=px[1]=px[2]=px[3]=pnt->x+sx;
+	px[0]=px[1]=px[2]=px[3]=pnt->x+wid_x;
 
 	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,texture_idx);
 
 	px[0]=px[3]=pnt->x;
-	px[1]=px[2]=pnt->x+sx;
+	px[1]=px[2]=pnt->x+wid_x;
 	pz[0]=pz[1]=pz[2]=pz[3]=pnt->z;
 
 	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,texture_idx);
 
-	pz[0]=pz[1]=pz[2]=pz[3]=pnt->z+sz;
+	pz[0]=pz[1]=pz[2]=pz[3]=pnt->z+wid_z;
 
 	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,texture_idx);
 
 		// top
 
 	px[0]=px[3]=pnt->x;
-	px[1]=px[2]=pnt->x+sx;
+	px[1]=px[2]=pnt->x+wid_x;
 	pz[0]=pz[1]=pnt->z;
-	pz[2]=pz[3]=pnt->z+sz;
+	pz[2]=pz[3]=pnt->z+wid_z;
 	py[0]=py[1]=py[2]=py[3]=pnt->y-high;
 
 	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,texture_idx);
@@ -488,49 +487,114 @@ void ag_gnerate_decoration_equipment_piece(d3pnt *pnt,int wid_x,int wid_z,int hi
 	map_recalc_normals_mesh(&map,&map.mesh.meshes[mesh_idx],normal_mode_out,FALSE);
 }
 
-void ag_gnerate_decoration_equipment(int room_idx)
+void ag_generate_decoration_equipment(int room_idx)
 {
-	int				x,z,high,count,
-					wid_x,wid_z;
-	d3pnt			pnt,start_pnt,min,max;
+	int				n,high,
+					dist,count,npoly,poly_idx;
+	float			fx,fz;
+	d3pnt			pnt,p1,p2;
+	map_mesh_type	*mesh;
 	ag_room_type	*room;
 
 	room=&ag_state.rooms[room_idx];
-	map_mesh_calculate_extent(&map,room->mesh_idx,&min,&max);
 
 		// get height
 
 	high=ag_size_equipment_high_start+ag_random_int(ag_size_equipment_high_extra);
 
-		// get equipment count
+		// run through the polygons and find
+		// walls we can put equipment against
 
-	count=ag_random_int(2)+2;
-	
-	wid_x=(max.x-min.x)/(count*4);
-	wid_z=(max.z-min.z)/(count*4);
+	npoly=map.mesh.meshes[room->mesh_idx].npoly;
 
-	start_pnt.x=((min.x+max.x)>>1)-((wid_x*count)>>1);
-	start_pnt.z=((min.z+max.z)>>1)-((wid_z*count)>>1);
+	for (poly_idx=0;poly_idx!=npoly;poly_idx++) {
+			
+		mesh=&map.mesh.meshes[room->mesh_idx];		// pointers might change as meshes are being added
+		poly_idx=ag_random_int(mesh->npoly);
+				
+		if (!ag_generate_is_polygon_window_target(room->mesh_idx,poly_idx)) continue;
 
-		// pad
-		
-	pnt.x=start_pnt.x-ag_size_equipment_separate_width;
-	pnt.y=max.y;
-	pnt.z=start_pnt.z-ag_size_equipment_separate_width;
-		
-	ag_gnerate_decoration_equipment_piece(&pnt,((wid_x*count)+(ag_size_equipment_separate_width*2)),((wid_z*count)+(ag_size_equipment_separate_width*2)),ag_size_floor_high,ag_texture_connect);
+			// get distance and determine
+			// count
 
-		// create equipment
+		ag_generate_get_wall_line(room->mesh_idx,poly_idx,&p1,&p2);
 
-	for (x=0;x!=count;x++) {
-		for (z=0;z!=count;z++) {
-			pnt.x=start_pnt.x+(x*wid_x);
-			pnt.y=max.y-ag_size_floor_high;
-			pnt.z=start_pnt.z+(z*wid_z);
+		fx=(float)(p2.x-p1.x);
+		fz=(float)(p2.z-p1.z);
+		dist=(int)sqrtf((fx*fx)+(fz*fz));
 
-			ag_gnerate_decoration_equipment_piece(&pnt,wid_x,wid_z,high,ag_texture_equipment);
+		if (dist<(ag_size_equipment_pad_wid*2)) continue;
+
+		count=dist/(ag_size_equipment_pad_wid*2);
+		if (count<0) count=1;
+
+			// equipment boxes
+
+		for (n=0;n!=count;n++) {
+
+			pnt.x=p1.x+(int)(((float)(p2.x-p1.x))*(((float)(n+1))/((float)(count+1))));
+			pnt.y=room->max.y;
+			pnt.z=p1.z+(int)(((float)(p2.z-p1.z))*(((float)(n+1))/((float)(count+1))));
+
+				// pad
+
+			pnt.x-=(ag_size_equipment_pad_wid>>1);
+			pnt.z-=(ag_size_equipment_pad_wid>>1);
+
+			ag_generate_decoration_equipment_piece(&pnt,ag_size_equipment_pad_wid,ag_size_equipment_pad_wid,ag_size_floor_high,ag_texture_connect);
+
+				// computer
+
+			pnt.x+=((ag_size_equipment_pad_wid-ag_size_equipment_computer_wid)>>1);
+			pnt.y-=ag_size_floor_high;
+			pnt.z+=((ag_size_equipment_pad_wid-ag_size_equipment_computer_wid)>>1);
+
+			ag_generate_decoration_equipment_piece(&pnt,ag_size_equipment_computer_wid,ag_size_equipment_computer_wid,high,ag_texture_equipment);
 		}
 	}
+
+		// these count as wall decorations,
+		// so we avoid vertex decorations
+
+	room->has_wall_decorations=TRUE;
+}
+
+/* =======================================================
+
+      Core Decorations
+      
+======================================================= */
+
+void ag_generate_decoration_core(int room_idx)
+{
+	int					n,extrude_mesh_idx,
+						poly_idx;
+	d3pnt				extrude_pnt;
+	ag_room_type		*room;
+
+	room=&ag_state.rooms[room_idx];
+
+		// find the ceiling
+
+	poly_idx=ag_generate_find_floor_polygon(room_idx);
+	if (poly_idx==-1) return;
+
+		// extrude it
+
+	extrude_pnt.x=0;
+	extrude_pnt.y=-(ag_size_room_high+ag_size_floor_high);
+	extrude_pnt.z=0;
+
+		// extrude it
+
+	extrude_mesh_idx=map_mesh_poly_punch_hole(&map,room->mesh_idx,poly_idx,&extrude_pnt,FALSE,normal_mode_out);
+	if (extrude_mesh_idx==-1) return;
+
+	for (n=0;n!=map.mesh.meshes[extrude_mesh_idx].npoly;n++) {
+		map.mesh.meshes[extrude_mesh_idx].polys[n].txt_idx=ag_texture_wall;
+	}
+	
+	map_mesh_reset_uv(&map,extrude_mesh_idx);
 }
 
 /* =======================================================
@@ -645,25 +709,51 @@ void ag_gnerate_decoration_vertex_column(int room_idx,bool circular)
 
 void ag_generate_decorations_add(void)
 {
-	int				n,dec_idx;
+	int				n,k,dec_idx;
 	ag_room_type	*room;
 
 	for (n=0;n!=ag_state.nroom;n++) {
 		room=&ag_state.rooms[n];
 
-			// if the room added
-			// stairs, then skip
-			// decorations
+			// try a couple of times
+			// to get the right decoration for
+			// a room, skip any room with stairs
 
-		dec_idx=ag_random_int(5);
-		if (room->has_stairs) dec_idx=ag_decoration_type_none;
+		dec_idx=ag_decoration_type_none;
+
+		if (!room->has_stairs) {
+			for (k=0;k!=10;k++) {
+				dec_idx=ag_random_int(5);
+
+				switch (dec_idx) {
+
+						// columns and equipment
+						// don't appear in two story rooms
+
+					case ag_decoration_type_columns:
+						if (room->second_story) continue;
+						break;
+
+					case ag_decoration_type_equipment:
+						if (room->second_story) continue;
+						break;
+
+						// core decoration requires window light
+						// and single story rooms
+
+					case ag_decoration_type_core:
+						if ((!room->has_windows) || (room->second_story)) continue;
+						break;
+
+				}
+
+				break;
+			}
+		}
 
 			// middle decorations
 
 		switch (dec_idx) {
-
-			case ag_decoration_type_none:
-				break;
 
 			case ag_decoration_type_columns:
 				ag_generate_decoration_columns(n);
@@ -674,7 +764,11 @@ void ag_generate_decorations_add(void)
 				break;
 
 			case ag_decoration_type_equipment:
-				ag_gnerate_decoration_equipment(n);
+				ag_generate_decoration_equipment(n);
+				break;
+
+			case ag_decoration_type_core:
+				ag_generate_decoration_core(n);
 				break;
 
 			case ag_decoration_type_trench:
@@ -684,20 +778,24 @@ void ag_generate_decorations_add(void)
 		}
 
 			// vertex decorations
+			// skip if already things on wall
 
-		switch (ag_random_int(3)) {
+		if (!room->has_wall_decorations) {
 
-			case ag_decoration_type_vertex_none:
-				break;
+			switch (ag_random_int(3)) {
 
-			case ag_decoration_type_vertex_column_circle:
-				ag_gnerate_decoration_vertex_column(n,TRUE);
-				break;
+				case ag_decoration_type_vertex_none:
+					break;
 
-			case ag_decoration_type_vertex_column_square:
-				ag_gnerate_decoration_vertex_column(n,FALSE);
-				break;
+				case ag_decoration_type_vertex_column_circle:
+					ag_gnerate_decoration_vertex_column(n,TRUE);
+					break;
 
+				case ag_decoration_type_vertex_column_square:
+					ag_gnerate_decoration_vertex_column(n,FALSE);
+					break;
+
+			}
 		}
 
 			// ceiling decorations
@@ -879,10 +977,17 @@ void ag_generate_spots_add_single(char *name,int spot_obj_type,char *script_name
 
 void ag_generate_spots_add(void)
 {
+	int				n;
+
 		// player spot
 
 	ag_generate_spots_add_single("Start",spot_type_player,"Player");
 
-		// other spots
+		// monster spots
+		// supergumba -- hard coded!  FIX!
+
+	for (n=0;n!=(ag_state.nroom*2);n++) {
+		ag_generate_spots_add_single("Monster",spot_type_object,"Cyborg Knife");
+	}
 
 }

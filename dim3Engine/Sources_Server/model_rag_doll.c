@@ -30,24 +30,104 @@ and can be sold or given away.
 #endif
 
 #include "interface.h"
+#include "objects.h"
 
 extern server_type				server;
 extern map_type					map;
 
 /* =======================================================
 
-      Model Fades
+      Model Rag Doll Bones
+      
+======================================================= */
+
+void model_rag_doll_clear_bones(model_draw *draw)
+{
+	int							n,nbone;
+	model_type					*model;
+	model_draw_rag_bone_type	*rag_bone;
+
+	if (draw->model_idx==-1) return;
+	model=server.model_list.models[draw->model_idx];
+
+	nbone=model->nbone;
+	rag_bone=draw->setup.rag_bones;
+	
+	for (n=0;n!=nbone;n++) {
+		rag_bone->rot_add.x=0.0f;
+		rag_bone->rot_add.y=0.0f;
+		rag_bone->rot_add.z=0.0f;
+		rag_bone++;
+	}
+}
+
+void model_rag_doll_push_bones(int tick,model_draw *draw)
+{
+	int							n,nbone;
+	float						fct;
+	model_type					*model;
+	model_draw_rag_doll			*rag_doll;
+	model_draw_rag_bone_type	*rag_bone;
+
+	rag_doll=&draw->rag_doll;
+
+		// get push factor
+
+	fct=1.0f-(((float)tick)/((float)rag_doll->tick));
+
+		// get the model
+
+	if (draw->model_idx==-1) return;
+	model=server.model_list.models[draw->model_idx];
+
+		// push the bones
+
+	nbone=model->nbone;
+	rag_bone=draw->setup.rag_bones;
+
+	for (n=0;n!=nbone;n++) {
+
+		switch (n%3) {
+			case 0:
+				rag_bone->rot_add.x+=0.5f;
+				break;
+			case 1:
+				rag_bone->rot_add.y+=0.5f;
+				break;
+			case 2:
+				rag_bone->rot_add.z+=0.5f;
+				break;
+		}
+
+		rag_bone++;
+	}
+}
+
+/* =======================================================
+
+      Model Rag Doll Start/Stop
       
 ======================================================= */
 
 void model_rag_doll_clear(model_draw *draw)
 {
+		// only reset bones if we were
+		// in a rag doll
+
+	if (draw->rag_doll.on) model_rag_doll_clear_bones(draw);
+
 	draw->rag_doll.on=FALSE;
 }
 
 void model_rag_doll_start(model_draw *draw,d3pnt *force_pnt,int force,int force_msec)
 {
 	model_draw_rag_doll		*rag_doll;
+
+		// stop all current animation
+
+	model_stop_animation(draw);
+
+		// start the rag doll
 
 	rag_doll=&draw->rag_doll;
 
@@ -80,7 +160,6 @@ void model_rag_doll_run(model_draw *draw)
 
 		// run rag dolls
 
-//	fct=((float)tick)/(float)fade->tick;
-//	draw->alpha=fade->start_alpha+((fade->end_alpha-fade->start_alpha)*fct);
+	model_rag_doll_push_bones(tick,draw);
 }
 
