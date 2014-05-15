@@ -457,6 +457,7 @@
 		26A45D081489AD6C00C02936 /* script_color.c in Sources */ = {isa = PBXBuildFile; fileRef = 26A45D061489AD6C00C02936 /* script_color.c */; };
 		26A45D091489AD6C00C02936 /* script_point_angle_vector.c in Sources */ = {isa = PBXBuildFile; fileRef = 26A45D071489AD6C00C02936 /* script_point_angle_vector.c */; };
 		26BB48F41685067E00825030 /* script_interface_virtual_control.c in Sources */ = {isa = PBXBuildFile; fileRef = 26BB48F31685067E00825030 /* script_interface_virtual_control.c */; };
+		26C8ECB81924325E0099984A /* model_rag_doll.c in Sources */ = {isa = PBXBuildFile; fileRef = 26C8ECB71924325E0099984A /* model_rag_doll.c */; };
 		26CBE2041581AD1E00093D7C /* simple_save_pick.c in Sources */ = {isa = PBXBuildFile; fileRef = 26CBE2031581AD1E00093D7C /* simple_save_pick.c */; };
 		26E1844513CEA27800812348 /* dim3 Engine.app in Copy Application */ = {isa = PBXBuildFile; fileRef = F5CD87F70557721D0023AD9B /* dim3 Engine.app */; };
 		26EE3E1713DA7F78000ABAF1 /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26EE3E1613DA7F78000ABAF1 /* AudioUnit.framework */; };
@@ -949,6 +950,7 @@
 		26A45D061489AD6C00C02936 /* script_color.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_color.c; sourceTree = "<group>"; };
 		26A45D071489AD6C00C02936 /* script_point_angle_vector.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_point_angle_vector.c; sourceTree = "<group>"; };
 		26BB48F31685067E00825030 /* script_interface_virtual_control.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_interface_virtual_control.c; sourceTree = "<group>"; };
+		26C8ECB71924325E0099984A /* model_rag_doll.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = model_rag_doll.c; sourceTree = "<group>"; };
 		26CBE2031581AD1E00093D7C /* simple_save_pick.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = simple_save_pick.c; sourceTree = "<group>"; };
 		26EE3E1613DA7F78000ABAF1 /* AudioUnit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioUnit.framework; path = ../../../../System/Library/Frameworks/AudioUnit.framework; sourceTree = "<group>"; };
 		26F0C43E1563297300AFE368 /* app_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = app_defs.h; path = Headers/app_defs.h; sourceTree = "<group>"; };
@@ -1789,6 +1791,7 @@
 				260B3EA21411F781006ED023 /* model_effect.c */,
 				260B3EA31411F781006ED023 /* model_fade.c */,
 				260B3EA41411F781006ED023 /* model_mesh.c */,
+				26C8ECB71924325E0099984A /* model_rag_doll.c */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -2180,6 +2183,7 @@
 				260B401C1411F781006ED023 /* script_obj_sight.c in Sources */,
 				260B401D1411F781006ED023 /* script_obj_size.c in Sources */,
 				260B401E1411F781006ED023 /* script_obj_status.c in Sources */,
+				26C8ECB81924325E0099984A /* model_rag_doll.c in Sources */,
 				260B401F1411F781006ED023 /* script_obj_touch.c in Sources */,
 				260B40201411F781006ED023 /* script_obj_touch_angle.c in Sources */,
 				260B40211411F781006ED023 /* script_obj_touch_position.c in Sources */,
