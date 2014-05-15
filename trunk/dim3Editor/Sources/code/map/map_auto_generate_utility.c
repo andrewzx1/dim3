@@ -324,6 +324,18 @@ bool ag_generate_is_polygon_window_target(int mesh_idx,int poly_idx)
 	return(mesh->vertexes[poly->v[2]].y==mesh->vertexes[poly->v[3]].y);
 }
 
+void ag_generate_get_wall_line(int mesh_idx,int poly_idx,d3pnt *p1,d3pnt *p2)
+{
+	map_mesh_type		*mesh;
+	map_mesh_poly_type	*poly;
+	
+	mesh=&map.mesh.meshes[mesh_idx];
+	poly=&mesh->polys[poly_idx];
+
+	memmove(p1,&mesh->vertexes[poly->v[0]],sizeof(d3pnt));
+	memmove(p2,&mesh->vertexes[poly->v[1]],sizeof(d3pnt));
+}
+
 /* =======================================================
 
       Windows
