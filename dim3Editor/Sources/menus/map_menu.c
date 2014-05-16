@@ -144,7 +144,7 @@ os_menu_item_type		map_menu_setup[]=
 									{"Polygon","Punch Middle Hole",map_menu_item_PolygonHole,os_menu_key_none,0x0},
 									{"Polygon","Tesselate",map_menu_item_PolyTesselate,os_menu_key_none,0x0},
 									{"Polygon","",0,os_menu_key_none,0x0},
-									{"Polygon","Reset Polygon UVs",map_menu_item_PolygonRotateUV,os_menu_key_cmd,'T'},
+									{"Polygon","Rotate Polygon UVs",map_menu_item_PolygonRotateUV,os_menu_key_cmd,'T'},
 									{"Polygon","Flip Us",map_menu_item_PolygonFlipU,os_menu_key_none,0x0},
 									{"Polygon","Flip Vs",map_menu_item_PolygonFlipV,os_menu_key_none,0x0},
 									{"Polygon","",0,os_menu_key_none,0x0},

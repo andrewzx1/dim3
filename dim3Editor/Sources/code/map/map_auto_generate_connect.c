@@ -821,8 +821,13 @@ void ag_generate_add_connector_room_stairs(int org_room_idx)
 
 	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_connect);
 
-	map_mesh_reset_uv(&map,mesh_idx);
+		// recalc the UVs and normals
+		// we do the normals first as this works
+		// around a twist that can develop in the UVs
+		// of the ceiling
+
 	map_recalc_normals_mesh(&map,&map.mesh.meshes[mesh_idx],normal_mode_in,FALSE);
+	map_mesh_reset_uv(&map,mesh_idx);
 
 		// get stair type
 
