@@ -975,6 +975,12 @@ void ag_generate_spots_add_single(char *name,int spot_obj_type,char *script_name
 	spot->params[0]=0x0;
 }
 
+//
+// supergumba -- add spots to ROOMs (randomly) ignoring
+// rooms with stairs, and find a FLOOR segment in the room and
+// put in middle
+//
+
 void ag_generate_spots_add(void)
 {
 	int				n;
