@@ -143,6 +143,7 @@ and can be sold or given away.
 #define ag_count_stack_box_row_start			10
 #define ag_count_stack_box_row_extra			10
 #define ag_count_stack_box_row_min				2
+#define ag_count_stack_box_high_max				3
 
 #define ag_size_column_normal_wid				1500
 #define ag_size_column_vertex_wid_start			2000
