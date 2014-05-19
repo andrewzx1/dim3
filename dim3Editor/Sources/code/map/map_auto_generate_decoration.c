@@ -240,7 +240,7 @@ void ag_generate_decoration_box(d3pnt *pnt,d3pnt *room_sz,int start_cmp_mesh_idx
 
 void ag_generate_decoration_box_stacks(int room_idx)
 {
-	int				n,row_count,cmp_mesh_idx;
+	int				n,row_count,high_count,cmp_mesh_idx;
 	bool			horz;
 	d3pnt			pnt,room_sz,min,max;
 	ag_room_type	*room;
@@ -275,6 +275,7 @@ void ag_generate_decoration_box_stacks(int room_idx)
 
 		// box stack
 
+	high_count=0;
 	cmp_mesh_idx=map.mesh.nmesh;
 
 	while (row_count>ag_count_stack_box_row_min) {
@@ -292,8 +293,11 @@ void ag_generate_decoration_box_stacks(int room_idx)
 			if (room_sz.z<ag_size_stack_box) break;
 		}
 
-		row_count--;
+		row_count-=2;
 		pnt.y-=ag_size_stack_box;
+		
+		high_count++;
+		if (high_count>ag_count_stack_box_high_max) break;
 	}
 }
 

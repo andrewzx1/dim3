@@ -1005,7 +1005,7 @@ JSValueRef js_map_object_spawn_func(JSContextRef cx,JSObjectRef func,JSObjectRef
 					script[name_str_len],params[256];
 	d3pnt			pnt;
 	d3ang			ang;
-
+	
 	if (!script_check_param_count(cx,func,argc,5,exception)) return(script_null_to_value(cx));
 
 		// spawn values
