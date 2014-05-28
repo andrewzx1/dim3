@@ -238,7 +238,7 @@ typedef struct		{
 
 typedef struct		{
 						int								start_tick,tick,force;
-						bool							on;
+						bool							on,rag_random;
 						d3pnt							force_pnt;
 					} model_draw_rag_doll;
 
