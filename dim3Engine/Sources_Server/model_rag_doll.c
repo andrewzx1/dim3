@@ -37,7 +37,7 @@ extern map_type					map;
 
 /* =======================================================
 
-      Model Rag Doll Bones
+      Model Rag Doll Clear Bones
       
 ======================================================= */
 
@@ -61,7 +61,31 @@ void model_rag_doll_clear_bones(model_draw *draw)
 	}
 }
 
-void model_rag_doll_push_bones(int tick,model_draw *draw)
+/* =======================================================
+
+      Model Rag Doll Constrain Bones
+      
+======================================================= */
+
+void model_rag_doll_constrain_bone(model_draw_rag_bone_type *rag_bone)
+{
+	if (rag_bone->rot_add.x<-90.0f) rag_bone->rot_add.x=-90.0f;		// supergumba -- temporary
+	if (rag_bone->rot_add.x>90.0f) rag_bone->rot_add.x=90.0f;
+
+	if (rag_bone->rot_add.y<-90.0f) rag_bone->rot_add.y=-90.0f;
+	if (rag_bone->rot_add.y>90.0f) rag_bone->rot_add.y=90.0f;
+
+	if (rag_bone->rot_add.z<-90.0f) rag_bone->rot_add.z=-90.0f;
+	if (rag_bone->rot_add.z>90.0f) rag_bone->rot_add.z=90.0f;
+}
+
+/* =======================================================
+
+      Model Rag Doll Random Bones
+      
+======================================================= */
+
+void model_rag_doll_random_bones(int tick,model_draw *draw)
 {
 	int							n,nbone;
 	float						fct;
@@ -99,7 +123,126 @@ void model_rag_doll_push_bones(int tick,model_draw *draw)
 				break;
 		}
 
+		model_rag_doll_constrain_bone(rag_bone);
+
 		rag_bone++;
+	}
+}
+
+/* =======================================================
+
+      Model Rag Doll Force Bones
+      
+======================================================= */
+
+float model_rag_doll_2D_bone_direction(int pivot_x,int pivot_y,int bone_x,int bone_y,int force_x,int force_y)
+{
+	float		a1,a2,f;
+	float		vx,vy,v2x,v2y;
+	bool		cwise;
+
+		// get the angle between the bone
+		// and the 0,-1 straight up vector
+
+	vx=(float)(bone_x-pivot_x);
+	vy=(float)(bone_y-pivot_y);
+
+	f=sqrtf((vx*vx)+(vy*vy));
+	if (f!=0.0f) {
+		f=1.0f/f;
+		vx*=f;
+		vy*=f;
+	}
+
+	a1=acosf((vx*0.0f)+(vy*-1.0f))*RAD_to_ANG;
+
+		// transpose the force vector
+		// to the pivot bone, and then
+		// get the angle between it and the
+		// bone
+
+	v2x=(float)((bone_x-force_x)-pivot_x);
+	v2y=(float)((bone_y-force_y)-pivot_y);
+
+	f=sqrtf((v2x*v2x)+(v2y*v2y));
+	if (f!=0.0f) {
+		f=1.0f/f;
+		v2x*=f;
+		v2y*=f;
+	}
+
+	a2=acosf((vx*v2x)+(vy*v2y))*RAD_to_ANG;
+
+		// get the sign for the direction
+
+	angle_dif(a1,a2,&cwise);
+	return(cwise?1.0f:-1.0f);
+}
+
+void model_rag_doll_push_bones(int tick,model_draw *draw)
+{
+	int							n,nbone;
+	float						fct;
+	d3pnt						bone_pnt[max_model_bone];
+	d3ang						rot;
+	model_type					*model;
+	model_draw_bone_type		*draw_bone;
+	model_draw_rag_doll			*rag_doll;
+	model_draw_rag_bone_type	*rag_bone;
+
+	rag_doll=&draw->rag_doll;
+
+		// get push factor
+
+	fct=1.0f-(((float)tick)/((float)rag_doll->tick));
+
+		// get the model
+
+	if (draw->model_idx==-1) return;
+	model=server.model_list.models[draw->model_idx];
+
+		// precalc all the bone positions
+
+	nbone=model->nbone;
+
+	for (n=0;n!=nbone;n++) {
+		model_get_draw_bone_position(&draw->setup,n,&bone_pnt[n]);
+		bone_pnt[n].x+=draw->pnt.x;
+		bone_pnt[n].y+=draw->pnt.y;
+		bone_pnt[n].z+=draw->pnt.z;
+	}
+
+		// push the bones
+
+	for (n=0;n!=nbone;n++) {
+
+			// can't rotate if no parents
+
+		draw_bone=&draw->setup.bones[n];
+		if (draw_bone->parent_idx==-1) continue;
+		
+			// for force hit
+
+		rot.x=0.5f*model_rag_doll_2D_bone_direction(bone_pnt[draw_bone->parent_idx].y,bone_pnt[draw_bone->parent_idx].z,bone_pnt[n].y,bone_pnt[n].z,rag_doll->force_pnt.y,rag_doll->force_pnt.z);
+		rot.y=0.5f*model_rag_doll_2D_bone_direction(bone_pnt[draw_bone->parent_idx].x,bone_pnt[draw_bone->parent_idx].z,bone_pnt[n].x,bone_pnt[n].z,rag_doll->force_pnt.x,rag_doll->force_pnt.z);
+		rot.z=0.5f*model_rag_doll_2D_bone_direction(bone_pnt[draw_bone->parent_idx].x,bone_pnt[draw_bone->parent_idx].y,bone_pnt[n].x,bone_pnt[n].y,rag_doll->force_pnt.x,rag_doll->force_pnt.y);
+		
+			// for gravity
+
+		rot.x=0.3f*model_rag_doll_2D_bone_direction(bone_pnt[draw_bone->parent_idx].y,bone_pnt[draw_bone->parent_idx].z,bone_pnt[n].y,bone_pnt[n].z,draw->pnt.y,draw->pnt.z);
+		rot.y=0.3f*model_rag_doll_2D_bone_direction(bone_pnt[draw_bone->parent_idx].x,bone_pnt[draw_bone->parent_idx].z,bone_pnt[n].x,bone_pnt[n].z,draw->pnt.x,draw->pnt.z);
+		rot.z=0.3f*model_rag_doll_2D_bone_direction(bone_pnt[draw_bone->parent_idx].x,bone_pnt[draw_bone->parent_idx].y,bone_pnt[n].x,bone_pnt[n].y,draw->pnt.x,draw->pnt.y);
+
+			// get parent rag bone
+			// for setting rotation
+
+		rag_bone=&draw->setup.rag_bones[draw_bone->parent_idx];
+
+		rag_bone->rot_add.x+=rot.x;
+		rag_bone->rot_add.y+=rot.y;
+		rag_bone->rot_add.z+=rot.z;
+
+		model_rag_doll_constrain_bone(rag_bone);
 	}
 }
 
@@ -119,7 +262,7 @@ void model_rag_doll_clear(model_draw *draw)
 	draw->rag_doll.on=FALSE;
 }
 
-void model_rag_doll_start(model_draw *draw,d3pnt *force_pnt,int force,int force_msec)
+void model_rag_doll_start(model_draw *draw,d3pnt *force_pnt,int force,int force_msec,bool rag_random)
 {
 	model_draw_rag_doll		*rag_doll;
 
@@ -136,6 +279,8 @@ void model_rag_doll_start(model_draw *draw,d3pnt *force_pnt,int force,int force_
 
 	rag_doll->force=force;
 	memmove(&rag_doll->force_pnt,force_pnt,sizeof(d3pnt));
+
+	rag_doll->rag_random=rag_random;
 
 	rag_doll->on=TRUE;
 }
@@ -160,6 +305,11 @@ void model_rag_doll_run(model_draw *draw)
 
 		// run rag dolls
 
-	model_rag_doll_push_bones(tick,draw);
+	if (rag_doll->rag_random) {
+		model_rag_doll_random_bones(tick,draw);
+	}
+	else {
+		model_rag_doll_push_bones(tick,draw);
+	}
 }
 

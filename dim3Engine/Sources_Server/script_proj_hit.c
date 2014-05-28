@@ -123,26 +123,30 @@ void js_get_proj_hit_name(proj_type *proj,int hit_type,char *name)
 	weapon_type			*hit_weap;
 	proj_type			*hit_proj;
 	proj_setup_type		*hit_proj_setup;
+
+	name[0]=0x0;
 	
 	switch (hit_type) {
 	
 		case sd_proj_hit_type_object:
 			hit_obj=server.obj_list.objs[proj->contact.obj_idx];
+			if (hit_obj==NULL) return;
+
 			strcpy(name,hit_obj->name);
 			return;
 		
 		case sd_proj_hit_type_projectile:
 			hit_proj=server.proj_list.projs[proj->contact.proj_idx];
+			if (!hit_proj->on) return;
+
 			hit_obj=server.obj_list.objs[proj->contact.obj_idx];
+			if (hit_obj==NULL) return;
+
 			hit_weap=hit_obj->weap_list.weaps[hit_proj->weap_idx];
 			hit_proj_setup=hit_weap->proj_setup_list.proj_setups[hit_proj->proj_setup_idx];
 			strcpy(name,hit_proj_setup->name);
 			return;
 		
-		default:
-			name[0]=0x0;
-			return;
-			
 	}
 }
 
