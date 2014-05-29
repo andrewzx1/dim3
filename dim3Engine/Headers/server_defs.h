@@ -237,9 +237,14 @@ typedef struct		{
 					} model_draw_fade;
 
 typedef struct		{
+						d3vct							rot,rot_add;
+					} model_draw_rag_doll_bone;
+
+typedef struct		{
 						int								start_tick,tick,force;
 						bool							on,rag_random;
 						d3pnt							force_pnt;
+						model_draw_rag_doll_bone		bones[max_model_bone];
 					} model_draw_rag_doll;
 
 typedef struct		{

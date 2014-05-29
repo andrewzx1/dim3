@@ -234,7 +234,13 @@ proj_setup_type* proj_setup_get_attach(JSObjectRef j_obj)
 	script_idx=(int)JSObjectGetPrivate(j_obj);
 	script=js.script_list.scripts[script_idx];
 
+	if (script->attach.obj_idx==-1) return(NULL);
+	if (script->attach.weap_idx==-1) return(NULL);
+	if (script->attach.proj_setup_idx==-1) return(NULL);
+
 	obj=server.obj_list.objs[script->attach.obj_idx];
+	if (obj==NULL) return(NULL);
+
 	weap=obj->weap_list.weaps[script->attach.weap_idx];
 	return(weap->proj_setup_list.proj_setups[script->attach.proj_setup_idx]);
 }
@@ -246,6 +252,8 @@ proj_type* proj_get_attach(JSObjectRef j_obj)
 	
 	script_idx=(int)JSObjectGetPrivate(j_obj);
 	script=js.script_list.scripts[script_idx];
+
+	if (script->attach.proj_idx==-1) return(NULL);
 	
 	return(server.proj_list.projs[script->attach.proj_idx]);
 }
