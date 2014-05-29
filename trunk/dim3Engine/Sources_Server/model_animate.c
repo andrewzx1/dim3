@@ -113,7 +113,7 @@ bool model_start_animation(model_draw *draw,char *name,int tick)
 
 		// cancel any rag doll
 
-	model_rag_doll_clear(draw);
+	model_rag_doll_stop(draw);
 
 		// smooth out changes in animations
 		
@@ -170,7 +170,7 @@ void model_stop_animation(model_draw *draw)
 
 		// cancel any rag doll
 
-	model_rag_doll_clear(draw);
+	model_rag_doll_stop(draw);
 }
 
 void model_stop_all_animation(model_draw *draw)
@@ -195,7 +195,7 @@ void model_stop_all_animation(model_draw *draw)
 
 		// cancel any rag doll
 
-	model_rag_doll_clear(draw);
+	model_rag_doll_stop(draw);
 }
 
 bool model_cancel_animation(model_draw *draw,char *name)
@@ -232,7 +232,7 @@ bool model_change_animation(model_draw *draw,char *name,int tick)
 
 		// cancel any rag doll
 
-	model_rag_doll_clear(draw);
+	model_rag_doll_stop(draw);
 	
 	return(TRUE);
 }
@@ -258,7 +258,7 @@ bool model_interrupt_animation(model_draw *draw,char *name,int tick)
 
 		// cancel any rag doll
 
-	model_rag_doll_clear(draw);
+	model_rag_doll_stop(draw);
 	
 	return(TRUE);
 }

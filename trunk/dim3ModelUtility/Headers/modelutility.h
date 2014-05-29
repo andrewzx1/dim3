@@ -74,10 +74,6 @@ typedef struct		{
 					} model_draw_alter_bone_type;
 
 typedef struct		{
-						d3ang							rot_add;
-					} model_draw_rag_bone_type;
-
-typedef struct		{
                         int								idx_1,idx_2;
                         float							factor,acceleration;
 					} model_draw_pose_type;
@@ -98,7 +94,6 @@ typedef struct		{
 						model_draw_pose_type			poses[max_model_blend_animation];
 						model_draw_bone_type			bones[max_model_bone];
 						model_draw_alter_bone_type		alter_bones[max_model_bone];
-						model_draw_rag_bone_type		rag_bones[max_model_bone];
 						model_draw_mesh_array_type		mesh_arrays[max_model_mesh];
                     } model_draw_setup;
 

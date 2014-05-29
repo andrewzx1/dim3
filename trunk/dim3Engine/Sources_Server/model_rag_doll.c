@@ -45,18 +45,18 @@ void model_rag_doll_clear_bones(model_draw *draw)
 {
 	int							n,nbone;
 	model_type					*model;
-	model_draw_rag_bone_type	*rag_bone;
+	model_draw_rag_doll_bone	*rag_bone;
 
 	if (draw->model_idx==-1) return;
 	model=server.model_list.models[draw->model_idx];
 
 	nbone=model->nbone;
-	rag_bone=draw->setup.rag_bones;
+	rag_bone=draw->rag_doll.bones;
 	
 	for (n=0;n!=nbone;n++) {
-		rag_bone->rot_add.x=0.0f;
-		rag_bone->rot_add.y=0.0f;
-		rag_bone->rot_add.z=0.0f;
+		rag_bone->rot.x=0.0f;
+		rag_bone->rot.y=0.0f;
+		rag_bone->rot.z=0.0f;
 		rag_bone++;
 	}
 }
@@ -67,63 +67,54 @@ void model_rag_doll_clear_bones(model_draw *draw)
       
 ======================================================= */
 
-void model_rag_doll_constrain_bone(model_draw_rag_bone_type *rag_bone)
+void model_rag_doll_constrain_bone(model_draw_rag_doll_bone *rag_bone)
 {
-	if (rag_bone->rot_add.x<-90.0f) rag_bone->rot_add.x=-90.0f;		// supergumba -- temporary
-	if (rag_bone->rot_add.x>90.0f) rag_bone->rot_add.x=90.0f;
+	if (rag_bone->rot.x<-10.0f) rag_bone->rot.x=-10.0f;		// supergumba -- temporary
+	if (rag_bone->rot.x>10.0f) rag_bone->rot.x=10.0f;
 
-	if (rag_bone->rot_add.y<-90.0f) rag_bone->rot_add.y=-90.0f;
-	if (rag_bone->rot_add.y>90.0f) rag_bone->rot_add.y=90.0f;
+	if (rag_bone->rot.y<-10.0f) rag_bone->rot.y=-10.0f;
+	if (rag_bone->rot.y>10.0f) rag_bone->rot.y=10.0f;
 
-	if (rag_bone->rot_add.z<-90.0f) rag_bone->rot_add.z=-90.0f;
-	if (rag_bone->rot_add.z>90.0f) rag_bone->rot_add.z=90.0f;
+	if (rag_bone->rot.z<-10.0f) rag_bone->rot.z=-10.0f;
+	if (rag_bone->rot.z>10.0f) rag_bone->rot.z=10.0f;
 }
 
 /* =======================================================
 
-      Model Rag Doll Random Bones
+      Model Rag Doll Setup Random Bones Rotations
       
 ======================================================= */
 
-void model_rag_doll_random_bones(int tick,model_draw *draw)
+void model_rag_doll_setup_random_bones(model_draw *draw)
 {
 	int							n,nbone;
-	float						fct;
 	model_type					*model;
-	model_draw_rag_doll			*rag_doll;
-	model_draw_rag_bone_type	*rag_bone;
-
-	rag_doll=&draw->rag_doll;
-
-		// get push factor
-
-	fct=1.0f-(((float)tick)/((float)rag_doll->tick));
+	model_draw_rag_doll_bone	*rag_bone;
 
 		// get the model
 
 	if (draw->model_idx==-1) return;
 	model=server.model_list.models[draw->model_idx];
 
+	nbone=model->nbone;
+
 		// push the bones
 
-	nbone=model->nbone;
-	rag_bone=draw->setup.rag_bones;
+	rag_bone=draw->rag_doll.bones;
 
 	for (n=0;n!=nbone;n++) {
 
 		switch (n%3) {
 			case 0:
-				rag_bone->rot_add.x+=0.5f;
+				rag_bone->rot_add.x=0.5f;
 				break;
 			case 1:
-				rag_bone->rot_add.y+=0.5f;
+				rag_bone->rot_add.y=0.5f;
 				break;
 			case 2:
-				rag_bone->rot_add.z+=0.5f;
+				rag_bone->rot_add.z=0.5f;
 				break;
 		}
-
-		model_rag_doll_constrain_bone(rag_bone);
 
 		rag_bone++;
 	}
@@ -131,7 +122,7 @@ void model_rag_doll_random_bones(int tick,model_draw *draw)
 
 /* =======================================================
 
-      Model Rag Doll Force Bones
+      Model Rag Doll Setup Force Bones Rotations
       
 ======================================================= */
 
@@ -179,22 +170,17 @@ float model_rag_doll_2D_bone_direction(int pivot_x,int pivot_y,int bone_x,int bo
 	return(cwise?1.0f:-1.0f);
 }
 
-void model_rag_doll_push_bones(int tick,model_draw *draw)
+void model_rag_doll_setup_push_bones(model_draw *draw)
 {
 	int							n,nbone;
-	float						fct;
 	d3pnt						bone_pnt[max_model_bone];
 	d3ang						rot;
 	model_type					*model;
 	model_draw_bone_type		*draw_bone;
 	model_draw_rag_doll			*rag_doll;
-	model_draw_rag_bone_type	*rag_bone;
+	model_draw_rag_doll_bone	*rag_bone;
 
 	rag_doll=&draw->rag_doll;
-
-		// get push factor
-
-	fct=1.0f-(((float)tick)/((float)rag_doll->tick));
 
 		// get the model
 
@@ -202,14 +188,22 @@ void model_rag_doll_push_bones(int tick,model_draw *draw)
 	model=server.model_list.models[draw->model_idx];
 
 		// precalc all the bone positions
+		// and clear all the rotations
 
 	nbone=model->nbone;
+
+	rag_bone=rag_doll->bones;
 
 	for (n=0;n!=nbone;n++) {
 		model_get_draw_bone_position(&draw->setup,n,&bone_pnt[n]);
 		bone_pnt[n].x+=draw->pnt.x;
 		bone_pnt[n].y+=draw->pnt.y;
 		bone_pnt[n].z+=draw->pnt.z;
+
+		rag_bone->rot_add.x=0.0f;
+		rag_bone->rot_add.y=0.0f;
+		rag_bone->rot_add.z=0.0f;
+		rag_bone++;
 	}
 
 		// push the bones
@@ -229,20 +223,55 @@ void model_rag_doll_push_bones(int tick,model_draw *draw)
 		
 			// for gravity
 
-		rot.x=0.3f*model_rag_doll_2D_bone_direction(bone_pnt[draw_bone->parent_idx].y,bone_pnt[draw_bone->parent_idx].z,bone_pnt[n].y,bone_pnt[n].z,draw->pnt.y,draw->pnt.z);
-		rot.y=0.3f*model_rag_doll_2D_bone_direction(bone_pnt[draw_bone->parent_idx].x,bone_pnt[draw_bone->parent_idx].z,bone_pnt[n].x,bone_pnt[n].z,draw->pnt.x,draw->pnt.z);
-		rot.z=0.3f*model_rag_doll_2D_bone_direction(bone_pnt[draw_bone->parent_idx].x,bone_pnt[draw_bone->parent_idx].y,bone_pnt[n].x,bone_pnt[n].y,draw->pnt.x,draw->pnt.y);
+		rot.x+=0.3f*model_rag_doll_2D_bone_direction(bone_pnt[draw_bone->parent_idx].y,bone_pnt[draw_bone->parent_idx].z,bone_pnt[n].y,bone_pnt[n].z,draw->pnt.y,draw->pnt.z);
+		rot.y+=0.3f*model_rag_doll_2D_bone_direction(bone_pnt[draw_bone->parent_idx].x,bone_pnt[draw_bone->parent_idx].z,bone_pnt[n].x,bone_pnt[n].z,draw->pnt.x,draw->pnt.z);
+		rot.z+=0.3f*model_rag_doll_2D_bone_direction(bone_pnt[draw_bone->parent_idx].x,bone_pnt[draw_bone->parent_idx].y,bone_pnt[n].x,bone_pnt[n].y,draw->pnt.x,draw->pnt.y);
 
 			// get parent rag bone
 			// for setting rotation
 
-		rag_bone=&draw->setup.rag_bones[draw_bone->parent_idx];
+		rag_bone=&rag_doll->bones[draw_bone->parent_idx];
 
-		rag_bone->rot_add.x+=rot.x;
-		rag_bone->rot_add.y+=rot.y;
-		rag_bone->rot_add.z+=rot.z;
+		rag_bone->rot_add.x=rot.x;
+		rag_bone->rot_add.y=rot.y;
+		rag_bone->rot_add.z=rot.z;
+	}
+}
+
+/* =======================================================
+
+      Model Rag Doll Run Bones
+      
+======================================================= */
+
+void model_rag_doll_run_bones(int tick,model_draw *draw)
+{
+	int							n,nbone;
+	model_type					*model;
+	model_draw_rag_doll_bone	*rag_bone;
+
+		// get the model
+
+	if (draw->model_idx==-1) return;
+	model=server.model_list.models[draw->model_idx];
+
+	nbone=model->nbone;
+
+		// supergumba -- need to reduce movement as we get closer to tick end
+	// 	fct=1.0f-(((float)tick)/((float)rag_doll->tick));
+
+		// position the bones
+
+	rag_bone=draw->rag_doll.bones;
+
+	for (n=0;n!=nbone;n++) {
+		rag_bone->rot.x+=rag_bone->rot_add.x;
+		rag_bone->rot.y+=rag_bone->rot_add.y;
+		rag_bone->rot.z+=rag_bone->rot_add.z;
 
 		model_rag_doll_constrain_bone(rag_bone);
+
+		rag_bone++;
 	}
 }
 
@@ -254,11 +283,7 @@ void model_rag_doll_push_bones(int tick,model_draw *draw)
 
 void model_rag_doll_clear(model_draw *draw)
 {
-		// only reset bones if we were
-		// in a rag doll
-
-	if (draw->rag_doll.on) model_rag_doll_clear_bones(draw);
-
+	model_rag_doll_clear_bones(draw);
 	draw->rag_doll.on=FALSE;
 }
 
@@ -282,7 +307,26 @@ void model_rag_doll_start(model_draw *draw,d3pnt *force_pnt,int force,int force_
 
 	rag_doll->rag_random=rag_random;
 
+		// setup rotations
+
+	if (rag_doll->rag_random) {
+		model_rag_doll_setup_random_bones(draw);
+	}
+	else {
+		model_rag_doll_setup_push_bones(draw);
+	}
+
 	rag_doll->on=TRUE;
+}
+
+void model_rag_doll_stop(model_draw *draw)
+{
+		// only reset bones if we were
+		// in a rag doll
+
+	if (draw->rag_doll.on) model_rag_doll_clear_bones(draw);
+
+	draw->rag_doll.on=FALSE;
 }
 
 void model_rag_doll_run(model_draw *draw)
@@ -305,11 +349,6 @@ void model_rag_doll_run(model_draw *draw)
 
 		// run rag dolls
 
-	if (rag_doll->rag_random) {
-		model_rag_doll_random_bones(tick,draw);
-	}
-	else {
-		model_rag_doll_push_bones(tick,draw);
-	}
+	model_rag_doll_run_bones(tick,draw);
 }
 

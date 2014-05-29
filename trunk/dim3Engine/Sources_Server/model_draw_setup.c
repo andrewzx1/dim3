@@ -46,13 +46,14 @@ extern network_setup_type	net_setup;
       
 ======================================================= */
 
-void model_draw_setup_dynamic_bones(model_type *mdl,model_draw *draw,model_draw_setup *setup)
+void model_draw_setup_dynamic_and_rag_bones(model_type *mdl,model_draw *draw,model_draw_setup *setup)
 {
 	int							n;
 	model_draw_alter_bone_type	*alter_bone;
 	model_draw_dynamic_bone		*dyn_bone;
+	model_draw_rag_doll_bone	*rag_bone;
 
-		// clear dynamic changes
+		// clear any bone alterations
 
 	alter_bone=setup->alter_bones;
 
@@ -83,6 +84,20 @@ void model_draw_setup_dynamic_bones(model_type *mdl,model_draw *draw,model_draw_
 		alter_bone->resize=dyn_bone->resize;
 
 		dyn_bone++;
+	}
+
+		// add in rag dolls
+
+	rag_bone=draw->rag_doll.bones;
+	alter_bone=setup->alter_bones;
+
+	for (n=0;n!=max_model_bone;n++) {
+		alter_bone->rot_add.x=angle_add(rag_bone->rot.x,alter_bone->rot_add.x);
+		alter_bone->rot_add.y=angle_add(rag_bone->rot.y,alter_bone->rot_add.y);
+		alter_bone->rot_add.z=angle_add(rag_bone->rot.z,alter_bone->rot_add.z);
+
+		rag_bone++;
+		alter_bone++;
 	}
 }
 
@@ -187,9 +202,9 @@ void model_draw_setup_object(obj_type *obj)
 		if (draw->spin.y!=0) setup->ang.y=angle_add(setup->ang.y,(float)((int)(spin_ang*draw->spin.y)%360));
 	}
 
-		// dynamic bones
+		// dynamic and rag bones
 
-	model_draw_setup_dynamic_bones(mdl,draw,setup);
+	model_draw_setup_dynamic_and_rag_bones(mdl,draw,setup);
 }
 
 /* =======================================================
@@ -312,9 +327,9 @@ void model_draw_setup_weapon(obj_type *obj,weapon_type *weap,bool ignore_y_shift
 	
 	draw->connect.weap_in_dual=dual_hand;
 
-		// dynamic bones
+		// dynamic and rag bones
 
-	model_draw_setup_dynamic_bones(mdl,draw,setup);
+	model_draw_setup_dynamic_and_rag_bones(mdl,draw,setup);
 }
 
 /* =======================================================
@@ -408,9 +423,9 @@ void model_draw_setup_projectile(proj_type *proj)
 		if (draw->spin.y!=0) setup->ang.y=angle_add(setup->ang.y,(float)((int)(spin_ang*draw->spin.y)%360));
 	}
 
-		// dynamic bones
+		// dynamic and rag bones
 
-	model_draw_setup_dynamic_bones(mdl,draw,setup);
+	model_draw_setup_dynamic_and_rag_bones(mdl,draw,setup);
 }
 
 /* =======================================================
