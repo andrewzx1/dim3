@@ -248,6 +248,7 @@ int ag_generate_find_floor_polygon(int room_idx)
 		poly=&mesh->polys[n];
 
 		if (poly->txt_idx!=ag_texture_floor) continue;
+		if (poly->ptsz<4) continue;
 
 		flat=TRUE;
 

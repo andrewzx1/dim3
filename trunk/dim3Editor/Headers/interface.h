@@ -706,6 +706,7 @@ extern void view_perspective_ortho(bool on);
 extern void view_cull(bool on);
 extern void view_clip(bool on);
 extern void map_view_goto_select(void);
+extern void map_view_goto_select_all(void);
 extern void map_view_calculate_bounds(d3pnt *min_pnt,d3pnt *max_pnt);
 extern void map_view_calculate_center(d3pnt *center_pnt);
 extern void map_view_goto_map_center(editor_view_type *view);

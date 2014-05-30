@@ -607,7 +607,7 @@ void ag_generate_decoration_core(int room_idx)
       
 ======================================================= */
 
-void ag_gnerate_decoration_floor_trench(int room_idx)
+void ag_generate_decoration_floor_trench(int room_idx)
 {
 	int					n,depth_count,
 						mesh_idx,poly_idx,extrude_mesh_idx;
@@ -637,7 +637,9 @@ void ag_gnerate_decoration_floor_trench(int room_idx)
 			// extrude it
 
 		extrude_mesh_idx=map_mesh_poly_punch_hole(&map,mesh_idx,poly_idx,&extrude_pnt,TRUE,((extrude_pnt.y>0)?normal_mode_in:normal_mode_out));
-		if (extrude_mesh_idx!=-1) map_mesh_reset_uv(&map,extrude_mesh_idx);
+		if (extrude_mesh_idx==-1) break;
+		
+		map_mesh_reset_uv(&map,extrude_mesh_idx);
 
 			// last polygon in extrude mesh is always
 			// the new extrude
@@ -776,7 +778,7 @@ void ag_generate_decorations_add(void)
 				break;
 
 			case ag_decoration_type_trench:
-				ag_gnerate_decoration_floor_trench(n);
+				ag_generate_decoration_floor_trench(n);
 				break;
 
 		}
@@ -951,7 +953,7 @@ void ag_generate_lights_add(void)
       
 ======================================================= */
 
-void ag_generate_spots_add_single(char *name,int spot_obj_type,char *script_name)
+void ag_generate_spots_add_single(char *name,int spot_obj_type,char *script_name,d3pnt *rtn_pnt)
 {
 	int					room_idx;
 	spot_type			*spot;
@@ -977,6 +979,10 @@ void ag_generate_spots_add_single(char *name,int spot_obj_type,char *script_name
 	strcpy(spot->script,script_name);
 	spot->display_model[0]=0x0;
 	spot->params[0]=0x0;
+
+		// return point
+
+	if (rtn_pnt!=NULL) memmove(rtn_pnt,&spot->pnt,sizeof(d3pnt));
 }
 
 //
@@ -991,13 +997,13 @@ void ag_generate_spots_add(void)
 
 		// player spot
 
-	ag_generate_spots_add_single("Start",spot_type_player,"Player");
+	ag_generate_spots_add_single("Start",spot_type_player,"Player",&ag_state.start_pnt);
 
 		// monster spots
 		// supergumba -- hard coded!  FIX!
 
 	for (n=0;n!=(ag_state.nroom*2);n++) {
-		ag_generate_spots_add_single("Monster",spot_type_object,"Cyborg Knife");
+		ag_generate_spots_add_single("Monster",spot_type_object,"Cyborg Knife",NULL);
 	}
 
 }

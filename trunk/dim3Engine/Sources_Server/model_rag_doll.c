@@ -128,46 +128,23 @@ void model_rag_doll_setup_random_bones(model_draw *draw)
 
 float model_rag_doll_2D_bone_direction(int pivot_x,int pivot_y,int bone_x,int bone_y,int force_x,int force_y)
 {
-	float		a1,a2,f;
-	float		vx,vy,v2x,v2y;
-	bool		cwise;
+	float		f,f_pivot_x,f_pivot_y,f_bone_x,f_bone_y,
+				f_force_x,f_force_y;
 
-		// get the angle between the bone
-		// and the 0,-1 straight up vector
+		// translate the points and
+		// work up the vectors that tell
+		// us which direction the bone
+		// should turn
 
-	vx=(float)(bone_x-pivot_x);
-	vy=(float)(bone_y-pivot_y);
+	f_pivot_x=(float)pivot_x;
+	f_pivot_y=(float)pivot_y;
+	f_bone_x=(float)bone_x;
+	f_bone_y=(float)bone_y;
+	f_force_x=(float)force_x;
+	f_force_y=(float)force_y;
 
-	f=sqrtf((vx*vx)+(vy*vy));
-	if (f!=0.0f) {
-		f=1.0f/f;
-		vx*=f;
-		vy*=f;
-	}
-
-	a1=acosf((vx*0.0f)+(vy*-1.0f))*RAD_to_ANG;
-
-		// transpose the force vector
-		// to the pivot bone, and then
-		// get the angle between it and the
-		// bone
-
-	v2x=(float)((bone_x-force_x)-pivot_x);
-	v2y=(float)((bone_y-force_y)-pivot_y);
-
-	f=sqrtf((v2x*v2x)+(v2y*v2y));
-	if (f!=0.0f) {
-		f=1.0f/f;
-		v2x*=f;
-		v2y*=f;
-	}
-
-	a2=acosf((vx*v2x)+(vy*v2y))*RAD_to_ANG;
-
-		// get the sign for the direction
-
-	angle_dif(a1,a2,&cwise);
-	return(cwise?1.0f:-1.0f);
+	f=(((((f_bone_y-f_pivot_y)/(f_bone_x-f_pivot_x))*(f_force_x-f_pivot_x))+f_pivot_y)-f_force_y);
+	return((f<0.0f)?-1.0f:1.0f);
 }
 
 void model_rag_doll_setup_push_bones(model_draw *draw)

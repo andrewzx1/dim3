@@ -852,7 +852,7 @@ void view_no_rot(bool on)
       
 ======================================================= */
 
-void map_view_goto_select(void)
+void map_view_goto_select_view(editor_view_type *view)
 {
 	float			fx,fy,fz;
 	d3ang			ang;
@@ -861,9 +861,13 @@ void map_view_goto_select(void)
 	
 	if (select_count()==0) return;
 
-	ang.x=view_get_lookat_x_angle(&map.editor_views.views[state.map.view_select_idx]);
-	ang.y=map.editor_views.views[state.map.view_select_idx].ang.y;
+		// look at angle
+
+	ang.x=view_get_lookat_x_angle(view);
+	ang.y=view->ang.y;
 	
+		// center around selection
+
 	select_get_center(&pnt);
 	
 	matrix_rotate_zyx(&mat,ang.x,ang.y,0.0f);
@@ -875,8 +879,35 @@ void map_view_goto_select(void)
 	pnt.x+=(int)fx;
 	pnt.y+=(int)fy;
 	pnt.z+=(int)fz;
-	
-	view_set_position(&pnt);
+
+		// if view is top or
+		// botton down, then
+		// move away from view
+		
+	if ((view->ang.x<=315.0f) && (view->ang.x>180.0f)) {
+		pnt.y-=200000;
+	}
+	if ((view->ang.x>=45.0f) && (view->ang.x<180.0f)) {
+		pnt.y+=200000;
+	}
+
+		// set view
+
+	memmove(&view->pnt,&pnt,sizeof(d3pnt));
+}
+
+void map_view_goto_select(void)
+{
+	map_view_goto_select_view(&map.editor_views.views[state.map.view_select_idx]);
+}
+
+void map_view_goto_select_all(void)
+{
+	int			n;
+
+	for (n=0;n!=map.editor_views.count;n++) {
+		map_view_goto_select_view(&map.editor_views.views[n]);
+	}
 }
 
 void map_view_calculate_bounds(d3pnt *min_pnt,d3pnt *max_pnt)
