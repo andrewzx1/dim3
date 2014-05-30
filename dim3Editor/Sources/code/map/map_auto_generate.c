@@ -910,12 +910,13 @@ bool ag_generate_run(char *err_str)
 	free(ag_state.rooms);
 
 		// restore the VBOs,
-		// center view, reset UVs
+		// center view to start spot
 		// and redraw
 
 	view_vbo_map_initialize();
 
-	map_view_goto_map_center_all();
+	select_add(item_map_spot,0,-1);
+	map_view_goto_select_all();
 
 	main_wind_draw();
 

@@ -204,6 +204,7 @@ typedef struct		{
 typedef struct		{
 						int							seed,nroom,
 													current_door_idx;
+						d3pnt						start_pnt;
 						ag_room_type				*rooms;
 					} ag_state_type;
 
