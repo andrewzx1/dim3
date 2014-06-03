@@ -323,12 +323,12 @@ JSValueRef js_model_animation_rag_doll_start_func(JSContextRef cx,JSObjectRef fu
 	d3pnt			force_pnt;
 	model_draw		*draw;
 	
-	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
+	if (!script_check_param_count(cx,func,argc,4,exception)) return(script_null_to_value(cx));
 	if (!script_check_fail_in_construct(cx,func,j_obj,exception)) return(script_null_to_value(cx));
 	
 	draw=script_find_model_draw(j_obj);
 	script_value_to_point(cx,argv[0],&force_pnt);
-	model_rag_doll_start(draw,&force_pnt,script_value_to_int(cx,argv[1]),script_value_to_int(cx,argv[2]),FALSE);
+	model_rag_doll_start(draw,&force_pnt,script_value_to_int(cx,argv[1]),script_value_to_int(cx,argv[3]),script_value_to_bool(cx,argv[2]),FALSE);
 	
 	return(script_null_to_value(cx));
 }
@@ -338,12 +338,12 @@ JSValueRef js_model_animation_rag_doll_random_func(JSContextRef cx,JSObjectRef f
 	d3pnt			force_pnt;
 	model_draw		*draw;
 	
-	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
 	if (!script_check_fail_in_construct(cx,func,j_obj,exception)) return(script_null_to_value(cx));
 	
 	draw=script_find_model_draw(j_obj);
 	force_pnt.x=force_pnt.y=force_pnt.z=0;
-	model_rag_doll_start(draw,&force_pnt,0,script_value_to_int(cx,argv[2]),TRUE);
+	model_rag_doll_start(draw,&force_pnt,0,script_value_to_int(cx,argv[1]),script_value_to_bool(cx,argv[0]),TRUE);
 	
 	return(script_null_to_value(cx));
 }

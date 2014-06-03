@@ -80,6 +80,7 @@ void setup_xml_default(void)
 	strcpy(setup.network.name,"Player");
 	setup.network.character_idx=0;
 	setup.network.tint_color_idx=0;
+	setup.network.custom_host_ip[0]=0x0;
 	setup.network.show_names=TRUE;
 	setup.network.map_rotation=FALSE;
 	
@@ -153,6 +154,7 @@ bool setup_xml_read_path(char *path)
 	xml_key_read_text(setup_tag,"Network_Name",setup.network.name,name_str_len);
     xml_key_read_int(setup_tag,"Character",&setup.network.character_idx);
     xml_key_read_int(setup_tag,"Tint",&setup.network.tint_color_idx);
+	xml_key_read_text(setup_tag,"Network_Custom_Host_IP",setup.network.custom_host_ip,64);
 	xml_key_read_int(setup_tag,"Host_Bot_Count",&setup.network.bot.count);
 	xml_key_read_int(setup_tag,"Host_Bot_Skill",&setup.network.bot.skill);
 	xml_key_read_int(setup_tag,"Host_Game_Type",&setup.network.game_type);
@@ -300,6 +302,7 @@ bool setup_xml_write(void)
 	xml_key_write_text("Network_Name",setup.network.name);
 	xml_key_write_int("Character",setup.network.character_idx);
 	xml_key_write_int("Tint",setup.network.tint_color_idx);
+	xml_key_write_text("Network_Custom_Host_IP",setup.network.custom_host_ip);
 	xml_key_write_int("Host_Bot_Count",setup.network.bot.count);
 	xml_key_write_int("Host_Bot_Skill",setup.network.bot.skill);
 	xml_key_write_int("Host_Game_Type",setup.network.game_type);
