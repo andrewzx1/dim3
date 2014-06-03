@@ -34,7 +34,8 @@ and can be sold or given away.
 #include "objects.h"
 
 #define join_pane_hosts					0
-#define join_pane_news					1
+#define join_pane_custom_host			1
+#define join_pane_news					2
 
 #define join_frame_id					0
 #define join_tab_id						1
@@ -45,6 +46,8 @@ and can be sold or given away.
 
 #define join_lan_table_id				20
 #define join_wan_table_id				21
+
+#define join_custom_ip_id				22
 
 #define join_map_bitmap_id				30
 #define join_host_status_id				31
@@ -562,21 +565,12 @@ void join_news_pane(void)
 	element_text_box_add(join_news,join_news_id,x,y,wid,high,FALSE);
 }
 
-void join_lan_internet_hosts(void)
+void join_add_info_controls(void)
 {
-	int						fx,fy,y,wid,high,table_high,
-							mx,tx,ty,half_wid,pic_high,
-							padding,margin;
-	char					str[1024],nstr[32];
-	element_column_type		cols[4];
+	int				fx,fy,wid,high,
+					mx,tx,ty,half_wid,pic_high,
+					padding,margin;
 
-		// show and hide proper elements
-		
-	element_hide(join_button_rescan_id,FALSE);
-	element_enable(join_button_rescan_id,FALSE);
-	element_enable(join_button_join_id,FALSE);
-	element_text_change(join_status_id,"");
-	
 	padding=element_get_padding();
 	margin=element_get_margin();
 
@@ -615,8 +609,68 @@ void join_lan_internet_hosts(void)
 	ty+=element_get_control_high();
 	element_text_add("Ping:",-1,tx,ty,iface.font.text_size_medium,tx_right,&iface.color.control.text,FALSE);
 	element_text_add("",join_ping_id,(tx+10),ty,iface.font.text_size_medium,tx_left,&iface.color.control.text,FALSE);
+}
+
+void join_custom_host_pane(void)
+{
+	int						fx,fy,y,wid,high,table_high,
+							mx,tx,ty,half_wid,pic_high,
+							padding,margin;
+	char					str[1024],nstr[32];
+
+		// show and hide proper elements
+		
+	element_hide(join_button_rescan_id,TRUE);
+	element_enable(join_button_join_id,FALSE);
+	element_text_change(join_status_id,"");
+	
+	padding=element_get_padding();
+	margin=element_get_margin();
+
+	element_get_frame_inner_space(join_frame_id,&fx,&fy,&wid,&high);
+
+		// info controls
+
+	join_add_info_controls();
+
+		// IP address
+
+	half_wid=(wid>>1)-padding;
+	mx=((fx+wid)-half_wid)-padding;
+
+	y=fy+(high>>1);
+
+	element_text_field_add("IP",setup.network.custom_host_ip,64,join_custom_ip_id,mx,y,TRUE);
+}
+
+void join_hosts_pane(void)
+{
+	int						fx,fy,y,wid,high,table_high,
+							mx,tx,ty,half_wid,pic_high,
+							padding,margin;
+	char					str[1024],nstr[32];
+	element_column_type		cols[4];
+
+		// show and hide proper elements
+		
+	element_hide(join_button_rescan_id,FALSE);
+	element_enable(join_button_rescan_id,FALSE);
+	element_enable(join_button_join_id,FALSE);
+	element_text_change(join_status_id,"");
+	
+	padding=element_get_padding();
+	margin=element_get_margin();
+
+	element_get_frame_inner_space(join_frame_id,&fx,&fy,&wid,&high);
+	
+		// info controls
+
+	join_add_info_controls();
 
 		// lan list
+
+	half_wid=(wid>>1)-padding;
+	mx=((fx+wid)-half_wid)-padding;
 	
 	if (join_mode==join_mode_lan) {
 		table_high=high-padding;
@@ -663,13 +717,13 @@ void join_lan_internet_hosts(void)
 		// start the local broadcast
 		// LAN thread
 		
-	join_ping_thread_lan_start();
+//	join_ping_thread_lan_start();
 }
 
 void join_create_pane(void)
 {
 	int							fx,fy,x,y,wid,high,margin,padding;
-	char						tab_list[][32]={"Hosts","News"};
+	char						tab_list[][32]={"Hosts","Custom Host","News"};
 	element_frame_button_type	butts[3]={{join_button_rescan_id,"Rescan",FALSE},{join_button_cancel_id,"Cancel",TRUE},{join_button_join_id,"Join",TRUE}};
 	
 		// turn off any scanning threads
@@ -692,7 +746,7 @@ void join_create_pane(void)
 	high=iface.scale_y-(margin*2);
 	
 	if (join_mode==join_mode_wan_lan) {
-		element_frame_add("Join Game",join_frame_id,fx,fy,wid,high,join_tab_id,2,(char*)tab_list,3,butts);
+		element_frame_add("Join Game",join_frame_id,fx,fy,wid,high,join_tab_id,3,(char*)tab_list,3,butts);
 		element_set_value(join_tab_id,join_tab_value);
 	}
 	else {
@@ -709,13 +763,16 @@ void join_create_pane(void)
 		// specific pane controls
 		
 	if (join_mode!=join_mode_wan_lan) {
-		join_lan_internet_hosts();
+		join_hosts_pane();
 		return;
 	}
 		
 	switch (element_get_value(join_tab_id)) {
 		case join_pane_hosts:
-			join_lan_internet_hosts();
+			join_hosts_pane();
+			break;
+		case join_pane_custom_host:
+			join_custom_host_pane();
 			break;
 		case join_pane_news:
 			join_news_pane();
@@ -1005,6 +1062,11 @@ void join_click(void)
 		case join_wan_table_id:
 			join_ping_wan_host();
 			break;
+
+		case join_custom_ip_id:
+			element_get_value_string(join_custom_ip_id,setup.network.custom_host_ip);
+			break;
+
 	}
 }
 	

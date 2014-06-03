@@ -199,6 +199,15 @@ and can be sold or given away.
 #define collide_obj_ray_spindle_size			((collide_obj_ray_half_sweep*2)/(collide_obj_ray_spindle_count-1))
 
 //
+// rag doll modes
+//
+
+#define rag_doll_mode_off						0
+#define rag_doll_mode_force						1
+#define rag_doll_mode_random					2
+#define rag_doll_mode_reset						3
+
+//
 // misc settings
 //
 
@@ -241,8 +250,8 @@ typedef struct		{
 					} model_draw_rag_doll_bone;
 
 typedef struct		{
-						int								start_tick,tick,force;
-						bool							on,rag_random;
+						int								mode,start_tick,tick,force;
+						bool							need_reset;
 						d3pnt							force_pnt;
 						model_draw_rag_doll_bone		bones[max_model_bone];
 					} model_draw_rag_doll;

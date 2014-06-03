@@ -109,7 +109,8 @@ typedef struct		{
 						int								game_type,score_limit,
 														respawn_secs,game_reset_secs,
 														character_idx,tint_color_idx;
-						char							name[name_str_len];
+						char							name[name_str_len],
+														custom_host_ip[64];
 						bool							show_names,map_rotation;
 						setup_network_bot_type			bot;
 						setup_network_map_list_type		map_list;
