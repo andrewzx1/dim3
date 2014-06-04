@@ -634,7 +634,7 @@ int map_mesh_poly_punch_hole(map_type *map,int mesh_idx,int poly_idx,d3pnt *extr
 	int						px[8],py[8],pz[8],
 							k,kx[8],ky[8],kz[8];
 	float					gx[8],gy[8],mgx,mgy,
-							k_gx[4],k_gy[4];
+							k_gx[8],k_gy[8];
 	d3pnt					*pt;
 	map_mesh_type			*mesh,*extrude_mesh;
 	map_mesh_poly_type		*poly;
@@ -736,7 +736,9 @@ int map_mesh_poly_punch_hole(map_type *map,int mesh_idx,int poly_idx,d3pnt *extr
 
 		extrude_mesh_idx=map_mesh_add(map);
 		if (extrude_mesh_idx==-1) return(-1);
-	
+
+		mesh=&map->mesh.meshes[mesh_idx];			// add might force memory move, need to always rebuild pointer
+
 		for (n=0;n!=ptsz;n++) {
 
 			poly=&mesh->polys[poly_idx];			// add might force memory move, need to always rebuild pointer

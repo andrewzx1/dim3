@@ -1057,6 +1057,16 @@ void element_enable(int id,bool enabled)
 	if (element!=NULL) element->enabled=enabled;
 }
 
+bool element_get_enable(int id)
+{
+	element_type		*element;
+	
+	element=element_find(id);
+	if (element==NULL) return(FALSE);
+	
+	return(element->enabled);
+}
+
 void element_hide(int id,bool hide)
 {
 	element_type		*element;

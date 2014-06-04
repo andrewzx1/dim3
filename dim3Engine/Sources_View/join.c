@@ -543,6 +543,23 @@ void join_ping_wan_host_update(void)
 	element_table_busy(join_wan_table_id,FALSE);
 }
 
+void join_ping_custom_host(join_server_host_type *host)
+{
+	int						msec;
+	unsigned char			msg[net_max_msg_size];
+
+	strcpy(host->ip,setup.network.custom_host_ip);
+		
+	msec=time_get();
+	
+	if (join_ping_thread_wan_internal(host,msec,msg)) {
+		join_ping_thread_update_host(host,msec,(network_reply_info*)msg);
+	}
+	else {
+		join_ping_thread_update_host(host,msec,NULL);
+	}
+}
+
 /* =======================================================
 
       Join Panes
@@ -613,41 +630,28 @@ void join_add_info_controls(void)
 
 void join_custom_host_pane(void)
 {
-	int						fx,fy,y,wid,high,table_high,
-							mx,tx,ty,half_wid,pic_high,
-							padding,margin;
-	char					str[1024],nstr[32];
+	int						fx,fy,x,y,wid,high;
 
 		// show and hide proper elements
 		
 	element_hide(join_button_rescan_id,TRUE);
-	element_enable(join_button_join_id,FALSE);
+	element_enable(join_button_join_id,(setup.network.custom_host_ip[0]!=0x0));
 	element_text_change(join_status_id,"");
-	
-	padding=element_get_padding();
-	margin=element_get_margin();
 
 	element_get_frame_inner_space(join_frame_id,&fx,&fy,&wid,&high);
 
-		// info controls
-
-	join_add_info_controls();
-
 		// IP address
 
-	half_wid=(wid>>1)-padding;
-	mx=((fx+wid)-half_wid)-padding;
-
+	x=fx+((wid>>1)-(element_get_control_long_wid()>>1));
 	y=fy+(high>>1);
 
-	element_text_field_add("IP",setup.network.custom_host_ip,64,join_custom_ip_id,mx,y,TRUE);
+	element_text_field_add("IP",setup.network.custom_host_ip,64,join_custom_ip_id,x,y,TRUE);
 }
 
 void join_hosts_pane(void)
 {
 	int						fx,fy,y,wid,high,table_high,
-							mx,tx,ty,half_wid,pic_high,
-							padding,margin;
+							mx,half_wid,padding,margin;
 	char					str[1024],nstr[32];
 	element_column_type		cols[4];
 
@@ -717,7 +721,7 @@ void join_hosts_pane(void)
 		// start the local broadcast
 		// LAN thread
 		
-//	join_ping_thread_lan_start();
+	join_ping_thread_lan_start();
 }
 
 void join_create_pane(void)
@@ -896,18 +900,27 @@ void join_game(void)
 	char							deny_reason[64],err_str[256];
 	obj_type						*player_obj;
 	join_server_host_type			*host;
+	join_server_host_type			custom_host;
 
 		// get selected host
 
-	idx=element_get_value(join_lan_table_id);
-	if (idx!=-1) {
-		host=&join_lan_list->hosts[idx];
+	if (element_get_value(join_tab_id)==join_pane_custom_host) {
+		join_ping_custom_host(&custom_host);
+		host=&custom_host;
 	}
 	else {
-		if (join_mode!=join_mode_wan_lan) return;
-		
-		idx=element_get_value(join_wan_table_id);
-		host=&join_wan_list->hosts[idx];
+
+		idx=element_get_value(join_lan_table_id);
+		if (idx!=-1) {
+			host=&join_lan_list->hosts[idx];
+		}
+		else {
+			if (join_mode!=join_mode_wan_lan) return;
+			
+			idx=element_get_value(join_wan_table_id);
+			host=&join_wan_list->hosts[idx];
+		}
+	
 	}
 
 		// reject if server is full
@@ -1020,7 +1033,11 @@ void join_click(void)
 		// keyboard
 
 	if (input_get_keyboard_escape()) id=join_button_cancel_id;
-	if (input_get_keyboard_return()) id=join_button_join_id;
+	if (input_get_keyboard_return()) {
+		if (element_get_enable(join_button_join_id)) id=join_button_join_id;
+	}
+
+	if (id==-1) id=gui_keyboard();
 
 		// clicking
 
@@ -1065,6 +1082,7 @@ void join_click(void)
 
 		case join_custom_ip_id:
 			element_get_value_string(join_custom_ip_id,setup.network.custom_host_ip);
+			setup_xml_write();
 			break;
 
 	}

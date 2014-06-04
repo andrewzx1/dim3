@@ -254,6 +254,7 @@ extern void element_set_value(int id,int value);
 extern void element_set_slider_value(int id,float value);
 extern void element_set_value_string(int id,char *str);
 extern void element_enable(int id,bool enabled);
+extern bool element_get_enable(int id);
 extern void element_hide(int id,bool hide);
 extern void element_table_busy(int id,bool busy);
 extern void element_text_change(int id,char *str);
