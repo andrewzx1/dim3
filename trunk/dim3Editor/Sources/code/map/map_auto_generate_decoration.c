@@ -624,7 +624,7 @@ void ag_generate_decoration_floor_trench(int room_idx)
 		// run to random depth
 
 	mesh_idx=room->mesh_idx;
-	depth_count=1+ag_random_int(3);
+	depth_count=1+ag_random_int(2);
 
 	for (n=0;n!=depth_count;n++) {
 
