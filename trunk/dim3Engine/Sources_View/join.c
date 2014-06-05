@@ -907,6 +907,12 @@ void join_game(void)
 	if (element_get_value(join_tab_id)==join_pane_custom_host) {
 		join_ping_custom_host(&custom_host);
 		host=&custom_host;
+		
+		if (host->unreachable) {
+			error_setup("Unable to Join Game: Host is Unreachable","Network Game Canceled");
+			server.next_state=gs_error;
+			return;
+		}
 	}
 	else {
 
@@ -926,7 +932,7 @@ void join_game(void)
 		// reject if server is full
 
 	if (host->player_list.count>=host->player_list.max_count) {
-		error_setup("Unable to Join Game: Server if Full","Network Game Canceled");
+		error_setup("Unable to Join Game: Server is Full","Network Game Canceled");
 		server.next_state=gs_error;
 		return;
 	}
@@ -1083,6 +1089,7 @@ void join_click(void)
 		case join_custom_ip_id:
 			element_get_value_string(join_custom_ip_id,setup.network.custom_host_ip);
 			setup_xml_write();
+			element_enable(join_button_join_id,TRUE);
 			break;
 
 	}
