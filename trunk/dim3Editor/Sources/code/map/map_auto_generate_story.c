@@ -41,6 +41,7 @@ extern bool ag_random_bool(void);
 extern void ag_generate_remove_polygons_in_box(int mesh_idx,d3pnt *min,d3pnt *max);
 extern int ag_generate_find_floor_polygon(int room_idx);
 extern void ag_generate_add_connector_room_step(d3pnt *min,d3pnt *max);
+extern bool ag_generate_room_surrounded_by_second_stories(int room_idx);
 
 /* =======================================================
 
@@ -99,21 +100,23 @@ void ag_generate_add_room_second_story_steps(d3pnt *min,d3pnt *max,d3pnt *mov)
       
 ======================================================= */
 
-void ag_generate_add_room_second_story_chunk(int room_idx,int mesh_idx,int poly_idx,int start_vertex_idx,int end_vertex_idx,int y_add)
+void ag_generate_add_room_second_story_chunk(int room_idx,int mesh_idx,int poly_idx,int start_vertex_idx,int end_vertex_idx)
 {
-	int						n,k,t,t2,ptsz,mx,my,mz,
-							story_mesh_idx,story_poly_idx;
+	int						n,k,t,t2,ptsz,mx,my,mz,ty,by,
+							story_mesh_idx,
+							group_idx,movement_idx,move_idx;
 	int						px[8],py[8],pz[8],
 							kx[4],ky[4],ky2[4],kz[4],
 							wx[4],wy[4],wz[4];
 	float					gx[8],gy[8],mgx,mgy,
 							k_gx[4],k_gy[4];
-	bool					no_stairs;
-	d3pnt					step_min,step_max,step_mov;
+	bool					elevator_chunk;
 	d3pnt					*pt;
 	ag_room_type			*room;
 	map_mesh_type			*mesh,*story_mesh;
 	map_mesh_poly_type		*poly;
+	movement_type			*movement;
+	movement_move_type		*move;
 
 	room=&ag_state.rooms[room_idx];
 
@@ -121,11 +124,6 @@ void ag_generate_add_room_second_story_chunk(int room_idx,int mesh_idx,int poly_
 	poly=&mesh->polys[poly_idx];
 
 	ptsz=poly->ptsz;
-
-		// randomly eliminate
-		// steps from some rooms
-
-	no_stairs=ag_random_bool();
 
 		// new hole vertexes
 
@@ -175,6 +173,20 @@ void ag_generate_add_room_second_story_chunk(int room_idx,int mesh_idx,int poly_
 
 		story_mesh=&map.mesh.meshes[story_mesh_idx];
 
+			// determine height and position
+			// if regular chunk or elevator chunk
+
+		elevator_chunk=(n==start_vertex_idx);
+
+		if (!elevator_chunk) {
+			ty=room->max.y-(ag_size_room_high+ag_size_floor_high);
+			by=ty+ag_size_floor_high;
+		}
+		else {
+			ty=room->max.y-ag_size_bump_high; ;
+			by=ty+(ag_size_room_high+ag_size_floor_high);
+		}
+
 			// get internal points
 		
 		mesh=&map.mesh.meshes[mesh_idx];			// adding a mesh could change these pointers
@@ -185,24 +197,24 @@ void ag_generate_add_room_second_story_chunk(int room_idx,int mesh_idx,int poly_
 
 		pt=&mesh->vertexes[poly->v[n]];
 		kx[0]=pt->x;
-		ky[0]=pt->y+y_add;
-		ky2[0]=ky[0]+ag_size_floor_high;
+		ky[0]=ty;
+		ky2[0]=by;
 		kz[0]=pt->z;
 
 		pt=&mesh->vertexes[poly->v[k]];
 		kx[1]=pt->x;
-		ky[1]=pt->y+y_add;
-		ky2[1]=ky[1]+ag_size_floor_high;
+		ky[1]=ty;
+		ky2[1]=by;
 		kz[1]=pt->z;
 
 		kx[2]=px[k];
-		ky[2]=py[k]+y_add;
-		ky2[2]=ky[2]+ag_size_floor_high;
+		ky[2]=ty;
+		ky2[2]=by;
 		kz[2]=pz[k];
 
 		kx[3]=px[n];
-		ky[3]=py[n]+y_add;
-		ky2[3]=ky[3]+ag_size_floor_high;
+		ky[3]=ty;
+		ky2[3]=by;
 		kz[3]=pz[n];
 
 			// walls
@@ -257,73 +269,116 @@ void ag_generate_add_room_second_story_chunk(int room_idx,int mesh_idx,int poly_
 		k_gx[3]=gx[n];
 		k_gy[3]=gy[n];
 
-		story_poly_idx=map_mesh_add_poly(&map,story_mesh_idx,4,kx,ky,kz,k_gx,k_gy,ag_texture_connect);
-		story_poly_idx=map_mesh_add_poly(&map,story_mesh_idx,4,kx,ky2,kz,k_gx,k_gy,ag_texture_connect);
+		map_mesh_add_poly(&map,story_mesh_idx,4,kx,ky,kz,k_gx,k_gy,ag_texture_connect);
+		if (!elevator_chunk) map_mesh_add_poly(&map,story_mesh_idx,4,kx,ky2,kz,k_gx,k_gy,ag_texture_connect);
 
 			// recalc UVs and normals
 
 		map_mesh_reset_uv(&map,story_mesh_idx);
-		map_recalc_normals_mesh(&map,story_mesh,normal_mode_out,FALSE);
+		map_recalc_normals_mesh(&map,&map.mesh.meshes[story_mesh_idx],normal_mode_out,FALSE);
 
-			// if this segment is straight,
-			// then make it a stair
+			// if elevator, setup the movement
 
-		if (no_stairs) continue;
-		if (room->has_stairs) continue;
+		if (!elevator_chunk) continue;
 
-			// setup step dimensions
+			// add elevator group
 
-		step_min.y=pt->y+y_add;
-		step_max.y=step_min.y+(ag_size_room_high+ag_size_floor_high);
-		
-		step_mov.x=0;
-		step_mov.y=0;
-		step_mov.z=0;
+		group_idx=map_group_add(&map);
+		sprintf(map.group.groups[group_idx].name,"Lift %d",room_idx);
 
-			// steps across the X
+		map.mesh.meshes[story_mesh_idx].group_idx=group_idx;
+		map.mesh.meshes[story_mesh_idx].flag.moveable=TRUE;
 
-		if (px[n]==px[k]) {
-			room->has_stairs=TRUE;
+			// add in movement
 
-			step_min.x=step_max.x=px[n];
+		movement_idx=map_movement_add(&map);
 
-			if (pz[n]<pz[k]) {
-				step_min.z=pz[n];
-				step_max.z=pz[k];
-			}
-			else {
-				step_min.z=pz[k];
-				step_max.z=pz[n];
-			}
+		movement=&map.movement.movements[movement_idx];
 
-			step_mov.x=(px[n]<mx)?ag_size_story_stair_tread_len:-ag_size_story_stair_tread_len;
+		sprintf(movement->name,"Lift %d",room_idx);
+		movement->group_idx=group_idx;
+		movement->reverse_group_idx=-1;
+		movement->auto_open_stand=TRUE;
 
-			ag_generate_add_room_second_story_steps(&step_min,&step_max,&step_mov);
-			continue;
-		}
+		move_idx=map_movement_move_add(&map,movement_idx);
 
-			// steps across the Z
+		move=&movement->moves[move_idx];
+		move->msec=3000;
+		move->mov.x=0;
+		move->mov.y=-(ag_size_room_high+(ag_size_floor_high-ag_size_bump_high));
+		move->mov.z=0;
 
-		if (pz[n]==pz[k]) {
-			room->has_stairs=TRUE;
-
-			if (px[n]<px[k]) {
-				step_min.x=px[n];
-				step_max.x=px[k];
-			}
-			else {
-				step_min.x=px[k];
-				step_max.x=px[n];
-			}
-
-			step_min.z=step_max.z=pz[n];
-
-			step_mov.z=(pz[n]<mz)?ag_size_story_stair_tread_len:-ag_size_story_stair_tread_len;
-
-			ag_generate_add_room_second_story_steps(&step_min,&step_max,&step_mov);
-			continue;
-		}
+		strcpy(move->sound_name,"Lift");
 	}
+}
+
+/* =======================================================
+
+      Second Story Complete
+      
+======================================================= */
+
+void ag_generate_add_room_second_story_complete(int room_idx)
+{
+	int						n,k,mesh_idx;
+	int						px[8],py[8],pz[8];
+	float					gx[8],gy[8];
+	ag_room_type			*room;
+
+	room=&ag_state.rooms[room_idx];
+
+		// tell later options that there
+		// can be more decorations and lights
+
+	room->second_story_complete=TRUE;
+
+		// complete floor mesh
+
+	mesh_idx=map_mesh_add(&map);
+
+		// add the walls
+
+	for (n=0;n!=room->nvertex;n++) {
+
+		k=n+1;
+		if (k==room->nvertex) k=0;
+
+		px[0]=px[3]=room->vertexes[n].x;
+		px[1]=px[2]=room->vertexes[k].x;
+		pz[0]=pz[3]=room->vertexes[n].z;
+		pz[1]=pz[2]=room->vertexes[k].z;
+		py[0]=py[1]=room->max.y-(ag_size_room_high+ag_size_floor_high);
+		py[2]=py[3]=room->max.y-ag_size_room_high;
+
+		gx[0]=gx[3]=0.0f;
+		gx[1]=gx[2]=1.0f;
+		gy[0]=gy[1]=0.0f;
+		gy[2]=gy[3]=1.0f;
+
+		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_wall);
+	}
+
+		// add the floor and ceiling
+
+	for (n=0;n!=room->nvertex;n++) {
+		px[n]=room->vertexes[n].x;
+		py[n]=room->max.y-ag_size_room_high;
+		pz[n]=room->vertexes[n].z;
+		gx[n]=gy[n]=0.0f;
+	}
+		
+	map_mesh_add_poly(&map,mesh_idx,room->nvertex,px,py,pz,gx,gy,ag_texture_connect);
+
+	for (n=0;n!=room->nvertex;n++) {
+		py[n]-=ag_size_floor_high;
+	}
+
+	map_mesh_add_poly(&map,mesh_idx,room->nvertex,px,py,pz,gx,gy,ag_texture_connect);
+
+		// recalc UVs and normals
+
+	map_mesh_reset_uv(&map,mesh_idx);
+	map_recalc_normals_mesh(&map,&map.mesh.meshes[mesh_idx],normal_mode_out,FALSE);
 }
 
 /* =======================================================
@@ -353,6 +408,15 @@ void ag_generate_add_room_second_story(void)
 
 		if (room->nvertex<=3) continue;
 
+			// if this room is connected to two
+			// other rooms with second stories, then
+			// it's a complete two story room
+
+		if (ag_generate_room_surrounded_by_second_stories(n)) {
+			ag_generate_add_room_second_story_complete(n);
+			continue;
+		}
+
 			// get the floor to base
 			// second story on
 
@@ -365,7 +429,9 @@ void ag_generate_add_room_second_story(void)
 		start_vertex_idx=0;
 		end_vertex_idx=ag_random_int(map.mesh.meshes[room->mesh_idx].polys[poly_idx].ptsz);
 
-		ag_generate_add_room_second_story_chunk(n,room->mesh_idx,poly_idx,start_vertex_idx,end_vertex_idx,-(ag_size_room_high+ag_size_floor_high));
+		if (start_vertex_idx==end_vertex_idx) end_vertex_idx++;
+
+		ag_generate_add_room_second_story_chunk(n,room->mesh_idx,poly_idx,start_vertex_idx,end_vertex_idx);
 	}
 }
 

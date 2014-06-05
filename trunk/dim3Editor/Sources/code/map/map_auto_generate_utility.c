@@ -339,6 +339,47 @@ void ag_generate_get_wall_line(int mesh_idx,int poly_idx,d3pnt *p1,d3pnt *p2)
 
 /* =======================================================
 
+      Determine Connected Room Statuses
+      
+======================================================= */
+
+bool ag_generate_room_surrounded_by_second_stories(int room_idx)
+{
+	int				n,story_count;
+	ag_room_type	*room;
+
+	room=&ag_state.rooms[room_idx];
+
+		// room it's connected to
+
+	story_count=0;
+
+	if (room->connect_box.other_room_idx!=-1) {
+		if (ag_state.rooms[room->connect_box.other_room_idx].second_story) {
+			story_count++;
+		}
+	}
+
+		// other rooms connected to it
+
+	for (n=0;n!=ag_state.nroom;n++) {
+		if (n==room_idx) continue;
+
+		room=&ag_state.rooms[n];
+
+		if (room->connect_box.other_room_idx==room_idx) {
+			if (room->second_story) {
+				story_count++;
+				if (story_count==2) return(TRUE);
+			}
+		}
+	}
+
+	return(FALSE);
+}
+
+/* =======================================================
+
       Windows
       
 ======================================================= */
