@@ -191,7 +191,9 @@ typedef struct		{
 
 typedef struct		{
 						int							nvertex,mesh_idx;
-						bool						second_story,require_top_floor,
+						bool						second_story,
+													second_story_complete,
+													require_top_floor,
 													has_stairs,has_windows,
 													has_wall_decorations;
 						d3pnt						min,max;

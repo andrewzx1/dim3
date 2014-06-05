@@ -916,10 +916,30 @@ void ag_generate_lights_add_spot(d3pnt *pnt)
 	lit->setting.col.b=1.0f-(((float)ag_random_int(25))/100.0f);
 }
 
+void ag_generate_lights_add_room_light(ag_room_type *room,int y_add)
+{
+	d3pnt			pnt,min,max;
+
+		// add the light
+
+	map_mesh_calculate_extent(&map,room->mesh_idx,&min,&max);
+
+	pnt.x=(min.x+max.x)>>1;
+	pnt.y=max.y-(ag_size_room_high-(ag_size_floor_high<<1));
+	if (room->second_story) pnt.y-=ag_size_room_high;
+	pnt.y+=y_add;
+	pnt.z=(min.z+max.z)>>1;
+
+	ag_generate_lights_add_spot(&pnt);
+
+		// add the fixture
+
+	ag_generate_lights_add_fixture(&pnt);
+}
+
 void ag_generate_lights_add(void)
 {
 	int				n;
-	d3pnt			pnt,min,max;
 	ag_room_type	*room;
 
 	for (n=0;n!=ag_state.nroom;n++) {
@@ -931,19 +951,11 @@ void ag_generate_lights_add(void)
 		if (room->has_windows) continue;
 
 			// add the light
+			// and a second one if a complete
+			// two story room
 
-		map_mesh_calculate_extent(&map,room->mesh_idx,&min,&max);
-
-		pnt.x=(min.x+max.x)>>1;
-		pnt.y=max.y-(ag_size_room_high-(ag_size_floor_high<<1));
-		if (room->second_story) pnt.y-=ag_size_room_high;
-		pnt.z=(min.z+max.z)>>1;
-
-		ag_generate_lights_add_spot(&pnt);
-
-			// add the fixture
-
-		ag_generate_lights_add_fixture(&pnt);
+		ag_generate_lights_add_room_light(room,0);
+		if (room->second_story_complete) ag_generate_lights_add_room_light(room,(ag_size_room_high+ag_size_floor_high));
 	}
 }
 
@@ -1003,7 +1015,7 @@ void ag_generate_spots_add(void)
 		// supergumba -- hard coded!  FIX!
 
 	for (n=0;n!=(ag_state.nroom*2);n++) {
-		ag_generate_spots_add_single("Monster",spot_type_object,"Cyborg Knife",NULL);
+	//	ag_generate_spots_add_single("Monster",spot_type_object,"Cyborg Knife",NULL);
 	}
 
 }
