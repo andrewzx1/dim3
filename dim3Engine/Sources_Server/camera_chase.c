@@ -201,6 +201,8 @@ void camera_chase_static_calc_position(void)
 		// looking angles
 
 	camera.cur_pos.ang.x=map.camera.chase.track_ang.x+map.camera.ang_offset.x;
+	if (camera.cur_pos.ang.x>180.0f) camera.cur_pos.ang.x-=360.0f;
+
 	camera.cur_pos.ang.y=map.camera.chase.track_ang.y+map.camera.ang_offset.y;
 	camera.cur_pos.ang.z=map.camera.chase.track_ang.z+map.camera.ang_offset.z;
 }
