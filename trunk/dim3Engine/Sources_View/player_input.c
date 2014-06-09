@@ -814,8 +814,8 @@ void player_side_scroll_input(obj_type *obj)
 
 		// left-right movement
 		
-	if (go_left) object_player_turn_direct(obj,270);
-	if (go_right) object_player_turn_direct(obj,90);
+	if (go_left) object_player_turn_direct(obj,270.0f);
+	if (go_right) object_player_turn_direct(obj,90.0f);
 	
 		// up-down movement
 	
@@ -1101,7 +1101,7 @@ void player_get_input(void)
 	if ((obj->hidden) || (obj->input.freeze)) return;
 	
 		// proper movement routines
-	
+		
 	switch (obj->input.mode) {
 	
 		case im_fpp:
