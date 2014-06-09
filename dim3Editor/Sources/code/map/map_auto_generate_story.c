@@ -391,6 +391,7 @@ void ag_generate_add_room_second_story(void)
 {
 	int				n,poly_idx,
 					start_vertex_idx,end_vertex_idx;
+	bool			story_surround;
 	ag_room_type	*room;
 
 		// build second stories
@@ -410,11 +411,17 @@ void ag_generate_add_room_second_story(void)
 
 			// if this room is connected to two
 			// other rooms with second stories, then
-			// it's a complete two story room
+			// it's a complete two story room or
+			// falls through and does a complete
+			// 360 ledge
 
-		if (ag_generate_room_surrounded_by_second_stories(n)) {
-			ag_generate_add_room_second_story_complete(n);
-			continue;
+		story_surround=ag_generate_room_surrounded_by_second_stories(n);
+
+		if (story_surround) {
+			if (ag_random_bool()) {
+				ag_generate_add_room_second_story_complete(n);
+				continue;
+			}
 		}
 
 			// get the floor to base
@@ -427,9 +434,14 @@ void ag_generate_add_room_second_story(void)
 			// to build around
 
 		start_vertex_idx=0;
-		end_vertex_idx=ag_random_int(map.mesh.meshes[room->mesh_idx].polys[poly_idx].ptsz);
 
-		if (start_vertex_idx==end_vertex_idx) end_vertex_idx++;
+		if (story_surround) {
+			end_vertex_idx=room->nvertex-1;
+		}
+		else {
+			end_vertex_idx=ag_random_int(map.mesh.meshes[room->mesh_idx].polys[poly_idx].ptsz);
+			if (start_vertex_idx==end_vertex_idx) end_vertex_idx++;
+		}
 
 		ag_generate_add_room_second_story_chunk(n,room->mesh_idx,poly_idx,start_vertex_idx,end_vertex_idx);
 	}

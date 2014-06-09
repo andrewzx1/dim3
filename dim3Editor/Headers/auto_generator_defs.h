@@ -89,7 +89,8 @@ and can be sold or given away.
 #define ag_decoration_type_box_stacks			1
 #define ag_decoration_type_equipment			2
 #define ag_decoration_type_core					3
-#define ag_decoration_type_trench				4
+#define ag_decoration_type_walls				4
+#define ag_decoration_type_trench				5
 
 #define ag_decoration_type_vertex_none			0
 #define ag_decoration_type_vertex_column_circle	1

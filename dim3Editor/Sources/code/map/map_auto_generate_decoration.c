@@ -587,6 +587,7 @@ void ag_generate_decoration_core(int room_idx)
 
 	extrude_pnt.x=0;
 	extrude_pnt.y=-(ag_size_room_high+ag_size_floor_high);
+	if (room->second_story) extrude_pnt.y-=ag_size_room_high;
 	extrude_pnt.z=0;
 
 		// extrude it
@@ -599,6 +600,97 @@ void ag_generate_decoration_core(int room_idx)
 	}
 	
 	map_mesh_reset_uv(&map,extrude_mesh_idx);
+}
+
+/* =======================================================
+
+      Wall Decorations
+      
+======================================================= */
+
+void ag_generate_decoration_walls(int room_idx)
+{
+	int						n,k,mx,my,mz,ty,by,
+							wall_mesh_idx;
+	int						px[8],py[8],pz[8],px2[8],py2[8],pz2[8],
+							kx[4],ky[4],kz[4];
+	float					gx[8],gy[8],mgx,mgy;
+	d3pnt					*pt;
+	ag_room_type			*room;
+
+	room=&ag_state.rooms[room_idx];
+	if (room->nvertex==0) return;
+
+		// new wall vertexes
+
+	mx=my=mz=0;
+	mgx=mgy=0.0f;
+
+	for (n=0;n!=room->nvertex;n++) {
+		pt=&room->vertexes[n];
+
+		px[n]=px2[n]=pt->x;
+		py[n]=py2[n]=pt->y;
+		pz[n]=pz2[n]=pt->z;
+
+		mx+=pt->x;
+		my+=pt->y;
+		mz+=pt->z;
+	}
+
+	mx/=room->nvertex;
+	my/=room->nvertex;
+	mz/=room->nvertex;
+
+	for (n=0;n!=room->nvertex;n++) {
+		px[n]=(int)(((float)(px[n]-mx))*0.5f)+mx;
+		py[n]=(int)(((float)(py[n]-my))*0.5f)+my;
+		pz[n]=(int)(((float)(pz[n]-mz))*0.5f)+mz;
+		px2[n]=(int)(((float)(px[n]-mx))*0.4f)+mx;
+		py2[n]=(int)(((float)(py[n]-my))*0.4f)+my;
+		pz2[n]=(int)(((float)(pz[n]-mz))*0.4f)+mz;
+	}
+
+		// new mesh for each wall
+
+	for (n=0;n!=room->nvertex;n++) {
+
+			// random select a wall
+
+		if (ag_random_bool()) continue;
+
+			// new wall
+		
+		wall_mesh_idx=map_mesh_add(&map);
+		if (wall_mesh_idx==-1) return;
+		
+		ty=room->max.y-(ag_size_room_high+ag_size_floor_high);
+		by=ty+ag_size_floor_high;
+
+		k=n+1;
+		if (k==room->nvertex) k=0;
+
+		kx[0]=kx[3]=px[n];
+		kx[1]=kx[2]=px[k];
+
+		ky[0]=ky[1]=ty;
+		ky[2]=ky[3]=by;
+
+		kz[0]=kz[3]=pz[n];
+		kz[1]=kz[2]=pz[k];
+
+		gx[0]=gx[3]=0.0f;
+		gx[1]=gx[2]=1.0f;
+		gy[0]=gy[1]=0.0f;
+		gy[2]=gy[3]=1.0f;
+
+		map_mesh_add_poly(&map,wall_mesh_idx,4,kx,ky,kz,gx,gy,ag_texture_connect);
+
+			// recalc UVs and normals
+
+		map_mesh_reset_uv(&map,wall_mesh_idx);
+		map_recalc_normals_mesh(&map,&map.mesh.meshes[wall_mesh_idx],normal_mode_out,FALSE);
+	}
 }
 
 /* =======================================================
@@ -733,22 +825,18 @@ void ag_generate_decorations_add(void)
 
 				switch (dec_idx) {
 
-						// columns and equipment
+						// columns, equipment
 						// don't appear in two story rooms
 
 					case ag_decoration_type_columns:
-						if (room->second_story) continue;
-						break;
-
 					case ag_decoration_type_equipment:
 						if (room->second_story) continue;
 						break;
 
 						// core decoration requires window light
-						// and single story rooms
 
 					case ag_decoration_type_core:
-						if ((!room->has_windows) || (room->second_story)) continue;
+						if (!room->has_windows) continue;
 						break;
 
 				}
@@ -775,6 +863,10 @@ void ag_generate_decorations_add(void)
 
 			case ag_decoration_type_core:
 				ag_generate_decoration_core(n);
+				break;
+
+			case ag_decoration_type_walls:
+				ag_generate_decoration_walls(n);
 				break;
 
 			case ag_decoration_type_trench:
