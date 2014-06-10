@@ -614,12 +614,16 @@ void ag_generate_decoration_walls(int room_idx)
 							wall_mesh_idx;
 	int						px[8],py[8],pz[8],px2[8],py2[8],pz2[8],
 							kx[4],ky[4],kz[4];
-	float					gx[8],gy[8],mgx,mgy;
+	float					f_wall,gx[8],gy[8],mgx,mgy;
 	d3pnt					*pt;
 	ag_room_type			*room;
 
 	room=&ag_state.rooms[room_idx];
 	if (room->nvertex==0) return;
+
+		// random wall size
+
+	f_wall=0.45f-(((float)ag_random_int(6))*0.01f);
 
 		// new wall vertexes
 
@@ -646,10 +650,20 @@ void ag_generate_decoration_walls(int room_idx)
 		px[n]=(int)(((float)(px[n]-mx))*0.5f)+mx;
 		py[n]=(int)(((float)(py[n]-my))*0.5f)+my;
 		pz[n]=(int)(((float)(pz[n]-mz))*0.5f)+mz;
-		px2[n]=(int)(((float)(px[n]-mx))*0.4f)+mx;
-		py2[n]=(int)(((float)(py[n]-my))*0.4f)+my;
-		pz2[n]=(int)(((float)(pz[n]-mz))*0.4f)+mz;
+		px2[n]=(int)(((float)(px[n]-mx))*f_wall)+mx;
+		py2[n]=(int)(((float)(py[n]-my))*f_wall)+my;
+		pz2[n]=(int)(((float)(pz[n]-mz))*f_wall)+mz;
 	}
+
+		// wall heights
+		
+	ty=room->max.y-(ag_size_room_high+ag_size_floor_high);
+	by=room->max.y;
+
+	gx[0]=gx[3]=0.0f;
+	gx[1]=gx[2]=1.0f;
+	gy[0]=gy[1]=0.0f;
+	gy[2]=gy[3]=1.0f;
 
 		// new mesh for each wall
 
@@ -663,9 +677,6 @@ void ag_generate_decoration_walls(int room_idx)
 		
 		wall_mesh_idx=map_mesh_add(&map);
 		if (wall_mesh_idx==-1) return;
-		
-		ty=room->max.y-(ag_size_room_high+ag_size_floor_high);
-		by=ty+ag_size_floor_high;
 
 		k=n+1;
 		if (k==room->nvertex) k=0;
@@ -679,12 +690,49 @@ void ag_generate_decoration_walls(int room_idx)
 		kz[0]=kz[3]=pz[n];
 		kz[1]=kz[2]=pz[k];
 
-		gx[0]=gx[3]=0.0f;
-		gx[1]=gx[2]=1.0f;
-		gy[0]=gy[1]=0.0f;
-		gy[2]=gy[3]=1.0f;
+		map_mesh_add_poly(&map,wall_mesh_idx,4,kx,ky,kz,gx,gy,ag_texture_wall);
 
-		map_mesh_add_poly(&map,wall_mesh_idx,4,kx,ky,kz,gx,gy,ag_texture_connect);
+		kx[0]=kx[3]=px2[n];
+		kx[1]=kx[2]=px2[k];
+
+		kz[0]=kz[3]=pz2[n];
+		kz[1]=kz[2]=pz2[k];
+
+		map_mesh_add_poly(&map,wall_mesh_idx,4,kx,ky,kz,gx,gy,ag_texture_wall);
+
+		kx[0]=kx[3]=px[k];
+		kx[1]=kx[2]=px2[k];
+
+		kz[0]=kz[3]=pz[k];
+		kz[1]=kz[2]=pz2[k];
+
+		map_mesh_add_poly(&map,wall_mesh_idx,4,kx,ky,kz,gx,gy,ag_texture_wall);
+
+		kx[0]=kx[3]=px[n];
+		kx[1]=kx[2]=px2[n];
+
+		kz[0]=kz[3]=pz[n];
+		kz[1]=kz[2]=pz2[n];
+
+		map_mesh_add_poly(&map,wall_mesh_idx,4,kx,ky,kz,gx,gy,ag_texture_wall);
+
+			// possible ceiling
+
+		if (room->second_story) {
+			kx[0]=px[n];
+			kx[1]=px[k];
+			kx[2]=px2[k];
+			kx[3]=px2[n];
+
+			ky[0]=ky[1]=ky[2]=ky[3]=ty;
+
+			kz[0]=pz[n];
+			kz[1]=pz[k];
+			kz[2]=pz2[k];
+			kz[3]=pz2[n];
+
+			map_mesh_add_poly(&map,wall_mesh_idx,4,kx,ky,kz,gx,gy,ag_texture_floor);
+		}
 
 			// recalc UVs and normals
 
