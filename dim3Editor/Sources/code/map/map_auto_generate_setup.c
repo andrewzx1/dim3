@@ -69,14 +69,49 @@ void ag_release(void)
 
 bool ag_check_required_textures(char *err_str)
 {
-	int			n;
+	texture_type		*texture;
 
-	for (n=0;n!=ag_texture_required_count;n++) {
-		if (map.textures[n].frames[0].bitmap.gl_id==-1) {
-			sprintf(err_str,"Auto Generator requires at least the first %d texture spots to be filled",ag_texture_required_count);
-			return(FALSE);
-		}
-	}
+		// note: this randomness requires the
+		// random seed to already be set
+
+	texture=&map.textures[ag_texture_wall];
+	bitmap_ag_texture_brick(&texture->frames[0],512);
+
+	texture=&map.textures[ag_texture_floor];
+	bitmap_ag_texture_metal(&texture->frames[0],512);
+
+	texture=&map.textures[ag_texture_ceiling];
+	bitmap_ag_texture_metal(&texture->frames[0],512);
+
+	texture=&map.textures[ag_texture_connect];
+	bitmap_ag_texture_brick(&texture->frames[0],512);
+
+	texture=&map.textures[ag_texture_alt_wall];
+	bitmap_ag_texture_brick(&texture->frames[0],512);
+
+	texture=&map.textures[ag_texture_second_floor];
+	bitmap_ag_texture_brick(&texture->frames[0],512);
+
+	texture=&map.textures[ag_texture_lift];
+	bitmap_ag_texture_metal(&texture->frames[0],512);
+
+	texture=&map.textures[ag_texture_door];
+	bitmap_ag_texture_metal(&texture->frames[0],512);
+
+	texture=&map.textures[ag_texture_stair];
+	bitmap_ag_texture_cement(&texture->frames[0],512);
+
+	texture=&map.textures[ag_texture_decoration_pillar];
+	bitmap_ag_texture_cement(&texture->frames[0],512);
+
+	texture=&map.textures[ag_texture_decoration_box];
+	bitmap_ag_texture_wood(&texture->frames[0],512);
+
+	texture=&map.textures[ag_texture_equipment];
+	bitmap_ag_texture_machine(&texture->frames[0],512);
+
+	texture=&map.textures[ag_texture_window];
+	bitmap_ag_texture_window(&texture->frames[0],512);
 
 	return(TRUE);
 }

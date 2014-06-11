@@ -252,7 +252,7 @@ void ag_generate_add_room_second_story_chunk(int room_idx,int mesh_idx,int poly_
 			k_gx[3]=0.0f;
 			k_gy[3]=1.0f;
 
-			map_mesh_add_poly(&map,story_mesh_idx,4,wx,wy,wz,k_gx,k_gy,ag_texture_connect);
+			map_mesh_add_poly(&map,story_mesh_idx,4,wx,wy,wz,k_gx,k_gy,(elevator_chunk?ag_texture_lift:ag_texture_second_floor));
 		}
 
 			// floor and ceiling
@@ -269,8 +269,8 @@ void ag_generate_add_room_second_story_chunk(int room_idx,int mesh_idx,int poly_
 		k_gx[3]=gx[n];
 		k_gy[3]=gy[n];
 
-		map_mesh_add_poly(&map,story_mesh_idx,4,kx,ky,kz,k_gx,k_gy,ag_texture_connect);
-		if (!elevator_chunk) map_mesh_add_poly(&map,story_mesh_idx,4,kx,ky2,kz,k_gx,k_gy,ag_texture_connect);
+		map_mesh_add_poly(&map,story_mesh_idx,4,kx,ky,kz,k_gx,k_gy,(elevator_chunk?ag_texture_lift:ag_texture_second_floor));
+		if (!elevator_chunk) map_mesh_add_poly(&map,story_mesh_idx,4,kx,ky2,kz,k_gx,k_gy,(elevator_chunk?ag_texture_lift:ag_texture_second_floor));
 
 			// recalc UVs and normals
 
@@ -355,7 +355,7 @@ void ag_generate_add_room_second_story_complete(int room_idx)
 		gy[0]=gy[1]=0.0f;
 		gy[2]=gy[3]=1.0f;
 
-		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_wall);
+		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_second_floor);
 	}
 
 		// add the floor and ceiling
@@ -367,13 +367,13 @@ void ag_generate_add_room_second_story_complete(int room_idx)
 		gx[n]=gy[n]=0.0f;
 	}
 		
-	map_mesh_add_poly(&map,mesh_idx,room->nvertex,px,py,pz,gx,gy,ag_texture_connect);
+	map_mesh_add_poly(&map,mesh_idx,room->nvertex,px,py,pz,gx,gy,ag_texture_second_floor);
 
 	for (n=0;n!=room->nvertex;n++) {
 		py[n]-=ag_size_floor_high;
 	}
 
-	map_mesh_add_poly(&map,mesh_idx,room->nvertex,px,py,pz,gx,gy,ag_texture_connect);
+	map_mesh_add_poly(&map,mesh_idx,room->nvertex,px,py,pz,gx,gy,ag_texture_second_floor);
 
 		// recalc UVs and normals
 

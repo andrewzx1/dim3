@@ -464,6 +464,14 @@ extern bool bitmap_write_png_data(unsigned char *data,int wid,int high,bool alph
 extern bool bitmap_check(char *path,char *err_str);
 extern bool bitmap_copy(char *srce_path,char *dest_path);
 
+extern void bitmap_ag_texture_init(void);
+extern bool bitmap_ag_texture_brick(texture_frame_type *frame,int pixel_sz);
+extern bool bitmap_ag_texture_metal(texture_frame_type *frame,int pixel_sz);
+extern bool bitmap_ag_texture_wood(texture_frame_type *frame,int pixel_sz);
+extern bool bitmap_ag_texture_cement(texture_frame_type *frame,int pixel_sz);
+extern bool bitmap_ag_texture_window(texture_frame_type *frame,int pixel_sz);
+extern bool bitmap_ag_texture_machine(texture_frame_type *frame,int pixel_sz);
+
 /* =======================================================
 
       Global Normal Modes

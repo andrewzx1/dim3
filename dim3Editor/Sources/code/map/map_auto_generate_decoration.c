@@ -596,7 +596,7 @@ void ag_generate_decoration_core(int room_idx)
 	if (extrude_mesh_idx==-1) return;
 
 	for (n=0;n!=map.mesh.meshes[extrude_mesh_idx].npoly;n++) {
-		map.mesh.meshes[extrude_mesh_idx].polys[n].txt_idx=ag_texture_wall;
+		map.mesh.meshes[extrude_mesh_idx].polys[n].txt_idx=ag_texture_alt_wall;
 	}
 	
 	map_mesh_reset_uv(&map,extrude_mesh_idx);
@@ -690,7 +690,7 @@ void ag_generate_decoration_walls(int room_idx)
 		kz[0]=kz[3]=pz[n];
 		kz[1]=kz[2]=pz[k];
 
-		map_mesh_add_poly(&map,wall_mesh_idx,4,kx,ky,kz,gx,gy,ag_texture_wall);
+		map_mesh_add_poly(&map,wall_mesh_idx,4,kx,ky,kz,gx,gy,ag_texture_alt_wall);
 
 		kx[0]=kx[3]=px2[n];
 		kx[1]=kx[2]=px2[k];
@@ -698,7 +698,7 @@ void ag_generate_decoration_walls(int room_idx)
 		kz[0]=kz[3]=pz2[n];
 		kz[1]=kz[2]=pz2[k];
 
-		map_mesh_add_poly(&map,wall_mesh_idx,4,kx,ky,kz,gx,gy,ag_texture_wall);
+		map_mesh_add_poly(&map,wall_mesh_idx,4,kx,ky,kz,gx,gy,ag_texture_alt_wall);
 
 		kx[0]=kx[3]=px[k];
 		kx[1]=kx[2]=px2[k];
@@ -706,7 +706,7 @@ void ag_generate_decoration_walls(int room_idx)
 		kz[0]=kz[3]=pz[k];
 		kz[1]=kz[2]=pz2[k];
 
-		map_mesh_add_poly(&map,wall_mesh_idx,4,kx,ky,kz,gx,gy,ag_texture_wall);
+		map_mesh_add_poly(&map,wall_mesh_idx,4,kx,ky,kz,gx,gy,ag_texture_alt_wall);
 
 		kx[0]=kx[3]=px[n];
 		kx[1]=kx[2]=px2[n];
@@ -714,7 +714,7 @@ void ag_generate_decoration_walls(int room_idx)
 		kz[0]=kz[3]=pz[n];
 		kz[1]=kz[2]=pz2[n];
 
-		map_mesh_add_poly(&map,wall_mesh_idx,4,kx,ky,kz,gx,gy,ag_texture_wall);
+		map_mesh_add_poly(&map,wall_mesh_idx,4,kx,ky,kz,gx,gy,ag_texture_alt_wall);
 
 			// possible ceiling
 
@@ -731,7 +731,7 @@ void ag_generate_decoration_walls(int room_idx)
 			kz[2]=pz2[k];
 			kz[3]=pz2[n];
 
-			map_mesh_add_poly(&map,wall_mesh_idx,4,kx,ky,kz,gx,gy,ag_texture_floor);
+			map_mesh_add_poly(&map,wall_mesh_idx,4,kx,ky,kz,gx,gy,ag_texture_second_floor);
 		}
 
 			// recalc UVs and normals

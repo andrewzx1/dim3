@@ -658,21 +658,21 @@ void ag_generate_add_connector_room_step(d3pnt *min,d3pnt *max)
 	py[0]=py[1]=min->y;
 	py[2]=py[3]=max->y;
 
-	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_floor);
+	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_stair);
 
 	px[0]=px[1]=px[2]=px[3]=max->x;
 
-	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_floor);
+	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_stair);
 
 	px[0]=px[3]=min->x;
 	px[1]=px[2]=max->x;
 	pz[0]=pz[1]=pz[2]=pz[3]=min->z;
 
-	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_floor);
+	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_stair);
 
 	pz[0]=pz[1]=pz[2]=pz[3]=max->z;
 
-	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_floor);
+	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_stair);
 
 		// top
 
@@ -682,7 +682,7 @@ void ag_generate_add_connector_room_step(d3pnt *min,d3pnt *max)
 	pz[2]=pz[3]=max->z;
 	py[0]=py[1]=py[2]=py[3]=min->y;
 
-	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_floor);
+	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_stair);
 
 		// reset UVs and normals
 

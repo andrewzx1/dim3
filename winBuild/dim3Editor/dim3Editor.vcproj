@@ -211,6 +211,10 @@
 				Name="Sources"
 				>
 				<File
+					RelativePath="..\..\dim3BaseUtility\Sources\base_ag_bitmap.c"
+					>
+				</File>
+				<File
 					RelativePath="..\..\dim3BaseUtility\Sources\base_bitmap_main.c"
 					>
 				</File>
