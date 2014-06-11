@@ -97,7 +97,7 @@ and can be sold or given away.
 #define ag_decoration_type_vertex_column_square	2
 
 #define ag_decoration_column_config_square		0
-#define ag_decoration_column_config_diamond	1
+#define ag_decoration_column_config_diamond		1
 #define ag_decoration_column_config_circle		2
 
 //
@@ -108,13 +108,15 @@ and can be sold or given away.
 #define ag_texture_floor						1
 #define ag_texture_ceiling						2
 #define ag_texture_connect						3
-#define ag_texture_door							4
-#define ag_texture_decoration_pillar			5
-#define ag_texture_decoration_box				6
-#define ag_texture_equipment					7
-#define ag_texture_window						8
-
-#define ag_texture_required_count				9			// number of textures that must be present to run
+#define ag_texture_alt_wall						4
+#define ag_texture_second_floor					5
+#define ag_texture_lift							6
+#define ag_texture_door							7
+#define ag_texture_stair						8
+#define ag_texture_decoration_pillar			9
+#define ag_texture_decoration_box				10
+#define ag_texture_equipment					11
+#define ag_texture_window						12
 
 //
 // dimensions and positions
