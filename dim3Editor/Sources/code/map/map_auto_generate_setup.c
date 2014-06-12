@@ -78,10 +78,10 @@ bool ag_check_required_textures(char *err_str)
 	bitmap_ag_texture_brick(&texture->frames[0],512);
 
 	texture=&map.textures[ag_texture_floor];
-	bitmap_ag_texture_metal(&texture->frames[0],512);
+	bitmap_ag_texture_tile(&texture->frames[0],512);
 
 	texture=&map.textures[ag_texture_ceiling];
-	bitmap_ag_texture_metal(&texture->frames[0],512);
+	bitmap_ag_texture_tile(&texture->frames[0],512);
 
 	texture=&map.textures[ag_texture_connect];
 	bitmap_ag_texture_brick(&texture->frames[0],512);
