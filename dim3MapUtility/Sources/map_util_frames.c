@@ -73,11 +73,11 @@ bool map_add_texture_frame(map_type *map,int txt,char *bitmap_name)
 	count=map_count_texture_frames(map,txt);
 	if (count==max_texture_frame) return(FALSE);
 	
-	map_textures_close(map);
+	map_textures_close_texture(map,txt);
 	
 	strcpy(map->textures[txt].frames[count].name,bitmap_name);
 	
-	map_textures_read_complete(map);
+	map_textures_read_texture(map,txt);
 	return(TRUE);
 }
 
@@ -88,7 +88,7 @@ bool map_delete_texture_frame(map_type *map,int txt)
 	count=map_count_texture_frames(map,txt);
 	if (count==0) return(FALSE);
 	
-	map_textures_close(map);
+	map_textures_close_texture(map,txt);
 	
 	count--;
 	
@@ -99,7 +99,7 @@ bool map_delete_texture_frame(map_type *map,int txt)
 	bitmap_new(&map->textures[txt].frames[count].specularmap);
 	bitmap_new(&map->textures[txt].frames[count].glowmap);
 	
-	map_textures_read_complete(map);
+	map_textures_read_texture(map,txt);
 	return(TRUE);
 }
 
@@ -108,7 +108,7 @@ bool map_replace_texture(map_type *map,int txt,char *bitmap_name)
 	int					n;
 	texture_type		*texture;
 
-	map_textures_close(map);
+	map_textures_close_texture(map,txt);
 	
 	texture=&map->textures[txt];
 	
@@ -118,7 +118,7 @@ bool map_replace_texture(map_type *map,int txt,char *bitmap_name)
 	
 	strcpy(map->textures[txt].frames[0].name,bitmap_name);
 
-	map_textures_read_complete(map);
+	map_textures_read_texture(map,txt);
 	return(TRUE);
 }
 
@@ -127,9 +127,9 @@ bool map_delete_texture(map_type *map,int start_txt,int end_txt)
 	int					n,k;
 	texture_type		*texture;
 
-	map_textures_close(map);
-	
 	for (n=start_txt;n!=end_txt;n++) {
+		map_textures_close_texture(map,n);
+
 		texture=&map->textures[n];
 	
 		for (k=0;k!=max_texture_frame;k++) {
@@ -138,7 +138,6 @@ bool map_delete_texture(map_type *map,int start_txt,int end_txt)
 	
 	}
 
-	map_textures_read_complete(map);
 	return(TRUE);
 }
 

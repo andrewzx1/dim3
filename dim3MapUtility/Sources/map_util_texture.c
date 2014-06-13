@@ -206,28 +206,31 @@ void map_textures_read_complete(map_type *map)
       
 ======================================================= */
 
+void map_textures_close_texture(map_type *map,int txt_idx)
+{
+	int					n;
+	texture_type		*texture;
+	texture_frame_type	*frame;
+	
+	texture=&map->textures[txt_idx];
+	frame=texture->frames;
+		
+	for (n=0;n!=max_texture_frame;n++) {
+		bitmap_close(&frame->bitmap);
+		bitmap_close(&frame->bumpmap);
+		bitmap_close(&frame->specularmap);
+		bitmap_close(&frame->glowmap);
+		
+		frame++;
+	}
+}
+
 void map_textures_close(map_type *map)
 {
-	int						i,k;
-	texture_type			*texture;
-	texture_frame_type		*frame;
+	int				n;
 	
-	texture=map->textures;
-	
-	for (i=0;i!=max_map_texture;i++) {
-		
-		frame=texture->frames;
-		
-		for (k=0;k!=max_texture_frame;k++) {
-			bitmap_close(&frame->bitmap);
-			bitmap_close(&frame->bumpmap);
-			bitmap_close(&frame->specularmap);
-			bitmap_close(&frame->glowmap);
-			
-			frame++;
-		}
-		
-		texture++;
+	for (n=0;n!=max_map_texture;n++) {
+		map_textures_close_texture(map,n);
 	}
 }
 

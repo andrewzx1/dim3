@@ -38,7 +38,7 @@ ag_state_type					ag_state;
 
 extern bool ag_initialize(char *err_str);
 extern void ag_release(void);
-extern bool ag_check_required_textures(char *err_str);
+extern void ag_create_texture_set(void);
 extern void ag_random_seed(void);
 extern void ag_random_previous_seed(void);
 extern void ag_random_next_seed(void);
@@ -854,11 +854,6 @@ bool ag_generate_run(char *err_str)
 	ag_state.nroom=0;
 	ag_state.current_door_idx=0;
 
-		// check if auto generator has
-		// required textures
-
-	if (!ag_check_required_textures(err_str)) return(FALSE);
-
 		// initialize auto generate structures
 
 	ag_state.rooms=(ag_room_type*)malloc(ag_max_room*sizeof(ag_room_type));
@@ -926,6 +921,12 @@ bool ag_generate_run(char *err_str)
 
 bool auto_generate_map(char *err_str)
 {
+		// on the start, create a
+		// new texture set
+
+	ag_random_seed();
+	ag_create_texture_set();
+
 		// run the auto generator
 		// with a new unique seed
 
