@@ -68,25 +68,36 @@ void ag_release(void)
       
 ======================================================= */
 
-texture_type* ag_create_texture(int idx,char *name,char *bitmap_name)
+texture_type* ag_create_texture(int idx,char *name)
 {
+	int					n;
 	texture_type		*texture;
-	
+
+		// close old texture
+
+	map_textures_close_texture(&map,idx);
+
+		// start new texture
+
 	texture=&map.textures[idx];
 	
 	sprintf(texture->material_name,name);
 	texture->shader_name[0]=0x0;
 	texture->additive=FALSE;
 	texture->compress=FALSE;
-	sprintf(bitmap_name,"%s/%s",map.info.name,texture->material_name);
+
+	for (n=0;n!=max_texture_frame;n++) {
+		texture->frames[n].name[0]=0x0;
+	}
+	
+	sprintf(texture->frames[0].name,"%s/%s",map.info.name,texture->material_name);
 
 	return(texture);
 }
 
-bool ag_check_required_textures(char *err_str)
+void ag_create_texture_set(void)
 {
-	char				base_path[1024],dir_path[1024],
-						bitmap_name[256];
+	char				base_path[1024],dir_path[1024];
 	texture_type		*texture;
 	
 		// create directory for new textures
@@ -99,59 +110,57 @@ bool ag_check_required_textures(char *err_str)
 		// note: this randomness requires the
 		// random seed to already be set
 
-	texture=ag_create_texture(ag_texture_wall,"Wall",bitmap_name);
-	bitmap_ag_texture_brick(&texture->frames[0],base_path,bitmap_name,512);
-	map_replace_texture(&map,ag_texture_wall,bitmap_name);
+	texture=ag_create_texture(ag_texture_wall,"Wall");
+	bitmap_ag_texture_brick(&texture->frames[0],base_path,512);
+	map_textures_read_texture(&map,ag_texture_wall);
 	
-	texture=ag_create_texture(ag_texture_floor,"Floor",bitmap_name);
-	bitmap_ag_texture_tile(&texture->frames[0],base_path,bitmap_name,512);
-	map_replace_texture(&map,ag_texture_floor,bitmap_name);
+	texture=ag_create_texture(ag_texture_floor,"Floor");
+	bitmap_ag_texture_tile(&texture->frames[0],base_path,512);
+	map_textures_read_texture(&map,ag_texture_floor);
 
-	texture=ag_create_texture(ag_texture_ceiling,"Ceiling",bitmap_name);
-	bitmap_ag_texture_tile(&texture->frames[0],base_path,bitmap_name,512);
-	map_replace_texture(&map,ag_texture_ceiling,bitmap_name);
+	texture=ag_create_texture(ag_texture_ceiling,"Ceiling");
+	bitmap_ag_texture_tile(&texture->frames[0],base_path,512);
+	map_textures_read_texture(&map,ag_texture_ceiling);
 
-	texture=ag_create_texture(ag_texture_connect,"Connect",bitmap_name);
-	bitmap_ag_texture_brick(&texture->frames[0],base_path,bitmap_name,512);
-	map_replace_texture(&map,ag_texture_connect,bitmap_name);
+	texture=ag_create_texture(ag_texture_connect,"Connect");
+	bitmap_ag_texture_brick(&texture->frames[0],base_path,512);
+	map_textures_read_texture(&map,ag_texture_connect);
 
-	texture=ag_create_texture(ag_texture_alt_wall,"Alt Wall",bitmap_name);
-	bitmap_ag_texture_brick(&texture->frames[0],base_path,bitmap_name,512);
-	map_replace_texture(&map,ag_texture_alt_wall,bitmap_name);
+	texture=ag_create_texture(ag_texture_alt_wall,"Alt Wall");
+	bitmap_ag_texture_brick(&texture->frames[0],base_path,512);
+	map_textures_read_texture(&map,ag_texture_alt_wall);
 
-	texture=ag_create_texture(ag_texture_second_floor,"Second Story",bitmap_name);
-	bitmap_ag_texture_brick(&texture->frames[0],base_path,bitmap_name,512);
-	map_replace_texture(&map,ag_texture_second_floor,bitmap_name);
+	texture=ag_create_texture(ag_texture_second_floor,"Second Story");
+	bitmap_ag_texture_brick(&texture->frames[0],base_path,512);
+	map_textures_read_texture(&map,ag_texture_second_floor);
 
-	texture=ag_create_texture(ag_texture_lift,"Lift",bitmap_name);
-	bitmap_ag_texture_metal(&texture->frames[0],base_path,bitmap_name,512);
-	map_replace_texture(&map,ag_texture_lift,bitmap_name);
+	texture=ag_create_texture(ag_texture_lift,"Lift");
+	bitmap_ag_texture_metal(&texture->frames[0],base_path,512);
+	map_textures_read_texture(&map,ag_texture_lift);
 
-	texture=ag_create_texture(ag_texture_door,"Door",bitmap_name);
-	bitmap_ag_texture_metal(&texture->frames[0],base_path,bitmap_name,512);
-	map_replace_texture(&map,ag_texture_door,bitmap_name);
+	texture=ag_create_texture(ag_texture_door,"Door");
+	bitmap_ag_texture_metal(&texture->frames[0],base_path,512);
+	map_textures_read_texture(&map,ag_texture_door);
 
-	texture=ag_create_texture(ag_texture_stair,"Stairs",bitmap_name);
-	bitmap_ag_texture_cement(&texture->frames[0],base_path,bitmap_name,512);
-	map_replace_texture(&map,ag_texture_stair,bitmap_name);
+	texture=ag_create_texture(ag_texture_stair,"Stairs");
+	bitmap_ag_texture_cement(&texture->frames[0],base_path,512,TRUE);
+	map_textures_read_texture(&map,ag_texture_stair);
 
-	texture=ag_create_texture(ag_texture_decoration_pillar,"Pillar",bitmap_name);
-	bitmap_ag_texture_cement(&texture->frames[0],base_path,bitmap_name,512);
-	map_replace_texture(&map,ag_texture_decoration_pillar,bitmap_name);
+	texture=ag_create_texture(ag_texture_decoration_pillar,"Pillar");
+	bitmap_ag_texture_cement(&texture->frames[0],base_path,512,FALSE);
+	map_textures_read_texture(&map,ag_texture_decoration_pillar);
 
-	texture=ag_create_texture(ag_texture_decoration_box,"Box",bitmap_name);
-	bitmap_ag_texture_wood(&texture->frames[0],base_path,bitmap_name,512);
-	map_replace_texture(&map,ag_texture_decoration_box,bitmap_name);
+	texture=ag_create_texture(ag_texture_decoration_box,"Box");
+	bitmap_ag_texture_wood(&texture->frames[0],base_path,512);
+	map_textures_read_texture(&map,ag_texture_decoration_box);
 
-	texture=ag_create_texture(ag_texture_equipment,"Equipment",bitmap_name);
-	bitmap_ag_texture_machine(&texture->frames[0],base_path,bitmap_name,512);
-	map_replace_texture(&map,ag_texture_equipment,bitmap_name);
+	texture=ag_create_texture(ag_texture_equipment,"Equipment");
+	bitmap_ag_texture_machine(&texture->frames[0],base_path,512);
+	map_textures_read_texture(&map,ag_texture_equipment);
 
-	texture=ag_create_texture(ag_texture_window,"Window",bitmap_name);
-	bitmap_ag_texture_window(&texture->frames[0],base_path,bitmap_name,512);
-	map_replace_texture(&map,ag_texture_window,bitmap_name);
-	
-	return(TRUE);
+	texture=ag_create_texture(ag_texture_window,"Window");
+	bitmap_ag_texture_window(&texture->frames[0],base_path,512);
+	map_textures_read_texture(&map,ag_texture_window);
 }
 
 

@@ -851,6 +851,7 @@ extern void map_close(map_type *map);
 
 extern void map_textures_read_setup(map_type *map);
 extern void map_textures_read_texture(map_type *map,int txt_idx);
+extern void map_textures_close_texture(map_type *map,int txt_idx);
 extern void map_refresh_textures(map_type *map);
 
 extern void map_prepare_mesh_poly(map_type *map,map_mesh_type *mesh,map_mesh_poly_type *poly);

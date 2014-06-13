@@ -869,7 +869,7 @@ void ag_generate_decorations_add(void)
 
 		if (!room->has_stairs) {
 			for (k=0;k!=10;k++) {
-				dec_idx=ag_random_int(5);
+				dec_idx=ag_random_int(6);
 
 				switch (dec_idx) {
 
