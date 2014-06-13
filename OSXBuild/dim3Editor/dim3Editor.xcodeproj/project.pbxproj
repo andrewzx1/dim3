@@ -174,6 +174,7 @@
 		26C25375161FFA6000A6E809 /* Up.png in Copy List Icons */ = {isa = PBXBuildFile; fileRef = 26C25370161FFA4700A6E809 /* Up.png */; };
 		26C25376161FFA6300A6E809 /* Down.png in Copy List Icons */ = {isa = PBXBuildFile; fileRef = 26C25373161FFA4B00A6E809 /* Down.png */; };
 		26C2CB8D1606B427004B25A8 /* dim3 Editor.icns in Resources */ = {isa = PBXBuildFile; fileRef = 26C2CB8C1606B427004B25A8 /* dim3 Editor.icns */; };
+		26CD14ED1949695E00C4F868 /* base_ag_bitmap.c in Sources */ = {isa = PBXBuildFile; fileRef = 26CD14EC1949695E00C4F868 /* base_ag_bitmap.c */; };
 		26E4021714F4721D0059C798 /* libPNG.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 26E4021514F4721D0059C798 /* libPNG.a */; };
 		26E4022714F4B3ED0059C798 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26E4022614F4B3ED0059C798 /* Foundation.framework */; };
 		26E5DA461611552B003D7755 /* dialog_bone_attach_duplicate.c in Sources */ = {isa = PBXBuildFile; fileRef = 26E5DA451611552B003D7755 /* dialog_bone_attach_duplicate.c */; };
@@ -662,6 +663,7 @@
 		26C25373161FFA4B00A6E809 /* Down.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Down.png; sourceTree = "<group>"; };
 		26C2CB8C1606B427004B25A8 /* dim3 Editor.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = "dim3 Editor.icns"; path = "Resources/dim3 Editor.icns"; sourceTree = SOURCE_ROOT; };
 		26C2CB961606B51E004B25A8 /* dim3Editor-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "dim3Editor-Info.plist"; path = "dim3Editor/dim3Editor-Info.plist"; sourceTree = SOURCE_ROOT; };
+		26CD14EC1949695E00C4F868 /* base_ag_bitmap.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = base_ag_bitmap.c; path = Sources/base_ag_bitmap.c; sourceTree = "<group>"; };
 		26E4021514F4721D0059C798 /* libPNG.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPNG.a; path = ../../Common/Libraries/PNG/libPNG.a; sourceTree = "<group>"; };
 		26E4021614F4721D0059C798 /* png.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = png.h; path = ../../Common/Libraries/PNG/png.h; sourceTree = "<group>"; };
 		26E4022614F4B3ED0059C798 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
@@ -889,6 +891,7 @@
 		2618DF1214F3637800DBE0DE /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				26CD14EC1949695E00C4F868 /* base_ag_bitmap.c */,
 				26C1DF641600444C007FDAC7 /* base_bitmap_main.c */,
 				26C1DF651600444C007FDAC7 /* base_bitmap_pngutility.c */,
 				26C1DF661600444C007FDAC7 /* base_bitmap_text.c */,
@@ -1786,6 +1789,7 @@
 				26F7E1191600468600E739C4 /* project_palette_chooser.c in Sources */,
 				26F7E11A1600468600E739C4 /* project_palette_choosers.c in Sources */,
 				26F7E11B1600468600E739C4 /* project_palette_color.c in Sources */,
+				26CD14ED1949695E00C4F868 /* base_ag_bitmap.c in Sources */,
 				26F7E11C1600468600E739C4 /* project_palette_crosshair.c in Sources */,
 				26F7E11D1600468600E739C4 /* project_palette_crosshairs.c in Sources */,
 				26F7E11E1600468600E739C4 /* project_palette_devices.c in Sources */,
