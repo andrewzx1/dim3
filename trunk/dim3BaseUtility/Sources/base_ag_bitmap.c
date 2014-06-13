@@ -38,7 +38,7 @@ and can be sold or given away.
 #define bitmap_ag_extra_brick_margin		5
 #define bitmap_ag_start_brick_lip			4
 #define bitmap_ag_extra_brick_lip			4
-#define bitmap_ag_brick_color_factor		0.2f
+#define bitmap_ag_brick_color_factor		0.05f
 #define bitmap_ag_brick_darken_factor		0.7f
 
 typedef struct	{
@@ -144,8 +144,8 @@ void bitmap_ag_texture_add_noise(bitmap_ag_type *ag_bitmap,unsigned char *data,i
 
 	per_ok=(int)(100.0f*percentage);
 
-	for (py=y;py!=(y+high);py++) {
-		for (px=x;px!=(x+wid);px++) {
+	for (py=y;py<(y+high);py++) {
+		for (px=x;px<(x+wid);px++) {
 
 			if (bitmap_ag_random_int(100)>per_ok) continue;
 
@@ -165,18 +165,16 @@ void bitmap_ag_texture_add_noise(bitmap_ag_type *ag_bitmap,unsigned char *data,i
 	}
 }
 
-void bitmap_ag_texture_damage_mark(bitmap_ag_type *ag_bitmap,unsigned char *data,int x,int y,float fct)
+void bitmap_ag_texture_damage_mark(bitmap_ag_type *ag_bitmap,unsigned char *data,int x,int y,int wid,int high,float fct)
 {
-	int			n,px,py,sz;
+	int			n,k,px,py;
 	d3col		col;
 
-	sz=15;
-
-	while (sz>4) {
+	for (k=0;k!=20;k++) {
 
 		for (n=0;n!=100;n++) {
-			px=x+(sz-bitmap_ag_random_int(sz*2));
-			py=y+(sz-bitmap_ag_random_int(sz*2));
+			px=x+(wid-bitmap_ag_random_int(wid<<1));
+			py=y+(high-bitmap_ag_random_int(high<<1));
 		
 			bitmap_ag_texture_read_pixel(ag_bitmap,data,px,py,&col);
 
@@ -189,8 +187,11 @@ void bitmap_ag_texture_damage_mark(bitmap_ag_type *ag_bitmap,unsigned char *data
 
 			bitmap_ag_texture_write_pixel(ag_bitmap,data,px,py,&col);
 		}
-
-		sz--;
+		
+		wid-=2;
+		high-=2;
+		
+		if ((wid<5) || (high<5)) break;
 	}
 
 }
@@ -264,15 +265,15 @@ bool bitmap_ag_texture_create(bitmap_ag_type *ag_bitmap)
 	return(TRUE);
 }
 
-bool bitmap_ag_texture_finish(bitmap_ag_type *ag_bitmap)
+bool bitmap_ag_texture_finish(bitmap_ag_type *ag_bitmap,char *base_path,char *name)
 {
-		// open the texture in opengl
-		// supergumba -- this will eventually save to disk
-
-	bitmap_texture_open(&ag_bitmap->frame->bitmap,ag_bitmap->png_data,FALSE,FALSE,FALSE,FALSE);
-	bitmap_texture_open(&ag_bitmap->frame->bumpmap,ag_bitmap->bump_data,FALSE,FALSE,FALSE,FALSE);
-	bitmap_texture_open(&ag_bitmap->frame->specularmap,ag_bitmap->spec_data,FALSE,FALSE,FALSE,FALSE);
-//	bitmap_texture_open(&ag_bitmap->frame->glowmap,ag_bitmap->glow_data,FALSE,FALSE,FALSE,FALSE);
+	bool		ok;
+	char		path[1024];
+	
+		// save file to disk
+		
+	sprintf(path,"%s/%s.png",base_path,name);
+	ok=bitmap_write_png_data(ag_bitmap->png_data,ag_bitmap->pixel_sz,ag_bitmap->pixel_sz,FALSE,path);
 
 		// free data
 
@@ -280,7 +281,7 @@ bool bitmap_ag_texture_finish(bitmap_ag_type *ag_bitmap)
 	free(ag_bitmap->bump_data);
 	free(ag_bitmap->spec_data);
 
-	return(TRUE);
+	return(ok);
 }
 
 /* =======================================================
@@ -355,7 +356,7 @@ void bitmap_ag_texture_brick_draw_brick(bitmap_ag_type *ag_bitmap,int px,int py,
 	}
 }
 
-bool bitmap_ag_texture_brick(texture_frame_type *frame,int pixel_sz)
+bool bitmap_ag_texture_brick(texture_frame_type *frame,char *base_path,char *name,int pixel_sz)
 {
 	int				px,py,row,col,margin,lip_sz,
 					row_count,row_sizes[bitmap_ag_max_brick_count],
@@ -389,7 +390,7 @@ bool bitmap_ag_texture_brick(texture_frame_type *frame,int pixel_sz)
 			bitmap_ag_random_color(&base_col,127,50,0,70,50,0);
 			break;
 		case 2:
-			bitmap_ag_random_color(&base_col,127,127,127,200,200,200);
+			bitmap_ag_random_color_lock(&base_col,200,127);
 			break;
 	}
 
@@ -414,7 +415,7 @@ bool bitmap_ag_texture_brick(texture_frame_type *frame,int pixel_sz)
 
 		// save the texture
 
-	return(bitmap_ag_texture_finish(&ag_bitmap));
+	return(bitmap_ag_texture_finish(&ag_bitmap,base_path,name));
 }
 
 /* =======================================================
@@ -423,7 +424,7 @@ bool bitmap_ag_texture_brick(texture_frame_type *frame,int pixel_sz)
       
 ======================================================= */
 
-bool bitmap_ag_texture_tile(texture_frame_type *frame,int pixel_sz)
+bool bitmap_ag_texture_tile(texture_frame_type *frame,char *base_path,char *name,int pixel_sz)
 {
 	bitmap_ag_type	ag_bitmap;
 
@@ -433,10 +434,18 @@ bool bitmap_ag_texture_tile(texture_frame_type *frame,int pixel_sz)
 
 	if (!bitmap_ag_texture_create(&ag_bitmap)) return(FALSE);
 	
+		// edges
+	
 	bitmap_ag_texture_brick_draw_brick(&ag_bitmap,0,0,pixel_sz,pixel_sz,20,&ag_bitmap.back_col);
+	
+		// tile shape
+		
+		
+		// tile noise
+		
 	bitmap_ag_texture_add_noise(&ag_bitmap,ag_bitmap.png_data,0,0,pixel_sz,pixel_sz,0.3f);
 
-	return(bitmap_ag_texture_finish(&ag_bitmap));
+	return(bitmap_ag_texture_finish(&ag_bitmap,base_path,name));
 }
 
 /* =======================================================
@@ -445,7 +454,7 @@ bool bitmap_ag_texture_tile(texture_frame_type *frame,int pixel_sz)
       
 ======================================================= */
 
-bool bitmap_ag_texture_metal(texture_frame_type *frame,int pixel_sz)
+bool bitmap_ag_texture_metal(texture_frame_type *frame,char *base_path,char *name,int pixel_sz)
 {
 	bitmap_ag_type	ag_bitmap;
 
@@ -457,7 +466,7 @@ bool bitmap_ag_texture_metal(texture_frame_type *frame,int pixel_sz)
 	
 	bitmap_ag_texture_brick_draw_brick(&ag_bitmap,0,0,pixel_sz,pixel_sz,20,&ag_bitmap.back_col);
 
-	return(bitmap_ag_texture_finish(&ag_bitmap));
+	return(bitmap_ag_texture_finish(&ag_bitmap,base_path,name));
 }
 
 /* =======================================================
@@ -466,7 +475,7 @@ bool bitmap_ag_texture_metal(texture_frame_type *frame,int pixel_sz)
       
 ======================================================= */
 
-bool bitmap_ag_texture_wood(texture_frame_type *frame,int pixel_sz)
+bool bitmap_ag_texture_wood(texture_frame_type *frame,char *base_path,char *name,int pixel_sz)
 {
 	bitmap_ag_type	ag_bitmap;
 
@@ -475,7 +484,7 @@ bool bitmap_ag_texture_wood(texture_frame_type *frame,int pixel_sz)
 	bitmap_ag_random_color(&ag_bitmap.back_col,127,50,0,100,40,0);
 
 	if (!bitmap_ag_texture_create(&ag_bitmap)) return(FALSE);
-	return(bitmap_ag_texture_finish(&ag_bitmap));
+	return(bitmap_ag_texture_finish(&ag_bitmap,base_path,name));
 }
 
 /* =======================================================
@@ -484,9 +493,9 @@ bool bitmap_ag_texture_wood(texture_frame_type *frame,int pixel_sz)
       
 ======================================================= */
 
-bool bitmap_ag_texture_cement(texture_frame_type *frame,int pixel_sz)
+bool bitmap_ag_texture_cement(texture_frame_type *frame,char *base_path,char *name,int pixel_sz)
 {
-	int				n,x,y;
+	int				n,x,y,wid,high;
 	bitmap_ag_type	ag_bitmap;
 
 	ag_bitmap.pixel_sz=pixel_sz;
@@ -504,12 +513,14 @@ bool bitmap_ag_texture_cement(texture_frame_type *frame,int pixel_sz)
 	for (n=0;n!=30;n++) {
 		x=bitmap_ag_random_int(pixel_sz);
 		y=bitmap_ag_random_int(pixel_sz);
-		bitmap_ag_texture_damage_mark(&ag_bitmap,ag_bitmap.png_data,x,y,1.2f);
+		wid=10+bitmap_ag_random_int(40);
+		high=10+bitmap_ag_random_int(40);
+		bitmap_ag_texture_damage_mark(&ag_bitmap,ag_bitmap.png_data,x,y,wid,high,1.2f);
 	}
 
 		// save textures
 
-	return(bitmap_ag_texture_finish(&ag_bitmap));
+	return(bitmap_ag_texture_finish(&ag_bitmap,base_path,name));
 }
 
 /* =======================================================
@@ -518,7 +529,7 @@ bool bitmap_ag_texture_cement(texture_frame_type *frame,int pixel_sz)
       
 ======================================================= */
 
-bool bitmap_ag_texture_window(texture_frame_type *frame,int pixel_sz)
+bool bitmap_ag_texture_window(texture_frame_type *frame,char *base_path,char *name,int pixel_sz)
 {
 	bitmap_ag_type	ag_bitmap;
 
@@ -527,7 +538,7 @@ bool bitmap_ag_texture_window(texture_frame_type *frame,int pixel_sz)
 	bitmap_ag_random_color(&ag_bitmap.back_col,255,255,255,200,200,32);
 
 	if (!bitmap_ag_texture_create(&ag_bitmap)) return(FALSE);
-	return(bitmap_ag_texture_finish(&ag_bitmap));
+	return(bitmap_ag_texture_finish(&ag_bitmap,base_path,name));
 }
 
 /* =======================================================
@@ -536,7 +547,7 @@ bool bitmap_ag_texture_window(texture_frame_type *frame,int pixel_sz)
       
 ======================================================= */
 
-bool bitmap_ag_texture_machine(texture_frame_type *frame,int pixel_sz)
+bool bitmap_ag_texture_machine(texture_frame_type *frame,char *base_path,char *name,int pixel_sz)
 {
 	bitmap_ag_type	ag_bitmap;
 
@@ -545,5 +556,5 @@ bool bitmap_ag_texture_machine(texture_frame_type *frame,int pixel_sz)
 	bitmap_ag_random_color(&ag_bitmap.back_col,0,0,255,64,127,0);
 
 	if (!bitmap_ag_texture_create(&ag_bitmap)) return(FALSE);
-	return(bitmap_ag_texture_finish(&ag_bitmap));
+	return(bitmap_ag_texture_finish(&ag_bitmap,base_path,name));
 }
