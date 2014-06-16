@@ -42,7 +42,9 @@ and can be sold or given away.
 #define bitmap_ag_brick_darken_factor		0.7f
 
 #define bitmap_ag_tile_start_split_count	2
-#define bitmap_ag_tile_extra_split_count	2
+#define bitmap_ag_tile_extra_split_count	3
+#define bitmap_ag_tile_complex_percent		80
+
 #define bitmap_ag_tile_style_border			0
 #define bitmap_ag_tile_style_checker		1
 #define bitmap_ag_tile_style_stripe			2
@@ -53,14 +55,14 @@ and can be sold or given away.
 
 typedef struct	{
 					int						pixel_sz;
-					unsigned char			*png_data,*bump_data,*spec_data;
+					unsigned char			*png_data,*bump_data,*spec_data,*glow_data;
 					d3col					back_col;
 					texture_frame_type		*frame;
 				} bitmap_ag_type;
 
 /* =======================================================
 
-      Brick Type Utility
+      AG Bitmap Utility
       
 ======================================================= */
 
@@ -255,7 +257,100 @@ void bitmap_ag_texture_damage_mark(bitmap_ag_type *ag_bitmap,int x,int y,int wid
 		
 		if ((wid<5) || (high<5)) break;
 	}
+}
 
+void bitmap_ag_texture_gradient_vertical(bitmap_ag_type *ag_bitmap,int px,int py,int wid,int high,float min,float max)
+{
+	int			x,y;
+	float		f;
+	d3col		col;
+
+		// draw the glow
+
+	for (y=py;y<(py+high);y++) {
+	
+		f=min+((max-min)*(((float)(y-py))/((float)high)));
+		
+		for (x=px;x<(px+wid);x++) {
+			bitmap_ag_texture_read_pixel(ag_bitmap,ag_bitmap->png_data,px,py,&col);
+			col.r*=f;
+			col.b*=f;
+			col.g*=f;
+			bitmap_ag_texture_write_pixel(ag_bitmap,ag_bitmap->png_data,x,y,&col);
+		}
+	}
+}
+
+void bitmap_ag_texture_random_vertical(bitmap_ag_type *ag_bitmap,int px,int py,int wid,int high,d3col *base_col,float fct)
+{
+	int			x,y,count;
+	float		f;
+	d3col		col;
+
+	count=0;
+
+	for (y=py;y<(py+high);y++) {
+	
+		count--;
+		
+		if (count<=0) {
+			f=(((float)(100-bitmap_ag_random_int(200)))*0.01)*fct;
+		
+			col.r=base_col->r+f;
+			if (col.r<0.0f) col.r=0.0f;
+			if (col.r>1.0f) col.r=1.0f;
+			
+			col.g=base_col->g+f;
+			if (col.g<0.0f) col.g=0.0f;
+			if (col.g>1.0f) col.g=1.0f;
+			
+			col.b=base_col->b+f;
+			if (col.b<0.0f) col.b=0.0f;
+			if (col.b>1.0f) col.b=1.0f;
+			
+			count=1+bitmap_ag_random_int(3);
+		}
+		
+		for (x=px;x<(px+wid);x++) {
+			bitmap_ag_texture_write_pixel(ag_bitmap,ag_bitmap->png_data,x,y,&col);
+		}
+	}
+}
+
+void bitmap_ag_texture_random_horizontal(bitmap_ag_type *ag_bitmap,int px,int py,int wid,int high,d3col *base_col,float fct)
+{
+	int			x,y,count;
+	float		f;
+	d3col		col;
+
+	count=0;
+
+	for (x=px;x<(px+wid);x++) {
+	
+		count--;
+		
+		if (count<=0) {
+			f=(((float)(100-bitmap_ag_random_int(200)))*0.01)*fct;
+		
+			col.r=base_col->r+f;
+			if (col.r<0.0f) col.r=0.0f;
+			if (col.r>1.0f) col.r=1.0f;
+			
+			col.g=base_col->g+f;
+			if (col.g<0.0f) col.g=0.0f;
+			if (col.g>1.0f) col.g=1.0f;
+			
+			col.b=base_col->b+f;
+			if (col.b<0.0f) col.b=0.0f;
+			if (col.b>1.0f) col.b=1.0f;
+			
+			count=1+bitmap_ag_random_int(3);
+		}
+		
+		for (y=py;y<(py+high);y++) {
+			bitmap_ag_texture_write_pixel(ag_bitmap,ag_bitmap->png_data,x,y,&col);
+		}
+	}
 }
 
 /* =======================================================
@@ -264,10 +359,10 @@ void bitmap_ag_texture_damage_mark(bitmap_ag_type *ag_bitmap,int x,int y,int wid
       
 ======================================================= */
 
-bool bitmap_ag_texture_create(bitmap_ag_type *ag_bitmap)
+bool bitmap_ag_texture_create(bitmap_ag_type *ag_bitmap,bool has_glow)
 {
 	int				n,pixel_count,byte_len,kr,kg,kb;
-	unsigned char	*p_ptr,*b_ptr,*s_ptr;
+	unsigned char	*p_ptr,*b_ptr,*s_ptr,*g_ptr;
 	
 	ag_bitmap->frame->bitmap.wid=ag_bitmap->frame->bitmap.high=ag_bitmap->pixel_sz;
 	ag_bitmap->frame->bitmap.opaque=TRUE;
@@ -301,6 +396,18 @@ bool bitmap_ag_texture_create(bitmap_ag_type *ag_bitmap)
 		free(ag_bitmap->png_data);
 		return(FALSE);
 	}
+	
+	ag_bitmap->glow_data=NULL;
+	
+	if (has_glow) {
+		ag_bitmap->glow_data=malloc(byte_len);
+		if (ag_bitmap->glow_data==NULL) {
+			free(ag_bitmap->glow_data);
+			free(ag_bitmap->bump_data);
+			free(ag_bitmap->png_data);
+			return(FALSE);
+		}
+	}
 
 		// fill the png
 
@@ -311,6 +418,7 @@ bool bitmap_ag_texture_create(bitmap_ag_type *ag_bitmap)
 	p_ptr=ag_bitmap->png_data;
 	b_ptr=ag_bitmap->bump_data;
 	s_ptr=ag_bitmap->spec_data;
+	if (has_glow) g_ptr=ag_bitmap->glow_data;
 
 	for (n=0;n!=pixel_count;n++) {
 		*p_ptr++=kr;
@@ -322,6 +430,11 @@ bool bitmap_ag_texture_create(bitmap_ag_type *ag_bitmap)
 		*s_ptr++=0x0;
 		*s_ptr++=0x0;
 		*s_ptr++=0x0;
+		if (has_glow) {
+			*g_ptr++=0x0;
+			*g_ptr++=0x0;
+			*g_ptr++=0x0;
+		}
 	}
 
 	return(TRUE);
@@ -376,12 +489,18 @@ bool bitmap_ag_texture_finish(bitmap_ag_type *ag_bitmap,char *base_path)
 		sprintf(path,"%s/%s_s.png",base_path,ag_bitmap->frame->name);
 		ok=bitmap_write_png_data(ag_bitmap->spec_data,ag_bitmap->pixel_sz,ag_bitmap->pixel_sz,FALSE,path);
 	}
+	
+	if ((ok) && (ag_bitmap->glow_data!=NULL)) {
+		sprintf(path,"%s/%s_g.png",base_path,ag_bitmap->frame->name);
+		ok=bitmap_write_png_data(ag_bitmap->glow_data,ag_bitmap->pixel_sz,ag_bitmap->pixel_sz,FALSE,path);
+	}
 
 		// free data
 
 	free(ag_bitmap->png_data);
 	free(ag_bitmap->bump_data);
 	free(ag_bitmap->spec_data);
+	free(ag_bitmap->glow_data);
 
 	return(ok);
 }
@@ -492,7 +611,7 @@ void bitmap_ag_texture_brick_draw_brick(bitmap_ag_type *ag_bitmap,int px,int py,
 	}
 }
 
-bool bitmap_ag_texture_brick(texture_frame_type *frame,char *base_path,int pixel_sz)
+bool bitmap_ag_texture_brick(texture_frame_type *frame,char *base_path,int pixel_sz,bool rough)
 {
 	int				px,py,row,col,margin,lip_sz,
 					row_count,row_sizes[bitmap_ag_max_brick_count],
@@ -504,7 +623,7 @@ bool bitmap_ag_texture_brick(texture_frame_type *frame,char *base_path,int pixel
 	ag_bitmap.frame=frame;
 	bitmap_ag_random_color_lock(&ag_bitmap.back_col,127,64);		// grout
 
-	if (!bitmap_ag_texture_create(&ag_bitmap)) return(FALSE);
+	if (!bitmap_ag_texture_create(&ag_bitmap,FALSE)) return(FALSE);
 
 		// grout noise
 
@@ -551,7 +670,7 @@ bool bitmap_ag_texture_brick(texture_frame_type *frame,char *base_path,int pixel
 
 		// save the texture
 
-	bitmap_ag_texture_make_spec(&ag_bitmap,0.6f);
+	bitmap_ag_texture_make_spec(&ag_bitmap,0.5f);
 	return(bitmap_ag_texture_finish(&ag_bitmap,base_path));
 }
 
@@ -561,23 +680,11 @@ bool bitmap_ag_texture_brick(texture_frame_type *frame,char *base_path,int pixel
       
 ======================================================= */
 
-bool bitmap_ag_texture_tile(texture_frame_type *frame,char *base_path,int pixel_sz)
+void bitmap_ag_texture_tile_inner(bitmap_ag_type *ag_bitmap,int split_count,int sx,int sy,int pixel_sz,d3col *cols,bool complex)
 {
 	int				x,y,px,py,wid,high,
-					tile_style,split_count,sz;
-	d3col			col[2],*t_col;
-	bitmap_ag_type	ag_bitmap;
-
-	ag_bitmap.pixel_sz=pixel_sz;
-	ag_bitmap.frame=frame;
-	ag_bitmap.back_col.r=ag_bitmap.back_col.g=ag_bitmap.back_col.b=0.0f;
-
-	if (!bitmap_ag_texture_create(&ag_bitmap)) return(FALSE);
-
-		// tile colors
-
-	bitmap_ag_random_color(&col[0],200,200,200,64,64,64);
-	bitmap_ag_random_color(&col[1],200,200,200,64,64,64);
+					tile_style,sz;
+	d3col			*t_col;
 
 		// tile style
 
@@ -585,51 +692,90 @@ bool bitmap_ag_texture_tile(texture_frame_type *frame,char *base_path,int pixel_
 	
 		// splits
 
-	split_count=bitmap_ag_tile_start_split_count+bitmap_ag_random_int(bitmap_ag_tile_extra_split_count);
 	sz=pixel_sz/split_count;
 
-	py=0;
+	py=sy;
 
 	for (y=0;y!=split_count;y++) {
 		high=sz;
-		if (y==(split_count-1)) high=pixel_sz-py;
+		if (y==(split_count-1)) high=pixel_sz-(py-sy);
 
-		px=0;
+		px=sx;
 
 		for (x=0;x!=split_count;x++) {
 			wid=sz;
-			if (x==(split_count-1)) wid=pixel_sz-px;
-
-			t_col=&col[0];
-
-			switch (tile_style) {
-
-				case bitmap_ag_tile_style_border:
-					if ((x!=0) && (y!=0)) t_col=&col[1];
-					break;
-
-				case bitmap_ag_tile_style_checker:
-					t_col=&col[(x+y)%2];
-					break;
-
-				case bitmap_ag_tile_style_stripe:
-					if ((x%2)!=0) t_col=&col[1];
-					break;
-
+			if (x==(split_count-1)) wid=pixel_sz-(px-sx);
+			
+				// if complex, we could create another tile set
+				// inside this tile set
+				
+			if ((complex) && (bitmap_ag_random_int(100)>bitmap_ag_tile_complex_percent)) {
+				bitmap_ag_texture_tile_inner(ag_bitmap,2,px,py,sz,cols,FALSE);
 			}
+			
+				// make the tile
 
-			bitmap_ag_texture_brick_draw_brick(&ag_bitmap,px,py,wid,high,5,t_col);
+			else {
+				t_col=&cols[0];
+
+				switch (tile_style) {
+
+					case bitmap_ag_tile_style_border:
+						if ((x!=0) && (y!=0)) t_col=&cols[1];
+						break;
+
+					case bitmap_ag_tile_style_checker:
+						t_col=&cols[(x+y)%2];
+						break;
+
+					case bitmap_ag_tile_style_stripe:
+						if ((x%2)!=0) t_col=&cols[1];
+						break;
+
+				}
+
+				bitmap_ag_texture_brick_draw_brick(ag_bitmap,px,py,wid,high,5,t_col);
+			}
+			
 			px+=sz;
 		}
 
 		py+=sz;
 	}
-		
+}
+
+
+
+bool bitmap_ag_texture_tile(texture_frame_type *frame,char *base_path,int pixel_sz,bool complex)
+{
+	int				split_count;
+	d3col			cols[2];
+	bitmap_ag_type	ag_bitmap;
+
+	ag_bitmap.pixel_sz=pixel_sz;
+	ag_bitmap.frame=frame;
+	ag_bitmap.back_col.r=ag_bitmap.back_col.g=ag_bitmap.back_col.b=0.0f;
+
+	if (!bitmap_ag_texture_create(&ag_bitmap,FALSE)) return(FALSE);
+
+		// tile colors
+
+	bitmap_ag_random_color(&cols[0],120,120,150,64,64,80);
+	
+	cols[1].r=cols[0].r*0.8f;
+	cols[1].g=cols[0].g*0.8f;
+	cols[1].b=cols[0].b*0.8f;
+	
+		// original splits
+
+	split_count=bitmap_ag_tile_start_split_count+bitmap_ag_random_int(bitmap_ag_tile_extra_split_count);
+	bitmap_ag_texture_tile_inner(&ag_bitmap,split_count,0,0,pixel_sz,cols,complex);
+
 		// tile noise
 		
 	bitmap_ag_texture_add_noise(&ag_bitmap,0,0,pixel_sz,pixel_sz,1.2f,0.2f);
 
-	bitmap_ag_texture_make_spec(&ag_bitmap,0.7f);
+	bitmap_ag_texture_make_spec(&ag_bitmap,0.55f);
 	return(bitmap_ag_texture_finish(&ag_bitmap,base_path));
 }
 
@@ -639,18 +785,30 @@ bool bitmap_ag_texture_tile(texture_frame_type *frame,char *base_path,int pixel_
       
 ======================================================= */
 
-bool bitmap_ag_texture_metal(texture_frame_type *frame,char *base_path,int pixel_sz)
+bool bitmap_ag_texture_metal(texture_frame_type *frame,char *base_path,int pixel_sz,bool bolts)
 {
+	d3col			col;
 	bitmap_ag_type	ag_bitmap;
 
 	ag_bitmap.pixel_sz=pixel_sz;
 	ag_bitmap.frame=frame;
-	bitmap_ag_random_color(&ag_bitmap.back_col,0,0,200,32,64,127);
+	bitmap_ag_random_color(&ag_bitmap.back_col,0,0,200,64,64,100);
 
-	if (!bitmap_ag_texture_create(&ag_bitmap)) return(FALSE);
+	if (!bitmap_ag_texture_create(&ag_bitmap,FALSE)) return(FALSE);
 	
-	bitmap_ag_texture_brick_draw_brick(&ag_bitmap,0,0,pixel_sz,pixel_sz,20,&ag_bitmap.back_col);
+	if (bolts) {
+		bitmap_ag_texture_brick_draw_brick(&ag_bitmap,0,0,pixel_sz,pixel_sz,15,&ag_bitmap.back_col);
 
+		col.r=ag_bitmap.back_col.r*0.6f;
+		col.g=ag_bitmap.back_col.g*0.6f;
+		col.b=ag_bitmap.back_col.b*0.8f;
+		
+		bitmap_ag_texture_brick_draw_brick(&ag_bitmap,20,20,40,40,5,&col);
+		bitmap_ag_texture_brick_draw_brick(&ag_bitmap,(pixel_sz-60),20,40,40,5,&col);
+		bitmap_ag_texture_brick_draw_brick(&ag_bitmap,(pixel_sz-60),(pixel_sz-60),40,40,5,&col);
+		bitmap_ag_texture_brick_draw_brick(&ag_bitmap,20,(pixel_sz-60),40,40,5,&col);
+	}
+	
 	bitmap_ag_texture_make_spec(&ag_bitmap,1.0f);
 	return(bitmap_ag_texture_finish(&ag_bitmap,base_path));
 }
@@ -670,7 +828,7 @@ bool bitmap_ag_texture_wood(texture_frame_type *frame,char *base_path,int pixel_
 	ag_bitmap.frame=frame;
 	bitmap_ag_random_color(&ag_bitmap.back_col,127,50,0,100,40,0);
 
-	if (!bitmap_ag_texture_create(&ag_bitmap)) return(FALSE);
+	if (!bitmap_ag_texture_create(&ag_bitmap,FALSE)) return(FALSE);
 
 		// inner boxes
 
@@ -678,16 +836,38 @@ bool bitmap_ag_texture_wood(texture_frame_type *frame,char *base_path,int pixel_
 	dark_col.g=ag_bitmap.back_col.g*0.7f;
 	dark_col.b=ag_bitmap.back_col.b*0.7f;
 
-	bitmap_ag_texture_brick_draw_brick(&ag_bitmap,0,0,pixel_sz,pixel_sz,3,&ag_bitmap.back_col);
-	bitmap_ag_texture_add_noise(&ag_bitmap,0,0,pixel_sz,pixel_sz,0.9f,0.2f);
+		// outside boards
+		
+	bitmap_ag_texture_brick_draw_brick(&ag_bitmap,0,0,pixel_sz,50,3,&ag_bitmap.back_col);
+	bitmap_ag_texture_random_vertical(&ag_bitmap,3,3,(pixel_sz-6),44,&ag_bitmap.back_col,0.1f);
+	bitmap_ag_texture_add_noise(&ag_bitmap,0,0,pixel_sz,50,0.9f,0.8f);
 
+	bitmap_ag_texture_brick_draw_brick(&ag_bitmap,0,(pixel_sz-50),pixel_sz,50,3,&ag_bitmap.back_col);
+	bitmap_ag_texture_random_vertical(&ag_bitmap,3,(pixel_sz-47),(pixel_sz-6),44,&ag_bitmap.back_col,0.1f);
+	bitmap_ag_texture_add_noise(&ag_bitmap,0,(pixel_sz-50),pixel_sz,50,0.9f,0.8f);
+
+	bitmap_ag_texture_brick_draw_brick(&ag_bitmap,0,50,50,(pixel_sz-100),3,&ag_bitmap.back_col);
+	bitmap_ag_texture_random_horizontal(&ag_bitmap,3,53,44,(pixel_sz-106),&ag_bitmap.back_col,0.1f);
+	bitmap_ag_texture_add_noise(&ag_bitmap,0,50,50,(pixel_sz-100),0.9f,0.8f);
+
+	bitmap_ag_texture_brick_draw_brick(&ag_bitmap,(pixel_sz-50),50,50,(pixel_sz-100),3,&ag_bitmap.back_col);
+	bitmap_ag_texture_random_horizontal(&ag_bitmap,(pixel_sz-47),53,44,(pixel_sz-106),&ag_bitmap.back_col,0.1f);
+	bitmap_ag_texture_add_noise(&ag_bitmap,(pixel_sz-50),50,50,(pixel_sz-100),0.9f,0.8f);
+
+		// inner boards
+		
 	bitmap_ag_texture_brick_draw_brick(&ag_bitmap,50,50,(pixel_sz-100),(pixel_sz-100),3,&dark_col);
+	bitmap_ag_texture_random_vertical(&ag_bitmap,53,53,(pixel_sz-106),(pixel_sz-106),&dark_col,0.05f);
 	bitmap_ag_texture_add_noise(&ag_bitmap,50,50,(pixel_sz-100),(pixel_sz-100),0.9f,0.8f);
-
+	
+		// cross boards
+	
 	bitmap_ag_texture_brick_draw_brick(&ag_bitmap,50,236,(pixel_sz-100),40,3,&ag_bitmap.back_col);
+	bitmap_ag_texture_random_vertical(&ag_bitmap,53,239,(pixel_sz-106),34,&ag_bitmap.back_col,0.1f);
 	bitmap_ag_texture_add_noise(&ag_bitmap,50,236,(pixel_sz-100),40,0.9f,0.2f);
 
 	bitmap_ag_texture_brick_draw_brick(&ag_bitmap,236,50,40,(pixel_sz-100),3,&ag_bitmap.back_col);
+	bitmap_ag_texture_random_horizontal(&ag_bitmap,239,53,34,(pixel_sz-106),&ag_bitmap.back_col,0.1f);
 	bitmap_ag_texture_add_noise(&ag_bitmap,236,50,40,(pixel_sz-100),0.9f,0.2f);
 
 	bitmap_ag_texture_make_spec(&ag_bitmap,0.3f);
@@ -715,7 +895,7 @@ bool bitmap_ag_texture_cement(texture_frame_type *frame,char *base_path,int pixe
 		bitmap_ag_random_color_lock(&ag_bitmap.back_col,140,100);
 	}
 
-	if (!bitmap_ag_texture_create(&ag_bitmap)) return(FALSE);
+	if (!bitmap_ag_texture_create(&ag_bitmap,FALSE)) return(FALSE);
 
 		// cement noise
 
@@ -751,6 +931,7 @@ void bitmap_ag_texture_window_pane(bitmap_ag_type *ag_bitmap,int px,int py,int w
 	bitmap_ag_texture_add_noise(ag_bitmap,px,py,wid,high,0.6f,0.5f);
 
 	bitmap_ag_texture_brick_draw_brick(ag_bitmap,(px+10),(py+10),(wid-20),(high-20),1,pane_col);
+	bitmap_ag_texture_gradient_vertical(ag_bitmap,(px+10),(py+10),(wid-20),(high-20),1.0f,0.7f);
 }
 
 bool bitmap_ag_texture_window(texture_frame_type *frame,char *base_path,int pixel_sz)
@@ -763,7 +944,7 @@ bool bitmap_ag_texture_window(texture_frame_type *frame,char *base_path,int pixe
 	ag_bitmap.frame=frame;
 	bitmap_ag_random_color_lock(&ag_bitmap.back_col,200,150);
 
-	if (!bitmap_ag_texture_create(&ag_bitmap)) return(FALSE);
+	if (!bitmap_ag_texture_create(&ag_bitmap,FALSE)) return(FALSE);
 
 		// background noise
 
@@ -794,15 +975,53 @@ bool bitmap_ag_texture_window(texture_frame_type *frame,char *base_path,int pixe
       
 ======================================================= */
 
+void bitmap_ag_texture_machine_glow(bitmap_ag_type *ag_bitmap,int px,int py,int wid,int high)
+{
+	int			x,y;
+	d3col		col;
+
+		// glow color
+
+	col.r=col.g=col.b=1.0f;
+
+		// draw the glow
+
+	for (y=py;y<(py+high);y++) {
+		for (x=px;x<(px+wid);x++) {
+			bitmap_ag_texture_write_pixel(ag_bitmap,ag_bitmap->glow_data,x,y,&col);
+		}
+	}
+}
+
 bool bitmap_ag_texture_machine(texture_frame_type *frame,char *base_path,int pixel_sz)
 {
+	int				n,y;
+	d3col			border_col,glow_col[2];
 	bitmap_ag_type	ag_bitmap;
 
 	ag_bitmap.pixel_sz=pixel_sz;
 	ag_bitmap.frame=frame;
 	bitmap_ag_random_color(&ag_bitmap.back_col,0,0,255,64,127,127);
 
-	if (!bitmap_ag_texture_create(&ag_bitmap)) return(FALSE);
+	if (!bitmap_ag_texture_create(&ag_bitmap,TRUE)) return(FALSE);
+	
+		// supergumba -- temp
+		
+	border_col.r=border_col.g=border_col.b=0.0f;
+	glow_col[0].r=glow_col[0].b=0.0f;
+	glow_col[0].g=1.0f;
+	glow_col[1].g=glow_col[1].b=0.0f;
+	glow_col[1].r=1.0f;
+	
+		// lights
+		
+	y=30;
+	
+	for (n=0;n!=5;n++) {
+		bitmap_ag_texture_window_pane(&ag_bitmap,30,y,200,80,&border_col,&glow_col[n%2]);
+		bitmap_ag_texture_machine_glow(&ag_bitmap,35,(y+5),190,70);
+		y+=90;
+	}
 
 	bitmap_ag_texture_make_spec(&ag_bitmap,1.0f);
 	return(bitmap_ag_texture_finish(&ag_bitmap,base_path));

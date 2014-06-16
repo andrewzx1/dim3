@@ -495,6 +495,7 @@ void ag_add_room(bool first_room)
 	room->flat.rgt.on=FALSE;
 
 	room->connect_box.on=FALSE;
+	room->connect_box.other_room_idx=-1;
 
 	room->second_story=ag_random_bool();
 	room->second_story_complete=FALSE;
