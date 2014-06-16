@@ -56,12 +56,53 @@ typedef struct	{
       
 ======================================================= */
 
-unsigned char* png_utility_read(char *path,int *p_wid,int *p_high,bool *alpha_channel);
-bool png_utility_write(unsigned char *data,int wid,int high,bool alpha_channel,char *path);
-bool png_utility_check(char *path,char *err_str);
-bool png_utility_copy(char *srce_path,char *dest_path);
-bool bitmap_texture_open(bitmap_type *bitmap,unsigned char *data,bool mipmap,bool compress,bool pixelated,bool npot);
-void bitmap_texture_close(bitmap_type *bitmap);
+extern unsigned char* png_utility_read(char *path,int *p_wid,int *p_high,bool *alpha_channel);
+extern bool png_utility_write(unsigned char *data,int wid,int high,bool alpha_channel,char *path);
+extern bool png_utility_check(char *path,char *err_str);
+extern bool png_utility_copy(char *srce_path,char *dest_path);
+extern bool bitmap_texture_open(bitmap_type *bitmap,unsigned char *data,bool mipmap,bool compress,bool pixelated,bool npot);
+extern void bitmap_texture_close(bitmap_type *bitmap);
+
+/* =======================================================
+
+      Auto-Generated Bitmaps
+      
+======================================================= */
+
+typedef struct	{
+					int						pixel_sz;
+					unsigned char			*png_data,*bump_data,*spec_data,*glow_data;
+					d3col					back_col;
+					texture_frame_type		*frame;
+				} bitmap_ag_type;
+
+extern int bitmap_ag_random_int(int max);
+extern bool bitmap_ag_random_bool(void);
+extern void bitmap_ag_random_color(d3col *col,int min_r,int min_g,int min_b,int max_r,int max_g,int max_b);
+extern void bitmap_ag_random_color_lock(d3col *col,int min,int max);
+extern void bitmap_ag_random_color_change(d3col *base_col,d3col *col,float fct);
+
+extern bool bitmap_ag_texture_create(bitmap_ag_type *ag_bitmap,bool has_glow);
+extern bool bitmap_ag_texture_finish(bitmap_ag_type *ag_bitmap,char *base_path);
+extern void bitmap_ag_texture_make_spec(bitmap_ag_type *ag_bitmap,float spec_fct);
+
+extern void bitmap_ag_texture_read_pixel(bitmap_ag_type *ag_bitmap,unsigned char *data,int x,int y,d3col *col);
+extern void bitmap_ag_texture_write_pixel(bitmap_ag_type *ag_bitmap,unsigned char *data,int x,int y,d3col *col);
+extern void bitmap_ag_texture_read_normal(bitmap_ag_type *ag_bitmap,unsigned char *data,int x,int y,d3vct *normal);
+extern void bitmap_ag_texture_write_normal(bitmap_ag_type *ag_bitmap,unsigned char *data,int x,int y,d3vct *normal);
+
+extern void bitmap_ag_texture_add_noise(bitmap_ag_type *ag_bitmap,int x,int y,int wid,int high,float base_darken,float percentage);
+extern void bitmap_ag_texture_add_particle(bitmap_ag_type *ag_bitmap,int x,int y,int wid,int high,float fct,bool shrink);
+extern void bitmap_ag_texture_add_ridge_horizontal(bitmap_ag_type *ag_bitmap,int x,int y,int wid,int high,float min,float max);
+
+extern void bitmap_ag_texture_gradient_overlay_vertical(bitmap_ag_type *ag_bitmap,int px,int py,int wid,int high,float min,float max);
+extern void bitmap_ag_texture_random_color_stripe_vertical(bitmap_ag_type *ag_bitmap,int px,int py,int wid,int high,d3col *base_col,float fct);
+extern void bitmap_ag_texture_random_color_stripe_horizontal(bitmap_ag_type *ag_bitmap,int px,int py,int wid,int high,d3col *base_col,float fct);
+extern void bitmap_ag_texture_random_color_stripe_slant(bitmap_ag_type *ag_bitmap,int px,int py,int wid,int high,d3col *base_col,float fct);
+
+extern void bitmap_ag_texture_draw_rectangle(bitmap_ag_type *ag_bitmap,int px,int py,int wid,int high,int lip_sz,bool flip_normal,d3col *col);
+extern void bitmap_ag_texture_draw_oval(bitmap_ag_type *ag_bitmap,int px,int py,int wid,int high,int border_sz,d3col *border_col,d3col *col);
+extern void bitmap_ag_texture_draw_line_horizontal(bitmap_ag_type *ag_bitmap,int px,int py,int wid,int lip_sz,bool flip_normal,d3col *col);
 
 /* =======================================================
 
