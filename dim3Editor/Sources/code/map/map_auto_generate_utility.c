@@ -349,7 +349,7 @@ bool ag_generate_room_surrounded_by_second_stories(int room_idx)
 	ag_room_type	*room;
 
 	room=&ag_state.rooms[room_idx];
-
+	
 		// room it's connected to
 
 	story_count=0;

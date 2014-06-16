@@ -545,7 +545,7 @@ void ag_generate_decoration_equipment(int room_idx)
 			pnt.x-=(ag_size_equipment_pad_wid>>1);
 			pnt.z-=(ag_size_equipment_pad_wid>>1);
 
-			ag_generate_decoration_equipment_piece(&pnt,ag_size_equipment_pad_wid,ag_size_equipment_pad_wid,ag_size_floor_high,ag_texture_connect);
+			ag_generate_decoration_equipment_piece(&pnt,ag_size_equipment_pad_wid,ag_size_equipment_pad_wid,ag_size_floor_high,ag_texture_stair);
 
 				// computer
 
