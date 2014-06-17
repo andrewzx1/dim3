@@ -159,7 +159,7 @@ and can be sold or given away.
 
 #define ag_size_trench_high						800
 
-#define ag_size_light_width_start				30000
+#define ag_size_light_width_start				50000
 #define ag_size_light_width_extra				15000
 #define ag_size_light_fixture_wid				500
 

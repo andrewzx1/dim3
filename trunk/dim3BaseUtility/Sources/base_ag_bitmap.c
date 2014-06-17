@@ -349,7 +349,7 @@ void bitmap_ag_texture_metal_bolts(bitmap_ag_type *ag_bitmap)
 			if (x==(split_count-1)) wid=ag_bitmap->pixel_sz-px;
 			
 			bitmap_ag_texture_draw_rectangle(ag_bitmap,px,py,wid,high,15,TRUE,&ag_bitmap->back_col);
-			bitmap_ag_texture_metal_pattern(ag_bitmap,px,py,wid,high,30);
+			bitmap_ag_texture_metal_pattern(ag_bitmap,px,py,wid,high,60);
 
 			bitmap_ag_texture_draw_oval(ag_bitmap,(px+20),(py+20),20,20,3,&border_col,&col);
 			bitmap_ag_texture_draw_oval(ag_bitmap,(px+(wid-40)),(py+20),20,20,3,&border_col,&col);
@@ -363,6 +363,25 @@ void bitmap_ag_texture_metal_bolts(bitmap_ag_type *ag_bitmap)
 	}
 }
 
+void bitmap_ag_texture_metal_lines(bitmap_ag_type *ag_bitmap)
+{
+	int			n,y,sz,line_count;
+	d3col		col;
+	
+	line_count=5+bitmap_ag_random_int(20);
+	sz=ag_bitmap->pixel_sz/line_count;
+	
+	y=3;
+	
+	col.r=ag_bitmap->back_col.r*0.7f;
+	col.g=ag_bitmap->back_col.g*0.7f;
+	col.b=ag_bitmap->back_col.b*0.7f;
+	
+	for (n=0;n!=line_count;n++) {
+		bitmap_ag_texture_draw_line_horizontal(ag_bitmap,0,y,ag_bitmap->pixel_sz,3,FALSE,&col);
+		y+=sz;
+	}
+}
 
 bool bitmap_ag_texture_metal(texture_frame_type *frame,char *base_path,int pixel_sz,bool bolts)
 {
@@ -393,7 +412,8 @@ bool bitmap_ag_texture_metal(texture_frame_type *frame,char *base_path,int pixel
 		bitmap_ag_texture_metal_bolts(&ag_bitmap);
 	}
 	else {
-		bitmap_ag_texture_metal_pattern(&ag_bitmap,0,0,pixel_sz,pixel_sz,150);
+		bitmap_ag_texture_metal_lines(&ag_bitmap);
+		bitmap_ag_texture_metal_pattern(&ag_bitmap,0,0,pixel_sz,pixel_sz,200);
 	}
 
 		// metals have high spec
@@ -597,7 +617,8 @@ bool bitmap_ag_texture_machine(texture_frame_type *frame,char *base_path,int pix
 
 		// metal look
 
-	bitmap_ag_texture_metal_pattern(&ag_bitmap,0,0,pixel_sz,pixel_sz,150);
+	bitmap_ag_texture_draw_rectangle(&ag_bitmap,0,0,pixel_sz,pixel_sz,2,TRUE,&ag_bitmap.back_col);
+	bitmap_ag_texture_metal_pattern(&ag_bitmap,0,0,pixel_sz,pixel_sz,300);
 	
 		// supergumba -- temp
 		
