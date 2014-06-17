@@ -663,7 +663,7 @@ void bitmap_ag_texture_draw_rectangle(bitmap_ag_type *ag_bitmap,int px,int py,in
 
 				if (x==lx) {
 					normal.x=flip_normal?0.89f:-0.89f;
-					normal.y=0;
+					normal.y=0.0f;
 					normal.z=0.44f;
 					bitmap_ag_texture_write_normal(ag_bitmap,ag_bitmap->bump_data,x,y,&normal);
 					continue;
@@ -671,14 +671,14 @@ void bitmap_ag_texture_draw_rectangle(bitmap_ag_type *ag_bitmap,int px,int py,in
 
 				if (x==(rx-1)) {
 					normal.x=flip_normal?-0.89f:0.89f;
-					normal.y=0;
+					normal.y=0.0f;
 					normal.z=0.44f;
 					bitmap_ag_texture_write_normal(ag_bitmap,ag_bitmap->bump_data,x,y,&normal);
 					continue;
 				}
 
 				if (y==ty) {
-					normal.x=0;
+					normal.x=0.0f;
 					normal.y=flip_normal?0.89f:-0.89f;
 					normal.z=0.44f;
 					bitmap_ag_texture_write_normal(ag_bitmap,ag_bitmap->bump_data,x,y,&normal);
@@ -686,15 +686,15 @@ void bitmap_ag_texture_draw_rectangle(bitmap_ag_type *ag_bitmap,int px,int py,in
 				}
 
 				if (y==(by-1)) {
-					normal.x=0;
+					normal.x=0.0f;
 					normal.y=flip_normal?-0.89f:0.89f;
 					normal.z=0.44f;
 					bitmap_ag_texture_write_normal(ag_bitmap,ag_bitmap->bump_data,x,y,&normal);
 					continue;
 				}
 
-				normal.x=0;
-				normal.y=0;
+				normal.x=-1.0f;
+				normal.y=-1.0f;
 				normal.z=1.0f;
 				bitmap_ag_texture_write_normal(ag_bitmap,ag_bitmap->bump_data,x,y,&normal);
 			}

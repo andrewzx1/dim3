@@ -96,6 +96,7 @@
 		26900AD514F2044F008026D5 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26900AD414F2044F008026D5 /* Cocoa.framework */; };
 		26918E1318F79BAA0053C09B /* map_auto_generate_decoration.c in Sources */ = {isa = PBXBuildFile; fileRef = 26918E1218F79BAA0053C09B /* map_auto_generate_decoration.c */; };
 		26973C3E1602EB1600167FD2 /* View.m in Sources */ = {isa = PBXBuildFile; fileRef = 26973C351602E78D00167FD2 /* View.m */; };
+		26C0CE53194FD8A7001C9292 /* base_ag_bitmap_utility.c in Sources */ = {isa = PBXBuildFile; fileRef = 26C0CE52194FD8A7001C9292 /* base_ag_bitmap_utility.c */; };
 		26C1DF6216004440007FDAC7 /* bitmap_cocoa.m in Sources */ = {isa = PBXBuildFile; fileRef = 26C1DF6016004440007FDAC7 /* bitmap_cocoa.m */; };
 		26C1DF6316004440007FDAC7 /* file_cocoa.m in Sources */ = {isa = PBXBuildFile; fileRef = 26C1DF6116004440007FDAC7 /* file_cocoa.m */; };
 		26C1DF871600444C007FDAC7 /* base_bitmap_main.c in Sources */ = {isa = PBXBuildFile; fileRef = 26C1DF641600444C007FDAC7 /* base_bitmap_main.c */; };
@@ -575,6 +576,7 @@
 		26918E1218F79BAA0053C09B /* map_auto_generate_decoration.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = map_auto_generate_decoration.c; path = Sources/code/map/map_auto_generate_decoration.c; sourceTree = "<group>"; };
 		26973C341602E78D00167FD2 /* View.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = View.h; path = dim3Editor/View.h; sourceTree = SOURCE_ROOT; };
 		26973C351602E78D00167FD2 /* View.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = View.m; path = dim3Editor/View.m; sourceTree = SOURCE_ROOT; };
+		26C0CE52194FD8A7001C9292 /* base_ag_bitmap_utility.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = base_ag_bitmap_utility.c; path = Sources/base_ag_bitmap_utility.c; sourceTree = "<group>"; };
 		26C1DF5D16004435007FDAC7 /* baseprivate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = baseprivate.h; path = Headers/baseprivate.h; sourceTree = "<group>"; };
 		26C1DF5E16004435007FDAC7 /* baseutility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = baseutility.h; path = Headers/baseutility.h; sourceTree = "<group>"; };
 		26C1DF5F16004435007FDAC7 /* dim3baseutility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = dim3baseutility.h; path = Headers/dim3baseutility.h; sourceTree = "<group>"; };
@@ -892,6 +894,7 @@
 			isa = PBXGroup;
 			children = (
 				26CD14EC1949695E00C4F868 /* base_ag_bitmap.c */,
+				26C0CE52194FD8A7001C9292 /* base_ag_bitmap_utility.c */,
 				26C1DF641600444C007FDAC7 /* base_bitmap_main.c */,
 				26C1DF651600444C007FDAC7 /* base_bitmap_pngutility.c */,
 				26C1DF661600444C007FDAC7 /* base_bitmap_text.c */,
@@ -1815,6 +1818,7 @@
 				26F7E1321600468600E739C4 /* project_palette_multiplayer.c in Sources */,
 				26F7E1331600468600E739C4 /* project_palette_particle_group.c in Sources */,
 				26F7E1341600468600E739C4 /* project_palette_particle.c in Sources */,
+				26C0CE53194FD8A7001C9292 /* base_ag_bitmap_utility.c in Sources */,
 				26F7E1351600468600E739C4 /* project_palette_particles.c in Sources */,
 				26F7E1361600468600E739C4 /* project_palette_preload_models.c in Sources */,
 				26F7E1371600468600E739C4 /* project_palette_progress.c in Sources */,
