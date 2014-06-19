@@ -861,6 +861,10 @@ void ag_generate_decorations_add(void)
 	for (n=0;n!=ag_state.nroom;n++) {
 		room=&ag_state.rooms[n];
 
+			// completely skip outside rooms
+
+		if (room->outside) continue;
+
 			// try a couple of times
 			// to get the right decoration for
 			// a room, skip any room with stairs
@@ -1088,6 +1092,7 @@ void ag_generate_lights_add(void)
 			// by windows
 
 		room=&ag_state.rooms[n];
+		if (room->outside) continue;
 		if (room->has_windows) continue;
 
 			// add the light

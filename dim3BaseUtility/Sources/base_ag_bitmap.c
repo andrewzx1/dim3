@@ -641,3 +641,43 @@ bool bitmap_ag_texture_machine(texture_frame_type *frame,char *base_path,int pix
 	bitmap_ag_texture_make_spec(&ag_bitmap,0.8f);
 	return(bitmap_ag_texture_finish(&ag_bitmap,base_path));
 }
+
+/* =======================================================
+
+      Skybox Type Textures
+      
+======================================================= */
+
+void bitmap_ag_texture_skybox_start(bool night)
+{
+}
+
+bool bitmap_ag_texture_skybox_top(texture_frame_type *frame,char *base_path,int pixel_sz)
+{
+	return(TRUE);
+}
+
+bool bitmap_ag_texture_skybox_bottom(texture_frame_type *frame,char *base_path,int pixel_sz)
+{
+	return(TRUE);
+}
+
+bool bitmap_ag_texture_skybox_north(texture_frame_type *frame,char *base_path,int pixel_sz)
+{
+	return(TRUE);
+}
+
+bool bitmap_ag_texture_skybox_south(texture_frame_type *frame,char *base_path,int pixel_sz)
+{
+	return(TRUE);
+}
+
+bool bitmap_ag_texture_skybox_east(texture_frame_type *frame,char *base_path,int pixel_sz)
+{
+	return(TRUE);
+}
+
+bool bitmap_ag_texture_skybox_west(texture_frame_type *frame,char *base_path,int pixel_sz)
+{
+	return(TRUE);
+}

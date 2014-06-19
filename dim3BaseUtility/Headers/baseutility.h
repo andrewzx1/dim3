@@ -471,6 +471,13 @@ extern bool bitmap_ag_texture_wood(texture_frame_type *frame,char *base_path,int
 extern bool bitmap_ag_texture_cement(texture_frame_type *frame,char *base_path,int pixel_sz,bool dark);
 extern bool bitmap_ag_texture_window(texture_frame_type *frame,char *base_path,int pixel_sz);
 extern bool bitmap_ag_texture_machine(texture_frame_type *frame,char *base_path,int pixel_sz);
+extern void bitmap_ag_texture_skybox_start(bool night);
+extern bool bitmap_ag_texture_skybox_top(texture_frame_type *frame,char *base_path,int pixel_sz);
+extern bool bitmap_ag_texture_skybox_bottom(texture_frame_type *frame,char *base_path,int pixel_sz);
+extern bool bitmap_ag_texture_skybox_north(texture_frame_type *frame,char *base_path,int pixel_sz);
+extern bool bitmap_ag_texture_skybox_south(texture_frame_type *frame,char *base_path,int pixel_sz);
+extern bool bitmap_ag_texture_skybox_east(texture_frame_type *frame,char *base_path,int pixel_sz);
+extern bool bitmap_ag_texture_skybox_west(texture_frame_type *frame,char *base_path,int pixel_sz);
 
 /* =======================================================
 

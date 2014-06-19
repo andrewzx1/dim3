@@ -194,7 +194,7 @@ typedef struct		{
 
 typedef struct		{
 						int							nvertex,mesh_idx;
-						bool						second_story,
+						bool						outside,second_story,
 													second_story_complete,
 													require_top_floor,
 													has_stairs,has_windows,
