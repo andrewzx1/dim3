@@ -167,6 +167,37 @@ void ag_create_texture_set(void)
 	texture=ag_create_texture(ag_texture_window,"Window",FALSE);
 	bitmap_ag_texture_window(&texture->frames[0],base_path,512);
 	map_textures_read_texture(&map,ag_texture_window);
+
+	bitmap_ag_texture_skybox_start(TRUE);
+
+	texture=ag_create_texture(ag_texture_skybox_top,"SkyTop",FALSE);
+	bitmap_ag_texture_skybox_top(&texture->frames[0],base_path,512);
+	map_textures_read_texture(&map,ag_texture_skybox_top);
+
+	texture=ag_create_texture(ag_texture_skybox_bottom,"SkyBottom",FALSE);
+	bitmap_ag_texture_skybox_bottom(&texture->frames[0],base_path,512);
+	map_textures_read_texture(&map,ag_texture_skybox_bottom);
+
+	texture=ag_create_texture(ag_texture_skybox_north,"SkyNorth",FALSE);
+	bitmap_ag_texture_skybox_north(&texture->frames[0],base_path,512);
+	map_textures_read_texture(&map,ag_texture_skybox_north);
+
+	texture=ag_create_texture(ag_texture_skybox_south,"SkySouth",FALSE);
+	bitmap_ag_texture_skybox_south(&texture->frames[0],base_path,512);
+	map_textures_read_texture(&map,ag_texture_skybox_south);
+
+	texture=ag_create_texture(ag_texture_skybox_east,"SkyEast",FALSE);
+	bitmap_ag_texture_skybox_east(&texture->frames[0],base_path,512);
+	map_textures_read_texture(&map,ag_texture_skybox_east);
+
+	texture=ag_create_texture(ag_texture_skybox_west,"SkyWest",FALSE);
+	bitmap_ag_texture_skybox_west(&texture->frames[0],base_path,512);
+	map_textures_read_texture(&map,ag_texture_skybox_west);
+
+	map.sky.fill=ag_texture_skybox_top;
+	map.sky.bottom_fill=ag_texture_skybox_bottom;
+	map.sky.north_fill=ag_texture_skybox_north;
+	map.sky.south_fill=ag_texture_skybox_south;
+	map.sky.east_fill=ag_texture_skybox_east;
+	map.sky.west_fill=ag_texture_skybox_west;
 }
-
-
