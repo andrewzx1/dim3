@@ -181,19 +181,21 @@ bool bitmap_ag_texture_finish(bitmap_ag_type *ag_bitmap,char *base_path)
 	sprintf(path,"%s/%s.png",base_path,ag_bitmap->frame->name);
 	ok=bitmap_write_png_data(ag_bitmap->png_data,ag_bitmap->pixel_sz,ag_bitmap->pixel_sz,FALSE,path);
 
-	if (ok) {
-		sprintf(path,"%s/%s_n.png",base_path,ag_bitmap->frame->name);
-		ok=bitmap_write_png_data(ag_bitmap->bump_data,ag_bitmap->pixel_sz,ag_bitmap->pixel_sz,FALSE,path);
-	}
+	if (!ag_bitmap->no_bump_spec) {
+		if (ok) {
+			sprintf(path,"%s/%s_n.png",base_path,ag_bitmap->frame->name);
+			ok=bitmap_write_png_data(ag_bitmap->bump_data,ag_bitmap->pixel_sz,ag_bitmap->pixel_sz,FALSE,path);
+		}
 
-	if (ok) {
-		sprintf(path,"%s/%s_s.png",base_path,ag_bitmap->frame->name);
-		ok=bitmap_write_png_data(ag_bitmap->spec_data,ag_bitmap->pixel_sz,ag_bitmap->pixel_sz,FALSE,path);
-	}
-	
-	if ((ok) && (ag_bitmap->glow_data!=NULL)) {
-		sprintf(path,"%s/%s_g.png",base_path,ag_bitmap->frame->name);
-		ok=bitmap_write_png_data(ag_bitmap->glow_data,ag_bitmap->pixel_sz,ag_bitmap->pixel_sz,FALSE,path);
+		if (ok) {
+			sprintf(path,"%s/%s_s.png",base_path,ag_bitmap->frame->name);
+			ok=bitmap_write_png_data(ag_bitmap->spec_data,ag_bitmap->pixel_sz,ag_bitmap->pixel_sz,FALSE,path);
+		}
+		
+		if ((ok) && (ag_bitmap->glow_data!=NULL)) {
+			sprintf(path,"%s/%s_g.png",base_path,ag_bitmap->frame->name);
+			ok=bitmap_write_png_data(ag_bitmap->glow_data,ag_bitmap->pixel_sz,ag_bitmap->pixel_sz,FALSE,path);
+		}
 	}
 
 		// free data

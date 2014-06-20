@@ -71,6 +71,7 @@ extern void bitmap_texture_close(bitmap_type *bitmap);
 
 typedef struct	{
 					int						pixel_sz;
+					bool					no_bump_spec;
 					unsigned char			*png_data,*bump_data,*spec_data,*glow_data;
 					d3col					back_col;
 					texture_frame_type		*frame;

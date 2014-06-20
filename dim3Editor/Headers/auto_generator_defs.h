@@ -118,6 +118,13 @@ and can be sold or given away.
 #define ag_texture_equipment					11
 #define ag_texture_window						12
 
+#define ag_texture_skybox_top					26
+#define ag_texture_skybox_bottom				27
+#define ag_texture_skybox_north					28
+#define ag_texture_skybox_south					29
+#define ag_texture_skybox_east					30
+#define ag_texture_skybox_west					31
+
 //
 // dimensions and positions
 //

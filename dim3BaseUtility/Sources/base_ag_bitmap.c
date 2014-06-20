@@ -30,16 +30,15 @@ and can be sold or given away.
 #endif
 
 #define bitmap_ag_max_brick_count					20
-#define bitmap_ag_start_brick_col_size				90
-#define bitmap_ag_extra_brick_col_size				90
+#define bitmap_ag_start_brick_col_size				80
+#define bitmap_ag_extra_brick_col_size				180
 #define bitmap_ag_start_brick_row_size				40
-#define bitmap_ag_extra_brick_row_size				50
+#define bitmap_ag_extra_brick_row_size				80
 #define bitmap_ag_start_brick_margin				2
-#define bitmap_ag_extra_brick_margin				5
+#define bitmap_ag_extra_brick_margin				12
 #define bitmap_ag_start_brick_lip					4
-#define bitmap_ag_extra_brick_lip					4
-#define bitmap_ag_brick_color_factor				0.05f
-#define bitmap_ag_brick_darken_factor				0.7f
+#define bitmap_ag_extra_brick_lip					6
+#define bitmap_ag_brick_color_factor				0.15f
 
 #define bitmap_ag_tile_start_split_count			2
 #define bitmap_ag_tile_extra_split_normal_count		3
@@ -103,6 +102,7 @@ bool bitmap_ag_texture_brick(texture_frame_type *frame,char *base_path,int pixel
 	bitmap_ag_type	ag_bitmap;
 
 	ag_bitmap.pixel_sz=pixel_sz;
+	ag_bitmap.no_bump_spec=FALSE;
 	ag_bitmap.frame=frame;
 	bitmap_ag_random_color_lock(&ag_bitmap.back_col,127,64);		// grout
 
@@ -120,15 +120,18 @@ bool bitmap_ag_texture_brick(texture_frame_type *frame,char *base_path,int pixel
 
 		// brick base color
 
-	switch (bitmap_ag_random_int(3)) {
+	switch (bitmap_ag_random_int(4)) {
 		case 0:
 			bitmap_ag_random_color(&base_col,150,40,40,127,0,0);
 			break;
 		case 1:
-			bitmap_ag_random_color(&base_col,127,50,0,70,50,0);
+			bitmap_ag_random_color(&base_col,127,50,0,90,40,0);
 			break;
 		case 2:
-			bitmap_ag_random_color_lock(&base_col,200,127);
+			bitmap_ag_random_color(&base_col,50,50,80,40,40,60);
+			break;
+		default:
+			bitmap_ag_random_color_lock(&base_col,127,64);
 			break;
 	}
 
@@ -175,7 +178,7 @@ bool bitmap_ag_texture_brick(texture_frame_type *frame,char *base_path,int pixel
 
 		// save the texture
 
-	bitmap_ag_texture_make_spec(&ag_bitmap,0.5f);
+	bitmap_ag_texture_make_spec(&ag_bitmap,0.3f);
 	return(bitmap_ag_texture_finish(&ag_bitmap,base_path));
 }
 
@@ -265,6 +268,7 @@ bool bitmap_ag_texture_tile(texture_frame_type *frame,char *base_path,int pixel_
 	bitmap_ag_type	ag_bitmap;
 
 	ag_bitmap.pixel_sz=pixel_sz;
+	ag_bitmap.no_bump_spec=FALSE;
 	ag_bitmap.frame=frame;
 	ag_bitmap.back_col.r=ag_bitmap.back_col.g=ag_bitmap.back_col.b=0.0f;
 
@@ -293,7 +297,7 @@ bool bitmap_ag_texture_tile(texture_frame_type *frame,char *base_path,int pixel_
 		
 	bitmap_ag_texture_add_noise(&ag_bitmap,0,0,pixel_sz,pixel_sz,1.2f,0.2f);
 
-	bitmap_ag_texture_make_spec(&ag_bitmap,0.55f);
+	bitmap_ag_texture_make_spec(&ag_bitmap,0.4f);
 	return(bitmap_ag_texture_finish(&ag_bitmap,base_path));
 }
 
@@ -389,8 +393,9 @@ bool bitmap_ag_texture_metal(texture_frame_type *frame,char *base_path,int pixel
 	bitmap_ag_type	ag_bitmap;
 
 	ag_bitmap.pixel_sz=pixel_sz;
+	ag_bitmap.no_bump_spec=FALSE;
 	ag_bitmap.frame=frame;
-	bitmap_ag_random_color(&ag_bitmap.back_col,0,0,200,64,64,100);
+	bitmap_ag_random_color(&ag_bitmap.back_col,0,0,150,64,64,100);
 
 	if (!bitmap_ag_texture_create(&ag_bitmap,FALSE)) return(FALSE);
 
@@ -435,6 +440,7 @@ bool bitmap_ag_texture_wood(texture_frame_type *frame,char *base_path,int pixel_
 	bitmap_ag_type	ag_bitmap;
 
 	ag_bitmap.pixel_sz=pixel_sz;
+	ag_bitmap.no_bump_spec=FALSE;
 	ag_bitmap.frame=frame;
 	bitmap_ag_random_color(&ag_bitmap.back_col,127,50,0,100,40,0);
 
@@ -496,6 +502,7 @@ bool bitmap_ag_texture_cement(texture_frame_type *frame,char *base_path,int pixe
 	bitmap_ag_type	ag_bitmap;
 
 	ag_bitmap.pixel_sz=pixel_sz;
+	ag_bitmap.no_bump_spec=FALSE;
 	ag_bitmap.frame=frame;
 
 	if (dark) {
@@ -551,6 +558,7 @@ bool bitmap_ag_texture_window(texture_frame_type *frame,char *base_path,int pixe
 	bitmap_ag_type	ag_bitmap;
 
 	ag_bitmap.pixel_sz=pixel_sz;
+	ag_bitmap.no_bump_spec=FALSE;
 	ag_bitmap.frame=frame;
 	bitmap_ag_random_color_lock(&ag_bitmap.back_col,200,150);
 
@@ -610,8 +618,9 @@ bool bitmap_ag_texture_machine(texture_frame_type *frame,char *base_path,int pix
 	bitmap_ag_type	ag_bitmap;
 
 	ag_bitmap.pixel_sz=pixel_sz;
+	ag_bitmap.no_bump_spec=FALSE;
 	ag_bitmap.frame=frame;
-	bitmap_ag_random_color(&ag_bitmap.back_col,0,0,255,64,127,127);
+	bitmap_ag_random_color(&ag_bitmap.back_col,0,0,127,64,64,127);
 
 	if (!bitmap_ag_texture_create(&ag_bitmap,TRUE)) return(FALSE);
 
@@ -652,32 +661,124 @@ void bitmap_ag_texture_skybox_start(bool night)
 {
 }
 
+void bitmap_ag_texture_skybox_stars(bitmap_ag_type *ag_bitmap,int x,int y,int wid,int high)
+{
+	int				n,px,py;
+	d3col			col;
+
+	for (n=0;n!=100;n++) {
+		px=x+bitmap_ag_random_int(wid);
+		py=y+bitmap_ag_random_int(high);
+		bitmap_ag_random_color_lock(&col,255,127);
+		bitmap_ag_texture_write_pixel(ag_bitmap,ag_bitmap->png_data,px,py,&col);
+	}
+}
+
 bool bitmap_ag_texture_skybox_top(texture_frame_type *frame,char *base_path,int pixel_sz)
 {
-	return(TRUE);
+	bitmap_ag_type	ag_bitmap;
+
+	ag_bitmap.pixel_sz=pixel_sz;
+	ag_bitmap.no_bump_spec=TRUE;
+	ag_bitmap.frame=frame;
+	ag_bitmap.back_col.r=0.1f;
+	ag_bitmap.back_col.g=0.0f;
+	ag_bitmap.back_col.b=0.5f;
+
+	if (!bitmap_ag_texture_create(&ag_bitmap,TRUE)) return(FALSE);
+
+	bitmap_ag_texture_skybox_stars(&ag_bitmap,0,0,pixel_sz,pixel_sz);
+
+	return(bitmap_ag_texture_finish(&ag_bitmap,base_path));
 }
 
 bool bitmap_ag_texture_skybox_bottom(texture_frame_type *frame,char *base_path,int pixel_sz)
 {
-	return(TRUE);
+	bitmap_ag_type	ag_bitmap;
+
+	ag_bitmap.pixel_sz=pixel_sz;
+	ag_bitmap.no_bump_spec=TRUE;
+	ag_bitmap.frame=frame;
+	ag_bitmap.back_col.r=0.0f;
+	ag_bitmap.back_col.g=0.0f;
+	ag_bitmap.back_col.b=0.0f;
+
+	if (!bitmap_ag_texture_create(&ag_bitmap,TRUE)) return(FALSE);
+	return(bitmap_ag_texture_finish(&ag_bitmap,base_path));
 }
 
 bool bitmap_ag_texture_skybox_north(texture_frame_type *frame,char *base_path,int pixel_sz)
 {
-	return(TRUE);
+	bitmap_ag_type	ag_bitmap;
+
+	ag_bitmap.pixel_sz=pixel_sz;
+	ag_bitmap.no_bump_spec=TRUE;
+	ag_bitmap.frame=frame;
+	ag_bitmap.back_col.r=0.1f;
+	ag_bitmap.back_col.g=0.0f;
+	ag_bitmap.back_col.b=0.5f;
+
+	if (!bitmap_ag_texture_create(&ag_bitmap,TRUE)) return(FALSE);
+
+	bitmap_ag_texture_gradient_overlay_vertical(&ag_bitmap,0,0,pixel_sz,pixel_sz,1.0f,0.0f);
+	bitmap_ag_texture_skybox_stars(&ag_bitmap,0,0,pixel_sz,(pixel_sz>>1));
+
+	return(bitmap_ag_texture_finish(&ag_bitmap,base_path));
 }
 
 bool bitmap_ag_texture_skybox_south(texture_frame_type *frame,char *base_path,int pixel_sz)
 {
-	return(TRUE);
+	bitmap_ag_type	ag_bitmap;
+
+	ag_bitmap.pixel_sz=pixel_sz;
+	ag_bitmap.no_bump_spec=TRUE;
+	ag_bitmap.frame=frame;
+	ag_bitmap.back_col.r=0.1f;
+	ag_bitmap.back_col.g=0.0f;
+	ag_bitmap.back_col.b=0.5f;
+
+	if (!bitmap_ag_texture_create(&ag_bitmap,TRUE)) return(FALSE);
+
+	bitmap_ag_texture_gradient_overlay_vertical(&ag_bitmap,0,0,pixel_sz,pixel_sz,1.0f,0.0f);
+	bitmap_ag_texture_skybox_stars(&ag_bitmap,0,0,pixel_sz,(pixel_sz>>1));
+
+	return(bitmap_ag_texture_finish(&ag_bitmap,base_path));
 }
 
 bool bitmap_ag_texture_skybox_east(texture_frame_type *frame,char *base_path,int pixel_sz)
 {
-	return(TRUE);
+	bitmap_ag_type	ag_bitmap;
+
+	ag_bitmap.pixel_sz=pixel_sz;
+	ag_bitmap.no_bump_spec=TRUE;
+	ag_bitmap.frame=frame;
+	ag_bitmap.back_col.r=0.1f;
+	ag_bitmap.back_col.g=0.0f;
+	ag_bitmap.back_col.b=0.5f;
+
+	if (!bitmap_ag_texture_create(&ag_bitmap,TRUE)) return(FALSE);
+
+	bitmap_ag_texture_gradient_overlay_vertical(&ag_bitmap,0,0,pixel_sz,pixel_sz,1.0f,0.0f);
+	bitmap_ag_texture_skybox_stars(&ag_bitmap,0,0,pixel_sz,(pixel_sz>>1));
+
+	return(bitmap_ag_texture_finish(&ag_bitmap,base_path));
 }
 
 bool bitmap_ag_texture_skybox_west(texture_frame_type *frame,char *base_path,int pixel_sz)
 {
-	return(TRUE);
+	bitmap_ag_type	ag_bitmap;
+
+	ag_bitmap.pixel_sz=pixel_sz;
+	ag_bitmap.no_bump_spec=TRUE;
+	ag_bitmap.frame=frame;
+	ag_bitmap.back_col.r=0.1f;
+	ag_bitmap.back_col.g=0.0f;
+	ag_bitmap.back_col.b=0.5f;
+
+	if (!bitmap_ag_texture_create(&ag_bitmap,TRUE)) return(FALSE);
+
+	bitmap_ag_texture_gradient_overlay_vertical(&ag_bitmap,0,0,pixel_sz,pixel_sz,1.0f,0.0f);
+	bitmap_ag_texture_skybox_stars(&ag_bitmap,0,0,pixel_sz,(pixel_sz>>1));
+
+	return(bitmap_ag_texture_finish(&ag_bitmap,base_path));
 }
