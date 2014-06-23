@@ -765,7 +765,7 @@ void ag_generate_add_connector_room_stairs(int org_room_idx)
 			py[2]=py[3]=room->connect_box.min.y+ag_size_room_high;
 		}
 
-		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_connect);
+		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_ceiling);
 	}
 	else {
 			// walls
@@ -807,7 +807,7 @@ void ag_generate_add_connector_room_stairs(int org_room_idx)
 			py[1]=py[2]=room->connect_box.min.y+ag_size_room_high;
 		}
 
-		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_connect);
+		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_ceiling);
 
 	}
 
@@ -819,7 +819,7 @@ void ag_generate_add_connector_room_stairs(int org_room_idx)
 	pz[0]=pz[1]=room->connect_box.min.z;
 	pz[2]=pz[3]=room->connect_box.max.z;
 
-	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_connect);
+	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_floor);
 
 		// recalc the UVs and normals
 		// we do the normals first as this works

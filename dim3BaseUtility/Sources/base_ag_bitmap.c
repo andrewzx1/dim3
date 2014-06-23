@@ -30,12 +30,10 @@ and can be sold or given away.
 #endif
 
 #define bitmap_ag_max_brick_count					20
-#define bitmap_ag_start_brick_col_size				80
-#define bitmap_ag_extra_brick_col_size				180
 #define bitmap_ag_start_brick_row_size				40
 #define bitmap_ag_extra_brick_row_size				80
 #define bitmap_ag_start_brick_margin				2
-#define bitmap_ag_extra_brick_margin				12
+#define bitmap_ag_extra_brick_margin				4
 #define bitmap_ag_start_brick_lip					4
 #define bitmap_ag_extra_brick_lip					6
 #define bitmap_ag_brick_color_factor				0.15f
@@ -65,40 +63,41 @@ and can be sold or given away.
       
 ======================================================= */
 
-int bitmap_ag_texture_brick_create_sizes(bitmap_ag_type *ag_bitmap,int start_size,int extra_size,int *sizes)
+void bitmap_ag_texture_brick_single(bitmap_ag_type *ag_bitmap,int px,int py,int wid,int high,int margin,d3col *base_col)
 {
-	int			n,tot_sz;
+	int				n,rx,ry,r_wid,rough_count,lip_sz,
+					tot_wid;
+	d3col			brick_col;
+	
+		// the brick
 
-	n=0;
-	tot_sz=0;
+	bitmap_ag_random_color_change(base_col,&brick_col,bitmap_ag_brick_color_factor);
+	lip_sz=bitmap_ag_start_brick_lip+bitmap_ag_random_int(bitmap_ag_extra_brick_lip);
+	bitmap_ag_texture_draw_rectangle(ag_bitmap,px,py,(wid-margin),(high-margin),lip_sz,FALSE,&brick_col);
 
-	while (TRUE) {
-		sizes[n]=start_size+bitmap_ag_random_int(extra_size);
-		if ((tot_sz+sizes[n])>=ag_bitmap->pixel_sz) {
-			sizes[n]=ag_bitmap->pixel_sz-tot_sz;
+		// rough effect
 
-			if (((sizes[n]*10)<ag_bitmap->pixel_sz) && (n>0)) {		// eliminate any smaller than 10% end pieces
-				sizes[n-1]+=sizes[n];
-				return(n);
-			}
+	rough_count=4+bitmap_ag_random_int(6);
+	tot_wid=(wid-margin)-(lip_sz<<1);
 
-			return(n+1);
-		}
-
-		tot_sz+=sizes[n];
-
-		n++;
-		if (n==bitmap_ag_max_brick_count) return(n);
+	for (n=0;n!=rough_count;n++) {
+		rx=(px+lip_sz)+bitmap_ag_random_int(tot_wid>>1);
+		r_wid=bitmap_ag_random_int(tot_wid>>1);
+		ry=(py+lip_sz)+bitmap_ag_random_int((high-margin)-((lip_sz<<1)+5));
+		bitmap_ag_texture_add_ridge_horizontal(ag_bitmap,rx,ry,r_wid,2,0.9f,0.8f);
 	}
+
+		// brick noise
+
+	bitmap_ag_texture_add_noise(ag_bitmap,px,py,(wid-margin),(high-margin),0.8f,0.5f);
 }
 
-bool bitmap_ag_texture_brick(texture_frame_type *frame,char *base_path,int pixel_sz,bool rough)
+bool bitmap_ag_texture_brick(texture_frame_type *frame,char *base_path,int pixel_sz)
 {
-	int				n,px,py,rx,ry,r_wid,row,col,
-					margin,lip_sz,tot_wid,rough_count,
-					row_count,row_sizes[bitmap_ag_max_brick_count],
-					col_count,col_sizes[bitmap_ag_max_brick_count];
-	d3col			base_col,brick_col;
+	int				px,py,wid,high,
+					row,col,row_count,col_count,
+					margin;
+	d3col			base_col;
 	bitmap_ag_type	ag_bitmap;
 
 	ag_bitmap.pixel_sz=pixel_sz;
@@ -112,28 +111,35 @@ bool bitmap_ag_texture_brick(texture_frame_type *frame,char *base_path,int pixel
 
 	bitmap_ag_texture_add_noise(&ag_bitmap,0,0,pixel_sz,pixel_sz,0.8f,0.5f);
 
-		// get number of bricks
+		// margin
 
-	row_count=bitmap_ag_texture_brick_create_sizes(&ag_bitmap,bitmap_ag_start_brick_row_size,bitmap_ag_extra_brick_row_size,row_sizes);
-	col_count=bitmap_ag_texture_brick_create_sizes(&ag_bitmap,bitmap_ag_start_brick_col_size,bitmap_ag_extra_brick_col_size,col_sizes);
 	margin=bitmap_ag_start_brick_margin+bitmap_ag_random_int(bitmap_ag_extra_brick_margin);
 
 		// brick base color
 
-	switch (bitmap_ag_random_int(4)) {
+	switch (bitmap_ag_random_int(3)) {
 		case 0:
 			bitmap_ag_random_color(&base_col,150,40,40,127,0,0);
 			break;
 		case 1:
 			bitmap_ag_random_color(&base_col,127,50,0,90,40,0);
 			break;
-		case 2:
+		default:
 			bitmap_ag_random_color(&base_col,50,50,80,40,40,60);
 			break;
-		default:
-			bitmap_ag_random_color_lock(&base_col,127,64);
-			break;
 	}
+	
+		// brick sizes
+
+	high=bitmap_ag_start_brick_row_size+bitmap_ag_random_int(bitmap_ag_extra_brick_row_size);
+	row_count=pixel_sz/high;
+	if (row_count<0) row_count=0;
+	high=pixel_sz/row_count;
+		
+	wid=high<<1;
+	col_count=pixel_sz/wid;
+	if (col_count<0) col_count=1;
+	wid=pixel_sz/col_count;
 
 		// draw the bricks
 
@@ -142,38 +148,134 @@ bool bitmap_ag_texture_brick(texture_frame_type *frame,char *base_path,int pixel
 	for (row=0;row!=row_count;row++) {
 
 		px=margin;
+		if ((row%2)!=0) px+=(wid>>1);
 
 		for (col=0;col!=col_count;col++) {
-
-				// the brick
-
-			bitmap_ag_random_color_change(&base_col,&brick_col,bitmap_ag_brick_color_factor);
-			lip_sz=bitmap_ag_start_brick_lip+bitmap_ag_random_int(bitmap_ag_extra_brick_lip);
-			bitmap_ag_texture_draw_rectangle(&ag_bitmap,px,py,(col_sizes[col]-margin),(row_sizes[row]-margin),lip_sz,FALSE,&brick_col);
-
-				// any rough
-
-			if (rough) {
-
-				rough_count=4+bitmap_ag_random_int(6);
-				tot_wid=(col_sizes[col]-margin)-(lip_sz<<1);
-
-				for (n=0;n!=rough_count;n++) {
-					rx=(px+lip_sz)+bitmap_ag_random_int(tot_wid>>1);
-					r_wid=bitmap_ag_random_int(tot_wid>>1);
-					ry=(py+lip_sz)+bitmap_ag_random_int((row_sizes[row]-margin)-((lip_sz<<1)+5));
-					bitmap_ag_texture_add_ridge_horizontal(&ag_bitmap,rx,ry,r_wid,2,0.9f,0.8f);
-				}
-
-			}
-
-				// brick noise
-
-			bitmap_ag_texture_add_noise(&ag_bitmap,px,py,(col_sizes[col]-margin),(row_sizes[row]-margin),0.8f,(rough?0.5f:0.3f));
-			px+=col_sizes[col];
+			bitmap_ag_texture_brick_single(&ag_bitmap,px,py,wid,high,margin,&base_col);
+			px+=wid;
 		}
 
-		py+=row_sizes[row];
+		py+=high;
+	}
+
+		// save the texture
+
+	bitmap_ag_texture_make_spec(&ag_bitmap,0.3f);
+	return(bitmap_ag_texture_finish(&ag_bitmap,base_path));
+}
+
+/* =======================================================
+
+      Interlaced Brick Type Textures
+      
+======================================================= */
+
+bool bitmap_ag_texture_brick_interlaced(texture_frame_type *frame,char *base_path,int pixel_sz)
+{
+	int				margin;
+	d3col			base_col;
+	bitmap_ag_type	ag_bitmap;
+
+	ag_bitmap.pixel_sz=pixel_sz;
+	ag_bitmap.no_bump_spec=FALSE;
+	ag_bitmap.frame=frame;
+	bitmap_ag_random_color_lock(&ag_bitmap.back_col,127,64);		// grout
+
+	if (!bitmap_ag_texture_create(&ag_bitmap,FALSE)) return(FALSE);
+
+		// grout noise
+
+	bitmap_ag_texture_add_noise(&ag_bitmap,0,0,pixel_sz,pixel_sz,0.8f,0.5f);
+
+		// margin
+
+	margin=bitmap_ag_start_brick_margin+bitmap_ag_random_int(bitmap_ag_extra_brick_margin);
+
+		// brick base color
+
+	switch (bitmap_ag_random_int(3)) {
+		case 0:
+			bitmap_ag_random_color(&base_col,150,40,40,127,0,0);
+			break;
+		case 1:
+			bitmap_ag_random_color(&base_col,127,50,0,90,40,0);
+			break;
+		default:
+			bitmap_ag_random_color(&base_col,50,50,80,40,40,60);
+			break;
+	}
+	
+		// draw the bricks
+		
+	bitmap_ag_texture_brick_single(&ag_bitmap,0,0,(pixel_sz>>1),(pixel_sz>>2),margin,&base_col);
+	bitmap_ag_texture_brick_single(&ag_bitmap,(pixel_sz>>1),0,(pixel_sz>>1),(pixel_sz>>2),margin,&base_col);
+	bitmap_ag_texture_brick_single(&ag_bitmap,0,(pixel_sz>>2),(pixel_sz>>1),(pixel_sz>>2),margin,&base_col);
+	bitmap_ag_texture_brick_single(&ag_bitmap,(pixel_sz>>1),(pixel_sz>>2),(pixel_sz>>1),(pixel_sz>>2),margin,&base_col);
+	bitmap_ag_texture_brick_single(&ag_bitmap,0,(pixel_sz>>1),(pixel_sz>>2),(pixel_sz>>1),margin,&base_col);
+	bitmap_ag_texture_brick_single(&ag_bitmap,(pixel_sz>>2),(pixel_sz>>1),(pixel_sz>>2),(pixel_sz>>1),margin,&base_col);
+	bitmap_ag_texture_brick_single(&ag_bitmap,((pixel_sz>>2)*2),(pixel_sz>>1),(pixel_sz>>2),(pixel_sz>>1),margin,&base_col);
+	bitmap_ag_texture_brick_single(&ag_bitmap,((pixel_sz>>2)*3),(pixel_sz>>1),(pixel_sz>>2),(pixel_sz>>1),margin,&base_col);
+
+		// save the texture
+
+	bitmap_ag_texture_make_spec(&ag_bitmap,0.3f);
+	return(bitmap_ag_texture_finish(&ag_bitmap,base_path));
+}
+
+/* =======================================================
+
+      Concrete Block Type Textures
+      
+======================================================= */
+
+bool bitmap_ag_texture_concrete_block(texture_frame_type *frame,char *base_path,int pixel_sz)
+{
+	int				px,py,high,row,row_count,
+					margin,lip_sz;
+	d3col			base_col,block_col;
+	bitmap_ag_type	ag_bitmap;
+
+	ag_bitmap.pixel_sz=pixel_sz;
+	ag_bitmap.no_bump_spec=FALSE;
+	ag_bitmap.frame=frame;
+	bitmap_ag_random_color_lock(&ag_bitmap.back_col,127,64);		// grout
+
+	if (!bitmap_ag_texture_create(&ag_bitmap,FALSE)) return(FALSE);
+
+		// grout noise
+
+	bitmap_ag_texture_add_noise(&ag_bitmap,0,0,pixel_sz,pixel_sz,0.8f,0.5f);
+
+		// margin
+
+	margin=bitmap_ag_start_brick_margin+bitmap_ag_random_int(bitmap_ag_extra_brick_margin);
+
+		// concrete is gray
+
+	bitmap_ag_random_color_lock(&base_col,127,64);
+	
+		// brick sizes
+
+	high=bitmap_ag_start_brick_row_size+bitmap_ag_random_int(bitmap_ag_extra_brick_row_size);
+	row_count=pixel_sz/high;
+	if (row_count<0) row_count=0;
+	high=pixel_sz/row_count;
+
+		// draw the blocks
+
+	py=margin;
+
+	for (row=0;row!=row_count;row++) {
+	
+		px=margin;
+		if ((row%2)!=0) px+=(pixel_sz>>1);
+
+		bitmap_ag_random_color_change(&base_col,&block_col,bitmap_ag_brick_color_factor);
+		lip_sz=bitmap_ag_start_brick_lip+bitmap_ag_random_int(bitmap_ag_extra_brick_lip);
+		bitmap_ag_texture_draw_rectangle(&ag_bitmap,px,py,(pixel_sz-margin),(high-margin),lip_sz,FALSE,&block_col);
+		bitmap_ag_texture_add_noise(&ag_bitmap,px,py,(pixel_sz-margin),(high-margin),0.5f,0.7f);
+
+		py+=high;
 	}
 
 		// save the texture

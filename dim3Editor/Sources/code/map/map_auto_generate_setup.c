@@ -117,7 +117,7 @@ void ag_create_texture_set(void)
 		// random seed to already be set
 
 	texture=ag_create_texture(ag_texture_wall,"Wall",FALSE);
-	bitmap_ag_texture_brick(&texture->frames[0],base_path,512,TRUE);
+	bitmap_ag_texture_brick(&texture->frames[0],base_path,512);
 	map_textures_read_texture(&map,ag_texture_wall);
 	
 	texture=ag_create_texture(ag_texture_floor,"Floor",FALSE);
@@ -129,15 +129,15 @@ void ag_create_texture_set(void)
 	map_textures_read_texture(&map,ag_texture_ceiling);
 
 	texture=ag_create_texture(ag_texture_connect,"Connect",FALSE);
-	bitmap_ag_texture_brick(&texture->frames[0],base_path,512,TRUE);
+	bitmap_ag_texture_concrete_block(&texture->frames[0],base_path,512);
 	map_textures_read_texture(&map,ag_texture_connect);
 
 	texture=ag_create_texture(ag_texture_alt_wall,"Alt Wall",FALSE);
-	bitmap_ag_texture_brick(&texture->frames[0],base_path,512,FALSE);
+	bitmap_ag_texture_brick(&texture->frames[0],base_path,512);
 	map_textures_read_texture(&map,ag_texture_alt_wall);
 
 	texture=ag_create_texture(ag_texture_second_floor,"Second Story",FALSE);
-	bitmap_ag_texture_brick(&texture->frames[0],base_path,512,FALSE);
+	bitmap_ag_texture_brick_interlaced(&texture->frames[0],base_path,512);
 	map_textures_read_texture(&map,ag_texture_second_floor);
 
 	texture=ag_create_texture(ag_texture_lift,"Lift",FALSE);

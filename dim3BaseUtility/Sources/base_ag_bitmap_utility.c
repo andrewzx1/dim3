@@ -253,9 +253,12 @@ void bitmap_ag_texture_make_spec(bitmap_ag_type *ag_bitmap,float spec_fct)
 void bitmap_ag_texture_read_pixel(bitmap_ag_type *ag_bitmap,unsigned char *data,int x,int y,d3col *col)
 {
 	unsigned char		*ptr;
-
-	if ((x<0) || (x>=ag_bitmap->pixel_sz)) return;
-	if ((y<0) || (y>=ag_bitmap->pixel_sz)) return;
+	
+	if (x<0) x=ag_bitmap->pixel_sz+x;
+	if (x>=ag_bitmap->pixel_sz) x-=ag_bitmap->pixel_sz;
+	
+	if (y<0) x=ag_bitmap->pixel_sz+y;
+	if (y>=ag_bitmap->pixel_sz) y-=ag_bitmap->pixel_sz;
 
 	ptr=data+((y*(ag_bitmap->pixel_sz*3))+(x*3));
 	col->r=((float)*ptr++)/255.0f;
@@ -267,8 +270,11 @@ void bitmap_ag_texture_write_pixel(bitmap_ag_type *ag_bitmap,unsigned char *data
 {
 	unsigned char		*ptr;
 
-	if ((x<0) || (x>=ag_bitmap->pixel_sz)) return;
-	if ((y<0) || (y>=ag_bitmap->pixel_sz)) return;
+	if (x<0) x=ag_bitmap->pixel_sz+x;
+	if (x>=ag_bitmap->pixel_sz) x-=ag_bitmap->pixel_sz;
+	
+	if (y<0) x=ag_bitmap->pixel_sz+y;
+	if (y>=ag_bitmap->pixel_sz) y-=ag_bitmap->pixel_sz;
 
 	ptr=data+((y*(ag_bitmap->pixel_sz*3))+(x*3));
 	*ptr++=(int)(((float)0xFF)*col->r);
@@ -280,8 +286,11 @@ void bitmap_ag_texture_read_normal(bitmap_ag_type *ag_bitmap,unsigned char *data
 {
 	unsigned char		*ptr;
 
-	if ((x<0) || (x>=ag_bitmap->pixel_sz)) return;
-	if ((y<0) || (y>=ag_bitmap->pixel_sz)) return;
+	if (x<0) x=ag_bitmap->pixel_sz+x;
+	if (x>=ag_bitmap->pixel_sz) x-=ag_bitmap->pixel_sz;
+	
+	if (y<0) x=ag_bitmap->pixel_sz+y;
+	if (y>=ag_bitmap->pixel_sz) y-=ag_bitmap->pixel_sz;
 
 	ptr=data+((y*(ag_bitmap->pixel_sz*3))+(x*3));
 	normal->x=(((float)*ptr++)/128.0f)-1.0f;
@@ -293,8 +302,11 @@ void bitmap_ag_texture_write_normal(bitmap_ag_type *ag_bitmap,unsigned char *dat
 {
 	unsigned char		*ptr;
 
-	if ((x<0) || (x>=ag_bitmap->pixel_sz)) return;
-	if ((y<0) || (y>=ag_bitmap->pixel_sz)) return;
+	if (x<0) x=ag_bitmap->pixel_sz+x;
+	if (x>=ag_bitmap->pixel_sz) x-=ag_bitmap->pixel_sz;
+	
+	if (y<0) x=ag_bitmap->pixel_sz+y;
+	if (y>=ag_bitmap->pixel_sz) y-=ag_bitmap->pixel_sz;
 
 	vector_normalize(normal);		// normalize before writing
 

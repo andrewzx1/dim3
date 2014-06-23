@@ -77,17 +77,19 @@ int view_get_movement_scale(editor_view_type *view,d3pnt *pnt)
 	int					mesh_idx,dist,scale;
 	d3pnt				mpnt;
 	
+	scale=move_mouse_min_scale;
+	
 		// find closest mesh
 		
 	mesh_idx=map_mesh_find_closest(&map,pnt);
-	if (mesh_idx==-1) return(move_mouse_min_scale);
-
-	map_mesh_calculate_center(&map,mesh_idx,&mpnt);
-	
-	dist=distance_get(view->pnt.x,view->pnt.y,view->pnt.z,mpnt.x,mpnt.y,mpnt.z);
-	
-	scale=dist/move_mouse_distance_ratio;
-	if (scale<move_mouse_min_scale) scale=move_mouse_min_scale;
+	if (mesh_idx!=-1) {
+		map_mesh_calculate_center(&map,mesh_idx,&mpnt);
+		
+		dist=distance_get(view->pnt.x,view->pnt.y,view->pnt.z,mpnt.x,mpnt.y,mpnt.z);
+		
+		scale=dist/move_mouse_distance_ratio;
+		if (scale<move_mouse_min_scale) scale=move_mouse_min_scale;
+	}
 	
 	return(scale);
 }
