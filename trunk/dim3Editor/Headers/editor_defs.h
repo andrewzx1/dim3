@@ -572,8 +572,13 @@ typedef struct		{
 // movement scales
 //
 
-#define move_mouse_min_scale					40
-#define move_mouse_distance_ratio				1000
+#ifdef D3_OS_MAC
+	#define move_mouse_min_scale				200
+	#define move_mouse_distance_ratio			800
+#else
+	#define move_mouse_min_scale				40
+	#define move_mouse_distance_ratio			1000
+#endif
 
 #define move_mouse_turn_reduce_scale			5.0f
 

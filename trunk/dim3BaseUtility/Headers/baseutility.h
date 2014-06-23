@@ -464,7 +464,9 @@ extern bool bitmap_write_png_data(unsigned char *data,int wid,int high,bool alph
 extern bool bitmap_check(char *path,char *err_str);
 extern bool bitmap_copy(char *srce_path,char *dest_path);
 
-extern bool bitmap_ag_texture_brick(texture_frame_type *frame,char *base_path,int pixel_sz,bool rough);
+extern bool bitmap_ag_texture_brick(texture_frame_type *frame,char *base_path,int pixel_sz);
+extern bool bitmap_ag_texture_brick_interlaced(texture_frame_type *frame,char *base_path,int pixel_sz);
+extern bool bitmap_ag_texture_concrete_block(texture_frame_type *frame,char *base_path,int pixel_sz);
 extern bool bitmap_ag_texture_tile(texture_frame_type *frame,char *base_path,int pixel_sz,bool complex);
 extern bool bitmap_ag_texture_metal(texture_frame_type *frame,char *base_path,int pixel_sz,bool bolts);
 extern bool bitmap_ag_texture_wood(texture_frame_type *frame,char *base_path,int pixel_sz);

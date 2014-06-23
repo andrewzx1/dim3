@@ -179,80 +179,20 @@ int map_recalc_normals_get_auto_mode(map_mesh_type *mesh)
 
 bool map_recalc_normals_determine_vector_in_out(map_mesh_poly_type *poly,d3pnt *min,d3pnt *max)
 {
-	int				x,y,z,k,pos_dist,neg_dist;
-	float			f_dist;
-	bool			is_out;
-	d3pnt			center,pos_pt,neg_pt;
+	d3pnt			center;
 	d3vct			face_vct;
 
-		// the dot product is the fall back position
-		// if these specialized checks fail
+		// the dot product is how we backface
+		// cull, so it tells us if looking from inside
+		// the poly you can see the current polygon,
+		// which tells you inside or out
 
 	center.x=(min->x+max->x)>>1;
 	center.y=(min->y+max->y)>>1;
 	center.z=(min->z+max->z)>>1;
 
 	vector_create(&face_vct,poly->box.mid.x,poly->box.mid.y,poly->box.mid.z,center.x,center.y,center.z);
-	is_out=(vector_dot_product(&poly->tangent_space.normal,&face_vct)>0.0f);
-
-		// get a point from the current normal vector
-		// and inverse of the current normal vector, using 10%
-		// of the distance to center
-	
-	f_dist=(float)distance_get(poly->box.mid.x,poly->box.mid.y,poly->box.mid.z,center.x,center.y,center.z);
-	f_dist*=0.1f;
-
-	pos_pt.x=poly->box.mid.x+(int)(poly->tangent_space.normal.x*f_dist);
-	pos_pt.y=poly->box.mid.y+(int)(poly->tangent_space.normal.y*f_dist);
-	pos_pt.z=poly->box.mid.z+(int)(poly->tangent_space.normal.z*f_dist);
-
-	neg_pt.x=poly->box.mid.x-(int)(poly->tangent_space.normal.x*f_dist);
-	neg_pt.y=poly->box.mid.y-(int)(poly->tangent_space.normal.y*f_dist);
-	neg_pt.z=poly->box.mid.z-(int)(poly->tangent_space.normal.z*f_dist);
-
-		// first we determine if we can think of the
-		// poly's box (which is determined by all connected
-		// polys) as a closed object in one direction
-
-		// if one direction is at least 25% greater than the others
-		// then consider it a tube like structure
-
-		// if any distance calcs fail, fall back to dot product
-
-	x=max->x-min->x;
-	y=max->y-min->y;
-	z=max->z-min->z;
-
-	k=x-((x*25)/100);
-	if ((x>y) && (x>z)) {
-		pos_dist=distance_2D_get(pos_pt.y,pos_pt.z,center.y,center.z);
-		neg_dist=distance_2D_get(neg_pt.y,neg_pt.z,center.y,center.z);
-		if (pos_dist==neg_dist) return(is_out);
-
-		return(pos_dist>neg_dist);
-	}
-
-	k=y-((y*25)/100);
-	if ((y>x) && (y>z)) {
-		pos_dist=distance_2D_get(pos_pt.x,pos_pt.z,center.x,center.z);
-		neg_dist=distance_2D_get(neg_pt.x,neg_pt.z,center.x,center.z);
-		if (pos_dist==neg_dist) return(is_out);
-
-		return(pos_dist>neg_dist);
-	}
-
-	k=z-((z*25)/100);
-	if ((z>x) && (z>y)) {
-		pos_dist=distance_2D_get(pos_pt.x,pos_pt.y,center.x,center.y);
-		neg_dist=distance_2D_get(neg_pt.x,neg_pt.y,center.x,center.y);
-		if (pos_dist==neg_dist) return(is_out);
-
-		return(pos_dist>neg_dist);
-	}
-
-		// finally fall back to dot product
-
-	return(is_out);
+	return(vector_dot_product(&poly->tangent_space.normal,&face_vct)>0.0f);
 }
 
 /* =======================================================
