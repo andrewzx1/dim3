@@ -193,8 +193,7 @@ typedef struct		{
 
 typedef struct		{
 						int							connect_type,
-													other_room_idx,wid,
-													stair_dir;
+													other_room_idx,stair_dir;
 						bool						on;
 						d3pnt						min,max;
 					} ag_room_connect_box_type;
