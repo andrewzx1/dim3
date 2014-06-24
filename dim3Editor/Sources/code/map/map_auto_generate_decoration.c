@@ -42,6 +42,7 @@ extern int ag_generate_find_floor_polygon(int room_idx);
 extern int ag_generate_find_ceiling_polygon(int room_idx);
 extern bool ag_generate_is_polygon_window_target(int mesh_idx,int poly_idx);
 extern void ag_generate_get_wall_line(int mesh_idx,int poly_idx,d3pnt *p1,d3pnt *p2);
+extern bool ag_generate_room_is_leaf(int room_idx);
 
 /* =======================================================
 
@@ -1110,20 +1111,49 @@ void ag_generate_lights_add(void)
       
 ======================================================= */
 
-void ag_generate_spots_add_single(char *name,int spot_obj_type,char *script_name,d3pnt *rtn_pnt)
+void ag_generate_spots_add_single(char *name,int spot_obj_type,char *script_name,bool leaf_only,d3pnt *rtn_pnt)
 {
-	int					room_idx;
-	spot_type			*spot;
+	int				n,room_idx,poly_idx;
+	spot_type		*spot;
+	ag_room_type	*room;
 
 		// add the spot
 
 	spot=&map.spots[map.nspot];
 	map.nspot++;
 
-		// randomize location
+		// usually for player spot
 
-	room_idx=ag_random_int(ag_state.nroom);
-	ag_generate_decoration_location_random(room_idx,&spot->pnt);
+	if (leaf_only) {
+		room_idx=0;
+
+		for (n=0;n!=ag_state.nroom;n++) {
+			if (ag_generate_room_is_leaf(n)) {
+				room_idx=n;
+				break;
+			}
+		}
+	}
+
+		// randomize room
+
+	else {
+		room_idx=ag_random_int(ag_state.nroom);
+	}
+
+		// find a floor in the room
+	
+	room=&ag_state.rooms[room_idx];
+
+	poly_idx=ag_generate_find_floor_polygon(room_idx);
+	if (poly_idx==-1) {
+		spot->pnt.x=(room->min.x+room->max.x)>>1;
+		spot->pnt.y=room->max.y;
+		spot->pnt.z=(room->min.z+room->max.z)>>1;
+	}
+	else {
+		map_mesh_poly_calculate_center(&map,room->mesh_idx,poly_idx,&spot->pnt);
+	}
 
 	spot->ang.x=0.0f;
 	spot->ang.y=0.0f;
@@ -1142,25 +1172,19 @@ void ag_generate_spots_add_single(char *name,int spot_obj_type,char *script_name
 	if (rtn_pnt!=NULL) memmove(rtn_pnt,&spot->pnt,sizeof(d3pnt));
 }
 
-//
-// supergumba -- add spots to ROOMs (randomly) ignoring
-// rooms with stairs, and find a FLOOR segment in the room and
-// put in middle
-//
-
 void ag_generate_spots_add(void)
 {
 	int				n;
 
 		// player spot
 
-	ag_generate_spots_add_single("Start",spot_type_player,"Player",&ag_state.start_pnt);
+	ag_generate_spots_add_single("Start",spot_type_player,"Player",TRUE,&ag_state.start_pnt);
 
 		// monster spots
 		// supergumba -- hard coded!  FIX!
 
 	for (n=0;n!=(ag_state.nroom*2);n++) {
-	//	ag_generate_spots_add_single("Monster",spot_type_object,"Cyborg Knife",NULL);
+	//	ag_generate_spots_add_single("Monster",spot_type_object,"Cyborg Knife",FALSE,NULL);
 	}
 
 }

@@ -46,7 +46,7 @@ extern void ag_generate_remove_polygons_in_box(int mesh_idx,d3pnt *min,d3pnt *ma
       
 ======================================================= */
 
-void ag_generate_set_connector_type(int room_idx)
+int ag_generate_get_connector_type(int room_idx)
 {
 	int				dx,dz;
 	ag_room_type	*room,*room2;
@@ -57,31 +57,22 @@ void ag_generate_set_connector_type(int room_idx)
 		// then connect with pillar
 
 	room2=&ag_state.rooms[room->connect_box.other_room_idx];
-	if ((room->second_story) && (room2->second_story)) {
-		room->connect_box.connect_type=ag_connect_type_arch;
-		return;
-	}
+	if ((room->second_story) && (room2->second_story)) return(ag_connect_type_arch);
 
 		// check for door width
 
 	dx=room->connect_box.max.x-room->connect_box.min.x;
 	dz=room->connect_box.max.z-room->connect_box.min.z;
 
-	if ((dx<=ag_size_door_min_width) && (dz<=ag_size_door_min_width)) {
-		room->connect_box.connect_type=ag_connect_type_door;
-		return;
-	}
+	if ((dx<=ag_size_door_min_width) && (dz<=ag_size_door_min_width)) return(ag_connect_type_door);
 
 		// randomize for any stairs
 
-	if (ag_random_int(100)<33) {
-		room->connect_box.connect_type=ag_connect_type_stairs;
-		return;
-	}
+	if (ag_random_int(100)<33) return(ag_connect_type_stairs);
 
 		// normal plain connector
 
-	room->connect_box.connect_type=ag_connect_type_normal;
+	return(ag_connect_type_normal);
 }
 
 /* =======================================================

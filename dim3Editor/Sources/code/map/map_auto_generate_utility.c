@@ -378,6 +378,29 @@ bool ag_generate_room_surrounded_by_second_stories(int room_idx)
 	return(FALSE);
 }
 
+bool ag_generate_room_is_leaf(int room_idx)
+{
+	int				n,connect_count;
+	ag_room_type	*room;
+
+		// room it's connected to
+
+	connect_count=0;
+
+	room=&ag_state.rooms[room_idx];
+	if (room->connect_box.other_room_idx!=-1) connect_count++;
+
+		// other rooms connected to it
+
+	for (n=0;n!=ag_state.nroom;n++) {
+		if (n!=room_idx) {
+			if (ag_state.rooms[n].connect_box.other_room_idx==room_idx) connect_count++;
+		}
+	}
+
+	return(connect_count<=1);
+}
+
 /* =======================================================
 
       Windows
