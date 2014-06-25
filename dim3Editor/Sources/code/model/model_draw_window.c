@@ -38,8 +38,8 @@ extern app_state_type			state;
 
 extern list_palette_type		file_palette,model_palette;
 
-double							tran_mod_matrix[16],tran_proj_matrix[16],tran_vport[4];
-d3rect							tran_wbox;
+double							model_mod_matrix[16],model_proj_matrix[16],model_vport[4];
+d3rect							model_wbox;
 
 /* =======================================================
 
@@ -134,29 +134,42 @@ void model_draw_gl_setup_2D(void)
 
 /* =======================================================
 
-      3D to 2D Transform
+      Projection Utilities
       
 ======================================================= */
 
-void model_draw_2D_transform_setup(void)
+void model_draw_setup_project_point(void)
 {
-	os_get_window_box(&tran_wbox);
+	os_get_window_box(&model_wbox);
 	
-	glGetDoublev(GL_MODELVIEW_MATRIX,tran_mod_matrix);
-	glGetDoublev(GL_PROJECTION_MATRIX,tran_proj_matrix);
-	glGetIntegerv(GL_VIEWPORT,(GLint*)tran_vport);
+	glGetDoublev(GL_MODELVIEW_MATRIX,model_mod_matrix);
+	glGetDoublev(GL_PROJECTION_MATRIX,model_proj_matrix);
+	glGetIntegerv(GL_VIEWPORT,(GLint*)model_vport);
 }
 
-void model_draw_2D_transform(d3fpnt *pnt,d3pnt *tran_pnt)
+float model_draw_project_point(d3fpnt *pnt,d3pnt *pnt2d)
 {
 	double			dx,dy,dz;
 	d3rect			mbox;
 
 	model_wind_get_box(&mbox);
 	
-	gluProject(pnt->x,pnt->y,pnt->z,tran_mod_matrix,tran_proj_matrix,(GLint*)tran_vport,&dx,&dy,&dz);
-	tran_pnt->x=((int)dx)-mbox.lx;
-	tran_pnt->y=(tran_wbox.by-((int)dy))-mbox.ty;
+	gluProject(pnt->x,pnt->y,pnt->z,model_mod_matrix,model_proj_matrix,(GLint*)model_vport,&dx,&dy,&dz);
+	pnt2d->x=((int)dx)-mbox.lx;
+	pnt2d->y=(model_wbox.by-((int)dy))-mbox.ty;
+	return((float)dz);
+}
+
+bool model_draw_project_point_in_z(d3fpnt *pnt)
+{
+	return(((((double)pnt->x)*model_mod_matrix[2])+(((double)pnt->y)*model_mod_matrix[6])+(((double)pnt->z)*model_mod_matrix[10])+model_mod_matrix[14])>0.0);
+}
+
+float model_draw_project_get_depth(d3fpnt *pnt)
+{
+	d3pnt			win_pnt;
+
+	return(model_draw_project_point(pnt,&win_pnt));	
 }
 
 /* =======================================================

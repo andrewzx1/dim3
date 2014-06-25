@@ -352,8 +352,8 @@ void model_draw_bone_names(int sel_bone_idx)
 {
 	int						n,nbone;
 	float					x_move,z_move,y_move;
-	d3pnt					tran_pnt;
 	d3fpnt					pnt;
+	d3pnt					pnt2d;
 	d3col					col;
 	d3rect					mbox;
 	model_bone_type			*bone;
@@ -363,7 +363,7 @@ void model_draw_bone_names(int sel_bone_idx)
 	
 		// get translation matrix
 				
-	model_draw_2D_transform_setup();
+	model_draw_setup_project_point();
 	model_draw_gl_setup_2D();
 	
 	model_wind_get_box(&mbox);
@@ -390,17 +390,17 @@ void model_draw_bone_names(int sel_bone_idx)
 		pnt.y=draw_bone->fpnt.y+y_move;
 		pnt.z=draw_bone->fpnt.z+z_move;
 		
-		model_draw_2D_transform(&pnt,&tran_pnt);
+		model_draw_project_point(&pnt,&pnt2d);
 		
-		tran_pnt.x+=mbox.lx;
+		pnt2d.x+=mbox.lx;
 		
 			// text
 			
 		if (n!=sel_bone_idx) {
-			text_draw_center(tran_pnt.x,(tran_pnt.y+50),12.0f,NULL,bone->name);
+			text_draw_center(pnt2d.x,(pnt2d.y+50),12.0f,NULL,bone->name);
 		}
 		else {
-			text_draw_center(tran_pnt.x,(tran_pnt.y+50),12.0f,&col,bone->name);
+			text_draw_center(pnt2d.x,(pnt2d.y+50),12.0f,&col,bone->name);
 		}
 		
 		bone++;

@@ -130,7 +130,7 @@ void render_transparent_sort(void)
 
 			for (i=0;i!=sort_cnt;i++) {
 				if (dist>sort_list[i].dist) {
-					sort_idx=i+1;
+					sort_idx=i;
 					break;
 				}
 			}
