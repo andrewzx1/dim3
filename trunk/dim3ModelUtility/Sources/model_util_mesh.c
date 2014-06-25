@@ -132,6 +132,7 @@ bool model_mesh_delete(model_type *model,int mesh_idx)
 		
 	if (mesh->vertexes!=NULL) free(mesh->vertexes);
 	if (mesh->polys!=NULL) free(mesh->polys);
+	if (mesh->trans_sort.polys!=NULL) free(mesh->trans_sort.polys);
 	
 		// delete current mesh
 				
@@ -185,11 +186,15 @@ bool model_mesh_set_poly_count(model_type *model,int mesh_idx,int poly_count)
 	
 	mesh=&model->meshes[mesh_idx];
 
+		// reset the poly count
+
 	poly=malloc(poly_count*sizeof(model_poly_type));
 	if (poly==NULL) return(FALSE);
 
 	bzero(poly,(poly_count*sizeof(model_poly_type)));
 	
+		// if there was an old list, move that over
+
 	if (mesh->polys!=NULL) {
 		count=mesh->npoly;
 		if (count>poly_count) count=poly_count;
@@ -201,6 +206,14 @@ bool model_mesh_set_poly_count(model_type *model,int mesh_idx,int poly_count)
 	
 	mesh->npoly=poly_count;
 	mesh->polys=poly;
+
+		// also need to update the poly
+		// sorting list for transparent polys
+
+	if (mesh->trans_sort.polys!=NULL) free(mesh->trans_sort.polys);
+
+	mesh->trans_sort.polys=(model_trans_sort_poly_type*)malloc(poly_count*sizeof(model_trans_sort_poly_type));
+	if (mesh->trans_sort.polys==NULL) return(FALSE);
 	
 	return(TRUE);
 }

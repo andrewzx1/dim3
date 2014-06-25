@@ -117,6 +117,16 @@ typedef struct		{
 //
 
 typedef struct		{
+						int								poly_idx;
+						float							dist;
+					} model_trans_sort_poly_type;
+
+typedef struct		{
+						int								count;
+						model_trans_sort_poly_type		*polys;	
+					} model_trans_sort_type;
+
+typedef struct		{
 						int								major_bone_idx,minor_bone_idx;
 						float							bone_factor;
 						d3pnt							pnt;
@@ -136,6 +146,7 @@ typedef struct		{
 														blend_add,never_cull,locked,
 														rt_non_light_blocking;
 						d3pnt							import_move,org_import_move;
+						model_trans_sort_type			trans_sort;
  						model_vertex_type				*vertexes;
                         model_poly_type					*polys;
 					} model_mesh_type;

@@ -429,9 +429,46 @@ void gl_project_point_patch(d3pnt *pnt,d3fpnt *win_pnt)
 	win_pnt->z=in[2];
 }
 
+void gl_project_point_patch_f(d3fpnt *f_pnt,d3fpnt *win_pnt)
+{
+    float		in[4],out[4];
+
+		// duplicate the gl_Position calculation
+
+		// multiply by modelview matrix
+		// last part of vector is always 1.0 here
+
+	out[0]=(f_pnt->x*gl_model_view_matrix[0])+(f_pnt->y*gl_model_view_matrix[4])+(f_pnt->z*gl_model_view_matrix[8])+gl_model_view_matrix[12];
+	out[1]=(f_pnt->x*gl_model_view_matrix[1])+(f_pnt->y*gl_model_view_matrix[5])+(f_pnt->z*gl_model_view_matrix[9])+gl_model_view_matrix[13];
+	out[2]=(f_pnt->x*gl_model_view_matrix[2])+(f_pnt->y*gl_model_view_matrix[6])+(f_pnt->z*gl_model_view_matrix[10])+gl_model_view_matrix[14];
+	out[3]=(f_pnt->x*gl_model_view_matrix[3])+(f_pnt->y*gl_model_view_matrix[7])+(f_pnt->z*gl_model_view_matrix[11])+gl_model_view_matrix[15];
+
+		// now multiply by the projection matrix
+
+	in[0]=(out[0]*gl_proj_matrix[0])+(out[1]*gl_proj_matrix[4])+(out[2]*gl_proj_matrix[8])+(out[3]*gl_proj_matrix[12]);
+	in[1]=(out[0]*gl_proj_matrix[1])+(out[1]*gl_proj_matrix[5])+(out[2]*gl_proj_matrix[9])+(out[3]*gl_proj_matrix[13]);
+	in[2]=(out[0]*gl_proj_matrix[2])+(out[1]*gl_proj_matrix[6])+(out[2]*gl_proj_matrix[10])+(out[3]*gl_proj_matrix[14]);
+	in[3]=(out[0]*gl_proj_matrix[3])+(out[1]*gl_proj_matrix[7])+(out[2]*gl_proj_matrix[11])+(out[3]*gl_proj_matrix[15]);
+
+	if (in[3]==0.0f) return;
+
+	in[0]=((in[0]/in[3])*0.5f)+0.5f;
+    in[1]=((in[1]/in[3])*0.5f)+0.5f;
+    in[2]=((in[2]/in[3])*0.5f)+0.5f;
+
+    win_pnt->x=(in[0]*gl_viewport[2])+gl_viewport[0];
+    win_pnt->y=(in[1]*gl_viewport[3])+gl_viewport[1];
+	win_pnt->z=in[2];
+}
+
 bool gl_project_in_view_z(d3pnt *pnt)
 {
 	return(((((float)pnt->x)*gl_model_view_matrix[2])+(((float)pnt->y)*gl_model_view_matrix[6])+(((float)pnt->z)*gl_model_view_matrix[10])+gl_model_view_matrix[14])>0.0);
+}
+
+bool gl_project_in_view_z_f(d3fpnt *f_pnt)
+{
+	return(((f_pnt->x*gl_model_view_matrix[2])+(f_pnt->y*gl_model_view_matrix[6])+(f_pnt->z*gl_model_view_matrix[10])+gl_model_view_matrix[14])>0.0);
 }
 
 void gl_project_point(d3pnt *pnt)
@@ -473,6 +510,14 @@ float gl_project_get_depth(d3pnt *pnt)
 	d3fpnt			win_pnt;
 
 	gl_project_point_patch(pnt,&win_pnt);	
+	return(win_pnt.z);
+}
+
+float gl_project_get_depth_f(d3fpnt *f_pnt)
+{
+	d3fpnt			win_pnt;
+
+	gl_project_point_patch_f(f_pnt,&win_pnt);	
 	return(win_pnt.z);
 }
 

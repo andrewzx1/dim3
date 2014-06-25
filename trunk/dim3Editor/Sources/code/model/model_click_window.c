@@ -51,7 +51,7 @@ void model_drag_sel_vertex(float *pv,d3rect *box,bool chg_sel)
 {
 	int					n,nt;
 	d3fpnt				pnt;
-	d3pnt				tran_pnt;
+	d3pnt				pnt2d;
 	model_mesh_type		*mesh;
 
 		// find selection
@@ -66,9 +66,9 @@ void model_drag_sel_vertex(float *pv,d3rect *box,bool chg_sel)
 		pnt.y=*pv++;
 		pnt.z=*pv++;
 		
-		model_draw_2D_transform(&pnt,&tran_pnt);
+		model_draw_project_point(&pnt,&pnt2d);
 		
-		if ((tran_pnt.x>=box->lx) && (tran_pnt.x<=box->rx) && (tran_pnt.y>=box->ty) && (tran_pnt.y<=box->by)) {
+		if ((pnt2d.x>=box->lx) && (pnt2d.x<=box->rx) && (pnt2d.y>=box->ty) && (pnt2d.y<=box->by)) {
 			if (!model_vertex_mask_check_hide(state.model.cur_mesh_idx,n)) model_vertex_mask_set_sel(state.model.cur_mesh_idx,n,chg_sel);
 		}
 	}
@@ -204,7 +204,7 @@ bool select_model_wind_vertex(d3pnt *start_pnt,float *pv)
 {
 	int					n,nt,idx;
 	d3fpnt				pnt;
-	d3pnt				tran_pnt;
+	d3pnt				pnt2d;
 	model_mesh_type		*mesh;
 
 		// clicked on a vertex?
@@ -220,9 +220,9 @@ bool select_model_wind_vertex(d3pnt *start_pnt,float *pv)
 		pnt.y=*pv++;
 		pnt.z=*pv++;
 		
-		model_draw_2D_transform(&pnt,&tran_pnt);
+		model_draw_project_point(&pnt,&pnt2d);
 		
-		if ((start_pnt->x>=(tran_pnt.x-5)) && (start_pnt->x<=(tran_pnt.x+5)) && (start_pnt->y>=(tran_pnt.y-5)) && (start_pnt->y<=(tran_pnt.y+5))) {
+		if ((start_pnt->x>=(pnt2d.x-5)) && (start_pnt->x<=(pnt2d.x+5)) && (start_pnt->y>=(pnt2d.y-5)) && (start_pnt->y<=(pnt2d.y+5))) {
 			idx=n;
 			break;
 		}
@@ -241,7 +241,7 @@ bool select_model_wind_vertex_sel_poly(d3pnt *start_pnt,float *pv)
 	int					n,k,nt,idx;
 	float				*pv2;
 	d3fpnt				pnt;
-	d3pnt				tran_pnt;
+	d3pnt				pnt2d;
 	model_mesh_type		*mesh;
 	model_poly_type		*poly;
 
@@ -265,9 +265,9 @@ bool select_model_wind_vertex_sel_poly(d3pnt *start_pnt,float *pv)
 			pnt.y=*pv2++;
 			pnt.z=*pv2;
 		
-			model_draw_2D_transform(&pnt,&tran_pnt);
+			model_draw_project_point(&pnt,&pnt2d);
 		
-			if ((start_pnt->x>=(tran_pnt.x-5)) && (start_pnt->x<=(tran_pnt.x+5)) && (start_pnt->y>=(tran_pnt.y-5)) && (start_pnt->y<=(tran_pnt.y+5))) {
+			if ((start_pnt->x>=(pnt2d.x-5)) && (start_pnt->x<=(pnt2d.x+5)) && (start_pnt->y>=(pnt2d.y-5)) && (start_pnt->y<=(pnt2d.y+5))) {
 				idx=poly->v[k];
 				break;
 			}
@@ -547,7 +547,7 @@ void select_model_wind(d3pnt *start_pnt)
 		// setup transforms
 		
 	model_draw_gl_setup(0);
-	model_draw_2D_transform_setup();
+	model_draw_setup_project_point();
 
 		// run the correct click
 		
@@ -642,10 +642,10 @@ void change_model_wind(d3pnt *start_pnt,bool shift_on,bool rotate_on,bool size_o
 
 bool model_wind_draw_bone_click_box(d3pnt *click_pnt,d3fpnt *pnt)
 {
-	d3pnt			tran_pnt;
+	d3pnt			pnt2d;
 	
-	model_draw_2D_transform(pnt,&tran_pnt);
-	return((click_pnt->x>=(tran_pnt.x-6)) && (click_pnt->x<=(tran_pnt.x+6)) && (click_pnt->y>=(tran_pnt.y-6)) && (click_pnt->y<=(tran_pnt.y+6)));
+	model_draw_project_point(pnt,&pnt2d);
+	return((click_pnt->x>=(pnt2d.x-6)) && (click_pnt->x<=(pnt2d.x+6)) && (click_pnt->y>=(pnt2d.y-6)) && (click_pnt->y<=(pnt2d.y+6)));
 }
 
 bool model_wind_bone_click(d3pnt *start_pnt,bool double_click)
@@ -674,7 +674,7 @@ bool model_wind_bone_click(d3pnt *start_pnt,bool double_click)
 		// setup transforms
 		
 	model_draw_gl_setup(0);
-	model_draw_2D_transform_setup();
+	model_draw_setup_project_point();
 	
 		// click on any drag handles?
 		
@@ -859,7 +859,7 @@ bool model_wind_hit_box_click(d3pnt *start_pnt)
 		// setup transforms
 		
 	model_draw_gl_setup(0);
-	model_draw_2D_transform_setup();
+	model_draw_setup_project_point();
 
 		// find a click
 

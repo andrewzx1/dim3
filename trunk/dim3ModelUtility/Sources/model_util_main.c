@@ -113,6 +113,7 @@ bool model_new(model_type *model,char *name)
 		
 	model->meshes[0].vertexes=NULL;
 	model->meshes[0].polys=NULL;
+	model->meshes[0].trans_sort.polys=NULL;
 
 	model->meshes[0].no_lighting=FALSE;
 	model->meshes[0].diffuse=TRUE;
@@ -220,6 +221,7 @@ void model_close(model_type *model)
 	for (n=0;n!=model->nmesh;n++) {
 		if (model->meshes[n].vertexes!=NULL) free(model->meshes[n].vertexes);
 		if (model->meshes[n].polys!=NULL) free(model->meshes[n].polys);
+		if (model->meshes[n].trans_sort.polys!=NULL) free(model->meshes[n].trans_sort.polys);
 	}
 
 	free(model->textures);
