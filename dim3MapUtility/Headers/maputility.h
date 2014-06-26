@@ -435,11 +435,11 @@ typedef struct		{
 typedef struct		{
 						int									mesh_idx,poly_idx;
 						float								dist;
-					} map_poly_sort_item_type;
+					} map_poly_sort_poly_type;
 
 typedef struct		{
 						int									count;
-						map_poly_sort_item_type				*list;
+						map_poly_sort_poly_type				*polys;
 					} map_poly_sort_type;
 
 //

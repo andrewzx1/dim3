@@ -119,17 +119,17 @@ void model_texture_end(void)
       
 ======================================================= */
 
-float model_draw_transparent_poly_far_z(int mesh_idx,model_poly_type *poly)
+float model_draw_transparent_poly_closest_z(int mesh_idx,model_poly_type *poly)
 {
 	int				n;
 	float			d,dist;
 	float			*pv;
 	d3fpnt			pnt;
 
-		// calculate the farest z
+		// calculate the closest z
 		// that is on screen
 
-	dist=0.0f;
+	dist=2.0f;
 
 	for (n=0;n!=poly->ptsz;n++) {
 		pv=draw_setup.mesh_arrays[mesh_idx].gl_vertex_array+(poly->v[n]*3);
@@ -138,7 +138,7 @@ float model_draw_transparent_poly_far_z(int mesh_idx,model_poly_type *poly)
 		pnt.z=*pv;
 		
 		d=model_draw_project_get_depth(&pnt);
-		if (d>dist) dist=d;
+		if (d<dist) dist=d;
 	}
 
 	return(dist);
@@ -172,15 +172,16 @@ bool model_draw_transparent_sort(int mesh_idx)
 
 			// find distance from camera
 
-		dist=model_draw_transparent_poly_far_z(mesh_idx,poly);
+		dist=model_draw_transparent_poly_closest_z(mesh_idx,poly);
 
 			// find position in sort list
-			// always check from the end of the list up
+			// this list will be reversed, from nearest
+			// to farests (as that works better for sorting)
 
 		sort_idx=sort_cnt;
 
 		for (k=0;k!=sort_cnt;k++) {
-			if (dist>mesh->trans_sort.polys[k].dist) {
+			if (dist<mesh->trans_sort.polys[k].dist) {
 				sort_idx=k;
 				break;
 			}
@@ -270,12 +271,15 @@ void model_draw_mesh_transparent_polygons(int mesh_idx)
 		// sorting already removes hidden
 		// or opaque polygons
 
+		// list is nearest to farthest, so we
+		// run it backwards
+
 	glEnable(GL_BLEND);
 	glDepthMask(GL_FALSE);
 
 	mesh=&model.meshes[mesh_idx];
 
-	for (n=0;n!=mesh->trans_sort.count;n++) {
+	for (n=(mesh->trans_sort.count-1);n>=0;n--) {
 		poly=&mesh->polys[mesh->trans_sort.polys[n].poly_idx];
 
 			// switch texture?

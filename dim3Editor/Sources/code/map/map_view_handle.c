@@ -105,13 +105,13 @@ bool view_handle_create_rot_handle(editor_view_type *view,d3pnt *pnt,d3ang *ang,
 	view_set_viewport(view,FALSE,FALSE);
 	view_set_3D_projection(view,map.editor_setup.view_near_dist,map.editor_setup.view_far_dist,view_near_offset);
 
-	if (!view_project_point_in_z(center_pnt)) return(FALSE);
+	if (!map_view_project_point_in_z(center_pnt)) return(FALSE);
 
-	view_project_point(view,center_pnt);
+	map_view_project_point(view,center_pnt);
 
-	view_project_point(view,&hand_pnt[0]);
-	view_project_point(view,&hand_pnt[1]);
-	view_project_point(view,&hand_pnt[2]);
+	map_view_project_point(view,&hand_pnt[0]);
+	map_view_project_point(view,&hand_pnt[1]);
+	map_view_project_point(view,&hand_pnt[2]);
 	
 	return(TRUE);
 }

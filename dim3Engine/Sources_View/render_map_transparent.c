@@ -49,18 +49,18 @@ bool render_transparent_create_sort_list(void)
 {
 	int					sz;
 
-	sz=max_sort_poly*sizeof(map_poly_sort_item_type);
-	trans_sort.list=(map_poly_sort_item_type*)malloc(sz);
-	if (trans_sort.list==NULL) return(FALSE);
+	sz=max_sort_poly*sizeof(map_poly_sort_poly_type);
+	trans_sort.polys=(map_poly_sort_poly_type*)malloc(sz);
+	if (trans_sort.polys==NULL) return(FALSE);
 
-	bzero(trans_sort.list,sz);
+	bzero(trans_sort.polys,sz);
 	
 	return(TRUE);
 }
 
 void render_transparent_dispose_sort_list(void)
 {
-	free(trans_sort.list);
+	free(trans_sort.polys);
 }
 
 /* =======================================================
@@ -69,16 +69,16 @@ void render_transparent_dispose_sort_list(void)
       
 ======================================================= */
 
-float render_transparent_poly_far_z(map_mesh_type *mesh,map_mesh_poly_type *poly)
+float render_transparent_poly_closest_z(map_mesh_type *mesh,map_mesh_poly_type *poly)
 {
 	int				n;
 	float			d,dist;
 	d3pnt			*pt;
 
-		// calculate the farest z
+		// calculate the closest z
 		// that is on screen
 
-	dist=0.0f;
+	dist=2.0f;
 
 	for (n=0;n!=poly->ptsz;n++) {
 
@@ -87,7 +87,7 @@ float render_transparent_poly_far_z(map_mesh_type *mesh,map_mesh_poly_type *poly
 		if (!gl_project_in_view_z(pt)) continue;
 		
 		d=gl_project_get_depth(pt);
-		if (d>dist) dist=d;
+		if (d<dist) dist=d;
 	}
 
 	return(dist);
@@ -99,9 +99,9 @@ void render_transparent_sort(void)
 	float						dist;
 	map_mesh_type				*mesh;
 	map_mesh_poly_type			*poly;
-	map_poly_sort_item_type		*sort_list;
+	map_poly_sort_poly_type		*sort_list;
 
-	sort_list=trans_sort.list;
+	sort_list=trans_sort.polys;
 
 		// create sort list
 
@@ -121,15 +121,15 @@ void render_transparent_sort(void)
 			
 				// find distance from camera
 
-			dist=render_transparent_poly_far_z(mesh,poly);
+			dist=render_transparent_poly_closest_z(mesh,poly);
 
 				// find position in sort list
-				// always check from the end of the list up
+				// this list is nearest to farthest
 
 			sort_idx=sort_cnt;
 
 			for (i=0;i!=sort_cnt;i++) {
-				if (dist>sort_list[i].dist) {
+				if (dist<sort_list[i].dist) {
 					sort_idx=i;
 					break;
 				}
@@ -138,7 +138,7 @@ void render_transparent_sort(void)
 				// add to sort list
 
 			if (sort_idx<sort_cnt) {
-				memmove(&sort_list[sort_idx+1],&sort_list[sort_idx],((sort_cnt-sort_idx)*sizeof(map_poly_sort_item_type)));
+				memmove(&sort_list[sort_idx+1],&sort_list[sort_idx],((sort_cnt-sort_idx)*sizeof(map_poly_sort_poly_type)));
 			}
 
 			sort_list[sort_idx].mesh_idx=view.render->draw_list.items[n].idx;
@@ -147,8 +147,6 @@ void render_transparent_sort(void)
 
 			sort_cnt++;
 			if (sort_cnt>=max_sort_poly) break;
-
-			poly++;
 		}
 
 		if (sort_cnt>=max_sort_poly) break;
@@ -193,11 +191,11 @@ void render_map_mesh_transparent(void)
 	cur_mesh_idx=-1;
 	lighting_small=FALSE;
 		
-	for (n=0;n!=trans_sort.count;n++) {
+	for (n=(trans_sort.count-1);n>=0;n--) {
 
-		mesh_idx=trans_sort.list[n].mesh_idx;
+		mesh_idx=trans_sort.polys[n].mesh_idx;
 		mesh=&map.mesh.meshes[mesh_idx];
-		poly=&mesh->polys[trans_sort.list[n].poly_idx];
+		poly=&mesh->polys[trans_sort.polys[n].poly_idx];
 
 			// check for a changing mesh,
 			// and reset some drawing operations
