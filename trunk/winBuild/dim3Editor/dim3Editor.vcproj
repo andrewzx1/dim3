@@ -1045,6 +1045,10 @@
 							>
 						</File>
 						<File
+							RelativePath="..\..\dim3Editor\Sources\code\map\map_view_draw_mesh.c"
+							>
+						</File>
+						<File
 							RelativePath="..\..\dim3Editor\Sources\code\map\map_view_draw_piece.c"
 							>
 						</File>

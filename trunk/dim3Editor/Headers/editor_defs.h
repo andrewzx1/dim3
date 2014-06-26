@@ -732,12 +732,17 @@ typedef struct		{
 // editor draw sorting
 //
 
-#define view_mesh_sort_max_mesh					5000
+#define view_mesh_sort_max_mesh						5000
 
 typedef struct		{
-						int						idx,dist;
-					} view_mesh_sort_list_type;
-					
+						int							mesh_idx,dist;
+					} view_mesh_sort_mesh_type;
+
+typedef struct		{
+						int							count;
+						view_mesh_sort_mesh_type	*meshes;
+					} view_mesh_sort_type;
+
 //
 // model vertex and poly masks
 //

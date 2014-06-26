@@ -32,9 +32,9 @@ and can be sold or given away.
 #include "glue.h"
 #include "interface.h"
 
-extern int						top_view_x,top_view_z,
-								view_mesh_sort_count;
-extern view_mesh_sort_list_type	*view_mesh_sort_list;
+extern int						top_view_x,top_view_z;
+extern view_mesh_sort_type		view_mesh_sort;
+extern map_poly_sort_type		view_poly_trans_sort;
 
 extern list_palette_type		file_palette,map_palette;
 
@@ -43,8 +43,8 @@ extern map_type					map;
 extern app_state_type			state;
 extern app_pref_type			pref;
 
-double							view_mod_matrix[16],view_proj_matrix[16];
-GLint							view_vport[4];
+double							map_view_mod_matrix[16],map_view_proj_matrix[16];
+GLint							map_view_vport[4];
 
 bitmap_type						spot_bitmap,scenery_bitmap,node_bitmap,node_defined_bitmap,
 								light_bitmap,sound_bitmap,particle_bitmap;
@@ -87,8 +87,13 @@ bool view_initialize(void)
 	
 		// view mesh sorting
 
-	view_mesh_sort_list=(view_mesh_sort_list_type*)malloc(view_mesh_sort_max_mesh*sizeof(view_mesh_sort_list_type));
-	if (view_mesh_sort_list==NULL) return(FALSE);
+	view_mesh_sort.meshes=(view_mesh_sort_mesh_type*)malloc(view_mesh_sort_max_mesh*sizeof(view_mesh_sort_mesh_type));
+	if (view_mesh_sort.meshes==NULL) return(FALSE);
+
+		// view transparent poly sorting
+
+	view_poly_trans_sort.polys=(map_poly_sort_poly_type*)malloc(max_sort_poly*sizeof(map_poly_sort_poly_type));
+	if (view_poly_trans_sort.polys==NULL) return(FALSE);
 
 		// some defaults
 		
@@ -100,9 +105,10 @@ bool view_initialize(void)
 
 void view_shutdown(void)
 {
-		// view sort list
+		// soring lists
 
-	free(view_mesh_sort_list);
+	free(view_poly_trans_sort.polys);
+	free(view_mesh_sort.meshes);
 
 		// interface textures
 		
@@ -439,29 +445,35 @@ void view_center_all(bool reset_ang)
       
 ======================================================= */
 
-void view_setup_project_point(void)
+void map_view_setup_project_point(void)
 {
-	glGetDoublev(GL_MODELVIEW_MATRIX,view_mod_matrix);
-	glGetDoublev(GL_PROJECTION_MATRIX,view_proj_matrix);
-	glGetIntegerv(GL_VIEWPORT,view_vport);
+	glGetDoublev(GL_MODELVIEW_MATRIX,map_view_mod_matrix);
+	glGetDoublev(GL_PROJECTION_MATRIX,map_view_proj_matrix);
+	glGetIntegerv(GL_VIEWPORT,map_view_vport);
 }
 
-void view_project_point(editor_view_type *view,d3pnt *pnt)
+float map_view_project_point(editor_view_type *view,d3pnt *pnt)
 {
 	double			dx,dy,dz;
 	d3rect			wbox;
 
 	os_get_window_box(&wbox);
 
-	gluProject(pnt->x,pnt->y,pnt->z,view_mod_matrix,view_proj_matrix,view_vport,&dx,&dy,&dz);
+	gluProject(pnt->x,pnt->y,pnt->z,map_view_mod_matrix,map_view_proj_matrix,map_view_vport,&dx,&dy,&dz);
 
 	pnt->x=((int)dx)-wbox.lx;
 	pnt->y=wbox.by-(((int)dy)-wbox.ty);
+	return((float)dz);
 }
 
-bool view_project_point_in_z(d3pnt *pnt)
+bool map_view_project_point_in_z(d3pnt *pnt)
 {
-	return(((((double)pnt->x)*view_mod_matrix[2])+(((double)pnt->y)*view_mod_matrix[6])+(((double)pnt->z)*view_mod_matrix[10])+view_mod_matrix[14])>0.0);
+	return(((((double)pnt->x)*map_view_mod_matrix[2])+(((double)pnt->y)*map_view_mod_matrix[6])+(((double)pnt->z)*map_view_mod_matrix[10])+map_view_mod_matrix[14])>0.0);
+}
+
+float map_view_project_get_depth(editor_view_type *view,d3pnt *pnt)
+{
+	return(map_view_project_point(view,pnt));	
 }
 
 /* =======================================================
@@ -633,7 +645,7 @@ void view_set_3D_projection(editor_view_type *view,int near_z,int far_z,int near
 	
 		// save projection
 		
-	view_setup_project_point();
+	map_view_setup_project_point();
 }
 
 /* =======================================================

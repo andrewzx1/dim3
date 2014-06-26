@@ -688,9 +688,10 @@ extern void view_set_viewport(editor_view_type *view,bool erase,bool use_backgro
 extern float view_get_lookat_x_angle(editor_view_type *view);
 extern void view_set_2D_projection(editor_view_type *view);
 extern void view_set_3D_projection(editor_view_type *view,int near_z,int far_z,int near_z_offset);
-extern void view_setup_project_point(void);
-extern void view_project_point(editor_view_type *view,d3pnt *pnt);
-extern bool view_project_point_in_z(d3pnt *pnt);
+extern void map_view_setup_project_point(void);
+extern float map_view_project_point(editor_view_type *view,d3pnt *pnt);
+extern bool map_view_project_point_in_z(d3pnt *pnt);
+extern float map_view_project_get_depth(editor_view_type *view,d3pnt *pnt);
 extern editor_view_type* view_get_current_view(void);
 extern bool view_point_in_view(editor_view_type *view,d3pnt *pnt);
 extern bool map_view_cursor(d3pnt *pnt);
@@ -725,6 +726,16 @@ extern void view_face_bottom(void);
 extern void map_view_select_view(d3pnt *pnt);
 extern void map_view_scroll_wheel(d3pnt *pnt,int delta);
 extern bool map_view_click(d3pnt *pnt,bool double_click);
+extern bool view_cull_poly(editor_view_type *view,map_mesh_type *mesh,map_mesh_poly_type *poly,int mn,int mk);
+extern bool view_clip_poly(editor_view_type *view,map_mesh_poly_type *poly);
+extern bool view_clip_liquid(editor_view_type *view,map_liquid_type *liq);
+extern bool view_clip_point(editor_view_type *view,d3pnt *pnt);
+extern void view_draw_create_mesh_sort_list(editor_view_type *view);
+extern void view_draw_meshes_opaque(editor_view_type *view);
+extern void view_draw_meshes_transparent(editor_view_type *view);
+extern void view_draw_liquids(editor_view_type *view,bool opaque);
+extern void view_draw_meshes_line(editor_view_type *view,bool opaque);
+extern void view_draw_meshes_normals(editor_view_type *view);
 extern void map_view_draw(void);
 
 //
