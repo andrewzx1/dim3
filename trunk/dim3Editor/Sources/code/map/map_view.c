@@ -466,6 +466,20 @@ float map_view_project_point(editor_view_type *view,d3pnt *pnt)
 	return((float)dz);
 }
 
+float map_view_project_point_f(editor_view_type *view,d3fpnt *pnt)
+{
+	double			dx,dy,dz;
+	d3rect			wbox;
+
+	os_get_window_box(&wbox);
+
+	gluProject(pnt->x,pnt->y,pnt->z,map_view_mod_matrix,map_view_proj_matrix,map_view_vport,&dx,&dy,&dz);
+
+	pnt->x=((float)dx)-(float)wbox.lx;
+	pnt->y=(float)wbox.by-((float)dy-(float)wbox.ty);
+	return((float)dz);
+}
+
 bool map_view_project_point_in_z(d3pnt *pnt)
 {
 	return(((((double)pnt->x)*map_view_mod_matrix[2])+(((double)pnt->y)*map_view_mod_matrix[6])+(((double)pnt->z)*map_view_mod_matrix[10])+map_view_mod_matrix[14])>0.0);
@@ -473,7 +487,24 @@ bool map_view_project_point_in_z(d3pnt *pnt)
 
 float map_view_project_get_depth(editor_view_type *view,d3pnt *pnt)
 {
-	return(map_view_project_point(view,pnt));	
+	d3pnt			pnt2;
+
+	pnt2.x=pnt->x;
+	pnt2.y=pnt->y;
+	pnt2.z=pnt->z;
+
+	return(map_view_project_point(view,&pnt2));	
+}
+
+float map_view_project_get_depth_f(editor_view_type *view,d3fpnt *pnt)
+{
+	d3fpnt			pnt2;
+
+	pnt2.x=pnt->x;
+	pnt2.y=pnt->y;
+	pnt2.z=pnt->z;
+
+	return(map_view_project_point_f(view,&pnt2));	
 }
 
 /* =======================================================
@@ -1232,7 +1263,7 @@ void map_view_draw(void)
 
 		// fix any model changes
 
-	view_models_reset();
+	map_view_models_reset();
 	
 		// draw the views
 		

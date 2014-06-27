@@ -69,16 +69,16 @@ void render_transparent_dispose_sort_list(void)
       
 ======================================================= */
 
-float render_transparent_poly_closest_z(map_mesh_type *mesh,map_mesh_poly_type *poly)
+float render_transparent_poly_farthest_z(map_mesh_type *mesh,map_mesh_poly_type *poly)
 {
 	int				n;
 	float			d,dist;
 	d3pnt			*pt;
 
-		// calculate the closest z
+		// calculate the farthest z
 		// that is on screen
 
-	dist=2.0f;
+	dist=0.0f;
 
 	for (n=0;n!=poly->ptsz;n++) {
 
@@ -87,7 +87,7 @@ float render_transparent_poly_closest_z(map_mesh_type *mesh,map_mesh_poly_type *
 		if (!gl_project_in_view_z(pt)) continue;
 		
 		d=gl_project_get_depth(pt);
-		if (d<dist) dist=d;
+		if (d>dist) dist=d;
 	}
 
 	return(dist);
@@ -121,15 +121,15 @@ void render_transparent_sort(void)
 			
 				// find distance from camera
 
-			dist=render_transparent_poly_closest_z(mesh,poly);
+			dist=render_transparent_poly_farthest_z(mesh,poly);
 
 				// find position in sort list
-				// this list is nearest to farthest
+				// this list is farthest to nearest
 
 			sort_idx=sort_cnt;
 
 			for (i=0;i!=sort_cnt;i++) {
-				if (dist<sort_list[i].dist) {
+				if (dist>sort_list[i].dist) {
 					sort_idx=i;
 					break;
 				}
@@ -191,7 +191,8 @@ void render_map_mesh_transparent(void)
 	cur_mesh_idx=-1;
 	lighting_small=FALSE;
 		
-	for (n=(trans_sort.count-1);n>=0;n--) {
+	for (n=0;n!=trans_sort.count;n++) {
+//	for (n=(trans_sort.count-1);n>=0;n--) {
 
 		mesh_idx=trans_sort.polys[n].mesh_idx;
 		mesh=&map.mesh.meshes[mesh_idx];

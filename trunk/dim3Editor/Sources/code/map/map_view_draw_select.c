@@ -543,13 +543,13 @@ void map_view_draw_select(editor_view_type *view)
 				break;
 				
 			case item_map_spot:
-				view_model_cube_vertexes(map.spots[main_idx].display_model,&map.spots[main_idx].pnt,&map.spots[main_idx].ang,1.0f,v_pnts);
+				map_view_model_cube_vertexes(map.spots[main_idx].display_model,&map.spots[main_idx].pnt,&map.spots[main_idx].ang,1.0f,v_pnts);
 				map_view_draw_select_cube(v_pnts);
 				map_view_draw_select_rot_handles(view,&map.spots[main_idx].pnt,&map.spots[main_idx].ang);
 				break;
 				
 			case item_map_scenery:
-				view_model_cube_vertexes(map.sceneries[main_idx].model_name,&map.sceneries[main_idx].pnt,&map.sceneries[main_idx].ang,map.sceneries[main_idx].resize,v_pnts);
+				map_view_model_cube_vertexes(map.sceneries[main_idx].model_name,&map.sceneries[main_idx].pnt,&map.sceneries[main_idx].ang,map.sceneries[main_idx].resize,v_pnts);
 				map_view_draw_select_cube(v_pnts);
 				map_view_draw_select_rot_handles(view,&map.sceneries[main_idx].pnt,&map.sceneries[main_idx].ang);
 				break;

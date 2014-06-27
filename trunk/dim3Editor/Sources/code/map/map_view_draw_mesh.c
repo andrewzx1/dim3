@@ -199,16 +199,16 @@ void view_draw_create_mesh_sort_list(editor_view_type *view)
       
 ======================================================= */
 
-float view_draw_meshes_transparent_poly_closest_z(editor_view_type *view,map_mesh_type *mesh,map_mesh_poly_type *poly)
+float view_draw_meshes_transparent_poly_farthest_z(editor_view_type *view,map_mesh_type *mesh,map_mesh_poly_type *poly)
 {
 	int				n;
 	float			d,dist;
 	d3pnt			*pt;
 
-		// calculate the closest z
+		// calculate the farthest z
 		// that is on screen
 
-	dist=2.0f;
+	dist=0.0f;
 
 	for (n=0;n!=poly->ptsz;n++) {
 
@@ -217,7 +217,7 @@ float view_draw_meshes_transparent_poly_closest_z(editor_view_type *view,map_mes
 		if (!map_view_project_point_in_z(pt)) continue;
 		
 		d=map_view_project_get_depth(view,pt);
-		if (d<dist) dist=d;
+		if (d>dist) dist=d;
 	}
 
 	return(dist);
@@ -266,15 +266,15 @@ int view_draw_meshes_transparent_sort(editor_view_type *view)
 			
 				// find distance from camera
 
-			dist=view_draw_meshes_transparent_poly_closest_z(view,mesh,poly);
+			dist=view_draw_meshes_transparent_poly_farthest_z(view,mesh,poly);
 
 				// find position in sort list
-				// this list is nearest to farthest
+				// this list is farthest to nearest
 
 			sort_idx=sort_cnt;
 
 			for (i=0;i!=sort_cnt;i++) {
-				if (dist<sort_list[i].dist) {
+				if (dist>sort_list[i].dist) {
 					sort_idx=i;
 					break;
 				}
@@ -324,7 +324,9 @@ void view_draw_meshes_opaque(editor_view_type *view)
 	
 	glEnable(GL_DEPTH_TEST);
 	glDepthMask(GL_TRUE);
-	
+
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
 	glColor4f(1.0f,1.0f,1.0f,1.0f);
 	
 	old_gl_id=-1;
@@ -345,8 +347,6 @@ void view_draw_meshes_opaque(editor_view_type *view)
 
 		glBindBuffer(GL_ARRAY_BUFFER,mesh->vbo.vertex);
 		glVertexPointer(3,GL_FLOAT,((3+2+2)*sizeof(float)),(GLvoid*)0);
-
-		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
 		if (view->uv_layer==uv_layer_normal) {
 			glTexCoordPointer(2,GL_FLOAT,((3+2+2)*sizeof(float)),(GLvoid*)(3*sizeof(float)));
@@ -444,19 +444,22 @@ void view_draw_meshes_transparent(editor_view_type *view)
 	
 	glEnable(GL_DEPTH_TEST);
 	glDepthMask(GL_FALSE);
+
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	
 	glColor4f(1.0f,1.0f,1.0f,1.0f);
 	
 	old_gl_id=-1;
 
 		// draw meshes
-		// poly sort list is nearest
-		// to farthest, so do in reverse
+		// poly sort list is farthest to
+		// nearest
 
 		// this list already removes non-opaque
 		// and hidden polys
-		
-	for (n=(view_poly_trans_sort.count-1);n>=0;n--) {
+	
+	for (n=0;n!=view_poly_trans_sort.count;n++) {
+//	for (n=(view_poly_trans_sort.count-1);n>=0;n--) {
 
 		mesh_idx=view_poly_trans_sort.polys[n].mesh_idx;
 		poly_idx=view_poly_trans_sort.polys[n].poly_idx;
@@ -477,8 +480,6 @@ void view_draw_meshes_transparent(editor_view_type *view)
 
 		glBindBuffer(GL_ARRAY_BUFFER,mesh->vbo.vertex);
 		glVertexPointer(3,GL_FLOAT,((3+2+2)*sizeof(float)),(GLvoid*)0);
-
-		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
 		if (view->uv_layer==uv_layer_normal) {
 			glTexCoordPointer(2,GL_FLOAT,((3+2+2)*sizeof(float)),(GLvoid*)(3*sizeof(float)));

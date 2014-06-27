@@ -106,7 +106,7 @@ bool file_new_map(void)
 	
 		// start models
 		
-	view_models_start();
+	map_view_models_start();
 		
 		// set flags as opened
 
@@ -181,7 +181,7 @@ bool file_open_map(char *file_name)
 	
 		// start models
 		
-	view_models_start();
+	map_view_models_start();
 	
 		// set flags as opened
 		
@@ -257,7 +257,7 @@ bool file_close_map(void)
 		// close map
 
 	map_close(&map);
-	view_models_close();
+	map_view_models_close();
 
 		// reset state
 	
