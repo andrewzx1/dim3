@@ -179,8 +179,8 @@ void render_model_release_vertex_objects(void)
       Transparent Polygon Sorting
       
 ======================================================= */
-/*
-float render_model_transparent_poly_far_z(int mesh_idx,model_poly_type *poly)
+
+float render_model_transparent_poly_closest_z(model_draw *draw,int mesh_idx,model_poly_type *poly)
 {
 	int				n;
 	float			d,dist;
@@ -190,10 +190,10 @@ float render_model_transparent_poly_far_z(int mesh_idx,model_poly_type *poly)
 		// calculate the farest z
 		// that is on screen
 
-	dist=0.0f;
+	dist=2.0f;
 
 	for (n=0;n!=poly->ptsz;n++) {
-		pv=draw_setup.mesh_arrays[mesh_idx].gl_vertex_array+(poly->v[n]*3);
+		pv=draw->setup.mesh_arrays[mesh_idx].gl_vertex_array+(poly->v[n]*3);
 		pnt.x=*pv++;
 		pnt.y=*pv++;
 		pnt.z=*pv;
@@ -201,49 +201,50 @@ float render_model_transparent_poly_far_z(int mesh_idx,model_poly_type *poly)
 		if (!gl_project_in_view_z_f(&pnt)) continue;
 		
 		d=gl_project_get_depth_f(&pnt);
-		if (d>dist) dist=d;
+		if (d<dist) dist=d;
 	}
 
 	return(dist);
 }
 
-bool model_draw_transparent_sort(int mesh_idx)
+bool model_draw_transparent_sort(model_type *mdl,model_draw *draw,int mesh_idx)
 {
-	int					n,k,sort_cnt,sort_idx;
+	int					n,k,v_idx,
+						sort_cnt,sort_idx;
 	float				dist;
 	model_mesh_type		*mesh;
     model_poly_type		*poly;
 
-		// setup projections
-
-	model_draw_setup_project_point();
-
 		// create sort list
 
-	mesh=&model.meshes[mesh_idx];
+	mesh=&mdl->meshes[mesh_idx];
 
 	sort_cnt=0;
+
+	v_idx=0;				// need to track vertex offsets as we won't be going through poly list
+	poly=mesh->polys;
 	
 	for (n=0;n!=mesh->npoly;n++) {
 
-		poly=&mesh->polys[n];
+			// skip out if opaque
 
-			// skip out if hidden or opaque
-
-		if (model_vertex_mask_check_hide_poly(mesh_idx,poly)) continue;
-		if (model.textures[poly->txt_idx].frames[0].bitmap.opaque) continue;
+		if (!draw->meshes[mesh_idx].textures[poly->txt_idx].transparent) {
+			v_idx+=poly->ptsz;
+			poly++;
+			continue;
+		}
 
 			// find distance from camera
 
-		dist=render_model_transparent_poly_far_z(mesh_idx,poly);
+		dist=render_model_transparent_poly_closest_z(draw,mesh_idx,poly);
 
 			// find position in sort list
-			// always check from the end of the list up
+			// list is sorted from farthest to nearest
 
 		sort_idx=sort_cnt;
 
 		for (k=0;k!=sort_cnt;k++) {
-			if (dist>mesh->trans_sort.polys[k].dist) {
+			if (dist<mesh->trans_sort.polys[k].dist) {
 				sort_idx=k;
 				break;
 			}
@@ -256,16 +257,20 @@ bool model_draw_transparent_sort(int mesh_idx)
 		}
 
 		mesh->trans_sort.polys[sort_idx].poly_idx=n;
+		mesh->trans_sort.polys[sort_idx].v_idx=v_idx;
 		mesh->trans_sort.polys[sort_idx].dist=dist;
 
 		sort_cnt++;
+
+		v_idx+=poly->ptsz;
+		poly++;
 	}
 
 	mesh->trans_sort.count=sort_cnt;
 
 	return(sort_cnt!=0);
 }
-*/
+
 /* =======================================================
 
       Draw Model Polys
@@ -347,30 +352,30 @@ void render_model_transparent_mesh(model_type *mdl,int mesh_idx,model_draw *draw
 	mesh=&mdl->meshes[mesh_idx];
 	draw_mesh=&draw->meshes[mesh_idx];
 	stride=draw->vbo[mesh_idx].vertex_stride;
+
+		// sort the polygons
+
+	if (!model_draw_transparent_sort(mdl,draw,mesh_idx)) return;
 	
 		// minimize state changes
 
 	cur_additive=FALSE;
 
 		// run through the polys
+		// this sorted list has already eliminated
+		// non-transparent polys
 
-	v_idx=0;
-	poly=mesh->polys;
+		// models are sorted farthest to nearest
+		// because they are based on closest point,
+		// map segments are the opposite as they are bigger
 
-	for (n=0;n!=mesh->npoly;n++) {
+	for (n=(mesh->trans_sort.count-1);n>=0;n--) {
 
-			// is this poly texture transparent
-
-		txt_idx=poly->txt_idx;
-
-		if (!draw_mesh->textures[txt_idx].transparent) {
-			v_idx+=poly->ptsz;
-			poly++;
-			continue;
-		}
+		poly=&mesh->polys[mesh->trans_sort.polys[n].poly_idx];
 	
 			// get texture
 
+		txt_idx=poly->txt_idx;
 		frame=draw_mesh->textures[txt_idx].frame;
 		texture=&mdl->textures[txt_idx];
 
@@ -393,14 +398,15 @@ void render_model_transparent_mesh(model_type *mdl,int mesh_idx,model_draw *draw
 		light_list->hilite=(mesh->no_lighting);
 
 			// draw poly
+			// vertex idx was cached when sorted
+			// list was created
+
+		v_idx=mesh->trans_sort.polys[n].v_idx;
 			
 		gl_shader_draw_execute_model_start(texture,txt_idx,frame,draw_mesh->alpha,0,(3*sizeof(float)),(5*sizeof(float)),(8*sizeof(float)),stride,light_list);
 		glDrawArrays(GL_TRIANGLE_FAN,v_idx,poly->ptsz);
 		gl_shader_draw_execute_model_end(texture,light_list);
 		
-		v_idx+=poly->ptsz;
-		poly++;
-
 		view.count.model_poly++;
 	}
 	

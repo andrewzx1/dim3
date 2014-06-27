@@ -36,7 +36,12 @@ and can be sold or given away.
 #define bitmap_ag_extra_brick_margin				4
 #define bitmap_ag_start_brick_lip					4
 #define bitmap_ag_extra_brick_lip					6
-#define bitmap_ag_brick_color_factor				0.15f
+#define bitmap_ag_brick_large_color_factor			0.15f
+#define bitmap_ag_brick_small_color_factor			0.05f
+
+#define bitmap_ag_start_block_row_count				4
+#define bitmap_ag_extra_block_row_count				2
+#define bitmap_ag_block_color_factor				0.05f
 
 #define bitmap_ag_tile_start_split_count			2
 #define bitmap_ag_tile_extra_split_normal_count		3
@@ -63,7 +68,7 @@ and can be sold or given away.
       
 ======================================================= */
 
-void bitmap_ag_texture_brick_single(bitmap_ag_type *ag_bitmap,int px,int py,int wid,int high,int margin,d3col *base_col)
+void bitmap_ag_texture_brick_single(bitmap_ag_type *ag_bitmap,int px,int py,int wid,int high,int margin,d3col *base_col,float color_factor)
 {
 	int				n,rx,ry,r_wid,rough_count,lip_sz,
 					tot_wid;
@@ -71,7 +76,7 @@ void bitmap_ag_texture_brick_single(bitmap_ag_type *ag_bitmap,int px,int py,int 
 	
 		// the brick
 
-	bitmap_ag_random_color_change(base_col,&brick_col,bitmap_ag_brick_color_factor);
+	bitmap_ag_random_color_change(base_col,&brick_col,color_factor);
 	lip_sz=bitmap_ag_start_brick_lip+bitmap_ag_random_int(bitmap_ag_extra_brick_lip);
 	bitmap_ag_texture_draw_rectangle(ag_bitmap,px,py,(wid-margin),(high-margin),lip_sz,FALSE,&brick_col);
 
@@ -151,7 +156,7 @@ bool bitmap_ag_texture_brick(texture_frame_type *frame,char *base_path,int pixel
 		if ((row%2)!=0) px+=(wid>>1);
 
 		for (col=0;col!=col_count;col++) {
-			bitmap_ag_texture_brick_single(&ag_bitmap,px,py,wid,high,margin,&base_col);
+			bitmap_ag_texture_brick_single(&ag_bitmap,px,py,wid,high,margin,&base_col,bitmap_ag_brick_large_color_factor);
 			px+=wid;
 		}
 
@@ -207,14 +212,14 @@ bool bitmap_ag_texture_brick_interlaced(texture_frame_type *frame,char *base_pat
 	
 		// draw the bricks
 		
-	bitmap_ag_texture_brick_single(&ag_bitmap,0,0,(pixel_sz>>1),(pixel_sz>>2),margin,&base_col);
-	bitmap_ag_texture_brick_single(&ag_bitmap,(pixel_sz>>1),0,(pixel_sz>>1),(pixel_sz>>2),margin,&base_col);
-	bitmap_ag_texture_brick_single(&ag_bitmap,0,(pixel_sz>>2),(pixel_sz>>1),(pixel_sz>>2),margin,&base_col);
-	bitmap_ag_texture_brick_single(&ag_bitmap,(pixel_sz>>1),(pixel_sz>>2),(pixel_sz>>1),(pixel_sz>>2),margin,&base_col);
-	bitmap_ag_texture_brick_single(&ag_bitmap,0,(pixel_sz>>1),(pixel_sz>>2),(pixel_sz>>1),margin,&base_col);
-	bitmap_ag_texture_brick_single(&ag_bitmap,(pixel_sz>>2),(pixel_sz>>1),(pixel_sz>>2),(pixel_sz>>1),margin,&base_col);
-	bitmap_ag_texture_brick_single(&ag_bitmap,((pixel_sz>>2)*2),(pixel_sz>>1),(pixel_sz>>2),(pixel_sz>>1),margin,&base_col);
-	bitmap_ag_texture_brick_single(&ag_bitmap,((pixel_sz>>2)*3),(pixel_sz>>1),(pixel_sz>>2),(pixel_sz>>1),margin,&base_col);
+	bitmap_ag_texture_brick_single(&ag_bitmap,0,0,(pixel_sz>>1),(pixel_sz>>2),margin,&base_col,bitmap_ag_brick_small_color_factor);
+	bitmap_ag_texture_brick_single(&ag_bitmap,(pixel_sz>>1),0,(pixel_sz>>1),(pixel_sz>>2),margin,&base_col,bitmap_ag_brick_small_color_factor);
+	bitmap_ag_texture_brick_single(&ag_bitmap,0,(pixel_sz>>2),(pixel_sz>>1),(pixel_sz>>2),margin,&base_col,bitmap_ag_brick_small_color_factor);
+	bitmap_ag_texture_brick_single(&ag_bitmap,(pixel_sz>>1),(pixel_sz>>2),(pixel_sz>>1),(pixel_sz>>2),margin,&base_col,bitmap_ag_brick_small_color_factor);
+	bitmap_ag_texture_brick_single(&ag_bitmap,0,(pixel_sz>>1),(pixel_sz>>2),(pixel_sz>>1),margin,&base_col,bitmap_ag_brick_small_color_factor);
+	bitmap_ag_texture_brick_single(&ag_bitmap,(pixel_sz>>2),(pixel_sz>>1),(pixel_sz>>2),(pixel_sz>>1),margin,&base_col,bitmap_ag_brick_small_color_factor);
+	bitmap_ag_texture_brick_single(&ag_bitmap,((pixel_sz>>2)*2),(pixel_sz>>1),(pixel_sz>>2),(pixel_sz>>1),margin,&base_col,bitmap_ag_brick_small_color_factor);
+	bitmap_ag_texture_brick_single(&ag_bitmap,((pixel_sz>>2)*3),(pixel_sz>>1),(pixel_sz>>2),(pixel_sz>>1),margin,&base_col,bitmap_ag_brick_small_color_factor);
 
 		// save the texture
 
@@ -256,9 +261,7 @@ bool bitmap_ag_texture_concrete_block(texture_frame_type *frame,char *base_path,
 	
 		// brick sizes
 
-	high=bitmap_ag_start_brick_row_size+bitmap_ag_random_int(bitmap_ag_extra_brick_row_size);
-	row_count=pixel_sz/high;
-	if (row_count<0) row_count=0;
+	row_count=bitmap_ag_start_block_row_count+bitmap_ag_random_int(bitmap_ag_extra_block_row_count);
 	high=pixel_sz/row_count;
 
 		// draw the blocks
@@ -270,7 +273,7 @@ bool bitmap_ag_texture_concrete_block(texture_frame_type *frame,char *base_path,
 		px=margin;
 		if ((row%2)!=0) px+=(pixel_sz>>1);
 
-		bitmap_ag_random_color_change(&base_col,&block_col,bitmap_ag_brick_color_factor);
+		bitmap_ag_random_color_change(&base_col,&block_col,bitmap_ag_block_color_factor);
 		lip_sz=bitmap_ag_start_brick_lip+bitmap_ag_random_int(bitmap_ag_extra_brick_lip);
 		bitmap_ag_texture_draw_rectangle(&ag_bitmap,px,py,(pixel_sz-margin),(high-margin),lip_sz,FALSE,&block_col);
 		bitmap_ag_texture_add_noise(&ag_bitmap,px,py,(pixel_sz-margin),(high-margin),0.5f,0.7f);

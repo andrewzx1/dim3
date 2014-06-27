@@ -45,13 +45,13 @@ model_type						*models;
 	        
 ======================================================= */
 
-void view_models_start(void)
+void map_view_models_start(void)
 {
 	nmodel=0;
 	models=malloc(sizeof(model_type)*max_model);
 }
 
-void view_models_close(void)
+void map_view_models_close(void)
 {
 	int					n;
 	model_type			*model;
@@ -92,7 +92,7 @@ int view_models_find_model(char *name)
 	return(-1);
 }
 
-void view_models_reset(void)
+void map_view_models_reset(void)
 {
 	int					n,idx;
 	bool				used[max_model];
@@ -189,11 +189,11 @@ void view_models_reset(void)
 
 /* =======================================================
 
-      Model Y size
+      Model Size
       
 ======================================================= */
 
-void view_get_model_size(char *model_name,d3pnt *size)
+void map_view_model_get_size(char *model_name,d3pnt *size)
 {
 	int					idx;
 
@@ -209,17 +209,106 @@ void view_get_model_size(char *model_name,d3pnt *size)
 
 /* =======================================================
 
+      Transparent Polygon Sorting
+      
+======================================================= */
+
+float map_view_model_draw_transparent_poly_closest_z(editor_view_type *view,model_draw_setup *draw_setup,int mesh_idx,model_poly_type *poly)
+{
+	int				n;
+	float			d,dist;
+	float			*pv;
+	d3fpnt			pnt;
+
+		// calculate the farest z
+		// that is on screen
+
+	dist=2.0f;
+
+	for (n=0;n!=poly->ptsz;n++) {
+		pv=draw_setup->mesh_arrays[mesh_idx].gl_vertex_array+(poly->v[n]*3);
+		pnt.x=*pv++;
+		pnt.y=*pv++;
+		pnt.z=*pv;
+		
+		d=map_view_project_get_depth_f(view,&pnt);
+		if (d<dist) dist=d;
+	}
+
+	return(dist);
+}
+
+bool map_view_model_draw_transparent_sort(editor_view_type *view,model_type *mdl,model_draw_setup *draw_setup,int mesh_idx)
+{
+	int					n,k,sort_cnt,sort_idx;
+	float				dist;
+	model_mesh_type		*mesh;
+    model_poly_type		*poly;
+
+		// create sort list
+
+	mesh=&mdl->meshes[mesh_idx];
+
+	sort_cnt=0;
+	
+	for (n=0;n!=mesh->npoly;n++) {
+
+		poly=&mesh->polys[n];
+
+			// skip out if opaque
+
+		if (mdl->textures[poly->txt_idx].frames[0].bitmap.opaque) continue;
+
+			// find distance from camera
+
+		dist=map_view_model_draw_transparent_poly_closest_z(view,draw_setup,mesh_idx,poly);
+
+			// find position in sort list
+			// list is sorted from farthest to nearest
+
+		sort_idx=sort_cnt;
+
+		for (k=0;k!=sort_cnt;k++) {
+			if (dist<mesh->trans_sort.polys[k].dist) {
+				sort_idx=k;
+				break;
+			}
+		}
+
+			// add to sort list
+
+		if (sort_idx<sort_cnt) {
+			memmove(&mesh->trans_sort.polys[sort_idx+1],&mesh->trans_sort.polys[sort_idx],((sort_cnt-sort_idx)*sizeof(model_trans_sort_poly_type)));
+		}
+
+		mesh->trans_sort.polys[sort_idx].poly_idx=n;
+		mesh->trans_sort.polys[sort_idx].dist=dist;
+
+		sort_cnt++;
+	}
+
+	mesh->trans_sort.count=sort_cnt;
+
+	return(sort_cnt!=0);
+}
+
+/* =======================================================
+
       Draw Model
       
 ======================================================= */
 
-void view_model_draw_polys(model_type *model,model_draw_setup *draw_setup,int *texture_frame,int frame_count,bool opaque)
+void map_view_model_draw_polys_opaque(model_type *model,model_draw_setup *draw_setup,int *texture_frame,int frame_count)
 {
 	int					n,k,frame,cur_txt_idx;
 	float				vertexes[8*3],uvs[8*2];
 	float				*pa,*pv,*pt;
 	model_mesh_type		*mesh;
     model_poly_type		*poly;
+
+		// setup drawing
+	
+	glDisable(GL_BLEND);
 
 	cur_txt_idx=-1;
 	
@@ -232,7 +321,7 @@ void view_model_draw_polys(model_type *model,model_draw_setup *draw_setup,int *t
 
 			// opaque or transparent
 
-		if (opaque!=model->textures[poly->txt_idx].frames[0].bitmap.opaque) continue;
+		if (!model->textures[poly->txt_idx].frames[0].bitmap.opaque) continue;
 
 			// new texture
 
@@ -266,12 +355,79 @@ void view_model_draw_polys(model_type *model,model_draw_setup *draw_setup,int *t
 	}
 }
 
-bool view_model_draw(d3pnt *pnt,d3ang *ang,char *name,float resize,int *texture_frame,int frame_count)
+void map_view_model_draw_polys_transparent(editor_view_type *view,model_type *model,model_draw_setup *draw_setup,int *texture_frame,int frame_count)
+{
+	int					n,k,frame,cur_txt_idx;
+	float				vertexes[8*3],uvs[8*2];
+	float				*pa,*pv,*pt;
+	model_mesh_type		*mesh;
+    model_poly_type		*poly;
+
+		// sort polys
+
+	if (!map_view_model_draw_transparent_sort(view,model,draw_setup,0)) return;
+
+		// setup drawing
+
+	glEnable(GL_BLEND);
+	glDepthMask(GL_FALSE);
+
+	cur_txt_idx=-1;
+	
+		// model meshes
+		// sort list has already eliminated any
+		// opaque polys
+
+		// sorted list is farthest to nearest,
+		// models are sorted this way because it works
+		// better for small polygons
+
+	mesh=&model->meshes[0];
+
+	for (n=(mesh->trans_sort.count-1);n>=0;n--) {
+		poly=&mesh->polys[mesh->trans_sort.polys[n].poly_idx];
+
+			// new texture
+
+		if (poly->txt_idx!=cur_txt_idx) {
+			cur_txt_idx=poly->txt_idx;
+
+			frame=0;
+			if (n<frame_count) frame=texture_frame[n];
+
+			glBindTexture(GL_TEXTURE_2D,model->textures[cur_txt_idx].frames[frame].bitmap.gl_id);
+		}
+
+			// draw triangle
+
+		pv=vertexes;
+		pt=uvs;
+
+		for (k=0;k!=poly->ptsz;k++) {
+			pa=draw_setup->mesh_arrays[0].gl_vertex_array+(poly->v[k]*3);
+			*pv++=*pa++;
+			*pv++=*pa++;
+			*pv++=*pa;
+			*pt++=poly->gx[k];
+			*pt++=poly->gy[k];
+		}
+
+		glVertexPointer(3,GL_FLOAT,0,vertexes);
+		glTexCoordPointer(2,GL_FLOAT,0,uvs);
+
+		glDrawArrays(GL_POLYGON,0,poly->ptsz);
+	}
+
+		// restore state
+
+	glDepthMask(GL_TRUE);
+}
+
+bool map_view_model_draw(editor_view_type *view,d3pnt *pnt,d3ang *ang,char *name,float resize,int *texture_frame,int frame_count)
 {
 	int								idx;
 	model_type						*model;
 	model_draw_setup				draw_setup;
-	model_mesh_type					*mesh;
 
 	if (name[0]==0x0) return(FALSE);
 	
@@ -299,31 +455,16 @@ bool view_model_draw(d3pnt *pnt,d3ang *ang,char *name,float resize,int *texture_
 	model_translate_draw_vertex(model,0,pnt->x,pnt->y,pnt->z,&draw_setup);
 
 		// draw triangles
-
-	mesh=&model->meshes[0];
 	
 	glEnable(GL_TEXTURE_2D);
-	
 	glEnable(GL_DEPTH_TEST);
 
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
-	glColor4f(1,1,1,1);
+	glColor4f(1.0f,1.0f,1.0f,1.0f);
     
-        // run through the opaque textures
-	
-	glDisable(GL_BLEND);
-	
-	view_model_draw_polys(model,&draw_setup,texture_frame,frame_count,TRUE);
-	
-		// run through the transparent textures
-
-	glEnable(GL_BLEND);
-	glDepthMask(GL_FALSE);
-	
-	view_model_draw_polys(model,&draw_setup,texture_frame,frame_count,FALSE);
-	
-	glDepthMask(GL_TRUE);
+	map_view_model_draw_polys_opaque(model,&draw_setup,texture_frame,frame_count);
+	map_view_model_draw_polys_transparent(view,model,&draw_setup,texture_frame,frame_count);
 
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	
@@ -340,7 +481,7 @@ bool view_model_draw(d3pnt *pnt,d3ang *ang,char *name,float resize,int *texture_
       
 ======================================================= */
 
-void view_model_cube_vertexes(char *name,d3pnt *pnt,d3ang *ang,float resize,d3pnt *v_pnts)
+void map_view_model_cube_vertexes(char *name,d3pnt *pnt,d3ang *ang,float resize,d3pnt *v_pnts)
 {
 	int						n,idx,cx,cy,cz,wid_x,wid_z,high,ty,by,
 							px[8],py[8],pz[8];

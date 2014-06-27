@@ -117,7 +117,7 @@ typedef struct		{
 //
 
 typedef struct		{
-						int								poly_idx;
+						int								poly_idx,v_idx;
 						float							dist;
 					} model_trans_sort_poly_type;
 
