@@ -149,6 +149,21 @@ int model_poly_mask_get_first_sel(int mesh_idx)
 	return(-1);
 }
 
+void model_poly_mask_set_sel_texture(int mesh_idx,int txt_idx)
+{
+	int					n,npoly;
+	model_mesh_type		*mesh;
+
+	mesh=&model.meshes[mesh_idx];
+	npoly=mesh->npoly;
+
+	for (n=0;n!=npoly;n++) {
+		if ((model_poly_mask_check_sel(mesh_idx,n)) && (!model_poly_mask_check_hide(mesh_idx,n))) {
+			mesh->polys[n].txt_idx=txt_idx;
+		}
+	}
+}
+
 /* =======================================================
 
       Hide Masks

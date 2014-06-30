@@ -107,11 +107,24 @@ bool model_texture_palette_get_disabled_state(void)
 
 int model_texture_palette_get_selected_texture(void)
 {
-	return(-1);
+	int				poly_idx;
+
+		// only get texture if we are in polygon mode
+
+	if (state.model.select_mode!=select_mode_polygon) return(-1);
+
+	poly_idx=model_poly_mask_get_first_sel(state.model.cur_mesh_idx);
+	if (poly_idx==-1) return(-1);
+
+	return(model.meshes[state.model.cur_mesh_idx].polys[poly_idx].txt_idx);
 }
 
 void model_texture_palette_put_selected_texture(int txt_idx)
 {
-	model_vertex_mask_set_sel_texture(state.model.cur_mesh_idx,txt_idx);
+		// if we select a texture, automatically go
+		// into polygon mode
+
+	state.model.select_mode=select_mode_polygon;
+	model_poly_mask_set_sel_texture(state.model.cur_mesh_idx,txt_idx);
 }
 
