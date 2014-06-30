@@ -983,6 +983,7 @@ extern void model_poly_mask_set_sel(int mesh_idx,int poly_idx,bool value);
 extern bool model_poly_mask_check_sel(int mesh_idx,int poly_idx);
 extern int model_poly_mask_count_sel(int mesh_idx);
 extern int model_poly_mask_get_first_sel(int mesh_idx);
+extern void model_poly_mask_set_sel_texture(int mesh_idx,int txt_idx);
 extern void model_poly_mask_clear_hide(int mesh_idx);
 extern void model_poly_mask_set_hide(int mesh_idx,int poly_idx,bool value);
 extern bool model_poly_mask_check_hide(int mesh_idx,int poly_idx);
