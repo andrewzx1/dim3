@@ -96,6 +96,7 @@
 		26900AD514F2044F008026D5 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26900AD414F2044F008026D5 /* Cocoa.framework */; };
 		26918E1318F79BAA0053C09B /* map_auto_generate_decoration.c in Sources */ = {isa = PBXBuildFile; fileRef = 26918E1218F79BAA0053C09B /* map_auto_generate_decoration.c */; };
 		26973C3E1602EB1600167FD2 /* View.m in Sources */ = {isa = PBXBuildFile; fileRef = 26973C351602E78D00167FD2 /* View.m */; };
+		26B44A18195FD2260072171F /* map_view_draw_mesh.c in Sources */ = {isa = PBXBuildFile; fileRef = 26B44A17195FD2260072171F /* map_view_draw_mesh.c */; };
 		26C0CE53194FD8A7001C9292 /* base_ag_bitmap_utility.c in Sources */ = {isa = PBXBuildFile; fileRef = 26C0CE52194FD8A7001C9292 /* base_ag_bitmap_utility.c */; };
 		26C1DF6216004440007FDAC7 /* bitmap_cocoa.m in Sources */ = {isa = PBXBuildFile; fileRef = 26C1DF6016004440007FDAC7 /* bitmap_cocoa.m */; };
 		26C1DF6316004440007FDAC7 /* file_cocoa.m in Sources */ = {isa = PBXBuildFile; fileRef = 26C1DF6116004440007FDAC7 /* file_cocoa.m */; };
@@ -576,6 +577,7 @@
 		26918E1218F79BAA0053C09B /* map_auto_generate_decoration.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = map_auto_generate_decoration.c; path = Sources/code/map/map_auto_generate_decoration.c; sourceTree = "<group>"; };
 		26973C341602E78D00167FD2 /* View.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = View.h; path = dim3Editor/View.h; sourceTree = SOURCE_ROOT; };
 		26973C351602E78D00167FD2 /* View.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = View.m; path = dim3Editor/View.m; sourceTree = SOURCE_ROOT; };
+		26B44A17195FD2260072171F /* map_view_draw_mesh.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = map_view_draw_mesh.c; path = Sources/code/map/map_view_draw_mesh.c; sourceTree = "<group>"; };
 		26C0CE52194FD8A7001C9292 /* base_ag_bitmap_utility.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = base_ag_bitmap_utility.c; path = Sources/base_ag_bitmap_utility.c; sourceTree = "<group>"; };
 		26C1DF5D16004435007FDAC7 /* baseprivate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = baseprivate.h; path = Headers/baseprivate.h; sourceTree = "<group>"; };
 		26C1DF5E16004435007FDAC7 /* baseutility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = baseutility.h; path = Headers/baseutility.h; sourceTree = "<group>"; };
@@ -1328,6 +1330,7 @@
 				26F7E065160045BA00E739C4 /* map_view_clip.c */,
 				26F7E066160045BA00E739C4 /* map_view_draw_piece.c */,
 				26F7E067160045BA00E739C4 /* map_view_draw_select.c */,
+				26B44A17195FD2260072171F /* map_view_draw_mesh.c */,
 				26F7E068160045BA00E739C4 /* map_view_handle.c */,
 				26F7E069160045BA00E739C4 /* map_view_models.c */,
 				26F7E06A160045BA00E739C4 /* map_view_movement.c */,
@@ -1716,6 +1719,7 @@
 				26F7E04E160045A900E739C4 /* text.c in Sources */,
 				26918E1318F79BAA0053C09B /* map_auto_generate_decoration.c in Sources */,
 				26F7E04F160045A900E739C4 /* texture_edit.c in Sources */,
+				26B44A18195FD2260072171F /* map_view_draw_mesh.c in Sources */,
 				26F7E050160045A900E739C4 /* texture_palette.c in Sources */,
 				26F7E051160045A900E739C4 /* tool_tip.c in Sources */,
 				26F7E052160045A900E739C4 /* xml_setup.c in Sources */,
