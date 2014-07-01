@@ -92,10 +92,6 @@ and can be sold or given away.
 #define ag_decoration_type_walls				4
 #define ag_decoration_type_trench				5
 
-#define ag_decoration_type_vertex_none			0
-#define ag_decoration_type_vertex_column_circle	1
-#define ag_decoration_type_vertex_column_square	2
-
 #define ag_decoration_column_config_square		0
 #define ag_decoration_column_config_diamond		1
 #define ag_decoration_column_config_circle		2
