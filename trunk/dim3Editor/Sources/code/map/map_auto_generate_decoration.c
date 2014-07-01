@@ -43,6 +43,9 @@ extern int ag_generate_find_ceiling_polygon(int room_idx);
 extern bool ag_generate_is_polygon_window_target(int mesh_idx,int poly_idx);
 extern void ag_generate_get_wall_line(int mesh_idx,int poly_idx,d3pnt *p1,d3pnt *p2);
 extern bool ag_generate_room_is_leaf(int room_idx);
+extern void ag_generate_primitive_cube(d3pnt *min,d3pnt *max,int txt_idx);
+extern void ag_generate_primitive_random_cylinder_setup(void);
+extern void ag_generate_primitive_random_cylinder_y(d3pnt *pnt,int radius,int high,int txt_idx);
 
 /* =======================================================
 
@@ -139,12 +142,9 @@ void ag_generate_decoration_location_angle(int room_idx,float ang,d3pnt *pnt)
 
 void ag_generate_decoration_box(d3pnt *pnt,d3pnt *room_sz,int start_cmp_mesh_idx)
 {
-	int				n,mesh_idx,x,z,sz;
-	int				px[8],py[8],pz[8];
-	float			gx[8],gy[8];
+	int				n,x,z,sz;
 	bool			hit;
-	d3pnt			mpt,min,max;
-	d3ang			ang;
+	d3pnt			min,max;
 
 		// find a random start position
 	
@@ -170,73 +170,7 @@ void ag_generate_decoration_box(d3pnt *pnt,d3pnt *room_sz,int start_cmp_mesh_idx
 		}
 	}
 
-	if (!hit) return;
-
-		// box mesh
-
-	mesh_idx=map_mesh_add(&map);
-
-	map.mesh.meshes[mesh_idx].flag.lock_uv=TRUE;
-
-	gx[0]=gx[3]=0.0f;
-	gx[1]=gx[2]=1.0f;
-	gy[0]=gy[1]=0.0f;
-	gy[2]=gy[3]=1.0f;
-
-		// sides
-
-	px[0]=px[1]=px[2]=px[3]=min.x;
-	pz[0]=pz[3]=min.z;
-	pz[1]=pz[2]=max.z;
-	py[0]=py[1]=min.y;
-	py[2]=py[3]=max.y;
-
-	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_decoration_box);
-
-	px[0]=px[1]=px[2]=px[3]=max.x;
-
-	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_decoration_box);
-
-	px[0]=px[3]=min.x;
-	px[1]=px[2]=max.x;
-	pz[0]=pz[1]=pz[2]=pz[3]=min.z;
-	py[0]=py[1]=min.y;
-	py[2]=py[3]=max.y;
-
-	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_decoration_box);
-
-	pz[0]=pz[1]=pz[2]=pz[3]=max.z;
-
-	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_decoration_box);
-
-		// top and bottom
-
-	px[0]=px[3]=min.x;
-	px[1]=px[2]=max.x;
-	pz[0]=pz[1]=min.z;
-	pz[2]=pz[3]=max.z;
-	py[0]=py[1]=py[2]=py[3]=max.y;
-
-	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_decoration_box);
-
-	py[0]=py[1]=py[2]=py[3]=min.y;
-
-	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_decoration_box);
-
-		// possibly rotate box
-
-	if (ag_random_bool()) {
-		ang.x=ang.z=0.0f;
-		ang.y=(float)ag_random_int(30);
-
-		map_mesh_calculate_center(&map,mesh_idx,&mpt);
-		map_mesh_rotate(&map,mesh_idx,&mpt,&ang);
-	}
-
-		// reset just normals
-		// as UVs are locked
-
-	map_recalc_normals_mesh(&map,&map.mesh.meshes[mesh_idx],normal_mode_out,FALSE);
+	if (hit) ag_generate_primitive_cube(&min,&max,ag_texture_decoration_box);
 }
 
 void ag_generate_decoration_box_stacks(int room_idx)
@@ -422,10 +356,12 @@ void ag_generate_decoration_columns(int room_idx)
 			break;
 	
 	}
+
+	ag_generate_primitive_random_cylinder_setup();
 	
 	for (ang=start_ang;ang<=end_ang;ang+=ang_add) {
 		ag_generate_decoration_location_angle(room_idx,(float)ang,&pnt);
-		ag_generate_decoration_column(&pnt,ag_size_column_normal_wid,high,TRUE);
+		ag_generate_primitive_random_cylinder_y(&pnt,ag_size_column_normal_wid,high,ag_texture_decoration_pillar);
 	}
 }
 
@@ -827,7 +763,7 @@ void ag_decoration_open_ceiling(int room_idx)
       
 ======================================================= */
 
-void ag_gnerate_decoration_vertex_column(int room_idx,bool circular)
+void ag_gnerate_decoration_vertex_column(int room_idx)
 {
 	int				n,high,radius;
 	ag_room_type	*room;
@@ -843,8 +779,10 @@ void ag_gnerate_decoration_vertex_column(int room_idx,bool circular)
 
 		// vertex columns
 
+	ag_generate_primitive_random_cylinder_setup();
+
 	for (n=0;n!=room->nvertex;n++) {
-		ag_generate_decoration_column(&room->vertexes[n],radius,high,circular);
+		ag_generate_primitive_random_cylinder_y(&room->vertexes[n],radius,high,ag_texture_stair);
 	}
 }
 
@@ -932,21 +870,7 @@ void ag_generate_decorations_add(void)
 			// skip if already things on wall
 
 		if (!room->has_wall_decorations) {
-
-			switch (ag_random_int(3)) {
-
-				case ag_decoration_type_vertex_none:
-					break;
-
-				case ag_decoration_type_vertex_column_circle:
-					ag_gnerate_decoration_vertex_column(n,TRUE);
-					break;
-
-				case ag_decoration_type_vertex_column_square:
-					ag_gnerate_decoration_vertex_column(n,FALSE);
-					break;
-
-			}
+			if (ag_random_bool()) ag_gnerate_decoration_vertex_column(n);
 		}
 
 			// ceiling decorations
