@@ -85,6 +85,7 @@
 		2653251F160149DF00061FB8 /* main_app.c in Sources */ = {isa = PBXBuildFile; fileRef = 2653251D160149DF00061FB8 /* main_app.c */; };
 		26532520160149DF00061FB8 /* main_window.c in Sources */ = {isa = PBXBuildFile; fileRef = 2653251E160149DF00061FB8 /* main_window.c */; };
 		2653B6D2160D76A300EE0CD7 /* DialogOutlineDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 2653B6D1160D76A300EE0CD7 /* DialogOutlineDataSource.m */; };
+		2653E3461963C14100AE55D9 /* map_auto_generate_primitive.c in Sources */ = {isa = PBXBuildFile; fileRef = 2653E3451963C14100AE55D9 /* map_auto_generate_primitive.c */; };
 		2658269014F31CE200245C24 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2658268F14F31CE200245C24 /* OpenGL.framework */; };
 		2658269114F31D3A00245C24 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26900AD714F2044F008026D5 /* AppKit.framework */; };
 		265A6310150B28CC0063EEDD /* dim3 Editor.app in Copy Application */ = {isa = PBXBuildFile; fileRef = 26900AD014F2044F008026D5 /* dim3 Editor.app */; };
@@ -563,6 +564,7 @@
 		2653251E160149DF00061FB8 /* main_window.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = main_window.c; path = Sources/windows/main_window.c; sourceTree = "<group>"; };
 		2653B6D0160D76A300EE0CD7 /* DialogOutlineDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DialogOutlineDataSource.h; path = dim3Editor/DialogOutlineDataSource.h; sourceTree = SOURCE_ROOT; };
 		2653B6D1160D76A300EE0CD7 /* DialogOutlineDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DialogOutlineDataSource.m; path = dim3Editor/DialogOutlineDataSource.m; sourceTree = SOURCE_ROOT; };
+		2653E3451963C14100AE55D9 /* map_auto_generate_primitive.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = map_auto_generate_primitive.c; path = Sources/code/map/map_auto_generate_primitive.c; sourceTree = "<group>"; };
 		2658268F14F31CE200245C24 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/OpenGL.framework; sourceTree = DEVELOPER_DIR; };
 		265AB41715FEEE99005CDBB0 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = dim3Editor/AppDelegate.h; sourceTree = SOURCE_ROOT; };
 		265AB41815FEEE99005CDBB0 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = dim3Editor/AppDelegate.m; sourceTree = SOURCE_ROOT; };
@@ -1307,12 +1309,13 @@
 		26F7E0411600458300E739C4 /* Map */ = {
 			isa = PBXGroup;
 			children = (
+				26F7E056160045BA00E739C4 /* map_auto_generate.c */,
 				260719F718F64E5400FF3C94 /* map_auto_generate_connect.c */,
 				26918E1218F79BAA0053C09B /* map_auto_generate_decoration.c */,
+				2653E3451963C14100AE55D9 /* map_auto_generate_primitive.c */,
 				26F7E053160045BA00E739C4 /* map_auto_generate_setup.c */,
 				26F0B2981903982700CF4493 /* map_auto_generate_story.c */,
 				26F7E055160045BA00E739C4 /* map_auto_generate_utility.c */,
-				26F7E056160045BA00E739C4 /* map_auto_generate.c */,
 				26F7E057160045BA00E739C4 /* map_dos.c */,
 				26F7E058160045BA00E739C4 /* map_groups.c */,
 				26F7E059160045BA00E739C4 /* map_import_obj.c */,
@@ -1787,6 +1790,7 @@
 				26F7E0D41600463800E739C4 /* dialog_normal.c in Sources */,
 				26F7E0D51600463800E739C4 /* dialog_scale_animation_time.c in Sources */,
 				26F7E0D61600463800E739C4 /* dialog_set_vertex_bone.c in Sources */,
+				2653E3461963C14100AE55D9 /* map_auto_generate_primitive.c in Sources */,
 				26F7E0DE1600467900E739C4 /* file_palette.c in Sources */,
 				26F7E0DF1600467900E739C4 /* list_palette_common.c in Sources */,
 				26F7E0E01600467900E739C4 /* property_utility_common.c in Sources */,
