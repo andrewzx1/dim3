@@ -59,16 +59,16 @@ int ag_generate_get_connector_type(int room_idx)
 	room2=&ag_state.rooms[room->connect_box.other_room_idx];
 	if ((room->second_story) && (room2->second_story)) return(ag_connect_type_arch);
 
+		// randomize for any stairs
+
+	if (ag_random_int(100)<33) return(ag_connect_type_stairs);
+
 		// check for door width
 
 	dx=room->connect_box.max.x-room->connect_box.min.x;
 	dz=room->connect_box.max.z-room->connect_box.min.z;
 
 	if ((dx<=ag_size_door_min_width) && (dz<=ag_size_door_min_width)) return(ag_connect_type_door);
-
-		// randomize for any stairs
-
-	if (ag_random_int(100)<33) return(ag_connect_type_stairs);
 
 		// normal plain connector
 
@@ -331,7 +331,7 @@ void ag_generate_add_connector_room_normal(int org_room_idx,bool has_door)
 			door_mov.x=-(((room->connect_box.max.x-room->connect_box.min.x)>>1)-ag_size_door_margin);
 			door_mov.y=0;
 			door_mov.z=0;
-	}
+		}
 		else {
 			mz=(room->connect_box.min.z+room->connect_box.max.z)>>1;
 
@@ -715,7 +715,7 @@ void ag_generate_add_connector_room_stairs(int org_room_idx)
 	gy[0]=gy[1]=0.0f;
 	gy[2]=gy[3]=1.0f;
 
-	if ((room->connect_box.stair_dir==ag_stair_dir_top) || (room->connect_box.stair_dir==ag_stair_dir_bottom)) {
+	if ((room->connect_box.side==ag_connect_side_top) || (room->connect_box.side==ag_connect_side_bottom)) {
 
 			// walls
 
@@ -736,7 +736,7 @@ void ag_generate_add_connector_room_stairs(int org_room_idx)
 		py[0]=py[1]=room->connect_box.max.y;
 		py[2]=py[3]=room->connect_box.max.y+ag_size_room_high;
 
-		pz[0]=pz[1]=pz[2]=pz[3]=((room->connect_box.stair_dir==ag_stair_dir_top)?room->connect_box.max.z:room->connect_box.min.z);
+		pz[0]=pz[1]=pz[2]=pz[3]=((room->connect_box.side==ag_connect_side_top)?room->connect_box.max.z:room->connect_box.min.z);
 
 		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_connect);
 
@@ -747,7 +747,7 @@ void ag_generate_add_connector_room_stairs(int org_room_idx)
 		pz[0]=pz[1]=room->connect_box.min.z;
 		pz[2]=pz[3]=room->connect_box.max.z;
 
-		if (room->connect_box.stair_dir==ag_stair_dir_top) {
+		if (room->connect_box.side==ag_connect_side_top) {
 			py[0]=py[1]=room->connect_box.min.y+ag_size_room_high;
 			py[2]=py[3]=room->connect_box.min.y;
 		}
@@ -778,7 +778,7 @@ void ag_generate_add_connector_room_stairs(int org_room_idx)
 		pz[0]=pz[3]=room->connect_box.min.z;
 		pz[1]=pz[2]=room->connect_box.max.z;
 
-		px[0]=px[1]=px[2]=px[3]=((room->connect_box.stair_dir==ag_stair_dir_left)?room->connect_box.max.x:room->connect_box.min.x);
+		px[0]=px[1]=px[2]=px[3]=((room->connect_box.side==ag_connect_side_left)?room->connect_box.max.x:room->connect_box.min.x);
 
 		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_connect);
 
@@ -789,7 +789,7 @@ void ag_generate_add_connector_room_stairs(int org_room_idx)
 		pz[0]=pz[1]=room->connect_box.min.z;
 		pz[2]=pz[3]=room->connect_box.max.z;
 
-		if (room->connect_box.stair_dir==ag_stair_dir_left) {
+		if (room->connect_box.side==ag_connect_side_left) {
 			py[0]=py[3]=room->connect_box.min.y+ag_size_room_high;
 			py[1]=py[2]=room->connect_box.min.y;
 		}
@@ -826,7 +826,7 @@ void ag_generate_add_connector_room_stairs(int org_room_idx)
 
 		// stairs going across the Z
 
-	if ((room->connect_box.stair_dir==ag_stair_dir_top) || (room->connect_box.stair_dir==ag_stair_dir_bottom)) {
+	if ((room->connect_box.side==ag_connect_side_top) || (room->connect_box.side==ag_connect_side_bottom)) {
 
 		stair_len=room->connect_box.max.z-room->connect_box.min.z;
 		step_len=stair_len/ag_size_stair_count;
@@ -834,7 +834,7 @@ void ag_generate_add_connector_room_stairs(int org_room_idx)
 
 			// steps
 
-		if (room->connect_box.stair_dir==ag_stair_dir_top) {
+		if (room->connect_box.side==ag_connect_side_top) {
 			step_min.z=room->connect_box.min.z;
 			step_max.z=room->connect_box.min.z+step_len;
 			step_z_add=step_len;
@@ -885,7 +885,7 @@ void ag_generate_add_connector_room_stairs(int org_room_idx)
 
 			// steps
 
-		if (room->connect_box.stair_dir==ag_stair_dir_left) {
+		if (room->connect_box.side==ag_connect_side_left) {
 			step_min.x=room->connect_box.min.x;
 			step_max.x=room->connect_box.min.x+step_len;
 			step_x_add=step_len;

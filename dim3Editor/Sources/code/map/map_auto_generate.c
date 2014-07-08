@@ -574,11 +574,11 @@ void ag_add_room(bool first_room)
 {
 	int				n,k,wid_x,wid_z,room_idx,mesh_idx,
 					connect_room_idx,org_connect_room_idx,connect_side,org_connect_side,
-					connect_box_offset,stair_len;
+					connect_type,connect_box_offset;
 	int				px[8],py[8],pz[8];
 	float			gx[8],gy[8];
 	bool			hit;
-	d3pnt			pnt,min,max,move_pnt;
+	d3pnt			pnt,min,max;
 	ag_room_type	*room,*connect_room;
 
 		// random size
@@ -598,12 +598,6 @@ void ag_add_room(bool first_room)
 		}
 	}
 
-		// if this room will end up being
-		// connected to another, we need an offset
-		// for the corridor
-
-	connect_box_offset=2000+ag_random_int(5000);
-
 		// if first room, in center of map
 
 	if (first_room) {
@@ -617,6 +611,7 @@ void ag_add_room(bool first_room)
 		min.z=pnt.z-wid_z;
 		max.z=pnt.z+wid_z;
 
+		connect_type=ag_connect_type_normal;
 		connect_room_idx=-1;
 		connect_side=-1;
 	}
@@ -631,10 +626,31 @@ void ag_add_room(bool first_room)
 
 	else {
 
+			// get random room and connect side
+
 		org_connect_room_idx=connect_room_idx=ag_random_int(ag_state.nroom);
 		org_connect_side=connect_side=ag_random_int(4);
 
+			// run through sides and rooms to find
+			// a good connection
+
 		while (TRUE) {
+
+				// get random connection type
+
+			connect_type=ag_generate_get_connector_type(org_connect_room_idx);
+
+				// get random connection size,
+				// stairs need extra
+
+			if (connect_type!=ag_connect_type_stairs) {
+				connect_box_offset=2000+ag_random_int(5000);
+			}
+			else {
+				connect_box_offset=ag_size_stair_length_start+ag_random_int(ag_size_stair_length_extra);
+			}
+
+				// check connection
 
 			pnt.x=(ag_state.rooms[connect_room_idx].min.x+ag_state.rooms[connect_room_idx].max.x)>>1;
 			pnt.z=(ag_state.rooms[connect_room_idx].min.z+ag_state.rooms[connect_room_idx].max.z)>>1;
@@ -705,7 +721,7 @@ void ag_add_room(bool first_room)
 			}
 
 				// if no hit, then move on to the
-				// next side or mesh
+				// next side or room
 
 			if (!hit) {
 				connect_side++;
@@ -744,9 +760,12 @@ void ag_add_room(bool first_room)
 	room->flat.lft.on=FALSE;
 	room->flat.rgt.on=FALSE;
 
-	room->connect_box.on=FALSE;
-	room->connect_box.other_room_idx=-1;
-	room->connect_box.connect_type=
+	room->connect_box.on=(connect_room_idx!=-1);
+	room->connect_box.connect_type=connect_type;
+	room->connect_box.side=connect_side;
+	room->connect_box.other_room_idx=connect_room_idx;
+	room->connect_box.min.y=max.y-ag_size_room_high;
+	room->connect_box.max.y=max.y;
 
 	room->outside=FALSE;
 	room->second_story=ag_random_bool();
@@ -785,13 +804,6 @@ void ag_add_room(bool first_room)
 		// for connected rooms
 
 	if (connect_room_idx!=-1) {
-
-		room->connect_box.on=TRUE;
-		room->connect_box.other_room_idx=connect_room_idx;
-		room->connect_box.min.y=max.y-ag_size_room_high;
-		room->connect_box.max.y=max.y;
-
-		room->connect_box.connect_type=ag_generate_get_connector_type(room_idx);
 
 			// setup vertexes so they line up
 			// when corridors are inserted
@@ -858,50 +870,6 @@ void ag_add_room(bool first_room)
 			connect_room->require_top_floor=TRUE;
 		}
 
-			// if this was a stairs connector, then
-			// we need to move the room
-
-		if (room->connect_box.connect_type==ag_connect_type_stairs) {
-			room->min.y+=ag_size_room_high;
-			room->max.y+=ag_size_room_high;
-
-			move_pnt.x=move_pnt.z=0;
-			stair_len=ag_size_stair_length_start+ag_random_int(ag_size_stair_length_extra);
-
-			switch (connect_side) {
-
-				case ag_connect_side_top:
-					room->connect_box.stair_dir=ag_stair_dir_top;
-					room->connect_box.min.z-=stair_len;
-					move_pnt.z=-stair_len;
-					break;
-
-				case ag_connect_side_bottom:
-					room->connect_box.stair_dir=ag_stair_dir_bottom;
-					room->connect_box.max.z+=stair_len;
-					move_pnt.z=stair_len;
-					break;
-				
-				case ag_connect_side_left:
-					room->connect_box.stair_dir=ag_stair_dir_left;
-					room->connect_box.min.x-=stair_len;
-					move_pnt.x=-stair_len;
-					break;
-
-				case ag_connect_side_right:
-					room->connect_box.stair_dir=ag_stair_dir_right;
-					room->connect_box.max.x+=stair_len;
-					move_pnt.x=stair_len;
-					break;
-			}
-
-			for (n=0;n!=room->nvertex;n++) {
-				room->vertexes[n].x+=move_pnt.x;
-				room->vertexes[n].y+=ag_size_room_high;
-				room->vertexes[n].z+=move_pnt.z;
-			}
-		}
-
 			// need to rebuild what's a flat connecting side as
 			// deformations might break flat sides
 
@@ -961,7 +929,7 @@ void ag_add_room(bool first_room)
 		if (room->second_story) py[n]-=ag_size_room_high;
 	}
 // supergumba -- testing decorations
-	map_mesh_add_poly(&map,mesh_idx,room->nvertex,px,py,pz,gx,gy,ag_texture_ceiling);
+//	map_mesh_add_poly(&map,mesh_idx,room->nvertex,px,py,pz,gx,gy,ag_texture_ceiling);
 
 		// reset the UV and normals
 

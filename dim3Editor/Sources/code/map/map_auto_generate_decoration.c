@@ -547,20 +547,21 @@ void ag_generate_decoration_core(int room_idx)
 
 void ag_generate_decoration_walls(int room_idx)
 {
-	int						n,k,mx,my,mz,ty,by,
-							wall_mesh_idx;
-	int						px[8],py[8],pz[8],px2[8],py2[8],pz2[8],
-							kx[4],ky[4],kz[4];
-	float					f_wall,gx[8],gy[8],mgx,mgy;
-	d3pnt					*pt;
-	ag_room_type			*room;
+	int					n,k,mx,my,mz,ty,by,
+						wall_mesh_idx;
+	int					px[8],py[8],pz[8],px2[8],py2[8],pz2[8],
+						kx[4],ky[4],kz[4];
+	float				f_wall,gx[8],gy[8],mgx,mgy;
+	bool				need_ceiling;
+	d3pnt				*pt;
+	ag_room_type		*room;
 
 	room=&ag_state.rooms[room_idx];
 	if (room->nvertex==0) return;
 
 		// random wall size
 
-	f_wall=0.45f-(((float)ag_random_int(6))*0.01f);
+	f_wall=0.49f-(((float)ag_random_int(6))*0.01f);
 
 		// new wall vertexes
 
@@ -594,7 +595,14 @@ void ag_generate_decoration_walls(int room_idx)
 
 		// wall heights
 		
-	ty=room->max.y-(ag_size_room_high+ag_size_floor_high);
+	if (ag_random_bool()) {
+		ty=room->max.y-(ag_size_room_high+ag_size_floor_high);
+		need_ceiling=room->second_story;
+	}
+	else {
+		ty=room->max.y-(ag_size_room_high>>1);
+		need_ceiling=TRUE;
+	}
 	by=room->max.y;
 
 	gx[0]=gx[3]=0.0f;
@@ -655,7 +663,7 @@ void ag_generate_decoration_walls(int room_idx)
 
 			// possible ceiling
 
-		if (room->second_story) {
+		if (need_ceiling) {
 			kx[0]=px[n];
 			kx[1]=px[k];
 			kx[2]=px2[k];
