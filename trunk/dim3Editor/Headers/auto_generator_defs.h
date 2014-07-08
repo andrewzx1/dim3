@@ -64,15 +64,6 @@ and can be sold or given away.
 #define ag_connect_type_stairs					3
 
 //
-// stair directions
-//
-
-#define ag_stair_dir_top						0
-#define ag_stair_dir_bottom						1
-#define ag_stair_dir_left						2
-#define ag_stair_dir_right						3
-
-//
 // stair types
 //
 
@@ -188,8 +179,8 @@ typedef struct		{
 					} ag_room_flat_side_type;
 
 typedef struct		{
-						int							connect_type,
-													other_room_idx,stair_dir;
+						int							connect_type,side,
+													other_room_idx;
 						bool						on;
 						d3pnt						min,max;
 					} ag_room_connect_box_type;
