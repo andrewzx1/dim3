@@ -82,6 +82,8 @@ and can be sold or given away.
 #define ag_decoration_type_core					3
 #define ag_decoration_type_walls				4
 #define ag_decoration_type_trench				5
+#define ag_decoration_type_machinery			6
+#define ag_decoration_type_rubble				7
 
 #define ag_decoration_column_config_square		0
 #define ag_decoration_column_config_diamond		1
@@ -152,6 +154,16 @@ and can be sold or given away.
 #define ag_size_equipment_high_extra			2000
 
 #define ag_size_trench_high						800
+
+#define ag_count_rubble_start					10
+#define ag_count_rubble_extra					30
+#define ag_size_rubble_start					200
+#define ag_size_rubble_extra					800
+
+#define ag_count_machinery_start				3
+#define ag_count_machinery_extra				5
+#define ag_size_machinery_start					2000
+#define ag_size_machinery_extra					2000
 
 #define ag_size_light_width_start				50000
 #define ag_size_light_width_extra				15000

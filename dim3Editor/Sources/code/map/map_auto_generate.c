@@ -44,7 +44,6 @@ extern void ag_random_previous_seed(void);
 extern void ag_random_next_seed(void);
 extern int ag_random_int(int max);
 extern bool ag_random_bool(void);
-extern int ag_generate_get_connector_type(int room_idx);
 extern void ag_generate_add_connector_rooms(void);
 extern void ag_generate_add_room_second_story(void);
 extern void ag_generate_delete_shared_polygons(void);
@@ -573,11 +572,11 @@ void ag_add_room_square(ag_room_type *room,int wid_x,int wid_z,int connect_side)
 void ag_add_room(bool first_room)
 {
 	int				n,k,wid_x,wid_z,room_idx,mesh_idx,
-					connect_room_idx,org_connect_room_idx,connect_side,org_connect_side,
-					connect_type,connect_box_offset;
+					connect_room_idx,org_connect_room_idx,
+					connect_side,org_connect_side,connect_box_offset;
 	int				px[8],py[8],pz[8];
 	float			gx[8],gy[8];
-	bool			hit;
+	bool			second_story,connect_stairs,hit;
 	d3pnt			pnt,min,max;
 	ag_room_type	*room,*connect_room;
 
@@ -598,6 +597,12 @@ void ag_add_room(bool first_room)
 		}
 	}
 
+		// determine if second story room
+		// or connecting by stairs
+
+	second_story=ag_random_bool();
+	connect_stairs=(ag_random_int(100)<33);
+
 		// if first room, in center of map
 
 	if (first_room) {
@@ -611,7 +616,6 @@ void ag_add_room(bool first_room)
 		min.z=pnt.z-wid_z;
 		max.z=pnt.z+wid_z;
 
-		connect_type=ag_connect_type_normal;
 		connect_room_idx=-1;
 		connect_side=-1;
 	}
@@ -636,14 +640,10 @@ void ag_add_room(bool first_room)
 
 		while (TRUE) {
 
-				// get random connection type
-
-			connect_type=ag_generate_get_connector_type(org_connect_room_idx);
-
 				// get random connection size,
 				// stairs need extra
 
-			if (connect_type!=ag_connect_type_stairs) {
+			if (!connect_stairs) {
 				connect_box_offset=2000+ag_random_int(5000);
 			}
 			else {
@@ -714,6 +714,7 @@ void ag_add_room(bool first_room)
 
 				// got a hit, we can use this spot
 				// make sure we are on same Y level
+				// if connected by stairs, go down on level
 
 			if (hit) {
 				max.y=ag_state.rooms[connect_room_idx].max.y;
@@ -761,19 +762,24 @@ void ag_add_room(bool first_room)
 	room->flat.rgt.on=FALSE;
 
 	room->connect_box.on=(connect_room_idx!=-1);
-	room->connect_box.connect_type=connect_type;
+	room->connect_box.connect_type=connect_stairs?ag_connect_type_stairs:ag_connect_type_normal;
 	room->connect_box.side=connect_side;
 	room->connect_box.other_room_idx=connect_room_idx;
 	room->connect_box.min.y=max.y-ag_size_room_high;
 	room->connect_box.max.y=max.y;
 
 	room->outside=FALSE;
-	room->second_story=ag_random_bool();
+	room->second_story=second_story;
 	room->second_story_complete=FALSE;
 	room->require_top_floor=FALSE;
 	room->has_stairs=FALSE;
 	room->has_windows=FALSE;
 	room->has_wall_decorations=FALSE;
+
+		// if this room is connected by steps,
+		// then we need to move it down
+
+	if (connect_stairs) room->max.y+=ag_size_room_high;
 
 		// first room is automatically a
 		// horizontal square room for maximum
@@ -863,11 +869,21 @@ void ag_add_room(bool first_room)
 		}
 
 			// check if two second story rooms,
-			// these can require a top floor
+			// these can require a top floor and
+			// need the arch connection type
 
 		if ((room->second_story) && (connect_room->second_story)) {
 			room->require_top_floor=TRUE;
 			connect_room->require_top_floor=TRUE;
+			if (room->connect_box.connect_type==ag_connect_type_normal) room->connect_box.connect_type=ag_connect_type_arch;
+		}
+
+			// determine if we can connect with a door
+
+		if (room->connect_box.connect_type==ag_connect_type_normal) {
+			wid_x=room->connect_box.max.x-room->connect_box.min.x;
+			wid_z=room->connect_box.max.z-room->connect_box.min.z;
+			if ((wid_x<=ag_size_door_min_width) && (wid_z<=ag_size_door_min_width)) room->connect_box.connect_type=ag_connect_type_door;
 		}
 
 			// need to rebuild what's a flat connecting side as

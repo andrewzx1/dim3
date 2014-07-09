@@ -102,7 +102,7 @@ extern void bitmap_ag_texture_random_color_stripe_horizontal(bitmap_ag_type *ag_
 extern void bitmap_ag_texture_random_color_stripe_slant(bitmap_ag_type *ag_bitmap,int px,int py,int wid,int high,d3col *base_col,float fct);
 
 extern void bitmap_ag_texture_draw_rectangle(bitmap_ag_type *ag_bitmap,int px,int py,int wid,int high,int lip_sz,bool flip_normal,d3col *col);
-extern void bitmap_ag_texture_draw_oval(bitmap_ag_type *ag_bitmap,int px,int py,int wid,int high,int border_sz,d3col *border_col,d3col *col);
+extern void bitmap_ag_texture_draw_oval(bitmap_ag_type *ag_bitmap,int px,int py,int wid,int high,int border_sz,bool flip_normal,d3col *border_col,d3col *col);
 extern void bitmap_ag_texture_draw_line_horizontal(bitmap_ag_type *ag_bitmap,int px,int py,int wid,int lip_sz,bool flip_normal,d3col *col);
 
 /* =======================================================
