@@ -43,7 +43,8 @@ extern int ag_generate_find_ceiling_polygon(int room_idx);
 extern bool ag_generate_is_polygon_window_target(int mesh_idx,int poly_idx);
 extern void ag_generate_get_wall_line(int mesh_idx,int poly_idx,d3pnt *p1,d3pnt *p2);
 extern bool ag_generate_room_is_leaf(int room_idx);
-extern void ag_generate_primitive_cube(d3pnt *min,d3pnt *max,int txt_idx);
+extern void ag_generate_primitive_cube(d3pnt *min,d3pnt *max,bool rotate,int group_idx,int txt_idx);
+extern void ag_generate_primitive_rubble(d3pnt *min,d3pnt *max,int txt_idx);
 extern void ag_generate_primitive_random_cylinder_setup(void);
 extern void ag_generate_primitive_random_cylinder_y(d3pnt *pnt,int radius,int high,int txt_idx);
 
@@ -170,7 +171,7 @@ void ag_generate_decoration_box(d3pnt *pnt,d3pnt *room_sz,int start_cmp_mesh_idx
 		}
 	}
 
-	if (hit) ag_generate_primitive_cube(&min,&max,ag_texture_decoration_box);
+	if (hit) ag_generate_primitive_cube(&min,&max,TRUE,-1,ag_texture_decoration_box);
 }
 
 void ag_generate_decoration_box_stacks(int room_idx)
@@ -736,6 +737,110 @@ void ag_generate_decoration_floor_trench(int room_idx)
 
 /* =======================================================
 
+      Machinery Decorations
+      
+======================================================= */
+
+void ag_generate_decoration_floor_machinery(int room_idx)
+{
+	int					n,count,wid,high,
+						group_idx,movement_idx,move_idx;
+	d3pnt				pnt,min,max;
+	movement_type		*movement;
+	movement_move_type	*move;
+	ag_room_type		*room;
+
+	room=&ag_state.rooms[room_idx];
+
+		// all machinery same size
+
+	wid=ag_size_machinery_start+ag_random_int(ag_size_machinery_extra);
+
+	high=ag_size_room_high+ag_size_floor_high;
+	if (room->second_story) high+=ag_size_room_high;
+
+		// build machinery
+
+	count=ag_count_machinery_start+ag_random_int(ag_count_machinery_extra);
+
+	for (n=0;n!=count;n++) {
+
+			// create the group
+			// and movement
+
+		group_idx=map_group_add(&map);
+		sprintf(map.group.groups[group_idx].name,"Machine %d.%d",room_idx,n);
+
+		movement_idx=map_movement_add(&map);
+
+		movement=&map.movement.movements[movement_idx];
+
+		sprintf(movement->name,"Machine %d.%d",room_idx,n);
+		movement->group_idx=group_idx;
+		movement->auto_start=TRUE;
+		movement->loop=TRUE;
+
+		move_idx=map_movement_move_add(&map,movement_idx);
+
+		move=&movement->moves[move_idx];
+		move->msec=5000;
+		move->mov.y=high-100;
+
+		strcpy(move->sound_name,"Lift");
+
+			// machine
+
+		ag_generate_decoration_location_random(room_idx,&pnt);
+
+		min.x=pnt.x-wid;
+		min.y=room->max.y-high;
+		min.z=pnt.z-wid;
+
+		max.x=pnt.x+wid;
+		max.y=room->max.y;
+		max.z=pnt.z+wid;
+
+		ag_generate_primitive_cube(&min,&max,FALSE,group_idx,ag_texture_lift);
+	}
+}
+
+/* =======================================================
+
+      Rubble Decorations
+      
+======================================================= */
+
+void ag_generate_decoration_floor_rubble(int room_idx)
+{
+	int					n,count,wid_x,wid_z,high;
+	d3pnt				pnt,min,max;
+	ag_room_type		*room;
+
+	room=&ag_state.rooms[room_idx];
+
+	count=ag_count_rubble_start+ag_random_int(ag_count_rubble_extra);
+
+	for (n=0;n!=count;n++) {
+		ag_generate_decoration_location_random(room_idx,&pnt);
+
+		wid_x=ag_size_rubble_start+ag_random_int(ag_size_rubble_extra);
+		wid_z=ag_size_rubble_start+ag_random_int(ag_size_rubble_extra);
+		high=ag_size_rubble_start+ag_random_int(ag_size_rubble_extra);
+
+		min.x=pnt.x-wid_x;
+		min.y=room->max.y-high;
+		min.z=pnt.z-wid_z;
+
+		max.x=pnt.x+wid_x;
+		max.y=room->max.y;
+		max.z=pnt.z+wid_z;
+
+		ag_generate_primitive_rubble(&min,&max,(ag_random_bool()?ag_texture_stair:ag_texture_decoration_pillar));
+	}
+}
+
+/* =======================================================
+
       Open Ceiling Decorations
       
 ======================================================= */
@@ -820,15 +925,16 @@ void ag_generate_decorations_add(void)
 
 		if (!room->has_stairs) {
 			for (k=0;k!=10;k++) {
-				dec_idx=ag_random_int(6);
+				dec_idx=ag_random_int(8);
 
 				switch (dec_idx) {
 
-						// columns, equipment
+						// columns, equipment, machinery
 						// don't appear in two story rooms
 
 					case ag_decoration_type_columns:
 					case ag_decoration_type_equipment:
+					case ag_decoration_type_machinery:
 						if (room->second_story) continue;
 						break;
 
@@ -870,6 +976,14 @@ void ag_generate_decorations_add(void)
 
 			case ag_decoration_type_trench:
 				ag_generate_decoration_floor_trench(n);
+				break;
+
+			case ag_decoration_type_machinery:
+				ag_generate_decoration_floor_machinery(n);
+				break;
+
+			case ag_decoration_type_rubble:
+				ag_generate_decoration_floor_rubble(n);
 				break;
 
 		}

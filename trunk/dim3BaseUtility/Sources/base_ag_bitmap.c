@@ -355,7 +355,7 @@ void bitmap_ag_texture_tile_inner(bitmap_ag_type *ag_bitmap,int split_count,int 
 					border_col.r=t_col->r*0.7f;
 					border_col.g=t_col->g*0.7f;
 					border_col.b=t_col->b*0.7f;
-					bitmap_ag_texture_draw_oval(ag_bitmap,(px+5),(py+5),(wid-10),(high-10),5,&border_col,NULL);
+					bitmap_ag_texture_draw_oval(ag_bitmap,(px+5),(py+5),(wid-10),(high-10),5,FALSE,&border_col,NULL);
 				}
 			}
 			
@@ -460,10 +460,10 @@ void bitmap_ag_texture_metal_bolts(bitmap_ag_type *ag_bitmap)
 			bitmap_ag_texture_draw_rectangle(ag_bitmap,px,py,wid,high,15,TRUE,&ag_bitmap->back_col);
 			bitmap_ag_texture_metal_pattern(ag_bitmap,px,py,wid,high,60);
 
-			bitmap_ag_texture_draw_oval(ag_bitmap,(px+20),(py+20),20,20,3,&border_col,&col);
-			bitmap_ag_texture_draw_oval(ag_bitmap,(px+(wid-40)),(py+20),20,20,3,&border_col,&col);
-			bitmap_ag_texture_draw_oval(ag_bitmap,(px+(wid-40)),(py+(high-40)),20,20,3,&border_col,&col);
-			bitmap_ag_texture_draw_oval(ag_bitmap,(px+20),(py+(high-40)),20,20,3,&border_col,&col);
+			bitmap_ag_texture_draw_oval(ag_bitmap,(px+20),(py+20),20,20,3,FALSE,&border_col,&col);
+			bitmap_ag_texture_draw_oval(ag_bitmap,(px+(wid-40)),(py+20),20,20,3,FALSE,&border_col,&col);
+			bitmap_ag_texture_draw_oval(ag_bitmap,(px+(wid-40)),(py+(high-40)),20,20,3,FALSE,&border_col,&col);
+			bitmap_ag_texture_draw_oval(ag_bitmap,(px+20),(py+(high-40)),20,20,3,FALSE,&border_col,&col);
 
 			px+=sz;
 		}
@@ -658,14 +658,14 @@ void bitmap_ag_texture_window_pane(bitmap_ag_type *ag_bitmap,int px,int py,int w
 
 bool bitmap_ag_texture_window(texture_frame_type *frame,char *base_path,int pixel_sz)
 {
-	int				sz,margin;
-	d3col			border_col,pane_col;
+	int				x,y,px,py,pane_count,sz,margin;
+	d3col			border_col,pane_col[2];
 	bitmap_ag_type	ag_bitmap;
 
 	ag_bitmap.pixel_sz=pixel_sz;
 	ag_bitmap.no_bump_spec=FALSE;
 	ag_bitmap.frame=frame;
-	bitmap_ag_random_color_lock(&ag_bitmap.back_col,200,150);
+	bitmap_ag_random_color_lock(&ag_bitmap.back_col,150,100);
 
 	if (!bitmap_ag_texture_create(&ag_bitmap,FALSE)) return(FALSE);
 
@@ -675,16 +675,43 @@ bool bitmap_ag_texture_window(texture_frame_type *frame,char *base_path,int pixe
 
 		// panes
 
-	sz=pixel_sz/2;
-	margin=20;
+	pane_count=2+bitmap_ag_random_int(3);
+
+	margin=5+bitmap_ag_random_int(10);
+	sz=(pixel_sz-margin)/pane_count;
 
 	bitmap_ag_random_color_lock(&border_col,64,32);
-	bitmap_ag_random_color(&pane_col,255,255,255,200,200,32);
 
-	bitmap_ag_texture_window_pane(&ag_bitmap,margin,margin,(sz-margin),(sz-margin),&border_col,&pane_col);
-	bitmap_ag_texture_window_pane(&ag_bitmap,margin,sz,(sz-margin),(sz-margin),&border_col,&pane_col);
-	bitmap_ag_texture_window_pane(&ag_bitmap,sz,margin,(sz-margin),(sz-margin),&border_col,&pane_col);
-	bitmap_ag_texture_window_pane(&ag_bitmap,sz,sz,(sz-margin),(sz-margin),&border_col,&pane_col);
+	bitmap_ag_random_color(&pane_col[0],255,255,255,220,220,180);
+	pane_col[1].r=pane_col[0].r*0.9f;
+	pane_col[1].g=pane_col[0].g*0.9f;
+	pane_col[1].b=pane_col[0].b*0.9f;
+
+	py=margin;
+
+	for (x=0;x!=pane_count;x++) {
+		px=margin;
+
+		for (y=0;y!=pane_count;y++) {
+
+				// clean pane
+
+			if (bitmap_ag_random_int(100)>25) {
+				bitmap_ag_texture_window_pane(&ag_bitmap,px,py,(sz-margin),(sz-margin),&border_col,&pane_col[0]);
+			}
+
+				// dirty pane
+
+			else {
+				bitmap_ag_texture_window_pane(&ag_bitmap,px,py,(sz-margin),(sz-margin),&border_col,&pane_col[1]);
+				bitmap_ag_texture_add_noise(&ag_bitmap,px,py,(sz-margin),(sz-margin),0.5f,0.3f);
+			}
+
+			px+=sz;
+		}
+
+		py+=sz;
+	}
 
 		// save
 
@@ -718,38 +745,81 @@ void bitmap_ag_texture_machine_glow(bitmap_ag_type *ag_bitmap,int px,int py,int 
 
 bool bitmap_ag_texture_machine(texture_frame_type *frame,char *base_path,int pixel_sz)
 {
-	int				n,y;
-	d3col			border_col,glow_col[2];
+	int				n,x,y,px,py,py2,wid,high,p_wid,p_high,lip_sz,col_idx;
+	d3col			border_col,dark_col,glow_col[4];
 	bitmap_ag_type	ag_bitmap;
 
 	ag_bitmap.pixel_sz=pixel_sz;
 	ag_bitmap.no_bump_spec=FALSE;
 	ag_bitmap.frame=frame;
-	bitmap_ag_random_color(&ag_bitmap.back_col,0,0,127,64,64,127);
+	bitmap_ag_random_color(&ag_bitmap.back_col,20,20,200,64,64,127);
 
 	if (!bitmap_ag_texture_create(&ag_bitmap,TRUE)) return(FALSE);
 
 		// metal look
 
-	bitmap_ag_texture_draw_rectangle(&ag_bitmap,0,0,pixel_sz,pixel_sz,2,TRUE,&ag_bitmap.back_col);
+	lip_sz=10+bitmap_ag_random_int(15);
+	bitmap_ag_texture_draw_rectangle(&ag_bitmap,0,0,pixel_sz,pixel_sz,lip_sz,FALSE,&ag_bitmap.back_col);
 	bitmap_ag_texture_metal_pattern(&ag_bitmap,0,0,pixel_sz,pixel_sz,300);
 	
-		// supergumba -- temp
+		// some random colors
 		
 	border_col.r=border_col.g=border_col.b=0.0f;
-	glow_col[0].r=glow_col[0].b=0.0f;
-	glow_col[0].g=1.0f;
-	glow_col[1].g=glow_col[1].b=0.0f;
-	glow_col[1].r=1.0f;
+	bitmap_ag_random_color(&glow_col[0],255,100,100,200,70,70);
+	bitmap_ag_random_color(&glow_col[1],255,255,255,150,150,150);
+	bitmap_ag_random_color(&glow_col[2],255,255,255,220,220,100);
+	bitmap_ag_random_color(&glow_col[3],100,255,100,70,200,70);
+
+	dark_col.r=ag_bitmap.back_col.r*0.8f;
+	dark_col.g=ag_bitmap.back_col.g*0.8f;
+	dark_col.b=ag_bitmap.back_col.b*0.8f;
 	
-		// lights
+		// components
+
+	p_wid=pixel_sz/5;
+	p_high=pixel_sz/5;
+	wid=p_wid-5;
+	high=p_high-5;
+
+	col_idx=0;
+
+	for (y=0;y!=5;y++) {
 		
-	y=30;
-	
-	for (n=0;n!=5;n++) {
-		bitmap_ag_texture_window_pane(&ag_bitmap,30,y,200,80,&border_col,&glow_col[n%2]);
-		bitmap_ag_texture_machine_glow(&ag_bitmap,35,(y+5),190,70);
-		y+=90;
+		for (x=0;x!=5;x++) {
+
+			px=(x*p_wid)+5;
+			py=(y*p_high)+5;
+
+			switch (bitmap_ag_random_int(4)) {
+
+					// plate
+
+				case 1:
+					bitmap_ag_texture_draw_rectangle(&ag_bitmap,px,py,wid,high,3,FALSE,&border_col);
+					bitmap_ag_texture_draw_rectangle(&ag_bitmap,(px+3),(py+3),(wid-6),(high-6),1,TRUE,&dark_col);
+					for (n=0;n!=8;n++) {
+						py2=(py+4)+((high/8)*n);
+						bitmap_ag_texture_draw_line_horizontal(&ag_bitmap,(px+4),py2,(wid-8),2,FALSE,&border_col);
+					}
+					break;
+
+					// box light
+
+				case 2:
+					bitmap_ag_texture_draw_rectangle(&ag_bitmap,px,py,wid,high,3,FALSE,&border_col);
+					bitmap_ag_texture_draw_rectangle(&ag_bitmap,(px+3),(py+3),(wid-6),(high-6),1,TRUE,&glow_col[(col_idx++)%4]);
+					bitmap_ag_texture_gradient_overlay_vertical(&ag_bitmap,(px+3),(py+3),(wid-6),(high-6),1.0f,0.7f);
+					bitmap_ag_texture_machine_glow(&ag_bitmap,(px+5),(py+5),(wid-10),(high-10));
+					break;
+
+					// circle button
+
+				case 3:
+					bitmap_ag_texture_draw_oval(&ag_bitmap,px,py,wid,high,3,bitmap_ag_random_bool(),&border_col,&dark_col);
+					break;
+
+			}
+		}
 	}
 
 	bitmap_ag_texture_make_spec(&ag_bitmap,0.8f);

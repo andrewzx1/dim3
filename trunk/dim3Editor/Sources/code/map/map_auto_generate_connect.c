@@ -42,41 +42,6 @@ extern void ag_generate_remove_polygons_in_box(int mesh_idx,d3pnt *min,d3pnt *ma
 
 /* =======================================================
 
-      Determine Connector Type
-      
-======================================================= */
-
-int ag_generate_get_connector_type(int room_idx)
-{
-	int				dx,dz;
-	ag_room_type	*room,*room2;
-
-	room=&ag_state.rooms[room_idx];
-
-		// if both rooms have second story,
-		// then connect with pillar
-
-	room2=&ag_state.rooms[room->connect_box.other_room_idx];
-	if ((room->second_story) && (room2->second_story)) return(ag_connect_type_arch);
-
-		// randomize for any stairs
-
-	if (ag_random_int(100)<33) return(ag_connect_type_stairs);
-
-		// check for door width
-
-	dx=room->connect_box.max.x-room->connect_box.min.x;
-	dz=room->connect_box.max.z-room->connect_box.min.z;
-
-	if ((dx<=ag_size_door_min_width) && (dz<=ag_size_door_min_width)) return(ag_connect_type_door);
-
-		// normal plain connector
-
-	return(ag_connect_type_normal);
-}
-
-/* =======================================================
-
       Door Room Connectors
       
 ======================================================= */

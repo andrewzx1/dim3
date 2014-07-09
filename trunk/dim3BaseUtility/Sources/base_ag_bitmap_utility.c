@@ -721,7 +721,7 @@ void bitmap_ag_texture_draw_rectangle(bitmap_ag_type *ag_bitmap,int px,int py,in
 	}
 }
 
-void bitmap_ag_texture_draw_oval(bitmap_ag_type *ag_bitmap,int px,int py,int wid,int high,int border_sz,d3col *border_col,d3col *col)
+void bitmap_ag_texture_draw_oval(bitmap_ag_type *ag_bitmap,int px,int py,int wid,int high,int border_sz,bool flip_normal,d3col *border_col,d3col *col)
 {
 	int				n,x,y,mx,my,border_count;
 	float			f_wid,f_high,fx,fy,rad;
@@ -757,8 +757,8 @@ void bitmap_ag_texture_draw_oval(bitmap_ag_type *ag_bitmap,int px,int py,int wid
 
 				// get a normal for the pixel change
 
-			normal.x=fx;
-			normal.y=-fy;
+			normal.x=flip_normal?-fx:fx;
+			normal.y=flip_normal?fy:-fy;
 			normal.z=0.5f;		// always force Z normal back to top
 			bitmap_ag_texture_write_normal(ag_bitmap,ag_bitmap->bump_data,x,y,&normal);
 		}
