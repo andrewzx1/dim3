@@ -793,7 +793,7 @@ void piece_single_uvs(bool poly_only)
 		if (type!=item_map_mesh) continue;
 		
 		if (poly_only) {
-			map_mesh_single_poly_uv(&map,mesh_idx,poly_idx);
+			map_mesh_poly_single_uv(&map,mesh_idx,poly_idx);
 		}
 		else {
 			map_mesh_single_uv(&map,mesh_idx);
