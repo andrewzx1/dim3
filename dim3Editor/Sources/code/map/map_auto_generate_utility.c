@@ -409,9 +409,10 @@ bool ag_generate_room_is_leaf(int room_idx)
 
 void ag_generate_windows_add(void)
 {
-	int				n,k,t,poly_idx,
+	int				n,k,t,poly_idx,dist,
 					window_count,extrude_mesh_idx;
-	d3pnt			extrude_pnt,lit_pnt;
+	float			uv_mult;
+	d3pnt			extrude_pnt,lit_pnt,min,max;
 	d3vct			extrude_vct;
 	map_mesh_type	*mesh;
 	ag_room_type	*room;
@@ -467,8 +468,15 @@ void ag_generate_windows_add(void)
 				poly_idx=map.mesh.meshes[extrude_mesh_idx].npoly-1;
 				map.mesh.meshes[extrude_mesh_idx].polys[poly_idx].txt_idx=ag_texture_window;
 				
-				map_mesh_single_poly_uv(&map,extrude_mesh_idx,poly_idx);
+					// figure out the UV
+
+				map_mesh_poly_single_uv(&map,extrude_mesh_idx,poly_idx);
 				map.mesh.meshes[extrude_mesh_idx].flag.lock_uv=TRUE;
+
+				map_mesh_poly_calculate_extent(&map,extrude_mesh_idx,poly_idx,&min,&max);
+				dist=distance_2D_get(min.x,min.z,max.x,max.z);
+				uv_mult=(float)(dist/(max.y-min.y));
+				if (uv_mult>0) map_mesh_poly_multipy_uv(&map,extrude_mesh_idx,poly_idx,uv_mult,1.0f);
 
 					// add in the light
 

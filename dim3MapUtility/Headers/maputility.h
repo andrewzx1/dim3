@@ -924,7 +924,8 @@ extern void map_mesh_reset_poly_uv(map_type *map,int mesh_idx,int poly_idx);
 extern void map_mesh_reset_uv(map_type *map,int mesh_idx);
 extern void map_mesh_whole_poly_uv(map_type *map,int mesh_idx,int poly_idx);
 extern void map_mesh_whole_uv(map_type *map,int mesh_idx);
-extern void map_mesh_single_poly_uv(map_type *map,int mesh_idx,int poly_idx);
+extern void map_mesh_poly_single_uv(map_type *map,int mesh_idx,int poly_idx);
+extern void map_mesh_poly_multipy_uv(map_type *map,int mesh_idx,int poly_idx,float x,float y);
 extern void map_mesh_single_uv(map_type *map,int mesh_idx);
 extern void map_mesh_sort_polys(map_type *map);
 

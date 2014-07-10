@@ -1324,7 +1324,7 @@ void map_mesh_whole_uv(map_type *map,int mesh_idx)
       
 ======================================================= */
 
-void map_mesh_single_poly_uv(map_type *map,int mesh_idx,int poly_idx)
+void map_mesh_poly_single_uv(map_type *map,int mesh_idx,int poly_idx)
 {
 	int						n;
 	float					m_gx,m_gy;
@@ -1366,6 +1366,21 @@ void map_mesh_single_poly_uv(map_type *map,int mesh_idx,int poly_idx)
 	}
 }
 
+void map_mesh_poly_multipy_uv(map_type *map,int mesh_idx,int poly_idx,float x,float y)
+{
+	int						n;
+	map_mesh_type			*mesh;
+	map_mesh_poly_type		*poly;
+
+	mesh=&map->mesh.meshes[mesh_idx];
+	poly=&mesh->polys[poly_idx];
+
+	for (n=0;n!=poly->ptsz;n++) {
+		poly->main_uv.uvs[n].x*=x;
+		poly->main_uv.uvs[n].y*=y;
+	}
+}
+
 void map_mesh_single_uv(map_type *map,int mesh_idx)
 {
 	int						n,npoly;
@@ -1376,7 +1391,7 @@ void map_mesh_single_uv(map_type *map,int mesh_idx)
 	npoly=mesh->npoly;
 
 	for (n=0;n!=npoly;n++) {
-		map_mesh_single_poly_uv(map,mesh_idx,n);
+		map_mesh_poly_single_uv(map,mesh_idx,n);
 	}
 }
 

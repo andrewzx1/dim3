@@ -743,9 +743,9 @@ void ag_generate_decoration_floor_trench(int room_idx)
 
 void ag_generate_decoration_floor_machinery(int room_idx)
 {
-	int					n,count,wid,high,
+	int					x,z,count,wid,m_wid,high,sec,
 						group_idx,movement_idx,move_idx;
-	d3pnt				pnt,min,max;
+	d3pnt				pnt,m_min,m_max,min,max;
 	movement_type		*movement;
 	movement_move_type	*move;
 	ag_room_type		*room;
@@ -754,53 +754,79 @@ void ag_generate_decoration_floor_machinery(int room_idx)
 
 		// all machinery same size
 
+	map_mesh_calculate_extent(&map,room->mesh_idx,&m_min,&m_max);
+
 	wid=ag_size_machinery_start+ag_random_int(ag_size_machinery_extra);
+	m_wid=(wid<<1)+(wid>>1);
 
 	high=ag_size_room_high+ag_size_floor_high;
 	if (room->second_story) high+=ag_size_room_high;
 
+	if (ag_random_bool()) {
+		count=2;
+	}
+	else {
+		count=4;
+	}
+
 		// build machinery
 
-	count=ag_count_machinery_start+ag_random_int(ag_count_machinery_extra);
+	for (x=0;x!=count;x++) {
 
-	for (n=0;n!=count;n++) {
+		for (z=0;z!=count;z++) {
 
-			// create the group
-			// and movement
+				// position
 
-		group_idx=map_group_add(&map);
-		sprintf(map.group.groups[group_idx].name,"Machine %d.%d",room_idx,n);
+			pnt.x=(((m_min.x+m_max.x)>>1)-((m_wid*count)>>1))+(x*m_wid);
+			pnt.x+=wid;
+			pnt.z=(((m_min.z+m_max.z)>>1)-((m_wid*count)>>1))+(z*m_wid);
+			pnt.z+=wid;
 
-		movement_idx=map_movement_add(&map);
+				// create the group
+				// and movement
 
-		movement=&map.movement.movements[movement_idx];
+			group_idx=map_group_add(&map);
+			sprintf(map.group.groups[group_idx].name,"Machine %d.%d",room_idx,((x*count)+z));
 
-		sprintf(movement->name,"Machine %d.%d",room_idx,n);
-		movement->group_idx=group_idx;
-		movement->auto_start=TRUE;
-		movement->loop=TRUE;
+			movement_idx=map_movement_add(&map);
 
-		move_idx=map_movement_move_add(&map,movement_idx);
+			movement=&map.movement.movements[movement_idx];
 
-		move=&movement->moves[move_idx];
-		move->msec=5000;
-		move->mov.y=high-100;
+			sprintf(movement->name,"Machine %d.%d",room_idx,((x*count)+z));
+			movement->group_idx=group_idx;
+			movement->auto_start=TRUE;
+			movement->loop=TRUE;
 
-		strcpy(move->sound_name,"Lift");
+			sec=3000+ag_random_int(3000);
 
-			// machine
+			move_idx=map_movement_move_add(&map,movement_idx);
 
-		ag_generate_decoration_location_random(room_idx,&pnt);
+			move=&movement->moves[move_idx];
+			move->msec=sec;
+			move->mov.y=-(high-100);
 
-		min.x=pnt.x-wid;
-		min.y=room->max.y-high;
-		min.z=pnt.z-wid;
+			strcpy(move->sound_name,"Lift");
 
-		max.x=pnt.x+wid;
-		max.y=room->max.y;
-		max.z=pnt.z+wid;
+			move_idx=map_movement_move_add(&map,movement_idx);
 
-		ag_generate_primitive_cube(&min,&max,FALSE,group_idx,ag_texture_lift);
+			move=&movement->moves[move_idx];
+			move->msec=sec;
+			move->mov.y=high-100;
+
+			strcpy(move->sound_name,"Lift");
+
+				// machine
+
+			min.x=pnt.x-wid;
+			min.y=room->max.y-high;
+			min.z=pnt.z-wid;
+
+			max.x=pnt.x+wid;
+			max.y=room->max.y;
+			max.z=pnt.z+wid;
+
+			ag_generate_primitive_cube(&min,&max,FALSE,group_idx,ag_texture_lift);
+		}
 	}
 }
 

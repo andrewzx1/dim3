@@ -209,15 +209,18 @@ void ag_generate_primitive_rubble(d3pnt *min,d3pnt *max,int txt_idx)
 	}
 
 		// randomize the vertexes
+		// that aren't on the bottom
 
 	mesh=&map.mesh.meshes[mesh_idx];
 
 	pnt=mesh->vertexes;
 
 	for (n=0;n!=mesh->nvertex;n++) {
-		pnt->x+=(200-ag_random_int(400));
-		pnt->y+=(200-ag_random_int(400));
-		pnt->z+=(200-ag_random_int(400));
+		if (pnt->y<max->y) {
+			pnt->x+=(200-ag_random_int(400));
+			pnt->y+=(200-ag_random_int(400));
+			pnt->z+=(200-ag_random_int(400));
+		}
 		pnt++;
 	}
 
