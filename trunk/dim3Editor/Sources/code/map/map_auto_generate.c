@@ -1037,12 +1037,6 @@ bool ag_generate_run(char *err_str)
 
 bool auto_generate_map(char *err_str)
 {
-		// on the start, create a
-		// new texture set
-
-	ag_random_seed();
-	ag_create_texture_set();
-
 		// run the auto generator
 		// with a new unique seed
 
@@ -1066,3 +1060,10 @@ int auto_generate_get_seed(void)
 {
 	return(ag_state.seed);
 }
+
+void auto_generate_map_textures(void)
+{
+	ag_random_seed();
+	ag_create_texture_set();
+}
+
