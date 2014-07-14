@@ -553,6 +553,7 @@ extern bool auto_generate_map(char *err_str);
 extern bool auto_generate_previous_map(char *err_str);
 extern bool auto_generate_next_map(char *err_str);
 extern int auto_generate_get_seed(void);
+extern void auto_generate_map_textures(void);
 
 //
 // selection routines
@@ -748,6 +749,8 @@ extern bool map_view_auto_generate_cursor(d3pnt *pnt);
 extern void map_view_auto_generate_scroll_wheel(d3pnt *pnt,int delta);
 extern bool map_view_auto_generate_click(d3pnt *pnt,bool double_click);
 extern void map_view_auto_generate_draw(void);
+
+extern void view_map_auto_generate_textures(void);
 
 //
 // view VBO

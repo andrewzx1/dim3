@@ -86,6 +86,21 @@ void view_map_auto_generate_end(void)
 
 /* =======================================================
 
+      Auto-Generate Textures
+      
+======================================================= */
+
+void view_map_auto_generate_textures(void)
+{
+	os_set_wait_cursor();
+	auto_generate_map_textures();
+	os_set_arrow_cursor();
+
+	main_wind_draw();
+}
+
+/* =======================================================
+
       Map Auto-Generate View Cursors
       
 ======================================================= */

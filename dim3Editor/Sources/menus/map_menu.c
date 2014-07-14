@@ -102,7 +102,8 @@ os_menu_item_type		map_menu_setup[]=
 									{"Map","",0,os_menu_key_none,0x0},
 									{"Map","Build Liquid Reflection Maps...",map_menu_item_BuildLiquidReflectionMaps,os_menu_key_none,0x0},
 									{"Map","",0,os_menu_key_none,0x0},
-									{"Map","Auto Generate Map...",map_menu_item_AutoGenerate,os_menu_key_none,0x0},
+									{"Map","Auto Generate Textures...",map_menu_item_AutoGenerateTextures,os_menu_key_none,0x0},
+									{"Map","Auto Generate Map...",map_menu_item_AutoGenerateMap,os_menu_key_none,0x0},
 									{"Map","",0,os_menu_key_none,0x0},
 									{"Map","Run...",map_menu_item_Run,os_menu_key_cmd,'R'},
 
@@ -481,7 +482,11 @@ bool map_menu_event_run(int cmd)
 			liquid_reflection_maps_create();
 			return(TRUE);
 
-		case map_menu_item_AutoGenerate:
+		case map_menu_item_AutoGenerateTextures:
+			view_map_auto_generate_textures();
+			return(TRUE);
+
+		case map_menu_item_AutoGenerateMap:
 			view_map_auto_generate_start();
 			return(TRUE);
 
