@@ -121,10 +121,19 @@ int model_texture_palette_get_selected_texture(void)
 
 void model_texture_palette_put_selected_texture(int txt_idx)
 {
-		// if we select a texture, automatically go
-		// into polygon mode
+		// if vertex mode, select vertexes
+		// if poly mode, replace textures
 
-	state.model.select_mode=select_mode_polygon;
-	model_poly_mask_set_sel_texture(state.model.cur_mesh_idx,txt_idx);
+	switch (state.model.select_mode) {
+		
+		case select_mode_vertex:
+			model_vertex_mask_set_sel_texture(state.model.cur_mesh_idx,txt_idx);
+			break;
+
+		case select_mode_polygon:
+			model_poly_mask_set_sel_texture(state.model.cur_mesh_idx,txt_idx);
+			break;
+
+	}
 }
 
