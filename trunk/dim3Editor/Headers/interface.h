@@ -546,16 +546,6 @@ extern void light_maps_clear(void);
 extern bool liquid_reflection_maps_create(void);
 
 //
-// auto-generate
-//
-
-extern bool auto_generate_map(char *err_str);
-extern bool auto_generate_previous_map(char *err_str);
-extern bool auto_generate_next_map(char *err_str);
-extern int auto_generate_get_seed(void);
-extern void auto_generate_map_textures(void);
-
-//
 // selection routines
 //
 

@@ -41,6 +41,30 @@ extern app_pref_type			pref;
 
 /* =======================================================
 
+      Map Auto Generation Setup/Finish
+      
+======================================================= */
+
+void view_map_auto_generate_setup(void)
+{
+	select_clear();
+	view_vbo_map_free();
+}
+
+void view_map_auto_generate_finish(void)
+{
+		// restore the VBOs,
+
+	view_vbo_map_initialize();
+
+		// center view to start spot
+
+	select_add(item_map_spot,0,-1);
+	map_view_goto_select_all();
+}
+
+/* =======================================================
+
       Enter/Exit Map Auto-Generate View
       
 ======================================================= */
@@ -92,8 +116,21 @@ void view_map_auto_generate_end(void)
 
 void view_map_auto_generate_textures(void)
 {
+	char			base_path[1024],dir_path[1024];
+
 	os_set_wait_cursor();
-	auto_generate_map_textures();
+
+		// create directory for new textures
+		
+	file_paths_data_default(&file_path_setup,base_path,"Bitmaps/Textures",NULL,NULL);
+
+	sprintf(dir_path,"%s/%s",base_path,map.info.name);
+	os_create_directory(dir_path);
+
+		// run bitmap generation for a map
+
+	ag_map_create_texture_set(base_path);
+
 	os_set_arrow_cursor();
 
 	main_wind_draw();
@@ -212,6 +249,7 @@ bool map_view_auto_generate_click_button(d3pnt *pnt,d3rect *wbox,d3rect *bbox,in
 bool map_view_auto_generate_click(d3pnt *pnt,bool double_click)
 {
 	char			err_str[256];
+	bool			ok;
 	d3rect			wbox,bbox;
 
 		// move within the view
@@ -226,14 +264,20 @@ bool map_view_auto_generate_click(d3pnt *pnt,bool double_click)
 
 	map_view_auto_generate_previous_button_box(&bbox);
 	if (map_view_auto_generate_click_button(pnt,&wbox,&bbox,map_auto_generate_button_previous)) {
-		if (!auto_generate_previous_map(err_str)) os_dialog_alert("Auto Generator",err_str);
+		view_map_auto_generate_setup();
+		ok=auto_generate_previous_map(err_str);
+		view_map_auto_generate_finish();
+		if (!ok) os_dialog_alert("Auto Generator",err_str);
 		main_wind_draw();
 		return(TRUE);
 	}
 
 	map_view_auto_generate_next_button_box(&bbox);
 	if (map_view_auto_generate_click_button(pnt,&wbox,&bbox,map_auto_generate_button_next)) {
-		if (!auto_generate_next_map(err_str)) os_dialog_alert("Auto Generator",err_str);
+		view_map_auto_generate_setup();
+		ok=auto_generate_next_map(err_str);
+		view_map_auto_generate_finish();
+		if (!ok) os_dialog_alert("Auto Generator",err_str);
 		main_wind_draw();
 		return(TRUE);
 	}

@@ -52,7 +52,7 @@
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="true"
-				AdditionalIncludeDirectories=".;..\Common\Libraries;..\Common\Libraries\GLEW;..\Common\Libraries\ZLib;..\Common\Libraries\SDL2;..\Common\Libraries\PNG;..\..\dim3Editor\Code;..\..\dim3Editor\Headers;..\..\dim3Common\Headers;..\Common;..\Common\Code;..\Common\Headers;..\..\dim3BaseUtility\Headers;..\..\dim3BaseUtility\Sources;..\..\dim3ModelUtility\Headers;..\..\dim3ModelUtility\Sources;..\..\dim3MapUtility\Headers;..\..\dim3MapUtility\Sources"
+				AdditionalIncludeDirectories=".;..\Common\Libraries;..\Common\Libraries\GLEW;..\Common\Libraries\ZLib;..\Common\Libraries\SDL2;..\Common\Libraries\PNG;..\..\dim3Editor\Code;..\..\dim3Editor\Headers;..\..\dim3Common\Headers;..\Common;..\Common\Code;..\Common\Headers;..\..\dim3BaseUtility\Headers;..\..\dim3BaseUtility\Sources;..\..\dim3ModelUtility\Headers;..\..\dim3ModelUtility\Sources;..\..\dim3MapUtility\Headers;..\..\dim3MapUtility\Sources;..\..\dim3AutoGenerate\Headers;..\..\dim3AutoGenerate\Sources\map;..\..\dim3AutoGenerate\Sources\model"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;D3_PCH;D3_EDITOR"
 				StringPooling="true"
 				ExceptionHandling="0"
@@ -370,10 +370,6 @@
 			<Filter
 				Name="Headers"
 				>
-				<File
-					RelativePath="..\..\dim3Editor\Headers\auto_generator_defs.h"
-					>
-				</File>
 				<File
 					RelativePath="..\..\dim3Editor\Headers\dim3editor.h"
 					>
@@ -953,34 +949,6 @@
 						Name="Map"
 						>
 						<File
-							RelativePath="..\..\dim3Editor\Sources\code\map\map_auto_generate.c"
-							>
-						</File>
-						<File
-							RelativePath="..\..\dim3Editor\Sources\code\map\map_auto_generate_connect.c"
-							>
-						</File>
-						<File
-							RelativePath="..\..\dim3Editor\Sources\code\map\map_auto_generate_decoration.c"
-							>
-						</File>
-						<File
-							RelativePath="..\..\dim3Editor\Sources\code\map\map_auto_generate_primitive.c"
-							>
-						</File>
-						<File
-							RelativePath="..\..\dim3Editor\Sources\code\map\map_auto_generate_setup.c"
-							>
-						</File>
-						<File
-							RelativePath="..\..\dim3Editor\Sources\code\map\map_auto_generate_story.c"
-							>
-						</File>
-						<File
-							RelativePath="..\..\dim3Editor\Sources\code\map\map_auto_generate_utility.c"
-							>
-						</File>
-						<File
 							RelativePath="..\..\dim3Editor\Sources\code\map\map_dos.c"
 							>
 						</File>
@@ -1374,6 +1342,70 @@
 					RelativePath="..\..\dim3ModelUtility\Sources\model_util_transform.c"
 					>
 				</File>
+			</Filter>
+		</Filter>
+		<Filter
+			Name="dim3AutoGenerate"
+			>
+			<Filter
+				Name="Headers"
+				>
+				<File
+					RelativePath="..\..\dim3AutoGenerate\Headers\autogeneratemapprivate.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3AutoGenerate\Headers\autogeneratemodelprivate.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3AutoGenerate\Headers\autogenerateutility.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3AutoGenerate\Headers\dim3autogenerate.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Sources"
+				>
+				<Filter
+					Name="map"
+					>
+					<File
+						RelativePath="..\..\dim3AutoGenerate\Sources\map\map_auto_generate.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3AutoGenerate\Sources\map\map_auto_generate_connect.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3AutoGenerate\Sources\map\map_auto_generate_decoration.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3AutoGenerate\Sources\map\map_auto_generate_primitive.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3AutoGenerate\Sources\map\map_auto_generate_setup.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3AutoGenerate\Sources\map\map_auto_generate_story.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3AutoGenerate\Sources\map\map_auto_generate_utility.c"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="model"
+					>
+				</Filter>
 			</Filter>
 		</Filter>
 	</Files>
