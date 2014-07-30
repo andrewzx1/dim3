@@ -39,8 +39,8 @@ extern bool ag_random_bool(void);
 // map generation
 //
 
-extern bool auto_generate_map(char *err_str);
-extern bool auto_generate_previous_map(char *err_str);
-extern bool auto_generate_next_map(char *err_str);
+extern bool auto_generate_map(map_type *map,char *err_str);
+extern bool auto_generate_previous_map(map_type *map,char *err_str);
+extern bool auto_generate_next_map(map_type *map,char *err_str);
 extern int auto_generate_get_seed(void);
-extern void ag_map_create_texture_set(char *base_path);
+extern void ag_map_create_texture_set(map_type *map,char *base_path);

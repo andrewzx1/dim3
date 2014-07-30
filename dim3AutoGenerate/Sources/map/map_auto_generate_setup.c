@@ -29,8 +29,6 @@ and can be sold or given away.
 	#include "dim3autogenerate.h"
 #endif
 
-extern map_type					map;
-
 extern ag_state_type			ag_state;
 
 /* =======================================================
@@ -64,18 +62,18 @@ void ag_map_release(void)
       
 ======================================================= */
 
-texture_type* ag_map_create_texture(int idx,char *name,bool has_glow)
+texture_type* ag_map_create_texture(map_type *map,int idx,char *name,bool has_glow)
 {
 	int					n;
 	texture_type		*texture;
 
 		// close old texture
 
-	map_textures_close_texture(&map,idx);
+	map_textures_close_texture(map,idx);
 
 		// start new texture
 
-	texture=&map.textures[idx];
+	texture=&map->textures[idx];
 	
 	sprintf(texture->material_name,name);
 	texture->shader_name[0]=0x0;
@@ -92,99 +90,99 @@ texture_type* ag_map_create_texture(int idx,char *name,bool has_glow)
 		texture->frames[n].name[0]=0x0;
 	}
 	
-	sprintf(texture->frames[0].name,"%s/%s",map.info.name,texture->material_name);
+	sprintf(texture->frames[0].name,"%s/%s",map->info.name,texture->material_name);
 
 	return(texture);
 }
 
-void ag_map_create_texture_set(char *base_path)
+void ag_map_create_texture_set(map_type *map,char *base_path)
 {
 	texture_type		*texture;
 
 	ag_random_seed();
 
-	texture=ag_map_create_texture(ag_texture_wall,"Wall",FALSE);
+	texture=ag_map_create_texture(map,ag_texture_wall,"Wall",FALSE);
 	bitmap_ag_texture_brick(&texture->frames[0],base_path,512);
-	map_textures_read_texture(&map,ag_texture_wall);
+	map_textures_read_texture(map,ag_texture_wall);
 	
-	texture=ag_map_create_texture(ag_texture_floor,"Floor",FALSE);
+	texture=ag_map_create_texture(map,ag_texture_floor,"Floor",FALSE);
 	bitmap_ag_texture_tile(&texture->frames[0],base_path,512,TRUE);
-	map_textures_read_texture(&map,ag_texture_floor);
+	map_textures_read_texture(map,ag_texture_floor);
 
-	texture=ag_map_create_texture(ag_texture_ceiling,"Ceiling",FALSE);
+	texture=ag_map_create_texture(map,ag_texture_ceiling,"Ceiling",FALSE);
 	bitmap_ag_texture_tile(&texture->frames[0],base_path,512,FALSE);
-	map_textures_read_texture(&map,ag_texture_ceiling);
+	map_textures_read_texture(map,ag_texture_ceiling);
 
-	texture=ag_map_create_texture(ag_texture_connect,"Connect",FALSE);
+	texture=ag_map_create_texture(map,ag_texture_connect,"Connect",FALSE);
 	bitmap_ag_texture_concrete_block(&texture->frames[0],base_path,512);
-	map_textures_read_texture(&map,ag_texture_connect);
+	map_textures_read_texture(map,ag_texture_connect);
 
-	texture=ag_map_create_texture(ag_texture_alt_wall,"Alt Wall",FALSE);
+	texture=ag_map_create_texture(map,ag_texture_alt_wall,"Alt Wall",FALSE);
 	bitmap_ag_texture_brick(&texture->frames[0],base_path,512);
-	map_textures_read_texture(&map,ag_texture_alt_wall);
+	map_textures_read_texture(map,ag_texture_alt_wall);
 
-	texture=ag_map_create_texture(ag_texture_second_floor,"Second Story",FALSE);
+	texture=ag_map_create_texture(map,ag_texture_second_floor,"Second Story",FALSE);
 	bitmap_ag_texture_brick_interlaced(&texture->frames[0],base_path,512);
-	map_textures_read_texture(&map,ag_texture_second_floor);
+	map_textures_read_texture(map,ag_texture_second_floor);
 
-	texture=ag_map_create_texture(ag_texture_lift,"Lift",FALSE);
+	texture=ag_map_create_texture(map,ag_texture_lift,"Lift",FALSE);
 	bitmap_ag_texture_metal(&texture->frames[0],base_path,512,FALSE);
-	map_textures_read_texture(&map,ag_texture_lift);
+	map_textures_read_texture(map,ag_texture_lift);
 
-	texture=ag_map_create_texture(ag_texture_door,"Door",FALSE);
+	texture=ag_map_create_texture(map,ag_texture_door,"Door",FALSE);
 	bitmap_ag_texture_metal(&texture->frames[0],base_path,512,TRUE);
-	map_textures_read_texture(&map,ag_texture_door);
+	map_textures_read_texture(map,ag_texture_door);
 
-	texture=ag_map_create_texture(ag_texture_stair,"Stairs",FALSE);
+	texture=ag_map_create_texture(map,ag_texture_stair,"Stairs",FALSE);
 	bitmap_ag_texture_cement(&texture->frames[0],base_path,512,TRUE);
-	map_textures_read_texture(&map,ag_texture_stair);
+	map_textures_read_texture(map,ag_texture_stair);
 
-	texture=ag_map_create_texture(ag_texture_decoration_pillar,"Pillar",FALSE);
+	texture=ag_map_create_texture(map,ag_texture_decoration_pillar,"Pillar",FALSE);
 	bitmap_ag_texture_cement(&texture->frames[0],base_path,512,FALSE);
-	map_textures_read_texture(&map,ag_texture_decoration_pillar);
+	map_textures_read_texture(map,ag_texture_decoration_pillar);
 
-	texture=ag_map_create_texture(ag_texture_decoration_box,"Box",FALSE);
+	texture=ag_map_create_texture(map,ag_texture_decoration_box,"Box",FALSE);
 	bitmap_ag_texture_wood(&texture->frames[0],base_path,512);
-	map_textures_read_texture(&map,ag_texture_decoration_box);
+	map_textures_read_texture(map,ag_texture_decoration_box);
 
-	texture=ag_map_create_texture(ag_texture_equipment,"Equipment",TRUE);
+	texture=ag_map_create_texture(map,ag_texture_equipment,"Equipment",TRUE);
 	bitmap_ag_texture_machine(&texture->frames[0],base_path,512);
-	map_textures_read_texture(&map,ag_texture_equipment);
+	map_textures_read_texture(map,ag_texture_equipment);
 
-	texture=ag_map_create_texture(ag_texture_window,"Window",FALSE);
+	texture=ag_map_create_texture(map,ag_texture_window,"Window",FALSE);
 	bitmap_ag_texture_window(&texture->frames[0],base_path,512);
-	map_textures_read_texture(&map,ag_texture_window);
+	map_textures_read_texture(map,ag_texture_window);
 
 	bitmap_ag_texture_skybox_start(TRUE);
 
-	texture=ag_map_create_texture(ag_texture_skybox_top,"SkyTop",FALSE);
+	texture=ag_map_create_texture(map,ag_texture_skybox_top,"SkyTop",FALSE);
 	bitmap_ag_texture_skybox_top(&texture->frames[0],base_path,512);
-	map_textures_read_texture(&map,ag_texture_skybox_top);
+	map_textures_read_texture(map,ag_texture_skybox_top);
 
-	texture=ag_map_create_texture(ag_texture_skybox_bottom,"SkyBottom",FALSE);
+	texture=ag_map_create_texture(map,ag_texture_skybox_bottom,"SkyBottom",FALSE);
 	bitmap_ag_texture_skybox_bottom(&texture->frames[0],base_path,512);
-	map_textures_read_texture(&map,ag_texture_skybox_bottom);
+	map_textures_read_texture(map,ag_texture_skybox_bottom);
 
-	texture=ag_map_create_texture(ag_texture_skybox_north,"SkyNorth",FALSE);
+	texture=ag_map_create_texture(map,ag_texture_skybox_north,"SkyNorth",FALSE);
 	bitmap_ag_texture_skybox_north(&texture->frames[0],base_path,512);
-	map_textures_read_texture(&map,ag_texture_skybox_north);
+	map_textures_read_texture(map,ag_texture_skybox_north);
 
-	texture=ag_map_create_texture(ag_texture_skybox_south,"SkySouth",FALSE);
+	texture=ag_map_create_texture(map,ag_texture_skybox_south,"SkySouth",FALSE);
 	bitmap_ag_texture_skybox_south(&texture->frames[0],base_path,512);
-	map_textures_read_texture(&map,ag_texture_skybox_south);
+	map_textures_read_texture(map,ag_texture_skybox_south);
 
-	texture=ag_map_create_texture(ag_texture_skybox_east,"SkyEast",FALSE);
+	texture=ag_map_create_texture(map,ag_texture_skybox_east,"SkyEast",FALSE);
 	bitmap_ag_texture_skybox_east(&texture->frames[0],base_path,512);
-	map_textures_read_texture(&map,ag_texture_skybox_east);
+	map_textures_read_texture(map,ag_texture_skybox_east);
 
-	texture=ag_map_create_texture(ag_texture_skybox_west,"SkyWest",FALSE);
+	texture=ag_map_create_texture(map,ag_texture_skybox_west,"SkyWest",FALSE);
 	bitmap_ag_texture_skybox_west(&texture->frames[0],base_path,512);
-	map_textures_read_texture(&map,ag_texture_skybox_west);
+	map_textures_read_texture(map,ag_texture_skybox_west);
 
-	map.sky.fill=ag_texture_skybox_top;
-	map.sky.bottom_fill=ag_texture_skybox_bottom;
-	map.sky.north_fill=ag_texture_skybox_north;
-	map.sky.south_fill=ag_texture_skybox_south;
-	map.sky.east_fill=ag_texture_skybox_east;
-	map.sky.west_fill=ag_texture_skybox_west;
+	map->sky.fill=ag_texture_skybox_top;
+	map->sky.bottom_fill=ag_texture_skybox_bottom;
+	map->sky.north_fill=ag_texture_skybox_north;
+	map->sky.south_fill=ag_texture_skybox_south;
+	map->sky.east_fill=ag_texture_skybox_east;
+	map->sky.west_fill=ag_texture_skybox_west;
 }

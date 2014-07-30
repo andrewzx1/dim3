@@ -29,14 +29,9 @@ and can be sold or given away.
 	#include "dim3autogenerate.h"
 #endif
 
-extern map_type					map;
-
 extern ag_state_type			ag_state;
 
 int								ag_cylinder_side_count,ag_cylinder_split_count;
-
-extern int ag_random_int(int max);
-extern bool ag_random_bool(void);
 
 /* =======================================================
 
@@ -44,7 +39,7 @@ extern bool ag_random_bool(void);
       
 ======================================================= */
 
-void ag_generate_primitive_cube(d3pnt *min,d3pnt *max,bool rotate,int group_idx,int txt_idx)
+void ag_map_primitive_cube(map_type *map,d3pnt *min,d3pnt *max,bool rotate,int group_idx,int txt_idx)
 {
 	int				mesh_idx;
 	int				px[8],py[8],pz[8];
@@ -54,9 +49,9 @@ void ag_generate_primitive_cube(d3pnt *min,d3pnt *max,bool rotate,int group_idx,
 
 		// box mesh
 
-	mesh_idx=map_mesh_add(&map);
+	mesh_idx=map_mesh_add(map);
 
-	map.mesh.meshes[mesh_idx].flag.lock_uv=TRUE;
+	map->mesh.meshes[mesh_idx].flag.lock_uv=TRUE;
 
 	gx[0]=gx[3]=0.0f;
 	gx[1]=gx[2]=1.0f;
@@ -71,11 +66,11 @@ void ag_generate_primitive_cube(d3pnt *min,d3pnt *max,bool rotate,int group_idx,
 	py[0]=py[1]=min->y;
 	py[2]=py[3]=max->y;
 
-	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,txt_idx);
+	map_mesh_add_poly(map,mesh_idx,4,px,py,pz,gx,gy,txt_idx);
 
 	px[0]=px[1]=px[2]=px[3]=max->x;
 
-	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,txt_idx);
+	map_mesh_add_poly(map,mesh_idx,4,px,py,pz,gx,gy,txt_idx);
 
 	px[0]=px[3]=min->x;
 	px[1]=px[2]=max->x;
@@ -83,11 +78,11 @@ void ag_generate_primitive_cube(d3pnt *min,d3pnt *max,bool rotate,int group_idx,
 	py[0]=py[1]=min->y;
 	py[2]=py[3]=max->y;
 
-	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,txt_idx);
+	map_mesh_add_poly(map,mesh_idx,4,px,py,pz,gx,gy,txt_idx);
 
 	pz[0]=pz[1]=pz[2]=pz[3]=max->z;
 
-	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,txt_idx);
+	map_mesh_add_poly(map,mesh_idx,4,px,py,pz,gx,gy,txt_idx);
 
 		// top and bottom
 
@@ -97,11 +92,11 @@ void ag_generate_primitive_cube(d3pnt *min,d3pnt *max,bool rotate,int group_idx,
 	pz[2]=pz[3]=max->z;
 	py[0]=py[1]=py[2]=py[3]=max->y;
 
-	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,txt_idx);
+	map_mesh_add_poly(map,mesh_idx,4,px,py,pz,gx,gy,txt_idx);
 
 	py[0]=py[1]=py[2]=py[3]=min->y;
 
-	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,txt_idx);
+	map_mesh_add_poly(map,mesh_idx,4,px,py,pz,gx,gy,txt_idx);
 
 		// possibly rotate box
 
@@ -110,21 +105,21 @@ void ag_generate_primitive_cube(d3pnt *min,d3pnt *max,bool rotate,int group_idx,
 			ang.x=ang.z=0.0f;
 			ang.y=(float)ag_random_int(30);
 
-			map_mesh_calculate_center(&map,mesh_idx,&mpt);
-			map_mesh_rotate(&map,mesh_idx,&mpt,&ang);
+			map_mesh_calculate_center(map,mesh_idx,&mpt);
+			map_mesh_rotate(map,mesh_idx,&mpt,&ang);
 		}
 	}
 
 		// reset just normals
 		// as UVs are locked
 
-	map_recalc_normals_mesh(&map,&map.mesh.meshes[mesh_idx],normal_mode_out,FALSE);
+	map_recalc_normals_mesh(map,&map->mesh.meshes[mesh_idx],normal_mode_out,FALSE);
 
 		// if a group, than moveable
 
 	if (group_idx!=1) {
-		map.mesh.meshes[mesh_idx].flag.moveable=TRUE;
-		map.mesh.meshes[mesh_idx].group_idx=group_idx;
+		map->mesh.meshes[mesh_idx].flag.moveable=TRUE;
+		map->mesh.meshes[mesh_idx].group_idx=group_idx;
 	}
 }
 
@@ -134,7 +129,7 @@ void ag_generate_primitive_cube(d3pnt *min,d3pnt *max,bool rotate,int group_idx,
       
 ======================================================= */
 
-void ag_generate_primitive_rubble(d3pnt *min,d3pnt *max,int txt_idx)
+void ag_map_primitive_rubble(map_type *map,d3pnt *min,d3pnt *max,int txt_idx)
 {
 	int				n,mesh_idx;
 	int				px[8],py[8],pz[8];
@@ -146,9 +141,9 @@ void ag_generate_primitive_rubble(d3pnt *min,d3pnt *max,int txt_idx)
 
 		// box mesh
 
-	mesh_idx=map_mesh_add(&map);
+	mesh_idx=map_mesh_add(map);
 
-	map.mesh.meshes[mesh_idx].flag.lock_uv=TRUE;
+	map->mesh.meshes[mesh_idx].flag.lock_uv=TRUE;
 
 	gx[0]=gx[3]=0.0f;
 	gx[1]=gx[2]=1.0f;
@@ -163,11 +158,11 @@ void ag_generate_primitive_rubble(d3pnt *min,d3pnt *max,int txt_idx)
 	py[0]=py[1]=min->y;
 	py[2]=py[3]=max->y;
 
-	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,txt_idx);
+	map_mesh_add_poly(map,mesh_idx,4,px,py,pz,gx,gy,txt_idx);
 
 	px[0]=px[1]=px[2]=px[3]=max->x;
 
-	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,txt_idx);
+	map_mesh_add_poly(map,mesh_idx,4,px,py,pz,gx,gy,txt_idx);
 
 	px[0]=px[3]=min->x;
 	px[1]=px[2]=max->x;
@@ -175,11 +170,11 @@ void ag_generate_primitive_rubble(d3pnt *min,d3pnt *max,int txt_idx)
 	py[0]=py[1]=min->y;
 	py[2]=py[3]=max->y;
 
-	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,txt_idx);
+	map_mesh_add_poly(map,mesh_idx,4,px,py,pz,gx,gy,txt_idx);
 
 	pz[0]=pz[1]=pz[2]=pz[3]=max->z;
 
-	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,txt_idx);
+	map_mesh_add_poly(map,mesh_idx,4,px,py,pz,gx,gy,txt_idx);
 
 		// top and bottom
 
@@ -189,11 +184,11 @@ void ag_generate_primitive_rubble(d3pnt *min,d3pnt *max,int txt_idx)
 	pz[2]=pz[3]=max->z;
 	py[0]=py[1]=py[2]=py[3]=max->y;
 
-	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,txt_idx);
+	map_mesh_add_poly(map,mesh_idx,4,px,py,pz,gx,gy,txt_idx);
 
 	py[0]=py[1]=py[2]=py[3]=min->y;
 
-	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,txt_idx);
+	map_mesh_add_poly(map,mesh_idx,4,px,py,pz,gx,gy,txt_idx);
 
 		// possibly rotate box
 
@@ -201,14 +196,14 @@ void ag_generate_primitive_rubble(d3pnt *min,d3pnt *max,int txt_idx)
 		ang.x=ang.z=0.0f;
 		ang.y=(float)ag_random_int(30);
 
-		map_mesh_calculate_center(&map,mesh_idx,&mpt);
-		map_mesh_rotate(&map,mesh_idx,&mpt,&ang);
+		map_mesh_calculate_center(map,mesh_idx,&mpt);
+		map_mesh_rotate(map,mesh_idx,&mpt,&ang);
 	}
 
 		// randomize the vertexes
 		// that aren't on the bottom
 
-	mesh=&map.mesh.meshes[mesh_idx];
+	mesh=&map->mesh.meshes[mesh_idx];
 
 	pnt=mesh->vertexes;
 
@@ -224,7 +219,7 @@ void ag_generate_primitive_rubble(d3pnt *min,d3pnt *max,int txt_idx)
 		// reset just normals
 		// as UVs are locked
 
-	map_recalc_normals_mesh(&map,&map.mesh.meshes[mesh_idx],normal_mode_out,FALSE);
+	map_recalc_normals_mesh(map,&map->mesh.meshes[mesh_idx],normal_mode_out,FALSE);
 }
 
 /* =======================================================
@@ -233,7 +228,7 @@ void ag_generate_primitive_rubble(d3pnt *min,d3pnt *max,int txt_idx)
       
 ======================================================= */
 
-int ag_generate_primitive_cylinder_y(int mesh_idx,d3pnt *pnt,int start_radius,int end_radius,int high,int side_count,int txt_idx)
+int ag_map_primitive_cylinder_y(map_type *map,int mesh_idx,d3pnt *pnt,int start_radius,int end_radius,int high,int side_count,int txt_idx)
 {
 	int				n;
 	int				px[4],py[4],pz[4];
@@ -243,7 +238,7 @@ int ag_generate_primitive_cylinder_y(int mesh_idx,d3pnt *pnt,int start_radius,in
 
 		// the mesh
 
-	if (mesh_idx==-1) mesh_idx=map_mesh_add(&map);
+	if (mesh_idx==-1) mesh_idx=map_mesh_add(map);
 
 		// column
 
@@ -278,7 +273,7 @@ int ag_generate_primitive_cylinder_y(int mesh_idx,d3pnt *pnt,int start_radius,in
 		py[0]=py[1]=pnt->y-high;
 		py[2]=py[3]=pnt->y;
 
-		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,txt_idx);
+		map_mesh_add_poly(map,mesh_idx,4,px,py,pz,gx,gy,txt_idx);
 
 			// exit early if we reconnect early
 
@@ -287,19 +282,19 @@ int ag_generate_primitive_cylinder_y(int mesh_idx,d3pnt *pnt,int start_radius,in
 
 		// reset UVs and normals
 
-	map_mesh_reset_uv(&map,mesh_idx);
-	map_recalc_normals_mesh(&map,&map.mesh.meshes[mesh_idx],normal_mode_out,FALSE);
+	map_mesh_reset_uv(map,mesh_idx);
+	map_recalc_normals_mesh(map,&map->mesh.meshes[mesh_idx],normal_mode_out,FALSE);
 
 	return(mesh_idx);
 }
 
-void ag_generate_primitive_random_cylinder_setup(void)
+void ag_map_primitive_random_cylinder_setup(map_type *map)
 {
 	ag_cylinder_side_count=4+ag_random_int(8);
 	ag_cylinder_split_count=1+ag_random_int(4);
 }
 
-void ag_generate_primitive_random_cylinder_y(d3pnt *pnt,int radius,int high,int txt_idx)
+void ag_map_primitive_random_cylinder_y(map_type *map,d3pnt *pnt,int radius,int high,int txt_idx)
 {
 	int			n,mesh_idx,d_high,
 				start_radius,end_radius;
@@ -319,7 +314,7 @@ void ag_generate_primitive_random_cylinder_y(d3pnt *pnt,int radius,int high,int 
 
 		end_radius=radius-(ag_random_int(radius>>1));
 
-		mesh_idx=ag_generate_primitive_cylinder_y(mesh_idx,&d_pnt,start_radius,end_radius,d_high,ag_cylinder_side_count,txt_idx);
+		mesh_idx=ag_map_primitive_cylinder_y(map,mesh_idx,&d_pnt,start_radius,end_radius,d_high,ag_cylinder_side_count,txt_idx);
 
 		d_pnt.y-=d_high;
 		start_radius=end_radius;

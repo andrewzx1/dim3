@@ -216,3 +216,34 @@ typedef struct		{
 						ag_room_type				*rooms;
 					} ag_state_type;
 
+//
+// functions
+//
+
+extern bool ag_map_initialize(char *err_str);
+extern void ag_map_release(void);
+
+extern void ag_map_add_connector_rooms(map_type *map);
+extern void ag_map_add_room_second_story(map_type *map);
+extern void ag_map_windows_add(map_type *map);
+extern void ag_map_decorations_add(map_type *map);
+extern void ag_map_lights_add(map_type *map);
+extern void ag_map_spots_add(map_type *map);
+
+extern void ag_map_delete_shared_polygons(map_type *map);
+extern void ag_map_remove_polygons_in_box(map_type *map,int mesh_idx,d3pnt *min,d3pnt *max);
+
+extern int ag_map_find_floor_polygon(map_type *map,int room_idx);
+extern int ag_map_find_ceiling_polygon(map_type *map,int room_idx);
+extern bool ag_map_is_polygon_window_target(map_type *map,int mesh_idx,int poly_idx);
+extern void ag_map_get_wall_line(map_type *map,int mesh_idx,int poly_idx,d3pnt *p1,d3pnt *p2);
+extern bool ag_map_room_is_leaf(int room_idx);
+extern void ag_map_add_connector_room_step(map_type *map,d3pnt *min,d3pnt *max);
+extern bool ag_map_room_surrounded_by_second_stories(int room_idx);
+
+extern void ag_map_primitive_cube(map_type *map,d3pnt *min,d3pnt *max,bool rotate,int group_idx,int txt_idx);
+extern void ag_map_primitive_rubble(map_type *map,d3pnt *min,d3pnt *max,int txt_idx);
+extern void ag_map_primitive_random_cylinder_setup(map_type *map);
+extern void ag_map_primitive_random_cylinder_y(map_type *map,d3pnt *pnt,int radius,int high,int txt_idx);
+
+extern void ag_map_lights_add_spot(map_type *map,d3pnt *pnt);
