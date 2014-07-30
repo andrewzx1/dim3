@@ -29,19 +29,7 @@ and can be sold or given away.
 	#include "dim3autogenerate.h"
 #endif
 
-extern map_type					map;
-
 ag_state_type					ag_state;
-
-extern bool ag_map_initialize(char *err_str);
-extern void ag_map_release(void);
-extern void ag_generate_add_connector_rooms(void);
-extern void ag_generate_add_room_second_story(void);
-extern void ag_generate_delete_shared_polygons(void);
-extern void ag_generate_windows_add(void);
-extern void ag_generate_decorations_add(void);
-extern void ag_generate_lights_add(void);
-extern void ag_generate_spots_add(void);
 
 /* =======================================================
 
@@ -49,43 +37,39 @@ extern void ag_generate_spots_add(void);
       
 ======================================================= */
 
-void ag_map_clear(void)
+void ag_map_clear(map_type *map)
 {
-		// clear all selections
-
-	select_clear();
-
 		// clear static memory
 
-	map.nspot=0;
-	map.nnode=0;
-	map.nscenery=0;
-	map.nlight=0;
-	map.nsound=0;
-	map.nparticle=0;
+	map->nspot=0;
+	map->nnode=0;
+	map->nscenery=0;
+	map->nlight=0;
+	map->nsound=0;
+	map->nparticle=0;
 
 		// meshes and liquids
 
-	while (map.mesh.nmesh!=0) {
-		map_mesh_delete(&map,0);
+	while (map->mesh.nmesh!=0) {
+		map_mesh_delete(map,0);
 	}
 
-	while (map.liquid.nliquid!=0) {
-		map_liquid_delete(&map,0);
+	while (map->liquid.nliquid!=0) {
+		map_liquid_delete(map,0);
 	}
 
 		// groups, movements, cinemas
 
-	while (map.group.ngroup!=0) {
-		map_group_delete(&map,0);
+	while (map->group.ngroup!=0) {
+		map_group_delete(map,0);
 	}
 
-	while (map.movement.nmovement!=0) {
-		map_movement_delete(&map,0);
+	while (map->movement.nmovement!=0) {
+		map_movement_delete(map,0);
 	}
 
-	while (map.cinema.ncinema!=0) {
-		map_cinema_delete(&map,0);
+	while (map->cinema.ncinema!=0) {
+		map_cinema_delete(map,0);
 	}
 }
 
@@ -95,7 +79,7 @@ void ag_map_clear(void)
       
 ======================================================= */
 
-bool ag_add_room_flatten_top(ag_room_type *room)
+bool ag_map_add_room_flatten_top(ag_room_type *room)
 {
 	int				n,top_idx,other_idx,
 					prev_idx,next_idx;
@@ -143,7 +127,7 @@ bool ag_add_room_flatten_top(ag_room_type *room)
 	return(TRUE);
 }
 
-bool ag_add_room_flatten_bottom(ag_room_type *room)
+bool ag_map_add_room_flatten_bottom(ag_room_type *room)
 {
 	int				n,bot_idx,other_idx,
 					prev_idx,next_idx;
@@ -191,7 +175,7 @@ bool ag_add_room_flatten_bottom(ag_room_type *room)
 	return(TRUE);
 }
 
-bool ag_add_room_flatten_left(ag_room_type *room)
+bool ag_map_add_room_flatten_left(ag_room_type *room)
 {
 	int				n,lft_idx,other_idx,
 					prev_idx,next_idx;
@@ -239,7 +223,7 @@ bool ag_add_room_flatten_left(ag_room_type *room)
 	return(TRUE);
 }
 
-bool ag_add_room_flatten_right(ag_room_type *room)
+bool ag_map_add_room_flatten_right(ag_room_type *room)
 {
 	int				n,rgt_idx,other_idx,
 					prev_idx,next_idx;
@@ -287,7 +271,7 @@ bool ag_add_room_flatten_right(ag_room_type *room)
 	return(TRUE);
 }
 
-void ag_add_room_fix_flat_flags(ag_room_type *room)
+void ag_map_add_room_fix_flat_flags(ag_room_type *room)
 {
 	if (room->flat.top.on) {
 		if ((room->vertexes[room->flat.top.p1_idx].z!=room->vertexes[room->flat.top.p2_idx].z)) room->flat.top.on=FALSE;
@@ -313,7 +297,7 @@ void ag_add_room_fix_flat_flags(ag_room_type *room)
       
 ======================================================= */
 
-void ag_add_room_get_point_from_angle(d3pnt *center_pnt,float x_radius,float z_radius,float ang,d3pnt *pnt)
+void ag_map_add_room_get_point_from_angle(d3pnt *center_pnt,float x_radius,float z_radius,float ang,d3pnt *pnt)
 {
 	float			rad;
 
@@ -328,7 +312,7 @@ void ag_add_room_get_point_from_angle(d3pnt *center_pnt,float x_radius,float z_r
       
 ======================================================= */
 
-bool ag_add_room_random(ag_room_type *room,int wid_x,int wid_z,int connect_room_idx,int connect_side)
+bool ag_map_add_room_random(ag_room_type *room,int wid_x,int wid_z,int connect_room_idx,int connect_side)
 {
 	int				n,
 					nvertex,random_ang;
@@ -359,8 +343,8 @@ bool ag_add_room_random(ag_room_type *room,int wid_x,int wid_z,int connect_room_
 			if (next_ang>360.0f) next_ang=0.0f;
 		}
 
-		ag_add_room_get_point_from_angle(&pnt,(float)wid_x,(float)wid_z,last_ang,&p1);
-		ag_add_room_get_point_from_angle(&pnt,(float)wid_x,(float)wid_z,next_ang,&p2);
+		ag_map_add_room_get_point_from_angle(&pnt,(float)wid_x,(float)wid_z,last_ang,&p1);
+		ag_map_add_room_get_point_from_angle(&pnt,(float)wid_x,(float)wid_z,next_ang,&p2);
 
 		last_ang=next_ang;
 
@@ -385,18 +369,18 @@ bool ag_add_room_random(ag_room_type *room,int wid_x,int wid_z,int connect_room_
 
 	if (connect_room_idx==-1) {
 		if (ag_random_bool()) {
-			ag_add_room_flatten_top(room);
-			ag_add_room_flatten_bottom(room);
+			ag_map_add_room_flatten_top(room);
+			ag_map_add_room_flatten_bottom(room);
 
-			if (ag_random_bool()) ag_add_room_flatten_left(room);
-			if (ag_random_bool()) ag_add_room_flatten_right(room);
+			if (ag_random_bool()) ag_map_add_room_flatten_left(room);
+			if (ag_random_bool()) ag_map_add_room_flatten_right(room);
 		}
 		else {
-			ag_add_room_flatten_left(room);
-			ag_add_room_flatten_right(room);
+			ag_map_add_room_flatten_left(room);
+			ag_map_add_room_flatten_right(room);
 
-			if (ag_random_bool()) ag_add_room_flatten_top(room);
-			if (ag_random_bool()) ag_add_room_flatten_bottom(room);
+			if (ag_random_bool()) ag_map_add_room_flatten_top(room);
+			if (ag_random_bool()) ag_map_add_room_flatten_bottom(room);
 		}
 	}
 
@@ -409,31 +393,31 @@ bool ag_add_room_random(ag_room_type *room,int wid_x,int wid_z,int connect_room_
 		switch (connect_side) {
 		
 			case ag_connect_side_bottom:
-			 if (!ag_add_room_flatten_top(room)) return(FALSE);
-				ag_add_room_flatten_bottom(room);
-				if (ag_random_bool()) ag_add_room_flatten_left(room);
-				if (ag_random_bool()) ag_add_room_flatten_right(room);
+			 if (!ag_map_add_room_flatten_top(room)) return(FALSE);
+				ag_map_add_room_flatten_bottom(room);
+				if (ag_random_bool()) ag_map_add_room_flatten_left(room);
+				if (ag_random_bool()) ag_map_add_room_flatten_right(room);
 				break;
 
 			case ag_connect_side_top:
-				if (!ag_add_room_flatten_bottom(room)) return(FALSE);
-				ag_add_room_flatten_top(room);
-				if (ag_random_bool()) ag_add_room_flatten_left(room);
-				if (ag_random_bool()) ag_add_room_flatten_right(room);
+				if (!ag_map_add_room_flatten_bottom(room)) return(FALSE);
+				ag_map_add_room_flatten_top(room);
+				if (ag_random_bool()) ag_map_add_room_flatten_left(room);
+				if (ag_random_bool()) ag_map_add_room_flatten_right(room);
 				break;
 			
 			case ag_connect_side_right:
-				if (!ag_add_room_flatten_left(room)) return(FALSE);
-				ag_add_room_flatten_right(room);
-				if (ag_random_bool()) ag_add_room_flatten_top(room);
-				if (ag_random_bool()) ag_add_room_flatten_bottom(room);
+				if (!ag_map_add_room_flatten_left(room)) return(FALSE);
+				ag_map_add_room_flatten_right(room);
+				if (ag_random_bool()) ag_map_add_room_flatten_top(room);
+				if (ag_random_bool()) ag_map_add_room_flatten_bottom(room);
 				break;
 
 			case ag_connect_side_left:
-				if (!ag_add_room_flatten_right(room)) return(FALSE);
-				ag_add_room_flatten_left(room);
-				if (ag_random_bool()) ag_add_room_flatten_top(room);
-				if (ag_random_bool()) ag_add_room_flatten_bottom(room);
+				if (!ag_map_add_room_flatten_right(room)) return(FALSE);
+				ag_map_add_room_flatten_left(room);
+				if (ag_random_bool()) ag_map_add_room_flatten_top(room);
+				if (ag_random_bool()) ag_map_add_room_flatten_bottom(room);
 				break;
 
 		}
@@ -442,7 +426,7 @@ bool ag_add_room_random(ag_room_type *room,int wid_x,int wid_z,int connect_room_
 	return(TRUE);
 }
 
-void ag_add_room_square(ag_room_type *room,int wid_x,int wid_z,int connect_side)
+void ag_map_add_room_square(ag_room_type *room,int wid_x,int wid_z,int connect_side)
 {
 	int				k;
 
@@ -560,7 +544,7 @@ void ag_add_room_square(ag_room_type *room,int wid_x,int wid_z,int connect_side)
 	room->flat.rgt.on=TRUE;
 }
 
-void ag_add_room(bool first_room)
+void ag_map_add_room(map_type *map,bool first_room)
 {
 	int				n,k,wid_x,wid_z,room_idx,mesh_idx,
 					connect_room_idx,org_connect_room_idx,
@@ -734,7 +718,7 @@ void ag_add_room(bool first_room)
 		// room structure
 		// used to track main rooms
 
-	mesh_idx=map_mesh_add(&map);
+	mesh_idx=map_mesh_add(map);
 	if (mesh_idx==-1) return;
 
 	room_idx=ag_state.nroom;
@@ -777,7 +761,7 @@ void ag_add_room(bool first_room)
 		// connection possibilities
 
 	if (first_room) {
-		ag_add_room_square(room,wid_x,wid_z,ag_connect_side_left);
+		ag_map_add_room_square(room,wid_x,wid_z,ag_connect_side_left);
 	}
 
 		// other rooms are random pass-throughs
@@ -786,11 +770,11 @@ void ag_add_room(bool first_room)
 	else {
 		
 		if (ag_random_int(100)<10) {
-			ag_add_room_square(room,wid_x,wid_z,connect_side);
+			ag_map_add_room_square(room,wid_x,wid_z,connect_side);
 		}
 		else {
-			if (!ag_add_room_random(room,wid_x,wid_z,connect_room_idx,connect_side)) {
-				map_mesh_delete(&map,mesh_idx);
+			if (!ag_map_add_room_random(room,wid_x,wid_z,connect_room_idx,connect_side)) {
+				map_mesh_delete(map,mesh_idx);
 				ag_state.nroom--;
 				return;
 			}
@@ -880,7 +864,7 @@ void ag_add_room(bool first_room)
 			// need to rebuild what's a flat connecting side as
 			// deformations might break flat sides
 
-		ag_add_room_fix_flat_flags(room);
+		ag_map_add_room_fix_flat_flags(room);
 	}
 
 		// add the walls and short
@@ -903,18 +887,18 @@ void ag_add_room(bool first_room)
 		gy[0]=gy[1]=0.0f;
 		gy[2]=gy[3]=1.0f;
 
-		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_wall);
+		map_mesh_add_poly(map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_wall);
 
 		py[0]=py[1]=room->max.y-(ag_size_room_high+ag_size_floor_high);
 		py[2]=py[3]=room->max.y-ag_size_room_high;
 
-		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_wall);
+		map_mesh_add_poly(map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_wall);
 
 		if (room->second_story) {
 			py[0]=py[1]=room->max.y-(ag_size_room_high+ag_size_floor_high+ag_size_room_high);
 			py[2]=py[3]=room->max.y-(ag_size_room_high+ag_size_floor_high);
 
-			map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_wall);
+			map_mesh_add_poly(map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_wall);
 		}
 	}
 
@@ -927,7 +911,7 @@ void ag_add_room(bool first_room)
 		gx[n]=gy[n]=0.0f;
 	}
 		
-	map_mesh_add_poly(&map,mesh_idx,room->nvertex,px,py,pz,gx,gy,ag_texture_floor);
+	map_mesh_add_poly(map,mesh_idx,room->nvertex,px,py,pz,gx,gy,ag_texture_floor);
 
 		// add the ceiling
 
@@ -936,12 +920,12 @@ void ag_add_room(bool first_room)
 		if (room->second_story) py[n]-=ag_size_room_high;
 	}
 // supergumba -- testing decorations
-//	map_mesh_add_poly(&map,mesh_idx,room->nvertex,px,py,pz,gx,gy,ag_texture_ceiling);
+//	map_mesh_add_poly(map,mesh_idx,room->nvertex,px,py,pz,gx,gy,ag_texture_ceiling);
 
 		// reset the UV and normals
 
-	map_mesh_reset_uv(&map,mesh_idx);
-	map_recalc_normals_mesh(&map,&map.mesh.meshes[mesh_idx],normal_mode_in,FALSE);
+	map_mesh_reset_uv(map,mesh_idx);
+	map_recalc_normals_mesh(map,&map->mesh.meshes[mesh_idx],normal_mode_in,FALSE);
 }
 
 /* =======================================================
@@ -950,11 +934,9 @@ void ag_add_room(bool first_room)
       
 ======================================================= */
 
-bool ag_generate_run(char *err_str)
+bool ag_map_run(map_type *map,char *err_str)
 {
 	int				n,room_count;
-
-//	srandom(601881436);		// supergumba -- testing
 
 	room_count=30;
 
@@ -968,7 +950,7 @@ bool ag_generate_run(char *err_str)
 
 		// clear the map data
 
-	ag_map_clear();
+	ag_map_clear(map);
 
 		// add rooms
 		// sometimes it fails because of randomness
@@ -976,7 +958,7 @@ bool ag_generate_run(char *err_str)
 		// rooms
 
 	for (n=0;n!=(room_count*10);n++) {
-		ag_add_room(ag_state.nroom==0);
+		ag_map_add_room(map,(ag_state.nroom==0));
 		if (ag_state.nroom==room_count) break;
 	}
 
@@ -984,27 +966,27 @@ bool ag_generate_run(char *err_str)
 		// rooms that happen when connected rooms
 		// are squared off
 
-	ag_generate_add_connector_rooms();
+	ag_map_add_connector_rooms(map);
 
 		// add second story items to
 		// rooms
 
-	ag_generate_add_room_second_story();
+	ag_map_add_room_second_story(map);
 
 		// delete any polygons that share the
 		// same space
 
-	ag_generate_delete_shared_polygons();
+	ag_map_delete_shared_polygons(map);
 
 		// other items
 
-	ag_generate_windows_add();
-	ag_generate_decorations_add();
-	ag_generate_lights_add();
+	ag_map_windows_add(map);
+	ag_map_decorations_add(map);
+	ag_map_lights_add(map);
 
 		// add spots and nodes
 
-	ag_generate_spots_add();
+	ag_map_spots_add(map);
 
 		// free auto generate structures
 
@@ -1013,25 +995,25 @@ bool ag_generate_run(char *err_str)
 	return(TRUE);
 }
 
-bool auto_generate_map(char *err_str)
+bool auto_generate_map(map_type *map,char *err_str)
 {
 		// run the auto generator
 		// with a new unique seed
 
 	ag_random_seed();
-	return(ag_generate_run(err_str));
+	return(ag_map_run(map,err_str));
 }
 
-bool auto_generate_previous_map(char *err_str)
+bool auto_generate_previous_map(map_type *map,char *err_str)
 {
 	ag_random_previous_seed();
-	return(ag_generate_run(err_str));
+	return(ag_map_run(map,err_str));
 }
 
-bool auto_generate_next_map(char *err_str)
+bool auto_generate_next_map(map_type *map,char *err_str)
 {
 	ag_random_next_seed();
-	return(ag_generate_run(err_str));
+	return(ag_map_run(map,err_str));
 }
 
 int auto_generate_get_seed(void)

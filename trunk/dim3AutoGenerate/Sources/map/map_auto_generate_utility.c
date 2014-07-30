@@ -29,11 +29,7 @@ and can be sold or given away.
 	#include "dim3autogenerate.h"
 #endif
 
-extern map_type					map;
-
 extern ag_state_type			ag_state;
-
-extern void ag_generate_lights_add_spot(d3pnt *pnt);
 
 /* =======================================================
 
@@ -83,7 +79,7 @@ bool ag_random_bool(void)
       
 ======================================================= */
 
-bool ag_generate_delete_shared_polygons_compare(map_mesh_type *mesh_1,int poly_1_idx,map_mesh_type *mesh_2,int poly_2_idx)
+bool ag_map_delete_shared_polygons_compare(map_type *map,map_mesh_type *mesh_1,int poly_1_idx,map_mesh_type *mesh_2,int poly_2_idx)
 {
 	int					n,k;
 	bool				hit;
@@ -99,10 +95,10 @@ bool ag_generate_delete_shared_polygons_compare(map_mesh_type *mesh_1,int poly_1
 
 		// ignore ceilings or floors
 
-	map_prepare_mesh_poly(&map,mesh_1,poly_1);
+	map_prepare_mesh_poly(map,mesh_1,poly_1);
 	if (poly_1->box.flat) return(FALSE);
 
-	map_prepare_mesh_poly(&map,mesh_2,poly_2);
+	map_prepare_mesh_poly(map,mesh_2,poly_2);
 	if (poly_2->box.flat) return(FALSE);
 
 		// might be in different orders, so look
@@ -126,15 +122,15 @@ bool ag_generate_delete_shared_polygons_compare(map_mesh_type *mesh_1,int poly_1
 	return(TRUE);
 }
 
-void ag_generate_delete_shared_polygons(void)
+void ag_map_delete_shared_polygons(map_type *map)
 {
 	int					n,mesh_1_idx,poly_1_idx,
 						mesh_2_idx,poly_2_idx;
 	map_mesh_type		*mesh_1,*mesh_2;
 
-	for (mesh_1_idx=0;mesh_1_idx!=map.mesh.nmesh;mesh_1_idx++) {
+	for (mesh_1_idx=0;mesh_1_idx!=map->mesh.nmesh;mesh_1_idx++) {
 
-		mesh_1=&map.mesh.meshes[mesh_1_idx];
+		mesh_1=&map->mesh.meshes[mesh_1_idx];
 		if (mesh_1->npoly==0) continue;
 
 		if (mesh_1->polys[0].txt_idx==ag_texture_door) continue;		// special skip out for doors, as they will be moving and so can't assume textures remain hidden
@@ -145,13 +141,13 @@ void ag_generate_delete_shared_polygons(void)
 
 			poly_2_idx=-1;
 
-			for (mesh_2_idx=0;mesh_2_idx!=map.mesh.nmesh;mesh_2_idx++) {
+			for (mesh_2_idx=0;mesh_2_idx!=map->mesh.nmesh;mesh_2_idx++) {
 				if (mesh_2_idx==mesh_1_idx) continue;
 
-				mesh_2=&map.mesh.meshes[mesh_2_idx];
+				mesh_2=&map->mesh.meshes[mesh_2_idx];
 
 				for (n=0;n!=mesh_2->npoly;n++) {
-					if (ag_generate_delete_shared_polygons_compare(mesh_1,poly_1_idx,mesh_2,n)) {
+					if (ag_map_delete_shared_polygons_compare(map,mesh_1,poly_1_idx,mesh_2,n)) {
 						poly_2_idx=n;
 						break;
 					}
@@ -161,8 +157,8 @@ void ag_generate_delete_shared_polygons(void)
 			}
 
 			if (poly_2_idx!=-1) {
-				map_mesh_delete_poly(&map,mesh_1_idx,poly_1_idx);
-				map_mesh_delete_poly(&map,mesh_2_idx,poly_2_idx);
+				map_mesh_delete_poly(map,mesh_1_idx,poly_1_idx);
+				map_mesh_delete_poly(map,mesh_2_idx,poly_2_idx);
 				continue;
 			}
 
@@ -177,7 +173,7 @@ void ag_generate_delete_shared_polygons(void)
       
 ======================================================= */
 
-void ag_generate_remove_polygons_in_box(int mesh_idx,d3pnt *min,d3pnt *max)
+void ag_map_remove_polygons_in_box(map_type *map,int mesh_idx,d3pnt *min,d3pnt *max)
 {
 	int					n,poly_idx;
 	bool				out;
@@ -185,7 +181,7 @@ void ag_generate_remove_polygons_in_box(int mesh_idx,d3pnt *min,d3pnt *max)
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
 
-	mesh=&map.mesh.meshes[mesh_idx];
+	mesh=&map->mesh.meshes[mesh_idx];
 
 	poly_idx=0;
 
@@ -213,7 +209,7 @@ void ag_generate_remove_polygons_in_box(int mesh_idx,d3pnt *min,d3pnt *max)
 
 			// delete this mesh
 
-		map_mesh_delete_poly(&map,mesh_idx,poly_idx);
+		map_mesh_delete_poly(map,mesh_idx,poly_idx);
 	}
 }
 
@@ -223,7 +219,7 @@ void ag_generate_remove_polygons_in_box(int mesh_idx,d3pnt *min,d3pnt *max)
       
 ======================================================= */
 
-int ag_generate_find_floor_polygon(int room_idx)
+int ag_map_find_floor_polygon(map_type *map,int room_idx)
 {
 	int					n,k;
 	bool				flat;
@@ -236,9 +232,9 @@ int ag_generate_find_floor_polygon(int room_idx)
 
 		// find the floor
 
-	map_mesh_calculate_extent(&map,room->mesh_idx,&min,&max);
+	map_mesh_calculate_extent(map,room->mesh_idx,&min,&max);
 
-	mesh=&map.mesh.meshes[room->mesh_idx];
+	mesh=&map->mesh.meshes[room->mesh_idx];
 
 	for (n=0;n!=mesh->npoly;n++) {
 		poly=&mesh->polys[n];
@@ -261,7 +257,7 @@ int ag_generate_find_floor_polygon(int room_idx)
 	return(-1);
 }
 
-int ag_generate_find_ceiling_polygon(int room_idx)
+int ag_map_find_ceiling_polygon(map_type *map,int room_idx)
 {
 	int					n,k;
 	bool				flat;
@@ -274,9 +270,9 @@ int ag_generate_find_ceiling_polygon(int room_idx)
 
 		// find the ceiling
 
-	map_mesh_calculate_extent(&map,room->mesh_idx,&min,&max);
+	map_mesh_calculate_extent(map,room->mesh_idx,&min,&max);
 
-	mesh=&map.mesh.meshes[room->mesh_idx];
+	mesh=&map->mesh.meshes[room->mesh_idx];
 
 	for (n=0;n!=mesh->npoly;n++) {
 		poly=&mesh->polys[n];
@@ -298,7 +294,7 @@ int ag_generate_find_ceiling_polygon(int room_idx)
 	return(-1);
 }
 
-bool ag_generate_is_polygon_window_target(int mesh_idx,int poly_idx)
+bool ag_map_is_polygon_window_target(map_type *map,int mesh_idx,int poly_idx)
 {
 	d3pnt				min,max;
 	map_mesh_type		*mesh;
@@ -306,12 +302,12 @@ bool ag_generate_is_polygon_window_target(int mesh_idx,int poly_idx)
 
 		// is Y high enough?
 
-	map_mesh_poly_calculate_extent(&map,mesh_idx,poly_idx,&min,&max);
+	map_mesh_poly_calculate_extent(map,mesh_idx,poly_idx,&min,&max);
 	if (abs(max.y-min.y)<ag_window_min_high) return(FALSE);
 
 		// only items with 5 vertexes
 
-	mesh=&map.mesh.meshes[mesh_idx];
+	mesh=&map->mesh.meshes[mesh_idx];
 	if (mesh->nvertex<4) return(FALSE);
 
 		// pairs of Ys
@@ -321,12 +317,12 @@ bool ag_generate_is_polygon_window_target(int mesh_idx,int poly_idx)
 	return(mesh->vertexes[poly->v[2]].y==mesh->vertexes[poly->v[3]].y);
 }
 
-void ag_generate_get_wall_line(int mesh_idx,int poly_idx,d3pnt *p1,d3pnt *p2)
+void ag_map_get_wall_line(map_type *map,int mesh_idx,int poly_idx,d3pnt *p1,d3pnt *p2)
 {
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
 	
-	mesh=&map.mesh.meshes[mesh_idx];
+	mesh=&map->mesh.meshes[mesh_idx];
 	poly=&mesh->polys[poly_idx];
 
 	memmove(p1,&mesh->vertexes[poly->v[0]],sizeof(d3pnt));
@@ -339,7 +335,7 @@ void ag_generate_get_wall_line(int mesh_idx,int poly_idx,d3pnt *p1,d3pnt *p2)
       
 ======================================================= */
 
-bool ag_generate_room_surrounded_by_second_stories(int room_idx)
+bool ag_map_room_surrounded_by_second_stories(int room_idx)
 {
 	int				n,story_count;
 	ag_room_type	*room;
@@ -374,7 +370,7 @@ bool ag_generate_room_surrounded_by_second_stories(int room_idx)
 	return(FALSE);
 }
 
-bool ag_generate_room_is_leaf(int room_idx)
+bool ag_map_room_is_leaf(int room_idx)
 {
 	int				n,connect_count;
 	ag_room_type	*room;
@@ -403,7 +399,7 @@ bool ag_generate_room_is_leaf(int room_idx)
       
 ======================================================= */
 
-void ag_generate_windows_add(void)
+void ag_map_windows_add(map_type *map)
 {
 	int				n,k,t,poly_idx,dist,
 					window_count,extrude_mesh_idx;
@@ -417,7 +413,7 @@ void ag_generate_windows_add(void)
 
 		room=&ag_state.rooms[n];
 
-		mesh=&map.mesh.meshes[room->mesh_idx];
+		mesh=&map->mesh.meshes[room->mesh_idx];
 		if (mesh->npoly==0) continue;
 
 			// is this a windowed room?
@@ -435,17 +431,17 @@ void ag_generate_windows_add(void)
 		for (t=0;t!=window_count;t++) {
 			for (k=0;k!=10;k++) {
 			
-				mesh=&map.mesh.meshes[room->mesh_idx];		// pointers might change as meshes are being added
+				mesh=&map->mesh.meshes[room->mesh_idx];		// pointers might change as meshes are being added
 				poly_idx=ag_random_int(mesh->npoly);
 				
-				if (!ag_generate_is_polygon_window_target(room->mesh_idx,poly_idx)) continue;
+				if (!ag_map_is_polygon_window_target(map,room->mesh_idx,poly_idx)) continue;
 				
 					// get extrude from the
 					// normal of the wall
 					
-				extrude_vct.x=map.mesh.meshes[room->mesh_idx].polys[poly_idx].tangent_space.normal.x;
-				extrude_vct.y=map.mesh.meshes[room->mesh_idx].polys[poly_idx].tangent_space.normal.y;
-				extrude_vct.z=map.mesh.meshes[room->mesh_idx].polys[poly_idx].tangent_space.normal.z;
+				extrude_vct.x=map->mesh.meshes[room->mesh_idx].polys[poly_idx].tangent_space.normal.x;
+				extrude_vct.y=map->mesh.meshes[room->mesh_idx].polys[poly_idx].tangent_space.normal.y;
+				extrude_vct.z=map->mesh.meshes[room->mesh_idx].polys[poly_idx].tangent_space.normal.z;
 				
 				extrude_pnt.x=-(int)(extrude_vct.x*(float)ag_window_depth);
 				extrude_pnt.y=0;
@@ -453,31 +449,31 @@ void ag_generate_windows_add(void)
 
 					// punch the window
 
-				extrude_mesh_idx=map_mesh_poly_punch_hole(&map,room->mesh_idx,poly_idx,&extrude_pnt,TRUE,normal_mode_in);
+				extrude_mesh_idx=map_mesh_poly_punch_hole(map,room->mesh_idx,poly_idx,&extrude_pnt,TRUE,normal_mode_in);
 				if (extrude_mesh_idx==-1) break;
 
 					// last mesh/polygon is always the
 					// extruded poly close
 
-				map_mesh_reset_uv(&map,extrude_mesh_idx);
+				map_mesh_reset_uv(map,extrude_mesh_idx);
 
-				poly_idx=map.mesh.meshes[extrude_mesh_idx].npoly-1;
-				map.mesh.meshes[extrude_mesh_idx].polys[poly_idx].txt_idx=ag_texture_window;
+				poly_idx=map->mesh.meshes[extrude_mesh_idx].npoly-1;
+				map->mesh.meshes[extrude_mesh_idx].polys[poly_idx].txt_idx=ag_texture_window;
 				
 					// figure out the UV
 
-				map_mesh_poly_single_uv(&map,extrude_mesh_idx,poly_idx);
-				map.mesh.meshes[extrude_mesh_idx].flag.lock_uv=TRUE;
+				map_mesh_poly_single_uv(map,extrude_mesh_idx,poly_idx);
+				map->mesh.meshes[extrude_mesh_idx].flag.lock_uv=TRUE;
 
-				map_mesh_poly_calculate_extent(&map,extrude_mesh_idx,poly_idx,&min,&max);
+				map_mesh_poly_calculate_extent(map,extrude_mesh_idx,poly_idx,&min,&max);
 				dist=distance_2D_get(min.x,min.z,max.x,max.z);
 				uv_mult=(float)(dist/(max.y-min.y));
-				if (uv_mult>0) map_mesh_poly_multipy_uv(&map,extrude_mesh_idx,poly_idx,uv_mult,1.0f);
+				if (uv_mult>0) map_mesh_poly_multipy_uv(map,extrude_mesh_idx,poly_idx,uv_mult,1.0f);
 
 					// add in the light
 
-				map_mesh_calculate_center(&map,extrude_mesh_idx,&lit_pnt);
-				ag_generate_lights_add_spot(&lit_pnt);
+				map_mesh_calculate_center(map,extrude_mesh_idx,&lit_pnt);
+				ag_map_lights_add_spot(map,&lit_pnt);
 
 				break;
 			}
