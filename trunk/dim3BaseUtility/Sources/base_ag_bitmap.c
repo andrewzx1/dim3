@@ -746,6 +746,7 @@ void bitmap_ag_texture_machine_glow(bitmap_ag_type *ag_bitmap,int px,int py,int 
 bool bitmap_ag_texture_machine(texture_frame_type *frame,char *base_path,int pixel_sz)
 {
 	int				n,x,y,px,py,py2,wid,high,p_wid,p_high,lip_sz,col_idx;
+	bool			used[5][5];
 	d3col			border_col,dark_col,glow_col[4];
 	bitmap_ag_type	ag_bitmap;
 
@@ -773,6 +774,14 @@ bool bitmap_ag_texture_machine(texture_frame_type *frame,char *base_path,int pix
 	dark_col.r=ag_bitmap.back_col.r*0.8f;
 	dark_col.g=ag_bitmap.back_col.g*0.8f;
 	dark_col.b=ag_bitmap.back_col.b*0.8f;
+
+		// blank all tiles as used
+
+	for (y=0;y!=5;y++) {
+		for (x=0;x!=5;x++) {
+			used[x][y]=FALSE;
+		}
+	}
 	
 		// components
 
@@ -787,8 +796,28 @@ bool bitmap_ag_texture_machine(texture_frame_type *frame,char *base_path,int pix
 		
 		for (x=0;x!=5;x++) {
 
+				// is this spot already used?
+
+			if (used[x][y]) continue;
+
+			used[x][y]=TRUE;
+
+				// is this a double spot?
+
 			px=(x*p_wid)+5;
 			py=(y*p_high)+5;
+
+			if ((bitmap_ag_random_int(100)<25) && (x<4) && (y<4)) {
+				wid=(p_wid*2)-5;
+				high=(p_high*2)-5;
+				used[x+1][y]=used[x][y+1]=used[x+1][y+1]=TRUE;
+			}
+			else {
+				wid=p_wid-5;
+				high=p_high-5;
+			}
+
+				// draw the component
 
 			switch (bitmap_ag_random_int(4)) {
 
