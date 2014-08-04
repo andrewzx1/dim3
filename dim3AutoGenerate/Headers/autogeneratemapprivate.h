@@ -210,11 +210,11 @@ typedef struct		{
 					} ag_room_type;
 
 typedef struct		{
-						int							seed,nroom,
+						int							nroom,
 													current_door_idx;
 						d3pnt						start_pnt;
 						ag_room_type				*rooms;
-					} ag_state_type;
+					} ag_map_state_type;
 
 //
 // functions

@@ -1,6 +1,6 @@
 /****************************** File *********************************
 
-Module: dim3 Editor
+Module: dim3 Auto Generator
 Author: Brian Barnes
  Usage: Auto Generation Utility
 
@@ -29,49 +29,7 @@ and can be sold or given away.
 	#include "dim3autogenerate.h"
 #endif
 
-extern ag_state_type			ag_state;
-
-/* =======================================================
-
-      Random Utilities
-      
-======================================================= */
-
-void ag_random_seed(void)
-{
-#ifdef D3_OS_WINDOWS
-	ag_state.seed=GetTickCount();
-#else
-	ag_state.seed=TickCount();
-#endif
-
-	srandom(ag_state.seed);
-}
-
-void ag_random_previous_seed(void)
-{
-	ag_state.seed--;
-	srandom(ag_state.seed);
-}
-
-void ag_random_next_seed(void)
-{
-	ag_state.seed++;
-	srandom(ag_state.seed);
-}
-
-int ag_random_int(int max)
-{
-	float			f;
-
-	f=(float)random()/(float)RAND_MAX;
-	return((int)(f*(float)max));
-}
-
-bool ag_random_bool(void)
-{
-	return(ag_random_int(100)>=50);
-}
+extern ag_map_state_type		ag_map_state;
 
 /* =======================================================
 
@@ -228,7 +186,7 @@ int ag_map_find_floor_polygon(map_type *map,int room_idx)
 	map_mesh_poly_type	*poly;
 	ag_room_type		*room;
 
-	room=&ag_state.rooms[room_idx];
+	room=&ag_map_state.rooms[room_idx];
 
 		// find the floor
 
@@ -266,7 +224,7 @@ int ag_map_find_ceiling_polygon(map_type *map,int room_idx)
 	map_mesh_poly_type	*poly;
 	ag_room_type		*room;
 
-	room=&ag_state.rooms[room_idx];
+	room=&ag_map_state.rooms[room_idx];
 
 		// find the ceiling
 
@@ -340,24 +298,24 @@ bool ag_map_room_surrounded_by_second_stories(int room_idx)
 	int				n,story_count;
 	ag_room_type	*room;
 
-	room=&ag_state.rooms[room_idx];
+	room=&ag_map_state.rooms[room_idx];
 	
 		// room it's connected to
 
 	story_count=0;
 
 	if (room->connect_box.other_room_idx!=-1) {
-		if (ag_state.rooms[room->connect_box.other_room_idx].second_story) {
+		if (ag_map_state.rooms[room->connect_box.other_room_idx].second_story) {
 			story_count++;
 		}
 	}
 
 		// other rooms connected to it
 
-	for (n=0;n!=ag_state.nroom;n++) {
+	for (n=0;n!=ag_map_state.nroom;n++) {
 		if (n==room_idx) continue;
 
-		room=&ag_state.rooms[n];
+		room=&ag_map_state.rooms[n];
 
 		if (room->connect_box.other_room_idx==room_idx) {
 			if (room->second_story) {
@@ -379,14 +337,14 @@ bool ag_map_room_is_leaf(int room_idx)
 
 	connect_count=0;
 
-	room=&ag_state.rooms[room_idx];
+	room=&ag_map_state.rooms[room_idx];
 	if (room->connect_box.other_room_idx!=-1) connect_count++;
 
 		// other rooms connected to it
 
-	for (n=0;n!=ag_state.nroom;n++) {
+	for (n=0;n!=ag_map_state.nroom;n++) {
 		if (n!=room_idx) {
-			if (ag_state.rooms[n].connect_box.other_room_idx==room_idx) connect_count++;
+			if (ag_map_state.rooms[n].connect_box.other_room_idx==room_idx) connect_count++;
 		}
 	}
 
@@ -409,9 +367,9 @@ void ag_map_windows_add(map_type *map)
 	map_mesh_type	*mesh;
 	ag_room_type	*room;
 	
-	for (n=0;n!=ag_state.nroom;n++) {
+	for (n=0;n!=ag_map_state.nroom;n++) {
 
-		room=&ag_state.rooms[n];
+		room=&ag_map_state.rooms[n];
 
 		mesh=&map->mesh.meshes[room->mesh_idx];
 		if (mesh->npoly==0) continue;

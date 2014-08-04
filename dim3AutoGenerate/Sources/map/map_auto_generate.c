@@ -1,8 +1,8 @@
 /****************************** File *********************************
 
-Module: dim3 Editor
+Module: dim3 Auto Generator
 Author: Brian Barnes
- Usage: Auto Generation Main Line
+ Usage: Map Auto Generation Main Line
 
 ***************************** License ********************************
 
@@ -29,11 +29,11 @@ and can be sold or given away.
 	#include "dim3autogenerate.h"
 #endif
 
-ag_state_type					ag_state;
+ag_map_state_type				ag_map_state;
 
 /* =======================================================
 
-      Auto Generate Utilities
+      Clear Map
       
 ======================================================= */
 
@@ -607,7 +607,7 @@ void ag_map_add_room(map_type *map,bool first_room)
 
 			// get random room and connect side
 
-		org_connect_room_idx=connect_room_idx=ag_random_int(ag_state.nroom);
+		org_connect_room_idx=connect_room_idx=ag_random_int(ag_map_state.nroom);
 		org_connect_side=connect_side=ag_random_int(4);
 
 			// run through sides and rooms to find
@@ -627,43 +627,43 @@ void ag_map_add_room(map_type *map,bool first_room)
 
 				// check connection
 
-			pnt.x=(ag_state.rooms[connect_room_idx].min.x+ag_state.rooms[connect_room_idx].max.x)>>1;
-			pnt.z=(ag_state.rooms[connect_room_idx].min.z+ag_state.rooms[connect_room_idx].max.z)>>1;
+			pnt.x=(ag_map_state.rooms[connect_room_idx].min.x+ag_map_state.rooms[connect_room_idx].max.x)>>1;
+			pnt.z=(ag_map_state.rooms[connect_room_idx].min.z+ag_map_state.rooms[connect_room_idx].max.z)>>1;
 
 			hit=FALSE;
 
 			switch (connect_side) {
 				case ag_connect_side_top:
-					if (ag_state.rooms[connect_room_idx].flat.top.on) {
+					if (ag_map_state.rooms[connect_room_idx].flat.top.on) {
 						min.x=pnt.x-wid_x;
 						max.x=pnt.x+wid_x;
-						min.z=(ag_state.rooms[connect_room_idx].min.z-(wid_z<<1))-connect_box_offset;
-						max.z=ag_state.rooms[connect_room_idx].min.z-connect_box_offset;
+						min.z=(ag_map_state.rooms[connect_room_idx].min.z-(wid_z<<1))-connect_box_offset;
+						max.z=ag_map_state.rooms[connect_room_idx].min.z-connect_box_offset;
 						hit=TRUE;
 					}
 					break;
 				case ag_connect_side_bottom:
-					if (ag_state.rooms[connect_room_idx].flat.bot.on) {
+					if (ag_map_state.rooms[connect_room_idx].flat.bot.on) {
 						min.x=pnt.x-wid_x;
 						max.x=pnt.x+wid_x;
-						min.z=ag_state.rooms[connect_room_idx].max.z+connect_box_offset;
-						max.z=(ag_state.rooms[connect_room_idx].max.z+(wid_z<<1))+connect_box_offset;
+						min.z=ag_map_state.rooms[connect_room_idx].max.z+connect_box_offset;
+						max.z=(ag_map_state.rooms[connect_room_idx].max.z+(wid_z<<1))+connect_box_offset;
 						hit=TRUE;
 					}
 					break;
 				case ag_connect_side_left:
-					if (ag_state.rooms[connect_room_idx].flat.lft.on) {
-						min.x=(ag_state.rooms[connect_room_idx].min.x-(wid_x<<1))-connect_box_offset;
-						max.x=ag_state.rooms[connect_room_idx].min.x-connect_box_offset;
+					if (ag_map_state.rooms[connect_room_idx].flat.lft.on) {
+						min.x=(ag_map_state.rooms[connect_room_idx].min.x-(wid_x<<1))-connect_box_offset;
+						max.x=ag_map_state.rooms[connect_room_idx].min.x-connect_box_offset;
 						min.z=pnt.z-wid_z;
 						max.z=pnt.z+wid_z;
 						hit=TRUE;
 					}
 					break;
 				case ag_connect_side_right:
-					if (ag_state.rooms[connect_room_idx].flat.rgt.on) {
-						min.x=ag_state.rooms[connect_room_idx].max.x+connect_box_offset;
-						max.x=(ag_state.rooms[connect_room_idx].max.x+(wid_x<<1))+connect_box_offset;
+					if (ag_map_state.rooms[connect_room_idx].flat.rgt.on) {
+						min.x=ag_map_state.rooms[connect_room_idx].max.x+connect_box_offset;
+						max.x=(ag_map_state.rooms[connect_room_idx].max.x+(wid_x<<1))+connect_box_offset;
 						min.z=pnt.z-wid_z;
 						max.z=pnt.z+wid_z;
 						hit=TRUE;
@@ -676,11 +676,11 @@ void ag_map_add_room(map_type *map,bool first_room)
 
 			if (hit) {
 
-				for (n=0;n!=ag_state.nroom;n++) {
-					if (max.x<=ag_state.rooms[n].min.x) continue;
-					if (min.x>=ag_state.rooms[n].max.x) continue;
-					if (max.z<=ag_state.rooms[n].min.z) continue;
-					if (min.z>=ag_state.rooms[n].max.z) continue;
+				for (n=0;n!=ag_map_state.nroom;n++) {
+					if (max.x<=ag_map_state.rooms[n].min.x) continue;
+					if (min.x>=ag_map_state.rooms[n].max.x) continue;
+					if (max.z<=ag_map_state.rooms[n].min.z) continue;
+					if (min.z>=ag_map_state.rooms[n].max.z) continue;
 
 					hit=FALSE;
 					break;
@@ -692,7 +692,7 @@ void ag_map_add_room(map_type *map,bool first_room)
 				// if connected by stairs, go down on level
 
 			if (hit) {
-				max.y=ag_state.rooms[connect_room_idx].max.y;
+				max.y=ag_map_state.rooms[connect_room_idx].max.y;
 				break;
 			}
 
@@ -705,7 +705,7 @@ void ag_map_add_room(map_type *map,bool first_room)
 
 				if (connect_side==org_connect_side) {
 					connect_room_idx++;
-					if (connect_room_idx>=ag_state.nroom) connect_room_idx=0;
+					if (connect_room_idx>=ag_map_state.nroom) connect_room_idx=0;
 
 						// no where to place room, exit out
 
@@ -721,12 +721,12 @@ void ag_map_add_room(map_type *map,bool first_room)
 	mesh_idx=map_mesh_add(map);
 	if (mesh_idx==-1) return;
 
-	room_idx=ag_state.nroom;
+	room_idx=ag_map_state.nroom;
 
-	room=&ag_state.rooms[room_idx];
+	room=&ag_map_state.rooms[room_idx];
 	room->mesh_idx=mesh_idx;
 
-	ag_state.nroom++;
+	ag_map_state.nroom++;
 
 	memmove(&room->min,&min,sizeof(d3pnt));
 	memmove(&room->max,&max,sizeof(d3pnt));
@@ -775,7 +775,7 @@ void ag_map_add_room(map_type *map,bool first_room)
 		else {
 			if (!ag_map_add_room_random(room,wid_x,wid_z,connect_room_idx,connect_side)) {
 				map_mesh_delete(map,mesh_idx);
-				ag_state.nroom--;
+				ag_map_state.nroom--;
 				return;
 			}
 		}
@@ -789,7 +789,7 @@ void ag_map_add_room(map_type *map,bool first_room)
 			// setup vertexes so they line up
 			// when corridors are inserted
 
-		connect_room=&ag_state.rooms[connect_room_idx];
+		connect_room=&ag_map_state.rooms[connect_room_idx];
 
 		switch (connect_side) {
 
@@ -940,13 +940,13 @@ bool ag_map_run(map_type *map,char *err_str)
 
 	room_count=30;
 
-	ag_state.nroom=0;
-	ag_state.current_door_idx=0;
+	ag_map_state.nroom=0;
+	ag_map_state.current_door_idx=0;
 
 		// initialize auto generate structures
 
-	ag_state.rooms=(ag_room_type*)malloc(ag_max_room*sizeof(ag_room_type));
-	if (ag_state.rooms==NULL) return(FALSE);
+	ag_map_state.rooms=(ag_room_type*)malloc(ag_max_room*sizeof(ag_room_type));
+	if (ag_map_state.rooms==NULL) return(FALSE);
 
 		// clear the map data
 
@@ -958,8 +958,8 @@ bool ag_map_run(map_type *map,char *err_str)
 		// rooms
 
 	for (n=0;n!=(room_count*10);n++) {
-		ag_map_add_room(map,(ag_state.nroom==0));
-		if (ag_state.nroom==room_count) break;
+		ag_map_add_room(map,(ag_map_state.nroom==0));
+		if (ag_map_state.nroom==room_count) break;
 	}
 
 		// add square connector
@@ -990,7 +990,7 @@ bool ag_map_run(map_type *map,char *err_str)
 
 		// free auto generate structures
 
-	free(ag_state.rooms);
+	free(ag_map_state.rooms);
 
 	return(TRUE);
 }
@@ -1004,19 +1004,14 @@ bool auto_generate_map(map_type *map,char *err_str)
 	return(ag_map_run(map,err_str));
 }
 
-bool auto_generate_previous_map(map_type *map,char *err_str)
+bool auto_generate_map_previous(map_type *map,char *err_str)
 {
 	ag_random_previous_seed();
 	return(ag_map_run(map,err_str));
 }
 
-bool auto_generate_next_map(map_type *map,char *err_str)
+bool auto_generate_map_next(map_type *map,char *err_str)
 {
 	ag_random_next_seed();
 	return(ag_map_run(map,err_str));
-}
-
-int auto_generate_get_seed(void)
-{
-	return(ag_state.seed);
 }

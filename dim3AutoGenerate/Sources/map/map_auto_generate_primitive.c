@@ -1,6 +1,6 @@
 /****************************** File *********************************
 
-Module: dim3 Editor
+Module: dim3 Auto Generator
 Author: Brian Barnes
  Usage: Auto Generation Primitive Generation
 
@@ -28,8 +28,6 @@ and can be sold or given away.
 #ifdef D3_PCH
 	#include "dim3autogenerate.h"
 #endif
-
-extern ag_state_type			ag_state;
 
 int								ag_cylinder_side_count,ag_cylinder_split_count;
 

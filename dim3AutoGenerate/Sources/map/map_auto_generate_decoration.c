@@ -1,6 +1,6 @@
 /****************************** File *********************************
 
-Module: dim3 Editor
+Module: dim3 Auto Generator
 Author: Brian Barnes
  Usage: Auto Generation Utility
 
@@ -29,7 +29,7 @@ and can be sold or given away.
 	#include "dim3autogenerate.h"
 #endif
 
-extern ag_state_type			ag_state;
+extern ag_map_state_type		ag_map_state;
 
 /* =======================================================
 
@@ -68,7 +68,7 @@ void ag_map_decoration_location_random(map_type *map,int room_idx,d3pnt *pnt)
 
 		// get current room dimensions
 
-	room=&ag_state.rooms[room_idx];
+	room=&ag_map_state.rooms[room_idx];
 	map_mesh_calculate_extent(map,room->mesh_idx,&min,&max);
 
 		// room size and margin
@@ -94,7 +94,7 @@ void ag_map_decoration_location_angle(map_type *map,int room_idx,float ang,d3pnt
 
 		// get current room dimensions
 
-	room=&ag_state.rooms[room_idx];
+	room=&ag_map_state.rooms[room_idx];
 	map_mesh_calculate_extent(map,room->mesh_idx,&min,&max);
 
 		// room size and radius
@@ -171,7 +171,7 @@ void ag_map_decoration_box_stacks(map_type *map,int room_idx)
 		// randomize location
 		// move it so within stack of boxes
 
-	room=&ag_state.rooms[room_idx];
+	room=&ag_map_state.rooms[room_idx];
 
 	map_mesh_calculate_center(map,room->mesh_idx,&pnt);
 	map_mesh_calculate_extent(map,room->mesh_idx,&min,&max);
@@ -235,7 +235,7 @@ void ag_map_decoration_columns(map_type *map,int room_idx)
 		// get height
 
 	high=ag_size_room_high+ag_size_floor_high;
-	if (ag_state.rooms[room_idx].second_story) high+=ag_size_room_high;
+	if (ag_map_state.rooms[room_idx].second_story) high+=ag_size_room_high;
 
 		// create columns
 
@@ -341,7 +341,7 @@ void ag_map_decoration_equipment(map_type *map,int room_idx)
 	map_mesh_type	*mesh;
 	ag_room_type	*room;
 
-	room=&ag_state.rooms[room_idx];
+	room=&ag_map_state.rooms[room_idx];
 
 		// get height
 
@@ -417,7 +417,7 @@ void ag_map_decoration_core(map_type *map,int room_idx)
 	d3pnt				extrude_pnt;
 	ag_room_type		*room;
 
-	room=&ag_state.rooms[room_idx];
+	room=&ag_map_state.rooms[room_idx];
 
 		// find the ceiling
 
@@ -460,7 +460,7 @@ void ag_map_decoration_walls(map_type *map,int room_idx)
 	d3pnt				*pt;
 	ag_room_type		*room;
 
-	room=&ag_state.rooms[room_idx];
+	room=&ag_map_state.rooms[room_idx];
 	if (room->nvertex==0) return;
 
 		// random wall size
@@ -603,7 +603,7 @@ void ag_map_decoration_floor_trench(map_type *map,int room_idx)
 	d3pnt				extrude_pnt;
 	ag_room_type		*room;
 
-	room=&ag_state.rooms[room_idx];
+	room=&ag_map_state.rooms[room_idx];
 
 		// find the floor
 
@@ -653,7 +653,7 @@ void ag_map_decoration_floor_machinery(map_type *map,int room_idx)
 	movement_move_type	*move;
 	ag_room_type		*room;
 
-	room=&ag_state.rooms[room_idx];
+	room=&ag_map_state.rooms[room_idx];
 
 		// all machinery same size
 
@@ -745,7 +745,7 @@ void ag_map_decoration_floor_rubble(map_type *map,int room_idx)
 	d3pnt				pnt,min,max;
 	ag_room_type		*room;
 
-	room=&ag_state.rooms[room_idx];
+	room=&ag_map_state.rooms[room_idx];
 
 	count=ag_count_rubble_start+ag_random_int(ag_count_rubble_extra);
 
@@ -780,7 +780,7 @@ void ag_decoration_open_ceiling(map_type *map,int room_idx)
 	d3pnt				extrude_pnt;
 	ag_room_type		*room;
 
-	room=&ag_state.rooms[room_idx];
+	room=&ag_map_state.rooms[room_idx];
 
 		// find the ceiling
 
@@ -810,12 +810,12 @@ void ag_gnerate_decoration_vertex_column(map_type *map,int room_idx)
 	int				n,high,radius;
 	ag_room_type	*room;
 
-	room=&ag_state.rooms[room_idx];
+	room=&ag_map_state.rooms[room_idx];
 
 		// get height and size
 
 	high=ag_size_room_high+ag_size_floor_high;
-	if (ag_state.rooms[room_idx].second_story) high+=ag_size_room_high;
+	if (ag_map_state.rooms[room_idx].second_story) high+=ag_size_room_high;
 
 	radius=ag_size_column_vertex_wid_start+ag_random_int(ag_size_column_vertex_wid_extra);
 
@@ -839,8 +839,8 @@ void ag_map_decorations_add(map_type *map)
 	int				n,k,dec_idx;
 	ag_room_type	*room;
 
-	for (n=0;n!=ag_state.nroom;n++) {
-		room=&ag_state.rooms[n];
+	for (n=0;n!=ag_map_state.nroom;n++) {
+		room=&ag_map_state.rooms[n];
 
 			// completely skip outside rooms
 
@@ -1062,12 +1062,12 @@ void ag_map_lights_add(map_type *map)
 	int				n;
 	ag_room_type	*room;
 
-	for (n=0;n!=ag_state.nroom;n++) {
+	for (n=0;n!=ag_map_state.nroom;n++) {
 
 			// skip rooms that are lit
 			// by windows
 
-		room=&ag_state.rooms[n];
+		room=&ag_map_state.rooms[n];
 		if (room->outside) continue;
 		if (room->has_windows) continue;
 
@@ -1102,7 +1102,7 @@ void ag_map_spots_add_single(map_type *map,char *name,int spot_obj_type,char *sc
 	if (leaf_only) {
 		room_idx=0;
 
-		for (n=0;n!=ag_state.nroom;n++) {
+		for (n=0;n!=ag_map_state.nroom;n++) {
 			if (ag_map_room_is_leaf(n)) {
 				room_idx=n;
 				break;
@@ -1113,12 +1113,12 @@ void ag_map_spots_add_single(map_type *map,char *name,int spot_obj_type,char *sc
 		// randomize room
 
 	else {
-		room_idx=ag_random_int(ag_state.nroom);
+		room_idx=ag_random_int(ag_map_state.nroom);
 	}
 
 		// find a floor in the room
 	
-	room=&ag_state.rooms[room_idx];
+	room=&ag_map_state.rooms[room_idx];
 
 	poly_idx=ag_map_find_floor_polygon(map,room_idx);
 	if (poly_idx==-1) {
@@ -1153,12 +1153,12 @@ void ag_map_spots_add(map_type *map)
 
 		// player spot
 
-	ag_map_spots_add_single(map,"Start",spot_type_player,"Player",TRUE,&ag_state.start_pnt);
+	ag_map_spots_add_single(map,"Start",spot_type_player,"Player",TRUE,&ag_map_state.start_pnt);
 
 		// monster spots
 		// supergumba -- hard coded!  FIX!
 
-	for (n=0;n!=(ag_state.nroom*2);n++) {
+	for (n=0;n!=(ag_map_state.nroom*2);n++) {
 	//	ag_map_spots_add_single(map,"Monster",spot_type_object,"Cyborg Knife",FALSE,NULL);
 	}
 

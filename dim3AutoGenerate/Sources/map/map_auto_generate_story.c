@@ -1,6 +1,6 @@
 /****************************** File *********************************
 
-Module: dim3 Editor
+Module: dim3 Auto Generator
 Author: Brian Barnes
  Usage: Auto Generation Room Second Story
 
@@ -29,7 +29,7 @@ and can be sold or given away.
 	#include "dim3autogenerate.h"
 #endif
 
-extern ag_state_type			ag_state;
+extern ag_map_state_type		ag_map_state;
 
 /* =======================================================
 
@@ -106,7 +106,7 @@ void ag_map_add_room_second_story_chunk(map_type *map,int room_idx,int mesh_idx,
 	movement_type			*movement;
 	movement_move_type		*move;
 
-	room=&ag_state.rooms[room_idx];
+	room=&ag_map_state.rooms[room_idx];
 
 	mesh=&map->mesh.meshes[mesh_idx];
 	poly=&mesh->polys[poly_idx];
@@ -313,7 +313,7 @@ void ag_map_add_room_second_story_complete(map_type *map,int room_idx)
 	float					gx[8],gy[8];
 	ag_room_type			*room;
 
-	room=&ag_state.rooms[room_idx];
+	room=&ag_map_state.rooms[room_idx];
 
 		// tell later options that there
 		// can be more decorations and lights
@@ -384,12 +384,12 @@ void ag_map_add_room_second_story(map_type *map)
 
 		// build second stories
 
-	for (n=0;n!=ag_state.nroom;n++) {
+	for (n=0;n!=ag_map_state.nroom;n++) {
 
 			// did this room have
 			// a second story
 
-		room=&ag_state.rooms[n];
+		room=&ag_map_state.rooms[n];
 		if (!room->second_story) continue;
 		if (!room->require_top_floor) continue;
 

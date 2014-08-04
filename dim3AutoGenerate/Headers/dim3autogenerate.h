@@ -32,6 +32,7 @@ and can be sold or given away.
 #include "os_defs.h"
 #include "baseutility.h"
 #include "maputility.h"
+#include "modelutility.h"
 #include "autogenerateutility.h"
 #include "autogeneratemapprivate.h"
 #include "autogeneratemodelprivate.h"
