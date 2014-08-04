@@ -1,6 +1,6 @@
 /****************************** File *********************************
 
-Module: dim3 Editor
+Module: dim3 Auto Generator
 Author: Brian Barnes
  Usage: Auto Generation Setup
 
@@ -29,7 +29,7 @@ and can be sold or given away.
 	#include "dim3autogenerate.h"
 #endif
 
-extern ag_state_type			ag_state;
+extern ag_map_state_type		ag_map_state;
 
 /* =======================================================
 
@@ -39,10 +39,10 @@ extern ag_state_type			ag_state;
 
 bool ag_map_initialize(char *err_str)
 {
-	ag_state.rooms=NULL;
+	ag_map_state.rooms=NULL;
 
-	ag_state.rooms=(ag_room_type*)malloc(ag_max_room*sizeof(ag_room_type));
-	if (ag_state.rooms==NULL) {
+	ag_map_state.rooms=(ag_room_type*)malloc(ag_max_room*sizeof(ag_room_type));
+	if (ag_map_state.rooms==NULL) {
 		strcpy(err_str,"Out of Memory");
 		return(FALSE);
 	}
@@ -52,8 +52,8 @@ bool ag_map_initialize(char *err_str)
 
 void ag_map_release(void)
 {
-	if (ag_state.rooms!=NULL) free(ag_state.rooms);
-	ag_state.rooms=NULL;
+	if (ag_map_state.rooms!=NULL) free(ag_map_state.rooms);
+	ag_map_state.rooms=NULL;
 }
 
 /* =======================================================
@@ -95,7 +95,7 @@ texture_type* ag_map_create_texture(map_type *map,int idx,char *name,bool has_gl
 	return(texture);
 }
 
-void ag_map_create_texture_set(map_type *map,char *base_path)
+void auto_generate_map_create_texture_set(map_type *map,char *base_path)
 {
 	texture_type		*texture;
 

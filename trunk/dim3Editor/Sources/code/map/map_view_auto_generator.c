@@ -72,10 +72,15 @@ void view_map_auto_generate_finish(void)
 void view_map_auto_generate_start(void)
 {
 	char			err_str[256];
+	bool			ok;
 
 		// run auto generator first time
 
-	if (!auto_generate_map(&map,err_str)) {
+	view_map_auto_generate_setup();
+	ok=auto_generate_map(&map,err_str);
+	view_map_auto_generate_finish();
+	
+	if (!ok) {
 		os_dialog_alert("Auto Generator",err_str);
 		return;
 	}
@@ -129,7 +134,7 @@ void view_map_auto_generate_textures(void)
 
 		// run bitmap generation for a map
 
-	ag_map_create_texture_set(&map,base_path);
+	auto_generate_map_create_texture_set(&map,base_path);
 
 	os_set_arrow_cursor();
 
@@ -265,7 +270,7 @@ bool map_view_auto_generate_click(d3pnt *pnt,bool double_click)
 	map_view_auto_generate_previous_button_box(&bbox);
 	if (map_view_auto_generate_click_button(pnt,&wbox,&bbox,map_auto_generate_button_previous)) {
 		view_map_auto_generate_setup();
-		ok=auto_generate_previous_map(&map,err_str);
+		ok=auto_generate_map_previous(&map,err_str);
 		view_map_auto_generate_finish();
 		if (!ok) os_dialog_alert("Auto Generator",err_str);
 		main_wind_draw();
@@ -275,7 +280,7 @@ bool map_view_auto_generate_click(d3pnt *pnt,bool double_click)
 	map_view_auto_generate_next_button_box(&bbox);
 	if (map_view_auto_generate_click_button(pnt,&wbox,&bbox,map_auto_generate_button_next)) {
 		view_map_auto_generate_setup();
-		ok=auto_generate_next_map(&map,err_str);
+		ok=auto_generate_map_next(&map,err_str);
 		view_map_auto_generate_finish();
 		if (!ok) os_dialog_alert("Auto Generator",err_str);
 		main_wind_draw();
@@ -436,7 +441,7 @@ void map_view_auto_generate_draw(void)
 
 		// info text
 
-	sprintf(str,"Seed: %d",auto_generate_get_seed());
+	sprintf(str,"Seed: %d",ag_random_bool());
 	text_draw(5,25,20.0f,NULL,str);
 
 	sprintf(str,"Mesh Count: %d",map.mesh.nmesh);

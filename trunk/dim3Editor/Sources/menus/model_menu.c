@@ -75,6 +75,8 @@ os_menu_item_type		model_menu_setup[]=
 									{"Model","",0,os_menu_key_none,0x0},
 									{"Model","Add Hit Box",model_menu_item_AddHitBox,os_menu_key_none,0x0},
 									{"Model","",0,os_menu_key_none,0x0},
+									{"Model","Auto Generate Model...",model_menu_item_AutoGenerateModel,os_menu_key_none,0x0},
+									{"Model","",0,os_menu_key_none,0x0},
 									{"Model","Clean Up",model_menu_item_CleanUp,os_menu_key_none,0x0},
 
 										// view menu
@@ -348,6 +350,11 @@ bool model_menu_event_run(int cmd)
 
 		case model_menu_item_AddHitBox:
 			model_piece_add_hit_box();
+            main_wind_draw();
+			return(TRUE);
+
+		case model_menu_item_AutoGenerateModel:
+			auto_generate_model_monster(&model);
             main_wind_draw();
 			return(TRUE);
 			

@@ -1405,6 +1405,18 @@
 				<Filter
 					Name="model"
 					>
+					<File
+						RelativePath="..\..\dim3AutoGenerate\Sources\model\model_auto_generate.c"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="common"
+					>
+					<File
+						RelativePath="..\..\dim3AutoGenerate\Sources\common\auto_generate_utility.c"
+						>
+					</File>
 				</Filter>
 			</Filter>
 		</Filter>

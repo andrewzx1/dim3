@@ -1,6 +1,6 @@
 /****************************** File *********************************
 
-Module: dim3 Editor
+Module: dim3 Auto Generator
 Author: Brian Barnes
  Usage: Auto Generation Room Connectors
 
@@ -29,7 +29,7 @@ and can be sold or given away.
 	#include "dim3autogenerate.h"
 #endif
 
-extern ag_state_type			ag_state;
+extern ag_map_state_type		ag_map_state;
 
 /* =======================================================
 
@@ -167,8 +167,8 @@ void ag_map_add_connector_room_normal(map_type *map,int org_room_idx,bool has_do
 						door2_min,door2_max;
 	ag_room_type		*room,*room2;
 
-	room=&ag_state.rooms[org_room_idx];
-	room2=&ag_state.rooms[room->connect_box.other_room_idx];
+	room=&ag_map_state.rooms[org_room_idx];
+	room2=&ag_map_state.rooms[room->connect_box.other_room_idx];
 
 		// remove unused polygons
 
@@ -242,7 +242,7 @@ void ag_map_add_connector_room_normal(map_type *map,int org_room_idx,bool has_do
 		// up door
 
 	if (ag_random_bool()) {
-		sprintf(door_name,"Door %d",ag_state.current_door_idx);
+		sprintf(door_name,"Door %d",ag_map_state.current_door_idx);
 
 		if (dx>dz) {
 			door_min.x=room->connect_box.min.x;
@@ -311,15 +311,15 @@ void ag_map_add_connector_room_normal(map_type *map,int org_room_idx,bool has_do
 		door2_min.y=room->connect_box.min.y;
 		door2_max.y=room->connect_box.max.y;
 
-		sprintf(door_name,"Door %d",ag_state.current_door_idx);
-		sprintf(door2_name,"Door %dR",ag_state.current_door_idx);
+		sprintf(door_name,"Door %d",ag_map_state.current_door_idx);
+		sprintf(door2_name,"Door %dR",ag_map_state.current_door_idx);
 
 		ag_map_add_connector_door(map,door_name,&door_min,&door_max,door2_name,&door2_min,&door2_max,&door_mov);
 	}
 
 		// next door
 
-	ag_state.current_door_idx++;
+	ag_map_state.current_door_idx++;
 }
 
 /* =======================================================
@@ -548,8 +548,8 @@ void ag_map_add_connector_room_arch(map_type *map,int org_room_idx)
 	int					ty,by,by2;
 	ag_room_type		*room,*room2;
 
-	room=&ag_state.rooms[org_room_idx];
-	room2=&ag_state.rooms[room->connect_box.other_room_idx];
+	room=&ag_map_state.rooms[org_room_idx];
+	room2=&ag_map_state.rooms[room->connect_box.other_room_idx];
 
 		// pillars go to the top
 
@@ -647,8 +647,8 @@ void ag_map_add_connector_room_stairs(map_type *map,int org_room_idx)
 	d3pnt				min,max,step_min,step_max;
 	ag_room_type		*room,*room2;
 
-	room=&ag_state.rooms[org_room_idx];
-	room2=&ag_state.rooms[room->connect_box.other_room_idx];
+	room=&ag_map_state.rooms[org_room_idx];
+	room2=&ag_map_state.rooms[room->connect_box.other_room_idx];
 
 		// remove unused polygons
 		// since they are on different levels, we
@@ -895,11 +895,11 @@ void ag_map_add_connector_rooms(map_type *map)
 	int				n;
 	ag_room_type	*room;
 
-	for (n=0;n!=ag_state.nroom;n++) {
+	for (n=0;n!=ag_map_state.nroom;n++) {
 
 			// did this room have a connection box?
 
-		room=&ag_state.rooms[n];
+		room=&ag_map_state.rooms[n];
 		if (!room->connect_box.on) continue;
 
 		switch (room->connect_box.connect_type) {
