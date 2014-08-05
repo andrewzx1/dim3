@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		260719F818F64E5400FF3C94 /* map_auto_generate_connect.c in Sources */ = {isa = PBXBuildFile; fileRef = 260719F718F64E5400FF3C94 /* map_auto_generate_connect.c */; };
 		26159D2016D191050069B442 /* base_iface_label.c in Sources */ = {isa = PBXBuildFile; fileRef = 26159D1F16D191050069B442 /* base_iface_label.c */; };
 		26159D2716D1AA6D0069B442 /* project_palette_label.c in Sources */ = {isa = PBXBuildFile; fileRef = 26159D2516D1AA6C0069B442 /* project_palette_label.c */; };
 		26159D2816D1AA6D0069B442 /* project_palette_labels.c in Sources */ = {isa = PBXBuildFile; fileRef = 26159D2616D1AA6D0069B442 /* project_palette_labels.c */; };
@@ -84,8 +83,14 @@
 		2621462C16050A5100F18538 /* spot.png in Copy Item Icons */ = {isa = PBXBuildFile; fileRef = 262145861605040300F18538 /* spot.png */; };
 		2653251F160149DF00061FB8 /* main_app.c in Sources */ = {isa = PBXBuildFile; fileRef = 2653251D160149DF00061FB8 /* main_app.c */; };
 		26532520160149DF00061FB8 /* main_window.c in Sources */ = {isa = PBXBuildFile; fileRef = 2653251E160149DF00061FB8 /* main_window.c */; };
+		2653B1C6198F436E008C40E4 /* map_auto_generate_connect.c in Sources */ = {isa = PBXBuildFile; fileRef = 2653B1BF198F436E008C40E4 /* map_auto_generate_connect.c */; };
+		2653B1C7198F436E008C40E4 /* map_auto_generate_decoration.c in Sources */ = {isa = PBXBuildFile; fileRef = 2653B1C0198F436E008C40E4 /* map_auto_generate_decoration.c */; };
+		2653B1C8198F436E008C40E4 /* map_auto_generate_primitive.c in Sources */ = {isa = PBXBuildFile; fileRef = 2653B1C1198F436E008C40E4 /* map_auto_generate_primitive.c */; };
+		2653B1C9198F436E008C40E4 /* map_auto_generate_setup.c in Sources */ = {isa = PBXBuildFile; fileRef = 2653B1C2198F436E008C40E4 /* map_auto_generate_setup.c */; };
+		2653B1CA198F436E008C40E4 /* map_auto_generate_story.c in Sources */ = {isa = PBXBuildFile; fileRef = 2653B1C3198F436E008C40E4 /* map_auto_generate_story.c */; };
+		2653B1CB198F436E008C40E4 /* map_auto_generate_utility.c in Sources */ = {isa = PBXBuildFile; fileRef = 2653B1C4198F436E008C40E4 /* map_auto_generate_utility.c */; };
+		2653B1CC198F436E008C40E4 /* map_auto_generate.c in Sources */ = {isa = PBXBuildFile; fileRef = 2653B1C5198F436E008C40E4 /* map_auto_generate.c */; };
 		2653B6D2160D76A300EE0CD7 /* DialogOutlineDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 2653B6D1160D76A300EE0CD7 /* DialogOutlineDataSource.m */; };
-		2653E3461963C14100AE55D9 /* map_auto_generate_primitive.c in Sources */ = {isa = PBXBuildFile; fileRef = 2653E3451963C14100AE55D9 /* map_auto_generate_primitive.c */; };
 		2658269014F31CE200245C24 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2658268F14F31CE200245C24 /* OpenGL.framework */; };
 		2658269114F31D3A00245C24 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26900AD714F2044F008026D5 /* AppKit.framework */; };
 		265A6310150B28CC0063EEDD /* dim3 Editor.app in Copy Application */ = {isa = PBXBuildFile; fileRef = 26900AD014F2044F008026D5 /* dim3 Editor.app */; };
@@ -95,7 +100,6 @@
 		265AB42815FEEF39005CDBB0 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 265AB42615FEEF39005CDBB0 /* InfoPlist.strings */; };
 		265AB42B15FEEF3E005CDBB0 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 265AB42915FEEF3E005CDBB0 /* MainMenu.xib */; };
 		26900AD514F2044F008026D5 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26900AD414F2044F008026D5 /* Cocoa.framework */; };
-		26918E1318F79BAA0053C09B /* map_auto_generate_decoration.c in Sources */ = {isa = PBXBuildFile; fileRef = 26918E1218F79BAA0053C09B /* map_auto_generate_decoration.c */; };
 		26973C3E1602EB1600167FD2 /* View.m in Sources */ = {isa = PBXBuildFile; fileRef = 26973C351602E78D00167FD2 /* View.m */; };
 		26B44A18195FD2260072171F /* map_view_draw_mesh.c in Sources */ = {isa = PBXBuildFile; fileRef = 26B44A17195FD2260072171F /* map_view_draw_mesh.c */; };
 		26C0CE53194FD8A7001C9292 /* base_ag_bitmap_utility.c in Sources */ = {isa = PBXBuildFile; fileRef = 26C0CE52194FD8A7001C9292 /* base_ag_bitmap_utility.c */; };
@@ -181,8 +185,9 @@
 		26E4021714F4721D0059C798 /* libPNG.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 26E4021514F4721D0059C798 /* libPNG.a */; };
 		26E4022714F4B3ED0059C798 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26E4022614F4B3ED0059C798 /* Foundation.framework */; };
 		26E5DA461611552B003D7755 /* dialog_bone_attach_duplicate.c in Sources */ = {isa = PBXBuildFile; fileRef = 26E5DA451611552B003D7755 /* dialog_bone_attach_duplicate.c */; };
-		26F0B2991903982700CF4493 /* map_auto_generate_story.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F0B2981903982700CF4493 /* map_auto_generate_story.c */; };
 		26F278F41606CB96007470ED /* DialogView.m in Sources */ = {isa = PBXBuildFile; fileRef = 26F278F31606CB96007470ED /* DialogView.m */; };
+		26F567031990993B00C8506C /* auto_generate_utility.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F567021990993B00C8506C /* auto_generate_utility.c */; };
+		26F567051990994700C8506C /* model_auto_generate.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F567041990994700C8506C /* model_auto_generate.c */; };
 		26F7D34F167175D400E51363 /* dialog_distort.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F7D34E167175D400E51363 /* dialog_distort.c */; };
 		26F7E04B160045A900E739C4 /* import_text_decode.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F7E043160045A900E739C4 /* import_text_decode.c */; };
 		26F7E04C160045A900E739C4 /* launch.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F7E044160045A900E739C4 /* launch.c */; };
@@ -192,9 +197,6 @@
 		26F7E050160045A900E739C4 /* texture_palette.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F7E048160045A900E739C4 /* texture_palette.c */; };
 		26F7E051160045A900E739C4 /* tool_tip.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F7E049160045A900E739C4 /* tool_tip.c */; };
 		26F7E052160045A900E739C4 /* xml_setup.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F7E04A160045A900E739C4 /* xml_setup.c */; };
-		26F7E06E160045BA00E739C4 /* map_auto_generate_setup.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F7E053160045BA00E739C4 /* map_auto_generate_setup.c */; };
-		26F7E070160045BA00E739C4 /* map_auto_generate_utility.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F7E055160045BA00E739C4 /* map_auto_generate_utility.c */; };
-		26F7E071160045BA00E739C4 /* map_auto_generate.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F7E056160045BA00E739C4 /* map_auto_generate.c */; };
 		26F7E072160045BA00E739C4 /* map_dos.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F7E057160045BA00E739C4 /* map_dos.c */; };
 		26F7E073160045BA00E739C4 /* map_groups.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F7E058160045BA00E739C4 /* map_groups.c */; };
 		26F7E074160045BA00E739C4 /* map_import_obj.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F7E059160045BA00E739C4 /* map_import_obj.c */; };
@@ -485,7 +487,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		260719F718F64E5400FF3C94 /* map_auto_generate_connect.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = map_auto_generate_connect.c; path = Sources/code/map/map_auto_generate_connect.c; sourceTree = "<group>"; };
 		26159D1F16D191050069B442 /* base_iface_label.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = base_iface_label.c; path = Sources/base_iface_label.c; sourceTree = "<group>"; };
 		26159D2516D1AA6C0069B442 /* project_palette_label.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = project_palette_label.c; path = Sources/palettes/project/project_palette_label.c; sourceTree = "<group>"; };
 		26159D2616D1AA6D0069B442 /* project_palette_labels.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = project_palette_labels.c; path = Sources/palettes/project/project_palette_labels.c; sourceTree = "<group>"; };
@@ -562,9 +563,19 @@
 		262145861605040300F18538 /* spot.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = spot.png; sourceTree = "<group>"; };
 		2653251D160149DF00061FB8 /* main_app.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = main_app.c; path = Sources/windows/main_app.c; sourceTree = "<group>"; };
 		2653251E160149DF00061FB8 /* main_window.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = main_window.c; path = Sources/windows/main_window.c; sourceTree = "<group>"; };
+		2653B1BB198F435B008C40E4 /* autogeneratemapprivate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = autogeneratemapprivate.h; path = ../../dim3AutoGenerate/Headers/autogeneratemapprivate.h; sourceTree = "<group>"; };
+		2653B1BC198F435B008C40E4 /* autogeneratemodelprivate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = autogeneratemodelprivate.h; path = ../../dim3AutoGenerate/Headers/autogeneratemodelprivate.h; sourceTree = "<group>"; };
+		2653B1BD198F435B008C40E4 /* autogenerateutility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = autogenerateutility.h; path = ../../dim3AutoGenerate/Headers/autogenerateutility.h; sourceTree = "<group>"; };
+		2653B1BE198F435B008C40E4 /* dim3autogenerate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = dim3autogenerate.h; path = ../../dim3AutoGenerate/Headers/dim3autogenerate.h; sourceTree = "<group>"; };
+		2653B1BF198F436E008C40E4 /* map_auto_generate_connect.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = map_auto_generate_connect.c; path = ../../dim3AutoGenerate/Sources/map/map_auto_generate_connect.c; sourceTree = "<group>"; };
+		2653B1C0198F436E008C40E4 /* map_auto_generate_decoration.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = map_auto_generate_decoration.c; path = ../../dim3AutoGenerate/Sources/map/map_auto_generate_decoration.c; sourceTree = "<group>"; };
+		2653B1C1198F436E008C40E4 /* map_auto_generate_primitive.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = map_auto_generate_primitive.c; path = ../../dim3AutoGenerate/Sources/map/map_auto_generate_primitive.c; sourceTree = "<group>"; };
+		2653B1C2198F436E008C40E4 /* map_auto_generate_setup.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = map_auto_generate_setup.c; path = ../../dim3AutoGenerate/Sources/map/map_auto_generate_setup.c; sourceTree = "<group>"; };
+		2653B1C3198F436E008C40E4 /* map_auto_generate_story.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = map_auto_generate_story.c; path = ../../dim3AutoGenerate/Sources/map/map_auto_generate_story.c; sourceTree = "<group>"; };
+		2653B1C4198F436E008C40E4 /* map_auto_generate_utility.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = map_auto_generate_utility.c; path = ../../dim3AutoGenerate/Sources/map/map_auto_generate_utility.c; sourceTree = "<group>"; };
+		2653B1C5198F436E008C40E4 /* map_auto_generate.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = map_auto_generate.c; path = ../../dim3AutoGenerate/Sources/map/map_auto_generate.c; sourceTree = "<group>"; };
 		2653B6D0160D76A300EE0CD7 /* DialogOutlineDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DialogOutlineDataSource.h; path = dim3Editor/DialogOutlineDataSource.h; sourceTree = SOURCE_ROOT; };
 		2653B6D1160D76A300EE0CD7 /* DialogOutlineDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DialogOutlineDataSource.m; path = dim3Editor/DialogOutlineDataSource.m; sourceTree = SOURCE_ROOT; };
-		2653E3451963C14100AE55D9 /* map_auto_generate_primitive.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = map_auto_generate_primitive.c; path = Sources/code/map/map_auto_generate_primitive.c; sourceTree = "<group>"; };
 		2658268F14F31CE200245C24 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/OpenGL.framework; sourceTree = DEVELOPER_DIR; };
 		265AB41715FEEE99005CDBB0 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = dim3Editor/AppDelegate.h; sourceTree = SOURCE_ROOT; };
 		265AB41815FEEE99005CDBB0 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = dim3Editor/AppDelegate.m; sourceTree = SOURCE_ROOT; };
@@ -576,7 +587,6 @@
 		26900AD014F2044F008026D5 /* dim3 Editor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "dim3 Editor.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		26900AD414F2044F008026D5 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		26900AD714F2044F008026D5 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
-		26918E1218F79BAA0053C09B /* map_auto_generate_decoration.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = map_auto_generate_decoration.c; path = Sources/code/map/map_auto_generate_decoration.c; sourceTree = "<group>"; };
 		26973C341602E78D00167FD2 /* View.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = View.h; path = dim3Editor/View.h; sourceTree = SOURCE_ROOT; };
 		26973C351602E78D00167FD2 /* View.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = View.m; path = dim3Editor/View.m; sourceTree = SOURCE_ROOT; };
 		26B44A17195FD2260072171F /* map_view_draw_mesh.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = map_view_draw_mesh.c; path = Sources/code/map/map_view_draw_mesh.c; sourceTree = "<group>"; };
@@ -674,10 +684,11 @@
 		26E4021614F4721D0059C798 /* png.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = png.h; path = ../../Common/Libraries/PNG/png.h; sourceTree = "<group>"; };
 		26E4022614F4B3ED0059C798 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		26E5DA451611552B003D7755 /* dialog_bone_attach_duplicate.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_bone_attach_duplicate.c; path = Sources/dialogs/model/dialog_bone_attach_duplicate.c; sourceTree = "<group>"; };
-		26F0B2981903982700CF4493 /* map_auto_generate_story.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = map_auto_generate_story.c; path = Sources/code/map/map_auto_generate_story.c; sourceTree = "<group>"; };
 		26F278F21606CB96007470ED /* DialogView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DialogView.h; path = dim3Editor/DialogView.h; sourceTree = SOURCE_ROOT; };
 		26F278F31606CB96007470ED /* DialogView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DialogView.m; path = dim3Editor/DialogView.m; sourceTree = SOURCE_ROOT; };
 		26F278F91607CE53007470ED /* glue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = glue.h; path = Headers/glue.h; sourceTree = "<group>"; };
+		26F567021990993B00C8506C /* auto_generate_utility.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = auto_generate_utility.c; path = ../../dim3AutoGenerate/Sources/common/auto_generate_utility.c; sourceTree = "<group>"; };
+		26F567041990994700C8506C /* model_auto_generate.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = model_auto_generate.c; path = ../../dim3AutoGenerate/Sources/model/model_auto_generate.c; sourceTree = "<group>"; };
 		26F7D34E167175D400E51363 /* dialog_distort.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_distort.c; path = Sources/dialogs/map/dialog_distort.c; sourceTree = "<group>"; };
 		26F7E043160045A900E739C4 /* import_text_decode.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = import_text_decode.c; path = Sources/code/common/import_text_decode.c; sourceTree = "<group>"; };
 		26F7E044160045A900E739C4 /* launch.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = launch.c; path = Sources/code/common/launch.c; sourceTree = "<group>"; };
@@ -687,9 +698,6 @@
 		26F7E048160045A900E739C4 /* texture_palette.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = texture_palette.c; path = Sources/code/common/texture_palette.c; sourceTree = "<group>"; };
 		26F7E049160045A900E739C4 /* tool_tip.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tool_tip.c; path = Sources/code/common/tool_tip.c; sourceTree = "<group>"; };
 		26F7E04A160045A900E739C4 /* xml_setup.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = xml_setup.c; path = Sources/code/common/xml_setup.c; sourceTree = "<group>"; };
-		26F7E053160045BA00E739C4 /* map_auto_generate_setup.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = map_auto_generate_setup.c; path = Sources/code/map/map_auto_generate_setup.c; sourceTree = "<group>"; };
-		26F7E055160045BA00E739C4 /* map_auto_generate_utility.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = map_auto_generate_utility.c; path = Sources/code/map/map_auto_generate_utility.c; sourceTree = "<group>"; };
-		26F7E056160045BA00E739C4 /* map_auto_generate.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = map_auto_generate.c; path = Sources/code/map/map_auto_generate.c; sourceTree = "<group>"; };
 		26F7E057160045BA00E739C4 /* map_dos.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = map_dos.c; path = Sources/code/map/map_dos.c; sourceTree = "<group>"; };
 		26F7E058160045BA00E739C4 /* map_groups.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = map_groups.c; path = Sources/code/map/map_groups.c; sourceTree = "<group>"; };
 		26F7E059160045BA00E739C4 /* map_import_obj.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = map_import_obj.c; path = Sources/code/map/map_import_obj.c; sourceTree = "<group>"; };
@@ -1059,6 +1067,58 @@
 			path = Resources/Items;
 			sourceTree = SOURCE_ROOT;
 		};
+		2653B1B6198F42DF008C40E4 /* dim3AutoGenerate */ = {
+			isa = PBXGroup;
+			children = (
+				2653B1B7198F431C008C40E4 /* Headers */,
+				2653B1B8198F432B008C40E4 /* Sources */,
+			);
+			name = dim3AutoGenerate;
+			sourceTree = "<group>";
+		};
+		2653B1B7198F431C008C40E4 /* Headers */ = {
+			isa = PBXGroup;
+			children = (
+				2653B1BB198F435B008C40E4 /* autogeneratemapprivate.h */,
+				2653B1BC198F435B008C40E4 /* autogeneratemodelprivate.h */,
+				2653B1BD198F435B008C40E4 /* autogenerateutility.h */,
+				2653B1BE198F435B008C40E4 /* dim3autogenerate.h */,
+			);
+			name = Headers;
+			sourceTree = "<group>";
+		};
+		2653B1B8198F432B008C40E4 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				26F567011990992A00C8506C /* Common */,
+				2653B1B9198F433C008C40E4 /* Map */,
+				2653B1BA198F4342008C40E4 /* Model */,
+			);
+			name = Sources;
+			sourceTree = "<group>";
+		};
+		2653B1B9198F433C008C40E4 /* Map */ = {
+			isa = PBXGroup;
+			children = (
+				2653B1BF198F436E008C40E4 /* map_auto_generate_connect.c */,
+				2653B1C0198F436E008C40E4 /* map_auto_generate_decoration.c */,
+				2653B1C1198F436E008C40E4 /* map_auto_generate_primitive.c */,
+				2653B1C2198F436E008C40E4 /* map_auto_generate_setup.c */,
+				2653B1C3198F436E008C40E4 /* map_auto_generate_story.c */,
+				2653B1C4198F436E008C40E4 /* map_auto_generate_utility.c */,
+				2653B1C5198F436E008C40E4 /* map_auto_generate.c */,
+			);
+			name = Map;
+			sourceTree = "<group>";
+		};
+		2653B1BA198F4342008C40E4 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				26F567041990994700C8506C /* model_auto_generate.c */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
 		265AB43115FEF0D8005CDBB0 /* dim3ModelUtility */ = {
 			isa = PBXGroup;
 			children = (
@@ -1154,6 +1214,7 @@
 		26900AC514F2044F008026D5 = {
 			isa = PBXGroup;
 			children = (
+				2653B1B6198F42DF008C40E4 /* dim3AutoGenerate */,
 				26900ADA14F2044F008026D5 /* dim3Editor */,
 				2618DF0B14F3633300DBE0DE /* dim3BaseUtility */,
 				265AB43215FEF0E2005CDBB0 /* dim3MapUtility */,
@@ -1291,6 +1352,14 @@
 			name = Dialogs;
 			sourceTree = "<group>";
 		};
+		26F567011990992A00C8506C /* Common */ = {
+			isa = PBXGroup;
+			children = (
+				26F567021990993B00C8506C /* auto_generate_utility.c */,
+			);
+			name = Common;
+			sourceTree = "<group>";
+		};
 		26F7E03F1600457B00E739C4 /* Common */ = {
 			isa = PBXGroup;
 			children = (
@@ -1309,13 +1378,6 @@
 		26F7E0411600458300E739C4 /* Map */ = {
 			isa = PBXGroup;
 			children = (
-				26F7E056160045BA00E739C4 /* map_auto_generate.c */,
-				260719F718F64E5400FF3C94 /* map_auto_generate_connect.c */,
-				26918E1218F79BAA0053C09B /* map_auto_generate_decoration.c */,
-				2653E3451963C14100AE55D9 /* map_auto_generate_primitive.c */,
-				26F7E053160045BA00E739C4 /* map_auto_generate_setup.c */,
-				26F0B2981903982700CF4493 /* map_auto_generate_story.c */,
-				26F7E055160045BA00E739C4 /* map_auto_generate_utility.c */,
 				26F7E057160045BA00E739C4 /* map_dos.c */,
 				26F7E058160045BA00E739C4 /* map_groups.c */,
 				26F7E059160045BA00E739C4 /* map_import_obj.c */,
@@ -1642,12 +1704,14 @@
 				265AB41D15FEEE99005CDBB0 /* main.m in Sources */,
 				265AB42115FEEED9005CDBB0 /* OSX_glue.m in Sources */,
 				26C1DF6216004440007FDAC7 /* bitmap_cocoa.m in Sources */,
+				2653B1CC198F436E008C40E4 /* map_auto_generate.c in Sources */,
 				26C1DF6316004440007FDAC7 /* file_cocoa.m in Sources */,
 				26C1DF871600444C007FDAC7 /* base_bitmap_main.c in Sources */,
 				26C1DF881600444C007FDAC7 /* base_bitmap_pngutility.c in Sources */,
 				26C1DF891600444C007FDAC7 /* base_bitmap_text.c in Sources */,
 				26C1DF8A1600444C007FDAC7 /* base_bitmap_textures.c in Sources */,
 				26C1DF8B1600444C007FDAC7 /* base_file_paths.c in Sources */,
+				2653B1C8198F436E008C40E4 /* map_auto_generate_primitive.c in Sources */,
 				26C1DF8C1600444C007FDAC7 /* base_file_search.c in Sources */,
 				26C1DF8D1600444C007FDAC7 /* base_iface_action.c in Sources */,
 				26C1DF8E1600444C007FDAC7 /* base_iface_chooser.c in Sources */,
@@ -1677,6 +1741,7 @@
 				26C1DFA61600444C007FDAC7 /* base_strings.c in Sources */,
 				26C1DFA71600444C007FDAC7 /* base_time.c in Sources */,
 				26C1DFA81600444C007FDAC7 /* base_xml.c in Sources */,
+				26F567051990994700C8506C /* model_auto_generate.c in Sources */,
 				26C1DFA91600444C007FDAC7 /* base_zip.c in Sources */,
 				26C1DFBD1600449C007FDAC7 /* map_util_cinema.c in Sources */,
 				26C1DFBE1600449C007FDAC7 /* map_util_frames.c in Sources */,
@@ -1711,6 +1776,7 @@
 				26C1DFF4160044CF007FDAC7 /* model_util_main.c in Sources */,
 				26C1DFF5160044CF007FDAC7 /* model_util_mesh.c in Sources */,
 				26C1DFF6160044CF007FDAC7 /* model_util_normals.c in Sources */,
+				2653B1CA198F436E008C40E4 /* map_auto_generate_story.c in Sources */,
 				26C1DFF7160044CF007FDAC7 /* model_util_pose.c in Sources */,
 				26C1DFF8160044CF007FDAC7 /* model_util_positions.c in Sources */,
 				26C1DFF9160044CF007FDAC7 /* model_util_size.c in Sources */,
@@ -1720,15 +1786,12 @@
 				26F7E04C160045A900E739C4 /* launch.c in Sources */,
 				26F7E04D160045A900E739C4 /* progress.c in Sources */,
 				26F7E04E160045A900E739C4 /* text.c in Sources */,
-				26918E1318F79BAA0053C09B /* map_auto_generate_decoration.c in Sources */,
+				2653B1C7198F436E008C40E4 /* map_auto_generate_decoration.c in Sources */,
 				26F7E04F160045A900E739C4 /* texture_edit.c in Sources */,
 				26B44A18195FD2260072171F /* map_view_draw_mesh.c in Sources */,
 				26F7E050160045A900E739C4 /* texture_palette.c in Sources */,
 				26F7E051160045A900E739C4 /* tool_tip.c in Sources */,
 				26F7E052160045A900E739C4 /* xml_setup.c in Sources */,
-				26F7E06E160045BA00E739C4 /* map_auto_generate_setup.c in Sources */,
-				26F7E070160045BA00E739C4 /* map_auto_generate_utility.c in Sources */,
-				26F7E071160045BA00E739C4 /* map_auto_generate.c in Sources */,
 				26F7E072160045BA00E739C4 /* map_dos.c in Sources */,
 				26F7E073160045BA00E739C4 /* map_groups.c in Sources */,
 				26F7E074160045BA00E739C4 /* map_import_obj.c in Sources */,
@@ -1747,6 +1810,7 @@
 				26F7E081160045BA00E739C4 /* map_view_draw_piece.c in Sources */,
 				26F7E082160045BA00E739C4 /* map_view_draw_select.c in Sources */,
 				26F7E083160045BA00E739C4 /* map_view_handle.c in Sources */,
+				2653B1CB198F436E008C40E4 /* map_auto_generate_utility.c in Sources */,
 				26F7E084160045BA00E739C4 /* map_view_models.c in Sources */,
 				26F7E085160045BA00E739C4 /* map_view_movement.c in Sources */,
 				26F7E086160045BA00E739C4 /* map_view_picker.c in Sources */,
@@ -1765,9 +1829,9 @@
 				26F7E0A5160045C900E739C4 /* model_piece.c in Sources */,
 				26F7E0A6160045C900E739C4 /* model_play.c in Sources */,
 				26F7E0A7160045C900E739C4 /* model_poly_masks.c in Sources */,
-				260719F818F64E5400FF3C94 /* map_auto_generate_connect.c in Sources */,
 				26F7E0A8160045C900E739C4 /* model_texture_import.c in Sources */,
 				26F7E0A9160045C900E739C4 /* model_texture_palette.c in Sources */,
+				2653B1C6198F436E008C40E4 /* map_auto_generate_connect.c in Sources */,
 				26F7E0AA160045C900E739C4 /* model_undo.c in Sources */,
 				26F7E0AB160045C900E739C4 /* model_vertex_masks.c in Sources */,
 				26F7E0AC160045C900E739C4 /* model_vertex_transform.c in Sources */,
@@ -1790,7 +1854,6 @@
 				26F7E0D41600463800E739C4 /* dialog_normal.c in Sources */,
 				26F7E0D51600463800E739C4 /* dialog_scale_animation_time.c in Sources */,
 				26F7E0D61600463800E739C4 /* dialog_set_vertex_bone.c in Sources */,
-				2653E3461963C14100AE55D9 /* map_auto_generate_primitive.c in Sources */,
 				26F7E0DE1600467900E739C4 /* file_palette.c in Sources */,
 				26F7E0DF1600467900E739C4 /* list_palette_common.c in Sources */,
 				26F7E0E01600467900E739C4 /* property_utility_common.c in Sources */,
@@ -1815,7 +1878,6 @@
 				26F7E1281600468600E739C4 /* project_palette_logo.c in Sources */,
 				26F7E1291600468600E739C4 /* project_palette_main.c in Sources */,
 				26F7E12A1600468600E739C4 /* project_palette_mark.c in Sources */,
-				26F0B2991903982700CF4493 /* map_auto_generate_story.c in Sources */,
 				26F7E12B1600468600E739C4 /* project_palette_marks.c in Sources */,
 				26F7E12C1600468600E739C4 /* project_palette_menu_item.c in Sources */,
 				26F7E12D1600468600E739C4 /* project_palette_menu.c in Sources */,
@@ -1839,6 +1901,7 @@
 				26F7E13E1600468600E739C4 /* project_palette_shader.c in Sources */,
 				26F7E13F1600468600E739C4 /* project_palette_shaders.c in Sources */,
 				26F7E1401600468600E739C4 /* project_palette_singleplayer_option.c in Sources */,
+				2653B1C9198F436E008C40E4 /* map_auto_generate_setup.c in Sources */,
 				26F7E1411600468600E739C4 /* project_palette_singleplayer.c in Sources */,
 				26F7E1421600468600E739C4 /* project_palette_sound.c in Sources */,
 				26F7E1431600468600E739C4 /* project_palette_sounds.c in Sources */,
@@ -1853,6 +1916,7 @@
 				26F7E1601600469400E739C4 /* map_palette_camera.c in Sources */,
 				26F7E1611600469400E739C4 /* map_palette_cinema.c in Sources */,
 				26F7E1621600469400E739C4 /* map_palette_group.c in Sources */,
+				26F567031990993B00C8506C /* auto_generate_utility.c in Sources */,
 				26F7E1631600469400E739C4 /* map_palette_light_media.c in Sources */,
 				26F7E1641600469400E739C4 /* map_palette_light.c in Sources */,
 				26F7E1651600469400E739C4 /* map_palette_liquid.c in Sources */,
