@@ -731,7 +731,7 @@ extern void view_draw_meshes_normals(editor_view_type *view);
 extern void map_view_draw(void);
 
 //
-// map view auto-generate
+// auto-generate
 //
 
 extern void view_map_auto_generate_start(void);
@@ -741,6 +741,8 @@ extern bool map_view_auto_generate_click(d3pnt *pnt,bool double_click);
 extern void map_view_auto_generate_draw(void);
 
 extern void view_map_auto_generate_textures(void);
+
+extern void model_auto_generate_textures(void);
 
 //
 // view VBO

@@ -481,6 +481,8 @@ extern bool bitmap_ag_texture_skybox_south(texture_frame_type *frame,char *base_
 extern bool bitmap_ag_texture_skybox_east(texture_frame_type *frame,char *base_path,int pixel_sz);
 extern bool bitmap_ag_texture_skybox_west(texture_frame_type *frame,char *base_path,int pixel_sz);
 
+extern bool bitmap_ag_texture_skin(texture_frame_type *frame,char *base_path,int pixel_sz);
+
 /* =======================================================
 
       Global Normal Modes

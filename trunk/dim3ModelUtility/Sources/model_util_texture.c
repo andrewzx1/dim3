@@ -56,9 +56,9 @@ void model_textures_clear(model_type *model)
       
 ======================================================= */
 
-void model_textures_read(model_type *model)
+void model_textures_read_texture(model_type *model,int txt_idx)
 {
-    int						n,k;
+    int						n;
     char					sub_path[1024],path[1024],
 							name[file_str_len];
 	texture_type			*texture;
@@ -66,61 +66,65 @@ void model_textures_read(model_type *model)
    
         // load the fills
         
-    texture=model->textures;
-    
-	for (n=0;n!=max_model_texture;n++) {
-	
-			// clear textures
-			
- 		frame=texture->frames;
-  
-        for (k=0;k!=max_texture_frame;k++) {
-			bitmap_new(&frame->bitmap);
-			bitmap_new(&frame->bumpmap);
-			bitmap_new(&frame->specularmap);
-			bitmap_new(&frame->glowmap);
-			
-			frame++;
-        }
-   
-			// load textures
-			
-		frame=texture->frames;
-        
-        for (k=0;k!=max_texture_frame;k++) {
+    texture=&model->textures[txt_idx];
+
+		// clear textures
 		
-			if (frame->name[0]!=0x0) {
+	frame=texture->frames;
+
+    for (n=0;n!=max_texture_frame;n++) {
+		bitmap_new(&frame->bitmap);
+		bitmap_new(&frame->bumpmap);
+		bitmap_new(&frame->specularmap);
+		bitmap_new(&frame->glowmap);
+		
+		frame++;
+    }
+
+		// load textures
+		
+	frame=texture->frames;
+    
+    for (n=0;n!=max_texture_frame;n++) {
+	
+		if (frame->name[0]!=0x0) {
+		
+			sprintf(sub_path,"Models/%s/Textures",model->name);
+		
+				// bitmap
+
+			file_paths_data(&file_path_setup,path,sub_path,frame->name,"png");
+			bitmap_open(&frame->bitmap,path,TRUE,texture->compress,texture->pixelated,FALSE,FALSE,FALSE);
+
+				// bumpmap
+
+			sprintf(name,"%s_n",frame->name);
+			file_paths_data(&file_path_setup,path,sub_path,name,"png");	// compress messes up normals
+			bitmap_open(&frame->bumpmap,path,TRUE,FALSE,texture->pixelated,FALSE,FALSE,texture->flip_normal);
 			
-				sprintf(sub_path,"Models/%s/Textures",model->name);
-			
-					// bitmap
+				// specular map
 
-				file_paths_data(&file_path_setup,path,sub_path,frame->name,"png");
-				bitmap_open(&frame->bitmap,path,TRUE,texture->compress,texture->pixelated,FALSE,FALSE,FALSE);
+			sprintf(name,"%s_s",frame->name);
+			file_paths_data(&file_path_setup,path,sub_path,name,"png");
+			bitmap_open(&frame->specularmap,path,TRUE,texture->compress,texture->pixelated,FALSE,FALSE,FALSE);
 
-					// bumpmap
+				// glow map
 
-				sprintf(name,"%s_n",frame->name);
-				file_paths_data(&file_path_setup,path,sub_path,name,"png");	// compress messes up normals
-				bitmap_open(&frame->bumpmap,path,TRUE,FALSE,texture->pixelated,FALSE,FALSE,texture->flip_normal);
-				
-					// specular map
+			sprintf(name,"%s_g",frame->name);
+			file_paths_data(&file_path_setup,path,sub_path,name,"png");
+			bitmap_open(&frame->glowmap,path,TRUE,texture->compress,texture->pixelated,FALSE,TRUE,FALSE);
+		}
+		
+		frame++;
+    }
+}
 
-				sprintf(name,"%s_s",frame->name);
-				file_paths_data(&file_path_setup,path,sub_path,name,"png");
-				bitmap_open(&frame->specularmap,path,TRUE,texture->compress,texture->pixelated,FALSE,FALSE,FALSE);
-
-					// glow map
-
-				sprintf(name,"%s_g",frame->name);
-				file_paths_data(&file_path_setup,path,sub_path,name,"png");
-				bitmap_open(&frame->glowmap,path,TRUE,texture->compress,texture->pixelated,FALSE,TRUE,FALSE);
-			}
-			
-			frame++;
-        }
+void model_textures_read(model_type *model)
+{
+    int				n;
         
-        texture++;
+	for (n=0;n!=max_model_texture;n++) {
+		model_textures_read_texture(model,n);
 	}
 }
 
@@ -130,28 +134,32 @@ void model_textures_read(model_type *model)
       
 ======================================================= */
 
-void model_textures_close(model_type *model)
+void model_textures_close_texture(model_type *model,int txt_idx)
 {
-    int						i,k;
+    int						n;
     texture_type			*texture;
 	texture_frame_type		*frame;
 
-    texture=model->textures;
-    
-	for (i=0;i!=max_model_texture;i++) {
-    
-		frame=texture->frames;
+	texture=&model->textures[txt_idx];
+
+	frame=texture->frames;
   
-        for (k=0;k!=max_texture_frame;k++) {
-			bitmap_close(&frame->bitmap);
-			bitmap_close(&frame->bumpmap);
-			bitmap_close(&frame->specularmap);
-			bitmap_close(&frame->glowmap);
-			
-			frame++;
-        }
-        
-        texture++;
+    for (n=0;n!=max_texture_frame;n++) {
+		bitmap_close(&frame->bitmap);
+		bitmap_close(&frame->bumpmap);
+		bitmap_close(&frame->specularmap);
+		bitmap_close(&frame->glowmap);
+
+		frame++;
+	}
+}
+
+void model_textures_close(model_type *model)
+{
+    int				n;
+
+	for (n=0;n!=max_model_texture;n++) {
+		model_textures_close_texture(model,n);
 	}
 }
 

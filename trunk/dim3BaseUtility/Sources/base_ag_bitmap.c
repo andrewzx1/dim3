@@ -986,3 +986,44 @@ bool bitmap_ag_texture_skybox_west(texture_frame_type *frame,char *base_path,int
 
 	return(bitmap_ag_texture_finish(&ag_bitmap,base_path));
 }
+
+/* =======================================================
+
+      Skin Type Textures
+      
+======================================================= */
+
+bool bitmap_ag_texture_skin(texture_frame_type *frame,char *base_path,int pixel_sz)
+{
+	int				n,x,y,wid,high,mark_count;
+	bitmap_ag_type	ag_bitmap;
+
+	ag_bitmap.pixel_sz=pixel_sz;
+	ag_bitmap.no_bump_spec=FALSE;
+	ag_bitmap.frame=frame;
+
+	bitmap_ag_random_color(&ag_bitmap.back_col,100,255,100,50,200,50);
+
+	if (!bitmap_ag_texture_create(&ag_bitmap,FALSE)) return(FALSE);
+
+		// skin noise
+
+	bitmap_ag_texture_add_noise(&ag_bitmap,0,0,pixel_sz,pixel_sz,0.5f,0.8f);
+
+		// marks
+
+	mark_count=bitmap_ag_cement_start_mark_size+bitmap_ag_random_int(bitmap_ag_cement_extra_mark_size);
+
+	for (n=0;n!=mark_count;n++) {
+		x=bitmap_ag_random_int(pixel_sz);
+		y=bitmap_ag_random_int(pixel_sz);
+		wid=bitmap_ag_cement_start_mark_size+bitmap_ag_random_int(bitmap_ag_cement_extra_mark_size);
+		high=bitmap_ag_cement_start_mark_size+bitmap_ag_random_int(bitmap_ag_cement_extra_mark_size);
+		bitmap_ag_texture_add_particle(&ag_bitmap,x,y,wid,high,0.8f,TRUE);
+	}
+
+		// save textures
+
+	bitmap_ag_texture_make_spec(&ag_bitmap,0.5f);
+	return(bitmap_ag_texture_finish(&ag_bitmap,base_path));
+}

@@ -390,6 +390,9 @@ extern int model_find_bone(model_type *model,char *bone_name);
 extern int model_find_pose(model_type *model,char *pose_name);
 extern int model_find_animate(model_type *model,char *animate_name);
 
+extern void model_textures_read_texture(model_type *model,int txt_idx);
+extern void model_textures_close_texture(model_type *model,int txt_idx);
+
 extern int model_count_texture_frames(model_type *model,int txt);
 extern void model_setup_animated_textures(model_type *model,int tick);
 extern bool model_add_texture_frame(model_type *model,int txt,char *bitmap_name);
