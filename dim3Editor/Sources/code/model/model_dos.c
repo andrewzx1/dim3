@@ -403,3 +403,33 @@ void model_file_import_animations(void)
 	
 	main_wind_draw();
 }
+
+/* =======================================================
+
+      Auto Generate Textures
+      
+======================================================= */
+
+void model_auto_generate_textures(void)
+{
+	char			base_path[1024],dir_path[1024];
+
+	os_set_wait_cursor();
+
+		// texture directory
+
+	file_paths_data_default(&file_path_setup,base_path,"Models",NULL,NULL);
+		
+	strcat(base_path,"/");
+	strcat(base_path,state.model.model_file_name);
+	
+	sprintf(dir_path,"%s/Textures",base_path);
+
+		// run bitmap generation for model
+
+	auto_generate_model_create_texture_set(&model,base_path);
+
+	os_set_arrow_cursor();
+
+	main_wind_draw();
+}

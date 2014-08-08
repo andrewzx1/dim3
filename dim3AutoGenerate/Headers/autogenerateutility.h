@@ -50,3 +50,5 @@ extern void auto_generate_map_create_texture_set(map_type *map,char *base_path);
 //
 
 extern void auto_generate_model_monster(model_type *model);
+extern void auto_generate_model_create_texture_set(model_type *model,char *base_path);
+

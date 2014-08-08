@@ -174,8 +174,9 @@ and can be sold or given away.
 #define model_menu_item_CenterXZAll				5311
 #define model_menu_item_FloorYAll				5312
 #define model_menu_item_AddHitBox				5313
-#define model_menu_item_AutoGenerateModel		5314
-#define model_menu_item_CleanUp					5315
+#define model_menu_item_AutoGenerateTextures	5314
+#define model_menu_item_AutoGenerateModel		5315
+#define model_menu_item_CleanUp					5316
 
 #define model_menu_item_Front					5400
 #define model_menu_item_Left					5401
