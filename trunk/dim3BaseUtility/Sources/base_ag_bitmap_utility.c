@@ -364,26 +364,24 @@ void bitmap_ag_texture_add_noise(bitmap_ag_type *ag_bitmap,int x,int y,int wid,i
 
 void bitmap_ag_texture_add_particle(bitmap_ag_type *ag_bitmap,int x,int y,int wid,int high,float fct,bool flip_normal,int density)
 {
-	int			n,k,step,px,py,mx,my;
-	float		rad,fx,fy,f_wid,f_high;
+	int			n,k,px,py,mx,my;
+	float		rad,fx,fy,f_wid,f_high,
+				start_f,factor_f;
 	d3col		col;
 	d3vct		normal;
 
 	mx=x+(wid>>1);
 	my=y+(high>>1);
+
+	start_f=0.4;
+	factor_f=0.1f;
 	
-	step=wid;
-	if (high>step) step=high;
-	
-	step/=5;
-	if (step<0) step=1;
-	
-	for (n=0;n!=step;n++) {
+	for (n=0;n!=5;n++) {
 		
 		for (k=0;k!=density;k++) {
 			rad=(2.0f*TRIG_PI)*(((float)bitmap_ag_random_int(1000))/1000.0f);
-			f_wid=((float)bitmap_ag_random_int(wid))*0.5f;
-			f_high=((float)bitmap_ag_random_int(high))*0.5f;
+			f_wid=start_f+(((float)bitmap_ag_random_int(wid))*factor_f);
+			f_high=start_f+(((float)bitmap_ag_random_int(high))*factor_f);
 
 			fx=sinf(rad);
 			px=mx+(int)(f_wid*fx);
@@ -421,10 +419,10 @@ void bitmap_ag_texture_add_particle(bitmap_ag_type *ag_bitmap,int x,int y,int wi
 			bitmap_ag_texture_write_normal(ag_bitmap,ag_bitmap->bump_data,px,py,&normal);
 		}
 		
-			// shrinking
-			
-		if (wid>=10) wid-=5;
-		if (high>=10) high-=5;
+			// next ring
+
+		start_f-=0.1f;
+		factor_f+=0.1f;
 	}
 }
 

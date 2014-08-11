@@ -53,6 +53,44 @@ void ag_model_clear(model_type *model)
 
 /* =======================================================
 
+      Bone Stats
+      
+======================================================= */
+
+bool ag_model_is_special_bone(model_type *model,int bone_idx)
+{
+	int				n;
+
+		// base bone
+
+	if ((model->bones[bone_idx].pnt.x==0) && (model->bones[bone_idx].pnt.y==0) && (model->bones[bone_idx].pnt.z==0)) return(TRUE);
+
+		// connector bones
+
+	if (bone_idx==model->bone_connect.name_bone_idx) return(TRUE);
+
+	for (n=0;n!=max_model_light;n++) {
+		if (bone_idx==model->bone_connect.light_bone_idx[n]) return(TRUE);
+	}
+
+	for (n=0;n!=max_model_halo;n++) {
+		if (bone_idx==model->bone_connect.halo_bone_idx[n]) return(TRUE);
+	}
+
+	return(FALSE);
+}
+
+bool ag_model_is_boxed_bone(model_type *model,int bone_idx)
+{
+	if (strstr(model->bones[bone_idx].name,"Head")!=NULL) return(TRUE);
+	if (strstr(model->bones[bone_idx].name,"Hand")!=NULL) return(TRUE);
+	if (strstr(model->bones[bone_idx].name,"Foor")!=NULL) return(TRUE);
+	
+	return(FALSE);
+}
+
+/* =======================================================
+
       Model Cylinders Vertex Positions
       
 ======================================================= */
@@ -117,9 +155,19 @@ void ag_model_bone_cylinder_vertexes(model_type *model,model_mesh_type *mesh,int
 	for (n=0;n!=ag_model_cylinder_side_count;n++) {
 		ag_model_bone_cylinder_position_y(bone,n,ag_model_cylinder_radius,&vertex->pnt);
 
+			// bone connection
+
 		vertex->major_bone_idx=bone_idx;
 		vertex->minor_bone_idx=-1;
 		vertex->bone_factor=1.0f;
+
+			// tangent space
+
+		vector_create(&vertex->tangent_space.normal,vertex->pnt.x,vertex->pnt.y,vertex->pnt.z,bone->pnt.x,bone->pnt.y,bone->pnt.z);
+
+		vertex->tangent_space.tangent.x=0.0f;		// supergumba -- need to properly calc this
+		vertex->tangent_space.tangent.y=1.0f;
+		vertex->tangent_space.tangent.z=0.0f;
 
 		vertex++;
 	}
@@ -128,6 +176,7 @@ void ag_model_bone_cylinder_vertexes(model_type *model,model_mesh_type *mesh,int
 void ag_model_bone_cylinder_polygons(model_type *model,model_mesh_type *mesh,int bone_idx,int poly_idx)
 {
 	int				n,k,v1_idx,v2_idx;
+	float			gx,gx2,gx_add;
 	model_poly_type	*poly;
 
 		// vertex start
@@ -137,6 +186,9 @@ void ag_model_bone_cylinder_polygons(model_type *model,model_mesh_type *mesh,int
 
 		// build polys
 
+	gx=0.0f;
+	gx_add=1.0f/(float)ag_model_cylinder_side_count;
+
 	poly=&mesh->polys[poly_idx];
 
 	for (n=0;n!=ag_model_cylinder_side_count;n++) {
@@ -144,10 +196,23 @@ void ag_model_bone_cylinder_polygons(model_type *model,model_mesh_type *mesh,int
 		poly->ptsz=4;
 		poly->txt_idx=0;
 
-		poly->gx[0]=poly->gx[3]=0.0f;
-		poly->gx[1]=poly->gx[2]=1.0f;
+			// the UV
+
+		if ((n+1)==ag_model_cylinder_side_count) {
+			gx2=1.0f;
+		}
+		else {
+			gx2=gx+gx_add;
+		}
+
+		poly->gx[0]=poly->gx[3]=gx;
+		poly->gx[1]=poly->gx[2]=gx2;
 		poly->gy[0]=poly->gy[1]=0.0f;
 		poly->gy[2]=poly->gy[3]=1.0f;
+
+		gx=gx2;
+
+			// the poly indexes
 
 		k=n+1;
 		if (k==ag_model_cylinder_side_count) k=0;
@@ -161,27 +226,144 @@ void ag_model_bone_cylinder_polygons(model_type *model,model_mesh_type *mesh,int
 	}
 }
 
-bool ag_model_is_special_bone(model_type *model,int bone_idx)
+void ag_model_bone_cube(model_type *model,model_mesh_type *mesh,int bone_idx)
 {
-	int				n;
+	int					n,nvertex,npoly;
+	int					x_off[8]={-200,200,200,-200,-200,200,200,-200},
+						y_off[8]={-200,-200,200,200,-200,-200,200,200},
+						z_off[8]={-200,-200,-200,-200,200,200,200,200};
+	model_bone_type		*bone;
+	model_vertex_type	*vertex;
+	model_poly_type		*poly;
 
-		// base bone
+		// add the 8 vertexes
+		// and 6 polys
 
-	if ((model->bones[bone_idx].pnt.x==0) && (model->bones[bone_idx].pnt.y==0) && (model->bones[bone_idx].pnt.z==0)) return(TRUE);
+	nvertex=mesh->nvertex;
+	model_mesh_set_vertex_count(model,0,(nvertex+8));
 
-		// connector bones
+	npoly=mesh->npoly;
+	model_mesh_set_poly_count(model,0,(npoly+6));
 
-	if (bone_idx==model->bone_connect.name_bone_idx) return(TRUE);
+		// build the cube vertexes
 
-	for (n=0;n!=max_model_light;n++) {
-		if (bone_idx==model->bone_connect.light_bone_idx[n]) return(TRUE);
+	vertex=&mesh->vertexes[nvertex];
+	bone=&model->bones[bone_idx];
+
+	for (n=0;n!=8;n++) {
+
+		vertex->pnt.x=bone->pnt.x+x_off[n];
+		vertex->pnt.y=bone->pnt.y+y_off[n];
+		vertex->pnt.z=bone->pnt.z+z_off[n];
+
+			// bone connection
+
+		vertex->major_bone_idx=bone_idx;
+		vertex->minor_bone_idx=-1;
+		vertex->bone_factor=1.0f;
+
+			// tangent space
+
+		vector_create(&vertex->tangent_space.normal,vertex->pnt.x,vertex->pnt.y,vertex->pnt.z,bone->pnt.x,bone->pnt.y,bone->pnt.z);
+
+		vertex->tangent_space.tangent.x=0.0f;		// supergumba -- need to properly calc this
+		vertex->tangent_space.tangent.y=1.0f;
+		vertex->tangent_space.tangent.z=0.0f;
+
+		vertex++;
 	}
 
-	for (n=0;n!=max_model_halo;n++) {
-		if (bone_idx==model->bone_connect.halo_bone_idx[n]) return(TRUE);
-	}
+		// build the cube polys
 
-	return(FALSE);
+	poly=&mesh->polys[npoly];
+
+	poly->ptsz=4;
+	poly->txt_idx=0;
+
+	poly->v[0]=nvertex;
+	poly->v[1]=nvertex+1;
+	poly->v[2]=nvertex+2;
+	poly->v[3]=nvertex+3;
+
+	poly->gx[0]=poly->gx[3]=0.0f;
+	poly->gx[1]=poly->gx[2]=1.0f;
+	poly->gy[0]=poly->gy[1]=0.0f;
+	poly->gy[2]=poly->gy[3]=1.0f;
+
+	poly++;
+
+	poly->ptsz=4;
+	poly->txt_idx=0;
+
+	poly->v[0]=nvertex+1;
+	poly->v[1]=nvertex+2;
+	poly->v[2]=nvertex+6;
+	poly->v[3]=nvertex+5;
+
+	poly->gx[0]=poly->gx[3]=0.0f;
+	poly->gx[1]=poly->gx[2]=1.0f;
+	poly->gy[0]=poly->gy[1]=0.0f;
+	poly->gy[2]=poly->gy[3]=1.0f;
+
+	poly++;
+
+	poly->ptsz=4;
+	poly->txt_idx=0;
+
+	poly->v[0]=nvertex;
+	poly->v[1]=nvertex+3;
+	poly->v[2]=nvertex+7;
+	poly->v[3]=nvertex+4;
+
+	poly->gx[0]=poly->gx[3]=0.0f;
+	poly->gx[1]=poly->gx[2]=1.0f;
+	poly->gy[0]=poly->gy[1]=0.0f;
+	poly->gy[2]=poly->gy[3]=1.0f;
+
+	poly++;
+
+	poly->ptsz=4;
+	poly->txt_idx=0;
+
+	poly->v[0]=nvertex+4;
+	poly->v[1]=nvertex+5;
+	poly->v[2]=nvertex+6;
+	poly->v[3]=nvertex+7;
+
+	poly->gx[0]=poly->gx[3]=0.0f;
+	poly->gx[1]=poly->gx[2]=1.0f;
+	poly->gy[0]=poly->gy[1]=0.0f;
+	poly->gy[2]=poly->gy[3]=1.0f;
+
+	poly++;
+
+	poly->ptsz=4;
+	poly->txt_idx=0;
+
+	poly->v[0]=nvertex;
+	poly->v[1]=nvertex+1;
+	poly->v[2]=nvertex+5;
+	poly->v[3]=nvertex+4;
+
+	poly->gx[0]=poly->gx[3]=0.0f;
+	poly->gx[1]=poly->gx[2]=1.0f;
+	poly->gy[0]=poly->gy[1]=0.0f;
+	poly->gy[2]=poly->gy[3]=1.0f;
+
+	poly++;
+
+	poly->ptsz=4;
+	poly->txt_idx=0;
+
+	poly->v[0]=nvertex+3;
+	poly->v[1]=nvertex+2;
+	poly->v[2]=nvertex+6;
+	poly->v[3]=nvertex+7;
+
+	poly->gx[0]=poly->gx[3]=0.0f;
+	poly->gx[1]=poly->gx[2]=1.0f;
+	poly->gy[0]=poly->gy[1]=0.0f;
+	poly->gy[2]=poly->gy[3]=1.0f;
 }
 
 void ag_model_build_around_bones(model_type *model)
@@ -197,7 +379,7 @@ void ag_model_build_around_bones(model_type *model)
 		ag_model_bone_cylinder_vertexes(model,&model->meshes[0],n);
 	}
 
-		// build the cylinder vertexes
+		// build the cylinder poly
 		// for bones with parents and
 		// no special or base bones
 
@@ -218,6 +400,12 @@ void ag_model_build_around_bones(model_type *model)
 			// create poly
 		
 		ag_model_bone_cylinder_polygons(model,&model->meshes[0],n,poly_idx);
+	}
+
+		// build special boxed bones
+
+	for (n=0;n!=model->nbone;n++) {
+		if (ag_model_is_boxed_bone(model,n)) ag_model_bone_cube(model,&model->meshes[0],n);
 	}
 }
 
