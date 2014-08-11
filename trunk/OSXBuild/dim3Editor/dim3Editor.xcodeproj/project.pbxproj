@@ -850,7 +850,6 @@
 		26F7E1931600472C00E739C4 /* model_menu.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = model_menu.c; path = Sources/menus/model_menu.c; sourceTree = "<group>"; };
 		26F7E1941600472C00E739C4 /* project_menu.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = project_menu.c; path = Sources/menus/project_menu.c; sourceTree = "<group>"; };
 		26F7E19C160047BB00E739C4 /* os_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = os_defs.h; path = ../dim3Common/Headers/os_defs.h; sourceTree = "<group>"; };
-		26F7E19D160047D900E739C4 /* auto_generator_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = auto_generator_defs.h; path = Headers/auto_generator_defs.h; sourceTree = "<group>"; };
 		26F7E19E160047D900E739C4 /* dim3editor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = dim3editor.h; path = Headers/dim3editor.h; sourceTree = "<group>"; };
 		26F7E19F160047D900E739C4 /* editor_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = editor_defs.h; path = Headers/editor_defs.h; sourceTree = "<group>"; };
 		26F7E1A0160047D900E739C4 /* interface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = interface.h; path = Headers/interface.h; sourceTree = "<group>"; };
@@ -1622,7 +1621,6 @@
 			children = (
 				26F7E19C160047BB00E739C4 /* os_defs.h */,
 				266E2B9816096FE400CE6147 /* mac_os_defs.h */,
-				26F7E19D160047D900E739C4 /* auto_generator_defs.h */,
 				26F7E19E160047D900E739C4 /* dim3editor.h */,
 				26F7E19F160047D900E739C4 /* editor_defs.h */,
 				26F7E1A0160047D900E739C4 /* interface.h */,

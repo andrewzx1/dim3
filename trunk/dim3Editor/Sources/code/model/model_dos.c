@@ -427,7 +427,7 @@ void model_auto_generate_textures(void)
 
 		// run bitmap generation for model
 
-	auto_generate_model_create_texture_set(&model,base_path);
+	auto_generate_model_create_texture_set(&model,dir_path);
 
 	os_set_arrow_cursor();
 

@@ -115,8 +115,11 @@ and can be sold or given away.
 #define ag_texture_skybox_west					31
 
 //
-// dimensions and positions
+// counts, dimensions and positions
 //
+
+#define ag_room_start_count						20
+#define ag_room_extra_count						20
 
 #define ag_flat_connector_min_width				10000
 

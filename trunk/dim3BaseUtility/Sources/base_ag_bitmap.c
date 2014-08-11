@@ -55,12 +55,23 @@ and can be sold or given away.
 
 #define bitmap_ag_metal_start_split_count			1
 #define bitmap_ag_metal_extra_split_normal_count	3
-#define bitmap_ag_metal_darken_factor				0.75f
-#define bitmap_ag_metal_lighten_factor				1.25f
+#define bitmap_ag_metal_darken_factor				0.9f
+#define bitmap_ag_metal_lighten_factor				1.1f
+#define bitmap_ag_metal_particle_density			20
+#define bitmap_ag_metal_particle_count				350
+#define bitmap_ag_metal_particle_start_size			80
+#define bitmap_ag_metal_particle_extra_size			40
 
-#define bitmap_ag_cement_mark_count					50
-#define bitmap_ag_cement_start_mark_size			20
-#define bitmap_ag_cement_extra_mark_size			50
+#define bitmap_ag_cement_mark_start_count			50
+#define bitmap_ag_cement_mark_extra_count			20
+#define bitmap_ag_cement_start_mark_size			80
+#define bitmap_ag_cement_extra_mark_size			100
+#define bitmap_ag_cement_particle_density			50
+
+#define bitmap_ag_skin_start_scale_count			100
+#define bitmap_ag_skin_extra_scale_count			50
+#define bitmap_ag_skin_start_scale_size				50
+#define bitmap_ag_skin_extra_scale_size				20
 
 /* =======================================================
 
@@ -78,7 +89,7 @@ void bitmap_ag_texture_brick_single(bitmap_ag_type *ag_bitmap,int px,int py,int 
 
 	bitmap_ag_random_color_change(base_col,&brick_col,color_factor);
 	lip_sz=bitmap_ag_start_brick_lip+bitmap_ag_random_int(bitmap_ag_extra_brick_lip);
-	bitmap_ag_texture_draw_rectangle(ag_bitmap,px,py,(wid-margin),(high-margin),lip_sz,FALSE,&brick_col);
+	bitmap_ag_texture_draw_rectangle(ag_bitmap,px,py,(wid-margin),(high-margin),lip_sz,FALSE,&brick_col,NULL);
 
 		// rough effect
 
@@ -275,7 +286,7 @@ bool bitmap_ag_texture_concrete_block(texture_frame_type *frame,char *base_path,
 
 		bitmap_ag_random_color_change(&base_col,&block_col,bitmap_ag_block_color_factor);
 		lip_sz=bitmap_ag_start_brick_lip+bitmap_ag_random_int(bitmap_ag_extra_brick_lip);
-		bitmap_ag_texture_draw_rectangle(&ag_bitmap,px,py,(pixel_sz-margin),(high-margin),lip_sz,FALSE,&block_col);
+		bitmap_ag_texture_draw_rectangle(&ag_bitmap,px,py,(pixel_sz-margin),(high-margin),lip_sz,FALSE,&block_col,NULL);
 		bitmap_ag_texture_add_noise(&ag_bitmap,px,py,(pixel_sz-margin),(high-margin),0.5f,0.7f);
 
 		py+=high;
@@ -347,7 +358,7 @@ void bitmap_ag_texture_tile_inner(bitmap_ag_type *ag_bitmap,int split_count,int 
 
 				}
 
-				bitmap_ag_texture_draw_rectangle(ag_bitmap,px,py,wid,high,5,FALSE,t_col);
+				bitmap_ag_texture_draw_rectangle(ag_bitmap,px,py,wid,high,5,FALSE,t_col,NULL);
 
 					// possible design
 
@@ -417,23 +428,33 @@ void bitmap_ag_texture_metal_pattern(bitmap_ag_type *ag_bitmap,int px,int py,int
 	int				n,x,y,m_wid,m_high;
 
 	for (n=0;n!=mark_count;n++) {
-		x=(px+20)+bitmap_ag_random_int(wid-40);
-		y=(py+20)+bitmap_ag_random_int(high-40);
-		m_wid=10+bitmap_ag_random_int(10);
-		m_high=10+bitmap_ag_random_int(10);
-		bitmap_ag_texture_add_particle(ag_bitmap,x,y,m_wid,m_high,(((n%2)==0)?bitmap_ag_metal_darken_factor:bitmap_ag_metal_lighten_factor),TRUE);
+		m_wid=bitmap_ag_metal_particle_start_size+bitmap_ag_random_int(bitmap_ag_metal_particle_extra_size);
+		m_high=bitmap_ag_metal_particle_start_size+bitmap_ag_random_int(bitmap_ag_metal_particle_extra_size);
+
+		x=px+bitmap_ag_random_int(wid-m_wid);
+		y=py+bitmap_ag_random_int(high-m_high);
+		
+		if ((n%2)==0) {
+			bitmap_ag_texture_add_particle(ag_bitmap,x,y,m_wid,m_high,bitmap_ag_metal_darken_factor,FALSE,bitmap_ag_metal_particle_density);
+		}
+		else {
+			bitmap_ag_texture_add_particle(ag_bitmap,x,y,m_wid,m_high,bitmap_ag_metal_lighten_factor,TRUE,bitmap_ag_metal_particle_density);
+		}
 	}
 }
 
 void bitmap_ag_texture_metal_bolts(bitmap_ag_type *ag_bitmap)
 {
-	int				x,y,px,py,wid,high,split_count,sz;
+	int				x,y,px,py,wid,high,
+					split_count,sz,panel_mark_count;
 	d3col			col,border_col;
 
 		// splits for panels
 
 	split_count=bitmap_ag_metal_start_split_count+bitmap_ag_random_int(bitmap_ag_metal_extra_split_normal_count);
 	sz=ag_bitmap->pixel_sz/split_count;
+	
+	panel_mark_count=bitmap_ag_metal_particle_count/(split_count*split_count);
 
 		// bolt colors
 
@@ -457,8 +478,8 @@ void bitmap_ag_texture_metal_bolts(bitmap_ag_type *ag_bitmap)
 			wid=sz;
 			if (x==(split_count-1)) wid=ag_bitmap->pixel_sz-px;
 			
-			bitmap_ag_texture_draw_rectangle(ag_bitmap,px,py,wid,high,15,TRUE,&ag_bitmap->back_col);
-			bitmap_ag_texture_metal_pattern(ag_bitmap,px,py,wid,high,60);
+			bitmap_ag_texture_draw_rectangle(ag_bitmap,px,py,wid,high,15,TRUE,&ag_bitmap->back_col,&border_col);
+			bitmap_ag_texture_metal_pattern(ag_bitmap,px,py,wid,high,panel_mark_count);
 
 			bitmap_ag_texture_draw_oval(ag_bitmap,(px+20),(py+20),20,20,3,FALSE,&border_col,&col);
 			bitmap_ag_texture_draw_oval(ag_bitmap,(px+(wid-40)),(py+20),20,20,3,FALSE,&border_col,&col);
@@ -494,7 +515,6 @@ void bitmap_ag_texture_metal_lines(bitmap_ag_type *ag_bitmap)
 
 bool bitmap_ag_texture_metal(texture_frame_type *frame,char *base_path,int pixel_sz,bool bolts)
 {
-	int				n,mark_count,x,y,wid,high;
 	bitmap_ag_type	ag_bitmap;
 
 	ag_bitmap.pixel_sz=pixel_sz;
@@ -504,18 +524,6 @@ bool bitmap_ag_texture_metal(texture_frame_type *frame,char *base_path,int pixel
 
 	if (!bitmap_ag_texture_create(&ag_bitmap,FALSE)) return(FALSE);
 
-		// marks
-
-	mark_count=bitmap_ag_cement_start_mark_size+bitmap_ag_random_int(bitmap_ag_cement_extra_mark_size);
-
-	for (n=0;n!=mark_count;n++) {
-		x=bitmap_ag_random_int(pixel_sz);
-		y=bitmap_ag_random_int(pixel_sz);
-		wid=bitmap_ag_cement_start_mark_size+bitmap_ag_random_int(bitmap_ag_cement_extra_mark_size);
-		high=bitmap_ag_cement_start_mark_size+bitmap_ag_random_int(bitmap_ag_cement_extra_mark_size);
-		bitmap_ag_texture_add_particle(&ag_bitmap,x,y,wid,high,0.9f,TRUE);
-	}
-
 		// bolt version
 
 	if (bolts) {
@@ -523,7 +531,7 @@ bool bitmap_ag_texture_metal(texture_frame_type *frame,char *base_path,int pixel
 	}
 	else {
 		bitmap_ag_texture_metal_lines(&ag_bitmap);
-		bitmap_ag_texture_metal_pattern(&ag_bitmap,0,0,pixel_sz,pixel_sz,200);
+		bitmap_ag_texture_metal_pattern(&ag_bitmap,0,0,pixel_sz,pixel_sz,bitmap_ag_metal_particle_count);
 	}
 
 		// metals have high spec
@@ -559,35 +567,35 @@ bool bitmap_ag_texture_wood(texture_frame_type *frame,char *base_path,int pixel_
 
 		// outside boards
 		
-	bitmap_ag_texture_draw_rectangle(&ag_bitmap,0,0,pixel_sz,50,3,FALSE,&ag_bitmap.back_col);
+	bitmap_ag_texture_draw_rectangle(&ag_bitmap,0,0,pixel_sz,50,3,FALSE,&ag_bitmap.back_col,NULL);
 	bitmap_ag_texture_random_color_stripe_vertical(&ag_bitmap,3,3,(pixel_sz-6),44,&ag_bitmap.back_col,0.1f);
 	bitmap_ag_texture_add_noise(&ag_bitmap,0,0,pixel_sz,50,0.9f,0.8f);
 
-	bitmap_ag_texture_draw_rectangle(&ag_bitmap,0,(pixel_sz-50),pixel_sz,50,3,FALSE,&ag_bitmap.back_col);
+	bitmap_ag_texture_draw_rectangle(&ag_bitmap,0,(pixel_sz-50),pixel_sz,50,3,FALSE,&ag_bitmap.back_col,NULL);
 	bitmap_ag_texture_random_color_stripe_vertical(&ag_bitmap,3,(pixel_sz-47),(pixel_sz-6),44,&ag_bitmap.back_col,0.1f);
 	bitmap_ag_texture_add_noise(&ag_bitmap,0,(pixel_sz-50),pixel_sz,50,0.9f,0.8f);
 
-	bitmap_ag_texture_draw_rectangle(&ag_bitmap,0,50,50,(pixel_sz-100),3,FALSE,&ag_bitmap.back_col);
+	bitmap_ag_texture_draw_rectangle(&ag_bitmap,0,50,50,(pixel_sz-100),3,FALSE,&ag_bitmap.back_col,NULL);
 	bitmap_ag_texture_random_color_stripe_horizontal(&ag_bitmap,3,53,44,(pixel_sz-106),&ag_bitmap.back_col,0.1f);
 	bitmap_ag_texture_add_noise(&ag_bitmap,0,50,50,(pixel_sz-100),0.9f,0.8f);
 
-	bitmap_ag_texture_draw_rectangle(&ag_bitmap,(pixel_sz-50),50,50,(pixel_sz-100),3,FALSE,&ag_bitmap.back_col);
+	bitmap_ag_texture_draw_rectangle(&ag_bitmap,(pixel_sz-50),50,50,(pixel_sz-100),3,FALSE,&ag_bitmap.back_col,NULL);
 	bitmap_ag_texture_random_color_stripe_horizontal(&ag_bitmap,(pixel_sz-47),53,44,(pixel_sz-106),&ag_bitmap.back_col,0.1f);
 	bitmap_ag_texture_add_noise(&ag_bitmap,(pixel_sz-50),50,50,(pixel_sz-100),0.9f,0.8f);
 
 		// inner boards
 		
-	bitmap_ag_texture_draw_rectangle(&ag_bitmap,50,50,(pixel_sz-100),(pixel_sz-100),3,FALSE,&dark_col);
+	bitmap_ag_texture_draw_rectangle(&ag_bitmap,50,50,(pixel_sz-100),(pixel_sz-100),3,FALSE,&dark_col,NULL);
 	bitmap_ag_texture_random_color_stripe_slant(&ag_bitmap,53,53,(pixel_sz-106),(pixel_sz-106),&dark_col,0.05f);
 	bitmap_ag_texture_add_noise(&ag_bitmap,50,50,(pixel_sz-100),(pixel_sz-100),0.9f,0.8f);
 	
 		// cross boards
 	
-	bitmap_ag_texture_draw_rectangle(&ag_bitmap,50,236,(pixel_sz-100),40,3,FALSE,&ag_bitmap.back_col);
+	bitmap_ag_texture_draw_rectangle(&ag_bitmap,50,236,(pixel_sz-100),40,3,FALSE,&ag_bitmap.back_col,NULL);
 	bitmap_ag_texture_random_color_stripe_vertical(&ag_bitmap,53,239,(pixel_sz-106),34,&ag_bitmap.back_col,0.1f);
 	bitmap_ag_texture_add_noise(&ag_bitmap,50,236,(pixel_sz-100),40,0.9f,0.2f);
 
-	bitmap_ag_texture_draw_rectangle(&ag_bitmap,236,50,40,(pixel_sz-100),3,FALSE,&ag_bitmap.back_col);
+	bitmap_ag_texture_draw_rectangle(&ag_bitmap,236,50,40,(pixel_sz-100),3,FALSE,&ag_bitmap.back_col,NULL);
 	bitmap_ag_texture_random_color_stripe_horizontal(&ag_bitmap,239,53,34,(pixel_sz-106),&ag_bitmap.back_col,0.1f);
 	bitmap_ag_texture_add_noise(&ag_bitmap,236,50,40,(pixel_sz-100),0.9f,0.2f);
 
@@ -621,18 +629,18 @@ bool bitmap_ag_texture_cement(texture_frame_type *frame,char *base_path,int pixe
 
 		// cement noise
 
-	bitmap_ag_texture_add_noise(&ag_bitmap,0,0,pixel_sz,pixel_sz,(dark?0.8f:0.5f),0.8f);
+//	bitmap_ag_texture_add_noise(&ag_bitmap,0,0,pixel_sz,pixel_sz,(dark?0.8f:0.5f),0.8f);
 
 		// marks
 
-	mark_count=bitmap_ag_cement_start_mark_size+bitmap_ag_random_int(bitmap_ag_cement_extra_mark_size);
+	mark_count=bitmap_ag_cement_mark_start_count+bitmap_ag_random_int(bitmap_ag_cement_mark_extra_count);
 
 	for (n=0;n!=mark_count;n++) {
 		x=bitmap_ag_random_int(pixel_sz);
 		y=bitmap_ag_random_int(pixel_sz);
 		wid=bitmap_ag_cement_start_mark_size+bitmap_ag_random_int(bitmap_ag_cement_extra_mark_size);
 		high=bitmap_ag_cement_start_mark_size+bitmap_ag_random_int(bitmap_ag_cement_extra_mark_size);
-		bitmap_ag_texture_add_particle(&ag_bitmap,x,y,wid,high,(dark?0.8f:1.2f),TRUE);
+		bitmap_ag_texture_add_particle(&ag_bitmap,x,y,wid,high,(dark?0.8f:1.2f),TRUE,bitmap_ag_cement_particle_density);
 	}
 
 		// save textures
@@ -649,10 +657,10 @@ bool bitmap_ag_texture_cement(texture_frame_type *frame,char *base_path,int pixe
 
 void bitmap_ag_texture_window_pane(bitmap_ag_type *ag_bitmap,int px,int py,int wid,int high,d3col *border_col,d3col *pane_col)
 {
-	bitmap_ag_texture_draw_rectangle(ag_bitmap,px,py,wid,high,1,FALSE,border_col);
+	bitmap_ag_texture_draw_rectangle(ag_bitmap,px,py,wid,high,1,FALSE,border_col,NULL);
 	bitmap_ag_texture_add_noise(ag_bitmap,px,py,wid,high,0.6f,0.5f);
 
-	bitmap_ag_texture_draw_rectangle(ag_bitmap,(px+10),(py+10),(wid-20),(high-20),1,TRUE,pane_col);
+	bitmap_ag_texture_draw_rectangle(ag_bitmap,(px+10),(py+10),(wid-20),(high-20),1,TRUE,pane_col,NULL);
 	bitmap_ag_texture_gradient_overlay_vertical(ag_bitmap,(px+10),(py+10),(wid-20),(high-20),1.0f,0.7f);
 }
 
@@ -760,8 +768,8 @@ bool bitmap_ag_texture_machine(texture_frame_type *frame,char *base_path,int pix
 		// metal look
 
 	lip_sz=10+bitmap_ag_random_int(15);
-	bitmap_ag_texture_draw_rectangle(&ag_bitmap,0,0,pixel_sz,pixel_sz,lip_sz,FALSE,&ag_bitmap.back_col);
-	bitmap_ag_texture_metal_pattern(&ag_bitmap,0,0,pixel_sz,pixel_sz,300);
+	bitmap_ag_texture_draw_rectangle(&ag_bitmap,0,0,pixel_sz,pixel_sz,lip_sz,FALSE,&ag_bitmap.back_col,NULL);
+	bitmap_ag_texture_metal_pattern(&ag_bitmap,0,0,pixel_sz,pixel_sz,bitmap_ag_metal_particle_count);
 	
 		// some random colors
 		
@@ -824,8 +832,8 @@ bool bitmap_ag_texture_machine(texture_frame_type *frame,char *base_path,int pix
 					// plate
 
 				case 1:
-					bitmap_ag_texture_draw_rectangle(&ag_bitmap,px,py,wid,high,3,FALSE,&border_col);
-					bitmap_ag_texture_draw_rectangle(&ag_bitmap,(px+3),(py+3),(wid-6),(high-6),1,TRUE,&dark_col);
+					bitmap_ag_texture_draw_rectangle(&ag_bitmap,px,py,wid,high,3,FALSE,&border_col,NULL);
+					bitmap_ag_texture_draw_rectangle(&ag_bitmap,(px+3),(py+3),(wid-6),(high-6),1,TRUE,&dark_col,NULL);
 					for (n=0;n!=8;n++) {
 						py2=(py+4)+((high/8)*n);
 						bitmap_ag_texture_draw_line_horizontal(&ag_bitmap,(px+4),py2,(wid-8),2,FALSE,&border_col);
@@ -835,8 +843,8 @@ bool bitmap_ag_texture_machine(texture_frame_type *frame,char *base_path,int pix
 					// box light
 
 				case 2:
-					bitmap_ag_texture_draw_rectangle(&ag_bitmap,px,py,wid,high,3,FALSE,&border_col);
-					bitmap_ag_texture_draw_rectangle(&ag_bitmap,(px+3),(py+3),(wid-6),(high-6),1,TRUE,&glow_col[(col_idx++)%4]);
+					bitmap_ag_texture_draw_rectangle(&ag_bitmap,px,py,wid,high,3,FALSE,&border_col,NULL);
+					bitmap_ag_texture_draw_rectangle(&ag_bitmap,(px+3),(py+3),(wid-6),(high-6),1,TRUE,&glow_col[(col_idx++)%4],NULL);
 					bitmap_ag_texture_gradient_overlay_vertical(&ag_bitmap,(px+3),(py+3),(wid-6),(high-6),1.0f,0.7f);
 					bitmap_ag_texture_machine_glow(&ag_bitmap,(px+5),(py+5),(wid-10),(high-10));
 					break;
@@ -996,6 +1004,7 @@ bool bitmap_ag_texture_skybox_west(texture_frame_type *frame,char *base_path,int
 bool bitmap_ag_texture_skin(texture_frame_type *frame,char *base_path,int pixel_sz)
 {
 	int				n,x,y,wid,high,mark_count;
+	d3col			border_col;
 	bitmap_ag_type	ag_bitmap;
 
 	ag_bitmap.pixel_sz=pixel_sz;
@@ -1012,14 +1021,18 @@ bool bitmap_ag_texture_skin(texture_frame_type *frame,char *base_path,int pixel_
 
 		// marks
 
-	mark_count=bitmap_ag_cement_start_mark_size+bitmap_ag_random_int(bitmap_ag_cement_extra_mark_size);
+	mark_count=bitmap_ag_skin_start_scale_count+bitmap_ag_random_int(bitmap_ag_skin_extra_scale_count);
+	
+	border_col.r=ag_bitmap.back_col.r*0.8f;
+	border_col.g=ag_bitmap.back_col.g*0.8f;
+	border_col.b=ag_bitmap.back_col.b*0.8f;
 
 	for (n=0;n!=mark_count;n++) {
 		x=bitmap_ag_random_int(pixel_sz);
 		y=bitmap_ag_random_int(pixel_sz);
-		wid=bitmap_ag_cement_start_mark_size+bitmap_ag_random_int(bitmap_ag_cement_extra_mark_size);
-		high=bitmap_ag_cement_start_mark_size+bitmap_ag_random_int(bitmap_ag_cement_extra_mark_size);
-		bitmap_ag_texture_add_particle(&ag_bitmap,x,y,wid,high,0.8f,TRUE);
+		wid=bitmap_ag_skin_start_scale_size+bitmap_ag_random_int(bitmap_ag_skin_extra_scale_size);
+		high=bitmap_ag_skin_start_scale_size+bitmap_ag_random_int(bitmap_ag_skin_extra_scale_size);
+		bitmap_ag_texture_draw_oval(&ag_bitmap,x,y,wid,high,1,TRUE,&border_col,NULL);
 	}
 
 		// save textures
@@ -1027,3 +1040,4 @@ bool bitmap_ag_texture_skin(texture_frame_type *frame,char *base_path,int pixel_
 	bitmap_ag_texture_make_spec(&ag_bitmap,0.5f);
 	return(bitmap_ag_texture_finish(&ag_bitmap,base_path));
 }
+

@@ -267,7 +267,7 @@ void auto_generate_model_create_texture_set(model_type *model,char *base_path)
 	ag_random_seed();
 
 	texture=ag_model_create_texture(model,ag_texture_wall,"Skin",FALSE);
-	bitmap_ag_texture_brick(&texture->frames[0],base_path,512);
+	bitmap_ag_texture_skin(&texture->frames[0],base_path,512);
 	model_textures_read_texture(model,0);
 }
 
