@@ -362,20 +362,34 @@ void bitmap_ag_texture_add_noise(bitmap_ag_type *ag_bitmap,int x,int y,int wid,i
       
 ======================================================= */
 
-void bitmap_ag_texture_add_particle(bitmap_ag_type *ag_bitmap,int x,int y,int wid,int high,float fct,bool shrink)
+void bitmap_ag_texture_add_particle(bitmap_ag_type *ag_bitmap,int x,int y,int wid,int high,float fct,bool flip_normal,int density)
 {
-	int			n,k,px,py,mx,my;
+	int			n,k,step,px,py,mx,my;
+	float		rad,fx,fy,f_wid,f_high;
 	d3col		col;
 	d3vct		normal;
 
-	for (k=0;k!=20;k++) {
+	mx=x+(wid>>1);
+	my=y+(high>>1);
+	
+	step=wid;
+	if (high>step) step=high;
+	
+	step/=5;
+	if (step<0) step=1;
+	
+	for (n=0;n!=step;n++) {
+		
+		for (k=0;k!=density;k++) {
+			rad=(2.0f*TRIG_PI)*(((float)bitmap_ag_random_int(1000))/1000.0f);
+			f_wid=((float)bitmap_ag_random_int(wid))*0.5f;
+			f_high=((float)bitmap_ag_random_int(high))*0.5f;
 
-		for (n=0;n!=100;n++) {
-			mx=wid-bitmap_ag_random_int(wid<<1);
-			px=x+mx;
+			fx=sinf(rad);
+			px=mx+(int)(f_wid*fx);
 
-			my=high-bitmap_ag_random_int(high<<1);
-			py=y+my;
+			fy=cosf(rad);
+			py=my-(int)(f_high*fy);
 
 				// make sure they wrap
 
@@ -401,18 +415,16 @@ void bitmap_ag_texture_add_particle(bitmap_ag_type *ag_bitmap,int x,int y,int wi
 				// get a normal for the pixel change
 
 			bitmap_ag_texture_read_normal(ag_bitmap,ag_bitmap->bump_data,px,py,&normal);
-			normal.x+=((float)mx)/((float)wid);
-			normal.y+=((float)my)/((float)high);
+			normal.x=flip_normal?-fx:fx;
+			normal.y=flip_normal?-fy:fy;
 			normal.z=0.5f;		// always force Z normal back to top
 			bitmap_ag_texture_write_normal(ag_bitmap,ag_bitmap->bump_data,px,py,&normal);
 		}
 		
-		if (shrink) {
-			wid-=2;
-			high-=2;
+			// shrinking
 			
-			if ((wid<5) || (high<5)) break;
-		}
+		if (wid>=10) wid-=5;
+		if (high>=10) high-=5;
 	}
 }
 
@@ -638,7 +650,7 @@ void bitmap_ag_texture_random_color_stripe_slant(bitmap_ag_type *ag_bitmap,int p
       
 ======================================================= */
 
-void bitmap_ag_texture_draw_rectangle(bitmap_ag_type *ag_bitmap,int px,int py,int wid,int high,int lip_sz,bool flip_normal,d3col *col)
+void bitmap_ag_texture_draw_rectangle(bitmap_ag_type *ag_bitmap,int px,int py,int wid,int high,int lip_sz,bool flip_normal,d3col *col,d3col *edge_col)
 {
 	int			n,x,y,lx,rx,ty,by;
 	float		f;
@@ -650,8 +662,6 @@ void bitmap_ag_texture_draw_rectangle(bitmap_ag_type *ag_bitmap,int px,int py,in
 	dark_col.r=col->r*bitmap_ag_outline_darken_factor;
 	dark_col.g=col->g*bitmap_ag_outline_darken_factor;
 	dark_col.b=col->b*bitmap_ag_outline_darken_factor;
-
-		// draw the brick
 
 	lx=px;
 	rx=px+wid;
@@ -668,8 +678,16 @@ void bitmap_ag_texture_draw_rectangle(bitmap_ag_type *ag_bitmap,int px,int py,in
 		col2.r=dark_col.r+((col->r-dark_col.r)*f);
 		col2.g=dark_col.g+((col->g-dark_col.g)*f);
 		col2.b=dark_col.b+((col->b-dark_col.b)*f);
+		
+		if (edge_col!=NULL) {
+			if ((n==0) || (n==(lip_sz-2))) {
+				col2.r=edge_col->r;
+				col2.g=edge_col->g;
+				col2.b=edge_col->b;
+			}
+		}
 
-			// draw brick
+			// draw rectangle
 
 		for (y=ty;y!=by;y++) {
 			for (x=lx;x!=rx;x++) {

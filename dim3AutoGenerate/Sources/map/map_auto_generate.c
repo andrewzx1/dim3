@@ -938,8 +938,6 @@ bool ag_map_run(map_type *map,char *err_str)
 {
 	int				n,room_count;
 
-	room_count=30;
-
 	ag_map_state.nroom=0;
 	ag_map_state.current_door_idx=0;
 
@@ -956,6 +954,8 @@ bool ag_map_run(map_type *map,char *err_str)
 		// sometimes it fails because of randomness
 		// so give it a chance to built up to room_count
 		// rooms
+		
+	room_count=ag_room_start_count+ag_random_int(ag_room_extra_count);
 
 	for (n=0;n!=(room_count*10);n++) {
 		ag_map_add_room(map,(ag_map_state.nroom==0));
