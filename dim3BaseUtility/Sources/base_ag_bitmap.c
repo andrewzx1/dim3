@@ -55,12 +55,12 @@ and can be sold or given away.
 
 #define bitmap_ag_metal_start_split_count			1
 #define bitmap_ag_metal_extra_split_normal_count	3
-#define bitmap_ag_metal_darken_factor				0.9f
-#define bitmap_ag_metal_lighten_factor				1.1f
+#define bitmap_ag_metal_darken_factor				0.8f
+#define bitmap_ag_metal_lighten_factor				1.2f
 #define bitmap_ag_metal_particle_density			20
 #define bitmap_ag_metal_particle_count				350
-#define bitmap_ag_metal_particle_start_size			80
-#define bitmap_ag_metal_particle_extra_size			40
+#define bitmap_ag_metal_particle_start_size			50
+#define bitmap_ag_metal_particle_extra_size			30
 
 #define bitmap_ag_cement_mark_start_count			50
 #define bitmap_ag_cement_mark_extra_count			20
@@ -498,6 +498,8 @@ void bitmap_ag_texture_metal_lines(bitmap_ag_type *ag_bitmap)
 	int			n,y,sz,line_count;
 	d3col		col;
 	
+		// lines
+
 	line_count=5+bitmap_ag_random_int(20);
 	sz=ag_bitmap->pixel_sz/line_count;
 	
@@ -511,6 +513,13 @@ void bitmap_ag_texture_metal_lines(bitmap_ag_type *ag_bitmap)
 		bitmap_ag_texture_draw_line_horizontal(ag_bitmap,0,y,ag_bitmap->pixel_sz,3,FALSE,&col);
 		y+=sz;
 	}
+
+		// make metal pattern bigger
+		// than texture to get over missing corners
+		// because of circular nature of particles
+
+	sz=ag_bitmap->pixel_sz+(bitmap_ag_metal_particle_start_size*2);
+	bitmap_ag_texture_metal_pattern(ag_bitmap,-bitmap_ag_metal_particle_start_size,-bitmap_ag_metal_particle_start_size,sz,sz,bitmap_ag_metal_particle_count);
 }
 
 bool bitmap_ag_texture_metal(texture_frame_type *frame,char *base_path,int pixel_sz,bool bolts)
@@ -531,7 +540,6 @@ bool bitmap_ag_texture_metal(texture_frame_type *frame,char *base_path,int pixel
 	}
 	else {
 		bitmap_ag_texture_metal_lines(&ag_bitmap);
-		bitmap_ag_texture_metal_pattern(&ag_bitmap,0,0,pixel_sz,pixel_sz,bitmap_ag_metal_particle_count);
 	}
 
 		// metals have high spec
@@ -629,7 +637,7 @@ bool bitmap_ag_texture_cement(texture_frame_type *frame,char *base_path,int pixe
 
 		// cement noise
 
-//	bitmap_ag_texture_add_noise(&ag_bitmap,0,0,pixel_sz,pixel_sz,(dark?0.8f:0.5f),0.8f);
+	bitmap_ag_texture_add_noise(&ag_bitmap,0,0,pixel_sz,pixel_sz,(dark?0.8f:0.5f),0.8f);
 
 		// marks
 
@@ -753,9 +761,9 @@ void bitmap_ag_texture_machine_glow(bitmap_ag_type *ag_bitmap,int px,int py,int 
 
 bool bitmap_ag_texture_machine(texture_frame_type *frame,char *base_path,int pixel_sz)
 {
-	int				n,x,y,px,py,py2,wid,high,p_wid,p_high,lip_sz,col_idx;
-	bool			used[5][5];
-	d3col			border_col,dark_col,glow_col[4];
+	int				n,x,y,px,py,py2,wid,high,p_wid,p_high,
+					col_idx,split,line_type;
+	d3col			border_col,dark_col,col,glow_col[4];
 	bitmap_ag_type	ag_bitmap;
 
 	ag_bitmap.pixel_sz=pixel_sz;
@@ -767,8 +775,9 @@ bool bitmap_ag_texture_machine(texture_frame_type *frame,char *base_path,int pix
 
 		// metal look
 
-	lip_sz=10+bitmap_ag_random_int(15);
-	bitmap_ag_texture_draw_rectangle(&ag_bitmap,0,0,pixel_sz,pixel_sz,lip_sz,FALSE,&ag_bitmap.back_col,NULL);
+	col.r=col.g=col.b=0.0f;
+
+	bitmap_ag_texture_draw_rectangle(&ag_bitmap,0,0,pixel_sz,pixel_sz,10,FALSE,&ag_bitmap.back_col,&col);
 	bitmap_ag_texture_metal_pattern(&ag_bitmap,0,0,pixel_sz,pixel_sz,bitmap_ag_metal_particle_count);
 	
 		// some random colors
@@ -782,56 +791,34 @@ bool bitmap_ag_texture_machine(texture_frame_type *frame,char *base_path,int pix
 	dark_col.r=ag_bitmap.back_col.r*0.8f;
 	dark_col.g=ag_bitmap.back_col.g*0.8f;
 	dark_col.b=ag_bitmap.back_col.b*0.8f;
-
-		// blank all tiles as used
-
-	for (y=0;y!=5;y++) {
-		for (x=0;x!=5;x++) {
-			used[x][y]=FALSE;
-		}
-	}
 	
 		// components
 
-	p_wid=pixel_sz/5;
-	p_high=pixel_sz/5;
-	wid=p_wid-5;
-	high=p_high-5;
+	split=3+bitmap_ag_random_int(3);
 
-	col_idx=0;
+	p_wid=(pixel_sz-28)/split;
+	p_high=(pixel_sz-28)/split;
+	wid=p_wid-4;
+	high=p_high-4;
 
-	for (y=0;y!=5;y++) {
-		
-		for (x=0;x!=5;x++) {
+	py=14;
 
-				// is this spot already used?
+	for (y=0;y!=split;y++) {
 
-			if (used[x][y]) continue;
+		px=14;
+		line_type=bitmap_ag_random_int(3);
 
-			used[x][y]=TRUE;
-
-				// is this a double spot?
-
-			px=(x*p_wid)+5;
-			py=(y*p_high)+5;
-
-			if ((bitmap_ag_random_int(100)<25) && (x<4) && (y<4)) {
-				wid=(p_wid*2)-5;
-				high=(p_high*2)-5;
-				used[x+1][y]=used[x][y+1]=used[x+1][y+1]=TRUE;
-			}
-			else {
-				wid=p_wid-5;
-				high=p_high-5;
-			}
+		col_idx=0;
+	
+		for (x=0;x!=split;x++) {
 
 				// draw the component
 
-			switch (bitmap_ag_random_int(4)) {
+			switch (line_type) {
 
 					// plate
 
-				case 1:
+				case 0:
 					bitmap_ag_texture_draw_rectangle(&ag_bitmap,px,py,wid,high,3,FALSE,&border_col,NULL);
 					bitmap_ag_texture_draw_rectangle(&ag_bitmap,(px+3),(py+3),(wid-6),(high-6),1,TRUE,&dark_col,NULL);
 					for (n=0;n!=8;n++) {
@@ -842,7 +829,7 @@ bool bitmap_ag_texture_machine(texture_frame_type *frame,char *base_path,int pix
 
 					// box light
 
-				case 2:
+				case 1:
 					bitmap_ag_texture_draw_rectangle(&ag_bitmap,px,py,wid,high,3,FALSE,&border_col,NULL);
 					bitmap_ag_texture_draw_rectangle(&ag_bitmap,(px+3),(py+3),(wid-6),(high-6),1,TRUE,&glow_col[(col_idx++)%4],NULL);
 					bitmap_ag_texture_gradient_overlay_vertical(&ag_bitmap,(px+3),(py+3),(wid-6),(high-6),1.0f,0.7f);
@@ -851,12 +838,16 @@ bool bitmap_ag_texture_machine(texture_frame_type *frame,char *base_path,int pix
 
 					// circle button
 
-				case 3:
-					bitmap_ag_texture_draw_oval(&ag_bitmap,px,py,wid,high,3,bitmap_ag_random_bool(),&border_col,&dark_col);
+				case 2:
+					bitmap_ag_texture_draw_oval(&ag_bitmap,px,py,wid,high,3,((x%2)==0),&border_col,&dark_col);
 					break;
 
 			}
+
+			px+=p_wid;
 		}
+
+		py+=p_high;
 	}
 
 	bitmap_ag_texture_make_spec(&ag_bitmap,0.8f);
@@ -1015,10 +1006,6 @@ bool bitmap_ag_texture_skin(texture_frame_type *frame,char *base_path,int pixel_
 
 	if (!bitmap_ag_texture_create(&ag_bitmap,FALSE)) return(FALSE);
 
-		// skin noise
-
-	bitmap_ag_texture_add_noise(&ag_bitmap,0,0,pixel_sz,pixel_sz,0.5f,0.8f);
-
 		// marks
 
 	mark_count=bitmap_ag_skin_start_scale_count+bitmap_ag_random_int(bitmap_ag_skin_extra_scale_count);
@@ -1034,6 +1021,10 @@ bool bitmap_ag_texture_skin(texture_frame_type *frame,char *base_path,int pixel_
 		high=bitmap_ag_skin_start_scale_size+bitmap_ag_random_int(bitmap_ag_skin_extra_scale_size);
 		bitmap_ag_texture_draw_oval(&ag_bitmap,x,y,wid,high,1,TRUE,&border_col,NULL);
 	}
+
+		// skin noise
+
+	bitmap_ag_texture_add_noise(&ag_bitmap,0,0,pixel_sz,pixel_sz,0.9f,0.8f);
 
 		// save textures
 
