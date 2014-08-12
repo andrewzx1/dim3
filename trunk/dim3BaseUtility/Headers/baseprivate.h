@@ -71,6 +71,7 @@ extern void bitmap_texture_close(bitmap_type *bitmap);
 
 typedef struct	{
 					int						pixel_sz;
+					int						clip_lx,clip_rx,clip_ty,clip_by;
 					bool					no_bump_spec;
 					unsigned char			*png_data,*bump_data,*spec_data,*glow_data;
 					d3col					back_col;
@@ -86,6 +87,9 @@ extern void bitmap_ag_random_color_change(d3col *base_col,d3col *col,float fct);
 extern bool bitmap_ag_texture_create(bitmap_ag_type *ag_bitmap,bool has_glow);
 extern bool bitmap_ag_texture_finish(bitmap_ag_type *ag_bitmap,char *base_path);
 extern void bitmap_ag_texture_make_spec(bitmap_ag_type *ag_bitmap,float spec_fct);
+
+extern void bitmap_ag_set_clip(bitmap_ag_type *ag_bitmap,int x,int y,int wid,int high);
+extern void bitmap_ag_clear_clip(bitmap_ag_type *ag_bitmap);
 
 extern void bitmap_ag_texture_read_pixel(bitmap_ag_type *ag_bitmap,unsigned char *data,int x,int y,d3col *col);
 extern void bitmap_ag_texture_write_pixel(bitmap_ag_type *ag_bitmap,unsigned char *data,int x,int y,d3col *col);

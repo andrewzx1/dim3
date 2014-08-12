@@ -68,8 +68,8 @@ and can be sold or given away.
 #define bitmap_ag_cement_extra_mark_size			100
 #define bitmap_ag_cement_particle_density			50
 
-#define bitmap_ag_skin_start_scale_count			100
-#define bitmap_ag_skin_extra_scale_count			50
+#define bitmap_ag_skin_start_scale_count			80
+#define bitmap_ag_skin_extra_scale_count			40
 #define bitmap_ag_skin_start_scale_size				50
 #define bitmap_ag_skin_extra_scale_size				20
 
@@ -992,10 +992,70 @@ bool bitmap_ag_texture_skybox_west(texture_frame_type *frame,char *base_path,int
       
 ======================================================= */
 
+void bitmap_ag_texture_skin_chunk(bitmap_ag_type *ag_bitmap,int x,int y,int wid,int high)
+{
+	int				n,px,py,p_wid,p_high,scale_count;
+	d3col			border_col;
+
+		// set the clip so scales
+		// can wrap within their UV space
+
+	bitmap_ag_set_clip(ag_bitmap,x,y,wid,high);
+
+		// scales
+
+	scale_count=bitmap_ag_skin_start_scale_count+bitmap_ag_random_int(bitmap_ag_skin_extra_scale_count);
+	
+	border_col.r=ag_bitmap->back_col.r*0.8f;
+	border_col.g=ag_bitmap->back_col.g*0.8f;
+	border_col.b=ag_bitmap->back_col.b*0.8f;
+
+	for (n=0;n!=scale_count;n++) {
+		px=bitmap_ag_random_int(wid);
+		py=bitmap_ag_random_int(high);
+		p_wid=bitmap_ag_skin_start_scale_size+bitmap_ag_random_int(bitmap_ag_skin_extra_scale_size);
+		p_high=bitmap_ag_skin_start_scale_size+bitmap_ag_random_int(bitmap_ag_skin_extra_scale_size);
+		bitmap_ag_texture_draw_oval(ag_bitmap,px,py,p_wid,p_high,1,TRUE,&border_col,NULL);
+	}
+
+	bitmap_ag_clear_clip(ag_bitmap);
+
+		// skin noise
+
+	bitmap_ag_texture_add_noise(ag_bitmap,x,y,wid,high,0.9f,0.8f);
+}
+
+void bitmap_ag_texture_face_chunk(bitmap_ag_type *ag_bitmap,int x,int y,int wid,int high)
+{
+	int				n,eye_count,
+					px,py,eye_wid,eye_high;
+	d3col			border_col,col;
+
+		// skin
+
+	bitmap_ag_texture_skin_chunk(ag_bitmap,x,y,wid,high);
+	
+		// eyes
+
+	border_col.r=border_col.g=border_col.b=0.0f;
+	bitmap_ag_random_color(&col,255,50,150,50,0,0);
+
+	eye_count=1+bitmap_ag_random_int(3);
+
+	eye_wid=(wid-50)/eye_count;
+	eye_high=eye_wid-bitmap_ag_random_int(eye_wid>>1);
+
+	px=x+25;
+	py=y+eye_high;
+
+	for (n=0;n!=eye_count;n++) {
+		bitmap_ag_texture_draw_oval(ag_bitmap,px,py,(eye_wid-5),eye_high,2,TRUE,&border_col,&col);
+		px+=eye_wid;
+	}
+}
+
 bool bitmap_ag_texture_skin(texture_frame_type *frame,char *base_path,int pixel_sz)
 {
-	int				n,x,y,wid,high,mark_count;
-	d3col			border_col;
 	bitmap_ag_type	ag_bitmap;
 
 	ag_bitmap.pixel_sz=pixel_sz;
@@ -1006,25 +1066,13 @@ bool bitmap_ag_texture_skin(texture_frame_type *frame,char *base_path,int pixel_
 
 	if (!bitmap_ag_texture_create(&ag_bitmap,FALSE)) return(FALSE);
 
-		// marks
+		// top-left is plain skin
 
-	mark_count=bitmap_ag_skin_start_scale_count+bitmap_ag_random_int(bitmap_ag_skin_extra_scale_count);
-	
-	border_col.r=ag_bitmap.back_col.r*0.8f;
-	border_col.g=ag_bitmap.back_col.g*0.8f;
-	border_col.b=ag_bitmap.back_col.b*0.8f;
+	bitmap_ag_texture_skin_chunk(&ag_bitmap,0,0,(pixel_sz>>1),(pixel_sz>>1));
 
-	for (n=0;n!=mark_count;n++) {
-		x=bitmap_ag_random_int(pixel_sz);
-		y=bitmap_ag_random_int(pixel_sz);
-		wid=bitmap_ag_skin_start_scale_size+bitmap_ag_random_int(bitmap_ag_skin_extra_scale_size);
-		high=bitmap_ag_skin_start_scale_size+bitmap_ag_random_int(bitmap_ag_skin_extra_scale_size);
-		bitmap_ag_texture_draw_oval(&ag_bitmap,x,y,wid,high,1,TRUE,&border_col,NULL);
-	}
+		// top-right is face
 
-		// skin noise
-
-	bitmap_ag_texture_add_noise(&ag_bitmap,0,0,pixel_sz,pixel_sz,0.9f,0.8f);
+	bitmap_ag_texture_face_chunk(&ag_bitmap,(pixel_sz>>1),0,(pixel_sz>>1),(pixel_sz>>1));
 
 		// save textures
 
