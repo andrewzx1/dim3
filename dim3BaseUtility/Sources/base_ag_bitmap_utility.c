@@ -168,6 +168,13 @@ bool bitmap_ag_texture_create(bitmap_ag_type *ag_bitmap,bool has_glow)
 		}
 	}
 
+		// default the clip
+
+	ag_bitmap->clip_lx=0;
+	ag_bitmap->clip_rx=ag_bitmap->pixel_sz;
+	ag_bitmap->clip_ty=0;
+	ag_bitmap->clip_by=ag_bitmap->pixel_sz;
+
 	return(TRUE);
 }
 
@@ -246,6 +253,28 @@ void bitmap_ag_texture_make_spec(bitmap_ag_type *ag_bitmap,float spec_fct)
 
 /* =======================================================
 
+      Clips
+      
+======================================================= */
+
+void bitmap_ag_set_clip(bitmap_ag_type *ag_bitmap,int x,int y,int wid,int high)
+{
+	ag_bitmap->clip_lx=x;
+	ag_bitmap->clip_rx=x+wid;
+	ag_bitmap->clip_ty=y;
+	ag_bitmap->clip_by=y+high;
+}
+
+void bitmap_ag_clear_clip(bitmap_ag_type *ag_bitmap)
+{
+	ag_bitmap->clip_lx=0;
+	ag_bitmap->clip_rx=ag_bitmap->pixel_sz;
+	ag_bitmap->clip_ty=0;
+	ag_bitmap->clip_by=ag_bitmap->pixel_sz;
+}
+
+/* =======================================================
+
       Read/Write Pixels
       
 ======================================================= */
@@ -254,11 +283,11 @@ void bitmap_ag_texture_read_pixel(bitmap_ag_type *ag_bitmap,unsigned char *data,
 {
 	unsigned char		*ptr;
 	
-	if (x<0) x=ag_bitmap->pixel_sz+x;
-	if (x>=ag_bitmap->pixel_sz) x-=ag_bitmap->pixel_sz;
+	if (x<ag_bitmap->clip_lx) x+=ag_bitmap->clip_rx;
+	if (x>=ag_bitmap->clip_rx) x-=(ag_bitmap->clip_rx-ag_bitmap->clip_lx);
 	
-	if (y<0) x=ag_bitmap->pixel_sz+y;
-	if (y>=ag_bitmap->pixel_sz) y-=ag_bitmap->pixel_sz;
+	if (y<ag_bitmap->clip_ty) y+=ag_bitmap->clip_by;
+	if (y>=ag_bitmap->clip_by) y-=(ag_bitmap->clip_by-ag_bitmap->clip_ty);
 
 	ptr=data+((y*(ag_bitmap->pixel_sz*3))+(x*3));
 	col->r=((float)*ptr++)/255.0f;
@@ -270,11 +299,11 @@ void bitmap_ag_texture_write_pixel(bitmap_ag_type *ag_bitmap,unsigned char *data
 {
 	unsigned char		*ptr;
 
-	if (x<0) x=ag_bitmap->pixel_sz+x;
-	if (x>=ag_bitmap->pixel_sz) x-=ag_bitmap->pixel_sz;
+	if (x<ag_bitmap->clip_lx) x+=ag_bitmap->clip_rx;
+	if (x>=ag_bitmap->clip_rx) x-=(ag_bitmap->clip_rx-ag_bitmap->clip_lx);
 	
-	if (y<0) x=ag_bitmap->pixel_sz+y;
-	if (y>=ag_bitmap->pixel_sz) y-=ag_bitmap->pixel_sz;
+	if (y<ag_bitmap->clip_ty) y+=ag_bitmap->clip_by;
+	if (y>=ag_bitmap->clip_by) y-=(ag_bitmap->clip_by-ag_bitmap->clip_ty);
 
 	ptr=data+((y*(ag_bitmap->pixel_sz*3))+(x*3));
 	*ptr++=(int)(((float)0xFF)*col->r);
@@ -286,11 +315,11 @@ void bitmap_ag_texture_read_normal(bitmap_ag_type *ag_bitmap,unsigned char *data
 {
 	unsigned char		*ptr;
 
-	if (x<0) x=ag_bitmap->pixel_sz+x;
-	if (x>=ag_bitmap->pixel_sz) x-=ag_bitmap->pixel_sz;
+	if (x<ag_bitmap->clip_lx) x+=ag_bitmap->clip_rx;
+	if (x>=ag_bitmap->clip_rx) x-=(ag_bitmap->clip_rx-ag_bitmap->clip_lx);
 	
-	if (y<0) x=ag_bitmap->pixel_sz+y;
-	if (y>=ag_bitmap->pixel_sz) y-=ag_bitmap->pixel_sz;
+	if (y<ag_bitmap->clip_ty) y+=ag_bitmap->clip_by;
+	if (y>=ag_bitmap->clip_by) y-=(ag_bitmap->clip_by-ag_bitmap->clip_ty);
 
 	ptr=data+((y*(ag_bitmap->pixel_sz*3))+(x*3));
 	normal->x=(((float)*ptr++)/128.0f)-1.0f;
@@ -302,11 +331,11 @@ void bitmap_ag_texture_write_normal(bitmap_ag_type *ag_bitmap,unsigned char *dat
 {
 	unsigned char		*ptr;
 
-	if (x<0) x=ag_bitmap->pixel_sz+x;
-	if (x>=ag_bitmap->pixel_sz) x-=ag_bitmap->pixel_sz;
+	if (x<ag_bitmap->clip_lx) x+=ag_bitmap->clip_rx;
+	if (x>=ag_bitmap->clip_rx) x-=(ag_bitmap->clip_rx-ag_bitmap->clip_lx);
 	
-	if (y<0) x=ag_bitmap->pixel_sz+y;
-	if (y>=ag_bitmap->pixel_sz) y-=ag_bitmap->pixel_sz;
+	if (y<ag_bitmap->clip_ty) y+=ag_bitmap->clip_by;
+	if (y>=ag_bitmap->clip_by) y-=(ag_bitmap->clip_by-ag_bitmap->clip_ty);
 
 	vector_normalize(normal);		// normalize before writing
 
@@ -388,14 +417,6 @@ void bitmap_ag_texture_add_particle(bitmap_ag_type *ag_bitmap,int x,int y,int wi
 
 			fy=cosf(rad);
 			py=my-(int)(f_high*fy);
-
-				// make sure they wrap
-
-			if (px<0) px=ag_bitmap->pixel_sz+px;
-			if (px>=ag_bitmap->pixel_sz) px-=ag_bitmap->pixel_sz;
-
-			if (py<0) py=ag_bitmap->pixel_sz+py;
-			if (py>=ag_bitmap->pixel_sz) py-=ag_bitmap->pixel_sz;
 		
 				// add the mark pixels as random particles
 
