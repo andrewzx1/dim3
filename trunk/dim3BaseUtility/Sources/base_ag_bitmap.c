@@ -992,7 +992,7 @@ bool bitmap_ag_texture_skybox_west(texture_frame_type *frame,char *base_path,int
       
 ======================================================= */
 
-void bitmap_ag_texture_skin_chunk(bitmap_ag_type *ag_bitmap,int x,int y,int wid,int high)
+void bitmap_ag_texture_skin_chunk(bitmap_ag_type *ag_bitmap,int x,int y,int wid,int high,float scale_darken,float noise_darken)
 {
 	int				n,px,py,p_wid,p_high,scale_count;
 	d3col			border_col;
@@ -1006,9 +1006,9 @@ void bitmap_ag_texture_skin_chunk(bitmap_ag_type *ag_bitmap,int x,int y,int wid,
 
 	scale_count=bitmap_ag_skin_start_scale_count+bitmap_ag_random_int(bitmap_ag_skin_extra_scale_count);
 	
-	border_col.r=ag_bitmap->back_col.r*0.8f;
-	border_col.g=ag_bitmap->back_col.g*0.8f;
-	border_col.b=ag_bitmap->back_col.b*0.8f;
+	border_col.r=ag_bitmap->back_col.r*scale_darken;
+	border_col.g=ag_bitmap->back_col.g*scale_darken;
+	border_col.b=ag_bitmap->back_col.b*scale_darken;
 
 	for (n=0;n!=scale_count;n++) {
 		px=bitmap_ag_random_int(wid);
@@ -1022,7 +1022,7 @@ void bitmap_ag_texture_skin_chunk(bitmap_ag_type *ag_bitmap,int x,int y,int wid,
 
 		// skin noise
 
-	bitmap_ag_texture_add_noise(ag_bitmap,x,y,wid,high,0.9f,0.8f);
+	bitmap_ag_texture_add_noise(ag_bitmap,x,y,wid,high,noise_darken,0.8f);
 }
 
 void bitmap_ag_texture_face_chunk(bitmap_ag_type *ag_bitmap,int x,int y,int wid,int high)
@@ -1033,7 +1033,7 @@ void bitmap_ag_texture_face_chunk(bitmap_ag_type *ag_bitmap,int x,int y,int wid,
 
 		// skin
 
-	bitmap_ag_texture_skin_chunk(ag_bitmap,x,y,wid,high);
+	bitmap_ag_texture_skin_chunk(ag_bitmap,x,y,wid,high,0.8f,0.8f);
 	
 		// eyes
 
@@ -1062,17 +1062,17 @@ bool bitmap_ag_texture_skin(texture_frame_type *frame,char *base_path,int pixel_
 	ag_bitmap.no_bump_spec=FALSE;
 	ag_bitmap.frame=frame;
 
-	bitmap_ag_random_color(&ag_bitmap.back_col,100,255,100,50,200,50);
+	bitmap_ag_random_color(&ag_bitmap.back_col,255,255,255,100,100,100);
 
 	if (!bitmap_ag_texture_create(&ag_bitmap,FALSE)) return(FALSE);
 
 		// top-left is plain skin
-
-	bitmap_ag_texture_skin_chunk(&ag_bitmap,0,0,(pixel_sz>>1),(pixel_sz>>1));
-
 		// top-right is face
+		// bottom-left is darker skin
 
+	bitmap_ag_texture_skin_chunk(&ag_bitmap,0,0,(pixel_sz>>1),(pixel_sz>>1),0.8f,0.8f);
 	bitmap_ag_texture_face_chunk(&ag_bitmap,(pixel_sz>>1),0,(pixel_sz>>1),(pixel_sz>>1));
+	bitmap_ag_texture_skin_chunk(&ag_bitmap,0,(pixel_sz>>1),(pixel_sz>>1),(pixel_sz>>1),0.6f,0.9f);
 
 		// save textures
 

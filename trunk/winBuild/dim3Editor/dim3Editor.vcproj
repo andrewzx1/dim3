@@ -1409,6 +1409,10 @@
 						RelativePath="..\..\dim3AutoGenerate\Sources\model\model_auto_generate.c"
 						>
 					</File>
+					<File
+						RelativePath="..\..\dim3AutoGenerate\Sources\model\model_auto_generate_bone.c"
+						>
+					</File>
 				</Filter>
 				<Filter
 					Name="common"
