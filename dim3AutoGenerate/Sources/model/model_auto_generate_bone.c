@@ -59,7 +59,6 @@ bool ag_model_bone_is_special(model_type *model,int bone_idx)
 
 		// base bone
 
-	if ((bone->pnt.x==0) && (bone->pnt.y==0) && (bone->pnt.z==0)) return(TRUE);
 	if (strcmp(bone->name,"Base")==0) return(TRUE);
 
 		// connector bones
@@ -145,6 +144,17 @@ bool ag_model_bone_is_cubed(model_type *model,int bone_idx,d3pnt *sz)
 	return(FALSE);
 }
 
+bool ag_model_bone_is_decoration_ok(model_type *model,int bone_idx)
+{
+	if (strcmp(model->bones[bone_idx].name,"Head")==0) return(FALSE);
+	if (strcmp(model->bones[bone_idx].name,"Base")==0) return(FALSE);
+	if (strcmp(model->bones[bone_idx].name,"Name")==0) return(FALSE);
+	if (strstr(model->bones[bone_idx].name,"Hand")!=NULL) return(FALSE);
+	if (strstr(model->bones[bone_idx].name,"Foot")!=NULL) return(FALSE);
+
+	return(TRUE);
+}
+
 /* =======================================================
 
       Add Bones
@@ -154,9 +164,38 @@ bool ag_model_bone_is_cubed(model_type *model,int bone_idx,d3pnt *sz)
 int ag_model_add_bone_single(model_type *model,char *name,int parent_idx,int x,int y,int z)
 {
 	int				bone_idx;
-	model_bone_type	*bone;
+	model_bone_type	*bone,*ptr;
+
+	/*
+	// supergumba -- normally adding a bone deletes
+	// any pose moves, so for now we need to do this by hand,
+	// eventually add back the real way
 
 	bone_idx=model_bone_add(model,x,y,z);
+	*/
+
+	ptr=(model_bone_type*)malloc(sizeof(model_bone_type)*(model->nbone+1));
+	if (model->bones!=NULL) {
+		memmove(ptr,model->bones,(sizeof(model_bone_type)*model->nbone));
+		free(model->bones);
+	}
+	model->bones=ptr;
+
+	bone_idx=model->nbone;
+	model->nbone++;
+
+	bone=&model->bones[bone_idx];
+	bzero(bone,sizeof(model_bone_type));
+	
+	bone->parent_idx=-1;
+	bone->pnt.x=x;
+	bone->pnt.y=y;
+	bone->pnt.z=z;
+
+	bone->natural_offset.x=bone->natural_offset.y=bone->natural_offset.z=0;
+	bone->natural_rot.x=bone->natural_rot.y=bone->natural_rot.z=0.0f;
+// end of stuff to delete later
+
 
 	bone=&model->bones[bone_idx];
 	strcpy(bone->name,name);
@@ -175,30 +214,39 @@ void ag_model_add_bones(model_type *model)
 				left_hip_bone_idx,right_hip_bone_idx,
 				left_knee_bone_idx,right_knee_bone_idx,
 				left_ankle_bone_idx,right_ankle_bone_idx;
+	int			hip_high,torso_high,head_high,hand_high,elbow_high;
+
+		// random sizes
+
+	hip_high=1000+ag_random_int(1500);
+	torso_high=hip_high+(500+ag_random_int(500));
+	head_high=torso_high+(150+ag_random_int(200));
+	hand_high=800+ag_random_int(1000);
+	elbow_high=((torso_high-hand_high)>>1)+hand_high;
 
 		// supergumba -- for now need to create in same
 		// order as animations that exist
 
-	hip_bone_idx=ag_model_add_bone_single(model,"Hips",-1,0,-1800,0);		// supergumba -- have to reset this later
-	torso_bone_idx=ag_model_add_bone_single(model,"Torso",hip_bone_idx,0,-2625,0);
+	hip_bone_idx=ag_model_add_bone_single(model,"Hips",-1,0,-hip_high,0);		// supergumba -- have to reset this later
+	torso_bone_idx=ag_model_add_bone_single(model,"Torso",hip_bone_idx,0,-torso_high,0);
 
-	left_shoulder_bone_idx=ag_model_add_bone_single(model,"Left Shoulder",torso_bone_idx,360,-2625,60);
-	right_shoulder_bone_idx=ag_model_add_bone_single(model,"Right Shoulder",torso_bone_idx,-360,-2625,60);
+	left_shoulder_bone_idx=ag_model_add_bone_single(model,"Left Shoulder",torso_bone_idx,360,-torso_high,60);
+	right_shoulder_bone_idx=ag_model_add_bone_single(model,"Right Shoulder",torso_bone_idx,-360,-torso_high,60);
 
-	left_elbow_bone_idx=ag_model_add_bone_single(model,"Left Elbow",left_shoulder_bone_idx,420,-2115,60);
-	right_elbow_bone_idx=ag_model_add_bone_single(model,"Right Elbow",right_shoulder_bone_idx,-420,-2115,60);
+	left_elbow_bone_idx=ag_model_add_bone_single(model,"Left Elbow",left_shoulder_bone_idx,420,-elbow_high,60);
+	right_elbow_bone_idx=ag_model_add_bone_single(model,"Right Elbow",right_shoulder_bone_idx,-420,-elbow_high,60);
 
-	left_wrist_bone_idx=ag_model_add_bone_single(model,"Left Wrist",left_elbow_bone_idx,450,-1650,0);
-	right_wrist_bone_idx=ag_model_add_bone_single(model,"Right Wrist",right_elbow_bone_idx,-450,-1650,0);
+	left_wrist_bone_idx=ag_model_add_bone_single(model,"Left Wrist",left_elbow_bone_idx,450,-(hand_high+150),0);
+	right_wrist_bone_idx=ag_model_add_bone_single(model,"Right Wrist",right_elbow_bone_idx,-450,-(hand_high+150),0);
 
-	ag_model_add_bone_single(model,"Left Hand",left_wrist_bone_idx,450,-1500,0);
-	ag_model_add_bone_single(model,"Right Hand",right_wrist_bone_idx,-450,-1500,0);
+	ag_model_add_bone_single(model,"Left Hand",left_wrist_bone_idx,450,-hand_high,0);
+	ag_model_add_bone_single(model,"Right Hand",right_wrist_bone_idx,-450,-hand_high,0);
 
-	right_hip_bone_idx=ag_model_add_bone_single(model,"Right Hip",hip_bone_idx,-150,-1650,0);
-	left_hip_bone_idx=ag_model_add_bone_single(model,"Left Hip",hip_bone_idx,150,-1650,0);
+	right_hip_bone_idx=ag_model_add_bone_single(model,"Right Hip",hip_bone_idx,-150,-(hip_high-200),0);
+	left_hip_bone_idx=ag_model_add_bone_single(model,"Left Hip",hip_bone_idx,150,-(hip_high-200),0);
 
-	left_knee_bone_idx=ag_model_add_bone_single(model,"Left Knee",left_hip_bone_idx,120,-975,45);
-	right_knee_bone_idx=ag_model_add_bone_single(model,"Right Knee",right_hip_bone_idx,-120,-975,45);
+	left_knee_bone_idx=ag_model_add_bone_single(model,"Left Knee",left_hip_bone_idx,120,-(hip_high>>1),45);
+	right_knee_bone_idx=ag_model_add_bone_single(model,"Right Knee",right_hip_bone_idx,-120,-(hip_high>>1),45);
 
 	left_ankle_bone_idx=ag_model_add_bone_single(model,"Left Ankle",left_knee_bone_idx,120,-240,90);
 	right_ankle_bone_idx=ag_model_add_bone_single(model,"Right Ankle",right_knee_bone_idx,-120,-240,90);
@@ -206,13 +254,9 @@ void ag_model_add_bones(model_type *model)
 	ag_model_add_bone_single(model,"Left Foot",left_ankle_bone_idx,120,-60,0);
 	ag_model_add_bone_single(model,"Right Foot",right_ankle_bone_idx,-120,-60,0);
 
-	head_bone_idx=ag_model_add_bone_single(model,"Head",torso_bone_idx,0,-2850,0);
+	head_bone_idx=ag_model_add_bone_single(model,"Head",torso_bone_idx,0,-head_high,0);
 	base_bone_idx=ag_model_add_bone_single(model,"Base",-1,0,0,0);
-	model->bone_connect.name_bone_idx=ag_model_add_bone_single(model,"Name",head_bone_idx,0,-3600,0);
+	model->bone_connect.name_bone_idx=ag_model_add_bone_single(model,"Name",head_bone_idx,0,-(head_high+1000),0);
 
 	model->bones[0].parent_idx=base_bone_idx;		// supergumba -- re-arrange these later when animations are created
-
-		// fix parenting animation distances
-
-	model_calculate_parents(model);
 }

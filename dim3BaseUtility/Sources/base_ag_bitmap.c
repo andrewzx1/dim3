@@ -1028,8 +1028,9 @@ void bitmap_ag_texture_skin_chunk(bitmap_ag_type *ag_bitmap,int x,int y,int wid,
 void bitmap_ag_texture_face_chunk(bitmap_ag_type *ag_bitmap,int x,int y,int wid,int high)
 {
 	int				n,eye_count,
-					px,py,eye_wid,eye_high;
-	d3col			border_col,col;
+					px,py,px2,py2,eye_wid,eye_high,
+					pupil_wid,pupil_high;
+	d3col			border_col,col,col2;
 
 		// skin
 
@@ -1039,19 +1040,57 @@ void bitmap_ag_texture_face_chunk(bitmap_ag_type *ag_bitmap,int x,int y,int wid,
 
 	border_col.r=border_col.g=border_col.b=0.0f;
 	bitmap_ag_random_color(&col,255,50,150,50,0,0);
+	col2.r=col2.g=col2.b=0.0f;
 
 	eye_count=1+bitmap_ag_random_int(3);
 
 	eye_wid=(wid-50)/eye_count;
-	eye_high=eye_wid-bitmap_ag_random_int(eye_wid>>1);
+	eye_high=(eye_wid*3)>>1;
+	if (eye_high>(high>>1)) eye_high=high>>1;
+
+	pupil_wid=eye_wid>>2;
+	pupil_high=eye_high-bitmap_ag_random_int(eye_high>>1);
 
 	px=x+25;
-	py=y+eye_high;
+	py=y+25;
 
 	for (n=0;n!=eye_count;n++) {
 		bitmap_ag_texture_draw_oval(ag_bitmap,px,py,(eye_wid-5),eye_high,2,TRUE,&border_col,&col);
+
+		px2=px+((eye_wid-pupil_wid)>>1);
+		py2=py+((eye_high-pupil_high)>>1);
+		bitmap_ag_texture_draw_oval(ag_bitmap,px2,py2,pupil_wid,pupil_high,1,TRUE,&border_col,&col2);
+
 		px+=eye_wid;
 	}
+
+	bitmap_ag_texture_draw_line_horizontal(ag_bitmap,(x+10),(y+(high-20)),(wid-20),2,FALSE,&col2);
+}
+
+void bitmap_ag_texture_cloth_chunk(bitmap_ag_type *ag_bitmap,int x,int y,int wid,int high)
+{
+	int				n,px,py,p_wid,p_high,mark_count;
+	d3col			col;
+
+	bitmap_ag_set_clip(ag_bitmap,x,y,wid,high);
+
+	bitmap_ag_random_color(&col,200,200,200,80,80,80);
+
+	bitmap_ag_texture_draw_rectangle(ag_bitmap,x,y,wid,high,1,TRUE,&col,NULL);
+	bitmap_ag_texture_gradient_overlay_vertical(ag_bitmap,x,y,wid,high,1.0f,0.7f);
+	bitmap_ag_texture_add_noise(ag_bitmap,x,y,wid,high,0.7f,0.5f);
+
+	mark_count=40+bitmap_ag_random_int(60);
+
+	for (n=0;n!=mark_count;n++) {
+		px=bitmap_ag_random_int(wid);
+		py=bitmap_ag_random_int(high);
+		p_wid=30+bitmap_ag_random_int(30);
+		p_high=30+bitmap_ag_random_int(30);
+		bitmap_ag_texture_add_particle(ag_bitmap,px,py,p_wid,p_high,0.8f,TRUE,bitmap_ag_cement_particle_density);
+	}
+
+	bitmap_ag_clear_clip(ag_bitmap);
 }
 
 bool bitmap_ag_texture_skin(texture_frame_type *frame,char *base_path,int pixel_sz)
@@ -1072,7 +1111,8 @@ bool bitmap_ag_texture_skin(texture_frame_type *frame,char *base_path,int pixel_
 
 	bitmap_ag_texture_skin_chunk(&ag_bitmap,0,0,(pixel_sz>>1),(pixel_sz>>1),0.8f,0.8f);
 	bitmap_ag_texture_face_chunk(&ag_bitmap,(pixel_sz>>1),0,(pixel_sz>>1),(pixel_sz>>1));
-	bitmap_ag_texture_skin_chunk(&ag_bitmap,0,(pixel_sz>>1),(pixel_sz>>1),(pixel_sz>>1),0.6f,0.9f);
+	bitmap_ag_texture_skin_chunk(&ag_bitmap,0,(pixel_sz>>1),(pixel_sz>>1),(pixel_sz>>1),0.7f,0.7f);
+	bitmap_ag_texture_cloth_chunk(&ag_bitmap,(pixel_sz>>1),(pixel_sz>>1),(pixel_sz>>1),(pixel_sz>>1));
 
 		// save textures
 

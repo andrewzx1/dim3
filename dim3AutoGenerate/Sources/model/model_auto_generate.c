@@ -169,17 +169,13 @@ int ag_model_bone_cylinder_vertexes(model_type *model,model_mesh_type *mesh,int 
 
 		vector_create(&vertex->tangent_space.normal,vertex->pnt.x,vertex->pnt.y,vertex->pnt.z,bone->pnt.x,bone->pnt.y,bone->pnt.z);
 
-		vertex->tangent_space.tangent.x=0.0f;		// supergumba -- need to properly calc this
-		vertex->tangent_space.tangent.y=1.0f;
-		vertex->tangent_space.tangent.z=0.0f;
-
 		vertex++;
 	}
 
 	return(v_idx);
 }
 
-void ag_model_bone_cylinder_polygons(model_type *model,model_mesh_type *mesh,int v1_idx,int v2_idx)
+void ag_model_bone_cylinder_polygons(model_type *model,model_mesh_type *mesh,int v1_idx,int v2_idx,bool secondary_texture)
 {
 	int				n,k,poly_idx;
 	float			gx,gx2,gx_add;
@@ -193,7 +189,7 @@ void ag_model_bone_cylinder_polygons(model_type *model,model_mesh_type *mesh,int
 		// build polys
 		// skin is top-left of texture
 
-	gx=0.0f;
+	gx=secondary_texture?0.5f:0.0f;
 	gx_add=0.5f/(float)ag_model_cylinder_side_count;
 
 	poly=&mesh->polys[poly_idx];
@@ -206,7 +202,7 @@ void ag_model_bone_cylinder_polygons(model_type *model,model_mesh_type *mesh,int
 			// the UV
 
 		if ((n+1)==ag_model_cylinder_side_count) {
-			gx2=0.5f;
+			gx2=secondary_texture?1.0f:0.5f;
 		}
 		else {
 			gx2=gx+gx_add;
@@ -214,8 +210,14 @@ void ag_model_bone_cylinder_polygons(model_type *model,model_mesh_type *mesh,int
 
 		poly->gx[0]=poly->gx[3]=gx;
 		poly->gx[1]=poly->gx[2]=gx2;
-		poly->gy[0]=poly->gy[1]=0.0f;
-		poly->gy[2]=poly->gy[3]=0.5f;
+		if (secondary_texture) {
+			poly->gy[0]=poly->gy[1]=0.5f;
+			poly->gy[2]=poly->gy[3]=1.0f;
+		}
+		else {
+			poly->gy[0]=poly->gy[1]=0.0f;
+			poly->gy[2]=poly->gy[3]=0.5f;
+		}
 
 		gx=gx2;
 
@@ -284,10 +286,6 @@ void ag_model_bone_point_cube(model_type *model,model_mesh_type *mesh,int bone_i
 			// tangent space
 
 		vector_create(&vertex->tangent_space.normal,vertex->pnt.x,vertex->pnt.y,vertex->pnt.z,bone->pnt.x,bone->pnt.y,bone->pnt.z);
-
-		vertex->tangent_space.tangent.x=0.0f;		// supergumba -- need to properly calc this
-		vertex->tangent_space.tangent.y=1.0f;
-		vertex->tangent_space.tangent.z=0.0f;
 
 		vertex++;
 	}
@@ -448,7 +446,7 @@ void ag_model_build_around_bones(model_type *model)
 			// create poly
 		
 		parent_idx=model->bones[n].parent_idx;
-		ag_model_bone_cylinder_polygons(model,mesh,bone_vertex_idx[n],bone_vertex_idx[parent_idx]);
+		ag_model_bone_cylinder_polygons(model,mesh,bone_vertex_idx[n],bone_vertex_idx[parent_idx],FALSE);
 	}
 
 		// build body bone
@@ -460,14 +458,14 @@ void ag_model_build_around_bones(model_type *model)
 
 		v_idx=ag_model_bone_cylinder_vertexes(model,mesh,body_bone_idx,ag_model_cylinder_body_radius_x,ag_model_cylinder_body_radius_z,0);
 		v2_idx=ag_model_bone_cylinder_vertexes(model,mesh,parent_idx,ag_model_cylinder_body_radius_x,ag_model_cylinder_body_radius_z,0);
-		ag_model_bone_cylinder_polygons(model,mesh,v_idx,v2_idx);
+		ag_model_bone_cylinder_polygons(model,mesh,v_idx,v2_idx,TRUE);
 	
 			// hip bone
 			// connects to bottom of body bone
 
 		if (hip_bone_idx!=-1) {
 			v3_idx=ag_model_bone_cylinder_vertexes(model,mesh,hip_bone_idx,ag_model_cylinder_hip_radius_x,ag_model_cylinder_hip_radius_z,ag_model_cylinder_hip_high);
-			ag_model_bone_cylinder_polygons(model,mesh,v2_idx,v3_idx);
+			ag_model_bone_cylinder_polygons(model,mesh,v2_idx,v3_idx,TRUE);
 		}
 	}
 
@@ -549,8 +547,11 @@ void auto_generate_model_monster(model_type *model)
 		// build model around bones
 
 	ag_model_build_around_bones(model);
+	ag_model_add_decorations(model);
 
 		// rebuild tangents
+		// and animation settings
 
 	model_recalc_normals(model,TRUE);
+	model_calculate_parents(model);
 }
