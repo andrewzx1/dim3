@@ -1064,7 +1064,7 @@ void bitmap_ag_texture_face_chunk(bitmap_ag_type *ag_bitmap,int x,int y,int wid,
 		px+=eye_wid;
 	}
 
-	bitmap_ag_texture_draw_line_horizontal(ag_bitmap,(x+10),(y+(high-20)),(wid-20),2,FALSE,&col2);
+	bitmap_ag_texture_draw_line_horizontal(ag_bitmap,(x+10),(y+(high-40)),(wid-20),2,FALSE,&col2);
 }
 
 void bitmap_ag_texture_cloth_chunk(bitmap_ag_type *ag_bitmap,int x,int y,int wid,int high)

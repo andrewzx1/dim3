@@ -157,6 +157,48 @@ bool ag_model_bone_is_decoration_ok(model_type *model,int bone_idx)
 
 /* =======================================================
 
+      Distances
+      
+======================================================= */
+
+int ag_model_bone_get_torso_width(model_type *model)
+{
+	int					n,min,max;
+	model_bone_type		*bone;
+
+	bone=model->bones;
+
+	min=max=0;
+
+	for (n=0;n!=model->nbone;n++) {
+		if (strcmp(bone->name,"Left Shoulder")==0) min=bone->pnt.x;
+		if (strcmp(bone->name,"Right Shoulder")==0) max=bone->pnt.x;
+		bone++;
+	}
+
+	return(abs(max-min)>>1);
+}
+
+int ag_model_bone_get_hip_width(model_type *model)
+{
+	int					n,min,max;
+	model_bone_type		*bone;
+
+	bone=model->bones;
+
+	min=max=0;
+
+	for (n=0;n!=model->nbone;n++) {
+		if (strcmp(bone->name,"Left Hip")==0) min=bone->pnt.x;
+		if (strcmp(bone->name,"Right Hip")==0) max=bone->pnt.x;
+		bone++;
+	}
+
+	return(abs(max-min)>>1);
+}
+
+/* =======================================================
+
       Add Bones
       
 ======================================================= */
@@ -214,12 +256,15 @@ void ag_model_add_bones(model_type *model)
 				left_hip_bone_idx,right_hip_bone_idx,
 				left_knee_bone_idx,right_knee_bone_idx,
 				left_ankle_bone_idx,right_ankle_bone_idx;
-	int			hip_high,torso_high,head_high,hand_high,elbow_high;
+	int			hip_high,torso_high,torso_radius,arm_swing,
+				head_high,hand_high,elbow_high;
 
 		// random sizes
 
 	hip_high=1000+ag_random_int(1500);
 	torso_high=hip_high+(500+ag_random_int(500));
+	torso_radius=300+ag_random_int(350);
+	arm_swing=40+ag_random_int(40);
 	head_high=torso_high+(150+ag_random_int(200));
 	hand_high=800+ag_random_int(1000);
 	elbow_high=((torso_high-hand_high)>>1)+hand_high;
@@ -230,17 +275,17 @@ void ag_model_add_bones(model_type *model)
 	hip_bone_idx=ag_model_add_bone_single(model,"Hips",-1,0,-hip_high,0);		// supergumba -- have to reset this later
 	torso_bone_idx=ag_model_add_bone_single(model,"Torso",hip_bone_idx,0,-torso_high,0);
 
-	left_shoulder_bone_idx=ag_model_add_bone_single(model,"Left Shoulder",torso_bone_idx,360,-torso_high,60);
-	right_shoulder_bone_idx=ag_model_add_bone_single(model,"Right Shoulder",torso_bone_idx,-360,-torso_high,60);
+	left_shoulder_bone_idx=ag_model_add_bone_single(model,"Left Shoulder",torso_bone_idx,torso_radius,-torso_high,60);
+	right_shoulder_bone_idx=ag_model_add_bone_single(model,"Right Shoulder",torso_bone_idx,-torso_radius,-torso_high,60);
 
-	left_elbow_bone_idx=ag_model_add_bone_single(model,"Left Elbow",left_shoulder_bone_idx,420,-elbow_high,60);
-	right_elbow_bone_idx=ag_model_add_bone_single(model,"Right Elbow",right_shoulder_bone_idx,-420,-elbow_high,60);
+	left_elbow_bone_idx=ag_model_add_bone_single(model,"Left Elbow",left_shoulder_bone_idx,(torso_radius+arm_swing),-elbow_high,60);
+	right_elbow_bone_idx=ag_model_add_bone_single(model,"Right Elbow",right_shoulder_bone_idx,-(torso_radius+arm_swing),-elbow_high,60);
 
-	left_wrist_bone_idx=ag_model_add_bone_single(model,"Left Wrist",left_elbow_bone_idx,450,-(hand_high+150),0);
-	right_wrist_bone_idx=ag_model_add_bone_single(model,"Right Wrist",right_elbow_bone_idx,-450,-(hand_high+150),0);
+	left_wrist_bone_idx=ag_model_add_bone_single(model,"Left Wrist",left_elbow_bone_idx,((torso_radius+arm_swing)+30),-(hand_high+150),0);
+	right_wrist_bone_idx=ag_model_add_bone_single(model,"Right Wrist",right_elbow_bone_idx,-((torso_radius+arm_swing)+30),-(hand_high+150),0);
 
-	ag_model_add_bone_single(model,"Left Hand",left_wrist_bone_idx,450,-hand_high,0);
-	ag_model_add_bone_single(model,"Right Hand",right_wrist_bone_idx,-450,-hand_high,0);
+	ag_model_add_bone_single(model,"Left Hand",left_wrist_bone_idx,((torso_radius+arm_swing)+30),-hand_high,0);
+	ag_model_add_bone_single(model,"Right Hand",right_wrist_bone_idx,-((torso_radius+arm_swing)+30),-hand_high,0);
 
 	right_hip_bone_idx=ag_model_add_bone_single(model,"Right Hip",hip_bone_idx,-150,-(hip_high-200),0);
 	left_hip_bone_idx=ag_model_add_bone_single(model,"Left Hip",hip_bone_idx,150,-(hip_high-200),0);
