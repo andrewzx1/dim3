@@ -348,6 +348,8 @@
 		26F7E1951600472C00E739C4 /* map_menu.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F7E1921600472C00E739C4 /* map_menu.c */; };
 		26F7E1961600472C00E739C4 /* model_menu.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F7E1931600472C00E739C4 /* model_menu.c */; };
 		26F7E1971600472C00E739C4 /* project_menu.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F7E1941600472C00E739C4 /* project_menu.c */; };
+		26F7EE0919A1BC3E006DD077 /* model_auto_generate_bone.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F7EE0719A1BC3E006DD077 /* model_auto_generate_bone.c */; };
+		26F7EE0A19A1BC3E006DD077 /* model_auto_generate_decorations.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F7EE0819A1BC3E006DD077 /* model_auto_generate_decorations.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -853,6 +855,8 @@
 		26F7E19E160047D900E739C4 /* dim3editor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = dim3editor.h; path = Headers/dim3editor.h; sourceTree = "<group>"; };
 		26F7E19F160047D900E739C4 /* editor_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = editor_defs.h; path = Headers/editor_defs.h; sourceTree = "<group>"; };
 		26F7E1A0160047D900E739C4 /* interface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = interface.h; path = Headers/interface.h; sourceTree = "<group>"; };
+		26F7EE0719A1BC3E006DD077 /* model_auto_generate_bone.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = model_auto_generate_bone.c; path = ../../dim3AutoGenerate/Sources/model/model_auto_generate_bone.c; sourceTree = "<group>"; };
+		26F7EE0819A1BC3E006DD077 /* model_auto_generate_decorations.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = model_auto_generate_decorations.c; path = ../../dim3AutoGenerate/Sources/model/model_auto_generate_decorations.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1113,6 +1117,8 @@
 		2653B1BA198F4342008C40E4 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				26F7EE0719A1BC3E006DD077 /* model_auto_generate_bone.c */,
+				26F7EE0819A1BC3E006DD077 /* model_auto_generate_decorations.c */,
 				26F567041990994700C8506C /* model_auto_generate.c */,
 			);
 			name = Model;
@@ -1891,6 +1897,7 @@
 				26F7E1361600468600E739C4 /* project_palette_preload_models.c in Sources */,
 				26F7E1371600468600E739C4 /* project_palette_progress.c in Sources */,
 				26F7E1381600468600E739C4 /* project_palette_radar_icon.c in Sources */,
+				26F7EE0A19A1BC3E006DD077 /* model_auto_generate_decorations.c in Sources */,
 				26F7E1391600468600E739C4 /* project_palette_radar.c in Sources */,
 				26F7E13A1600468600E739C4 /* project_palette_ring.c in Sources */,
 				26F7E13B1600468600E739C4 /* project_palette_rings.c in Sources */,
@@ -1899,6 +1906,7 @@
 				26F7E13E1600468600E739C4 /* project_palette_shader.c in Sources */,
 				26F7E13F1600468600E739C4 /* project_palette_shaders.c in Sources */,
 				26F7E1401600468600E739C4 /* project_palette_singleplayer_option.c in Sources */,
+				26F7EE0919A1BC3E006DD077 /* model_auto_generate_bone.c in Sources */,
 				2653B1C9198F436E008C40E4 /* map_auto_generate_setup.c in Sources */,
 				26F7E1411600468600E739C4 /* project_palette_singleplayer.c in Sources */,
 				26F7E1421600468600E739C4 /* project_palette_sound.c in Sources */,
