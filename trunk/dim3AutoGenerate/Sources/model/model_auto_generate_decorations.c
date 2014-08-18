@@ -29,6 +29,9 @@ and can be sold or given away.
 	#include "dim3autogenerate.h"
 #endif
 
+#define ag_model_decoration_bone_spike_count		5
+#define ag_model_decoration_bone_spike_extra		10
+
 /* =======================================================
 
       Spike Decorations
@@ -148,6 +151,17 @@ void ag_model_decoration_spike(model_type *model,model_mesh_type *mesh,int bone_
 	poly->gy[2]=1.0f;
 }
 
+void ag_model_decoration_bone_spike(model_type *model,model_mesh_type *mesh,int bone_idx)
+{
+	int				n,nspike;
+
+	nspike=ag_model_decoration_bone_spike_count+ag_random_int(ag_model_decoration_bone_spike_extra);
+
+	for (n=0;n!=nspike;n++) {
+		ag_model_decoration_spike(model,mesh,bone_idx);
+	}
+}
+
 /* =======================================================
 
       Model Decorations
@@ -156,24 +170,25 @@ void ag_model_decoration_spike(model_type *model,model_mesh_type *mesh,int bone_
 
 void ag_model_add_decorations(model_type *model)
 {
-	int					n,nspike,bone_idx;
+	int					n;
 	model_mesh_type		*mesh;
 
 	mesh=&model->meshes[0];
 
-	nspike=20+ag_random_int(30);
+	for (n=0;n!=model->nbone;n++) {
 
-	for (n=0;n!=nspike;n++) {
+			// can bone have decoration
 
-			// find bone that can have decoration
-
-		while (TRUE) {
-			bone_idx=ag_random_int(model->nbone);
-			if (ag_model_bone_is_decoration_ok(model,bone_idx)) break;
-		}
+		if (!ag_model_bone_is_decoration_ok(model,n)) continue;
 
 			// add decoration
 
-		ag_model_decoration_spike(model,mesh,bone_idx);
+		switch (ag_random_int(2)) {
+
+			case 1:
+				ag_model_decoration_bone_spike(model,mesh,n);
+				break;
+
+		}
 	}
 }

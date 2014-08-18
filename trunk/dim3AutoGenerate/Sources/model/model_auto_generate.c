@@ -31,10 +31,6 @@ and can be sold or given away.
 
 #define ag_model_cylinder_side_count		8
 #define ag_model_cylinder_limb_radius		100
-#define ag_model_cylinder_body_radius_x		300
-#define ag_model_cylinder_body_radius_z		150
-#define ag_model_cylinder_hip_radius_x		250
-#define ag_model_cylinder_hip_radius_z		150
 #define ag_model_cylinder_hip_high			300
 #define ag_model_cylinder_extra_size		40
 
@@ -175,18 +171,24 @@ int ag_model_bone_cylinder_vertexes(model_type *model,model_mesh_type *mesh,int 
 	return(v_idx);
 }
 
-void ag_model_bone_cylinder_polygons(model_type *model,model_mesh_type *mesh,int v1_idx,int v2_idx,bool secondary_texture)
+void ag_model_bone_cylinder_polygons(model_type *model,model_mesh_type *mesh,int v1_idx,int v2_idx,bool secondary_texture,bool close_top,bool close_bottom)
 {
-	int				n,k,poly_idx;
-	float			gx,gx2,gx_add;
+	int				n,k,npoly,poly_idx;
+	float			gx,gx2,gy,gx_add,
+					ang,uv_x[8],uv_y[8];
 	model_poly_type	*poly;
 
 		// add polys
 
 	poly_idx=mesh->npoly;
-	model_mesh_set_poly_count(model,0,(poly_idx+ag_model_cylinder_side_count));
 
-		// build polys
+	npoly=poly_idx+ag_model_cylinder_side_count;
+	if (close_top) npoly+=(ag_model_cylinder_side_count-2);
+	if (close_bottom) npoly+=(ag_model_cylinder_side_count-2);
+
+	model_mesh_set_poly_count(model,0,npoly);
+
+		// build side polys
 		// skin is top-left of texture
 
 	gx=secondary_texture?0.5f:0.0f;
@@ -232,6 +234,51 @@ void ag_model_bone_cylinder_polygons(model_type *model,model_mesh_type *mesh,int
 		poly->v[3]=v2_idx+n;
 
 		poly++;
+	}
+
+		// get UV for polys
+	
+	gx=secondary_texture?0.5f:0.0f;
+	gy=secondary_texture?0.5f:0.0f;
+
+	for (n=0;n!=ag_model_cylinder_side_count;n++) {
+		ang=(TRIG_PI/((float)ag_model_cylinder_side_count))*(float)n;
+		uv_x[n]=gx+fabsf(0.5f*sinf(ang));
+		uv_y[n]=gy+fabsf(0.5f*cosf(ang));
+	}
+
+		// build top or bottom polys
+
+	for (n=0;n!=(ag_model_cylinder_side_count-2);n++) {
+		
+		if (close_top) {
+			poly->ptsz=3;
+			poly->txt_idx=0;
+			poly->gx[0]=uv_x[0];
+			poly->gx[1]=uv_x[n+1];
+			poly->gx[2]=uv_x[n+2];
+			poly->gy[0]=uv_y[0];
+			poly->gy[1]=uv_y[n+1];
+			poly->gy[2]=uv_y[n+2];
+			poly->v[0]=v1_idx;
+			poly->v[1]=v1_idx+(n+1);
+			poly->v[2]=v1_idx+(n+2);
+			poly++;
+		}
+		if (close_bottom) {
+			poly->ptsz=3;
+			poly->txt_idx=0;
+			poly->gx[0]=uv_x[0];
+			poly->gx[1]=uv_x[n+1];
+			poly->gx[2]=uv_x[n+2];
+			poly->gy[0]=uv_y[0];
+			poly->gy[1]=uv_y[n+1];
+			poly->gy[2]=uv_y[n+2];
+			poly->v[0]=v2_idx;
+			poly->v[1]=v2_idx+(n+1);
+			poly->v[2]=v2_idx+(n+2);
+			poly++;
+		}
 	}
 }
 
@@ -389,10 +436,6 @@ void ag_model_bone_point_cube(model_type *model,model_mesh_type *mesh,int bone_i
 	poly->gy[2]=poly->gy[3]=0.5f;
 }
 
-void ag_model_bone_point_cylinder(model_type *model,model_mesh_type *mesh,int bone_idx,int body_v2_idx,d3pnt *sz)
-{
-}
-
 /* =======================================================
 
       Build Primitives around bones
@@ -403,7 +446,8 @@ void ag_model_build_around_bones(model_type *model)
 {
 	int				n,parent_idx,
 					body_bone_idx,hip_bone_idx,
-					v_idx,v2_idx,v3_idx;
+					v_idx,v2_idx,v3_idx,
+					radius_x,radius_z;
 	int				bone_vertex_idx[max_model_bone];
 	d3pnt			sz;
 	model_mesh_type	*mesh;
@@ -446,7 +490,7 @@ void ag_model_build_around_bones(model_type *model)
 			// create poly
 		
 		parent_idx=model->bones[n].parent_idx;
-		ag_model_bone_cylinder_polygons(model,mesh,bone_vertex_idx[n],bone_vertex_idx[parent_idx],FALSE);
+		ag_model_bone_cylinder_polygons(model,mesh,bone_vertex_idx[n],bone_vertex_idx[parent_idx],FALSE,FALSE,FALSE);
 	}
 
 		// build body bone
@@ -454,18 +498,24 @@ void ag_model_build_around_bones(model_type *model)
 	if (body_bone_idx!=-1) {
 		parent_idx=model->bones[body_bone_idx].parent_idx;
 
-			// body bone
+			// body cylinder
 
-		v_idx=ag_model_bone_cylinder_vertexes(model,mesh,body_bone_idx,ag_model_cylinder_body_radius_x,ag_model_cylinder_body_radius_z,0);
-		v2_idx=ag_model_bone_cylinder_vertexes(model,mesh,parent_idx,ag_model_cylinder_body_radius_x,ag_model_cylinder_body_radius_z,0);
-		ag_model_bone_cylinder_polygons(model,mesh,v_idx,v2_idx,TRUE);
+		radius_x=ag_model_bone_get_torso_width(model)-(ag_model_cylinder_limb_radius>>1);
+		radius_z=radius_x>>1;
+
+		v_idx=ag_model_bone_cylinder_vertexes(model,mesh,body_bone_idx,radius_x,radius_z,0);
+		v2_idx=ag_model_bone_cylinder_vertexes(model,mesh,parent_idx,radius_x,radius_z,0);
+		ag_model_bone_cylinder_polygons(model,mesh,v_idx,v2_idx,TRUE,TRUE,FALSE);
 	
 			// hip bone
 			// connects to bottom of body bone
 
 		if (hip_bone_idx!=-1) {
-			v3_idx=ag_model_bone_cylinder_vertexes(model,mesh,hip_bone_idx,ag_model_cylinder_hip_radius_x,ag_model_cylinder_hip_radius_z,ag_model_cylinder_hip_high);
-			ag_model_bone_cylinder_polygons(model,mesh,v2_idx,v3_idx,TRUE);
+			radius_x=ag_model_bone_get_hip_width(model);
+			radius_z=ag_model_cylinder_limb_radius;
+
+			v3_idx=ag_model_bone_cylinder_vertexes(model,mesh,hip_bone_idx,radius_x,radius_z,ag_model_cylinder_hip_high);
+			ag_model_bone_cylinder_polygons(model,mesh,v2_idx,v3_idx,TRUE,FALSE,TRUE);
 		}
 	}
 
