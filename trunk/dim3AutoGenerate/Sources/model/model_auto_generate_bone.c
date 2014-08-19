@@ -118,30 +118,19 @@ bool ag_model_bone_is_shallow_y(model_type *model,int bone_idx)
 	return(abs(bone->pnt.y-(model->bones[bone->parent_idx].pnt.y))<20);
 }
 
-bool ag_model_bone_is_cubed(model_type *model,int bone_idx,d3pnt *sz)
+bool ag_model_bone_is_head(model_type *model,int bone_idx)
 {
-	if (strcmp(model->bones[bone_idx].name,"Head")==0) {
-		sz->x=ag_model_cube_head_x_size+ag_random_int(ag_model_cube_extra_size);
-		sz->y=ag_model_cube_head_y_size+ag_random_int(ag_model_cube_extra_size);
-		sz->z=ag_model_cube_head_z_size+ag_random_int(ag_model_cube_extra_size);
-		return(TRUE);
-	}
+	return(strcmp(model->bones[bone_idx].name,"Head")==0);
+}
 
-	if (strstr(model->bones[bone_idx].name,"Hand")!=NULL) {
-		sz->x=ag_model_cube_hand_x_size+ag_random_int(ag_model_cube_extra_size);
-		sz->y=ag_model_cube_hand_y_size+ag_random_int(ag_model_cube_extra_size);
-		sz->z=ag_model_cube_hand_z_size+ag_random_int(ag_model_cube_extra_size);
-		return(TRUE);
-	}
+bool ag_model_bone_is_hand(model_type *model,int bone_idx)
+{
+	return(strstr(model->bones[bone_idx].name,"Hand")!=NULL);
+}
 
-	if (strstr(model->bones[bone_idx].name,"Foot")!=NULL) {
-		sz->x=ag_model_cube_foot_x_size+ag_random_int(ag_model_cube_extra_size);
-		sz->y=ag_model_cube_foot_y_size+ag_random_int(ag_model_cube_extra_size);
-		sz->z=ag_model_cube_foot_z_size+ag_random_int(ag_model_cube_extra_size);
-		return(TRUE);
-	}
-	
-	return(FALSE);
+bool ag_model_bone_is_foot(model_type *model,int bone_idx)
+{
+	return(strstr(model->bones[bone_idx].name,"Foot")!=NULL);
 }
 
 bool ag_model_bone_is_decoration_ok(model_type *model,int bone_idx)

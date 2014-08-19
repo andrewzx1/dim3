@@ -85,6 +85,67 @@ void ag_model_clear(model_type *model)
 
 /* =======================================================
 
+      Remove Stray Vertexes
+      
+======================================================= */
+
+void ag_model_remove_stray_vertexes(model_type *model)
+{
+	int					n,k,i,t,nvertex,npoly,sz;
+	unsigned char		*v_ok;
+    model_poly_type		*poly;
+	
+		// vertex hit list
+			
+	nvertex=model->meshes[0].nvertex;
+	
+	v_ok=(unsigned char*)malloc(nvertex);
+	bzero(v_ok,nvertex);
+	
+		// find vertexes hit
+		
+	npoly=model->meshes[0].npoly;
+	poly=model->meshes[0].polys;
+	
+	for (n=0;n!=npoly;n++) {
+		for (k=0;k!=poly->ptsz;k++) {
+			v_ok[poly->v[k]]=0x1;
+		}
+		poly++;
+	}
+	
+		// delete unused vertexes
+	
+	for (n=(nvertex-1);n>=0;n--) {
+	
+		if (v_ok[n]==0x1) continue;
+		
+			// change all poly vertex pointers
+	
+		poly=model->meshes[0].polys;
+		
+		for (i=0;i!=npoly;i++) {
+			for (t=0;t!=poly->ptsz;t++) {
+				if (poly->v[t]>n) poly->v[t]--;
+			}
+			poly++;
+		}
+		
+			// delete vertex
+			
+		sz=(nvertex-n)*sizeof(model_vertex_type);
+		if (sz>0) memmove(&model->meshes[0].vertexes[n],&model->meshes[0].vertexes[n+1],sz);
+		
+		nvertex--;
+	}
+	
+	model->meshes[0].nvertex=nvertex;
+
+	free(v_ok);
+}
+
+/* =======================================================
+
       Model Cylinders Vertex Positions
       
 ======================================================= */
@@ -449,7 +510,6 @@ void ag_model_build_around_bones(model_type *model)
 					v_idx,v2_idx,v3_idx,
 					radius_x,radius_z;
 	int				bone_vertex_idx[max_model_bone];
-	d3pnt			sz;
 	model_mesh_type	*mesh;
 
 		// build into first mesh
@@ -484,6 +544,9 @@ void ag_model_build_around_bones(model_type *model)
 
 		if (ag_model_bone_is_special(model,n)) continue;
 		if (ag_model_bone_is_special(model,model->bones[n].parent_idx)) continue;
+
+		if (ag_model_bone_is_hand(model,n)) continue;
+		if (ag_model_bone_is_foot(model,n)) continue;
 
 		if (ag_model_bone_is_shallow_y(model,n)) continue;
 
@@ -522,7 +585,15 @@ void ag_model_build_around_bones(model_type *model)
 		// build cubed bone points
 
 	for (n=0;n!=model->nbone;n++) {
-		if (ag_model_bone_is_cubed(model,n,&sz)) ag_model_bone_point_cube(model,mesh,n,&sz);
+		if (ag_model_bone_is_hand(model,n)) {
+			ag_model_piece_bone_hand(model,mesh,n,ag_model_cylinder_limb_radius);
+			continue;
+		}
+		if (ag_model_bone_is_foot(model,n)) {
+			ag_model_piece_bone_foot(model,mesh,n,ag_model_cylinder_limb_radius);
+			continue;
+		}
+		//if (ag_model_bone_is_cubed(model,n,&sz)) ag_model_bone_point_cube(model,mesh,n,&sz);
 	}
 }
 
@@ -598,6 +669,10 @@ void auto_generate_model_monster(model_type *model)
 
 	ag_model_build_around_bones(model);
 	ag_model_add_decorations(model);
+
+		// remove any stray vertexes
+
+	ag_model_remove_stray_vertexes(model);
 
 		// rebuild tangents
 		// and animation settings
