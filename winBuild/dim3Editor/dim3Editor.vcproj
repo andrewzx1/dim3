@@ -1417,6 +1417,10 @@
 						RelativePath="..\..\dim3AutoGenerate\Sources\model\model_auto_generate_decorations.c"
 						>
 					</File>
+					<File
+						RelativePath="..\..\dim3AutoGenerate\Sources\model\model_auto_generate_pieces.c"
+						>
+					</File>
 				</Filter>
 				<Filter
 					Name="common"
