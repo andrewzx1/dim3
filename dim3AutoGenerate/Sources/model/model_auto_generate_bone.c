@@ -32,17 +32,6 @@ and can be sold or given away.
 #define ag_model_cube_head_x_size			180
 #define ag_model_cube_head_y_size			200
 #define ag_model_cube_head_z_size			150
-#define ag_model_cube_hips_x_size			250
-#define ag_model_cube_hips_y_size			200
-#define ag_model_cube_hips_z_size			150
-#define ag_model_cube_hand_x_size			100
-#define ag_model_cube_hand_y_size			150
-#define ag_model_cube_hand_z_size			80
-#define ag_model_cube_foot_x_size			100
-#define ag_model_cube_foot_y_size			50
-#define ag_model_cube_foot_z_size			200
-
-#define ag_model_cube_extra_size			40
 
 /* =======================================================
 

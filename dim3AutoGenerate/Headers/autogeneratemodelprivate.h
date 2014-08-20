@@ -46,6 +46,7 @@ extern void ag_model_add_bones(model_type *model);
 // pieces
 //
 
+extern void ag_model_piece_bone_head(model_type *model,model_mesh_type *mesh,int bone_idx,int limb_radius);
 extern void ag_model_piece_bone_hand(model_type *model,model_mesh_type *mesh,int bone_idx,int limb_radius);
 extern void ag_model_piece_bone_foot(model_type *model,model_mesh_type *mesh,int bone_idx,int limb_radius);
 
