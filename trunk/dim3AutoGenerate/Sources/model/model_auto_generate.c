@@ -508,7 +508,7 @@ void ag_model_build_around_bones(model_type *model)
 	int				n,parent_idx,
 					body_bone_idx,hip_bone_idx,
 					v_idx,v2_idx,v3_idx,
-					radius_x,radius_z;
+					radius_x,radius_z,high;
 	int				bone_vertex_idx[max_model_bone];
 	model_mesh_type	*mesh;
 
@@ -574,10 +574,19 @@ void ag_model_build_around_bones(model_type *model)
 			// connects to bottom of body bone
 
 		if (hip_bone_idx!=-1) {
-			radius_x=ag_model_bone_get_hip_width(model);
-			radius_z=ag_model_cylinder_limb_radius;
 
-			v3_idx=ag_model_bone_cylinder_vertexes(model,mesh,hip_bone_idx,radius_x,radius_z,ag_model_cylinder_hip_high);
+			if (ag_random_bool()) {
+				radius_x=ag_model_bone_get_hip_width(model);
+				radius_z=ag_model_cylinder_limb_radius;
+				high=ag_model_cylinder_hip_high;
+			}
+			else {
+				radius_x=ag_model_bone_get_torso_width(model)+ag_model_cylinder_limb_radius;
+				radius_z=ag_model_cylinder_limb_radius+(ag_model_cylinder_limb_radius>>1);
+				high=ag_model_cylinder_hip_high+ag_random_int(ag_model_cylinder_hip_high);
+			}
+
+			v3_idx=ag_model_bone_cylinder_vertexes(model,mesh,hip_bone_idx,radius_x,radius_z,high);
 			ag_model_bone_cylinder_polygons(model,mesh,v2_idx,v3_idx,TRUE,FALSE,TRUE);
 		}
 	}
@@ -593,7 +602,10 @@ void ag_model_build_around_bones(model_type *model)
 			ag_model_piece_bone_foot(model,mesh,n,ag_model_cylinder_limb_radius);
 			continue;
 		}
-		//if (ag_model_bone_is_cubed(model,n,&sz)) ag_model_bone_point_cube(model,mesh,n,&sz);
+		if (ag_model_bone_is_head(model,n)) {
+			ag_model_piece_bone_head(model,mesh,n,ag_model_cylinder_limb_radius);
+			continue;
+		}
 	}
 }
 
