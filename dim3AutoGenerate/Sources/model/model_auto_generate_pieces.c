@@ -30,10 +30,15 @@ and can be sold or given away.
 #endif
 
 #define ag_model_piece_hand_y_size			200
-#define ag_model_piece_hand_y_size_extra	100
+#define ag_model_piece_hand_y_size_extra	150
 
 #define ag_model_piece_foot_x_size			100
-#define ag_model_piece_foot_z_size			300
+#define ag_model_piece_foot_x_size_extra	50
+#define ag_model_piece_foot_z_size			250
+#define ag_model_piece_foot_z_size_extra	250
+
+int 					ag_model_piece_hand_high,
+						ag_model_piece_foot_x_sz,ag_model_piece_foot_z_front;
 
 /* =======================================================
 
@@ -62,7 +67,7 @@ void ag_model_piece_add_vertex(model_type *model,model_vertex_type *vertex,int c
 	vector_create(&vertex->tangent_space.normal,vertex->pnt.x,vertex->pnt.y,vertex->pnt.z,bone->pnt.x,bone->pnt.y,bone->pnt.z);
 }
 
-void ag_model_piece_add_quad(model_type *model,model_poly_type *poly,int v_off,int v1_idx,int v2_idx,int v3_idx,int v4_idx,bool secondary_texture)
+void ag_model_piece_add_quad(model_type *model,model_poly_type *poly,int v_off,int v1_idx,int v2_idx,int v3_idx,int v4_idx,int texture_square)
 {
 	poly->ptsz=4;
 	poly->txt_idx=0;
@@ -72,10 +77,50 @@ void ag_model_piece_add_quad(model_type *model,model_poly_type *poly,int v_off,i
 	poly->v[2]=v_off+v3_idx;
 	poly->v[3]=v_off+v4_idx;
 
-	poly->gx[0]=poly->gx[3]=secondary_texture?0.5f:0.0f;
-	poly->gx[1]=poly->gx[2]=secondary_texture?1.0f:0.5f;
-	poly->gy[0]=poly->gy[1]=secondary_texture?0.5f:0.0f;
-	poly->gy[2]=poly->gy[3]=secondary_texture?1.0f:0.5f;
+	switch (texture_square) {
+		case 0:
+			poly->gx[0]=poly->gx[3]=0.0f;
+			poly->gx[1]=poly->gx[2]=0.5f;
+			poly->gy[0]=poly->gy[1]=0.0f;
+			poly->gy[2]=poly->gy[3]=0.5f;
+			break;
+		case 1:
+			poly->gx[0]=poly->gx[3]=0.5f;
+			poly->gx[1]=poly->gx[2]=1.0f;
+			poly->gy[0]=poly->gy[1]=0.0f;
+			poly->gy[2]=poly->gy[3]=0.5f;
+			break;
+		case 2:
+			poly->gx[0]=poly->gx[3]=0.0f;
+			poly->gx[1]=poly->gx[2]=0.5f;
+			poly->gy[0]=poly->gy[1]=0.5f;
+			poly->gy[2]=poly->gy[3]=1.0f;
+			break;
+		case 3:
+			poly->gx[0]=poly->gx[3]=0.5f;
+			poly->gx[1]=poly->gx[2]=1.0f;
+			poly->gy[0]=poly->gy[1]=0.5f;
+			poly->gy[2]=poly->gy[3]=1.0f;
+			break;
+	}
+}
+
+/* =======================================================
+
+      Piece Setups
+      
+======================================================= */
+
+void ag_model_piece_setup(void)
+{
+		// setup certain random elements early so
+		// they are the same across all times they are
+		// used
+
+	ag_model_piece_hand_high=ag_model_piece_hand_y_size+ag_random_int(ag_model_piece_hand_y_size_extra);
+
+	ag_model_piece_foot_x_sz=ag_model_piece_foot_x_size+ag_random_int(ag_model_piece_foot_x_size_extra);
+	ag_model_piece_foot_z_front=-(ag_model_piece_foot_z_size+ag_random_int(ag_model_piece_foot_z_size_extra));
 }
 
 /* =======================================================
@@ -106,9 +151,9 @@ void ag_model_piece_bone_head(model_type *model,model_mesh_type *mesh,int bone_i
 
 		// y and z coordinates
 
-	x_sz=200+ag_random_int(200);
-	z_sz=200+ag_random_int(200);
-	y_top=250+ag_random_int(250);
+	x_sz=100+ag_random_int(200);
+	z_sz=100+ag_random_int(200);
+	y_top=350+ag_random_int(350);
 
 		// build the vertexes
 	
@@ -128,13 +173,13 @@ void ag_model_piece_bone_head(model_type *model,model_mesh_type *mesh,int bone_i
 
 	poly=&mesh->polys[poly_idx];
 
-	ag_model_piece_add_quad(model,poly++,vertex_idx,0,1,2,3,FALSE);
-	ag_model_piece_add_quad(model,poly++,vertex_idx,4,5,6,7,FALSE);
+	ag_model_piece_add_quad(model,poly++,vertex_idx,3,2,1,0,1);
+	ag_model_piece_add_quad(model,poly++,vertex_idx,4,5,6,7,0);
 
-	ag_model_piece_add_quad(model,poly++,vertex_idx,0,1,5,4,FALSE);
-	ag_model_piece_add_quad(model,poly++,vertex_idx,1,2,6,5,FALSE);
-	ag_model_piece_add_quad(model,poly++,vertex_idx,2,3,7,6,FALSE);
-	ag_model_piece_add_quad(model,poly++,vertex_idx,0,3,7,4,FALSE);
+	ag_model_piece_add_quad(model,poly++,vertex_idx,0,1,5,4,0);
+	ag_model_piece_add_quad(model,poly++,vertex_idx,1,2,6,5,0);
+	ag_model_piece_add_quad(model,poly++,vertex_idx,2,3,7,6,0);
+	ag_model_piece_add_quad(model,poly++,vertex_idx,0,3,7,4,0);
 }
 
 /* =======================================================
@@ -146,7 +191,7 @@ void ag_model_piece_bone_head(model_type *model,model_mesh_type *mesh,int bone_i
 void ag_model_piece_bone_hand(model_type *model,model_mesh_type *mesh,int bone_idx,int limb_radius)
 {
 	int					vertex_idx,poly_idx,center_bone_idx,
-						y_mid,y_bot,high;
+						y_mid,y_bot;
 	model_vertex_type	*vertex;
 	model_poly_type		*poly;
 
@@ -165,10 +210,8 @@ void ag_model_piece_bone_hand(model_type *model,model_mesh_type *mesh,int bone_i
 
 		// y and z coordinates
 
-	high=ag_model_piece_hand_y_size+ag_random_int(ag_model_piece_hand_y_size_extra);
-
-	y_mid=high>>1;
-	y_bot=high;
+	y_mid=ag_model_piece_hand_high>>1;
+	y_bot=ag_model_piece_hand_high;
 
 		// build the vertexes
 	
@@ -192,17 +235,17 @@ void ag_model_piece_bone_hand(model_type *model,model_mesh_type *mesh,int bone_i
 
 	poly=&mesh->polys[poly_idx];
 
-	ag_model_piece_add_quad(model,poly++,vertex_idx,0,1,7,6,FALSE);
-	ag_model_piece_add_quad(model,poly++,vertex_idx,1,2,8,7,FALSE);
-	ag_model_piece_add_quad(model,poly++,vertex_idx,2,3,9,8,FALSE);
-	ag_model_piece_add_quad(model,poly++,vertex_idx,3,4,10,9,FALSE);
-	ag_model_piece_add_quad(model,poly++,vertex_idx,4,5,11,10,FALSE);
-	ag_model_piece_add_quad(model,poly++,vertex_idx,5,0,6,11,FALSE);
+	ag_model_piece_add_quad(model,poly++,vertex_idx,0,1,7,6,2);
+	ag_model_piece_add_quad(model,poly++,vertex_idx,1,2,8,7,2);
+	ag_model_piece_add_quad(model,poly++,vertex_idx,2,3,9,8,2);
+	ag_model_piece_add_quad(model,poly++,vertex_idx,3,4,10,9,2);
+	ag_model_piece_add_quad(model,poly++,vertex_idx,4,5,11,10,2);
+	ag_model_piece_add_quad(model,poly++,vertex_idx,5,0,6,11,2);
 
-	ag_model_piece_add_quad(model,poly++,vertex_idx,0,1,2,5,FALSE);
-	ag_model_piece_add_quad(model,poly++,vertex_idx,2,3,4,5,FALSE);
-	ag_model_piece_add_quad(model,poly++,vertex_idx,6,7,8,11,FALSE);
-	ag_model_piece_add_quad(model,poly++,vertex_idx,8,9,10,11,FALSE);
+	ag_model_piece_add_quad(model,poly++,vertex_idx,0,1,2,5,2);
+	ag_model_piece_add_quad(model,poly++,vertex_idx,2,3,4,5,2);
+	ag_model_piece_add_quad(model,poly++,vertex_idx,6,7,8,11,2);
+	ag_model_piece_add_quad(model,poly++,vertex_idx,8,9,10,11,2);
 }
 
 /* =======================================================
@@ -214,7 +257,7 @@ void ag_model_piece_bone_hand(model_type *model,model_mesh_type *mesh,int bone_i
 void ag_model_piece_bone_foot(model_type *model,model_mesh_type *mesh,int bone_idx,int limb_radius)
 {
 	int					vertex_idx,poly_idx,center_bone_idx,
-						z_front,z_mid,z_back,y_bot,y_mid,high;
+						z_mid,z_back,y_bot,y_mid,high;
 	model_vertex_type	*vertex;
 	model_poly_type		*poly;
 
@@ -233,7 +276,6 @@ void ag_model_piece_bone_foot(model_type *model,model_mesh_type *mesh,int bone_i
 
 		// y and z coordinates
 
-	z_front=-ag_model_piece_foot_z_size;
 	z_mid=-(limb_radius<<1);
 	z_back=limb_radius;
 
@@ -246,35 +288,35 @@ void ag_model_piece_bone_foot(model_type *model,model_mesh_type *mesh,int bone_i
 	
 	vertex=&mesh->vertexes[vertex_idx];
 
-	ag_model_piece_add_vertex(model,vertex++,center_bone_idx,bone_idx,ag_model_piece_foot_x_size,y_mid,z_front);
-	ag_model_piece_add_vertex(model,vertex++,center_bone_idx,bone_idx,ag_model_piece_foot_x_size,0,z_mid);
-	ag_model_piece_add_vertex(model,vertex++,center_bone_idx,bone_idx,ag_model_piece_foot_x_size,0,z_back);
-	ag_model_piece_add_vertex(model,vertex++,center_bone_idx,bone_idx,ag_model_piece_foot_x_size,y_bot,z_back);
-	ag_model_piece_add_vertex(model,vertex++,center_bone_idx,bone_idx,ag_model_piece_foot_x_size,y_bot,z_mid);
-	ag_model_piece_add_vertex(model,vertex++,center_bone_idx,bone_idx,ag_model_piece_foot_x_size,y_bot,z_front);
+	ag_model_piece_add_vertex(model,vertex++,center_bone_idx,bone_idx,ag_model_piece_foot_x_sz,y_mid,ag_model_piece_foot_z_front);
+	ag_model_piece_add_vertex(model,vertex++,center_bone_idx,bone_idx,ag_model_piece_foot_x_sz,0,z_mid);
+	ag_model_piece_add_vertex(model,vertex++,center_bone_idx,bone_idx,ag_model_piece_foot_x_sz,0,z_back);
+	ag_model_piece_add_vertex(model,vertex++,center_bone_idx,bone_idx,ag_model_piece_foot_x_sz,y_bot,z_back);
+	ag_model_piece_add_vertex(model,vertex++,center_bone_idx,bone_idx,ag_model_piece_foot_x_sz,y_bot,z_mid);
+	ag_model_piece_add_vertex(model,vertex++,center_bone_idx,bone_idx,ag_model_piece_foot_x_sz,y_bot,ag_model_piece_foot_z_front);
 
-	ag_model_piece_add_vertex(model,vertex++,center_bone_idx,bone_idx,-ag_model_piece_foot_x_size,y_mid,z_front);
-	ag_model_piece_add_vertex(model,vertex++,center_bone_idx,bone_idx,-ag_model_piece_foot_x_size,0,z_mid);
-	ag_model_piece_add_vertex(model,vertex++,center_bone_idx,bone_idx,-ag_model_piece_foot_x_size,0,z_back);
-	ag_model_piece_add_vertex(model,vertex++,center_bone_idx,bone_idx,-ag_model_piece_foot_x_size,y_bot,z_back);
-	ag_model_piece_add_vertex(model,vertex++,center_bone_idx,bone_idx,-ag_model_piece_foot_x_size,y_bot,z_mid);
-	ag_model_piece_add_vertex(model,vertex++,center_bone_idx,bone_idx,-ag_model_piece_foot_x_size,y_bot,z_front);
+	ag_model_piece_add_vertex(model,vertex++,center_bone_idx,bone_idx,-ag_model_piece_foot_x_sz,y_mid,ag_model_piece_foot_z_front);
+	ag_model_piece_add_vertex(model,vertex++,center_bone_idx,bone_idx,-ag_model_piece_foot_x_sz,0,z_mid);
+	ag_model_piece_add_vertex(model,vertex++,center_bone_idx,bone_idx,-ag_model_piece_foot_x_sz,0,z_back);
+	ag_model_piece_add_vertex(model,vertex++,center_bone_idx,bone_idx,-ag_model_piece_foot_x_sz,y_bot,z_back);
+	ag_model_piece_add_vertex(model,vertex++,center_bone_idx,bone_idx,-ag_model_piece_foot_x_sz,y_bot,z_mid);
+	ag_model_piece_add_vertex(model,vertex++,center_bone_idx,bone_idx,-ag_model_piece_foot_x_sz,y_bot,ag_model_piece_foot_z_front);
 
 		// build the polys
 
 	poly=&mesh->polys[poly_idx];
 
-	ag_model_piece_add_quad(model,poly++,vertex_idx,0,1,4,5,TRUE);
-	ag_model_piece_add_quad(model,poly++,vertex_idx,1,2,3,4,TRUE);
+	ag_model_piece_add_quad(model,poly++,vertex_idx,0,1,4,5,3);
+	ag_model_piece_add_quad(model,poly++,vertex_idx,1,2,3,4,3);
 
-	ag_model_piece_add_quad(model,poly++,vertex_idx,6,7,10,11,TRUE);
-	ag_model_piece_add_quad(model,poly++,vertex_idx,7,8,9,10,TRUE);
+	ag_model_piece_add_quad(model,poly++,vertex_idx,6,7,10,11,3);
+	ag_model_piece_add_quad(model,poly++,vertex_idx,7,8,9,10,3);
 
-	ag_model_piece_add_quad(model,poly++,vertex_idx,6,0,5,11,TRUE);
-	ag_model_piece_add_quad(model,poly++,vertex_idx,7,1,0,6,TRUE);
-	ag_model_piece_add_quad(model,poly++,vertex_idx,8,2,1,7,TRUE);
-	ag_model_piece_add_quad(model,poly++,vertex_idx,8,2,9,3,TRUE);
-	ag_model_piece_add_quad(model,poly++,vertex_idx,9,3,10,4,TRUE);
-	ag_model_piece_add_quad(model,poly++,vertex_idx,10,4,5,11,TRUE);
+	ag_model_piece_add_quad(model,poly++,vertex_idx,6,0,5,11,3);
+	ag_model_piece_add_quad(model,poly++,vertex_idx,7,1,0,6,3);
+	ag_model_piece_add_quad(model,poly++,vertex_idx,8,2,1,7,3);
+	ag_model_piece_add_quad(model,poly++,vertex_idx,8,2,3,9,3);
+	ag_model_piece_add_quad(model,poly++,vertex_idx,9,3,4,10,3);
+	ag_model_piece_add_quad(model,poly++,vertex_idx,10,4,5,11,3);
 }
 

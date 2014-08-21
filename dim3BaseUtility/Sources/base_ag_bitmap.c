@@ -1027,7 +1027,7 @@ void bitmap_ag_texture_skin_chunk(bitmap_ag_type *ag_bitmap,int x,int y,int wid,
 
 void bitmap_ag_texture_face_chunk(bitmap_ag_type *ag_bitmap,int x,int y,int wid,int high)
 {
-	int				n,eye_count,
+	int				n,eye_count,eye_x,eye_y,
 					px,py,px2,py2,eye_wid,eye_high,
 					pupil_wid,pupil_high;
 	d3col			border_col,col,col2;
@@ -1044,15 +1044,18 @@ void bitmap_ag_texture_face_chunk(bitmap_ag_type *ag_bitmap,int x,int y,int wid,
 
 	eye_count=1+bitmap_ag_random_int(3);
 
-	eye_wid=(wid-50)/eye_count;
-	eye_high=(eye_wid*3)>>1;
+	eye_x=25+bitmap_ag_random_int(30);
+	eye_y=40+bitmap_ag_random_int(30);
+
+	eye_wid=(wid-(eye_x<<1))/eye_count;
+	eye_high=eye_wid>>1;
 	if (eye_high>(high>>1)) eye_high=high>>1;
 
 	pupil_wid=eye_wid>>2;
 	pupil_high=eye_high-bitmap_ag_random_int(eye_high>>1);
 
-	px=x+25;
-	py=y+25;
+	px=x+eye_x;
+	py=y+eye_y;
 
 	for (n=0;n!=eye_count;n++) {
 		bitmap_ag_texture_draw_oval(ag_bitmap,px,py,(eye_wid-5),eye_high,2,TRUE,&border_col,&col);
@@ -1063,6 +1066,8 @@ void bitmap_ag_texture_face_chunk(bitmap_ag_type *ag_bitmap,int x,int y,int wid,
 
 		px+=eye_wid;
 	}
+
+		// mouth
 
 	bitmap_ag_texture_draw_line_horizontal(ag_bitmap,(x+10),(y+(high-40)),(wid-20),2,FALSE,&col2);
 }
@@ -1087,7 +1092,7 @@ void bitmap_ag_texture_cloth_chunk(bitmap_ag_type *ag_bitmap,int x,int y,int wid
 		py=bitmap_ag_random_int(high);
 		p_wid=30+bitmap_ag_random_int(30);
 		p_high=30+bitmap_ag_random_int(30);
-		bitmap_ag_texture_add_particle(ag_bitmap,px,py,p_wid,p_high,0.8f,TRUE,bitmap_ag_cement_particle_density);
+		bitmap_ag_texture_add_particle(ag_bitmap,px,py,p_wid,p_high,0.9f,TRUE,bitmap_ag_cement_particle_density);
 	}
 
 	bitmap_ag_clear_clip(ag_bitmap);

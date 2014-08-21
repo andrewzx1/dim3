@@ -591,7 +591,9 @@ void ag_model_build_around_bones(model_type *model)
 		}
 	}
 
-		// build cubed bone points
+		// build pieces
+
+	ag_model_piece_setup();
 
 	for (n=0;n!=model->nbone;n++) {
 		if (ag_model_bone_is_hand(model,n)) {

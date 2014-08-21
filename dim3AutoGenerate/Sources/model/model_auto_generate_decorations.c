@@ -173,8 +173,6 @@ void ag_model_add_decorations(model_type *model)
 	int					n;
 	model_mesh_type		*mesh;
 
-	return;	// supergumba -- turn off for now
-
 	mesh=&model->meshes[0];
 
 	for (n=0;n!=model->nbone;n++) {

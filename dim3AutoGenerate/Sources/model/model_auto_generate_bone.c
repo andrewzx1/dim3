@@ -235,7 +235,7 @@ void ag_model_add_bones(model_type *model)
 				left_knee_bone_idx,right_knee_bone_idx,
 				left_ankle_bone_idx,right_ankle_bone_idx;
 	int			hip_high,torso_high,torso_radius,arm_swing,
-				head_high,hand_high,elbow_high;
+				head_high,hand_high,elbow_high,ankle_high;
 
 		// random sizes
 
@@ -243,9 +243,10 @@ void ag_model_add_bones(model_type *model)
 	torso_high=hip_high+(500+ag_random_int(500));
 	torso_radius=300+ag_random_int(350);
 	arm_swing=40+ag_random_int(40);
-	head_high=torso_high+(150+ag_random_int(200));
+	head_high=torso_high+(50+ag_random_int(100));
 	hand_high=800+ag_random_int(1000);
 	elbow_high=((torso_high-hand_high)>>1)+hand_high;
+	ankle_high=100+ag_random_int(200);
 
 		// supergumba -- for now need to create in same
 		// order as animations that exist
@@ -271,8 +272,8 @@ void ag_model_add_bones(model_type *model)
 	left_knee_bone_idx=ag_model_add_bone_single(model,"Left Knee",left_hip_bone_idx,120,-(hip_high>>1),45);
 	right_knee_bone_idx=ag_model_add_bone_single(model,"Right Knee",right_hip_bone_idx,-120,-(hip_high>>1),45);
 
-	left_ankle_bone_idx=ag_model_add_bone_single(model,"Left Ankle",left_knee_bone_idx,120,-240,90);
-	right_ankle_bone_idx=ag_model_add_bone_single(model,"Right Ankle",right_knee_bone_idx,-120,-240,90);
+	left_ankle_bone_idx=ag_model_add_bone_single(model,"Left Ankle",left_knee_bone_idx,120,-ankle_high,90);
+	right_ankle_bone_idx=ag_model_add_bone_single(model,"Right Ankle",right_knee_bone_idx,-120,-ankle_high,90);
 
 	ag_model_add_bone_single(model,"Left Foot",left_ankle_bone_idx,120,-60,0);
 	ag_model_add_bone_single(model,"Right Foot",right_ankle_bone_idx,-120,-60,0);
