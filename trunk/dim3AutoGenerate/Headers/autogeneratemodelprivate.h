@@ -40,7 +40,7 @@ extern bool ag_model_bone_is_foot(model_type *model,int bone_idx);
 extern bool ag_model_bone_is_decoration_ok(model_type *model,int bone_idx);
 extern int ag_model_bone_get_torso_width(model_type *model);
 extern int ag_model_bone_get_hip_width(model_type *model);
-extern void ag_model_add_bones(model_type *model);
+extern void ag_model_bone_create_skeleton(model_type *model);
 
 //
 // pieces

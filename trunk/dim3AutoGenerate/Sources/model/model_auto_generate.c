@@ -30,9 +30,11 @@ and can be sold or given away.
 #endif
 
 #define ag_model_cylinder_side_count		8
-#define ag_model_cylinder_limb_radius		100
-#define ag_model_cylinder_hip_high			300
-#define ag_model_cylinder_extra_size		40
+#define ag_model_limb_radius_start			80
+#define ag_model_limb_radius_extra			80
+
+#define ag_model_hip_high_start				250
+#define ag_model_hip_high_extra				100
 
 /* =======================================================
 
@@ -508,7 +510,7 @@ void ag_model_build_around_bones(model_type *model)
 	int				n,parent_idx,
 					body_bone_idx,hip_bone_idx,
 					v_idx,v2_idx,v3_idx,
-					radius_x,radius_z,high;
+					limb_radius,radius_x,radius_z,hip_high;
 	int				bone_vertex_idx[max_model_bone];
 	model_mesh_type	*mesh;
 
@@ -516,10 +518,14 @@ void ag_model_build_around_bones(model_type *model)
 
 	mesh=&model->meshes[0];
 
+		// random limb radius
+
+	limb_radius=ag_model_limb_radius_start+ag_random_int(ag_model_limb_radius_extra);
+
 		// build the cylinder vertexes
 
 	for (n=0;n!=model->nbone;n++) {
-		bone_vertex_idx[n]=ag_model_bone_cylinder_vertexes(model,mesh,n,ag_model_cylinder_limb_radius,ag_model_cylinder_limb_radius,0);
+		bone_vertex_idx[n]=ag_model_bone_cylinder_vertexes(model,mesh,n,limb_radius,limb_radius,0);
 	}
 
 		// build the cylinder poly
@@ -563,7 +569,7 @@ void ag_model_build_around_bones(model_type *model)
 
 			// body cylinder
 
-		radius_x=ag_model_bone_get_torso_width(model)-(ag_model_cylinder_limb_radius>>1);
+		radius_x=ag_model_bone_get_torso_width(model)-(limb_radius>>1);
 		radius_z=radius_x>>1;
 
 		v_idx=ag_model_bone_cylinder_vertexes(model,mesh,body_bone_idx,radius_x,radius_z,0);
@@ -575,18 +581,18 @@ void ag_model_build_around_bones(model_type *model)
 
 		if (hip_bone_idx!=-1) {
 
+			hip_high=ag_model_hip_high_start+ag_random_int(ag_model_hip_high_extra);
+
 			if (ag_random_bool()) {
 				radius_x=ag_model_bone_get_hip_width(model);
-				radius_z=ag_model_cylinder_limb_radius;
-				high=ag_model_cylinder_hip_high;
+				radius_z=limb_radius;
 			}
 			else {
-				radius_x=ag_model_bone_get_torso_width(model)+ag_model_cylinder_limb_radius;
-				radius_z=ag_model_cylinder_limb_radius+(ag_model_cylinder_limb_radius>>1);
-				high=ag_model_cylinder_hip_high+ag_random_int(ag_model_cylinder_hip_high);
+				radius_x=ag_model_bone_get_torso_width(model)+limb_radius;
+				radius_z=limb_radius+(limb_radius>>1);
 			}
 
-			v3_idx=ag_model_bone_cylinder_vertexes(model,mesh,hip_bone_idx,radius_x,radius_z,high);
+			v3_idx=ag_model_bone_cylinder_vertexes(model,mesh,hip_bone_idx,radius_x,radius_z,hip_high);
 			ag_model_bone_cylinder_polygons(model,mesh,v2_idx,v3_idx,TRUE,FALSE,TRUE);
 		}
 	}
@@ -597,15 +603,15 @@ void ag_model_build_around_bones(model_type *model)
 
 	for (n=0;n!=model->nbone;n++) {
 		if (ag_model_bone_is_hand(model,n)) {
-			ag_model_piece_bone_hand(model,mesh,n,ag_model_cylinder_limb_radius);
+			ag_model_piece_bone_hand(model,mesh,n,limb_radius);
 			continue;
 		}
 		if (ag_model_bone_is_foot(model,n)) {
-			ag_model_piece_bone_foot(model,mesh,n,ag_model_cylinder_limb_radius);
+			ag_model_piece_bone_foot(model,mesh,n,limb_radius);
 			continue;
 		}
 		if (ag_model_bone_is_head(model,n)) {
-			ag_model_piece_bone_head(model,mesh,n,ag_model_cylinder_limb_radius);
+			ag_model_piece_bone_head(model,mesh,n,limb_radius);
 			continue;
 		}
 	}
@@ -675,9 +681,9 @@ void auto_generate_model_monster(model_type *model)
 	ag_random_seed();
 	ag_model_clear(model);
 
-		// build the bones
+		// build the skeleton
 
-	ag_model_add_bones(model);
+	ag_model_bone_create_skeleton(model);
 
 		// build model around bones
 

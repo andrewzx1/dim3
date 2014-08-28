@@ -172,7 +172,7 @@ int ag_model_bone_get_hip_width(model_type *model)
 		bone++;
 	}
 
-	return(abs(max-min)>>1);
+	return(abs(max-min));
 }
 
 /* =======================================================
@@ -224,7 +224,29 @@ int ag_model_add_bone_single(model_type *model,char *name,int parent_idx,int x,i
 	return(bone_idx);
 }
 
-void ag_model_add_bones(model_type *model)
+void ag_model_get_random_rotate(d3ang *rot_ang,int rot_x,int rot_y,int rot_z)
+{
+	rot_ang->x=(float)(ag_random_int(rot_x<<1)-rot_x);
+	rot_ang->y=(float)(ag_random_int(rot_y<<1)-rot_y);
+	rot_ang->z=(float)(ag_random_int(rot_z<<1)-rot_z);
+}
+
+void ag_model_rotate_bone(model_type *model,int bone_idx,d3ang *rot_ang)
+{
+	model_bone_type	*bone,*parent_bone;
+
+	bone=&model->bones[bone_idx];
+	parent_bone=&model->bones[bone->parent_idx];
+	rotate_point(&bone->pnt.x,&bone->pnt.y,&bone->pnt.z,parent_bone->pnt.x,parent_bone->pnt.y,parent_bone->pnt.z,rot_ang->x,rot_ang->y,rot_ang->z);
+}
+
+/* =======================================================
+
+     Create Skeleton
+      
+======================================================= */
+
+void ag_model_bone_create_skeleton(model_type *model)
 {
 	int			base_bone_idx,hip_bone_idx,
 				torso_bone_idx,head_bone_idx,
@@ -236,6 +258,7 @@ void ag_model_add_bones(model_type *model)
 				left_ankle_bone_idx,right_ankle_bone_idx;
 	int			hip_high,torso_high,torso_radius,arm_swing,
 				head_high,hand_high,elbow_high,ankle_high;
+	d3ang		rot_ang;
 
 		// random sizes
 
@@ -283,4 +306,14 @@ void ag_model_add_bones(model_type *model)
 	model->bone_connect.name_bone_idx=ag_model_add_bone_single(model,"Name",head_bone_idx,0,-(head_high+1000),0);
 
 	model->bones[0].parent_idx=base_bone_idx;		// supergumba -- re-arrange these later when animations are created
+
+		// some random rotations
+
+	ag_model_get_random_rotate(&rot_ang,0,0,10);
+	ag_model_rotate_bone(model,torso_bone_idx,&rot_ang);
+
+	ag_model_get_random_rotate(&rot_ang,0,15,5);
+	ag_model_rotate_bone(model,left_shoulder_bone_idx,&rot_ang);
+	ag_model_rotate_bone(model,right_shoulder_bone_idx,&rot_ang);
+
 }
