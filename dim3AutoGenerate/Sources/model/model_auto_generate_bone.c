@@ -226,18 +226,38 @@ int ag_model_add_bone_single(model_type *model,char *name,int parent_idx,int x,i
 
 void ag_model_get_random_rotate(d3ang *rot_ang,int rot_x,int rot_y,int rot_z)
 {
-	rot_ang->x=(float)(ag_random_int(rot_x<<1)-rot_x);
-	rot_ang->y=(float)(ag_random_int(rot_y<<1)-rot_y);
-	rot_ang->z=(float)(ag_random_int(rot_z<<1)-rot_z);
+	rot_ang->x=rot_ang->y=rot_ang->z=0.0f;
+
+	if (rot_x!=0) rot_ang->x=(float)ag_random_int(rot_x);
+	if (rot_y!=0) rot_ang->y=(float)ag_random_int(rot_y);
+	if (rot_z!=0) rot_ang->z=(float)ag_random_int(rot_z);
 }
 
-void ag_model_rotate_bone(model_type *model,int bone_idx,d3ang *rot_ang)
+void ag_model_rotate_bone(model_type *model,int bone_idx,d3ang *rot_ang,d3pnt *offset_pnt)
 {
 	model_bone_type	*bone,*parent_bone;
 
 	bone=&model->bones[bone_idx];
 	parent_bone=&model->bones[bone->parent_idx];
+
+	if (offset_pnt!=NULL) memmove(offset_pnt,&bone->pnt,sizeof(d3pnt));
 	rotate_point(&bone->pnt.x,&bone->pnt.y,&bone->pnt.z,parent_bone->pnt.x,parent_bone->pnt.y,parent_bone->pnt.z,rot_ang->x,rot_ang->y,rot_ang->z);
+
+	if (offset_pnt!=NULL) {
+		offset_pnt->x-=bone->pnt.x;
+		offset_pnt->y-=bone->pnt.y;
+		offset_pnt->z-=bone->pnt.z;
+	}
+}
+
+void ag_model_move_bone(model_type *model,int bone_idx,d3pnt *offset_pnt)
+{
+	model_bone_type	*bone;
+
+	bone=&model->bones[bone_idx];
+	bone->pnt.x-=offset_pnt->x;
+	bone->pnt.y-=offset_pnt->y;
+	bone->pnt.z-=offset_pnt->z;
 }
 
 /* =======================================================
@@ -255,9 +275,11 @@ void ag_model_bone_create_skeleton(model_type *model)
 				left_wrist_bone_idx,right_wrist_bone_idx,
 				left_hip_bone_idx,right_hip_bone_idx,
 				left_knee_bone_idx,right_knee_bone_idx,
-				left_ankle_bone_idx,right_ankle_bone_idx;
+				left_ankle_bone_idx,right_ankle_bone_idx,
+				left_foot_bone_idx,right_foot_bone_idx;
 	int			hip_high,torso_high,torso_radius,arm_swing,
 				head_high,hand_high,elbow_high,ankle_high;
+	d3pnt		torso_offset_pnt,left_offset_pnt,right_offset_pnt;
 	d3ang		rot_ang;
 
 		// random sizes
@@ -298,8 +320,8 @@ void ag_model_bone_create_skeleton(model_type *model)
 	left_ankle_bone_idx=ag_model_add_bone_single(model,"Left Ankle",left_knee_bone_idx,120,-ankle_high,90);
 	right_ankle_bone_idx=ag_model_add_bone_single(model,"Right Ankle",right_knee_bone_idx,-120,-ankle_high,90);
 
-	ag_model_add_bone_single(model,"Left Foot",left_ankle_bone_idx,120,-60,0);
-	ag_model_add_bone_single(model,"Right Foot",right_ankle_bone_idx,-120,-60,0);
+	left_foot_bone_idx=ag_model_add_bone_single(model,"Left Foot",left_ankle_bone_idx,120,-60,0);
+	right_foot_bone_idx=ag_model_add_bone_single(model,"Right Foot",right_ankle_bone_idx,-120,-60,0);
 
 	head_bone_idx=ag_model_add_bone_single(model,"Head",torso_bone_idx,0,-head_high,0);
 	base_bone_idx=ag_model_add_bone_single(model,"Base",-1,0,0,0);
@@ -309,11 +331,26 @@ void ag_model_bone_create_skeleton(model_type *model)
 
 		// some random rotations
 
-	ag_model_get_random_rotate(&rot_ang,0,0,10);
-	ag_model_rotate_bone(model,torso_bone_idx,&rot_ang);
+	ag_model_get_random_rotate(&rot_ang,20,0,0);
+	rot_ang.x=-rot_ang.x;
+	ag_model_rotate_bone(model,torso_bone_idx,&rot_ang,&torso_offset_pnt);
+	ag_model_move_bone(model,head_bone_idx,&torso_offset_pnt);
+	ag_model_rotate_bone(model,head_bone_idx,&rot_ang,NULL);
 
-	ag_model_get_random_rotate(&rot_ang,0,15,5);
-	ag_model_rotate_bone(model,left_shoulder_bone_idx,&rot_ang);
-	ag_model_rotate_bone(model,right_shoulder_bone_idx,&rot_ang);
+	ag_model_get_random_rotate(&rot_ang,5,0,10);
+	ag_model_move_bone(model,right_shoulder_bone_idx,&torso_offset_pnt);
+	ag_model_rotate_bone(model,right_shoulder_bone_idx,&rot_ang,NULL);
+	rot_ang.z=-rot_ang.z;
+	ag_model_move_bone(model,left_shoulder_bone_idx,&torso_offset_pnt);
+	ag_model_rotate_bone(model,left_shoulder_bone_idx,&rot_ang,NULL);
 
+	ag_model_get_random_rotate(&rot_ang,0,0,20);
+	ag_model_rotate_bone(model,left_knee_bone_idx,&rot_ang,&left_offset_pnt);
+	ag_model_move_bone(model,left_ankle_bone_idx,&left_offset_pnt);
+	ag_model_move_bone(model,left_foot_bone_idx,&left_offset_pnt);
+
+	rot_ang.z=-rot_ang.z;
+	ag_model_rotate_bone(model,right_knee_bone_idx,&rot_ang,&right_offset_pnt);
+	ag_model_move_bone(model,right_ankle_bone_idx,&right_offset_pnt);
+	ag_model_move_bone(model,right_foot_bone_idx,&right_offset_pnt);
 }
