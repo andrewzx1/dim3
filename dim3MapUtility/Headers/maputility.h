@@ -327,7 +327,8 @@ typedef struct		{
 					} map_mesh_import_type;
 
 typedef struct		{
-						int									nvertex,npoly,group_idx,
+						int									rtl_mesh_id,
+															nvertex,npoly,group_idx,
 															hide_mode,harm;
 						d3pnt								rot_off;
 						d3pnt								*vertexes;
@@ -395,7 +396,8 @@ typedef struct		{
 					} map_liquid_copy_type;
 
 typedef struct		{
-						int									y,depth,lft,rgt,top,bot,group_idx,
+						int									rtl_mesh_id,
+															y,depth,lft,rgt,top,bot,group_idx,
 															txt_idx,lmap_txt_idx;
 						float								speed_alter,tint_alpha;
 						char								camera[name_str_len];
@@ -467,6 +469,7 @@ typedef struct		{
 					} map_light_setting_type;
 
 typedef struct		{
+						int									rtl_light_id;
 						char								name[name_str_len];
 						d3pnt								pnt;
 						map_light_setting_type				setting;

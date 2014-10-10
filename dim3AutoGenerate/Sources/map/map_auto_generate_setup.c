@@ -113,6 +113,18 @@ void auto_generate_map_create_texture_set(map_type *map,char *base_path)
 	bitmap_ag_texture_tile(&texture->frames[0],base_path,512,FALSE);
 	map_textures_read_texture(map,ag_texture_ceiling);
 
+	texture=ag_map_create_texture(map,ag_texture_wall_2,"Wall 2",FALSE);
+	bitmap_ag_texture_brick(&texture->frames[0],base_path,512);
+	map_textures_read_texture(map,ag_texture_wall_2);
+	
+	texture=ag_map_create_texture(map,ag_texture_floor_2,"Floor 2",FALSE);
+	bitmap_ag_texture_tile(&texture->frames[0],base_path,512,TRUE);
+	map_textures_read_texture(map,ag_texture_floor_2);
+
+	texture=ag_map_create_texture(map,ag_texture_ceiling_2,"Ceiling 2",FALSE);
+	bitmap_ag_texture_tile(&texture->frames[0],base_path,512,FALSE);
+	map_textures_read_texture(map,ag_texture_ceiling_2);
+
 	texture=ag_map_create_texture(map,ag_texture_connect,"Connect",FALSE);
 	bitmap_ag_texture_concrete_block(&texture->frames[0],base_path,512);
 	map_textures_read_texture(map,ag_texture_connect);

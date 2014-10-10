@@ -117,7 +117,7 @@ void audio_callback(void *userdata,Uint8 *stream,int len)
 		
 			// don't do left-right if not in fpp
 			
-		if (map.camera.mode!=cv_fpp) {
+		if (map.camera.camera_mode!=cv_fpp) {
 			play->left_fact=vol>>1;
 			play->right_fact=vol>>1;
 			continue;

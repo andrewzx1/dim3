@@ -60,7 +60,7 @@ void view_setup_objects_rtl(int tick)
 		
 		if (obj->hidden) continue;
 		
-		is_camera=((map.camera.mode==cv_fpp) && (obj->idx==camera.obj_idx));
+		is_camera=((map.camera.camera_mode==cv_fpp) && (obj->idx==camera.obj_idx));
 		
 			// setup model positions
 			

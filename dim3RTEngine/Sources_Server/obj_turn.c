@@ -257,7 +257,7 @@ void object_player_turn(obj_type *obj)
 	
 		// zoom factors
 
-	if (map.camera.mode==cv_fpp) {
+	if (map.camera.camera_mode==cv_fpp) {
 		weap=weapon_find_current(obj);
 		if (weap!=NULL) {
 			if ((weap->zoom.on) && (weap->zoom.mode!=zoom_mode_off)) {

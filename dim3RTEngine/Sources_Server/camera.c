@@ -69,7 +69,7 @@ void camera_map_setup(void)
 	
 		// if static, attach from node
 		
-	if (map.camera.mode!=cv_static) return;
+	if (map.camera.camera_mode!=cv_static) return;
 	
 		// find node, go to fpp if missing
 		
@@ -77,7 +77,7 @@ void camera_map_setup(void)
 	if (node_idx==-1) {
 		sprintf(err_str,"Can not attach camera to missing node: %s",map.camera.c_static.attach_node);
 		console_add_error(err_str);
-		map.camera.mode=cv_fpp;
+		map.camera.camera_mode=cv_fpp;
 		return;
 	}
 	
@@ -276,7 +276,7 @@ void camera_server_run(void)
 	camera_auto_turn_run();
 	camera_animate_run();
 
-	switch (map.camera.mode) {
+	switch (map.camera.camera_mode) {
 
 		case cv_chase:
 			camera_chase_run();
@@ -291,7 +291,7 @@ void camera_server_run(void)
 
 void camera_view_draw_run(void)
 {
-	switch (map.camera.mode) {
+	switch (map.camera.camera_mode) {
 
 		case cv_fpp:
             camera_fpp_calc_position();
