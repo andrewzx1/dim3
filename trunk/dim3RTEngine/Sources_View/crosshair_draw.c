@@ -288,7 +288,7 @@ void crosshair_draw(obj_type *obj,weapon_type *weap)
 
 		// can't use centered crosshairs when not in FPP
 
-	if ((weap->crosshair.type==ct_center) && (map.camera.mode!=cv_fpp)) return;
+	if ((weap->crosshair.type==ct_center) && (map.camera.camera_mode!=cv_fpp)) return;
 	
 		// is crosshair on?
 

@@ -362,7 +362,7 @@ void map_movements_auto_open(void)
 
 				// check for camera node walks
 
-			if ((map.camera.mode==cv_static) && (camera.auto_walk.on) && (camera.auto_walk.open_doors)) {
+			if ((map.camera.camera_mode==cv_static) && (camera.auto_walk.on) && (camera.auto_walk.open_doors)) {
 				obj_in_range=distance_check(camera.cur_pos.pnt.x,camera.cur_pos.pnt.y,camera.cur_pos.pnt.z,movement->run.auto_open_pnt.x,movement->run.auto_open_pnt.y,movement->run.auto_open_pnt.z,movement->auto_open_distance);
 			}
 

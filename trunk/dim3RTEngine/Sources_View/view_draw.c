@@ -154,7 +154,7 @@ void view_draw_dim3rtl(void)
 
 		// camera adjustments
 	
-	if (map.camera.mode==cv_fpp) {
+	if (map.camera.camera_mode==cv_fpp) {
 		view_calculate_scope(obj,camera_obj);
 		view_calculate_recoil(obj);
 	}

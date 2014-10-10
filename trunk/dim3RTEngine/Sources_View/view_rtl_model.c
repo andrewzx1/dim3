@@ -336,7 +336,7 @@ void view_dim3rtl_map_model_mesh_start(void)
 		obj=server.obj_list.objs[n];
 		if (obj==NULL) continue;
 		
-		no_ray_trace_block=((map.camera.mode==cv_fpp) && (obj->idx==camera.obj_idx));
+		no_ray_trace_block=((map.camera.camera_mode==cv_fpp) && (obj->idx==camera.obj_idx));
 		view_dim3rtl_model_setup_single_model(&obj->draw,TRUE,no_ray_trace_block,FALSE,FALSE);
 
 		progress_update();
@@ -432,7 +432,7 @@ void view_dim3rtl_map_model_update(void)
 
 		for (n=0;n!=max_weap_list;n++) {
 			weap=obj->weap_list.weaps[n];
-			if (weap!=NULL) view_dim3rtl_model_update_single_model(&weap->draw,((n!=obj->held_weapon.current_idx)||(map.camera.mode!=cv_fpp)));
+			if (weap!=NULL) view_dim3rtl_model_update_single_model(&weap->draw,((n!=obj->held_weapon.current_idx)||(map.camera.camera_mode!=cv_fpp)));
 		}
 	}
 }

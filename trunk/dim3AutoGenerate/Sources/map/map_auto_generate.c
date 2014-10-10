@@ -321,7 +321,7 @@ bool ag_map_add_room_random(ag_room_type *room,int wid_x,int wid_z,int connect_r
 
 		// create random polygon
 
-	nvertex=4+random_int(4);
+	nvertex=5+random_int(4);
 	random_ang=(int)(360.0f/(float)nvertex);
 
 	room->nvertex=0;
@@ -887,7 +887,7 @@ void ag_map_add_room(map_type *map,bool first_room)
 		gy[0]=gy[1]=0.0f;
 		gy[2]=gy[3]=1.0f;
 
-		map_mesh_add_poly(map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_wall);
+		map_mesh_add_poly(map,mesh_idx,4,px,py,pz,gx,gy,(room->second_story?ag_texture_wall_2:ag_texture_wall));
 
 		py[0]=py[1]=room->max.y-(ag_size_room_high+ag_size_floor_high);
 		py[2]=py[3]=room->max.y-ag_size_room_high;
@@ -898,7 +898,7 @@ void ag_map_add_room(map_type *map,bool first_room)
 			py[0]=py[1]=room->max.y-(ag_size_room_high+ag_size_floor_high+ag_size_room_high);
 			py[2]=py[3]=room->max.y-(ag_size_room_high+ag_size_floor_high);
 
-			map_mesh_add_poly(map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_wall);
+			map_mesh_add_poly(map,mesh_idx,4,px,py,pz,gx,gy,(room->second_story?ag_texture_wall_2:ag_texture_wall));
 		}
 	}
 
@@ -911,7 +911,7 @@ void ag_map_add_room(map_type *map,bool first_room)
 		gx[n]=gy[n]=0.0f;
 	}
 		
-	map_mesh_add_poly(map,mesh_idx,room->nvertex,px,py,pz,gx,gy,ag_texture_floor);
+	map_mesh_add_poly(map,mesh_idx,room->nvertex,px,py,pz,gx,gy,(room->second_story?ag_texture_floor_2:ag_texture_floor));
 
 		// add the ceiling
 
@@ -920,7 +920,7 @@ void ag_map_add_room(map_type *map,bool first_room)
 		if (room->second_story) py[n]-=ag_size_room_high;
 	}
 // supergumba -- testing decorations
-//	map_mesh_add_poly(map,mesh_idx,room->nvertex,px,py,pz,gx,gy,ag_texture_ceiling);
+	map_mesh_add_poly(map,mesh_idx,room->nvertex,px,py,pz,gx,gy,(room->second_story?ag_texture_ceiling_2:ag_texture_ceiling));
 
 		// reset the UV and normals
 

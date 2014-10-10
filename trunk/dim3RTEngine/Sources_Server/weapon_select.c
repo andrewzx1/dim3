@@ -213,7 +213,7 @@ void weapon_goto(obj_type *obj,weapon_type *weap)
 
 		// set next weapon
 	
-	if (map.camera.mode==cv_fpp) {
+	if (map.camera.camera_mode==cv_fpp) {
 		obj->held_weapon.next_idx=weap->idx;
 	}
 	else {
@@ -232,7 +232,7 @@ void weapon_goto(obj_type *obj,weapon_type *weap)
         
         // start hand swap
 
-    if ((obj->held_weapon.mode!=wm_lower) && (map.camera.mode==cv_fpp)) weapon_lower(obj);
+    if ((obj->held_weapon.mode!=wm_lower) && (map.camera.camera_mode==cv_fpp)) weapon_lower(obj);
 }
 
 void weapon_switch(obj_type *obj,int dir)
@@ -486,11 +486,11 @@ void weapon_zoom_enter(obj_type *obj,weapon_type *weap)
 
 		// save old camera mode and switch to fpp
 
-	obj->zoom_draw.old_camera_mode=map.camera.mode;
+	obj->zoom_draw.old_camera_mode=map.camera.camera_mode;
 	obj->zoom_draw.start_tick=game_time_get();
 	obj->zoom_draw.sway_reset=TRUE;
 	
-	map.camera.mode=cv_fpp;
+	map.camera.camera_mode=cv_fpp;
 
  	scripts_post_event_console(weap->script_idx,-1,sd_event_weapon_fire,sd_event_weapon_fire_zoom_enter,0);
 }
@@ -507,7 +507,7 @@ void weapon_zoom_off(obj_type *obj,weapon_type *weap)
 {
 		// switch back to original camera mode
 
-	map.camera.mode=obj->zoom_draw.old_camera_mode;
+	map.camera.camera_mode=obj->zoom_draw.old_camera_mode;
 
 		// turn off zoom
 
@@ -552,7 +552,7 @@ void weapon_player_run_hand(void)
 		// right state?
 		
 	if (obj->hidden) return;
-	if (map.camera.mode!=cv_fpp) return;
+	if (map.camera.camera_mode!=cv_fpp) return;
 	
 		// find held weapon
 	

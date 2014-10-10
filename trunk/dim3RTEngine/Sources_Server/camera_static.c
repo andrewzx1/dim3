@@ -142,7 +142,7 @@ bool camera_walk_to_node_by_index_setup(int from_idx,int to_idx,int msec,int eve
 
 		// only works in static camera
 
-	if (map.camera.mode!=cv_static) {
+	if (map.camera.camera_mode!=cv_static) {
 		strcpy(err_str,"Can only walk cameras in static mode");
 		return(FALSE);
 	}
