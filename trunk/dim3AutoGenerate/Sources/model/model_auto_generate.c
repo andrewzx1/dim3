@@ -509,8 +509,7 @@ void ag_model_build_around_bones(model_type *model)
 {
 	int				n,parent_idx,
 					body_bone_idx,hip_bone_idx,
-					v_idx,v2_idx,v3_idx,
-					limb_radius,radius_x,radius_z,hip_high;
+					limb_radius;
 	int				bone_vertex_idx[max_model_bone];
 	model_mesh_type	*mesh;
 
@@ -564,38 +563,7 @@ void ag_model_build_around_bones(model_type *model)
 
 		// build body bone
 
-	if (body_bone_idx!=-1) {
-		parent_idx=model->bones[body_bone_idx].parent_idx;
-
-			// body cylinder
-
-		radius_x=ag_model_bone_get_torso_width(model)-(limb_radius>>1);
-		radius_z=radius_x>>1;
-
-		v_idx=ag_model_bone_cylinder_vertexes(model,mesh,body_bone_idx,radius_x,radius_z,0);
-		v2_idx=ag_model_bone_cylinder_vertexes(model,mesh,parent_idx,radius_x,radius_z,0);
-		ag_model_bone_cylinder_polygons(model,mesh,v_idx,v2_idx,TRUE,TRUE,FALSE);
-	
-			// hip bone
-			// connects to bottom of body bone
-
-		if (hip_bone_idx!=-1) {
-
-			hip_high=ag_model_hip_high_start+ag_random_int(ag_model_hip_high_extra);
-
-			if (ag_random_bool()) {
-				radius_x=ag_model_bone_get_hip_width(model);
-				radius_z=limb_radius;
-			}
-			else {
-				radius_x=ag_model_bone_get_torso_width(model)+limb_radius;
-				radius_z=limb_radius+(limb_radius>>1);
-			}
-
-			v3_idx=ag_model_bone_cylinder_vertexes(model,mesh,hip_bone_idx,radius_x,radius_z,hip_high);
-			ag_model_bone_cylinder_polygons(model,mesh,v2_idx,v3_idx,TRUE,FALSE,TRUE);
-		}
-	}
+	ag_model_piece_bone_body(model,mesh,body_bone_idx,hip_bone_idx,limb_radius);
 
 		// build pieces
 

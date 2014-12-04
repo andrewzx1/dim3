@@ -135,48 +135,6 @@ bool ag_model_bone_is_decoration_ok(model_type *model,int bone_idx)
 
 /* =======================================================
 
-      Distances
-      
-======================================================= */
-
-int ag_model_bone_get_torso_width(model_type *model)
-{
-	int					n,min,max;
-	model_bone_type		*bone;
-
-	bone=model->bones;
-
-	min=max=0;
-
-	for (n=0;n!=model->nbone;n++) {
-		if (strcmp(bone->name,"Left Shoulder")==0) min=bone->pnt.x;
-		if (strcmp(bone->name,"Right Shoulder")==0) max=bone->pnt.x;
-		bone++;
-	}
-
-	return(abs(max-min)>>1);
-}
-
-int ag_model_bone_get_hip_width(model_type *model)
-{
-	int					n,min,max;
-	model_bone_type		*bone;
-
-	bone=model->bones;
-
-	min=max=0;
-
-	for (n=0;n!=model->nbone;n++) {
-		if (strcmp(bone->name,"Left Hip")==0) min=bone->pnt.x;
-		if (strcmp(bone->name,"Right Hip")==0) max=bone->pnt.x;
-		bone++;
-	}
-
-	return(abs(max-min));
-}
-
-/* =======================================================
-
       Add Bones
       
 ======================================================= */
