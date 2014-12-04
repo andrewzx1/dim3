@@ -38,8 +38,6 @@ extern bool ag_model_bone_is_head(model_type *model,int bone_idx);
 extern bool ag_model_bone_is_hand(model_type *model,int bone_idx);
 extern bool ag_model_bone_is_foot(model_type *model,int bone_idx);
 extern bool ag_model_bone_is_decoration_ok(model_type *model,int bone_idx);
-extern int ag_model_bone_get_torso_width(model_type *model);
-extern int ag_model_bone_get_hip_width(model_type *model);
 extern void ag_model_bone_create_skeleton(model_type *model);
 
 //
@@ -48,6 +46,7 @@ extern void ag_model_bone_create_skeleton(model_type *model);
 
 extern void ag_model_piece_setup(void);
 extern void ag_model_piece_bone_head(model_type *model,model_mesh_type *mesh,int bone_idx,int limb_radius);
+extern void ag_model_piece_bone_body(model_type *model,model_mesh_type *mesh,int body_bone_idx,int hip_bone_idx,int limb_radius);
 extern void ag_model_piece_bone_hand(model_type *model,model_mesh_type *mesh,int bone_idx,int limb_radius);
 extern void ag_model_piece_bone_foot(model_type *model,model_mesh_type *mesh,int bone_idx,int limb_radius);
 
