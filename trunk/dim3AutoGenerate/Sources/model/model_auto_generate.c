@@ -527,38 +527,14 @@ void ag_model_build_around_bones(model_type *model)
 		bone_vertex_idx[n]=ag_model_bone_cylinder_vertexes(model,mesh,n,limb_radius,limb_radius,0);
 	}
 
-		// build the cylinder poly
-		// for bones with parents and
-		// no special or base bones, or
-		// the body bone or any bone connected
-		// directly to the hips
+		// find body and hips
 
 	body_bone_idx=-1;
 	hip_bone_idx=-1;
 
 	for (n=0;n!=model->nbone;n++) {
-
-		if (model->bones[n].parent_idx==-1) continue;
-
-		if (ag_model_bone_is_body(model,n)) {
-			body_bone_idx=n;
-			continue;
-		}
+		if (ag_model_bone_is_body(model,n)) body_bone_idx=n;
 		if (ag_model_bone_is_hip(model,n)) hip_bone_idx=n;
-		if (ag_model_bone_is_connected_to_hips(model,n)) continue;
-
-		if (ag_model_bone_is_special(model,n)) continue;
-		if (ag_model_bone_is_special(model,model->bones[n].parent_idx)) continue;
-
-		if (ag_model_bone_is_hand(model,n)) continue;
-		if (ag_model_bone_is_foot(model,n)) continue;
-
-		if (ag_model_bone_is_shallow_y(model,n)) continue;
-
-			// create poly
-		
-		parent_idx=model->bones[n].parent_idx;
-		ag_model_bone_cylinder_polygons(model,mesh,bone_vertex_idx[n],bone_vertex_idx[parent_idx],FALSE,FALSE,FALSE);
 	}
 
 		// build body bone
@@ -570,8 +546,18 @@ void ag_model_build_around_bones(model_type *model)
 	ag_model_piece_setup();
 
 	for (n=0;n!=model->nbone;n++) {
+		if (ag_model_bone_is_arm(model,n)) {
+			parent_idx=model->bones[n].parent_idx;
+			ag_model_bone_cylinder_polygons(model,mesh,bone_vertex_idx[n],bone_vertex_idx[parent_idx],FALSE,FALSE,FALSE);
+			continue;
+		}
 		if (ag_model_bone_is_hand(model,n)) {
 			ag_model_piece_bone_hand(model,mesh,n,limb_radius);
+			continue;
+		}
+		if (ag_model_bone_is_leg(model,n)) {
+			parent_idx=model->bones[n].parent_idx;
+			ag_model_bone_cylinder_polygons(model,mesh,bone_vertex_idx[n],bone_vertex_idx[parent_idx],TRUE,FALSE,FALSE);
 			continue;
 		}
 		if (ag_model_bone_is_foot(model,n)) {
@@ -579,9 +565,39 @@ void ag_model_build_around_bones(model_type *model)
 			continue;
 		}
 		if (ag_model_bone_is_head(model,n)) {
+
+				// neck
+
+			parent_idx=model->bones[n].parent_idx;
+			ag_model_bone_cylinder_polygons(model,mesh,bone_vertex_idx[n],bone_vertex_idx[parent_idx],FALSE,FALSE,FALSE);
+
+				// head
+
 			ag_model_piece_bone_head(model,mesh,n,limb_radius);
 			continue;
 		}
+	}
+}
+
+/* =======================================================
+
+      Randomize Vertexes
+      
+======================================================= */
+
+void ag_model_randomize_vertexes(model_type *model)
+{
+	int					n;
+	model_mesh_type		*mesh;
+	model_vertex_type	*vertex;
+
+	mesh=&model->meshes[0];
+	vertex=mesh->vertexes;
+
+	for (n=0;n!=mesh->nvertex;n++) {
+		vertex->pnt.x+=(ag_random_int(100)-200);
+		vertex->pnt.z+=(ag_random_int(100)-200);
+		vertex++;
 	}
 }
 
@@ -661,6 +677,10 @@ void auto_generate_model_monster(model_type *model)
 		// remove any stray vertexes
 
 	ag_model_remove_stray_vertexes(model);
+
+		// randomize vertexes
+
+	ag_model_randomize_vertexes(model);
 
 		// rebuild tangents
 		// and animation settings

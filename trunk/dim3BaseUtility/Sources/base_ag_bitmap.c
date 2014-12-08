@@ -1028,48 +1028,66 @@ void bitmap_ag_texture_skin_chunk(bitmap_ag_type *ag_bitmap,int x,int y,int wid,
 void bitmap_ag_texture_face_chunk(bitmap_ag_type *ag_bitmap,int x,int y,int wid,int high)
 {
 	int				n,eye_count,eye_x,eye_y,
-					px,py,px2,py2,eye_wid,eye_high,
-					pupil_wid,pupil_high;
-	d3col			border_col,col,col2;
+					px,py,px2,py2,px_add,face_x,face_wid,
+					eye_wid,eye_high,m_sz,border_sz,
+					pupil_wid,pupil_high,line_count;
+	d3col			border_col,eye_col,pupil_col,mouth_col;
 
 		// skin
 
 	bitmap_ag_texture_skin_chunk(ag_bitmap,x,y,wid,high,0.8f,0.8f);
+
+		// position of face
 	
+	face_x=x+((wid*5)/10);
+	face_wid=(wid*4)/10;
+
 		// eyes
 
-	border_col.r=border_col.g=border_col.b=0.0f;
-	bitmap_ag_random_color(&col,255,50,150,50,0,0);
-	col2.r=col2.g=col2.b=0.0f;
+	bitmap_ag_random_color_lock(&border_col,0,50);
+	bitmap_ag_random_color(&eye_col,150,0,50,255,50,150);
+	bitmap_ag_random_color(&pupil_col,0,0,0,100,10,40);
+	bitmap_ag_random_color(&mouth_col,0,0,0,80,10,50);
 
 	eye_count=1+bitmap_ag_random_int(3);
 
-	eye_x=25+bitmap_ag_random_int(30);
-	eye_y=40+bitmap_ag_random_int(30);
-
-	eye_wid=(wid-(eye_x<<1))/eye_count;
-	eye_high=eye_wid>>1;
+	eye_wid=face_wid/eye_count;
+	eye_high=(eye_wid>>1)+bitmap_ag_random_int(eye_wid);
 	if (eye_high>(high>>1)) eye_high=high>>1;
+
+	eye_x=(face_wid>>1)-((eye_count*eye_wid)>>1);
+	eye_y=40+bitmap_ag_random_int(30);
 
 	pupil_wid=eye_wid>>2;
 	pupil_high=eye_high-bitmap_ag_random_int(eye_high>>1);
 
-	px=x+eye_x;
+	px=face_x+eye_x;
 	py=y+eye_y;
 
+	border_sz=2+bitmap_ag_random_int(eye_high>>2);
+
 	for (n=0;n!=eye_count;n++) {
-		bitmap_ag_texture_draw_oval(ag_bitmap,px,py,(eye_wid-5),eye_high,2,TRUE,&border_col,&col);
+		bitmap_ag_texture_draw_oval(ag_bitmap,px,py,(eye_wid-5),eye_high,border_sz,TRUE,&border_col,&eye_col);
 
 		px2=px+((eye_wid-pupil_wid)>>1);
 		py2=py+((eye_high-pupil_high)>>1);
-		bitmap_ag_texture_draw_oval(ag_bitmap,px2,py2,pupil_wid,pupil_high,1,TRUE,&border_col,&col2);
+		bitmap_ag_texture_draw_oval(ag_bitmap,px2,py2,pupil_wid,pupil_high,0,TRUE,NULL,&pupil_col);
 
 		px+=eye_wid;
 	}
 
 		// mouth
 
-	bitmap_ag_texture_draw_line_horizontal(ag_bitmap,(x+10),(y+(high-40)),(wid-20),2,FALSE,&col2);
+	line_count=1+bitmap_ag_random_int(4);
+
+	px=face_x+10;
+	px_add=(face_wid-20)/line_count;
+
+	for (n=0;n!=line_count;n++) {
+		m_sz=2+bitmap_ag_random_int(8);
+		bitmap_ag_texture_draw_line_horizontal(ag_bitmap,px,(y+(high-40)),px_add,m_sz,FALSE,&mouth_col);
+		px+=px_add;
+	}
 }
 
 void bitmap_ag_texture_cloth_chunk(bitmap_ag_type *ag_bitmap,int x,int y,int wid,int high)
