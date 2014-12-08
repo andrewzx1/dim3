@@ -112,9 +112,29 @@ bool ag_model_bone_is_head(model_type *model,int bone_idx)
 	return(strcmp(model->bones[bone_idx].name,"Head")==0);
 }
 
+bool ag_model_bone_is_arm(model_type *model,int bone_idx)
+{
+	if (strstr(model->bones[bone_idx].name,"Left Wrist")!=NULL) return(TRUE);
+	if (strstr(model->bones[bone_idx].name,"Left Elbow")!=NULL) return(TRUE);
+	if (strstr(model->bones[bone_idx].name,"Right Wrist")!=NULL) return(TRUE);
+	if (strstr(model->bones[bone_idx].name,"Right Elbow")!=NULL) return(TRUE);
+
+	return(FALSE);
+}
+
 bool ag_model_bone_is_hand(model_type *model,int bone_idx)
 {
 	return(strstr(model->bones[bone_idx].name,"Hand")!=NULL);
+}
+
+bool ag_model_bone_is_leg(model_type *model,int bone_idx)
+{
+	if (strstr(model->bones[bone_idx].name,"Left Ankle")!=NULL) return(TRUE);
+	if (strstr(model->bones[bone_idx].name,"Left Knee")!=NULL) return(TRUE);
+	if (strstr(model->bones[bone_idx].name,"Right Ankle")!=NULL) return(TRUE);
+	if (strstr(model->bones[bone_idx].name,"Right Knee")!=NULL) return(TRUE);
+
+	return(FALSE);
 }
 
 bool ag_model_bone_is_foot(model_type *model,int bone_idx)
