@@ -46,7 +46,7 @@ int 					ag_model_piece_hand_high,
       
 ======================================================= */
 
-void ag_model_piece_add_vertex(model_type *model,model_vertex_type *vertex,int center_bone_idx,int attach_bone_idx,int x_off,int y_off,int z_off)
+void ag_model_piece_add_vertex(model_type *model,model_vertex_type *vertex,int center_bone_idx,int major_bone_idx,int minor_bone_idx,float bone_factor,int x_off,int y_off,int z_off)
 {
 	model_bone_type		*bone;
 
@@ -58,9 +58,9 @@ void ag_model_piece_add_vertex(model_type *model,model_vertex_type *vertex,int c
 
 		// bone connection
 
-	vertex->major_bone_idx=attach_bone_idx;
-	vertex->minor_bone_idx=-1;
-	vertex->bone_factor=1.0f;
+	vertex->major_bone_idx=major_bone_idx;
+	vertex->minor_bone_idx=minor_bone_idx;
+	vertex->bone_factor=bone_factor;
 
 		// tangent space
 
@@ -104,14 +104,15 @@ void ag_model_piece_add_trig(model_type *model,model_poly_type *poly,int v_off,i
       
 ======================================================= */
 
-void ag_model_piece_complex_cylinder(model_type *model,model_mesh_type *mesh,int bone_idx,int min_stack,int extra_stack,d3pnt *sz_start,d3pnt *sz_extra,int y_off,float gx_offset,float gy_offset,float cap_gx_offset,float cap_gy_offset)
+void ag_model_piece_complex_cylinder(model_type *model,model_mesh_type *mesh,int bone_idx,int parent_bone_idx,int min_stack,int extra_stack,d3pnt *sz_start,d3pnt *sz_extra,int y_off,float gx_offset,float gy_offset,float cap_gx_offset,float cap_gy_offset,bool force_end_size)
 {
-	int					n,k,y,v_idx,vc_idx,
+	int					n,k,y,v_idx,vc_idx,major_bone_idx,minor_bone_idx,
 						vertex_idx,poly_idx,center_bone_idx,
 						stack_count,head_high,y_add,
 						x_sz,x_h_sz,z_sz,z_h_sz,
 						va_idx[4];
-	float				ang,gx,gy,gx_add,gy_add,uv_x[8],uv_y[8];
+	float				bone_factor,ang,
+						gx,gy,gx_add,gy_add,uv_x[8],uv_y[8];
 	model_vertex_type	*vertex;
 	model_poly_type		*poly;
 
@@ -150,22 +151,54 @@ void ag_model_piece_complex_cylinder(model_type *model,model_mesh_type *mesh,int
 
 			// randomize x-z coordinates
 
-		x_sz=sz_start->x+ag_random_int(sz_extra->x);
-		x_h_sz=x_sz>>1;
+		x_sz=sz_start->x;
+		z_sz=sz_start->z;
 
-		z_sz=sz_start->z+ag_random_int(sz_extra->z);
+		if (!((force_end_size) && ((n==0) || (n==stack_count)))) {
+			x_sz+=ag_random_int(sz_extra->x);
+			z_sz+=ag_random_int(sz_extra->z);
+		}
+
+		x_h_sz=x_sz>>1;
 		z_h_sz=z_sz>>1;
+
+			// minor bone
+
+		if (parent_bone_idx!=-1) {
+			if (n==stack_count) {
+				major_bone_idx=bone_idx;
+				minor_bone_idx=-1;
+				bone_factor=1.0f;
+			}
+			else {
+				if (n==0) {
+					major_bone_idx=parent_bone_idx;
+					minor_bone_idx=-1;
+					bone_factor=1.0f;
+				}
+				else {
+					major_bone_idx=bone_idx;
+					minor_bone_idx=parent_bone_idx;
+					bone_factor=1.0f-(((float)n)/((float)stack_count));
+				}
+			}
+		}
+		else {
+			major_bone_idx=bone_idx;
+			minor_bone_idx=-1;
+			bone_factor=1.0f;
+		}
 
 			// the vertexes
 
-		ag_model_piece_add_vertex(model,vertex++,bone_idx,bone_idx,-x_sz,y,z_h_sz);
-		ag_model_piece_add_vertex(model,vertex++,bone_idx,bone_idx,-x_h_sz,y,z_sz);
-		ag_model_piece_add_vertex(model,vertex++,bone_idx,bone_idx,x_h_sz,y,z_sz);
-		ag_model_piece_add_vertex(model,vertex++,bone_idx,bone_idx,x_sz,y,z_h_sz);
-		ag_model_piece_add_vertex(model,vertex++,bone_idx,bone_idx,x_sz,y,-z_h_sz);
-		ag_model_piece_add_vertex(model,vertex++,bone_idx,bone_idx,x_h_sz,y,-z_sz);
-		ag_model_piece_add_vertex(model,vertex++,bone_idx,bone_idx,-x_h_sz,y,-z_sz);
-		ag_model_piece_add_vertex(model,vertex++,bone_idx,bone_idx,-x_sz,y,-z_h_sz);
+		ag_model_piece_add_vertex(model,vertex++,bone_idx,major_bone_idx,minor_bone_idx,bone_factor,-x_sz,y,z_h_sz);
+		ag_model_piece_add_vertex(model,vertex++,bone_idx,major_bone_idx,minor_bone_idx,bone_factor,-x_h_sz,y,z_sz);
+		ag_model_piece_add_vertex(model,vertex++,bone_idx,major_bone_idx,minor_bone_idx,bone_factor,x_h_sz,y,z_sz);
+		ag_model_piece_add_vertex(model,vertex++,bone_idx,major_bone_idx,minor_bone_idx,bone_factor,x_sz,y,z_h_sz);
+		ag_model_piece_add_vertex(model,vertex++,bone_idx,major_bone_idx,minor_bone_idx,bone_factor,x_sz,y,-z_h_sz);
+		ag_model_piece_add_vertex(model,vertex++,bone_idx,major_bone_idx,minor_bone_idx,bone_factor,x_h_sz,y,-z_sz);
+		ag_model_piece_add_vertex(model,vertex++,bone_idx,major_bone_idx,minor_bone_idx,bone_factor,-x_h_sz,y,-z_sz);
+		ag_model_piece_add_vertex(model,vertex++,bone_idx,major_bone_idx,minor_bone_idx,bone_factor,-x_sz,y,-z_h_sz);
 
 		y+=y_add;
 	}
@@ -295,7 +328,7 @@ void ag_model_piece_bone_head(model_type *model,model_mesh_type *mesh,int bone_i
 	sz_start.z=150;
 	sz_extra.z=250;
 
-	ag_model_piece_complex_cylinder(model,mesh,bone_idx,2,3,&sz_start,&sz_extra,0,0.5f,0.0f,0.0f,0.0f);
+	ag_model_piece_complex_cylinder(model,mesh,bone_idx,-1,2,3,&sz_start,&sz_extra,0,0.5f,0.0f,0.0f,0.0f,FALSE);
 }
 
 /* =======================================================
@@ -366,7 +399,7 @@ extern void ag_model_piece_bone_body(model_type *model,model_mesh_type *mesh,int
 	sz_start.z=limb_radius;
 	sz_extra.z=limb_radius;
 
-	ag_model_piece_complex_cylinder(model,mesh,hip_bone_idx,3,4,&sz_start,&sz_extra,y_off,0.5f,0.5f,0.5f,0.5f);
+	ag_model_piece_complex_cylinder(model,mesh,hip_bone_idx,-1,3,4,&sz_start,&sz_extra,y_off,0.5f,0.5f,0.5f,0.5f,FALSE);
 }
 
 /* =======================================================
@@ -404,19 +437,19 @@ void ag_model_piece_bone_hand(model_type *model,model_mesh_type *mesh,int bone_i
 	
 	vertex=&mesh->vertexes[vertex_idx];
 
-	ag_model_piece_add_vertex(model,vertex++,center_bone_idx,bone_idx,limb_radius,0,-limb_radius);
-	ag_model_piece_add_vertex(model,vertex++,center_bone_idx,bone_idx,limb_radius,0,limb_radius);
-	ag_model_piece_add_vertex(model,vertex++,center_bone_idx,bone_idx,limb_radius,y_mid,(limb_radius+50));
-	ag_model_piece_add_vertex(model,vertex++,center_bone_idx,bone_idx,limb_radius,y_bot,limb_radius);
-	ag_model_piece_add_vertex(model,vertex++,center_bone_idx,bone_idx,limb_radius,y_bot,-limb_radius);
-	ag_model_piece_add_vertex(model,vertex++,center_bone_idx,bone_idx,limb_radius,y_mid,-(limb_radius+50));
+	ag_model_piece_add_vertex(model,vertex++,center_bone_idx,bone_idx,-1,1.0f,limb_radius,0,-limb_radius);
+	ag_model_piece_add_vertex(model,vertex++,center_bone_idx,bone_idx,-1,1.0f,limb_radius,0,limb_radius);
+	ag_model_piece_add_vertex(model,vertex++,center_bone_idx,bone_idx,-1,1.0f,limb_radius,y_mid,(limb_radius+50));
+	ag_model_piece_add_vertex(model,vertex++,center_bone_idx,bone_idx,-1,1.0f,limb_radius,y_bot,limb_radius);
+	ag_model_piece_add_vertex(model,vertex++,center_bone_idx,bone_idx,-1,1.0f,limb_radius,y_bot,-limb_radius);
+	ag_model_piece_add_vertex(model,vertex++,center_bone_idx,bone_idx,-1,1.0f,limb_radius,y_mid,-(limb_radius+50));
 
-	ag_model_piece_add_vertex(model,vertex++,center_bone_idx,bone_idx,-limb_radius,0,-limb_radius);
-	ag_model_piece_add_vertex(model,vertex++,center_bone_idx,bone_idx,-limb_radius,0,limb_radius);
-	ag_model_piece_add_vertex(model,vertex++,center_bone_idx,bone_idx,-limb_radius,y_mid,(limb_radius+50));
-	ag_model_piece_add_vertex(model,vertex++,center_bone_idx,bone_idx,-limb_radius,y_bot,limb_radius);
-	ag_model_piece_add_vertex(model,vertex++,center_bone_idx,bone_idx,-limb_radius,y_bot,-limb_radius);
-	ag_model_piece_add_vertex(model,vertex++,center_bone_idx,bone_idx,-limb_radius,y_mid,-(limb_radius+50));
+	ag_model_piece_add_vertex(model,vertex++,center_bone_idx,bone_idx,-1,1.0f,-limb_radius,0,-limb_radius);
+	ag_model_piece_add_vertex(model,vertex++,center_bone_idx,bone_idx,-1,1.0f,-limb_radius,0,limb_radius);
+	ag_model_piece_add_vertex(model,vertex++,center_bone_idx,bone_idx,-1,1.0f,-limb_radius,y_mid,(limb_radius+50));
+	ag_model_piece_add_vertex(model,vertex++,center_bone_idx,bone_idx,-1,1.0f,-limb_radius,y_bot,limb_radius);
+	ag_model_piece_add_vertex(model,vertex++,center_bone_idx,bone_idx,-1,1.0f,-limb_radius,y_bot,-limb_radius);
+	ag_model_piece_add_vertex(model,vertex++,center_bone_idx,bone_idx,-1,1.0f,-limb_radius,y_mid,-(limb_radius+50));
 
 		// build the polys
 
@@ -475,19 +508,19 @@ void ag_model_piece_bone_foot(model_type *model,model_mesh_type *mesh,int bone_i
 	
 	vertex=&mesh->vertexes[vertex_idx];
 
-	ag_model_piece_add_vertex(model,vertex++,center_bone_idx,bone_idx,ag_model_piece_foot_x_sz,y_mid,ag_model_piece_foot_z_front);
-	ag_model_piece_add_vertex(model,vertex++,center_bone_idx,bone_idx,ag_model_piece_foot_x_sz,0,z_mid);
-	ag_model_piece_add_vertex(model,vertex++,center_bone_idx,bone_idx,ag_model_piece_foot_x_sz,0,z_back);
-	ag_model_piece_add_vertex(model,vertex++,center_bone_idx,bone_idx,ag_model_piece_foot_x_sz,y_bot,z_back);
-	ag_model_piece_add_vertex(model,vertex++,center_bone_idx,bone_idx,ag_model_piece_foot_x_sz,y_bot,z_mid);
-	ag_model_piece_add_vertex(model,vertex++,center_bone_idx,bone_idx,ag_model_piece_foot_x_sz,y_bot,ag_model_piece_foot_z_front);
+	ag_model_piece_add_vertex(model,vertex++,center_bone_idx,bone_idx,-1,1.0f,ag_model_piece_foot_x_sz,y_mid,ag_model_piece_foot_z_front);
+	ag_model_piece_add_vertex(model,vertex++,center_bone_idx,bone_idx,-1,1.0f,ag_model_piece_foot_x_sz,0,z_mid);
+	ag_model_piece_add_vertex(model,vertex++,center_bone_idx,bone_idx,-1,1.0f,ag_model_piece_foot_x_sz,0,z_back);
+	ag_model_piece_add_vertex(model,vertex++,center_bone_idx,bone_idx,-1,1.0f,ag_model_piece_foot_x_sz,y_bot,z_back);
+	ag_model_piece_add_vertex(model,vertex++,center_bone_idx,bone_idx,-1,1.0f,ag_model_piece_foot_x_sz,y_bot,z_mid);
+	ag_model_piece_add_vertex(model,vertex++,center_bone_idx,bone_idx,-1,1.0f,ag_model_piece_foot_x_sz,y_bot,ag_model_piece_foot_z_front);
 
-	ag_model_piece_add_vertex(model,vertex++,center_bone_idx,bone_idx,-ag_model_piece_foot_x_sz,y_mid,ag_model_piece_foot_z_front);
-	ag_model_piece_add_vertex(model,vertex++,center_bone_idx,bone_idx,-ag_model_piece_foot_x_sz,0,z_mid);
-	ag_model_piece_add_vertex(model,vertex++,center_bone_idx,bone_idx,-ag_model_piece_foot_x_sz,0,z_back);
-	ag_model_piece_add_vertex(model,vertex++,center_bone_idx,bone_idx,-ag_model_piece_foot_x_sz,y_bot,z_back);
-	ag_model_piece_add_vertex(model,vertex++,center_bone_idx,bone_idx,-ag_model_piece_foot_x_sz,y_bot,z_mid);
-	ag_model_piece_add_vertex(model,vertex++,center_bone_idx,bone_idx,-ag_model_piece_foot_x_sz,y_bot,ag_model_piece_foot_z_front);
+	ag_model_piece_add_vertex(model,vertex++,center_bone_idx,bone_idx,-1,1.0f,-ag_model_piece_foot_x_sz,y_mid,ag_model_piece_foot_z_front);
+	ag_model_piece_add_vertex(model,vertex++,center_bone_idx,bone_idx,-1,1.0f,-ag_model_piece_foot_x_sz,0,z_mid);
+	ag_model_piece_add_vertex(model,vertex++,center_bone_idx,bone_idx,-1,1.0f,-ag_model_piece_foot_x_sz,0,z_back);
+	ag_model_piece_add_vertex(model,vertex++,center_bone_idx,bone_idx,-1,1.0f,-ag_model_piece_foot_x_sz,y_bot,z_back);
+	ag_model_piece_add_vertex(model,vertex++,center_bone_idx,bone_idx,-1,1.0f,-ag_model_piece_foot_x_sz,y_bot,z_mid);
+	ag_model_piece_add_vertex(model,vertex++,center_bone_idx,bone_idx,-1,1.0f,-ag_model_piece_foot_x_sz,y_bot,ag_model_piece_foot_z_front);
 
 		// build the polys
 

@@ -197,6 +197,7 @@ void ag_model_bone_cylinder_position_z(model_bone_type *bone,int side_idx,float 
       
 ======================================================= */
 
+// supergumba -- delete this and above
 int ag_model_bone_cylinder_vertexes(model_type *model,model_mesh_type *mesh,int bone_idx,int radius_x,int radius_z,int y_off)
 {
 	int					n,v_idx;
@@ -234,6 +235,29 @@ int ag_model_bone_cylinder_vertexes(model_type *model,model_mesh_type *mesh,int 
 	return(v_idx);
 }
 
+
+void ag_model_limb_bone(model_type *model,model_mesh_type *mesh,int bone_idx,int limb_radius,bool secondary_texture)
+{
+	int				parent_bone_idx;
+	float			gx_offset,gy_offset;
+	d3pnt			sz_start,sz_extra;
+	model_bone_type	*bone,*parent_bone;
+
+	bone=&model->bones[bone_idx];
+	parent_bone_idx=bone->parent_idx;
+	parent_bone=&model->bones[parent_bone_idx];
+
+	sz_start.x=sz_start.z=limb_radius;
+	sz_start.y=abs(parent_bone->pnt.y-bone->pnt.y);
+
+	sz_extra.x=sz_extra.y=sz_extra.z=0;
+
+	gx_offset=gy_offset=(secondary_texture?0.5f:0.0f);
+
+	ag_model_piece_complex_cylinder(model,mesh,bone_idx,parent_bone_idx,1,2,&sz_start,&sz_extra,0,gx_offset,gy_offset,0.0f,0.0f,TRUE);
+}
+
+// supergumba -- delete this
 void ag_model_bone_cylinder_polygons(model_type *model,model_mesh_type *mesh,int v1_idx,int v2_idx,bool secondary_texture,bool close_top,bool close_bottom)
 {
 	int				n,k,npoly,poly_idx;
@@ -345,12 +369,14 @@ void ag_model_bone_cylinder_polygons(model_type *model,model_mesh_type *mesh,int
 	}
 }
 
+
 /* =======================================================
 
       Primitives around bone point
       
 ======================================================= */
 
+// supergumba -- what about this?  delete
 void ag_model_bone_point_cube(model_type *model,model_mesh_type *mesh,int bone_idx,d3pnt *sz)
 {
 	int					n,nvertex,npoly;
@@ -548,7 +574,10 @@ void ag_model_build_around_bones(model_type *model)
 	for (n=0;n!=model->nbone;n++) {
 		if (ag_model_bone_is_arm(model,n)) {
 			parent_idx=model->bones[n].parent_idx;
-			ag_model_bone_cylinder_polygons(model,mesh,bone_vertex_idx[n],bone_vertex_idx[parent_idx],FALSE,FALSE,FALSE);
+		//	ag_model_bone_cylinder_polygons(model,mesh,bone_vertex_idx[n],bone_vertex_idx[parent_idx],FALSE,FALSE,FALSE);
+
+			ag_model_limb_bone(model,mesh,n,limb_radius,FALSE);
+
 			continue;
 		}
 		if (ag_model_bone_is_hand(model,n)) {
