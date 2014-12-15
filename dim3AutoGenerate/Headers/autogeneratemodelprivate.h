@@ -47,7 +47,7 @@ extern void ag_model_bone_create_skeleton(model_type *model);
 //
 
 extern void ag_model_piece_setup(void);
-extern void ag_model_piece_complex_cylinder(model_type *model,model_mesh_type *mesh,int bone_idx,int parent_bone_idx,int min_stack,int extra_stack,d3pnt *sz_start,d3pnt *sz_extra,int y_off,float gx_offset,float gy_offset,float cap_gx_offset,float cap_gy_offset,bool force_end_size);
+extern void ag_model_piece_complex_cylinder(model_type *model,model_mesh_type *mesh,int p_major_bone_idx,int p_minor_bone_idx,d3pnt *spt,d3pnt *ept,int stack_count,d3pnt *radius,d3pnt *radius_extra,float gx_offset,float gy_offset,float cap_gx_offset,float cap_gy_offset,bool force_end_size,bool no_end_cap);
 extern void ag_model_piece_bone_head(model_type *model,model_mesh_type *mesh,int bone_idx,int limb_radius);
 extern void ag_model_piece_bone_body(model_type *model,model_mesh_type *mesh,int body_bone_idx,int hip_bone_idx,int limb_radius);
 extern void ag_model_piece_bone_hand(model_type *model,model_mesh_type *mesh,int bone_idx,int limb_radius);

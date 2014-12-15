@@ -235,26 +235,34 @@ int ag_model_bone_cylinder_vertexes(model_type *model,model_mesh_type *mesh,int 
 	return(v_idx);
 }
 
-
-void ag_model_limb_bone(model_type *model,model_mesh_type *mesh,int bone_idx,int limb_radius,bool secondary_texture)
+void ag_model_limb_bone(model_type *model,model_mesh_type *mesh,int major_bone_idx,int limb_radius,bool secondary_texture)
 {
-	int				parent_bone_idx;
+	int				minor_bone_idx,stack_count;
 	float			gx_offset,gy_offset;
-	d3pnt			sz_start,sz_extra;
-	model_bone_type	*bone,*parent_bone;
+	d3pnt			spt,ept,radius,radius_extra;
+	model_bone_type	*major_bone,*minor_bone;
 
-	bone=&model->bones[bone_idx];
-	parent_bone_idx=bone->parent_idx;
-	parent_bone=&model->bones[parent_bone_idx];
+	major_bone=&model->bones[major_bone_idx];
+	minor_bone_idx=major_bone->parent_idx;
+	minor_bone=&model->bones[minor_bone_idx];
 
-	sz_start.x=sz_start.z=limb_radius;
-	sz_start.y=abs(parent_bone->pnt.y-bone->pnt.y);
+		// size
 
-	sz_extra.x=sz_extra.y=sz_extra.z=0;
+	memmove(&spt,&major_bone->pnt,sizeof(d3pnt));
+	memmove(&ept,&minor_bone->pnt,sizeof(d3pnt));
+
+	radius.x=radius.z=limb_radius;
+	radius_extra.x=radius_extra.y=radius_extra.z=0;
+
+		// how many stacks?
+
+	stack_count=2+ag_random_int(3);
+
+		// create the limb
 
 	gx_offset=gy_offset=(secondary_texture?0.5f:0.0f);
 
-	ag_model_piece_complex_cylinder(model,mesh,bone_idx,parent_bone_idx,1,2,&sz_start,&sz_extra,0,gx_offset,gy_offset,0.0f,0.0f,TRUE);
+	ag_model_piece_complex_cylinder(model,mesh,major_bone_idx,minor_bone_idx,&spt,&ept,stack_count,&radius,&radius_extra,gx_offset,gy_offset,0.0f,0.0f,TRUE,TRUE);
 }
 
 // supergumba -- delete this
@@ -574,10 +582,7 @@ void ag_model_build_around_bones(model_type *model)
 	for (n=0;n!=model->nbone;n++) {
 		if (ag_model_bone_is_arm(model,n)) {
 			parent_idx=model->bones[n].parent_idx;
-		//	ag_model_bone_cylinder_polygons(model,mesh,bone_vertex_idx[n],bone_vertex_idx[parent_idx],FALSE,FALSE,FALSE);
-
 			ag_model_limb_bone(model,mesh,n,limb_radius,FALSE);
-
 			continue;
 		}
 		if (ag_model_bone_is_hand(model,n)) {
@@ -586,7 +591,7 @@ void ag_model_build_around_bones(model_type *model)
 		}
 		if (ag_model_bone_is_leg(model,n)) {
 			parent_idx=model->bones[n].parent_idx;
-			ag_model_bone_cylinder_polygons(model,mesh,bone_vertex_idx[n],bone_vertex_idx[parent_idx],TRUE,FALSE,FALSE);
+			ag_model_limb_bone(model,mesh,n,limb_radius,TRUE);
 			continue;
 		}
 		if (ag_model_bone_is_foot(model,n)) {
@@ -701,7 +706,7 @@ void auto_generate_model_monster(model_type *model)
 		// build model around bones
 
 	ag_model_build_around_bones(model);
-	ag_model_add_decorations(model);
+//	ag_model_add_decorations(model);		// supergumba -- testing
 
 		// remove any stray vertexes
 
