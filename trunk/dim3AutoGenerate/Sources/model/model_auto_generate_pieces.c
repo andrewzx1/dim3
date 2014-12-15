@@ -67,6 +67,36 @@ void ag_model_piece_add_vertex(model_type *model,model_vertex_type *vertex,int c
 	vector_create(&vertex->tangent_space.normal,vertex->pnt.x,vertex->pnt.y,vertex->pnt.z,bone->pnt.x,bone->pnt.y,bone->pnt.z);
 }
 
+void ag_model_piece_add_vertex_by_point(model_type *model,model_vertex_type *vertex,d3pnt *pnt,d3pnt *radius,float ang_y,int major_bone_idx,int minor_bone_idx,float bone_factor)
+{
+	float				fx,fy,fz;
+	matrix_type			mat;
+
+		// build the rotations
+
+	matrix_rotate_xyz(&mat,0.0f,ang_y,0.0f);
+	
+	fx=1.0f;
+	fy=0.0f;
+	fz=0.0f;
+	
+	matrix_vertex_multiply(&mat,&fx,&fy,&fz);
+
+	vertex->pnt.x=pnt->x+(int)(fx*((float)radius->x));
+	vertex->pnt.y=pnt->y;
+	vertex->pnt.z=pnt->z+(int)(fz*((float)radius->z));
+
+		// bone connection
+
+	vertex->major_bone_idx=major_bone_idx;
+	vertex->minor_bone_idx=minor_bone_idx;
+	vertex->bone_factor=bone_factor;
+
+		// tangent space
+
+	vector_create(&vertex->tangent_space.normal,vertex->pnt.x,vertex->pnt.y,vertex->pnt.z,pnt->x,pnt->y,pnt->z);
+}
+
 void ag_model_piece_add_quad(model_type *model,model_poly_type *poly,int v_off,int v1_idx,int v2_idx,int v3_idx,int v4_idx,float gx,float gx_sz,float gy,float gy_sz)
 {
 	poly->ptsz=4;
@@ -104,26 +134,15 @@ void ag_model_piece_add_trig(model_type *model,model_poly_type *poly,int v_off,i
       
 ======================================================= */
 
-void ag_model_piece_complex_cylinder(model_type *model,model_mesh_type *mesh,int bone_idx,int parent_bone_idx,int min_stack,int extra_stack,d3pnt *sz_start,d3pnt *sz_extra,int y_off,float gx_offset,float gy_offset,float cap_gx_offset,float cap_gy_offset,bool force_end_size)
+void ag_model_piece_complex_cylinder(model_type *model,model_mesh_type *mesh,int p_major_bone_idx,int p_minor_bone_idx,d3pnt *spt,d3pnt *ept,int stack_count,d3pnt *radius,d3pnt *radius_extra,float gx_offset,float gy_offset,float cap_gx_offset,float cap_gy_offset,bool force_end_size,bool no_end_cap)
 {
-	int					n,k,y,v_idx,vc_idx,major_bone_idx,minor_bone_idx,
-						vertex_idx,poly_idx,center_bone_idx,
-						stack_count,head_high,y_add,
-						x_sz,x_h_sz,z_sz,z_h_sz,
-						va_idx[4];
+	int					n,k,v_idx,vc_idx,major_bone_idx,minor_bone_idx,
+						vertex_idx,poly_idx,va_idx[4];
 	float				bone_factor,ang,
 						gx,gy,gx_add,gy_add,uv_x[8],uv_y[8];
+	d3pnt				pt,rnd_rad;
 	model_vertex_type	*vertex;
 	model_poly_type		*poly;
-
-		// get center bone
-
-	center_bone_idx=model->bones[bone_idx].parent_idx;
-	if (center_bone_idx==-1) return;
-
-		// how many stacks?
-
-	stack_count=min_stack+ag_random_int(extra_stack);
 
 		// add the vertexes and polys
 		// need 1 extra for top row of vertexes
@@ -134,73 +153,57 @@ void ag_model_piece_complex_cylinder(model_type *model,model_mesh_type *mesh,int
 	poly_idx=mesh->npoly;
 	model_mesh_set_poly_count(model,0,(poly_idx+((8*stack_count)+(2*6))));
 
-		// head height
-
-	head_high=sz_start->y+ag_random_int(sz_extra->y);
-	y_add=(head_high/stack_count);
-
-	gy_add=0.5f/((float)stack_count);
-
 		// build the vertexes
 	
 	vertex=&mesh->vertexes[vertex_idx];
 
-	y=y_off-(y_add*stack_count);
-
 	for (n=0;n!=(stack_count+1);n++) {
+
+			// get position
+
+		pt.x=spt->x+(((ept->x-spt->x)*n)/stack_count);
+		pt.y=spt->y+(((ept->y-spt->y)*n)/stack_count);
+		pt.z=spt->z+(((ept->z-spt->z)*n)/stack_count);
 
 			// randomize x-z coordinates
 
-		x_sz=sz_start->x;
-		z_sz=sz_start->z;
+		rnd_rad.x=radius->x;
+		rnd_rad.z=radius->z;
 
 		if (!((force_end_size) && ((n==0) || (n==stack_count)))) {
-			x_sz+=ag_random_int(sz_extra->x);
-			z_sz+=ag_random_int(sz_extra->z);
+			rnd_rad.x+=ag_random_int(radius_extra->x);
+			rnd_rad.z+=ag_random_int(radius_extra->z);
 		}
 
-		x_h_sz=x_sz>>1;
-		z_h_sz=z_sz>>1;
+			// get attached bone
+		
+		major_bone_idx=p_major_bone_idx;
+		minor_bone_idx=-1;
+		bone_factor=1.0f;
 
-			// minor bone
-
-		if (parent_bone_idx!=-1) {
+		if (minor_bone_idx!=-1) {
 			if (n==stack_count) {
-				major_bone_idx=bone_idx;
+				major_bone_idx=p_minor_bone_idx;
 				minor_bone_idx=-1;
 				bone_factor=1.0f;
 			}
 			else {
-				if (n==0) {
-					major_bone_idx=parent_bone_idx;
-					minor_bone_idx=-1;
-					bone_factor=1.0f;
-				}
-				else {
-					major_bone_idx=bone_idx;
-					minor_bone_idx=parent_bone_idx;
-					bone_factor=1.0f-(((float)n)/((float)stack_count));
-				}
+				major_bone_idx=p_major_bone_idx;
+				minor_bone_idx=p_minor_bone_idx;
+				bone_factor=1.0f-((float)n)/((float)stack_count);
 			}
-		}
-		else {
-			major_bone_idx=bone_idx;
-			minor_bone_idx=-1;
-			bone_factor=1.0f;
 		}
 
 			// the vertexes
 
-		ag_model_piece_add_vertex(model,vertex++,bone_idx,major_bone_idx,minor_bone_idx,bone_factor,-x_sz,y,z_h_sz);
-		ag_model_piece_add_vertex(model,vertex++,bone_idx,major_bone_idx,minor_bone_idx,bone_factor,-x_h_sz,y,z_sz);
-		ag_model_piece_add_vertex(model,vertex++,bone_idx,major_bone_idx,minor_bone_idx,bone_factor,x_h_sz,y,z_sz);
-		ag_model_piece_add_vertex(model,vertex++,bone_idx,major_bone_idx,minor_bone_idx,bone_factor,x_sz,y,z_h_sz);
-		ag_model_piece_add_vertex(model,vertex++,bone_idx,major_bone_idx,minor_bone_idx,bone_factor,x_sz,y,-z_h_sz);
-		ag_model_piece_add_vertex(model,vertex++,bone_idx,major_bone_idx,minor_bone_idx,bone_factor,x_h_sz,y,-z_sz);
-		ag_model_piece_add_vertex(model,vertex++,bone_idx,major_bone_idx,minor_bone_idx,bone_factor,-x_h_sz,y,-z_sz);
-		ag_model_piece_add_vertex(model,vertex++,bone_idx,major_bone_idx,minor_bone_idx,bone_factor,-x_sz,y,-z_h_sz);
-
-		y+=y_add;
+		ag_model_piece_add_vertex_by_point(model,vertex++,&pt,&rnd_rad,0.0f,major_bone_idx,minor_bone_idx,bone_factor);
+		ag_model_piece_add_vertex_by_point(model,vertex++,&pt,&rnd_rad,45.0f,major_bone_idx,minor_bone_idx,bone_factor);
+		ag_model_piece_add_vertex_by_point(model,vertex++,&pt,&rnd_rad,90.0f,major_bone_idx,minor_bone_idx,bone_factor);
+		ag_model_piece_add_vertex_by_point(model,vertex++,&pt,&rnd_rad,135.0f,major_bone_idx,minor_bone_idx,bone_factor);
+		ag_model_piece_add_vertex_by_point(model,vertex++,&pt,&rnd_rad,180.0f,major_bone_idx,minor_bone_idx,bone_factor);
+		ag_model_piece_add_vertex_by_point(model,vertex++,&pt,&rnd_rad,225.0f,major_bone_idx,minor_bone_idx,bone_factor);
+		ag_model_piece_add_vertex_by_point(model,vertex++,&pt,&rnd_rad,270.0f,major_bone_idx,minor_bone_idx,bone_factor);
+		ag_model_piece_add_vertex_by_point(model,vertex++,&pt,&rnd_rad,315.0f,major_bone_idx,minor_bone_idx,bone_factor);
 	}
 
 		// build the side polys
@@ -210,6 +213,8 @@ void ag_model_piece_complex_cylinder(model_type *model,model_mesh_type *mesh,int
 	v_idx=0;
 
 	gx_add=0.5f/8.0f;
+	gy_add=0.5f/((float)stack_count);
+
 	gy=gy_offset;
 
 	for (n=0;n!=stack_count;n++) {
@@ -237,6 +242,10 @@ void ag_model_piece_complex_cylinder(model_type *model,model_mesh_type *mesh,int
 		v_idx+=8;
 		gy+=gy_add;
 	}
+
+		// skip if no close
+
+	if (no_end_cap) return;
 
 		// top and bottom UVs
 
@@ -317,18 +326,34 @@ void ag_model_piece_setup(void)
 
 void ag_model_piece_bone_head(model_type *model,model_mesh_type *mesh,int bone_idx,int limb_radius)
 {
-	d3pnt			sz_start,sz_extra;
+	int				stack_count;
+	d3pnt			spt,ept,radius,radius_extra;
+	model_bone_type	*bone;
 
-	sz_start.x=150;
-	sz_extra.x=250;
+		// top to bottom of head
 
-	sz_start.y=350;
-	sz_extra.y=350;
+	bone=&model->bones[bone_idx];
 
-	sz_start.z=150;
-	sz_extra.z=250;
+	spt.x=bone->pnt.x;
+	spt.y=bone->pnt.y-(350+ag_random_int(350));
+	spt.z=bone->pnt.z;
 
-	ag_model_piece_complex_cylinder(model,mesh,bone_idx,-1,2,3,&sz_start,&sz_extra,0,0.5f,0.0f,0.0f,0.0f,FALSE);
+	ept.x=bone->pnt.x;
+	ept.y=bone->pnt.y;
+	ept.z=bone->pnt.z;
+
+		// radius
+
+	radius.x=radius.z=150;
+	radius_extra.x=radius_extra.z=250;
+
+		// how many stacks?
+
+	stack_count=2+ag_random_int(3);
+
+		// create the cylinder
+
+	ag_model_piece_complex_cylinder(model,mesh,bone_idx,-1,&spt,&ept,stack_count,&radius,&radius_extra,0.5f,0.0f,0.0f,0.0f,FALSE,FALSE);
 }
 
 /* =======================================================
@@ -337,69 +362,92 @@ void ag_model_piece_bone_head(model_type *model,model_mesh_type *mesh,int bone_i
       
 ======================================================= */
 
-extern void ag_model_piece_bone_body(model_type *model,model_mesh_type *mesh,int body_bone_idx,int hip_bone_idx,int limb_radius)
+void ag_model_piece_bone_body(model_type *model,model_mesh_type *mesh,int body_bone_idx,int hip_bone_idx,int limb_radius)
 {
-	int					n,x,y,y_off,ty,by;
-	d3pnt				min,max,sz_start,sz_extra;
+	int					n,stack_count,
+						major_bone_idx,minor_bone_idx;
+	bool				chk_bne;
+	d3pnt				spt,ept,min,max,radius,radius_extra;
 	model_bone_type		*bone;
 
 		// find body size by bones
 
-	min.x=min.y=1000000;
-	max.x=max.y=0;
+	min.x=min.y=spt.z=0;
+	max.x=max.y=max.z=0;
 
-	ty=by=0;
+	major_bone_idx=minor_bone_idx=-1;
+
+		// always start with torso
+		// bone
 
 	bone=model->bones;
 
 	for (n=0;n!=model->nbone;n++) {
 		if (strcmp(bone->name,"Torso")==0) {
-			y=-bone->pnt.y;
-			if (y<min.y) min.y=y;
-		}
-		if (strcmp(bone->name,"Left Shoulder")==0) {
-			x=-bone->pnt.x;
-			y=-bone->pnt.y;
-			if (y<min.y) min.y=y;
-			if (x<min.x) min.x=x;
-		}
-		if (strcmp(bone->name,"Right Shoulder")==0) {
-			x=-bone->pnt.x;
-			y=-bone->pnt.y;
-			if (y<min.y) min.y=y;
-			if (x>max.x) max.x=x;
+			major_bone_idx=n;
+			memmove(&min,&bone->pnt,sizeof(d3pnt));
+			memmove(&max,&bone->pnt,sizeof(d3pnt));
 		}
 		if (strcmp(bone->name,"Hips")==0) {
-			y=ty=-bone->pnt.y;
-			if (y>max.y) max.y=y;
-		}
-		if (strcmp(bone->name,"Left Hip")==0) {
-			x=-bone->pnt.x;
-			y=by=-bone->pnt.y;
-			if (y>max.y) max.y=y;
-			if (x<min.x) min.x=x;
-		}
-		if (strcmp(bone->name,"Right Hip")==0) {
-			x=-bone->pnt.x;
-			y=by=-bone->pnt.y;
-			if (y>max.y) max.y=y;
-			if (x>max.x) max.x=x;
+			minor_bone_idx=n;
 		}
 		bone++;
 	}
 
-	y_off=abs(by-ty);
+		// change by other bone positions
 
-	sz_start.x=(abs(max.x-min.x)>>1)-100;
-	sz_extra.x=100;
+	bone=model->bones;
 
-	sz_start.y=abs(max.y-min.y)+y_off;
-	sz_extra.y=50;
+	for (n=0;n!=model->nbone;n++) {
 
-	sz_start.z=limb_radius;
-	sz_extra.z=limb_radius;
+		chk_bne=FALSE;
 
-	ag_model_piece_complex_cylinder(model,mesh,hip_bone_idx,-1,3,4,&sz_start,&sz_extra,y_off,0.5f,0.5f,0.5f,0.5f,FALSE);
+		chk_bne|=(strcmp(bone->name,"Left Shoulder")==0);
+		chk_bne|=(strcmp(bone->name,"Right Shoulder")==0);
+		chk_bne|=(strcmp(bone->name,"Hips")==0);
+		chk_bne|=(strcmp(bone->name,"Left Hip")==0);
+		chk_bne|=(strcmp(bone->name,"Right Hip")==0);
+
+		if (chk_bne) {
+			if (bone->pnt.x<min.x) min.x=bone->pnt.x;
+			if (bone->pnt.y<min.y) min.y=bone->pnt.y;
+			if (bone->pnt.z<min.z) min.z=bone->pnt.z;
+
+			if (bone->pnt.x>max.x) max.x=bone->pnt.x;
+			if (bone->pnt.y>max.y) max.y=bone->pnt.y;
+			if (bone->pnt.z>max.z) max.z=bone->pnt.z;
+		}
+
+		bone++;
+	}
+
+	if ((major_bone_idx==-1) || (minor_bone_idx==-1)) return;
+
+		// get the start/end points
+
+	bone=&model->bones[major_bone_idx];
+	memmove(&spt,&bone->pnt,sizeof(d3pnt));
+
+	bone=&model->bones[minor_bone_idx];
+	memmove(&ept,&bone->pnt,sizeof(d3pnt));
+
+	ept.y=max.y;		// need to go down to hips
+
+		// get radius
+
+	radius.x=(abs(max.x-min.x)>>1)-100;
+	radius.z=limb_radius;
+
+	radius_extra.x=100;
+	radius_extra.z=limb_radius;
+
+		// how many stacks?
+
+	stack_count=2+ag_random_int(3);
+
+		// create the cylinder
+
+	ag_model_piece_complex_cylinder(model,mesh,major_bone_idx,minor_bone_idx,&spt,&ept,stack_count,&radius,&radius_extra,0.5f,0.5f,0.5f,0.5f,FALSE,FALSE);
 }
 
 /* =======================================================
