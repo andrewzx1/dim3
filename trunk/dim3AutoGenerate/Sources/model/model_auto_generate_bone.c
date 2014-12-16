@@ -271,6 +271,18 @@ void ag_model_bone_create_skeleton(model_type *model)
 	elbow_high=((torso_high-hand_high)>>1)+hand_high;
 	ankle_high=100+ag_random_int(200);
 
+		// fix some extreme sizes
+
+	if (abs(elbow_high-torso_high)<300) {
+		elbow_high-=300;
+		hand_high-=300;
+	}
+	if (abs(hand_high-elbow_high)<150) {
+		hand_high-=250;
+	}
+
+	if (hand_high<0) hand_high=0;
+
 		// supergumba -- for now need to create in same
 		// order as animations that exist
 

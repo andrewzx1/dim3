@@ -148,108 +148,26 @@ void ag_model_remove_stray_vertexes(model_type *model)
 
 /* =======================================================
 
-      Model Cylinders Vertex Positions
+      Limbs
       
 ======================================================= */
 
-void ag_model_bone_cylinder_position_x(model_bone_type *bone,int side_idx,float radius,d3pnt *pnt)
+void ag_model_limb_bone(model_type *model,model_mesh_type *mesh,int bot_bone_idx,int limb_radius,bool secondary_texture)
 {
-	float			ang;
-
-		// angle offset
-
-	ang=((2.0f*TRIG_PI)/((float)ag_model_cylinder_side_count))*side_idx;
-
-	pnt->x=bone->pnt.x;
-	pnt->y=bone->pnt.y+(int)(radius*sinf(ang));
-	pnt->z=bone->pnt.z-(int)(radius*cosf(ang));
-}
-
-void ag_model_bone_cylinder_position_y(model_bone_type *bone,int side_idx,float radius_x,float radius_z,d3pnt *pnt)
-{
-	float			ang;
-
-		// angle offset
-
-	ang=((2.0f*TRIG_PI)/((float)ag_model_cylinder_side_count))*side_idx;
-
-	pnt->x=bone->pnt.x+(int)(radius_x*sinf(ang));
-	pnt->y=bone->pnt.y;
-	pnt->z=bone->pnt.z-(int)(radius_z*cosf(ang));
-}
-
-void ag_model_bone_cylinder_position_z(model_bone_type *bone,int side_idx,float radius,d3pnt *pnt)
-{
-	float			ang;
-
-		// angle offset
-
-	ang=((2.0f*TRIG_PI)/((float)ag_model_cylinder_side_count))*side_idx;
-
-	pnt->x=bone->pnt.x+(int)(radius*sinf(ang));
-	pnt->y=bone->pnt.y-(int)(radius*cosf(ang));
-	pnt->z=bone->pnt.z;
-}
-
-/* =======================================================
-
-      Primitives around bones
-      
-======================================================= */
-
-// supergumba -- delete this and above
-int ag_model_bone_cylinder_vertexes(model_type *model,model_mesh_type *mesh,int bone_idx,int radius_x,int radius_z,int y_off)
-{
-	int					n,v_idx;
-	model_bone_type		*bone;
-	model_vertex_type	*vertex;
-
-		// add vertexes
-
-	v_idx=mesh->nvertex;
-	model_mesh_set_vertex_count(model,0,(v_idx+ag_model_cylinder_side_count));
-
-		// set cylinder vertexes
-		// around bones
-
-	bone=&model->bones[bone_idx];
-	vertex=&mesh->vertexes[v_idx];
-
-	for (n=0;n!=ag_model_cylinder_side_count;n++) {
-		ag_model_bone_cylinder_position_y(bone,n,(float)radius_x,(float)radius_z,&vertex->pnt);
-		vertex->pnt.y+=y_off;
-
-			// bone connection
-
-		vertex->major_bone_idx=bone_idx;
-		vertex->minor_bone_idx=-1;
-		vertex->bone_factor=1.0f;
-
-			// tangent space
-
-		vector_create(&vertex->tangent_space.normal,vertex->pnt.x,vertex->pnt.y,vertex->pnt.z,bone->pnt.x,bone->pnt.y,bone->pnt.z);
-
-		vertex++;
-	}
-
-	return(v_idx);
-}
-
-void ag_model_limb_bone(model_type *model,model_mesh_type *mesh,int major_bone_idx,int limb_radius,bool secondary_texture)
-{
-	int				minor_bone_idx,stack_count;
+	int				top_bone_idx,stack_count;
 	float			gx_offset,gy_offset;
 	d3pnt			spt,ept,radius,radius_extra;
-	model_bone_type	*major_bone,*minor_bone;
+	model_bone_type	*top_bone,*bot_bone;
 
-	major_bone=&model->bones[major_bone_idx];
-	minor_bone_idx=major_bone->parent_idx;
-	minor_bone=&model->bones[minor_bone_idx];
+	bot_bone=&model->bones[bot_bone_idx];
+
+	top_bone_idx=bot_bone->parent_idx;
+	top_bone=&model->bones[top_bone_idx];
 
 		// size
 
-	memmove(&spt,&major_bone->pnt,sizeof(d3pnt));
-	memmove(&ept,&minor_bone->pnt,sizeof(d3pnt));
+	memmove(&spt,&top_bone->pnt,sizeof(d3pnt));
+	memmove(&ept,&bot_bone->pnt,sizeof(d3pnt));
 
 	radius.x=radius.z=limb_radius;
 	radius_extra.x=radius_extra.y=radius_extra.z=0;
@@ -262,275 +180,7 @@ void ag_model_limb_bone(model_type *model,model_mesh_type *mesh,int major_bone_i
 
 	gx_offset=gy_offset=(secondary_texture?0.5f:0.0f);
 
-	ag_model_piece_complex_cylinder(model,mesh,major_bone_idx,minor_bone_idx,&spt,&ept,stack_count,&radius,&radius_extra,gx_offset,gy_offset,0.0f,0.0f,TRUE,TRUE);
-}
-
-// supergumba -- delete this
-void ag_model_bone_cylinder_polygons(model_type *model,model_mesh_type *mesh,int v1_idx,int v2_idx,bool secondary_texture,bool close_top,bool close_bottom)
-{
-	int				n,k,npoly,poly_idx;
-	float			gx,gx2,gy,gx_add,
-					ang,uv_x[8],uv_y[8];
-	model_poly_type	*poly;
-
-		// add polys
-
-	poly_idx=mesh->npoly;
-
-	npoly=poly_idx+ag_model_cylinder_side_count;
-	if (close_top) npoly+=(ag_model_cylinder_side_count-2);
-	if (close_bottom) npoly+=(ag_model_cylinder_side_count-2);
-
-	model_mesh_set_poly_count(model,0,npoly);
-
-		// build side polys
-		// skin is top-left of texture
-
-	gx=secondary_texture?0.5f:0.0f;
-	gx_add=0.5f/(float)ag_model_cylinder_side_count;
-
-	poly=&mesh->polys[poly_idx];
-
-	for (n=0;n!=ag_model_cylinder_side_count;n++) {
-
-		poly->ptsz=4;
-		poly->txt_idx=0;
-
-			// the UV
-
-		if ((n+1)==ag_model_cylinder_side_count) {
-			gx2=secondary_texture?1.0f:0.5f;
-		}
-		else {
-			gx2=gx+gx_add;
-		}
-
-		poly->gx[0]=poly->gx[3]=gx;
-		poly->gx[1]=poly->gx[2]=gx2;
-		if (secondary_texture) {
-			poly->gy[0]=poly->gy[1]=0.5f;
-			poly->gy[2]=poly->gy[3]=1.0f;
-		}
-		else {
-			poly->gy[0]=poly->gy[1]=0.0f;
-			poly->gy[2]=poly->gy[3]=0.5f;
-		}
-
-		gx=gx2;
-
-			// the poly indexes
-
-		k=n+1;
-		if (k==ag_model_cylinder_side_count) k=0;
-
-		poly->v[0]=v1_idx+n;
-		poly->v[1]=v1_idx+k;
-		poly->v[2]=v2_idx+k;
-		poly->v[3]=v2_idx+n;
-
-		poly++;
-	}
-
-		// get UV for polys
-	
-	gx=secondary_texture?0.5f:0.0f;
-	gy=secondary_texture?0.5f:0.0f;
-
-	for (n=0;n!=ag_model_cylinder_side_count;n++) {
-		ang=(TRIG_PI/((float)ag_model_cylinder_side_count))*(float)n;
-		uv_x[n]=gx+fabsf(0.5f*sinf(ang));
-		uv_y[n]=gy+fabsf(0.5f*cosf(ang));
-	}
-
-		// build top or bottom polys
-
-	for (n=0;n!=(ag_model_cylinder_side_count-2);n++) {
-		
-		if (close_top) {
-			poly->ptsz=3;
-			poly->txt_idx=0;
-			poly->gx[0]=uv_x[0];
-			poly->gx[1]=uv_x[n+1];
-			poly->gx[2]=uv_x[n+2];
-			poly->gy[0]=uv_y[0];
-			poly->gy[1]=uv_y[n+1];
-			poly->gy[2]=uv_y[n+2];
-			poly->v[0]=v1_idx;
-			poly->v[1]=v1_idx+(n+1);
-			poly->v[2]=v1_idx+(n+2);
-			poly++;
-		}
-		if (close_bottom) {
-			poly->ptsz=3;
-			poly->txt_idx=0;
-			poly->gx[0]=uv_x[0];
-			poly->gx[1]=uv_x[n+1];
-			poly->gx[2]=uv_x[n+2];
-			poly->gy[0]=uv_y[0];
-			poly->gy[1]=uv_y[n+1];
-			poly->gy[2]=uv_y[n+2];
-			poly->v[0]=v2_idx;
-			poly->v[1]=v2_idx+(n+1);
-			poly->v[2]=v2_idx+(n+2);
-			poly++;
-		}
-	}
-}
-
-
-/* =======================================================
-
-      Primitives around bone point
-      
-======================================================= */
-
-// supergumba -- what about this?  delete
-void ag_model_bone_point_cube(model_type *model,model_mesh_type *mesh,int bone_idx,d3pnt *sz)
-{
-	int					n,nvertex,npoly;
-	int					x_off[8]={-1,1,1,-1,-1,1,1,-1},
-						y_off[8]={-1,-1,1,1,-1,-1,1,1},
-						z_off[8]={-1,-1,-1,-1,1,1,1,1};
-	bool				has_face;
-	model_bone_type		*bone;
-	model_vertex_type	*vertex;
-	model_poly_type		*poly;
-
-		// add the 8 vertexes
-		// and 6 polys
-
-	nvertex=mesh->nvertex;
-	model_mesh_set_vertex_count(model,0,(nvertex+8));
-
-	npoly=mesh->npoly;
-	model_mesh_set_poly_count(model,0,(npoly+6));
-
-		// need face?
-
-	bone=&model->bones[bone_idx];
-
-	has_face=(strcmp(bone->name,"Head")==0);
-
-		// build the cube vertexes
-
-	vertex=&mesh->vertexes[nvertex];
-
-	for (n=0;n!=8;n++) {
-
-		vertex->pnt.x=(bone->pnt.x+x_off[n]*sz->x);
-		vertex->pnt.y=(bone->pnt.y+y_off[n]*sz->y);
-		vertex->pnt.z=(bone->pnt.z+z_off[n]*sz->z);
-
-			// bone connection
-
-		vertex->major_bone_idx=bone_idx;
-		vertex->minor_bone_idx=-1;
-		vertex->bone_factor=1.0f;
-
-			// tangent space
-
-		vector_create(&vertex->tangent_space.normal,vertex->pnt.x,vertex->pnt.y,vertex->pnt.z,bone->pnt.x,bone->pnt.y,bone->pnt.z);
-
-		vertex++;
-	}
-
-		// build the cube polys
-
-	poly=&mesh->polys[npoly];
-
-	poly->ptsz=4;
-	poly->txt_idx=0;
-
-	poly->v[0]=nvertex;
-	poly->v[1]=nvertex+1;
-	poly->v[2]=nvertex+2;
-	poly->v[3]=nvertex+3;
-
-	if (has_face) {
-		poly->gx[0]=poly->gx[3]=1.0f;		// face is top-right of texture
-		poly->gx[1]=poly->gx[2]=0.5f;
-	}
-	else {
-		poly->gx[0]=poly->gx[3]=0.0f;
-		poly->gx[1]=poly->gx[2]=0.5f;
-	}
-	poly->gy[0]=poly->gy[1]=0.0f;
-	poly->gy[2]=poly->gy[3]=0.5f;
-
-	poly++;
-
-	poly->ptsz=4;
-	poly->txt_idx=0;
-
-	poly->v[0]=nvertex+1;
-	poly->v[1]=nvertex+2;
-	poly->v[2]=nvertex+6;
-	poly->v[3]=nvertex+5;
-
-	poly->gx[0]=poly->gx[3]=0.0f;
-	poly->gx[1]=poly->gx[2]=0.5f;
-	poly->gy[0]=poly->gy[1]=0.0f;
-	poly->gy[2]=poly->gy[3]=0.5f;
-
-	poly++;
-
-	poly->ptsz=4;
-	poly->txt_idx=0;
-
-	poly->v[0]=nvertex;
-	poly->v[1]=nvertex+3;
-	poly->v[2]=nvertex+7;
-	poly->v[3]=nvertex+4;
-
-	poly->gx[0]=poly->gx[3]=0.0f;
-	poly->gx[1]=poly->gx[2]=0.5f;
-	poly->gy[0]=poly->gy[1]=0.0f;
-	poly->gy[2]=poly->gy[3]=0.5f;
-
-	poly++;
-
-	poly->ptsz=4;
-	poly->txt_idx=0;
-
-	poly->v[0]=nvertex+4;
-	poly->v[1]=nvertex+5;
-	poly->v[2]=nvertex+6;
-	poly->v[3]=nvertex+7;
-
-	poly->gx[0]=poly->gx[3]=0.0f;
-	poly->gx[1]=poly->gx[2]=0.5f;
-	poly->gy[0]=poly->gy[1]=0.0f;
-	poly->gy[2]=poly->gy[3]=0.5f;
-
-	poly++;
-
-	poly->ptsz=4;
-	poly->txt_idx=0;
-
-	poly->v[0]=nvertex;
-	poly->v[1]=nvertex+1;
-	poly->v[2]=nvertex+5;
-	poly->v[3]=nvertex+4;
-
-	poly->gx[0]=poly->gx[3]=0.0f;
-	poly->gx[1]=poly->gx[2]=0.5f;
-	poly->gy[0]=poly->gy[1]=0.0f;
-	poly->gy[2]=poly->gy[3]=0.5f;
-
-	poly++;
-
-	poly->ptsz=4;
-	poly->txt_idx=0;
-
-	poly->v[0]=nvertex+3;
-	poly->v[1]=nvertex+2;
-	poly->v[2]=nvertex+6;
-	poly->v[3]=nvertex+7;
-
-	poly->gx[0]=poly->gx[3]=0.0f;
-	poly->gx[1]=poly->gx[2]=0.5f;
-	poly->gy[0]=poly->gy[1]=0.0f;
-	poly->gy[2]=poly->gy[3]=0.5f;
+	ag_model_piece_complex_cylinder(model,mesh,top_bone_idx,bot_bone_idx,&spt,&ept,stack_count,&radius,&radius_extra,gx_offset,gy_offset,0.0f,0.0f,TRUE,TRUE);
 }
 
 /* =======================================================
@@ -541,10 +191,9 @@ void ag_model_bone_point_cube(model_type *model,model_mesh_type *mesh,int bone_i
 
 void ag_model_build_around_bones(model_type *model)
 {
-	int				n,parent_idx,
+	int				n,
 					body_bone_idx,hip_bone_idx,
 					limb_radius;
-	int				bone_vertex_idx[max_model_bone];
 	model_mesh_type	*mesh;
 
 		// build into first mesh
@@ -554,12 +203,6 @@ void ag_model_build_around_bones(model_type *model)
 		// random limb radius
 
 	limb_radius=ag_model_limb_radius_start+ag_random_int(ag_model_limb_radius_extra);
-
-		// build the cylinder vertexes
-
-	for (n=0;n!=model->nbone;n++) {
-		bone_vertex_idx[n]=ag_model_bone_cylinder_vertexes(model,mesh,n,limb_radius,limb_radius,0);
-	}
 
 		// find body and hips
 
@@ -581,7 +224,6 @@ void ag_model_build_around_bones(model_type *model)
 
 	for (n=0;n!=model->nbone;n++) {
 		if (ag_model_bone_is_arm(model,n)) {
-			parent_idx=model->bones[n].parent_idx;
 			ag_model_limb_bone(model,mesh,n,limb_radius,FALSE);
 			continue;
 		}
@@ -590,7 +232,6 @@ void ag_model_build_around_bones(model_type *model)
 			continue;
 		}
 		if (ag_model_bone_is_leg(model,n)) {
-			parent_idx=model->bones[n].parent_idx;
 			ag_model_limb_bone(model,mesh,n,limb_radius,TRUE);
 			continue;
 		}
@@ -602,8 +243,7 @@ void ag_model_build_around_bones(model_type *model)
 
 				// neck
 
-			parent_idx=model->bones[n].parent_idx;
-			ag_model_bone_cylinder_polygons(model,mesh,bone_vertex_idx[n],bone_vertex_idx[parent_idx],FALSE,FALSE,FALSE);
+			ag_model_limb_bone(model,mesh,n,limb_radius,FALSE);
 
 				// head
 
@@ -618,6 +258,37 @@ void ag_model_build_around_bones(model_type *model)
       Randomize Vertexes
       
 ======================================================= */
+
+void ag_model_collapse_similar_vertexes(model_type *model)
+{
+	int					n,k,t;
+	model_mesh_type		*mesh;
+	model_vertex_type	*vertex,*chk_vertex;
+	model_poly_type		*poly;
+
+	mesh=&model->meshes[0];
+
+	vertex=mesh->vertexes;
+
+	for (n=0;n!=mesh->nvertex;n++) {
+
+		poly=mesh->polys;
+			
+		for (k=0;k!=mesh->npoly;k++) {
+		
+			for (t=0;t!=poly->ptsz;t++) {
+				if (poly->v[t]==n) continue;
+
+				chk_vertex=&mesh->vertexes[poly->v[t]];
+				if ((chk_vertex->pnt.x==vertex->pnt.x) && (chk_vertex->pnt.y==vertex->pnt.y) && (chk_vertex->pnt.z==vertex->pnt.z)) poly->v[t]=n;
+			}
+
+			poly++;
+		}
+
+		vertex++;
+	}
+}
 
 void ag_model_randomize_vertexes(model_type *model)
 {
@@ -706,10 +377,11 @@ void auto_generate_model_monster(model_type *model)
 		// build model around bones
 
 	ag_model_build_around_bones(model);
-//	ag_model_add_decorations(model);		// supergumba -- testing
+	ag_model_add_decorations(model);		// supergumba -- testing
 
 		// remove any stray vertexes
 
+	ag_model_collapse_similar_vertexes(model);
 	ag_model_remove_stray_vertexes(model);
 
 		// randomize vertexes
