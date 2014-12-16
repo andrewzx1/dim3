@@ -1039,7 +1039,7 @@ void bitmap_ag_texture_face_chunk(bitmap_ag_type *ag_bitmap,int x,int y,int wid,
 
 		// position of face
 	
-	face_x=x+((wid*5)/10);
+	face_x=x+((wid*6)/10);
 	face_wid=(wid*4)/10;
 
 		// eyes
